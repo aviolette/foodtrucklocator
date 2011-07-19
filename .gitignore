@@ -2,4 +2,5 @@ cfl.iml
 out
 target
 .idea
-src/main/java/resources/trucks.yaml
+src/main/resources/trucks.yaml
+src/main/webapp/WEB-INF/cron.xml
