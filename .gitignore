@@ -2,3 +2,4 @@ cfl.iml
 out
 target
 .idea
+src/main/java/resources/trucks.yaml

@@ -1,0 +1,115 @@
+package foodtruck.model;
+
+import javax.annotation.Nullable;
+
+import com.google.common.base.Objects;
+
+/**
+ * Static information about a food truck.
+ * @author aviolette@gmail.com
+ * @since Jul 12, 2011
+ */
+public class Truck {
+  private final String id;
+  private final String name;
+  private final String twitterHandle;
+  private final String url;
+  private final String iconUrl;
+
+  private Truck(Builder builder) {
+    this.id = builder.id;
+    this.name = builder.name;
+    this.twitterHandle = builder.twitter;
+    this.url = builder.url;
+    this.iconUrl = builder.iconUrl;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getTwitterHandle() {
+    return twitterHandle;
+  }
+
+  public String getUrl() {
+    return url;
+  }
+
+  public String getIconUrl() {
+    return iconUrl;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(id, name, url, iconUrl, twitterHandle);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    } else if (o == null || !(o instanceof Truck)) {
+      return false;
+    }
+    Truck truck = (Truck) o;
+    return id.equals(truck.id) && name.equals(truck.name) && iconUrl.equals(truck.iconUrl) &&
+        Objects.equal(twitterHandle, truck.twitterHandle) && Objects.equal(url, truck.url); 
+  }
+
+  @Override
+  public String toString() {
+    return Objects.toStringHelper(this)
+        .add("id", id)
+        .add("name", name)
+        .add("url", url)
+        .add("iconUrl", iconUrl)
+        .add("twitterHandle", twitterHandle)
+        .toString();
+  }
+
+  public static class Builder {
+    private String id;
+    private String name;
+    private @Nullable String url;
+    private String iconUrl;
+    private @Nullable String twitter;
+
+    public Builder() {
+    }
+
+    public Builder id(String id) {
+      this.id = id;
+      return this;
+    }
+
+    public Builder name(String name) {
+      this.name = name;
+      return this;
+    }
+
+    public Builder url(@Nullable String url) {
+      this.url = url;
+      return this;
+    }
+
+    public Builder iconUrl(String iconUrl) {
+      this.iconUrl = iconUrl;
+      return this;
+    }
+
+    public Builder twitterHandle(@Nullable String twitter) {
+      this.twitter = twitter;
+      return this;
+    }
+
+    public Truck build() {
+      return new Truck(this);
+    }
+
+  }
+}

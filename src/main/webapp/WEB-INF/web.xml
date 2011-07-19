@@ -5,7 +5,7 @@
 		  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
            version="2.5">
   <listener>
-    <listener-class>net.andrewviolette.foodtruck.server.FoodtruckConfig</listener-class>
+    <listener-class>foodtruck.server.FoodtruckConfig</listener-class>
   </listener>
   <filter>
     <filter-name>guiceFilter</filter-name>
@@ -15,4 +15,14 @@
     <filter-name>guiceFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+  <!--
+  <security-constraint>
+        <web-resource-collection>
+            <url-pattern>/cron/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+        </auth-constraint>
+    </security-constraint>
+    -->
 </web-app>
