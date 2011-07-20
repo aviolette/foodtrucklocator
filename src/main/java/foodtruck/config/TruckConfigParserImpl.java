@@ -14,11 +14,11 @@ import com.google.common.collect.ImmutableMap;
 import org.joda.time.LocalTime;
 import org.yaml.snakeyaml.Yaml;
 
-import foodtruck.schedule.DeterministicScheduleStrategy;
 import foodtruck.model.DayOfWeek;
 import foodtruck.model.Location;
 import foodtruck.model.ReoccurringTruckStop;
 import foodtruck.model.Truck;
+import foodtruck.schedule.DeterministicScheduleStrategy;
 import foodtruck.schedule.ScheduleStrategy;
 
 /**
@@ -29,6 +29,7 @@ public class TruckConfigParserImpl implements TruckConfigParser {
   private static final Logger log = Logger.getLogger(TruckConfigParserImpl.class.getName());
 
   // TODO: this is pretty atrocious code.  fix 
+
   @Override
   public Map<Truck, ScheduleStrategy> parse(String url, ScheduleStrategy defaultStrategy)
       throws FileNotFoundException {
@@ -48,18 +49,7 @@ public class TruckConfigParserImpl implements TruckConfigParser {
       if (strategyObj != null) {
         String type = (String) strategyObj.get("type");
         if ("schedule".equals(type)) {
-          List<Map<String, Object>> scheduleList = (List) strategyObj.get("schedule");
-          ImmutableList.Builder<ReoccurringTruckStop> stops = ImmutableList.builder();
-          for (Map<String, Object> scheduleData : scheduleList) {
-            LocalTime startTime = getTime(scheduleData, "start");
-            LocalTime endTime = getTime(scheduleData, "end");
-            ReoccurringTruckStop stop =
-                new ReoccurringTruckStop(truck, DayOfWeek.valueOf((String) scheduleData.get("day")),
-                    startTime, endTime, new Location((Double) scheduleData.get("latitude"),
-                        (Double) scheduleData.get("longitude"), (String) scheduleData.get("name")));
-            stops.add(stop);
-          }
-          strategy = new DeterministicScheduleStrategy(stops.build());
+          strategy = scheduleStrategy(truck, strategyObj);
         }
       }
       log.log(Level.INFO, "Loaded truck: {0}", truck);
@@ -68,11 +58,26 @@ public class TruckConfigParserImpl implements TruckConfigParser {
     return truckBuilder.build();
   }
 
+  private ScheduleStrategy scheduleStrategy(Truck truck, Map<String, Object> strategyObj) {
+    final ScheduleStrategy strategy;
+    List<Map<String, Object>> scheduleList = (List) strategyObj.get("schedule");
+    ImmutableList.Builder<ReoccurringTruckStop> stops = ImmutableList.builder();
+    for (Map<String, Object> scheduleData : scheduleList) {
+      LocalTime startTime = getTime(scheduleData, "start");
+      LocalTime endTime = getTime(scheduleData, "end");
+      ReoccurringTruckStop stop =
+          new ReoccurringTruckStop(truck, DayOfWeek.valueOf((String) scheduleData.get("day")),
+              startTime, endTime, new Location((Double) scheduleData.get("latitude"),
+                  (Double) scheduleData.get("longitude"), (String) scheduleData.get("name")));
+      stops.add(stop);
+    }
+    strategy = new DeterministicScheduleStrategy(stops.build());
+    return strategy;
+  }
 
   private LocalTime getTime(Map<String, Object> scheduleData, String key) {
     String timeValue = (String) scheduleData.get(key);
     String[] values = timeValue.split(":");
     return new LocalTime(Integer.parseInt(values[0]), Integer.parseInt(values[1]));
   }
-
 }
