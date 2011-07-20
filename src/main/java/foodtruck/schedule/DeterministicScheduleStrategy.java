@@ -2,13 +2,13 @@ package foodtruck.schedule;
 
 import java.util.List;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.internal.ImmutableList;
 
 import foodtruck.model.ReoccurringTruckStop;
 import foodtruck.model.TimeRange;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
-import foodtruck.schedule.ScheduleStrategy;
 
 /**
  * A strategy for determining a truck's location based on a regularly-occurring set of stops.
@@ -20,6 +20,10 @@ public class DeterministicScheduleStrategy implements ScheduleStrategy {
 
   public DeterministicScheduleStrategy(List<ReoccurringTruckStop> stops) {
     this.stops = stops;
+  }
+
+  @VisibleForTesting public List<ReoccurringTruckStop> getStops() {
+    return stops;
   }
 
   @Override
