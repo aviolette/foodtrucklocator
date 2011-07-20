@@ -3,4 +3,5 @@ out
 target
 .idea
 src/main/resources/trucks.yaml
+src/main/resources/twitter4j.properties
 src/main/webapp/WEB-INF/cron.xml
