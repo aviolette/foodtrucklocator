@@ -54,7 +54,16 @@ public class TruckStop {
       return false;
     }
     TruckStop obj = (TruckStop) o;
-    return truck.equals(obj.truck) && startTime.equals(obj.startTime) && endTime.equals(obj.endTime) &&
+    return truck.equals(obj.truck) && startTime.equals(obj.startTime) &&
+        endTime.equals(obj.endTime) &&
         location.equals(obj.location);
+  }
+
+  /**
+   * Returns true if the start time of the stop falls within the specified time range.
+   */
+  public boolean within(TimeRange range) {
+    return range.getStartDateTime().isBefore(startTime.plusSeconds(1)) &&
+      range.getEndDateTime().isAfter(startTime);
   }
 }

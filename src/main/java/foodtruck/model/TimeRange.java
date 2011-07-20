@@ -61,4 +61,8 @@ public class TimeRange {
   public DateTime getStartDateTime() {
     return date.toDateTime(startTime);
   }
+
+  public DateTime getEndDateTime() {
+    return date.toDateTime(endTime);
+  }
 }
