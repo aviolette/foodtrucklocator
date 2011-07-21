@@ -1,4 +1,4 @@
-package foodtruck.service;
+package foodtruck.truckstops;
 
 import java.util.List;
 import java.util.Map;

@@ -20,7 +20,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.model.Location;
 import foodtruck.model.TruckStop;
-import foodtruck.service.FoodTruckStopService;
+import foodtruck.truckstops.FoodTruckStopService;
 
 /**
  * @author aviolette

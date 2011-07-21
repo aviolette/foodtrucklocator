@@ -31,10 +31,12 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
   private static final String LONGITUDE_FIELD = "longitude";
   private static final String TRUCK_ID_FIELD = "truckId";
   private final Map<String, Truck> trucks;
+  private final DatastoreServiceProvider serviceProvider;
 
   @Inject
-  public TruckStopDAOAppEngine(Map<String, Truck> trucks) {
+  public TruckStopDAOAppEngine(Map<String, Truck> trucks, DatastoreServiceProvider provider) {
     this.trucks = trucks;
+    this.serviceProvider = provider;
   }
 
   /**
@@ -42,7 +44,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
    */
   @Override
   public Set<TruckStop> findAfter(DateTime instant) {
-    DatastoreService dataStore = DatastoreServiceFactory.getDatastoreService();
+    DatastoreService dataStore = serviceProvider.get();
     Query q = new Query(STOP_KIND);
     q.addFilter(TIME_RANGE_FIELD, Query.FilterOperator.GREATER_THAN_OR_EQUAL, instant.toDate());
     ImmutableSet.Builder<TruckStop> stops = ImmutableSet.builder();
@@ -61,7 +63,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
    */
   @Override
   public void deleteAfter(DateTime startTime) {
-    DatastoreService dataStore = DatastoreServiceFactory.getDatastoreService();
+    DatastoreService dataStore = serviceProvider.get();
     Query q = new Query(STOP_KIND);
     q.addFilter(TIME_RANGE_FIELD, Query.FilterOperator.GREATER_THAN_OR_EQUAL, startTime.toDate());
     ImmutableList.Builder<Key> keys = ImmutableList.builder();

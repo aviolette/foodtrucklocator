@@ -13,7 +13,7 @@ import com.google.inject.Singleton;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 
-import foodtruck.service.FoodTruckStopService;
+import foodtruck.truckstops.FoodTruckStopService;
 
 /**
  * @author aviolette@gmail.com

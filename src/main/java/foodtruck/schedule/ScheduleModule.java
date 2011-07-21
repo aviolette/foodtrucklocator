@@ -8,6 +8,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
 import foodtruck.config.TruckConfigParser;
+import foodtruck.geolocation.GeoLocator;
 import foodtruck.model.Truck;
 import twitter4j.TwitterFactory;
 
@@ -26,8 +27,8 @@ public class ScheduleModule extends AbstractModule {
   }
 
   @Provides @DefaultStrategy
-  public ScheduleStrategy provideTwitterStrategy(TwitterFactoryWrapper factoryWrapper) {
-    return new TwitterFeedScheduleStrategy(factoryWrapper);
+  public ScheduleStrategy provideTwitterStrategy(TwitterFactoryWrapper factoryWrapper, GeoLocator geoLocator) {
+    return new TwitterFeedScheduleStrategy(factoryWrapper, geoLocator);
   }
 
   @Provides @Singleton

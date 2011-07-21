@@ -7,8 +7,9 @@ import com.google.inject.servlet.GuiceServletContextListener;
 
 import foodtruck.config.ConfigModule;
 import foodtruck.dao.appengine.AppEngineDAOModule;
+import foodtruck.geolocation.GeolocationModule;
 import foodtruck.schedule.ScheduleModule;
-import foodtruck.service.ServiceModule;
+import foodtruck.truckstops.ServiceModule;
 
 /**
  * @author aviolette@gmail.com
@@ -24,6 +25,7 @@ public class FoodtruckConfig extends GuiceServletContextListener {
     return new Module[] {
         new ConfigModule(),
         new AppEngineDAOModule(),
+        new GeolocationModule(),
         new ServiceModule(),
         new ScheduleModule(),
         new FoodtruckServletModule()
