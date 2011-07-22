@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.junit.Before;
@@ -33,15 +34,16 @@ public class DeterministicScheduleStrategyTest {
 
   @Before
   public void before() {
+    DateTimeZone zone = DateTimeZone.forID("America/Chicago");
     truck = new Truck.Builder().id("foo").name("bar").build();
     stop1 =
         new ReoccurringTruckStop(truck, DayOfWeek.monday, new LocalTime(11, 0),
-            new LocalTime(2, 0), new Location(1, 2, "Some location"));
+            new LocalTime(2, 0), new Location(1, 2, "Some location"), zone);
     stop2 =
         new ReoccurringTruckStop(truck, DayOfWeek.monday, new LocalTime(15, 0), new LocalTime(17, 0),
-            new Location(3, 4, "Another Location"));
+            new Location(3, 4, "Another Location"), zone);
     stop3 = new ReoccurringTruckStop(truck, DayOfWeek.thursday, new LocalTime(11, 0),
-        new LocalTime(3, 4), new Location(1, 2, "Some location"));
+        new LocalTime(3, 4), new Location(1, 2, "Some location"), zone);
     stops = ImmutableList.of(stop1, stop2, stop3);
     strategy = new DeterministicScheduleStrategy(stops);
   }

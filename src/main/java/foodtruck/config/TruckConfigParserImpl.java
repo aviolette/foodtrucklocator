@@ -10,7 +10,9 @@ import java.util.logging.Logger;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.inject.Inject;
 
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalTime;
 import org.yaml.snakeyaml.Yaml;
 
@@ -27,8 +29,13 @@ import foodtruck.schedule.ScheduleStrategy;
  */
 public class TruckConfigParserImpl implements TruckConfigParser {
   private static final Logger log = Logger.getLogger(TruckConfigParserImpl.class.getName());
+  private final DateTimeZone zone;
 
-  // TODO: this is pretty atrocious code.  fix 
+  @Inject
+  public TruckConfigParserImpl(DateTimeZone localZone) {
+    zone = localZone;
+  }
+  // TODO: this is pretty atrocious code.  fix
 
   @Override
   public Map<Truck, ScheduleStrategy> parse(String url, ScheduleStrategy defaultStrategy)
@@ -68,7 +75,7 @@ public class TruckConfigParserImpl implements TruckConfigParser {
       ReoccurringTruckStop stop =
           new ReoccurringTruckStop(truck, DayOfWeek.valueOf((String) scheduleData.get("day")),
               startTime, endTime, new Location((Double) scheduleData.get("latitude"),
-                  (Double) scheduleData.get("longitude"), (String) scheduleData.get("name")));
+                  (Double) scheduleData.get("longitude"), (String) scheduleData.get("name")), zone);
       stops.add(stop);
     }
     strategy = new DeterministicScheduleStrategy(stops.build());

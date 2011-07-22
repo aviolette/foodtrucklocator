@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.easymock.EasyMockSupport;
+import org.joda.time.DateTimeZone;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,7 +26,7 @@ public class TruckConfigParserImplTest extends EasyMockSupport {
   @Before
   public void before() {
     strategy = createMock(ScheduleStrategy.class);
-    parser = new TruckConfigParserImpl();
+    parser = new TruckConfigParserImpl(DateTimeZone.forID("America/Chicago"));
   }
 
   @Test

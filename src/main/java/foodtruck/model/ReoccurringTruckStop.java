@@ -1,5 +1,6 @@
 package foodtruck.model;
 
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
@@ -14,14 +15,16 @@ public class ReoccurringTruckStop {
   private final LocalTime startTime;
   private final LocalTime endTime;
   private final Location location;
+  private final DateTimeZone zone;
 
   public ReoccurringTruckStop(Truck truck, DayOfWeek dayOfWeek, LocalTime startTime,
-      LocalTime endTime, Location location) {
+      LocalTime endTime, Location location, DateTimeZone zone) {
     this.truck = truck;
     this.day = dayOfWeek;
     this.startTime = startTime;
     this.endTime = endTime;
     this.location = location;
+    this.zone = zone;
   }
 
   public boolean in(TimeRange range) {
@@ -31,6 +34,7 @@ public class ReoccurringTruckStop {
   }
 
   public TruckStop toTruckStop(LocalDate localDate) {
-    return new TruckStop(truck, localDate.toDateTime(startTime), localDate.toDateTime(endTime), location);
+    return new TruckStop(truck, localDate.toDateTime(startTime, zone),
+        localDate.toDateTime(endTime, zone), location);
   }
 }
