@@ -10,7 +10,7 @@ import org.joda.time.LocalTime;
 import org.junit.Before;
 import org.junit.Test;
 
-import foodtruck.schedule.DeterministicScheduleStrategy;
+import foodtruck.schedule.ReoccuringScheduleStrategy;
 import foodtruck.model.DayOfWeek;
 import foodtruck.model.Location;
 import foodtruck.model.ReoccurringTruckStop;
@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
  * @since Jul 15, 2011
  */
 public class DeterministicScheduleStrategyTest {
-  private DeterministicScheduleStrategy strategy;
+  private ReoccuringScheduleStrategy strategy;
   private Truck truck;
   private List<ReoccurringTruckStop> stops;
   private ReoccurringTruckStop stop1;
@@ -45,7 +45,7 @@ public class DeterministicScheduleStrategyTest {
     stop3 = new ReoccurringTruckStop(truck, DayOfWeek.thursday, new LocalTime(11, 0),
         new LocalTime(3, 4), new Location(1, 2, "Some location"), zone);
     stops = ImmutableList.of(stop1, stop2, stop3);
-    strategy = new DeterministicScheduleStrategy(stops);
+    strategy = new ReoccuringScheduleStrategy(stops);
   }
 
   @Test

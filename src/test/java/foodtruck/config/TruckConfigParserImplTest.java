@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import foodtruck.model.ReoccurringTruckStop;
 import foodtruck.model.Truck;
-import foodtruck.schedule.DeterministicScheduleStrategy;
+import foodtruck.schedule.ReoccuringScheduleStrategy;
 import foodtruck.schedule.ScheduleStrategy;
 import static org.junit.Assert.assertEquals;
 
@@ -40,7 +40,7 @@ public class TruckConfigParserImplTest extends EasyMockSupport {
     Truck truck =
         new Truck.Builder().id("scheduleTruck").name("Truck that runs on a fixed schedule")
             .twitterHandle("foobar").iconUrl("http://foo/bar.jpg").build();
-    DeterministicScheduleStrategy strategy = (DeterministicScheduleStrategy) result.get(truck);
+    ReoccuringScheduleStrategy strategy = (ReoccuringScheduleStrategy) result.get(truck);
     List<ReoccurringTruckStop> stops = strategy.getStops();
     assertEquals(2, stops.size());
     // truck 2

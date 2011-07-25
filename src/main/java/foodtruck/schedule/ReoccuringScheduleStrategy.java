@@ -15,10 +15,10 @@ import foodtruck.model.TruckStop;
  * @author aviolette@gmail.com
  * @since Jul 13, 2011
  */
-public class DeterministicScheduleStrategy implements ScheduleStrategy {
+public class ReoccuringScheduleStrategy implements ScheduleStrategy {
   private final List<ReoccurringTruckStop> stops;
 
-  public DeterministicScheduleStrategy(List<ReoccurringTruckStop> stops) {
+  public ReoccuringScheduleStrategy(List<ReoccurringTruckStop> stops) {
     this.stops = stops;
   }
 

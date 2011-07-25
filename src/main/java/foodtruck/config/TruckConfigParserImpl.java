@@ -20,7 +20,7 @@ import foodtruck.model.DayOfWeek;
 import foodtruck.model.Location;
 import foodtruck.model.ReoccurringTruckStop;
 import foodtruck.model.Truck;
-import foodtruck.schedule.DeterministicScheduleStrategy;
+import foodtruck.schedule.ReoccuringScheduleStrategy;
 import foodtruck.schedule.ScheduleStrategy;
 
 /**
@@ -57,6 +57,8 @@ public class TruckConfigParserImpl implements TruckConfigParser {
         String type = (String) strategyObj.get("type");
         if ("schedule".equals(type)) {
           strategy = scheduleStrategy(truck, strategyObj);
+//        } else if ("manual".equals(type)) {
+//          strategy = manualStrategy(truck, strategyObj);
         }
       }
       log.log(Level.INFO, "Loaded truck: {0}", truck);
@@ -78,7 +80,7 @@ public class TruckConfigParserImpl implements TruckConfigParser {
                   (Double) scheduleData.get("longitude"), (String) scheduleData.get("name")), zone);
       stops.add(stop);
     }
-    strategy = new DeterministicScheduleStrategy(stops.build());
+    strategy = new ReoccuringScheduleStrategy(stops.build());
     return strategy;
   }
 
