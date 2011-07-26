@@ -20,10 +20,8 @@
       center: latlng,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
-
     var map = new google.maps.Map(document.getElementById("map_canvas"),
         myOptions);
-
      function buildMarker(iconUrl, map, lat, lng, name) {
         var latLng = new google.maps.LatLng(lat, lng);
         var marker = new google.maps.Marker({
@@ -34,7 +32,6 @@
                            '<img src="' + iconUrl +'"/>&nbsp;' + name
 
            '</div>';
-
        var infowindow = new google.maps.InfoWindow({
            content: contentString
        });
@@ -42,18 +39,13 @@
           infowindow.open(map,marker);
         });       
      }
-
   <c:forEach var="stop" items="${stops}">
     buildMarker("<c:out value="${stop.truck.iconUrl}"/>", map, <c:out value="${stop.location.latitude}"/>, ${stop.location.longitude}, "${stop.truck.name}");
   </c:forEach>
-
-
   }
-
 </script>
 </head>
 <body onload="initialize()">
-  <div>hello world</div>
   <div id="map_canvas" style="width:100%; height:100%"></div>
 </body>
 </html>
