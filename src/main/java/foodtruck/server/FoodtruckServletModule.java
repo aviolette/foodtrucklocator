@@ -16,7 +16,7 @@ public class FoodtruckServletModule extends ServletModule {
   @Override
   protected void configureServlets() {
     serve("/cron/recache").with(FoodTruckUpdaterServlet.class);
-    serve("/*").with(FoodTruckServlet.class);
+    serveRegex("/[\\w]*").with(FoodTruckServlet.class);
   }
 
   @Provides
