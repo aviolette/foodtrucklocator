@@ -5,4 +5,4 @@ target
 src/main/resources/trucks.yaml
 src/main/resources/twitter4j.properties
 src/main/webapp/WEB-INF/cron.xml
-src/main/webapp/WEB-INF/appengine.xml
+src/main/webapp/WEB-INF/appengine-web.xml
