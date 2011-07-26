@@ -84,7 +84,7 @@ public class TruckConfigParserImpl implements TruckConfigParser {
       LocalTime endTime = getTime(scheduleData, "end");
       LocalDate date = getDate(scheduleData, "date");
       TruckStop stop =
-          new TruckStop(truck,  date.toDateTime(startTime), date.toDateTime(endTime),
+          new TruckStop(truck, date.toDateTime(startTime, zone), date.toDateTime(endTime, zone),
               new Location((Double) scheduleData.get("latitude"),
                   (Double) scheduleData.get("longitude"), (String) scheduleData.get("name")));
       stops.add(stop);
