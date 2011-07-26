@@ -9,12 +9,12 @@ import com.google.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
-import foodtruck.schedule.DefaultStrategy;
-import foodtruck.schedule.ScheduleStrategy;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.TimeRange;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
+import foodtruck.schedule.DefaultStrategy;
+import foodtruck.schedule.ScheduleStrategy;
 
 /**
  * @author aviolette@gmail.com
@@ -38,7 +38,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
 
   @Override
   public Set<TruckStop> findStopsFor(DateTime instant) {
-    return truckStopDAO.findAfter(instant);
+    return truckStopDAO.findAt(instant);
   }
 
   @Override

@@ -12,7 +12,7 @@ import foodtruck.model.TruckStop;
  * @since Jul 12, 2011
  */
 public interface TruckStopDAO {
-  Set<TruckStop> findAfter(DateTime instant);
+  Set<TruckStop> findAt(DateTime instant);
 
   void deleteAfter(DateTime startTime);
 
