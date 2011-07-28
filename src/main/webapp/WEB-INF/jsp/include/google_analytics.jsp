@@ -3,7 +3,7 @@
 <script type="text/javascript">
 
   var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'google_analytics_ua']);
+  _gaq.push(['_setAccount', '${google_analytics_ua}']);
   _gaq.push(['_trackPageview']);
 
   (function() {

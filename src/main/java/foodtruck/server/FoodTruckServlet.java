@@ -59,6 +59,10 @@ public class FoodTruckServlet extends HttpServlet {
     Set<TruckStop> stops = foodTruckService.findStopsFor(dateTime);
     req.setAttribute("stops", stops);
     req.setAttribute("center", mapCenter);
+    String googleAnalytics = System.getProperty("foodtruck.google.analytics", null);
+    if ( googleAnalytics != null) {
+      req.setAttribute("google_analytics_ua", googleAnalytics);
+    }
     req.getRequestDispatcher("/WEB-INF/jsp/index.jsp").forward(req, resp);
   }
 }
