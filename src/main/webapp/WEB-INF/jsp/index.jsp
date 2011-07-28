@@ -1,5 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ include file="common.jsp"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -44,6 +43,9 @@
   </c:forEach>
   }
 </script>
+  <c:if test="${google_analytics_ua != null}">
+    <jsp:include page="include/google_analytics.jsp"/>
+  </c:if>
 </head>
 <body onload="initialize()">
   <div id="map_canvas" style="width:100%; height:100%"></div>

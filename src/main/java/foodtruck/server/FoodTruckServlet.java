@@ -59,6 +59,6 @@ public class FoodTruckServlet extends HttpServlet {
     Set<TruckStop> stops = foodTruckService.findStopsFor(dateTime);
     req.setAttribute("stops", stops);
     req.setAttribute("center", mapCenter);
-    req.getRequestDispatcher("index.jsp").forward(req, resp);
+    req.getRequestDispatcher("/WEB-INF/jsp/index.jsp").forward(req, resp);
   }
 }
