@@ -7,10 +7,8 @@
   <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
   <link rel="stylesheet" href="css/base.css"/>
   <link rel="stylesheet" href="css/main.css"/>
-
-  <script type="text/javascript"
-          src="http://maps.google.com/maps/api/js?sensor=true">
-  </script>
+  <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"> </script>
+  <script type="text/javascript" src="script/map.js"> </script>
   <script type="text/javascript">
     function initialize() {
       var latlng = new google.maps.LatLng(${center.latitude}, ${center.longitude});
@@ -21,25 +19,6 @@
       };
       var map = new google.maps.Map(document.getElementById("map_canvas"),
           myOptions);
-
-      function buildMarker(iconUrl, map, lat, lng, name) {
-        var latLng = new google.maps.LatLng(lat, lng);
-        var marker = new google.maps.Marker({
-          map: map,
-          position: latLng
-        });
-        var contentString = '<div id="content">' +
-            '<img src="' + iconUrl + '"/>&nbsp;' + name
-
-        '</div>';
-        var infowindow = new google.maps.InfoWindow({
-          content: contentString
-        });
-        google.maps.event.addListener(marker, 'click', function() {
-          infowindow.open(map, marker);
-        });
-      }
-
     <c:forEach var="stop" items="${stops}">
       buildMarker("<c:out value="${stop.truck.iconUrl}"/>", map,
           <c:out value="${stop.location.latitude}"/>, ${stop.location.longitude},
