@@ -2,12 +2,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<style type="text/css">
-  html { height: 100% }
-  body { height: 100%; margin: 0px; padding: 0px }
-  #map_canvas { height: 100% }
-</style>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <link rel="stylesheet" href="css/base.css"/>
+  <link rel="stylesheet" href="css/main.css"/>
+
 <script type="text/javascript"
     src="http://maps.google.com/maps/api/js?sensor=true">
 </script>
@@ -48,7 +48,19 @@
   </c:if>
 </head>
 <body onload="initialize()">
-  <div id="map_canvas" style="width:100%; height:100%"></div>
+  <div class="main">
+    <div id="header"><div class="section"><h1>Chicago Food Truck Locator</h1></div></div>
+
+    <div id="right">
+      <div id="contentWrapper">
+        <div class="section" id="map_canvas"></div>
+      </div>
+    </div>
+   <div id="left">
+      <div class="section">Left column</div>
+    </div>
+    <div id="footer">Footer</div>
+  </div>
 </body>
 </html>
 
