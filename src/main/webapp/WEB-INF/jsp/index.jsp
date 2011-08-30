@@ -41,7 +41,14 @@
     </div>
   </div>
   <div id="left">
-    <div class="section">Left column</div>
+    <div class="section">
+      <%-- Left column --%>
+        <ul>
+        <c:forEach var="stop" items="${stops}">
+          <li>${stop.truck.name}</li>
+        </c:forEach>
+        </ul>
+    </div>
   </div>
   <footer>Footer</footer>
 </div>

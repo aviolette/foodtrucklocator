@@ -1,0 +1,78 @@
+package foodtruck.schedule;
+
+import java.io.IOException;
+import java.util.List;
+
+import com.google.appengine.repackaged.com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
+import com.google.gdata.client.calendar.CalendarQuery;
+import com.google.gdata.client.calendar.CalendarService;
+import com.google.gdata.data.DateTime;
+import com.google.gdata.data.calendar.CalendarEventEntry;
+import com.google.gdata.data.calendar.CalendarEventFeed;
+import com.google.gdata.data.extensions.When;
+import com.google.gdata.data.extensions.Where;
+import com.google.gdata.util.ServiceException;
+import com.google.inject.Inject;
+
+import org.joda.time.DateTimeZone;
+
+import foodtruck.model.Location;
+import foodtruck.model.TimeRange;
+import foodtruck.model.Truck;
+import foodtruck.model.TruckStop;
+import static foodtruck.schedule.TimeUtils.toJoda;
+
+/**
+ * Uses a google calendar feed to load a truck's schedule.
+ * @author aviolette@gmail.com
+ * @since 8/27/11
+ */
+public class GoogleCalendarStrategy implements ScheduleStrategy {
+  private final CalendarService calendarService;
+  private final CalendarQueryFactory queryFactory;
+  private final DateTimeZone defaultZone;
+
+  @Inject
+  public GoogleCalendarStrategy(CalendarService calendarService,
+      CalendarQueryFactory queryFactory, DateTimeZone defaultZone) {
+    this.calendarService = calendarService;
+    this.queryFactory = queryFactory;
+    this.defaultZone = defaultZone;
+  }
+
+  @Override public List<TruckStop> findForTime(Truck truck, TimeRange range) {
+    CalendarQuery query = queryFactory.create();
+    query.setMinimumStartTime(new DateTime(range.getStartDateTime().toDate(),
+        defaultZone.toTimeZone()));
+    query.setMaximumStartTime(new DateTime(range.getEndDateTime().toDate(),
+        defaultZone.toTimeZone()));
+    query.setStringCustomParameter("singleevents", "true");
+    query.setFullTextQuery(truck.getId());
+    ImmutableList.Builder<TruckStop> builder = ImmutableList.builder();
+    try {
+      CalendarEventFeed resultFeed = calendarService.query(query, CalendarEventFeed.class);
+
+      for (CalendarEventEntry entry : resultFeed.getEntries()) {
+        Where where = Iterables.getFirst(entry.getLocations(), null);
+        if (where == null) {
+          throw new IllegalStateException("No location specified");
+        }
+        When time = Iterables.getFirst(entry.getTimes(), null);
+        builder.add(new TruckStop(truck, toJoda(time.getStartTime()),
+            toJoda(time.getEndTime()), parseLocation(where)));
+      }
+
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    } catch (ServiceException e) {
+      throw new RuntimeException(e);
+    }
+    return builder.build();
+  }
+
+  private Location parseLocation(Where where) {
+    String values[] = where.getValueString().split(",");
+    return new Location(Double.parseDouble(values[0]), Double.parseDouble(values[1]), values.length > 2 ? values[2] : null);
+  }
+}

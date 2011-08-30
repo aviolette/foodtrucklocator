@@ -3,8 +3,8 @@ package foodtruck.config;
 import java.io.FileNotFoundException;
 import java.util.Map;
 
-import foodtruck.schedule.ScheduleStrategy;
 import foodtruck.model.Truck;
+import foodtruck.schedule.ScheduleStrategy;
 
 /**
  * @author aviolette@gmail.com

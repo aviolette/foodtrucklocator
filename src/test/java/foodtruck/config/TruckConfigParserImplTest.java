@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import foodtruck.model.ReoccurringTruckStop;
 import foodtruck.model.Truck;
+import foodtruck.schedule.GoogleCalendarStrategy;
 import foodtruck.schedule.ReoccuringScheduleStrategy;
 import foodtruck.schedule.ScheduleStrategy;
 import static org.junit.Assert.assertEquals;
@@ -23,13 +24,15 @@ import static org.junit.Assert.assertEquals;
 public class TruckConfigParserImplTest extends EasyMockSupport {
   private TruckConfigParserImpl parser;
   private ScheduleStrategy strategy;
+  private GoogleCalendarStrategy googleCalendarStrategy;
 
   @Before
   public void before() {
     strategy = createMock(ScheduleStrategy.class);
+    googleCalendarStrategy = createMock(GoogleCalendarStrategy.class);
     final DateTimeZone dateTimeZone = DateTimeZone.forID("America/Chicago");
     parser = new TruckConfigParserImpl(dateTimeZone,
-        DateTimeFormat.forPattern("MM/dd/YYYY").withZone(dateTimeZone));
+        DateTimeFormat.forPattern("MM/dd/YYYY").withZone(dateTimeZone), null);
   }
 
   @Test

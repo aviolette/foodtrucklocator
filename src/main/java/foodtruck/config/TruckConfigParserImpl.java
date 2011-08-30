@@ -24,6 +24,7 @@ import foodtruck.model.Location;
 import foodtruck.model.ReoccurringTruckStop;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
+import foodtruck.schedule.GoogleCalendarStrategy;
 import foodtruck.schedule.ManualScheduleStrategy;
 import foodtruck.schedule.ReoccuringScheduleStrategy;
 import foodtruck.schedule.ScheduleStrategy;
@@ -36,12 +37,15 @@ public class TruckConfigParserImpl implements TruckConfigParser {
   private static final Logger log = Logger.getLogger(TruckConfigParserImpl.class.getName());
   private final DateTimeZone zone;
   private final DateTimeFormatter formatter;
+  private final GoogleCalendarStrategy googleCalendarStrategy;
 
   @Inject
   public TruckConfigParserImpl(DateTimeZone localZone,
-      @Named("configDate") DateTimeFormatter formatter) {
+      @Named("configDate") DateTimeFormatter formatter,
+      GoogleCalendarStrategy googleCalendarStrategy) {
     zone = localZone;
     this.formatter = formatter;
+    this.googleCalendarStrategy = googleCalendarStrategy;
   }
   // TODO: this is pretty atrocious code.  fix
 
@@ -67,6 +71,8 @@ public class TruckConfigParserImpl implements TruckConfigParser {
           strategy = scheduleStrategy(truck, strategyObj);
         } else if ("manual".equals(type)) {
           strategy = manualStrategy(truck, strategyObj);
+        } else if ("calendar".equals(type)) {
+          strategy = googleCalendarStrategy;
         }
       }
       log.log(Level.INFO, "Loaded truck: {0}", truck);
