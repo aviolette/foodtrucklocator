@@ -17,7 +17,7 @@ import com.google.inject.Inject;
 
 import org.joda.time.DateTimeZone;
 
-import foodtruck.model.Location;
+import foodtruck.geolocation.GeoLocator;
 import foodtruck.model.TimeRange;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
@@ -32,13 +32,15 @@ public class GoogleCalendarStrategy implements ScheduleStrategy {
   private final CalendarService calendarService;
   private final CalendarQueryFactory queryFactory;
   private final DateTimeZone defaultZone;
+  private final GeoLocator geolocator;
 
   @Inject
   public GoogleCalendarStrategy(CalendarService calendarService,
-      CalendarQueryFactory queryFactory, DateTimeZone defaultZone) {
+      CalendarQueryFactory queryFactory, DateTimeZone defaultZone, GeoLocator geolocator) {
     this.calendarService = calendarService;
     this.queryFactory = queryFactory;
     this.defaultZone = defaultZone;
+    this.geolocator = geolocator;
   }
 
   @Override public List<TruckStop> findForTime(Truck truck, TimeRange range) {
@@ -60,7 +62,7 @@ public class GoogleCalendarStrategy implements ScheduleStrategy {
         }
         When time = Iterables.getFirst(entry.getTimes(), null);
         builder.add(new TruckStop(truck, toJoda(time.getStartTime()),
-            toJoda(time.getEndTime()), parseLocation(where)));
+            toJoda(time.getEndTime()), geolocator.locate(where.getValueString())));
       }
 
     } catch (IOException e) {
@@ -69,10 +71,5 @@ public class GoogleCalendarStrategy implements ScheduleStrategy {
       throw new RuntimeException(e);
     }
     return builder.build();
-  }
-
-  private Location parseLocation(Where where) {
-    String values[] = where.getValueString().split(",");
-    return new Location(Double.parseDouble(values[0]), Double.parseDouble(values[1]), values.length > 2 ? values[2] : null);
   }
 }

@@ -2,6 +2,7 @@ package foodtruck.model;
 
 import javax.annotation.Nullable;
 
+import com.google.appengine.repackaged.com.google.common.base.Strings;
 import com.google.common.base.Objects;
 
 /**
@@ -36,6 +37,10 @@ public class Location {
     return this.name;
   }
 
+  public boolean isNamed() {
+    return !Strings.isNullOrEmpty(this.name);
+  }
+
   @Override
   public String toString() {
     return Objects.toStringHelper(this)
@@ -54,10 +59,9 @@ public class Location {
   public boolean equals(Object o) {
     if (o == this) {
       return true;
-    } else if( o == null || !(o instanceof Location)) {
+    } else if (o == null || !(o instanceof Location)) {
       return false;
     }
-
     Location obj = (Location) o;
     return lat == obj.lat && lng == obj.lng;
   }

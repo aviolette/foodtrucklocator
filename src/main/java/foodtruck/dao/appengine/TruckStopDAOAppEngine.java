@@ -35,7 +35,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
   private static final String TRUCK_ID_FIELD = "truckId";
   private final Map<String, Truck> trucks;
   private final DatastoreServiceProvider serviceProvider;
-  private DateTimeZone zone;
+  private final DateTimeZone zone;
 
   @Inject
   public TruckStopDAOAppEngine(Map<String, Truck> trucks, DatastoreServiceProvider provider,

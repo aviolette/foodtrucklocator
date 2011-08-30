@@ -1,7 +1,5 @@
 package foodtruck.dao;
 
-import java.util.Set;
-
 import foodtruck.model.Location;
 
 /**
@@ -10,8 +8,12 @@ import foodtruck.model.Location;
  */
 public interface LocationDAO {
   /**
-   * Looks up a set of location based on the keywords.
-   * @return A set of locations that match the keyword (or an empty set).
+   * Looks up a location by an address.
    */
-  Set<Location> lookup(String keyword);
+  Location lookup(String keyword);
+
+  /**
+   * Saves a location to the datastore.
+   */
+  void save(Location location);
 }

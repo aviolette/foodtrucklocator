@@ -41,8 +41,8 @@ public class ScheduleModule extends AbstractModule {
 
   @Provides
   public GoogleCalendarStrategy provideGoogleCalendarStrategy(CalendarService service,
-      CalendarQueryFactory queryProvider, DateTimeZone zone) {
-    return new GoogleCalendarStrategy(service, queryProvider, zone);
+      CalendarQueryFactory queryProvider, DateTimeZone zone, GeoLocator geoLocator) {
+    return new GoogleCalendarStrategy(service, queryProvider, zone, geoLocator);
   }
 
   @Provides @Singleton
@@ -51,14 +51,16 @@ public class ScheduleModule extends AbstractModule {
   }
 
   @Provides @DefaultStrategy
-  public ScheduleStrategy provideTwitterStrategy(TwitterFactoryWrapper factoryWrapper, GeoLocator geoLocator) {
+  public ScheduleStrategy provideTwitterStrategy(TwitterFactoryWrapper factoryWrapper,
+      GeoLocator geoLocator) {
     return new TwitterFeedScheduleStrategy(factoryWrapper, geoLocator);
   }
 
   @Provides @Singleton
   public Map<Truck, ScheduleStrategy> providesTruckStrategies(TruckConfigParser parser,
       @DefaultStrategy ScheduleStrategy defaultStrategy) throws FileNotFoundException {
-    String url = Thread.currentThread().getContextClassLoader().getResource("trucks.yaml").getFile();
+    String url =
+        Thread.currentThread().getContextClassLoader().getResource("trucks.yaml").getFile();
     return parser.parse(url, defaultStrategy);
   }
 
