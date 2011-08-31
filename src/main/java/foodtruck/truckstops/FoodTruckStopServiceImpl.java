@@ -1,9 +1,11 @@
 package foodtruck.truckstops;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
@@ -53,5 +55,17 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
       List<TruckStop> stops = strategy.findForTime(truck, theDay);
       truckStopDAO.addStops(stops);
     }
+  }
+
+  @Override
+  public Set<Truck> findTrucks() {
+    Set<Truck> truckSet = Sets.newTreeSet(new Comparator<Truck>() {
+      @Override
+      public int compare(Truck t1, Truck t2) {
+        return t1.getName().compareTo(t2.getName());
+      }
+    });
+    truckSet.addAll(trucks.values());
+    return truckSet;
   }
 }

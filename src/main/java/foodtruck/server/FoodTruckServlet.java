@@ -19,6 +19,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.model.Location;
+import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.truckstops.FoodTruckStopService;
 
@@ -57,6 +58,8 @@ public class FoodTruckServlet extends HttpServlet {
       dateTime = new DateTime(zone);
     }
     Set<TruckStop> stops = foodTruckService.findStopsFor(dateTime);
+    Set<Truck> trucks = foodTruckService.findTrucks();
+    req.setAttribute("trucks", trucks);
     req.setAttribute("stops", stops);
     req.setAttribute("center", mapCenter);
     String googleAnalytics = System.getProperty("foodtruck.google.analytics", null);

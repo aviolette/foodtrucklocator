@@ -5,6 +5,7 @@ import java.util.Set;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
+import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 
 /**
@@ -25,4 +26,9 @@ public interface FoodTruckStopService {
    * @param day running the process for this day
    */
   void updateStopsFor(LocalDate day);
+
+  /**
+   * Returns all the trucks in the system.
+   */
+  Set<Truck> findTrucks();
 }
