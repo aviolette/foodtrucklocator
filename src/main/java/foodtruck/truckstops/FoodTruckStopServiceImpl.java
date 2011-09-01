@@ -43,11 +43,6 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   }
 
   @Override
-  public Set<TruckStop> findStopsFor(DateTime instant) {
-    return truckStopDAO.findAt(instant);
-  }
-
-  @Override
   public void updateStopsFor(LocalDate instant) {
     TimeRange theDay = new TimeRange(instant);
     truckStopDAO.deleteAfter(theDay.getStartDateTime());
@@ -67,7 +62,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     Set<Truck> allTrucks = com.google.appengine.repackaged.com.google.common.collect.Sets
         .newHashSet();
     allTrucks.addAll(trucks.values());
-    for (TruckStop stop : findStopsFor(dateTime)) {
+    for (TruckStop stop : truckStopDAO.findAt(dateTime)) {
       locations.put(stop.getLocation(), stop.getTruck());
       allTrucks.remove(stop.getTruck());
     }
