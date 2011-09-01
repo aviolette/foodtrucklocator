@@ -60,6 +60,7 @@ public class TruckConfigParserImpl implements TruckConfigParser {
       Truck truck = new Truck.Builder()
           .id((String) truckMap.get("id"))
           .name((String) truckMap.get("name"))
+          .url((String) truckMap.get("url"))
           .iconUrl((String) truckMap.get("iconUrl"))
           .twitterHandle((String) truckMap.get("twitter"))
           .build();
@@ -114,7 +115,7 @@ public class TruckConfigParserImpl implements TruckConfigParser {
       ReoccurringTruckStop stop =
           new ReoccurringTruckStop(truck, DayOfWeek.valueOf((String) scheduleData.get("day")),
               startTime, endTime, new Location((Double) scheduleData.get("latitude"),
-                  (Double) scheduleData.get("longitude"), (String) scheduleData.get("name")), zone);
+              (Double) scheduleData.get("longitude"), (String) scheduleData.get("name")), zone);
       stops.add(stop);
     }
     strategy = new ReoccuringScheduleStrategy(stops.build());

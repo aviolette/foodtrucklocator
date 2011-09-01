@@ -57,6 +57,7 @@ document.write("<script src='script/lib/jquery-1.5.1.min.js'>\x3C/script>")</scr
   <c:forEach var="truck" items="${locationTruck.trucks}">
     truck = new Truck({
       latLng: latlng,
+      id : "${truck.id}",
       name: "${truck.name}",
       url: "${truck.url}",
       twitter: "${truck.twitterHandle}",
