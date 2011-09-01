@@ -1,9 +1,9 @@
-html {
-    height: 100%
+html, body, #map_wrapper, #right, .main {
+    height: 100%;
+    width: 100%;
 }
 
-body {
-    height: 100%;
+body, .main {
     padding: 0px;
     font-family: Arial, sans-serif;
 }
@@ -11,6 +11,8 @@ body {
 #map_canvas {
     min-width: 500px;
     min-height: 500px;
+    height: 100%;
+    width: 100%;
 }
 
 header {
@@ -28,13 +30,13 @@ header h1 {
     width: 100%;
 }
 
-#contentWrapper {
-    margin-left: 200px;
+#map_wrapper {
+    margin-left: 350px;
 }
 
 #left {
     float: left;
-    width: 200px;
+    width: 350px;
     margin-left: -100%;
 }
 

@@ -1,7 +1,6 @@
 package foodtruck.server;
 
 import java.io.IOException;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -19,11 +18,10 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.model.Location;
-import foodtruck.model.Truck;
-import foodtruck.model.TruckStop;
 import foodtruck.truckstops.FoodTruckStopService;
 
 /**
+ * Servlet that serves up the main food truck page.
  * @author aviolette
  * @since Jul 12, 2011
  */
@@ -48,7 +46,7 @@ public class FoodTruckServlet extends HttpServlet {
       throws ServletException, IOException {
     final String timeRequest = req.getParameter("time");
     DateTime dateTime = null;
-    if(!Strings.isNullOrEmpty(timeRequest)) {
+    if (!Strings.isNullOrEmpty(timeRequest)) {
       try {
         dateTime = timeFormatter.parseDateTime(timeRequest);
       } catch (IllegalArgumentException ignored) {
@@ -57,13 +55,10 @@ public class FoodTruckServlet extends HttpServlet {
     if (dateTime == null) {
       dateTime = new DateTime(zone);
     }
-    Set<TruckStop> stops = foodTruckService.findStopsFor(dateTime);
-    Set<Truck> trucks = foodTruckService.findTrucks();
-    req.setAttribute("trucks", trucks);
-    req.setAttribute("stops", stops);
+    req.setAttribute("trucks", foodTruckService.findFoodTruckGroups(dateTime));
     req.setAttribute("center", mapCenter);
     String googleAnalytics = System.getProperty("foodtruck.google.analytics", null);
-    if ( googleAnalytics != null) {
+    if (googleAnalytics != null) {
       req.setAttribute("google_analytics_ua", googleAnalytics);
     }
     req.getRequestDispatcher("/WEB-INF/jsp/index.jsp").forward(req, resp);

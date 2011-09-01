@@ -1,19 +1,23 @@
 package foodtruck.truckstops;
 
-import java.util.Comparator;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import foodtruck.dao.TruckStopDAO;
+import foodtruck.model.Location;
 import foodtruck.model.TimeRange;
 import foodtruck.model.Truck;
+import foodtruck.model.TruckLocationGroup;
 import foodtruck.model.TruckStop;
 import foodtruck.schedule.DefaultStrategy;
 import foodtruck.schedule.ScheduleStrategy;
@@ -58,14 +62,27 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   }
 
   @Override
-  public Set<Truck> findTrucks() {
-    Set<Truck> truckSet = Sets.newTreeSet(new Comparator<Truck>() {
-      @Override
-      public int compare(Truck t1, Truck t2) {
-        return t1.getName().compareTo(t2.getName());
-      }
-    });
-    truckSet.addAll(trucks.values());
-    return truckSet;
+  public Set<TruckLocationGroup> findFoodTruckGroups(DateTime dateTime) {
+    Multimap<Location, Truck> locations = LinkedListMultimap.create();
+    Set<Truck> allTrucks = com.google.appengine.repackaged.com.google.common.collect.Sets
+        .newHashSet();
+    allTrucks.addAll(trucks.values());
+    for (TruckStop stop : findStopsFor(dateTime)) {
+      locations.put(stop.getLocation(), stop.getTruck());
+      allTrucks.remove(stop.getTruck());
+    }
+    for (Truck truck : allTrucks) {
+      locations.put(null, truck);
+    }
+    ImmutableSet.Builder<TruckLocationGroup> builder = ImmutableSet.builder();
+    for (Location location : locations.keySet()) {
+      builder.add(new TruckLocationGroup(location, locations.get(location)));
+    }
+    Collection c = locations.get(null);
+    if (c != null && !c.isEmpty()) {
+      builder.add(new TruckLocationGroup(null, c));
+    }
+    return builder.build();
+
   }
 }

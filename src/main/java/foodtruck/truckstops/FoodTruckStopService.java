@@ -5,7 +5,7 @@ import java.util.Set;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
-import foodtruck.model.Truck;
+import foodtruck.model.TruckLocationGroup;
 import foodtruck.model.TruckStop;
 
 /**
@@ -17,7 +17,7 @@ public interface FoodTruckStopService {
   /**
    * Finds all the truck stops for the current time.
    * @param instant the time to search on.
-   * @return the truck stops (sorted by the name of the truck in ascending order 
+   * @return the truck stops (sorted by the name of the truck in ascending order
    */
   Set<TruckStop> findStopsFor(DateTime instant);
 
@@ -28,7 +28,7 @@ public interface FoodTruckStopService {
   void updateStopsFor(LocalDate day);
 
   /**
-   * Returns all the trucks in the system.
+   * Returns the food trucks, grouped by locations.
    */
-  Set<Truck> findTrucks();
+  Set<TruckLocationGroup> findFoodTruckGroups(DateTime dateTime);
 }
