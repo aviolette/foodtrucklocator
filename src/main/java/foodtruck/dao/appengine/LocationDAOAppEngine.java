@@ -26,9 +26,9 @@ public class LocationDAOAppEngine implements LocationDAO {
 
   @Override
   public Location lookup(String keyword) {
-    keyword = keyword.toLowerCase();
     DatastoreService dataStore = provider.get();
     Query q = new Query(LOCATION_KIND);
+    // TODO: fix so it searches in a case insensitive manner
     q.addFilter(NAME_FIELD, Query.FilterOperator.EQUAL, keyword);
     Entity entity = dataStore.prepare(q).asSingleEntity();
     if (entity != null) {

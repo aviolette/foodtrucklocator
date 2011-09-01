@@ -25,7 +25,6 @@ public class KeywordLocator implements GeoLocator {
 
   @Override
   public @Nullable Location locate(String location) {
-    location = location.toLowerCase();
     Location loc = dao.lookup(location);
     if (loc != null) {
       return loc;

@@ -48,15 +48,17 @@ document.write("<script src='script/lib/jquery-1.5.1.min.js'>\x3C/script>")</scr
     };
     var map = new google.maps.Map(document.getElementById("map_canvas"),
         myOptions);
-    var truck, stop, i = 0, letter;
+    var truck, stop, i = 0, letter, locationName;
     var menuSection = $("#foodTruckList");
   <c:forEach var="locationTruck" items="${trucks}" varStatus="status">
   <c:if test="${locationTruck.location != null}">
     latlng = new google.maps.LatLng(${locationTruck.location.latitude},
         ${locationTruck.location.longitude});
+    var locationName = "${locationTruck.location.name}";
   <c:forEach var="truck" items="${locationTruck.trucks}">
     truck = new Truck({
       latLng: latlng,
+      locationName : locationName,
       id : "${truck.id}",
       name: "${truck.name}",
       url: "${truck.url}",

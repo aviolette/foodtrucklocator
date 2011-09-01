@@ -36,6 +36,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
   private final Map<String, Truck> trucks;
   private final DatastoreServiceProvider serviceProvider;
   private final DateTimeZone zone;
+  private static final String LOCATION_NAME_FIELD = "locationName";
 
   @Inject
   public TruckStopDAOAppEngine(Map<String, Truck> trucks, DatastoreServiceProvider provider,
@@ -65,7 +66,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
       stops.add(new TruckStop(trucks.get((String) entity.getProperty(TRUCK_ID_FIELD)),
           startTime, endTime,
           new Location((Double) entity.getProperty(LATITUDE_FIELD), (Double) entity.getProperty(
-              LONGITUDE_FIELD))));
+              LONGITUDE_FIELD), (String) entity.getProperty(LOCATION_NAME_FIELD))));
     }
     return stops.build();
   }
@@ -98,6 +99,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
       truckStop.setProperty(END_TIME_FIELD, stop.getEndTime().toDate());
       truckStop.setProperty(LATITUDE_FIELD, stop.getLocation().getLatitude());
       truckStop.setProperty(LONGITUDE_FIELD, stop.getLocation().getLongitude());
+      truckStop.setProperty(LOCATION_NAME_FIELD, stop.getLocation().getName());
       service.put(truckStop);
     }
   }

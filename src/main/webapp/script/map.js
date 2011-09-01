@@ -15,6 +15,9 @@ var Truck = function(opts) {
         "Section' class='contentSection'></div>");
     var div = $('#' + options.id + 'Section');
     div.append("<a class='activationLink' href='#'>" + options.name + "</a><br/> ")
+    if (options.locationName) {
+      div.append("<span class='locationName'>" + options.locationName + "</span></br>");
+    }
     if (options.url) {
       div.append("Website: <a href='" + options.url + "'>" + options.url + "</a><br/>")
     }
