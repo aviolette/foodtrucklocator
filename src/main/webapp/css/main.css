@@ -31,12 +31,12 @@ header h1 {
 }
 
 #map_wrapper {
-    margin-left: 350px;
+    margin-left: 400px;
 }
 
 #left {
     float: left;
-    width: 350px;
+    width: 400px;
     margin-left: -100%;
 }
 
