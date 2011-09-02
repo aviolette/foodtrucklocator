@@ -4,5 +4,3 @@ out
 target
 .idea
 src/main/resources/twitter4j.properties
-src/main/webapp/WEB-INF/cron.xml
-src/main/webapp/WEB-INF/appengine-web.xml
