@@ -1,0 +1,133 @@
+id: tamalespaceship
+twitter: tamalespace101
+name:  Tamale Spaceship
+categories: Mexican
+iconUrl: "http://a3.twimg.com/profile_images/1402134609/be86_1_1__normal.jpg"
+url: http://thetamalespaceship.com/
+strategy:
+  type: calendar
+---
+id: meatyballs1
+twitter: fossfoodtrucks
+name: Meatyballs 1
+categories: Sandwich
+url: http://www.meatyballsmobile.com
+iconUrl: https://twimg0-a.akamaihd.net/profile_images/1204282220/Meatyballs_Mobile_Logo_A_normal.jpg
+strategy:
+  type: calendar
+---
+id: meatyballs2
+twitter: fossfoodtrucks
+name: Meatyballs 2
+categories: Sandwich
+url: http://www.meatyballsmobile.com
+iconUrl: https://twimg0-a.akamaihd.net/profile_images/1204282220/Meatyballs_Mobile_Logo_A_normal.jpg
+strategy:
+  type: calendar
+---
+id: meatyballs3
+twitter: fossfoodtrucks
+url: http://www.meatyballsmobile.com
+name: Meatyballs 3
+categories: Sandwich
+iconUrl: https://twimg0-a.akamaihd.net/profile_images/1204282220/Meatyballs_Mobile_Logo_A_normal.jpg
+strategy:
+  type: calendar
+---
+id: 5411empanadas
+url: http://5411empanadas.com/
+twitter: 5411empanadas
+name: 5411 Empanadas
+categories: Spanish
+iconUrl: "https://si0.twimg.com/profile_images/749153715/twitter2_normal.jpg"
+strategy:
+  type: calendar
+---
+id: gaztrowagon
+twitter: wherezthewagon
+name: Gaztro Wagon
+categories: American
+iconUrl: https://si0.twimg.com/profile_images/781557064/GaztroWagon_B_B_Stacked_normal.png
+strategy:
+  type: calendar
+---
+id: theslideride
+twitter: theslideride
+url: http://www.theslideride.com/
+name: The Slide Ride
+categories: Sandwich
+iconUrl: https://si0.twimg.com/profile_images/1323538462/ribeye_normal.jpg
+strategy:
+  type: calendar
+---
+id: thesouthernmac
+twitter: thesouthernmac
+url: http://thesouthernmac.com/
+name: The Southern Mac and Cheese Truck
+categories: American
+iconUrl: https://si0.twimg.com/profile_images/1214705421/Mac_and_Cheese_Truck_Media_Shot_-_low_res_normal.jpg
+strategy:
+  type: calendar
+---
+id: sweetridechi
+twitter: sweetridechi
+name: Sweet Ride
+categories: Cupcakes
+url: http://www.sweetridesf.com/
+iconUrl: https://si0.twimg.com/profile_images/1165252076/Sweet_Ride_Truck_normal.jpg
+strategy:
+  type: calendar
+---
+id: flirtycupcakes
+twitter: flirtycupcakes
+name: Flirty Cupcakes
+categories: Cupcakes
+url: http://www.flirtycupcakes.com/
+iconUrl: https://si0.twimg.com/profile_images/720492263/small_logo_normal.jpg
+strategy:
+  type: calendar
+---
+id: taquerofusion
+twitter: taquerofusion
+name: Taquero Fusion
+categories: Mexican
+url: http://www.taquerofusion.com/
+iconUrl: https://si0.twimg.com/profile_images/1312553461/LogoTwitter_normal.jpg
+strategy:
+  type: calendar
+---
+id: hautesausage1
+twitter: hautesausage
+name: Haute Sausage 1
+categories: American
+url: http://www.hautesausage.com/
+iconUrl: https://si0.twimg.com/profile_images/1325400326/HSlogoFB_normal.jpg
+strategy:
+  type: calendar
+---
+id: hautesausage2
+twitter: hautesausage
+name: Haute Sausage 2
+categories: American
+url: http://www.hautesausage.com/
+iconUrl: https://si0.twimg.com/profile_images/1325400326/HSlogoFB_normal.jpg
+strategy:
+  type: calendar
+---
+id: hautesausage3
+twitter: hautesausage
+name: Big Sausage
+categories: American
+url: http://www.hautesausage.com/
+iconUrl: https://si0.twimg.com/profile_images/1325400326/HSlogoFB_normal.jpg
+strategy:
+  type: calendar
+---
+id: gigisbakeshop
+twitter: gigisbakeshop
+name: Gigis Bake Shop
+categories: Cupcake
+iconUrl: https://twimg0-a.akamaihd.net/profile_images/1503976385/GiGI_TAG_v07_normal.jpg
+strategy:
+  type: calendar
+
