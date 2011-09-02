@@ -6,11 +6,15 @@ var Truck = function(opts) {
     return "http://www.google.com/mapfiles/marker" + letter + ".png"
   }
 
-  self.buildMenuItem = function (menuSection, letter) {
+  self.buildMenuItem = function (menuSection, letter, letterUsed) {
     menuSection.append("<div class='menuSection' id='" + options.id + "'/>");
     var section = $('#' + options.id)
-    section.append("<div class='iconSection'><img src='" + buildIconUrl(letter) + "'/> <img src='" +
-        options.iconUrl + "'/></div>");
+    var markerText = "&nbsp;";
+    if (!letterUsed) {
+      markerText = "<img src='" + buildIconUrl(letter) + "'/>";
+    }
+    section.append("<div class='markerSection'>" + markerText + "</div>");
+    section.append("<div class='iconSection'> <img src='" + options.iconUrl + "'/></div>")
     section.append("<div class='menuContent' id='" + options.id +
         "Section' class='contentSection'></div>");
     var div = $('#' + options.id + 'Section');
@@ -19,11 +23,12 @@ var Truck = function(opts) {
       div.append("<span class='locationName'>" + options.locationName + "</span></br>");
     }
     if (options.url) {
-      div.append("Website: <a href='" + options.url + "'>" + options.url + "</a><br/>")
+      div.append("Website: <a target='_blank' href='" + options.url + "'>" + options.url +
+          "</a><br/>")
     }
     if (options.twitter) {
-      div.append("Twitter: <a href='http://twitter.com/#!/" + options.twitter + "'>@" +
-          options.twitter + "</a> ")
+      div.append("Twitter: <a target='_blank' href='http://twitter.com/" + options.twitter + "'>@" +
+          options.twitter + "</a><br/>")
     }
   },
       self.buildMarker = function (map, letter) {

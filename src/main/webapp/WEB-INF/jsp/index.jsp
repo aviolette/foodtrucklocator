@@ -27,6 +27,12 @@
         their published schedules on their websites. Our plan is to crystallize this data further
         via other real-time technologies.</p>
 
+      <p>If you are a food truck and would like to be included in this application or have other
+        suggestions,
+        please contact us via our twitter account <a target="_blank"
+                                                     href="http://twitter.com/chifoodtruckz">@chifoodtruckz</a>.
+      </p>
+
       <div id="foodTruckList">
       </div>
     </div>
@@ -54,14 +60,16 @@ document.write("<script src='script/lib/jquery-1.5.1.min.js'>\x3C/script>")</scr
   <c:if test="${locationTruck.location != null}">
     latlng = new google.maps.LatLng(${locationTruck.location.latitude},
         ${locationTruck.location.longitude});
-    var locationName = "${locationTruck.location.name}";
-  <c:forEach var="truck" items="${locationTruck.trucks}">
+    locationName = "${locationTruck.location.name}";
+  <c:forEach var="truck" items="${locationTruck.trucks}" varStatus="truckStatus">
     truck = new Truck({
       latLng: latlng,
       locationName : locationName,
       id : "${truck.id}",
       name: "${truck.name}",
+      <c:if test="${truck.url != null}">
       url: "${truck.url}",
+      </c:if>
       categories: [
         <c:forEach var="category" items="${truck.categories}" varStatus="catStat">"${category}"
         <c:if test="${!catStat.last}">, </c:if></c:forEach>],
@@ -70,7 +78,7 @@ document.write("<script src='script/lib/jquery-1.5.1.min.js'>\x3C/script>")</scr
     });
     letter = String.fromCharCode(${status.index + 65});
     truck.buildMarker(map, letter);
-    truck.buildMenuItem(menuSection, letter);
+    truck.buildMenuItem(menuSection, letter, ${truckStatus.index != 0});
   </c:forEach>
   </c:if>
   </c:forEach>

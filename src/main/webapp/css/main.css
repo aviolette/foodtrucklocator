@@ -38,6 +38,10 @@ header h1 {
     float: left;
     width: 400px;
     margin-left: -100%;
+    overflow: auto;
+    z-index: 0;
+    position: relative;
+
 }
 
 footer {
@@ -58,7 +62,13 @@ footer {
 }
 
 .menuContent {
-    margin-left: 88px;
+    margin-left: 95px;
+}
+
+.markerSection {
+    float: left;
+    width: 25px;
+    padding: 0 10px 0 0;
 }
 
 .iconSection {
