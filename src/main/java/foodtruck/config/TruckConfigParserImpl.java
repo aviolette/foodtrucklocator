@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -62,6 +63,8 @@ public class TruckConfigParserImpl implements TruckConfigParser {
           .name((String) truckMap.get("name"))
           .url((String) truckMap.get("url"))
           .iconUrl((String) truckMap.get("iconUrl"))
+          .description((String) truckMap.get("description"))
+          .categories(splitList(truckMap.get("categories")))
           .twitterHandle((String) truckMap.get("twitter"))
           .build();
       Map<String, Object> strategyObj = (Map) truckMap.get("strategy");
@@ -80,6 +83,12 @@ public class TruckConfigParserImpl implements TruckConfigParser {
       truckBuilder.put(truck, strategy);
     }
     return truckBuilder.build();
+  }
+
+  private ImmutableSet<String> splitList(Object categories) {
+    String categoryList = (String) categories;
+    return categoryList == null ? ImmutableSet.<String>of() :
+        ImmutableSet.copyOf(categoryList.split(","));
   }
 
   private ScheduleStrategy manualStrategy(Truck truck, Map<String, Object> strategyObj) {

@@ -62,6 +62,9 @@ document.write("<script src='script/lib/jquery-1.5.1.min.js'>\x3C/script>")</scr
       id : "${truck.id}",
       name: "${truck.name}",
       url: "${truck.url}",
+      categories: [
+        <c:forEach var="category" items="${truck.categories}" varStatus="catStat">"${category}"
+        <c:if test="${!catStat.last}">, </c:if></c:forEach>],
       twitter: "${truck.twitterHandle}",
       iconUrl: "${truck.iconUrl}"
     });
