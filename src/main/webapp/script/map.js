@@ -1,4 +1,43 @@
-var Truck = function(opts) {
+var TruckMap = function(lat, lng) {
+  var latlng = new google.maps.LatLng(lat, lng);
+  var trucks = [];
+  var map;
+  var self = this;
+  self.initialize = function() {
+    map = new google.maps.Map(document.getElementById("map_canvas"), {
+      zoom: 14,
+      center: latlng,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    });
+  };
+  self.loadTrucksForTime = function(requestTime) {
+    $.ajax({
+      url: "/service/stops?time=" + requestTime,
+      context: document.body,
+      dataType: 'json',
+      success: function(data) {
+        var menuSection = $("#foodTruckList");
+        menuSection.empty();
+        $.each(data, function(idx, truckGroup) {
+          var letter = String.fromCharCode(65 + idx);
+          if (typeof truckGroup['location'] != 'undefined') {
+            var latlng = new google.maps.LatLng(truckGroup.location.latitude,
+                truckGroup.location.longitude);
+            var locationName = (typeof truckGroup.location['name'] == 'undefined') ? null :
+                truckGroup.location.name;
+            $.each(truckGroup.trucks, function(truckIdx, truck) {
+              var truckObj = new Truck(latlng, locationName, truck);
+              truckObj.buildMarker(map, letter);
+              truckObj.buildMenuItem(menuSection, letter, truckIdx != 0);
+            });
+          }
+        });
+      }
+    })
+  }
+};
+
+var Truck = function(latLng, locationName, opts) {
   var self = this;
   var options = opts;
 
@@ -19,8 +58,8 @@ var Truck = function(opts) {
         "Section' class='contentSection'></div>");
     var div = $('#' + options.id + 'Section');
     div.append("<a class='activationLink' href='#'>" + options.name + "</a><br/> ")
-    if (options.locationName) {
-      div.append("<span class='locationName'>" + options.locationName + "</span></br>");
+    if (locationName) {
+      div.append("<span class='locationName'>" + locationName + "</span></br>");
     }
     if (options.url) {
       div.append("Website: <a target='_blank' href='" + options.url + "'>" + options.url +
@@ -35,7 +74,7 @@ var Truck = function(opts) {
         var marker = new google.maps.Marker({
           map: map,
           icon: buildIconUrl(letter),
-          position: options.latLng
+          position: latLng
         });
         var contentString = '<div id="content">' +
             '<img src="' + options.iconUrl + '"/>&nbsp;' + options.name

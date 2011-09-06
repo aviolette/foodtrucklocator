@@ -11,7 +11,7 @@
   <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
   <script type="text/javascript" src="script/map.js"></script>
 </head>
-<body onload="initialize()">
+<body>
 <div class="main" id="container">
   <div id="right">
     <div id="map_wrapper">
@@ -45,44 +45,12 @@ document.write("<script src='script/lib/jquery-1.5.1.min.js'>\x3C/script>")</scr
   <jsp:include page="include/google_analytics.jsp"/>
 </c:if>
 <script type="text/javascript">
-  function initialize() {
-    var latlng = new google.maps.LatLng(${center.latitude}, ${center.longitude});
-    var myOptions = {
-      zoom: 14,
-      center: latlng,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
-    var map = new google.maps.Map(document.getElementById("map_canvas"),
-        myOptions);
-    var truck, stop, i = 0, letter, locationName;
-    var menuSection = $("#foodTruckList");
-  <c:forEach var="locationTruck" items="${trucks}" varStatus="status">
-  <c:if test="${locationTruck.location != null}">
-    latlng = new google.maps.LatLng(${locationTruck.location.latitude},
-        ${locationTruck.location.longitude});
-    locationName = "${locationTruck.location.name}";
-  <c:forEach var="truck" items="${locationTruck.trucks}" varStatus="truckStatus">
-    truck = new Truck({
-      latLng: latlng,
-      locationName : locationName,
-      id : "${truck.id}",
-      name: "${truck.name}",
-      <c:if test="${truck.url != null}">
-      url: "${truck.url}",
-      </c:if>
-      categories: [
-        <c:forEach var="category" items="${truck.categories}" varStatus="catStat">"${category}"
-        <c:if test="${!catStat.last}">, </c:if></c:forEach>],
-      twitter: "${truck.twitterHandle}",
-      iconUrl: "${truck.iconUrl}"
-    });
-    letter = String.fromCharCode(${status.index + 65});
-    truck.buildMarker(map, letter);
-    truck.buildMenuItem(menuSection, letter, ${truckStatus.index != 0});
-  </c:forEach>
-  </c:if>
-  </c:forEach>
-  }
+  $(function() {
+    var map = new TruckMap(${center.latitude}, ${center.longitude});
+    map.initialize();
+    map.loadTrucksForTime("${requestTime}");
+  });
+
 </script>
 </body>
 </html>
