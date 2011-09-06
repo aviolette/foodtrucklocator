@@ -3,6 +3,8 @@ package foodtruck.model;
 import java.util.Set;
 
 import javax.annotation.Nullable;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableSet;
@@ -12,14 +14,21 @@ import com.google.common.collect.ImmutableSet;
  * @author aviolette@gmail.com
  * @since Jul 12, 2011
  */
+@XmlRootElement
 public class Truck {
-  private final String id;
-  private final String name;
-  private final String twitterHandle;
-  private final String url;
-  private final String iconUrl;
-  private final Set<String> categories;
-  private final String description;
+  private String id;
+  private String name;
+  private String twitterHandle;
+  private String url;
+  private String iconUrl;
+  private Set<String> categories;
+  private String description;
+
+  // for JAXB
+  public Truck() {
+  }
+
+  ;
 
   private Truck(Builder builder) {
     this.id = builder.id;
@@ -32,30 +41,37 @@ public class Truck {
 
   }
 
+  @XmlElement
   public String getName() {
     return name;
   }
 
+  @XmlElement
   public Set<String> getCategories() {
     return categories;
   }
 
+  @XmlElement
   public @Nullable String getDescription() {
     return description;
   }
 
+  @XmlElement
   public String getTwitterHandle() {
     return twitterHandle;
   }
 
+  @XmlElement
   public String getUrl() {
     return url;
   }
 
+  @XmlElement
   public String getIconUrl() {
     return iconUrl;
   }
 
+  @XmlElement
   public String getId() {
     return id;
   }
@@ -138,6 +154,5 @@ public class Truck {
     public Truck build() {
       return new Truck(this);
     }
-
   }
 }

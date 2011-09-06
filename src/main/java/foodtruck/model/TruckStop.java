@@ -1,5 +1,8 @@
 package foodtruck.model;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import com.google.common.base.Objects;
 
 import org.joda.time.DateTime;
@@ -10,11 +13,16 @@ import org.joda.time.DateTime;
  * @author aviolette@gmail.com
  * @since Jul 12, 2011
  */
+@XmlRootElement
 public class TruckStop {
-  private final Truck truck;
-  private final DateTime startTime;
-  private final DateTime endTime;
-  private final Location location;
+  private Truck truck;
+  private DateTime startTime;
+  private DateTime endTime;
+  private Location location;
+
+  // for JAXB
+  public TruckStop() {
+  }
 
   public TruckStop(Truck truck, DateTime startTime, DateTime endTime, Location location) {
     this.truck = truck;
@@ -23,18 +31,22 @@ public class TruckStop {
     this.location = location;
   }
 
+  @XmlElement
   public Truck getTruck() {
     return truck;
   }
 
+  @XmlElement
   public DateTime getStartTime() {
     return startTime;
   }
 
+  @XmlElement
   public DateTime getEndTime() {
     return endTime;
   }
 
+  @XmlElement
   public Location getLocation() {
     return location;
   }
@@ -64,6 +76,6 @@ public class TruckStop {
    */
   public boolean within(TimeRange range) {
     return range.getStartDateTime().isBefore(startTime.plusSeconds(1)) &&
-      range.getEndDateTime().isAfter(startTime);
+        range.getEndDateTime().isAfter(startTime);
   }
 }

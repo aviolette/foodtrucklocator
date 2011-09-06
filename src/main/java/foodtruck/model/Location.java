@@ -1,6 +1,9 @@
 package foodtruck.model;
 
 import javax.annotation.Nullable;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import com.google.appengine.repackaged.com.google.common.base.Strings;
 import com.google.common.base.Objects;
@@ -10,10 +13,15 @@ import com.google.common.base.Objects;
  * @author aviolette@gmail.com
  * @since Jul 12, 2011
  */
+@XmlRootElement
 public class Location {
-  private final double lng;
-  private final double lat;
-  private final String name;
+  private double lng;
+  private double lat;
+  private String name;
+
+  // for jaxb
+  public Location() {
+  }
 
   public Location(double lat, double lng, @Nullable String name) {
     this.lat = lat;
@@ -25,18 +33,22 @@ public class Location {
     this(lat, lng, null);
   }
 
+  @XmlElement
   public double getLatitude() {
     return lat;
   }
 
+  @XmlElement
   public double getLongitude() {
     return lng;
   }
 
+  @XmlElement
   public String getName() {
     return this.name;
   }
 
+  @XmlTransient
   public boolean isNamed() {
     return !Strings.isNullOrEmpty(this.name);
   }

@@ -1,8 +1,11 @@
 package foodtruck.server;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.Provides;
 import com.google.inject.name.Named;
 import com.google.inject.servlet.ServletModule;
+import com.sun.jersey.api.core.PackagesResourceConfig;
+import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 
 import org.joda.time.DateTimeZone;
 
@@ -13,9 +16,12 @@ import foodtruck.model.Location;
  * @since Jul 12, 2011
  */
 public class FoodtruckServletModule extends ServletModule {
+
   @Override
   protected void configureServlets() {
     serve("/cron/recache").with(FoodTruckUpdaterServlet.class);
+    serve("/service/*").with(GuiceContainer.class,
+        ImmutableMap.of(PackagesResourceConfig.PROPERTY_PACKAGES, "foodtruck.resources"));
     serveRegex("/[\\w]*").with(FoodTruckServlet.class);
   }
 

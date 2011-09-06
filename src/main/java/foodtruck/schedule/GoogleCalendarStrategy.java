@@ -2,6 +2,8 @@ package foodtruck.schedule;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.appengine.repackaged.com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -18,6 +20,7 @@ import com.google.inject.Inject;
 import org.joda.time.DateTimeZone;
 
 import foodtruck.geolocation.GeoLocator;
+import foodtruck.model.Location;
 import foodtruck.model.TimeRange;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
@@ -33,6 +36,8 @@ public class GoogleCalendarStrategy implements ScheduleStrategy {
   private final CalendarQueryFactory queryFactory;
   private final DateTimeZone defaultZone;
   private final GeoLocator geolocator;
+  private static final Logger log = Logger.getLogger(GoogleCalendarStrategy.class.getName());
+
 
   @Inject
   public GoogleCalendarStrategy(CalendarService calendarService,
@@ -43,7 +48,8 @@ public class GoogleCalendarStrategy implements ScheduleStrategy {
     this.geolocator = geolocator;
   }
 
-  @Override public List<TruckStop> findForTime(Truck truck, TimeRange range) {
+  @Override
+  public List<TruckStop> findForTime(Truck truck, TimeRange range) {
     CalendarQuery query = queryFactory.create();
     query.setMinimumStartTime(new DateTime(range.getStartDateTime().toDate(),
         defaultZone.toTimeZone()));
@@ -61,8 +67,16 @@ public class GoogleCalendarStrategy implements ScheduleStrategy {
           throw new IllegalStateException("No location specified");
         }
         When time = Iterables.getFirst(entry.getTimes(), null);
-        builder.add(new TruckStop(truck, toJoda(time.getStartTime()),
-            toJoda(time.getEndTime()), geolocator.locate(where.getValueString())));
+
+        final Location location = geolocator.locate(where.getValueString());
+        if (location != null) {
+          builder.add(new TruckStop(truck, toJoda(time.getStartTime()),
+              toJoda(time.getEndTime()), location));
+        } else {
+          log.log(Level.WARNING, "Location could not be resolved for {0}, {1} between {2} and {3}",
+              new Object[] {truck.getId(), where.getValueString(), range.getStartDateTime(),
+                  range.getEndDateTime()});
+        }
       }
 
     } catch (IOException e) {
