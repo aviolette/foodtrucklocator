@@ -62,6 +62,7 @@ public class FoodTruckServlet extends HttpServlet {
       req.setAttribute("google_analytics_ua", googleAnalytics);
     }
     req.setAttribute("requestTime", timeFormatter.print(dateTime));
+    req.setAttribute("requestTimeInMillis", dateTime.getMillis());
     req.getRequestDispatcher("/WEB-INF/jsp/index.jsp").forward(req, resp);
   }
 }

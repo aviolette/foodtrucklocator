@@ -1,5 +1,4 @@
 <%@ include file="../common.jsp" %>
-
 <script>
   var _gaq = [
     ["_setAccount","${google_analytics_ua}"],

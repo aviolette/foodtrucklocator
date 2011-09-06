@@ -83,3 +83,11 @@ a, a:hover, a:visited {
 a.activationLink {
     font-size: 1.2em;
 }
+
+.sliderContainer {
+    padding: 10px !important;
+}
+
+#sliderTime {
+    font-weight: bold;
+}
