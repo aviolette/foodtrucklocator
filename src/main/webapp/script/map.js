@@ -108,9 +108,10 @@ var Truck = function(latLng, locationName, opts) {
       div.append("Website: <a target='_blank' href='" + options.url + "'>" + options.url +
           "</a><br/>")
     }
-    if (options.twitter) {
-      div.append("Twitter: <a target='_blank' href='http://twitter.com/" + options.twitter + "'>@" +
-          options.twitter + "</a><br/>")
+    if (options.twitterHandle) {
+      div.append("Twitter: <a target='_blank' href='http://twitter.com/" + options.twitterHandle +
+          "'>@" +
+          options.twitterHandle + "</a><br/>")
     }
   };
 

@@ -149,11 +149,6 @@
       <artifactId>jersey-client</artifactId>
       <version>1.6</version>
     </dependency>
-    <dependency>
-      <groupId>com.sun.jersey.contribs</groupId>
-      <artifactId>jersey-guice</artifactId>
-      <version>1.6</version>
-    </dependency>
   </dependencies>
   <build>
     <plugins>
