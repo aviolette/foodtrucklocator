@@ -23,7 +23,7 @@
       <%-- Left column --%>
       <h1>Chicago Food Trucks</h1>
 
-      <p>The Chicago Food Truck locator is in its infancy. Currently we locate food trucks based on
+      <p>The Chicago Food Truck locator currently locates food trucks based on
         their published schedules on their websites. Our plan is to crystallize this data further
         via other real-time technologies.</p>
 
@@ -34,6 +34,7 @@
       </p>
 
       <div class="sliderContainer">
+        <div>Select a time:</div>
         <div id="sliderTime"></div>
         <div id="slider"></div>
       </div>
