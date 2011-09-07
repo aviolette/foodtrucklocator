@@ -139,4 +139,12 @@ categories: Pies
 iconUrl: http://a1.twimg.com/profile_images/1428015678/Logo_Design_normal.png
 strategy:
   type: calendar
+---
+id: mamagreengoodie
+twitter: mamagreengoodie
+name: Mama Green Goodie
+categories: Desserts
+iconUrl: https://twimg0-a.akamaihd.net/profile_images/1416523084/profile_normal.jpg
+strategy:
+  type: calendar
 
