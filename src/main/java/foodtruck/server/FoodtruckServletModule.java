@@ -28,6 +28,6 @@ public class FoodtruckServletModule extends ServletModule {
 
   @Provides @Named("center")
   public Location provideMapCenter() {
-    return new Location(41.8781136, -87.6297982);
+    return new Location(41.8807438, -87.6293867);
   }
 }
