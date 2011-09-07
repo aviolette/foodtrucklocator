@@ -2,12 +2,12 @@ var TimeSlider = function(initialTime, initialDate, map) {
   var sliderValue = (initialTime.getHours() * 60) +
       (Math.floor(initialTime.getMinutes() / 15) * 15);
 
-  function computeTime(value) {
+  function computeTime(value, twelveHour) {
     // yuck - cleanup
     var val = value / 60;
     var hour = Math.floor(val);
     var min = (val - hour) * 60;
-    if (hour > 12) {
+    if (hour > 12 && twelveHour) {
       hour = hour - 12;
     }
     hour = (hour < 10) ? "0" + hour : "" + hour;
@@ -16,7 +16,7 @@ var TimeSlider = function(initialTime, initialDate, map) {
   }
 
   function displayTime(value) {
-    var time = computeTime(value);
+    var time = computeTime(value, true);
     $("#sliderTime").empty().append(time.join(":"));
   }
 
@@ -27,7 +27,7 @@ var TimeSlider = function(initialTime, initialDate, map) {
       displayTime(ui.value);
     },
     change: function(event, ui) {
-      var time = computeTime(ui.value);
+      var time = computeTime(ui.value, false);
       map.clear();
       map.loadTrucksForTime(initialDate + "-" + time.join(""));
     }
