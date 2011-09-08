@@ -34,8 +34,7 @@ var TimeSlider = function(initialTime, initialDate, map) {
   });
 };
 
-var TruckMap = function(lat, lng) {
-  var latlng = new google.maps.LatLng(lat, lng);
+var TruckMap = function(latlng) {
   var trucks = [];
   var self = this;
   var map = new google.maps.Map(document.getElementById("map_canvas"), {

@@ -85,9 +85,20 @@ a.activationLink {
 }
 
 .sliderContainer {
-    padding: 10px !important;
+    padding: 10px 10px 10px 0!important;
+    clear: left;
 }
 
-#sliderTime {
+.sliderTimeWrapper {
+    float: left;
+    width: 150px;
+}
+
+.sliderTime {
     font-weight: bold;
 }
+
+#slider {
+    margin-left: 150px;
+}
+
