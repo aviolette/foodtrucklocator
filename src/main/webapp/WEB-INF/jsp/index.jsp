@@ -55,6 +55,9 @@ document.write("<script src='script/lib/jquery-1.6.2.min.js'>\x3C/script>")</scr
 </c:if>
 <script type="text/javascript">
   $(function() {
+    // fit the map to the screen...need to do this with css, but it eludes me now
+    $("#right").width($("#map_canvas").width() - $("#left").width());
+    $("#left").css("margin-left", "-" + $("#map_canvas").width() + "px");
     var map = new TruckMap(${center.latitude}, ${center.longitude});
     map.loadTrucksForTime("${requestTime}");
     new TimeSlider(new Date(${requestTimeInMillis}), "${requestTime}".split("-")[0], map);
