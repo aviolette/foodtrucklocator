@@ -148,6 +148,15 @@ iconUrl: https://twimg0-a.akamaihd.net/profile_images/1416523084/profile_normal.
 strategy:
   type: calendar
 ---
+id: themoremobile
+twitter: themoremobile
+name: The More Mobile
+categories: Desserts
+url: http://www.morecupcakes.com/
+iconUrl: https://twimg0-a.akamaihd.net/profile_images/1121172140/moremobile_normal.jpg
+strategy:
+  type: calendar
+---
 id: homagesf
 twitter: homagesf
 url: http://homagestreetfood.com/
