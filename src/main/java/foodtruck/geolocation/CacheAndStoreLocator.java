@@ -13,13 +13,14 @@ import foodtruck.model.Location;
  * @author aviolette@gmail.com
  * @since Jul 20, 2011
  */
-public class KeywordLocator implements GeoLocator {
+public class CacheAndStoreLocator implements GeoLocator {
   private final LocationDAO dao;
-  private final GoogleGeolocator googleGeolocator;
+  private final GeoLocator secondaryLocator;
 
   @Inject
-  public KeywordLocator(LocationDAO dao, GoogleGeolocator googleGeolocator) {
-    this.googleGeolocator = googleGeolocator;
+  public CacheAndStoreLocator(LocationDAO dao,
+      @SecondaryGeolocator GeoLocator secondaryLocator) {
+    this.secondaryLocator = secondaryLocator;
     this.dao = dao;
   }
 
@@ -29,7 +30,7 @@ public class KeywordLocator implements GeoLocator {
     if (loc != null) {
       return loc;
     }
-    loc = googleGeolocator.locate(location);
+    loc = secondaryLocator.locate(location);
     // only update named locations in the db
     if (loc != null && loc.isNamed()) {
       dao.save(loc);
