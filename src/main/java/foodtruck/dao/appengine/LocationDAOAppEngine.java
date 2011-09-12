@@ -1,7 +1,11 @@
 package foodtruck.dao.appengine;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.inject.Inject;
 
@@ -18,6 +22,7 @@ public class LocationDAOAppEngine implements LocationDAO {
   private static final String NAME_FIELD = "name";
   private static final String LAT_FIELD = "lat";
   private static final String LNG_FIELD = "lng";
+  private static final Logger log = Logger.getLogger(LocationDAOAppEngine.class.getName());
 
   @Inject
   public LocationDAOAppEngine(DatastoreServiceProvider provider) {
@@ -30,7 +35,13 @@ public class LocationDAOAppEngine implements LocationDAO {
     Query q = new Query(LOCATION_KIND);
     // TODO: fix so it searches in a case insensitive manner
     q.addFilter(NAME_FIELD, Query.FilterOperator.EQUAL, keyword);
-    Entity entity = dataStore.prepare(q).asSingleEntity();
+    Entity entity = null;
+    try {
+      entity = dataStore.prepare(q).asSingleEntity();
+    } catch (PreparedQuery.TooManyResultsException tmr) {
+      log.log(Level.WARNING, "Got too many results exception for: '{0}'", keyword);
+    }
+
     if (entity != null) {
       return new Location((Double) entity.getProperty(LAT_FIELD),
           (Double) entity.getProperty(LNG_FIELD), keyword);
