@@ -174,4 +174,21 @@ categories: Dessert
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1271453607/3111-logo-brownlet-350px_normal.jpg
 strategy:
   type: calendar
+---
+id: culture
+twitter: culture
+url: http://cultureyogurt.com
+name: Culture Yougart
+categories: Dessert
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1484907277/logosmall_normal.jpg
+strategy:
+  type: calendar
+---
+id: adelitatruck
+twitter: adelitatruck
+name: La Adelita
+categories: Mexican
+iconUrl: https://twimg0-a.akamaihd.net/profile_images/1408203936/FOODTRUCK_normal.jpg
+strategy:
+  type: calendar
 
