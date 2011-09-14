@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.LinkedListMultimap;
@@ -31,6 +33,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   private final Map<Truck, ScheduleStrategy> strategies;
   private final ScheduleStrategy defaultStrategy;
   private final Map<String, Truck> trucks;
+  private static final Logger log = Logger.getLogger(FoodTruckStopServiceImpl.class.getName());
 
   @Inject
   public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, Map<Truck,
@@ -51,8 +54,12 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
       if (strategy == null) {
         strategy = defaultStrategy;
       }
-      List<TruckStop> stops = strategy.findForTime(truck, theDay);
-      truckStopDAO.addStops(stops);
+      try {
+        List<TruckStop> stops = strategy.findForTime(truck, theDay);
+        truckStopDAO.addStops(stops);
+      } catch (Exception e) {
+        log.log(Level.WARNING, "Exception thrown while refreshing truck: " + truck.getId(), e);
+      }
     }
   }
 
