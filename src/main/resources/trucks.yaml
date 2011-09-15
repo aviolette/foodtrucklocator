@@ -191,4 +191,21 @@ categories: Mexican
 iconUrl: https://twimg0-a.akamaihd.net/profile_images/1408203936/FOODTRUCK_normal.jpg
 strategy:
   type: calendar
+---
+id: sweetiecakes
+twitter: Rzjp6Cakes
+name: Sweetie Cakes
+categories: Dessert
+url: http://www.tasteofsweetiecakes.com/
+iconUrl: http://a3.twimg.com/profile_images/1508155810/sweetie_cakes_logo_normal.png
+strategy:
+  type: calendar
+---
+id: bergsteinsny
+twitter: bergsteinsny
+name: Bergstein's NY Deli
+categories: Food
+iconUrl: https://twimg0-a.akamaihd.net/profile_images/1187497687/twitter_normal.jpg
+strategy:
+  type: calendar
 
