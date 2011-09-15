@@ -125,15 +125,5 @@ var Truck = function(latLng, locationName, opts) {
       icon: buildIconUrl(letter),
       position: latLng
     });
-    var contentString = '<div id="content">' +
-        '<img src="' + options.iconUrl + '"/>&nbsp;' + options.name
-
-    '</div>';
-    var infowindow = new google.maps.InfoWindow({
-      content: contentString
-    });
-    google.maps.event.addListener(marker, 'click', function() {
-      infowindow.open(map, marker);
-    });
   };
 };
