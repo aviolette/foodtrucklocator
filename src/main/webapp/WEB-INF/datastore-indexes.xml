@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<datastore-indexes autoGenerate="true">
+  <datastore-index kind="Truck" ancestor="false" source="manual">
+      <property name="truckId" direction="asc"/>
+      <property name="startTime" direction="asc"/>
+  </datastore-index>
+</datastore-indexes>
