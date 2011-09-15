@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 import foodtruck.model.TruckStop;
 
@@ -26,4 +27,13 @@ public interface TruckStopDAO {
    * Adds the truckstops to the data store.
    */
   void addStops(List<TruckStop> stops);
+
+  /**
+   * Returns the truck stops during the specified day.
+   * @param truckId the truckId
+   * @param day the day to search over
+   * @return the list of truck stops
+   * @throws IllegalStateException if the truck specified is invalid
+   */
+  List<TruckStop> findDuring(String truckId, LocalDate day);
 }

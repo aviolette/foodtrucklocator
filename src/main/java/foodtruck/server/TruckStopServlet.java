@@ -1,7 +1,6 @@
 package foodtruck.server;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -15,14 +14,11 @@ import com.google.inject.Singleton;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import foodtruck.model.Location;
-import foodtruck.model.Truck;
 import foodtruck.model.TruckLocationGroup;
 import foodtruck.truckstops.FoodTruckStopService;
 
@@ -35,13 +31,14 @@ public class TruckStopServlet extends HttpServlet {
   private final FoodTruckStopService foodTruckService;
   private final DateTimeZone zone;
   private final DateTimeFormatter timeFormatter;
+  private final JsonWriter writer;
 
   @Inject
-  public TruckStopServlet(FoodTruckStopService service, DateTimeZone zone) {
+  public TruckStopServlet(FoodTruckStopService service, DateTimeZone zone, JsonWriter writer) {
     this.foodTruckService = service;
     this.zone = zone;
     this.timeFormatter = DateTimeFormat.forPattern("YYYYMMdd-HHmm").withZone(zone);
-
+    this.writer = writer;
   }
 
   @Override
@@ -64,7 +61,7 @@ public class TruckStopServlet extends HttpServlet {
 
       for (TruckLocationGroup group : foodTruckGroups) {
         if (group.getLocation() != null) {
-          arr.put(writeGroup(group));
+          arr.put(writer.writeGroup(group));
         }
       }
       resp.setHeader("Content-Type", "application/json");
@@ -74,34 +71,4 @@ public class TruckStopServlet extends HttpServlet {
     }
   }
 
-  private JSONObject writeGroup(TruckLocationGroup group) throws JSONException {
-    return new JSONObject()
-        .put("location", writeLocation(group.getLocation()))
-        .put("trucks", writeTrucks(group.getTrucks()));
-  }
-
-  private JSONArray writeTrucks(Collection<Truck> trucks) throws JSONException {
-    JSONArray arr = new JSONArray();
-    for (Truck truck : trucks) {
-      arr.put(writeTruck(truck));
-    }
-    return arr;
-  }
-
-  private JSONObject writeTruck(Truck truck) throws JSONException {
-    return new JSONObject()
-        .put("id", truck.getId())
-        .put("description", truck.getDescription())
-        .put("iconUrl", truck.getIconUrl())
-        .put("twitterHandle", truck.getTwitterHandle())
-        .put("name", truck.getName())
-        .put("url", truck.getUrl());
-  }
-
-  private JSONObject writeLocation(Location location) throws JSONException {
-    return new JSONObject()
-        .put("latitude", location.getLatitude())
-        .put("longitude", location.getLongitude())
-        .put("name", location.getName());
-  }
 }

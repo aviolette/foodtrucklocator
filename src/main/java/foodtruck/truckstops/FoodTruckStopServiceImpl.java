@@ -20,6 +20,7 @@ import foodtruck.model.Location;
 import foodtruck.model.TimeRange;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckLocationGroup;
+import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStop;
 import foodtruck.schedule.DefaultStrategy;
 import foodtruck.schedule.ScheduleStrategy;
@@ -86,5 +87,14 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     }
     return builder.build();
 
+  }
+
+  @Override
+  public TruckSchedule findStopsForDay(String truckId, LocalDate day) {
+    Truck truck = trucks.get(truckId);
+    if (truck == null) {
+      throw new IllegalStateException("Invalid truck id specified: " + truckId);
+    }
+    return new TruckSchedule(truck, day, truckStopDAO.findDuring(truckId, day));
   }
 }

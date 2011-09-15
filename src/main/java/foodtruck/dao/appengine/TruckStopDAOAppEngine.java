@@ -16,6 +16,7 @@ import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
 
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.Location;
@@ -102,5 +103,29 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
       truckStop.setProperty(LOCATION_NAME_FIELD, stop.getLocation().getName());
       service.put(truckStop);
     }
+  }
+
+  @Override
+  public List<TruckStop> findDuring(String truckId, LocalDate day) {
+    DatastoreService dataStore = serviceProvider.get();
+    Query q = new Query(STOP_KIND);
+    // TODO: google's filters can't do range comparisons...ugh...here I search the lower bound
+    q.addFilter(START_TIME_FIELD, Query.FilterOperator.GREATER_THAN_OR_EQUAL,
+        day.toDateMidnight().toDate());
+    q.addFilter(TRUCK_ID_FIELD, Query.FilterOperator.EQUAL, truckId);
+    q.addSort(START_TIME_FIELD, Query.SortDirection.ASCENDING);
+    ImmutableList.Builder<TruckStop> stops = ImmutableList.builder();
+    for (Entity entity : dataStore.prepare(q).asIterable()) {
+      final DateTime startTime = new DateTime((Date) entity.getProperty(START_TIME_FIELD), zone);
+      if (startTime.isAfter(day.plusDays(1).toDateMidnight())) {
+        continue;
+      }
+      final DateTime endTime = new DateTime((Date) entity.getProperty(END_TIME_FIELD), zone);
+      stops.add(new TruckStop(trucks.get((String) entity.getProperty(TRUCK_ID_FIELD)),
+          startTime, endTime,
+          new Location((Double) entity.getProperty(LATITUDE_FIELD), (Double) entity.getProperty(
+              LONGITUDE_FIELD), (String) entity.getProperty(LOCATION_NAME_FIELD))));
+    }
+    return stops.build();
   }
 }
