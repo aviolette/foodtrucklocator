@@ -41,6 +41,10 @@ public class FoodTruckServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
+    final String path = req.getRequestURI();
+    if (!Strings.isNullOrEmpty(path)) {
+      req.setAttribute("showScheduleFor", path.substring(1));
+    }
     final String timeRequest = req.getParameter("time");
     DateTime dateTime = null;
     if (!Strings.isNullOrEmpty(timeRequest)) {

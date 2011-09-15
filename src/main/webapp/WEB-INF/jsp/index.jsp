@@ -44,7 +44,7 @@
   </div>
 </div>
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-<script type="text/javascript" src="script/map.js"></script>
+<script type="text/javascript" src="script/map.js?ver=1"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
 <script>window.jQuery || document.write("<script src='script/lib/jquery-1.6.2.min.js'>\x3C/script>")</script>
 <script type="text/javascript" src="script/lib/jquery-ui-1.8.16.custom.min.js"></script>
@@ -58,8 +58,15 @@
     $("#left").css("margin-left", "-" + $("#map_canvas").width() + "px");
     var originalCenter = new google.maps.LatLng(${center.latitude}, ${center.longitude});
     var map = new TruckMap(originalCenter);
-    map.loadTrucksForTime("${requestTime}");
-    new TimeSlider(new Date(${requestTimeInMillis}), "${requestTime}".split("-")[0], map);
+    <c:choose>
+      <c:when test="${empty showScheduleFor}">
+        map.loadTrucksForTime("${requestTime}");
+        new TimeSlider(new Date(${requestTimeInMillis}), "${requestTime}".split("-")[0], map);
+      </c:when>
+      <c:otherwise>
+        map.loadTruckSchedule("${showScheduleFor}")
+      </c:otherwise>
+    </c:choose>
   });
 </script>
 </body>

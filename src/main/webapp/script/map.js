@@ -50,6 +50,21 @@ var TruckMap = function(latlng) {
     trucks = [];
   };
 
+  self.loadTruckSchedule = function(truckId) {
+    $.ajax({
+      url: "/service/schedule/" + truckId,
+      context: document.body,
+      dataType: 'json',
+      success: function(data) {
+        var menuSection = $("#foodTruckList");
+        menuSection.empty();
+        $.each(data.stops, function(idx, scheduleItem) {
+
+        });
+      }
+    });
+  };
+
   self.loadTrucksForTime = function(requestTime) {
     $.ajax({
       url: "/service/stops?time=" + requestTime,
