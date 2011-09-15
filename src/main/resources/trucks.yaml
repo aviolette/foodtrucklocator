@@ -208,4 +208,21 @@ categories: Food
 iconUrl: https://twimg0-a.akamaihd.net/profile_images/1187497687/twitter_normal.jpg
 strategy:
   type: calendar
+---
+id: smgfoodtruck
+twitter: smgfoodtruck
+name: Sweet Miss Givings
+categories: Dessert
+url: http://www.sweetmissgivings.com
+iconUrl: https://twimg0-a.akamaihd.net/profile_images/1192829259/photo_normal.JPG
+strategy:
+  type: calendar
+---
+id: brownbagtruck
+twitter: brownbagtruck
+name: Brown Bag Truck
+categories: Food
+iconUrl: https://twimg0-a.akamaihd.net/profile_images/1500530673/twitter_pic_normal.jpg
+strategy:
+  type: calendar
 
