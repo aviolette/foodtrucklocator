@@ -19,7 +19,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.model.Location;
-import foodtruck.truckstops.FoodTruckStopService;
 
 /**
  * Servlet that serves up the main food truck page.
@@ -28,15 +27,12 @@ import foodtruck.truckstops.FoodTruckStopService;
  */
 @Singleton
 public class FoodTruckServlet extends HttpServlet {
-  private final FoodTruckStopService foodTruckService;
   private final DateTimeZone zone;
   private final Location mapCenter;
   private final DateTimeFormatter timeFormatter;
 
   @Inject
-  public FoodTruckServlet(FoodTruckStopService foodTruckService, DateTimeZone zone,
-      @Named("center") Location centerLocation) {
-    this.foodTruckService = foodTruckService;
+  public FoodTruckServlet( DateTimeZone zone, @Named("center") Location centerLocation) {
     this.zone = zone;
     this.mapCenter = centerLocation;
     this.timeFormatter = DateTimeFormat.forPattern("YYYYMMdd-HHmm").withZone(zone);
@@ -60,7 +56,6 @@ public class FoodTruckServlet extends HttpServlet {
         dateTime = dateTime.withTime(11, 30, 0, 0);
       }
     }
-    req.setAttribute("trucks", foodTruckService.findFoodTruckGroups(dateTime));
     req.setAttribute("center", mapCenter);
     String googleAnalytics = System.getProperty("foodtruck.google.analytics", null);
     if (googleAnalytics != null) {
