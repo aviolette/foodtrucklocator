@@ -24,7 +24,7 @@
       <h1>Chicago Food Trucks</h1>
 
       <p>The Chicago Food Truck locator currently locates food trucks based on
-        their published schedules on their websites. For up-to-date information, please check the
+        their published schedules on their websites. For up-to-date information, please check their
         twitter feeds.</p>
 
       <p>If you are a food truck and would like to be included in this application or have other
@@ -54,8 +54,12 @@
 <script type="text/javascript">
   $(function() {
     // fit the map to the screen...need to do this with css, but it eludes me now
-    $("#right").width($("#map_canvas").width() - $("#left").width());
-    $("#left").css("margin-left", "-" + $("#map_canvas").width() + "px");
+    if (Modernizr.touch) {
+      $("#left").css("overflow-y", "visible")
+    } else {
+      $("#right").width($("#map_canvas").width() - $("#left").width());
+      $("#left").css("margin-left", "-" + $("#map_canvas").width() + "px");
+    }
     var originalCenter = new google.maps.LatLng(${center.latitude}, ${center.longitude});
     var map = new TruckMap(originalCenter);
     <c:choose>
