@@ -136,6 +136,7 @@ id: thepiemachine
 twitter: thepiemachine
 name: The Pie Machine
 categories: Pies
+url: http://www.uptownpies.com
 iconUrl: http://a1.twimg.com/profile_images/1428015678/Logo_Design_normal.png
 strategy:
   type: calendar
