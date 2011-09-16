@@ -2,9 +2,14 @@ package foodtruck.server;
 
 import java.util.Collection;
 
+import com.google.inject.Inject;
+
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
@@ -18,6 +23,13 @@ import foodtruck.model.TruckStop;
  * @since 9/14/11
  */
 public class JsonWriter {
+  private final DateTimeFormatter timeFormatter;
+
+  @Inject
+  public JsonWriter(DateTimeZone zone) {
+    timeFormatter = DateTimeFormat.forPattern("hh:mm a").withZone(zone);
+  }
+
   public JSONObject writeGroup(TruckLocationGroup group) throws
       JSONException {
     return new org.codehaus.jettison.json.JSONObject()
@@ -59,8 +71,8 @@ public class JsonWriter {
     for (TruckStop stop : schedule.getStops()) {
       JSONObject truckStop = new JSONObject()
           .put("location", writeLocation(stop.getLocation()))
-          .put("startTime", stop.getStartTime().getMillis())
-          .put("endTime", stop.getEndTime().getMillis());
+          .put("startTime", timeFormatter.print(stop.getStartTime()))
+          .put("endTime", timeFormatter.print(stop.getEndTime()));
       arr.put(truckStop);
     }
     return obj.put("stops", arr);

@@ -24,8 +24,8 @@
       <h1>Chicago Food Trucks</h1>
 
       <p>The Chicago Food Truck locator currently locates food trucks based on
-        their published schedules on their websites. Our plan is to crystallize this data further
-        via other real-time technologies.</p>
+        their published schedules on their websites. For up-to-date information, please check the
+        twitter feeds.</p>
 
       <p>If you are a food truck and would like to be included in this application or have other
         suggestions,
@@ -44,7 +44,7 @@
   </div>
 </div>
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-<script type="text/javascript" src="script/map.js?ver=1"></script>
+<script type="text/javascript" src="script/map.js?ver=2"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
 <script>window.jQuery || document.write("<script src='script/lib/jquery-1.6.2.min.js'>\x3C/script>")</script>
 <script type="text/javascript" src="script/lib/jquery-ui-1.8.16.custom.min.js"></script>
@@ -64,6 +64,7 @@
         new TimeSlider(new Date(${requestTimeInMillis}), "${requestTime}".split("-")[0], map);
       </c:when>
       <c:otherwise>
+       $(".sliderContainer").css("display", "none");
         map.loadTruckSchedule("${showScheduleFor}")
       </c:otherwise>
     </c:choose>

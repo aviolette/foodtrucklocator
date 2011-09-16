@@ -1,3 +1,7 @@
+function buildIconUrl(letter) {
+  return "http://www.google.com/mapfiles/marker" + letter + ".png"
+}
+
 var TimeSlider = function(initialTime, initialDate, map) {
   var sliderValue = (initialTime.getHours() * 60) +
       (Math.floor(initialTime.getMinutes() / 15) * 15);
@@ -58,8 +62,27 @@ var TruckMap = function(latlng) {
       success: function(data) {
         var menuSection = $("#foodTruckList");
         menuSection.empty();
+        var truck = data.truck;
+        var t = new Truck(null, null, truck);
+        menuSection.append("<a href='/'>&#171; Back to Main List</a><br/> ")
+        t.buildMenuItem(menuSection, null, true);
         $.each(data.stops, function(idx, scheduleItem) {
-
+          var latlng = new google.maps.LatLng(scheduleItem.location.latitude,
+              scheduleItem.location.longitude);
+          var locationName = (typeof scheduleItem.location['name'] == 'undefined') ? null :
+              scheduleItem.location.name;
+          var letter = String.fromCharCode(65 + idx);
+          var truckObj = new Truck(latlng, locationName, truck);
+          truckObj.buildMarker(map, letter);
+          menuSection.append("<div class='menuSection' id='menu" + idx +"'/>");
+          var section = $('#menu' + idx) ;
+          var markerText = "<img src='" + buildIconUrl(letter) + "'/>";
+          section.append("<div class='markerSection'>" + markerText + "</div>");
+          section.append("<div class='menuContent' id='menu" + idx +
+               "Section' class='contentSection'></div>");
+          var div = $('#menu' + idx + 'Section');
+          div.append(scheduleItem.startTime + " - " + scheduleItem.endTime + "<br/>");
+          div.append(locationName);
         });
       }
     });
@@ -98,9 +121,6 @@ var Truck = function(latLng, locationName, opts) {
   var options = opts;
   var marker = null;
 
-  function buildIconUrl(letter) {
-    return "http://www.google.com/mapfiles/marker" + letter + ".png"
-  }
 
   self.buildMenuItem = function (menuSection, letter, letterUsed) {
     menuSection.append("<div class='menuSection' id='" + options.id + "'/>");
@@ -114,7 +134,7 @@ var Truck = function(latLng, locationName, opts) {
     section.append("<div class='menuContent' id='" + options.id +
         "Section' class='contentSection'></div>");
     var div = $('#' + options.id + 'Section');
-    div.append("<a class='activationLink' href='#'>" + options.name + "</a><br/> ")
+    div.append("<a class='activationLink' href='/" +  options.id + "'>" + options.name + "</a><br/> ")
     if (locationName) {
       div.append("<span class='locationName'>" + locationName + "</span></br>");
     }
