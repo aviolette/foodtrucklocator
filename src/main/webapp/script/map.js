@@ -81,7 +81,7 @@ var TruckMap = function(latlng) {
           section.append("<div class='menuContent' id='menu" + idx +
                "Section' class='contentSection'></div>");
           var div = $('#menu' + idx + 'Section');
-          div.append(scheduleItem.startTime + " - " + scheduleItem.endTime + "<br/>");
+          div.append(scheduleItem.startTime + "<br/>");
           div.append(locationName);
         });
       }
