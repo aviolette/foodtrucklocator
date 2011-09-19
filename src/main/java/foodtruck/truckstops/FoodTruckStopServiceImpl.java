@@ -22,8 +22,7 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckLocationGroup;
 import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStop;
-import foodtruck.schedule.DefaultStrategy;
-import foodtruck.schedule.ScheduleStrategy;
+import foodtruck.schedule.GoogleCalendarScheduleSearch;
 
 /**
  * @author aviolette@gmail.com
@@ -31,19 +30,16 @@ import foodtruck.schedule.ScheduleStrategy;
  */
 public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   private final TruckStopDAO truckStopDAO;
-  private final Map<Truck, ScheduleStrategy> strategies;
-  private final ScheduleStrategy defaultStrategy;
   private final Map<String, Truck> trucks;
+  private final GoogleCalendarScheduleSearch googleCalendar;
   private static final Logger log = Logger.getLogger(FoodTruckStopServiceImpl.class.getName());
 
   @Inject
-  public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, Map<Truck,
-      ScheduleStrategy> strategies, @DefaultStrategy ScheduleStrategy defaultStrategy,
-      Map<String, Truck> trucks) {
+  public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, Map<String, Truck> trucks,
+      GoogleCalendarScheduleSearch googleCalendar) {
     this.truckStopDAO = truckStopDAO;
-    this.strategies = strategies;
-    this.defaultStrategy = defaultStrategy;
     this.trucks = trucks;
+    this.googleCalendar = googleCalendar;
   }
 
   @Override
@@ -51,12 +47,8 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     TimeRange theDay = new TimeRange(instant);
     truckStopDAO.deleteAfter(theDay.getStartDateTime());
     for (Truck truck : trucks.values()) {
-      ScheduleStrategy strategy = strategies.get(truck);
-      if (strategy == null) {
-        strategy = defaultStrategy;
-      }
       try {
-        List<TruckStop> stops = strategy.findForTime(truck, theDay);
+        List<TruckStop> stops = googleCalendar.findForTime(null, theDay);
         truckStopDAO.addStops(stops);
       } catch (Exception e) {
         log.log(Level.WARNING, "Exception thrown while refreshing truck: " + truck.getId(), e);

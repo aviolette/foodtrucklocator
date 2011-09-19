@@ -11,10 +11,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
-import org.joda.time.DateTimeZone;
-
 import foodtruck.config.TruckConfigParser;
-import foodtruck.geolocation.GeoLocator;
 import foodtruck.model.Truck;
 import twitter4j.TwitterFactory;
 
@@ -39,29 +36,16 @@ public class ScheduleModule extends AbstractModule {
     return new CalendarService("foodtruck-app");
   }
 
-  @Provides
-  public GoogleCalendarStrategy provideGoogleCalendarStrategy(CalendarService service,
-      CalendarQueryFactory queryProvider, DateTimeZone zone, GeoLocator geoLocator) {
-    return new GoogleCalendarStrategy(service, queryProvider, zone, geoLocator);
-  }
-
   @Provides @Singleton
   public TwitterFactoryWrapper provideTwitterFactory() {
     return new TwitterFactoryWrapper(new TwitterFactory());
   }
 
-  @Provides @DefaultStrategy
-  public ScheduleStrategy provideTwitterStrategy(TwitterFactoryWrapper factoryWrapper,
-      GeoLocator geoLocator) {
-    return new TwitterFeedScheduleStrategy(factoryWrapper, geoLocator);
-  }
-
   @Provides @Singleton
-  public Map<Truck, ScheduleStrategy> providesTruckStrategies(TruckConfigParser parser,
-      @DefaultStrategy ScheduleStrategy defaultStrategy) throws FileNotFoundException {
+  public Map<String, Truck> providesTrucks(TruckConfigParser parser)
+      throws FileNotFoundException {
     String url =
         Thread.currentThread().getContextClassLoader().getResource("trucks.yaml").getFile();
-    return parser.parse(url, defaultStrategy);
+    return parser.parse(url);
   }
-
 }

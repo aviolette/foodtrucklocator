@@ -48,9 +48,6 @@ public class AddressExtractorTest {
         "1:30 Monroe/Wacker";
     List<String> addresses = parser.parse(tweet);
     assertNotNull(addresses);
-    for (String s : addresses) {
-      System.out.println("FOO: "+s);
-    }
     assertEquals(2, addresses.size());
     assertEquals("Dearborn/Monroe", addresses.get(0));
     assertEquals("Monroe/Wacker", addresses.get(1));
