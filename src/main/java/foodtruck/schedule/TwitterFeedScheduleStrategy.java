@@ -20,7 +20,7 @@ import twitter4j.TwitterException;
  * @author aviolette@gmail.com
  * @since Jul 13, 2011
  */
-public class TwitterFeedScheduleStrategy  {
+public class TwitterFeedScheduleStrategy implements ScheduleStrategy {
   private static final Logger log = Logger.getLogger(TwitterFeedScheduleStrategy.class.getName());
   private final TwitterFactoryWrapper twitterFactory;
   private final GeoLocator geolocator;
@@ -30,6 +30,7 @@ public class TwitterFeedScheduleStrategy  {
     this.geolocator = geolocator;
   }
   
+  @Override
   public List<TruckStop> findForTime(Truck truck, TimeRange range) {
     Twitter twitter = twitterFactory.create();
     ImmutableList.Builder<TruckStop> builder = ImmutableList.builder();
