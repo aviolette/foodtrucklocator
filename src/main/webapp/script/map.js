@@ -42,7 +42,7 @@ var TruckMap = function(latlng) {
   var trucks = [];
   var self = this;
   var map = new google.maps.Map(document.getElementById("map_canvas"), {
-    zoom: 14,
+    zoom: 13,
     center: latlng,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   });
