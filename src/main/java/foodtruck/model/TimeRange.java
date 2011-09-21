@@ -3,6 +3,7 @@ package foodtruck.model;
 import com.google.common.base.Objects;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
@@ -17,17 +18,25 @@ public class TimeRange {
   private final LocalTime endTime;
   private final LocalTime startTime;
   private final LocalDate date;
+  private final DateTimeZone zone;
 
+  @Deprecated
   public TimeRange(LocalDate instant) {
-    date = instant;
-    startTime = MIDNIGHT;
-    endTime = JUST_BEFORE_MIDNIGHT;
+    this(instant, DateTimeZone.UTC);
   }
 
   public TimeRange(LocalDate date, LocalTime startTime, LocalTime endTime) {
     this.startTime = startTime;
     this.endTime = endTime;
     this.date = date;
+    this.zone = DateTimeZone.UTC;
+  }
+
+  public TimeRange(LocalDate instant, DateTimeZone zone) {
+    date = instant;
+    startTime = MIDNIGHT;
+    endTime = JUST_BEFORE_MIDNIGHT;
+    this.zone = zone;
   }
 
   @Override
@@ -59,10 +68,10 @@ public class TimeRange {
   }
 
   public DateTime getStartDateTime() {
-    return date.toDateTime(startTime);
+    return date.toDateTime(startTime, zone);
   }
 
   public DateTime getEndDateTime() {
-    return date.toDateTime(endTime);
+    return date.toDateTime(endTime, zone);
   }
 }

@@ -66,4 +66,10 @@ public class TruckStop {
     return range.getStartDateTime().isBefore(startTime.plusSeconds(1)) &&
         range.getEndDateTime().isAfter(startTime);
   }
+
+  @Override
+  public String toString() {
+    return Objects.toStringHelper(this).add("truck", truck).add("startTime", startTime)
+        .add("endTime", endTime).add("location", location).toString();
+  }
 }

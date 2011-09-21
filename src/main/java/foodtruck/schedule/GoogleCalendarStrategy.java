@@ -70,8 +70,10 @@ public class GoogleCalendarStrategy implements ScheduleStrategy {
 
         final Location location = geolocator.locate(where.getValueString());
         if (location != null) {
-          builder.add(new TruckStop(truck, toJoda(time.getStartTime()),
-              toJoda(time.getEndTime()), location));
+          final TruckStop truckStop = new TruckStop(truck, toJoda(time.getStartTime(), defaultZone),
+              toJoda(time.getEndTime(), defaultZone), location);
+          log.log(Level.INFO, "Loaded truckstop: {0}", truckStop);
+          builder.add(truckStop);
         } else {
           log.log(Level.WARNING, "Location could not be resolved for {0}, {1} between {2} and {3}",
               new Object[] {truck.getId(), where.getValueString(), range.getStartDateTime(),

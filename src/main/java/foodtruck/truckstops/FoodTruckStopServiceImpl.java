@@ -13,6 +13,7 @@ import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 
 import foodtruck.dao.TruckStopDAO;
@@ -35,20 +36,22 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   private final ScheduleStrategy defaultStrategy;
   private final Map<String, Truck> trucks;
   private static final Logger log = Logger.getLogger(FoodTruckStopServiceImpl.class.getName());
+  private final DateTimeZone zone;
 
   @Inject
   public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, Map<Truck,
       ScheduleStrategy> strategies, @DefaultStrategy ScheduleStrategy defaultStrategy,
-      Map<String, Truck> trucks) {
+      Map<String, Truck> trucks, DateTimeZone zone) {
     this.truckStopDAO = truckStopDAO;
     this.strategies = strategies;
     this.defaultStrategy = defaultStrategy;
     this.trucks = trucks;
+    this.zone = zone;
   }
 
   @Override
   public void updateStopsFor(LocalDate instant) {
-    TimeRange theDay = new TimeRange(instant);
+    TimeRange theDay = new TimeRange(instant, zone);
     truckStopDAO.deleteAfter(theDay.getStartDateTime());
     for (Truck truck : trucks.values()) {
       ScheduleStrategy strategy = strategies.get(truck);
