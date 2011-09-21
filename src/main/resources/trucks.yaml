@@ -168,9 +168,9 @@ strategy:
   type: calendar
 ---
 id: bridgeportpastry
-twitter: bridgeportpastry
+twitter: bridgeportpasty
 url: http://bridgeportpasty.com/
-name: Bridgeport Pastry
+name: Bridgeport Pasty
 categories: Dessert
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1271453607/3111-logo-brownlet-350px_normal.jpg
 strategy:
@@ -206,7 +206,7 @@ id: bergsteinsny
 twitter: bergsteinsny
 name: Bergstein's NY Deli
 categories: Food
-iconUrl: https://twimg0-a.akamaihd.net/profile_images/1187497687/twitter_normal.jpg
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1187497687/twitter_normal.jpg
 strategy:
   type: calendar
 ---
@@ -215,7 +215,7 @@ twitter: smgfoodtruck
 name: Sweet Miss Givings
 categories: Dessert
 url: http://www.sweetmissgivings.com
-iconUrl: https://twimg0-a.akamaihd.net/profile_images/1192829259/photo_normal.JPG
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1192829259/photo_normal.JPG
 strategy:
   type: calendar
 ---
@@ -223,7 +223,43 @@ id: brownbagtruck
 twitter: brownbagtruck
 name: Brown Bag Truck
 categories: Food
-iconUrl: https://twimg0-a.akamaihd.net/profile_images/1500530673/twitter_pic_normal.jpg
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1500530673/twitter_pic_normal.jpg
+strategy:
+  type: calendar
+---
+id: foreveryogurt
+twitter: foreveryogurt
+name: Forever Yogurt
+categories: Dessert
+url: http://www.foreveryogurt.com
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1332195359/twitterlogo1_normal.png
+strategy:
+  type: calendar
+---
+id: courageouscakes
+twitter: courageouscakes
+name: Cupcakes for Courage
+categories: Dessert
+url: http://www.cupcakesforcourage.com
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1268075878/twitter_logo_normal.jpg
+strategy:
+  type: calendar
+---
+id: jerkinonwheels
+twitter: jerkinonwheels
+name: Jerkin on Wheels
+categories: Food
+url: http://www.jerkinonwheels.com/
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1514860552/0001Xf_normal.jpg
+strategy:
+  type: calendar
+---
+id: thewagyuwagon
+twitter: thewagyuwagon
+name: The Wagyu Wagon
+categories: Food
+url: http://www.thewagyuwagon.com
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1310282168/D_2_WagyuWagon_ID_Identity_normal.jpg
 strategy:
   type: calendar
 
