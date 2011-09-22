@@ -1,6 +1,7 @@
 package foodtruck.model;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.junit.Before;
@@ -18,18 +19,18 @@ public class TruckStopTest {
 
   @Before
   public void before() {
-    stop = createTruckStop(new DateTime(2011, 7, 11, 11, 0, 0, 0),
-        new DateTime(2011, 7, 11, 12, 0, 0, 0));
+    stop = createTruckStop(new DateTime(2011, 7, 11, 11, 0, 0, 0, DateTimeZone.UTC),
+        new DateTime(2011, 7, 11, 12, 0, 0, 0, DateTimeZone.UTC));
   }
 
   @Test
   public void testWithinEarlierDay() {
-    assertFalse(stop.within(new TimeRange(new LocalDate(2011, 6, 11))));
+    assertFalse(stop.within(new TimeRange(new LocalDate(2011, 6, 11), DateTimeZone.UTC)));
   }
 
   @Test
   public void testWithinFullDay() {
-    assertTrue(stop.within(new TimeRange(new LocalDate(2011, 7, 11))));
+    assertTrue(stop.within(new TimeRange(new LocalDate(2011, 7, 11), DateTimeZone.UTC)));
   }
 
   @Test
@@ -54,7 +55,7 @@ public class TruckStopTest {
 
   @Test
   public void testWithinDayLaterDay() {
-    assertFalse(stop.within(new TimeRange(new LocalDate(2011, 8, 11))));
+    assertFalse(stop.within(new TimeRange(new LocalDate(2011, 8, 11), DateTimeZone.UTC)));
   }
 
   private TruckStop createTruckStop(DateTime startTime, DateTime endTime) {

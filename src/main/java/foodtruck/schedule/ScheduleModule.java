@@ -50,18 +50,12 @@ public class ScheduleModule extends AbstractModule {
     return new TwitterFactoryWrapper(new TwitterFactory());
   }
 
-  @Provides @DefaultStrategy
-  public ScheduleStrategy provideTwitterStrategy(TwitterFactoryWrapper factoryWrapper,
-      GeoLocator geoLocator) {
-    return new TwitterFeedScheduleStrategy(factoryWrapper, geoLocator);
-  }
-
   @Provides @Singleton
-  public Map<Truck, ScheduleStrategy> providesTruckStrategies(TruckConfigParser parser,
-      @DefaultStrategy ScheduleStrategy defaultStrategy) throws FileNotFoundException {
+  public Map<String, Truck> providesTrucks(TruckConfigParser parser)
+      throws FileNotFoundException {
     String url =
         Thread.currentThread().getContextClassLoader().getResource("trucks.yaml").getFile();
-    return parser.parse(url, defaultStrategy);
+    return parser.parse(url);
   }
-
 }
+

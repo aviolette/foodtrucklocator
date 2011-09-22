@@ -23,7 +23,7 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckLocationGroup;
 import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStop;
-import foodtruck.schedule.DefaultStrategy;
+import foodtruck.schedule.GoogleCalendarStrategy;
 import foodtruck.schedule.ScheduleStrategy;
 
 /**
@@ -32,18 +32,15 @@ import foodtruck.schedule.ScheduleStrategy;
  */
 public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   private final TruckStopDAO truckStopDAO;
-  private final Map<Truck, ScheduleStrategy> strategies;
   private final ScheduleStrategy defaultStrategy;
   private final Map<String, Truck> trucks;
   private static final Logger log = Logger.getLogger(FoodTruckStopServiceImpl.class.getName());
   private final DateTimeZone zone;
 
   @Inject
-  public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, Map<Truck,
-      ScheduleStrategy> strategies, @DefaultStrategy ScheduleStrategy defaultStrategy,
+  public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, GoogleCalendarStrategy defaultStrategy,
       Map<String, Truck> trucks, DateTimeZone zone) {
     this.truckStopDAO = truckStopDAO;
-    this.strategies = strategies;
     this.defaultStrategy = defaultStrategy;
     this.trucks = trucks;
     this.zone = zone;
@@ -54,12 +51,8 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     TimeRange theDay = new TimeRange(instant, zone);
     truckStopDAO.deleteAfter(theDay.getStartDateTime());
     for (Truck truck : trucks.values()) {
-      ScheduleStrategy strategy = strategies.get(truck);
-      if (strategy == null) {
-        strategy = defaultStrategy;
-      }
       try {
-        List<TruckStop> stops = strategy.findForTime(truck, theDay);
+        List<TruckStop> stops = defaultStrategy.findForTime(truck, theDay);
         truckStopDAO.addStops(stops);
       } catch (Exception e) {
         log.log(Level.WARNING, "Exception thrown while refreshing truck: " + truck.getId(), e);

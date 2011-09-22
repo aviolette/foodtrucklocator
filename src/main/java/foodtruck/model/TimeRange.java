@@ -20,11 +20,6 @@ public class TimeRange {
   private final LocalDate date;
   private final DateTimeZone zone;
 
-  @Deprecated
-  public TimeRange(LocalDate instant) {
-    this(instant, DateTimeZone.UTC);
-  }
-
   public TimeRange(LocalDate date, LocalTime startTime, LocalTime endTime) {
     this.startTime = startTime;
     this.endTime = endTime;

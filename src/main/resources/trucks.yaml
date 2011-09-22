@@ -4,8 +4,6 @@ name:  Tamale Spaceship
 categories: Mexican
 iconUrl: "http://a3.twimg.com/profile_images/1402134609/be86_1_1__normal.jpg"
 url: http://thetamalespaceship.com/
-strategy:
-  type: calendar
 ---
 id: meatyballs1
 twitter: fossfoodtrucks
@@ -13,8 +11,6 @@ name: Meatyballs 1
 categories: Sandwich
 url: http://www.meatyballsmobile.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1204282220/Meatyballs_Mobile_Logo_A_normal.jpg
-strategy:
-  type: calendar
 ---
 id: meatyballs2
 twitter: fossfoodtrucks
@@ -22,8 +18,6 @@ name: Meatyballs 2
 categories: Sandwich
 url: http://www.meatyballsmobile.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1204282220/Meatyballs_Mobile_Logo_A_normal.jpg
-strategy:
-  type: calendar
 ---
 id: meatyballs3
 twitter: fossfoodtrucks
@@ -31,8 +25,6 @@ url: http://www.meatyballsmobile.com
 name: Meatyballs 3
 categories: Sandwich
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1204282220/Meatyballs_Mobile_Logo_A_normal.jpg
-strategy:
-  type: calendar
 ---
 id: 5411empanadas
 url: http://5411empanadas.com/
@@ -40,8 +32,6 @@ twitter: 5411empanadas
 name: 5411 Empanadas
 categories: Spanish
 iconUrl: "http://si0.twimg.com/profile_images/749153715/twitter2_normal.jpg"
-strategy:
-  type: calendar
 ---
 id: gaztrowagon
 twitter: wherezthewagon
@@ -49,8 +39,6 @@ name: Gaztro Wagon
 categories: American
 url: http://www.gaztro-wagon.com/
 iconUrl: http://si0.twimg.com/profile_images/781557064/GaztroWagon_B_B_Stacked_normal.png
-strategy:
-  type: calendar
 ---
 id: theslideride
 twitter: theslideride
@@ -58,8 +46,6 @@ url: http://www.theslideride.com/
 name: The Slide Ride
 categories: Sandwich
 iconUrl: http://si0.twimg.com/profile_images/1323538462/ribeye_normal.jpg
-strategy:
-  type: calendar
 ---
 id: thesouthernmac
 twitter: thesouthernmac
@@ -67,8 +53,6 @@ url: http://thesouthernmac.com/
 name: The Southern Mac and Cheese Truck
 categories: American
 iconUrl: http://si0.twimg.com/profile_images/1214705421/Mac_and_Cheese_Truck_Media_Shot_-_low_res_normal.jpg
-strategy:
-  type: calendar
 ---
 id: sweetridechi
 twitter: sweetridechi
@@ -76,8 +60,6 @@ name: Sweet Ride
 categories: Cupcakes
 url: http://www.sweetridesf.com/
 iconUrl: http://si0.twimg.com/profile_images/1165252076/Sweet_Ride_Truck_normal.jpg
-strategy:
-  type: calendar
 ---
 id: flirtycupcakes
 twitter: flirtycupcakes
@@ -85,8 +67,6 @@ name: Flirty Cupcakes
 categories: Cupcakes
 url: http://www.flirtycupcakes.com/
 iconUrl: http://si0.twimg.com/profile_images/720492263/small_logo_normal.jpg
-strategy:
-  type: calendar
 ---
 id: taquerofusion
 twitter: taquerofusion
@@ -94,8 +74,6 @@ name: Taquero Fusion
 categories: Mexican
 url: http://www.taquerofusion.com/
 iconUrl: http://si0.twimg.com/profile_images/1312553461/LogoTwitter_normal.jpg
-strategy:
-  type: calendar
 ---
 id: hautesausage1
 twitter: hautesausage
@@ -103,8 +81,6 @@ name: Haute Sausage 1
 categories: American
 url: http://www.hautesausage.com/
 iconUrl: http://si0.twimg.com/profile_images/1325400326/HSlogoFB_normal.jpg
-strategy:
-  type: calendar
 ---
 id: hautesausage2
 twitter: hautesausage
@@ -112,8 +88,6 @@ name: Haute Sausage 2
 categories: American
 url: http://www.hautesausage.com/
 iconUrl: http://si0.twimg.com/profile_images/1325400326/HSlogoFB_normal.jpg
-strategy:
-  type: calendar
 ---
 id: hautesausage3
 twitter: hautesausage
@@ -121,16 +95,12 @@ name: Big Sausage
 categories: American
 url: http://www.hautesausage.com/
 iconUrl: http://si0.twimg.com/profile_images/1325400326/HSlogoFB_normal.jpg
-strategy:
-  type: calendar
 ---
 id: gigisbakeshop
 twitter: gigisbakeshop
 name: Gigis Bake Shop
 categories: Cupcake
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1503976385/GiGI_TAG_v07_normal.jpg
-strategy:
-  type: calendar
 ---
 id: thepiemachine
 twitter: thepiemachine
@@ -138,16 +108,12 @@ name: The Pie Machine
 categories: Pies
 url: http://www.uptownpies.com
 iconUrl: http://a1.twimg.com/profile_images/1428015678/Logo_Design_normal.png
-strategy:
-  type: calendar
 ---
 id: mamagreengoodie
 twitter: mamagreengoodie
 name: Mama Green Goodie
 categories: Desserts
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1416523084/profile_normal.jpg
-strategy:
-  type: calendar
 ---
 id: themoremobile
 twitter: themoremobile
@@ -155,8 +121,6 @@ name: The More Mobile
 categories: Desserts
 url: http://www.morecupcakes.com/
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1121172140/moremobile_normal.jpg
-strategy:
-  type: calendar
 ---
 id: homagesf
 twitter: homagesf
@@ -164,17 +128,13 @@ url: http://homagestreetfood.com/
 name: Homage Street Food
 categories: Food
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1491944244/logo_orange_and_black_twit_normal.jpg
-strategy:
-  type: calendar
 ---
-id: bridgeportpastry
+id: bridgeportpasty
 twitter: bridgeportpasty
 url: http://bridgeportpasty.com/
 name: Bridgeport Pasty
 categories: Dessert
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1271453607/3111-logo-brownlet-350px_normal.jpg
-strategy:
-  type: calendar
 ---
 id: culture
 twitter: culture
@@ -182,16 +142,12 @@ url: http://cultureyogurt.com
 name: Culture Yogurt
 categories: Dessert
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1484907277/logosmall_normal.jpg
-strategy:
-  type: calendar
 ---
 id: adelitatruck
 twitter: adelitatruck
 name: La Adelita
 categories: Mexican
 iconUrl: https://twimg0-a.akamaihd.net/profile_images/1408203936/FOODTRUCK_normal.jpg
-strategy:
-  type: calendar
 ---
 id: sweetiecakes
 twitter: Rzjp6Cakes
@@ -199,16 +155,12 @@ name: Sweetie Cakes
 categories: Dessert
 url: http://www.tasteofsweetiecakes.com/
 iconUrl: http://a3.twimg.com/profile_images/1508155810/sweetie_cakes_logo_normal.png
-strategy:
-  type: calendar
 ---
 id: bergsteinsny
 twitter: bergsteinsny
 name: Bergstein's NY Deli
 categories: Food
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1187497687/twitter_normal.jpg
-strategy:
-  type: calendar
 ---
 id: smgfoodtruck
 twitter: smgfoodtruck
@@ -216,16 +168,12 @@ name: Sweet Miss Givings
 categories: Dessert
 url: http://www.sweetmissgivings.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1192829259/photo_normal.JPG
-strategy:
-  type: calendar
 ---
 id: brownbagtruck
 twitter: brownbagtruck
 name: Brown Bag Truck
 categories: Food
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1500530673/twitter_pic_normal.jpg
-strategy:
-  type: calendar
 ---
 id: foreveryogurt
 twitter: foreveryogurt
@@ -233,8 +181,6 @@ name: Forever Yogurt
 categories: Dessert
 url: http://www.foreveryogurt.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1332195359/twitterlogo1_normal.png
-strategy:
-  type: calendar
 ---
 id: courageouscakes
 twitter: courageouscakes
@@ -242,8 +188,6 @@ name: Cupcakes for Courage
 categories: Dessert
 url: http://www.cupcakesforcourage.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1268075878/twitter_logo_normal.jpg
-strategy:
-  type: calendar
 ---
 id: jerkinonwheels
 twitter: jerkinonwheels
@@ -251,8 +195,6 @@ name: Jerkin on Wheels
 categories: Food
 url: http://www.jerkinonwheels.com/
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1514860552/0001Xf_normal.jpg
-strategy:
-  type: calendar
 ---
 id: thewagyuwagon
 twitter: thewagyuwagon
@@ -260,6 +202,4 @@ name: The Wagyu Wagon
 categories: Food
 url: http://www.thewagyuwagon.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1310282168/D_2_WagyuWagon_ID_Identity_normal.jpg
-strategy:
-  type: calendar
 

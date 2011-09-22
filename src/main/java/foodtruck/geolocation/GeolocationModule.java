@@ -22,5 +22,4 @@ public class GeolocationModule extends AbstractModule {
     Client c = Client.create();
     return c.resource("http://maps.googleapis.com/maps/api/geocode/json");
   }
-
 }
