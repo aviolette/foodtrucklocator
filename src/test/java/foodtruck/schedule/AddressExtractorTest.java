@@ -29,7 +29,7 @@ public class AddressExtractorTest {
     List<String> addresses = parser.parse(tweet);
     assertNotNull(addresses);
     assertEquals(1, addresses.size());
-    assertEquals("1601 N. Clark", Iterables.getFirst(addresses, null));
+    assertEquals("1601 N. Clark, Chicago, IL", Iterables.getFirst(addresses, null));
   }
 
   @Test
@@ -38,8 +38,8 @@ public class AddressExtractorTest {
     List<String> addresses = parser.parse(tweet);
     assertNotNull(addresses);
     assertEquals(2, addresses.size());
-    assertEquals("Monroe&Dearborn", addresses.get(0));
-    assertEquals("Monroe&Wacker", addresses.get(1));
+    assertEquals("Monroe&Dearborn, Chicago, IL", addresses.get(0));
+    assertEquals("Monroe&Wacker, Chicago, IL", addresses.get(1));
   }
 
   @Test
@@ -49,12 +49,9 @@ public class AddressExtractorTest {
         "1:30 Monroe/Wacker";
     List<String> addresses = parser.parse(tweet);
     assertNotNull(addresses);
-    for (String s : addresses) {
-      System.out.println("FOO: "+s);
-    }
     assertEquals(2, addresses.size());
-    assertEquals("Dearborn/Monroe", addresses.get(0));
-    assertEquals("Monroe/Wacker", addresses.get(1));
+    assertEquals("Dearborn/Monroe, Chicago, IL", addresses.get(0));
+    assertEquals("Monroe/Wacker, Chicago, IL", addresses.get(1));
   }
 
   @Test
@@ -63,16 +60,42 @@ public class AddressExtractorTest {
     List<String> addresses = parser.parse(tweet);
     assertNotNull(addresses);
     assertEquals(2, addresses.size());
-    assertEquals("Dearborn and Monroe", addresses.get(0));
-    assertEquals("Ashland and Paulina", addresses.get(1));
+    assertEquals("Dearborn and Monroe, Chicago, IL", addresses.get(0));
+    assertEquals("Ashland and Paulina, Chicago, IL", addresses.get(1));
   }
 
-  @Test @Ignore
+  @Test
   public void testParseIntersection() {
-    String tweet = "Just landed at Rush and Walton";
+    String tweet = "Just landed at Rush and Walton foobar";
     List<String> addresses = parser.parse(tweet);
     assertNotNull(addresses);
-    assertEquals(2, addresses.size());
-    assertEquals("Rush and Walton", addresses.get(0));
+    assertEquals(1, addresses.size());
+    assertEquals("Rush and Walton, Chicago, IL", addresses.get(0));
+  }
+
+ @Test
+  public void testParseIntersection2() {
+    String tweet = "Gold Coast, we have landed at Rush and Walton...here until 6 pm";
+    List<String> addresses = parser.parse(tweet);
+    assertNotNull(addresses);
+    assertEquals(1, addresses.size());
+    assertEquals("Rush and Walton, Chicago, IL", addresses.get(0));
+  }
+
+ @Test
+  public void testParseIntersection3() {
+    String tweet = "Thanks Gold Coast! River North you ready?  Kingsbury and Erie, here we come!";
+    assertTweet("Kingsbury and Erie, Chicago, IL", tweet);
+  }
+
+  public void testParseIntersection4() {
+    assertTweet("Hubbard and Lasalle, Chicago, IL", "Alright #RiverNorth we're at Hubbard and LaSalle for the final stop of the night");
+  }
+
+  private void assertTweet(String expected, String tweet) {
+    List<String> addresses = parser.parse(tweet);
+    assertNotNull(addresses);
+    assertEquals(1, addresses.size());
+    assertEquals(expected, addresses.get(0));
   }
 }

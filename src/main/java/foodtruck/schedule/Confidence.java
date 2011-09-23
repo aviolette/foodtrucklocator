@@ -7,5 +7,5 @@ package foodtruck.schedule;
  * @since 9/19/11
  */
 public enum Confidence {
-  NOT_VERY, SORT_OF, VERY
+  LOW, MEDIUM, HIGH
 }

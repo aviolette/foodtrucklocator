@@ -44,9 +44,9 @@ public class ScheduleModule extends AbstractModule {
   }
 
   @Provides
-  public GoogleCalendarStrategy provideGoogleCalendarStrategy(CalendarService service,
+  public GoogleCalendar provideGoogleCalendarStrategy(CalendarService service,
       CalendarQueryFactory queryProvider, DateTimeZone zone, GeoLocator geoLocator) {
-    return new GoogleCalendarStrategy(service, queryProvider, zone, geoLocator);
+    return new GoogleCalendar(service, queryProvider, zone, geoLocator);
   }
 
   @Provides @Singleton

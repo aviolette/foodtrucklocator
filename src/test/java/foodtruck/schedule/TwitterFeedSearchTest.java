@@ -30,18 +30,8 @@ public class TwitterFeedSearchTest extends EasyMockSupport {
     truck = new Truck.Builder().id("foobar").twitterHandle("foobar").name("FOobar Truck").build();
     expect(twitterWrapper.create()).andStubReturn(twitter);
     locator = createMock(GeoLocator.class);
-    strategy = new TwitterFeedSearch(twitterWrapper, locator, 123, new AddressExtractor());
   }
 
-  // TODO: include geolocation data
-  private Status createStatusMock(boolean reply, boolean retweet, String text, DateTime dateTime) {
-    Status status = createMock(Status.class);
-    expect(status.getInReplyToUserId()).andStubReturn(reply ? 256L : -1L);
-    expect(status.isRetweet()).andStubReturn(retweet);
-    expect(status.getText()).andStubReturn(text);
-    expect(status.getCreatedAt()).andStubReturn(dateTime.toDate());
-    return status;
-  }
 
 
   @Test

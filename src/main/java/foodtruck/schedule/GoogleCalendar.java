@@ -31,16 +31,15 @@ import static foodtruck.schedule.TimeUtils.toJoda;
  * @author aviolette@gmail.com
  * @since 8/27/11
  */
-public class GoogleCalendarStrategy implements ScheduleStrategy {
+public class GoogleCalendar implements ScheduleStrategy {
   private final CalendarService calendarService;
   private final CalendarQueryFactory queryFactory;
   private final DateTimeZone defaultZone;
   private final GeoLocator geolocator;
-  private static final Logger log = Logger.getLogger(GoogleCalendarStrategy.class.getName());
-
+  private static final Logger log = Logger.getLogger(GoogleCalendar.class.getName());
 
   @Inject
-  public GoogleCalendarStrategy(CalendarService calendarService,
+  public GoogleCalendar(CalendarService calendarService,
       CalendarQueryFactory queryFactory, DateTimeZone defaultZone, GeoLocator geolocator) {
     this.calendarService = calendarService;
     this.queryFactory = queryFactory;
@@ -60,14 +59,12 @@ public class GoogleCalendarStrategy implements ScheduleStrategy {
     ImmutableList.Builder<TruckStop> builder = ImmutableList.builder();
     try {
       CalendarEventFeed resultFeed = calendarService.query(query, CalendarEventFeed.class);
-
       for (CalendarEventEntry entry : resultFeed.getEntries()) {
         Where where = Iterables.getFirst(entry.getLocations(), null);
         if (where == null) {
           throw new IllegalStateException("No location specified");
         }
         When time = Iterables.getFirst(entry.getTimes(), null);
-
         final Location location = geolocator.locate(where.getValueString());
         if (location != null) {
           final TruckStop truckStop = new TruckStop(truck, toJoda(time.getStartTime(), defaultZone),
@@ -80,7 +77,6 @@ public class GoogleCalendarStrategy implements ScheduleStrategy {
                   range.getEndDateTime()});
         }
       }
-
     } catch (IOException e) {
       throw new RuntimeException(e);
     } catch (ServiceException e) {

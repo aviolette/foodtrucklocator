@@ -69,7 +69,7 @@ public class TruckStop {
 
   @Override
   public String toString() {
-    return Objects.toStringHelper(this).add("truck", truck).add("startTime", startTime)
+    return Objects.toStringHelper(this).add("truck", truck.getId()).add("startTime", startTime)
         .add("endTime", endTime).add("location", location).toString();
   }
 }

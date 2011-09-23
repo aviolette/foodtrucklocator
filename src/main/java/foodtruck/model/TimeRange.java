@@ -34,6 +34,13 @@ public class TimeRange {
     this.zone = zone;
   }
 
+  public TimeRange(DateTime startTime, DateTime endTime) {
+    date = startTime.toLocalDate();
+    this.startTime = startTime.toLocalTime();
+    this.endTime = endTime.toLocalTime();
+    this.zone = startTime.getZone();
+  }
+
   @Override
   public int hashCode() {
     return Objects.hashCode(startTime, endTime, date);

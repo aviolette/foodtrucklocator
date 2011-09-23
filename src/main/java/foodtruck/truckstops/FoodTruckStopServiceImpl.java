@@ -6,9 +6,11 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
@@ -23,8 +25,8 @@ import foodtruck.model.TruckLocationGroup;
 import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStop;
 import foodtruck.model.Trucks;
-import foodtruck.schedule.GoogleCalendarStrategy;
-import foodtruck.schedule.ScheduleStrategy;
+import foodtruck.schedule.GoogleCalendar;
+import foodtruck.schedule.TruckStopMatch;
 import foodtruck.schedule.TwitterFeedSearch;
 
 /**
@@ -33,17 +35,17 @@ import foodtruck.schedule.TwitterFeedSearch;
  */
 public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   private final TruckStopDAO truckStopDAO;
-  private final ScheduleStrategy defaultStrategy;
+  private final GoogleCalendar googleCalendar;
   private final Trucks trucks;
   private static final Logger log = Logger.getLogger(FoodTruckStopServiceImpl.class.getName());
   private final DateTimeZone zone;
   private TwitterFeedSearch feedSearch;
 
   @Inject
-  public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, GoogleCalendarStrategy defaultStrategy,
+  public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, GoogleCalendar googleCalendar,
       Trucks trucks, DateTimeZone zone, TwitterFeedSearch feedSearch) {
     this.truckStopDAO = truckStopDAO;
-    this.defaultStrategy = defaultStrategy;
+    this.googleCalendar = googleCalendar;
     this.trucks = trucks;
     this.zone = zone;
     this.feedSearch = feedSearch;
@@ -53,9 +55,16 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   public void updateStopsFor(LocalDate instant) {
     TimeRange theDay = new TimeRange(instant, zone);
     truckStopDAO.deleteAfter(theDay.getStartDateTime());
+    pullTruckSchedule(theDay);
+  }
+
+  private void pullTruckSchedule(TimeRange theDay) {
+//    Multimap<String, TruckStopMatch> matches = feedSearch.findTweets(2);
+    Multimap<String, TruckStopMatch> matches = HashMultimap.create();
     for (Truck truck : trucks.allTrucks()) {
       try {
-        List<TruckStop> stops = defaultStrategy.findForTime(truck, theDay);
+        List<TruckStop> stops = googleCalendar.findForTime(truck, theDay);
+        stops = alterStopsWithCurrentData(stops, matches.get(truck.getId()), truck);
         truckStopDAO.addStops(stops);
       } catch (Exception e) {
         log.log(Level.WARNING, "Exception thrown while refreshing truck: " + truck.getId(), e);
@@ -63,11 +72,16 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     }
   }
 
+  private List<TruckStop> alterStopsWithCurrentData(List<TruckStop> stops,
+      Collection<TruckStopMatch> matches, Truck truck) {
+    log.log(Level.INFO, "Matches for {0}: {1}", new Object[] {truck.getId(), matches});
+    return stops;
+  }
+
   @Override
   public Set<TruckLocationGroup> findFoodTruckGroups(DateTime dateTime) {
     Multimap<Location, Truck> locations = LinkedListMultimap.create();
-    Set<Truck> allTrucks = com.google.appengine.repackaged.com.google.common.collect.Sets
-        .newHashSet();
+    Set<Truck> allTrucks = Sets.newHashSet();
     allTrucks.addAll(trucks.allTrucks());
     for (TruckStop stop : truckStopDAO.findAt(dateTime)) {
       locations.put(stop.getLocation(), stop.getTruck());

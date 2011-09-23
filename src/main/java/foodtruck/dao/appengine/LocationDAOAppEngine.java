@@ -5,8 +5,10 @@ import java.util.logging.Logger;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 
 import foodtruck.dao.LocationDAO;
@@ -39,14 +41,32 @@ public class LocationDAOAppEngine implements LocationDAO {
     try {
       entity = dataStore.prepare(q).asSingleEntity();
     } catch (PreparedQuery.TooManyResultsException tmr) {
-      log.log(Level.WARNING, "Got too many results exception for: '{0}'", keyword);
+      log.log(Level.WARNING, "Got too many results exception for: {0}", keyword);
+      try {
+        deleteDuplicates(keyword, dataStore);
+      } catch(Exception e) {
+        log.log(Level.WARNING, "Error deleting duplicates", e);
+      }
     }
-
     if (entity != null) {
       return new Location((Double) entity.getProperty(LAT_FIELD),
           (Double) entity.getProperty(LNG_FIELD), keyword);
     }
     return null;
+  }
+
+  private void deleteDuplicates(String keyword, DatastoreService dataStore) {
+    Query q = new Query(LOCATION_KIND);
+    q.addFilter(NAME_FIELD, Query.FilterOperator.EQUAL, keyword);
+    ImmutableList.Builder<Key> keys = ImmutableList.builder();
+    boolean first = true;
+    for (Entity entity : dataStore.prepare(q).asIterable()) {
+      if (!first) {
+        keys.add(entity.getKey());
+      }
+      first = false;
+    }
+    dataStore.delete(keys.build());
   }
 
   @Override

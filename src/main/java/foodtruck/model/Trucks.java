@@ -23,4 +23,9 @@ public class Trucks  {
   public Collection<Truck> allTrucks() {
     return trucks.values();
   }
+
+  public Truck findByTwitterId(String screenName) {
+    // wrong
+    return trucks.get(screenName);
+  }
 }

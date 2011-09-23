@@ -1,5 +1,7 @@
 package foodtruck.schedule;
 
+import com.google.common.base.Objects;
+
 import foodtruck.model.TruckStop;
 
 /**
@@ -27,5 +29,24 @@ public class TruckStopMatch {
 
   public String getText() {
     return text;
+  }
+
+  @Override public String toString() {
+    return Objects.toStringHelper(this).add("confidence", confidence).add("stop", stop)
+        .add("text", text).toString();
+  }
+
+  @Override public int hashCode() {
+    return Objects.hashCode(confidence, stop, text);
+  }
+
+  @Override public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    } else if (o == null || !(o instanceof TruckStopMatch)) {
+      return false;
+    }
+    TruckStopMatch match = (TruckStopMatch) o;
+    return confidence == match.confidence && stop.equals(match.stop) && text.equals(match.text);
   }
 }
