@@ -2,7 +2,6 @@ package foodtruck.truckstops;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,8 +22,10 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckLocationGroup;
 import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStop;
+import foodtruck.model.Trucks;
 import foodtruck.schedule.GoogleCalendarStrategy;
 import foodtruck.schedule.ScheduleStrategy;
+import foodtruck.schedule.TwitterFeedSearch;
 
 /**
  * @author aviolette@gmail.com
@@ -33,24 +34,26 @@ import foodtruck.schedule.ScheduleStrategy;
 public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   private final TruckStopDAO truckStopDAO;
   private final ScheduleStrategy defaultStrategy;
-  private final Map<String, Truck> trucks;
+  private final Trucks trucks;
   private static final Logger log = Logger.getLogger(FoodTruckStopServiceImpl.class.getName());
   private final DateTimeZone zone;
+  private TwitterFeedSearch feedSearch;
 
   @Inject
   public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, GoogleCalendarStrategy defaultStrategy,
-      Map<String, Truck> trucks, DateTimeZone zone) {
+      Trucks trucks, DateTimeZone zone, TwitterFeedSearch feedSearch) {
     this.truckStopDAO = truckStopDAO;
     this.defaultStrategy = defaultStrategy;
     this.trucks = trucks;
     this.zone = zone;
+    this.feedSearch = feedSearch;
   }
 
   @Override
   public void updateStopsFor(LocalDate instant) {
     TimeRange theDay = new TimeRange(instant, zone);
     truckStopDAO.deleteAfter(theDay.getStartDateTime());
-    for (Truck truck : trucks.values()) {
+    for (Truck truck : trucks.allTrucks()) {
       try {
         List<TruckStop> stops = defaultStrategy.findForTime(truck, theDay);
         truckStopDAO.addStops(stops);
@@ -65,7 +68,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     Multimap<Location, Truck> locations = LinkedListMultimap.create();
     Set<Truck> allTrucks = com.google.appengine.repackaged.com.google.common.collect.Sets
         .newHashSet();
-    allTrucks.addAll(trucks.values());
+    allTrucks.addAll(trucks.allTrucks());
     for (TruckStop stop : truckStopDAO.findAt(dateTime)) {
       locations.put(stop.getLocation(), stop.getTruck());
       allTrucks.remove(stop.getTruck());
@@ -87,7 +90,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
 
   @Override
   public TruckSchedule findStopsForDay(String truckId, LocalDate day) {
-    Truck truck = trucks.get(truckId);
+    Truck truck = trucks.findById(truckId);
     if (truck == null) {
       throw new IllegalStateException("Invalid truck id specified: " + truckId);
     }

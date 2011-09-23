@@ -13,6 +13,7 @@ import com.google.common.collect.ImmutableSet;
 import org.yaml.snakeyaml.Yaml;
 
 import foodtruck.model.Truck;
+import foodtruck.model.Trucks;
 
 /**
  * @author aviolette@gmail.com
@@ -22,7 +23,7 @@ public class TruckConfigParserImpl implements TruckConfigParser {
   private static final Logger log = Logger.getLogger(TruckConfigParserImpl.class.getName());
 
   @Override
-  public Map<String, Truck> parse(String url)
+  public Trucks parse(String url)
       throws FileNotFoundException {
     Yaml yaml = new Yaml();
     Iterable<Map<String, Object>> trucks =
@@ -41,7 +42,7 @@ public class TruckConfigParserImpl implements TruckConfigParser {
       log.log(Level.INFO, "Loaded truck: {0}", truck);
       truckBuilder.put(truck.getId(), truck);
     }
-    return truckBuilder.build();
+    return new Trucks(truckBuilder.build());
   }
 
   private ImmutableSet<String> splitList(Object categories) {

@@ -2,7 +2,6 @@ package foodtruck.dao.appengine;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -20,8 +19,8 @@ import org.joda.time.LocalDate;
 
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.Location;
-import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
+import foodtruck.model.Trucks;
 
 /**
  * @author aviolette@gmail.com
@@ -34,13 +33,13 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
   private static final String LATITUDE_FIELD = "latitude";
   private static final String LONGITUDE_FIELD = "longitude";
   private static final String TRUCK_ID_FIELD = "truckId";
-  private final Map<String, Truck> trucks;
+  private final Trucks trucks;
   private final DatastoreServiceProvider serviceProvider;
   private final DateTimeZone zone;
   private static final String LOCATION_NAME_FIELD = "locationName";
 
   @Inject
-  public TruckStopDAOAppEngine(Map<String, Truck> trucks, DatastoreServiceProvider provider,
+  public TruckStopDAOAppEngine(Trucks trucks, DatastoreServiceProvider provider,
       DateTimeZone zone) {
     this.trucks = trucks;
     this.serviceProvider = provider;
@@ -64,7 +63,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
       if (instant.isBefore(startTime) || instant.isAfter(endTime)) {
         continue;
       }
-      stops.add(new TruckStop(trucks.get((String) entity.getProperty(TRUCK_ID_FIELD)),
+      stops.add(new TruckStop(trucks.findById((String) entity.getProperty(TRUCK_ID_FIELD)),
           startTime, endTime,
           new Location((Double) entity.getProperty(LATITUDE_FIELD), (Double) entity.getProperty(
               LONGITUDE_FIELD), (String) entity.getProperty(LOCATION_NAME_FIELD))));
@@ -121,7 +120,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
         continue;
       }
       final DateTime endTime = new DateTime((Date) entity.getProperty(END_TIME_FIELD), zone);
-      stops.add(new TruckStop(trucks.get((String) entity.getProperty(TRUCK_ID_FIELD)),
+      stops.add(new TruckStop(trucks.findById((String) entity.getProperty(TRUCK_ID_FIELD)),
           startTime, endTime,
           new Location((Double) entity.getProperty(LATITUDE_FIELD), (Double) entity.getProperty(
               LONGITUDE_FIELD), (String) entity.getProperty(LOCATION_NAME_FIELD))));

@@ -1,9 +1,8 @@
 package foodtruck.config;
 
 import java.io.FileNotFoundException;
-import java.util.Map;
 
-import foodtruck.model.Truck;
+import foodtruck.model.Trucks;
 
 /**
  * Loads the truck configurations from the configuration file.
@@ -17,5 +16,5 @@ public interface TruckConfigParser {
    * @return a mapping of truck Ids to trucks.
    * @throws FileNotFoundException if the file referenced by the URL cannot be found.
    */
-  Map<String, Truck> parse(String url) throws FileNotFoundException;
+  Trucks parse(String url) throws FileNotFoundException;
 }

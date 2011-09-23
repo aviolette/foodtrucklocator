@@ -1,22 +1,13 @@
 package foodtruck.schedule;
 
-import java.util.List;
-
-import com.google.common.collect.ImmutableList;
-
 import org.easymock.EasyMockSupport;
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 import org.junit.Before;
 import org.junit.Test;
 
 import foodtruck.geolocation.GeoLocator;
-import foodtruck.model.TimeRange;
 import foodtruck.model.Truck;
-import foodtruck.model.TruckStop;
 import static org.easymock.EasyMock.expect;
-import static org.junit.Assert.assertEquals;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -25,8 +16,8 @@ import twitter4j.TwitterException;
  * @author aviolette@gmail.com
  * @since Jul 15, 2011
  */
-public class TwitterFeedScheduleStrategyTest extends EasyMockSupport {
-  private TwitterFeedScheduleStrategy strategy;
+public class TwitterFeedSearchTest extends EasyMockSupport {
+  private TwitterFeedSearch strategy;
   private TwitterFactoryWrapper twitterWrapper;
   private Twitter twitter;
   private Truck truck;
@@ -39,7 +30,7 @@ public class TwitterFeedScheduleStrategyTest extends EasyMockSupport {
     truck = new Truck.Builder().id("foobar").twitterHandle("foobar").name("FOobar Truck").build();
     expect(twitterWrapper.create()).andStubReturn(twitter);
     locator = createMock(GeoLocator.class);
-    strategy = new TwitterFeedScheduleStrategy(twitterWrapper, locator);
+    strategy = new TwitterFeedSearch(twitterWrapper, locator, 123, new AddressExtractor());
   }
 
   // TODO: include geolocation data

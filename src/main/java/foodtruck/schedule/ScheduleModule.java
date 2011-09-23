@@ -3,7 +3,6 @@ package foodtruck.schedule;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Map;
 
 import com.google.gdata.client.calendar.CalendarService;
 import com.google.inject.AbstractModule;
@@ -15,7 +14,7 @@ import org.joda.time.DateTimeZone;
 
 import foodtruck.config.TruckConfigParser;
 import foodtruck.geolocation.GeoLocator;
-import foodtruck.model.Truck;
+import foodtruck.model.Trucks;
 import twitter4j.TwitterFactory;
 
 /**
@@ -32,6 +31,11 @@ public class ScheduleModule extends AbstractModule {
   @Provides @Named("calendar.feed.url")
   public URL provideCalendarUrl() throws MalformedURLException {
     return new URL(System.getProperty("calendar.feed.url"));
+  }
+
+  @Provides @Named("foodtruck.twitter.list")
+  public int provideTwitterListId() {
+    return Integer.parseInt(System.getProperty("foodtruck.twitter.list"));
   }
 
   @Provides
@@ -51,7 +55,7 @@ public class ScheduleModule extends AbstractModule {
   }
 
   @Provides @Singleton
-  public Map<String, Truck> providesTrucks(TruckConfigParser parser)
+  public Trucks providesTrucks(TruckConfigParser parser)
       throws FileNotFoundException {
     String url =
         Thread.currentThread().getContextClassLoader().getResource("trucks.yaml").getFile();

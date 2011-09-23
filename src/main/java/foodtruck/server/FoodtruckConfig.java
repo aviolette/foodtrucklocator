@@ -10,6 +10,7 @@ import foodtruck.dao.appengine.AppEngineDAOModule;
 import foodtruck.geolocation.GeolocationModule;
 import foodtruck.schedule.ScheduleModule;
 import foodtruck.truckstops.ServiceModule;
+import foodtruck.util.UtilModule;
 
 /**
  * @author aviolette@gmail.com
@@ -28,6 +29,7 @@ public class FoodtruckConfig extends GuiceServletContextListener {
         new GeolocationModule(),
         new ServiceModule(),
         new ScheduleModule(),
+        new UtilModule(),
         new FoodtruckServletModule()
     };
   }

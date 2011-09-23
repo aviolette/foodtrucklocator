@@ -10,10 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDate;
-
 import foodtruck.truckstops.FoodTruckStopService;
+import foodtruck.util.Clock;
 
 /**
  * @author aviolette@gmail.com
@@ -22,12 +20,12 @@ import foodtruck.truckstops.FoodTruckStopService;
 @Singleton
 public class FoodTruckUpdaterServlet extends HttpServlet implements Runnable {
   private final FoodTruckStopService service;
-  private final DateTimeZone currentZone;
+  private final Clock clock;
 
   @Inject
-  public FoodTruckUpdaterServlet(FoodTruckStopService service, DateTimeZone currentZone) {
+  public FoodTruckUpdaterServlet(FoodTruckStopService service, Clock clock) {
     this.service = service;
-    this.currentZone = currentZone;
+    this.clock = clock;
   }
 
   @Override
@@ -38,6 +36,6 @@ public class FoodTruckUpdaterServlet extends HttpServlet implements Runnable {
 
   @Override
   public void run() {
-    service.updateStopsFor(new LocalDate(currentZone));  
+    service.updateStopsFor(clock.currentDay());
   }
 }

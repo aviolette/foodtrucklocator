@@ -19,6 +19,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.model.Location;
+import foodtruck.util.Clock;
 
 /**
  * Servlet that serves up the main food truck page.
@@ -27,13 +28,14 @@ import foodtruck.model.Location;
  */
 @Singleton
 public class FoodTruckServlet extends HttpServlet {
-  private final DateTimeZone zone;
   private final Location mapCenter;
   private final DateTimeFormatter timeFormatter;
+  private final Clock clock;
 
   @Inject
-  public FoodTruckServlet( DateTimeZone zone, @Named("center") Location centerLocation) {
-    this.zone = zone;
+  public FoodTruckServlet( DateTimeZone zone, @Named("center") Location centerLocation,
+      Clock clock) {
+    this.clock = clock;
     this.mapCenter = centerLocation;
     this.timeFormatter = DateTimeFormat.forPattern("YYYYMMdd-HHmm").withZone(zone);
   }
@@ -54,7 +56,7 @@ public class FoodTruckServlet extends HttpServlet {
       }
     }
     if (dateTime == null) {
-      dateTime = new DateTime(zone);
+      dateTime = clock.now();
       // peg the time at something that actually returns results
       if (dateTime.toLocalTime().isBefore(new LocalTime(11, 30))) {
         dateTime = dateTime.withTime(11, 30, 0, 0);

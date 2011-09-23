@@ -12,11 +12,11 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 
 import foodtruck.model.TruckSchedule;
 import foodtruck.truckstops.FoodTruckStopService;
+import foodtruck.util.Clock;
 
 /**
  * @author aviolette@gmail.com
@@ -26,20 +26,21 @@ import foodtruck.truckstops.FoodTruckStopService;
 public class FoodTruckScheduleServlet extends HttpServlet {
   private final FoodTruckStopService stopService;
   private final JsonWriter writer;
-  private final DateTimeZone zone;
+  private final Clock clock;
 
   @Inject
-  public FoodTruckScheduleServlet(FoodTruckStopService stopService, JsonWriter writer, DateTimeZone zone) {
+  public FoodTruckScheduleServlet(FoodTruckStopService stopService, JsonWriter writer,
+      Clock clock) {
     this.stopService = stopService;
     this.writer = writer;
-    this.zone = zone;
+    this.clock = clock;
   }
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     String truckId = req.getPathInfo().substring(1);
-    LocalDate day = new LocalDate(zone);
+    LocalDate day =  clock.currentDay();
     String value;
     try {
       TruckSchedule schedule = stopService.findStopsForDay(truckId, day);

@@ -65,4 +65,13 @@ public class AddressExtractorTest {
     assertEquals("Dearborn and Monroe", addresses.get(0));
     assertEquals("Ashland and Paulina", addresses.get(1));
   }
+
+  @Test
+  public void testParseIntersection() {
+    String tweet = "Just landed at Rush and Walton";
+    List<String> addresses = parser.parse(tweet);
+    assertNotNull(addresses);
+    assertEquals(2, addresses.size());
+    assertEquals("Rush and Walton", addresses.get(0));
+  }
 }
