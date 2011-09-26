@@ -147,7 +147,7 @@ id: adelitatruck
 twitter: adelitatruck
 name: La Adelita
 categories: Mexican
-iconUrl: https://twimg0-a.akamaihd.net/profile_images/1408203936/FOODTRUCK_normal.jpg
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1408203936/FOODTRUCK_normal.jpg
 ---
 id: sweetiecakes
 twitter: Rzjp6Cakes
@@ -236,14 +236,21 @@ twitter: mobilefoodunit
 name: Bayoun Express
 categories: Cajun
 url: http://www.mobilefoodunit.com
-iconUrl: https://twimg0-a.akamaihd.net/profile_images/1393048160/mfuLOGO_normal.png
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1393048160/mfuLOGO_normal.png
 ---
 id: chickpeadelight
 twitter: chickpeadelight
 name: Chickpea Delights
 categories: Food
 url: http://www.chickpeadelights.com
-iconUrl: https://twimg0-a.akamaihd.net/profile_images/1525691204/logo_small_normal.jpg
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1525691204/logo_small_normal.jpg
+---
+id: starfruitcafe
+twitter: starfruitcafe
+name: Keifer Truck
+categories: yogurt
+url: http://www.starfruitcafe.com
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1432329264/starfruittruck_normal.JPG
 
 
 
