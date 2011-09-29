@@ -96,6 +96,7 @@ var TruckMap = function(latlng) {
       success: function(data) {
         var menuSection = $("#foodTruckList");
         menuSection.empty();
+        var bounds = new google.maps.LatLngBounds ();
         $.each(data, function(idx, truckGroup) {
           var letter = String.fromCharCode(65 + idx);
           if (typeof truckGroup['location'] != 'undefined') {
@@ -105,12 +106,13 @@ var TruckMap = function(latlng) {
                 truckGroup.location.name;
             $.each(truckGroup.trucks, function(truckIdx, truck) {
               var truckObj = new Truck(latlng, locationName, truck);
-              truckObj.buildMarker(map, letter);
+              truckObj.buildMarker(map, letter, bounds);
               truckObj.buildMenuItem(menuSection, letter, truckIdx != 0);
               trucks.push(truckObj);
             });
           }
         });
+        map.fitBounds(bounds);
       }
     })
   }
@@ -154,11 +156,12 @@ var Truck = function(latLng, locationName, opts) {
     marker = null;
   };
 
-  self.buildMarker = function (map, letter) {
+  self.buildMarker = function (map, letter, bounds) {
     marker = new google.maps.Marker({
       map: map,
       icon: buildIconUrl(letter),
       position: latLng
     });
+    bounds.extend(latLng);
   };
 };
