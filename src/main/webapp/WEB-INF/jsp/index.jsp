@@ -23,7 +23,7 @@
       <%-- Left column --%>
       <h1>Chicago Food Truck Locator</h1>
 
-      <p>The Chicago Food Truck locator currently locates food trucks based on
+      <p>The Chicago Food Truck locator currently finds food trucks based on
         their published schedules on their websites. For up-to-date information, please check their
         twitter feeds.</p>
 
