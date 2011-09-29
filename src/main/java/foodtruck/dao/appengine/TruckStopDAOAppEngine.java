@@ -60,7 +60,8 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
     for (Entity entity : dataStore.prepare(q).asIterable()) {
       final DateTime startTime = new DateTime((Date) entity.getProperty(START_TIME_FIELD), zone);
       final DateTime endTime = new DateTime((Date) entity.getProperty(END_TIME_FIELD), zone);
-      if (instant.isBefore(startTime) || instant.isAfter(endTime)) {
+      final DateTime upperBound = endTime.minusMinutes(1);
+      if (instant.isBefore(startTime) || instant.isAfter(upperBound)) {
         continue;
       }
       stops.add(new TruckStop(trucks.findById((String) entity.getProperty(TRUCK_ID_FIELD)),
