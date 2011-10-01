@@ -38,12 +38,13 @@ var TimeSlider = function(initialTime, initialDate, map) {
   });
 };
 
-var TruckMap = function(latlng) {
+var TruckMap = function(center) {
   var trucks = [];
   var self = this;
   var map = new google.maps.Map(document.getElementById("map_canvas"), {
     zoom: 13,
-    center: latlng,
+    maxZoom: 15,
+    center: center,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   });
 
@@ -66,6 +67,8 @@ var TruckMap = function(latlng) {
         var t = new Truck(null, null, truck);
         menuSection.append("<a href='/'>&#171; Back to Main List</a><br/> ")
         t.buildMenuItem(menuSection, null, true);
+        var bounds = new google.maps.LatLngBounds ();
+        bounds.extend(center);
         $.each(data.stops, function(idx, scheduleItem) {
           var latlng = new google.maps.LatLng(scheduleItem.location.latitude,
               scheduleItem.location.longitude);
@@ -73,7 +76,7 @@ var TruckMap = function(latlng) {
               scheduleItem.location.name;
           var letter = String.fromCharCode(65 + idx);
           var truckObj = new Truck(latlng, locationName, truck);
-          truckObj.buildMarker(map, letter);
+          truckObj.buildMarker(map, letter, bounds);
           menuSection.append("<div class='menuSection' id='menu" + idx +"'/>");
           var section = $('#menu' + idx) ;
           var markerText = "<img src='" + buildIconUrl(letter) + "'/>";
@@ -84,6 +87,7 @@ var TruckMap = function(latlng) {
           div.append(scheduleItem.startTime + "<br/>");
           div.append(locationName);
         });
+        map.fitBounds(bounds);
       }
     });
   };
@@ -97,6 +101,7 @@ var TruckMap = function(latlng) {
         var menuSection = $("#foodTruckList");
         menuSection.empty();
         var bounds = new google.maps.LatLngBounds ();
+        bounds.extend(center);
         $.each(data, function(idx, truckGroup) {
           var letter = String.fromCharCode(65 + idx);
           if (typeof truckGroup['location'] != 'undefined') {

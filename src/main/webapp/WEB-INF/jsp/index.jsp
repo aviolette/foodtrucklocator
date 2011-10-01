@@ -44,7 +44,7 @@
   </div>
 </div>
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-<script type="text/javascript" src="script/map.js?ver=3"></script>
+<script type="text/javascript" src="script/map.js?ver=4"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
 <script>window.jQuery || document.write("<script src='script/lib/jquery-1.6.2.min.js'>\x3C/script>")</script>
 <script type="text/javascript" src="script/lib/jquery-ui-1.8.16.custom.min.js"></script>
