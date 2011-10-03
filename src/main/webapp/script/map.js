@@ -12,7 +12,7 @@ window.FoodTruckLocator = function() {
     bounds.extend(objectOnMap.position.latLng);
   }
 
-  function buildMenuItem(menuSection, truck, letter, letterUsed, locationName) {
+  function buildMenuItem(menuSection, truck, letter, letterUsed, locationName, distance) {
     menuSection.append("<div class='menuSection' id='" + truck.id + "'/>");
     var section = $('#' + truck.id);
     var markerText = "&nbsp;";
@@ -20,13 +20,16 @@ window.FoodTruckLocator = function() {
       markerText = "<img src='" + buildIconUrl(letter) + "'/>";
     }
     section.append("<div class='markerSection'>" + markerText + "</div>");
-    section.append("<div class='iconSection'> <img src='" + truck.iconUrl + "'/></div>")
+    section.append("<div class='iconSection'> <img src='" + truck.iconUrl + "'/></div>");
     section.append("<div class='menuContent' id='" + truck.id +
         "Section' class='contentSection'></div>");
     var div = $('#' + truck.id + 'Section');
-    div.append("<a class='activationLink' href='/" +  truck.id + "'>" + truck.name + "</a><br/> ")
+    div.append("<a class='activationLink' href='/" +  truck.id + "'>" + truck.name + "</a><br/> ");
     if (locationName) {
       div.append("<span class='locationName'>" + locationName + "</span></br>");
+    }
+    if (distance) {
+      div.append("<span>" + distance + " miles away</span></br>")
     }
     if (truck.url) {
       div.append("Website: <a target='_blank' href='" + truck.url + "'>" + truck.url +
@@ -49,9 +52,12 @@ window.FoodTruckLocator = function() {
     }
   };
 
-  var Trucks = function(truckListener, currentTime) {
-    var self = this;
+  var Trucks = function(truckListener, position) {
     var groups = [];
+    var self = this;
+    var currentPosition = position;
+    truckListener.trucks = self;
+
     self.removeAll = function () {
       $.each(groups, function(idx, group) {
         truckListener.groupRemoved(group);
@@ -73,20 +79,26 @@ window.FoodTruckLocator = function() {
                   truckGroup.location.longitude);
               var locationName = (typeof truckGroup.location['name'] == 'undefined') ? null :
                   truckGroup.location.name;
+              if (/, Chicago, IL$/i.test(locationName)) {
+                locationName = locationName.substring(0, locationName.length - 13);
+              }
               var group = new TruckGroup({name: locationName, latLng : latlng });
+              var distance = null;
+              if (currentPosition) {
+                distance = google.maps.geometry.spherical.computeDistanceBetween(currentPosition,
+                    group.position.latLng, 3959);
+                group.distance = Math.round(distance * 100) / 100;
+              }
               $.each(truckGroup.trucks, function(truckIdx, truck) {
                 group.addTruck(truck);
               });
-              truckListener.groupAdded(group, idx);
               groups.push(group);
             }
           });
-          truckListener.finished();
+          truckListener.finished(groups);
         }
       })
     };
-    self.loadTrucks(currentTime);
-    truckListener.trucks = self;
   };
 
   var TruckGroupMap = function(center, requestTime, requestDate) {
@@ -97,7 +109,7 @@ window.FoodTruckLocator = function() {
       maxZoom : 15,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     });
-
+    var trucks = null;
     var TimeSlider = function(initialTime, initialDate) {
       var sliderValue = (initialTime.getHours() * 60) +
           (Math.floor(initialTime.getMinutes() / 15) * 15);
@@ -148,15 +160,74 @@ window.FoodTruckLocator = function() {
       }
     };
 
-    self.groupAdded = function(group, groupIndex) {
-      var letter = String.fromCharCode(65 + groupIndex);
-      buildMarker(group, letter, bounds, map);
-      $.each(group.trucks, function(idx, truck) {
-        buildMenuItem(menuSection, truck, letter, idx > 0, group.position.name);
-      });
-    };
+    function buildGroupInfo(group, idx, letter) {
+      menuSection.append("<div class='menuSection'  id='group" + idx + "'/>");
+      var section = $('#group' + idx);
+      var markerText = "&nbsp;";
+      markerText = "<img src='" + buildIconUrl(letter) + "'/>";
+      section.append("<div class='markerSection'>" + markerText + "</div>");
+      section.append("<div class='locationContent' id='location" + idx +
+          "Section' class='contentSection'></div>");
+      var div = $('#location' + idx + 'Section');
+      div.append("<address class='locationName'>" + group.position.name + "</address>");
+      if (group.distance) {
+        div.append("<span>" + group.distance + " miles away</span></br></br>")
+      }
+      return div;
+    }
 
-    self.finished = function() {
+    function buildIconForTruck(truck, contentDiv) {
+      menuSection.append("<div class='truckSection' id='truck" + truck.id + "'/>");
+      var section = $('#truck' + truck.id);
+      section.append("<div class='markerSection'>&nbsp;</div>");
+      section.append("<div class='iconSection'><img src='" + truck.iconUrl + "'/></div>");
+      section.append("<div class='menuContent' id='truck" + truck.id +
+          "Section' class='contentSection'></div>");
+      var div = $('#truck' + truck.id + 'Section');
+      div.append("<a href='/" + truck.id + "'>" + truck.name + "</a><br/>");
+      if (truck.url) {
+        div.append("Website: <a target='_blank' href='" + truck.url + "'>" + truck.url +
+            "</a><br/>")
+      }
+      if (truck.twitterHandle) {
+        div.append("Twitter: <a target='_blank' href='http://twitter.com/" + truck.twitterHandle +
+            "'>@" +
+            truck.twitterHandle + "</a><br/>")
+      }
+    }
+
+    function buildInfoWindow(group) {
+      var contentString = "<address class='locaitonName'>" + group.position.name + "</address>";
+      contentString = contentString + "<ul>"
+      $.each(group.trucks, function(truckIdx, truck) {
+        contentString += "<li>" + truck.name + "</li>"
+      });
+      contentString = contentString + "</ul>";
+      var infowindow = new google.maps.InfoWindow({
+          content: contentString
+      });
+
+      google.maps.event.addListener(group.marker, 'click', function() {
+        infowindow.open(map, group.marker);
+      });
+    }
+
+    self.finished = function(groups) {
+      var sorted = groups.sort(function (a, b) {
+        if (typeof a.distance == "undefined" || a.distance == null) {
+          return 0;
+        }
+        return a.distance > b.distance ? 1 : ((a.distance == b.distance) ? 0 : -1);
+      });
+      $.each(sorted, function(groupIndex, group) {
+        var letter = String.fromCharCode(65 + groupIndex);
+        buildMarker(group, letter, bounds, map);
+        var contentDiv = buildGroupInfo(group, groupIndex, letter);
+        $.each(group.trucks, function(idx, truck) {
+          buildIconForTruck(truck, contentDiv);
+        });
+        buildInfoWindow(group);
+      });
       map.fitBounds(bounds);
     };
   };
@@ -229,12 +300,48 @@ window.FoodTruckLocator = function() {
      };
   };
 
+  function fitMapToView() {
+    if (Modernizr.touch) {
+      $("#left").css("overflow-y", "visible")
+    } else {
+      $("#right").width($("#map_canvas").width() - $("#left").width());
+      $("#left").css("margin-left", "-" + $("#map_canvas").width() + "px");
+      $("#body").height($("#body").height() - $("header").height());
+    }
+  }
+
+  function loadWithoutGeo(view, date) {
+    var truckObj = new Trucks(view);
+    truckObj.loadTrucks(date, null);
+  }
+
+  function loadAllTrucks(view, date) {
+    if (Modernizr.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        var currentLocation = new google.maps.LatLng(position.coords.latitude,
+            position.coords.longitude);
+        var truckObj = new Trucks(view, currentLocation);
+        truckObj.loadTrucks(date);
+      }, function() {
+        loadWithoutGeo(view, date)
+      });
+    } else {
+      loadWithoutGeo(view, date);
+    }
+  }
+
   return {
+    loadTrucksWithoutMap : function(center, time, date) {
+      var truckView = new TruckListView(center, time, date.split("-")[0]);
+      loadAllTrucks(truckView, date);
+    },
     loadTrucksWithMap : function(center, time, date) {
+      fitMapToView();
       var truckView = new TruckGroupMap(center, time, date.split("-")[0]);
-      var trucks = new Trucks(truckView, date);
+      loadAllTrucks(truckView, date);
     },
     loadTruckSchedule : function(truckId, center) {
+      fitMapToView();
       $(".sliderContainer").css("display", "none");
       var truckView = new ScheduleMap(center);
       var schedule = new Schedule(truckView);

@@ -43,7 +43,7 @@
     </div>
   </div>
 </div>
-<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&libraries=geometry"></script>
 <script type="text/javascript" src="script/map.js?ver=5"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
 <script>window.jQuery || document.write("<script src='script/lib/jquery-1.6.2.min.js'>\x3C/script>")</script>
@@ -53,13 +53,6 @@
 </c:if>
 <script type="text/javascript">
   $(function() {
-    // fit the map to the screen...need to do this with css, but it eludes me now
-    if (Modernizr.touch) {
-      $("#left").css("overflow-y", "visible")
-    } else {
-      $("#right").width($("#map_canvas").width() - $("#left").width());
-      $("#left").css("margin-left", "-" + $("#map_canvas").width() + "px");
-    }
     var center = new google.maps.LatLng(${center.latitude}, ${center.longitude});
     <c:choose>
       <c:when test="${empty showScheduleFor}">
