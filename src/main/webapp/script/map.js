@@ -50,6 +50,7 @@ window.FoodTruckLocator = function() {
   };
 
   var Trucks = function(truckListener, currentTime) {
+    var self = this;
     var groups = [];
     self.removeAll = function () {
       $.each(groups, function(idx, group) {
