@@ -64,10 +64,18 @@ footer {
     clear: left;
 }
 
+.truckGroup {
+    padding: 15px 0;
+}
+
 .truckSection {
     padding-bottom: 10px;
     min-height: 48px;
     clear: left;
+}
+
+.truckSectionTextOnly {
+    padding: 10px 0;
 }
 
 .menuContent {

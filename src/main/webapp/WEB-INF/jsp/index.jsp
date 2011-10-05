@@ -22,7 +22,7 @@
   <div id="left">
     <div class="section">
       <c:if test="${not empty requestDate}">
-        Schedule for ${requestDate}
+        <h2>Schedule for ${requestDate}</h2>
       </c:if>
       <div class="sliderContainer">
         <div class="sliderTimeWrapper">Select a time: <span id="sliderTime"></span></div>
@@ -32,6 +32,7 @@
       <div id="foodTruckList">
         <div class="flash">Determining your location for optimum results...</div>
       </div>
+
     </div>
   </div>
 </div>
@@ -45,13 +46,17 @@
 </c:if>
 <script type="text/javascript">
   $(function() {
-    var center = new google.maps.LatLng(${center.latitude}, ${center.longitude});
+    FoodTruckLocator.center = new google.maps.LatLng(${center.latitude}, ${center.longitude});
     <c:choose>
       <c:when test="${empty showScheduleFor}">
-        FoodTruckLocator.loadTrucksWithMap(center, new Date(${requestTimeInMillis}), "${requestTime}");
+        if ($(window).height < 500 && $(window.width) < 400) {
+          FoodTruckLocator.loadTrucksWithoutMap(new Date(${requestTimeInMillis}), "${requestTime}");
+        } else {
+          FoodTruckLocator.loadTrucksWithMap(new Date(${requestTimeInMillis}), "${requestTime}");
+        }
       </c:when>
       <c:otherwise>
-        FoodTruckLocator.loadTruckSchedule("${showScheduleFor}", center);
+        FoodTruckLocator.loadTruckSchedule("${showScheduleFor}");
       </c:otherwise>
     </c:choose>
   });

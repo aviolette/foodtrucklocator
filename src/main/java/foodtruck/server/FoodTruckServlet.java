@@ -31,6 +31,7 @@ public class FoodTruckServlet extends HttpServlet {
   private final Location mapCenter;
   private final DateTimeFormatter timeFormatter;
   private final Clock clock;
+  private final DateTimeFormatter dateFormatter;
 
   @Inject
   public FoodTruckServlet( DateTimeZone zone, @Named("center") Location centerLocation,
@@ -38,6 +39,7 @@ public class FoodTruckServlet extends HttpServlet {
     this.clock = clock;
     this.mapCenter = centerLocation;
     this.timeFormatter = DateTimeFormat.forPattern("YYYYMMdd-HHmm").withZone(zone);
+    this.dateFormatter = DateTimeFormat.forPattern("EEE MMM dd, YYYY");
   }
 
   @Override
@@ -67,6 +69,7 @@ public class FoodTruckServlet extends HttpServlet {
     if (googleAnalytics != null) {
       req.setAttribute("google_analytics_ua", googleAnalytics);
     }
+    req.setAttribute("requestDate", dateFormatter.print(dateTime));
     req.setAttribute("requestTime", timeFormatter.print(dateTime));
     req.setAttribute("requestTimeInMillis", dateTime.getMillis());
     req.getRequestDispatcher("/WEB-INF/jsp/index.jsp").forward(req, resp);
