@@ -355,7 +355,9 @@ window.FoodTruckLocator = function() {
     if (Modernizr.touch) {
       $("#left").css("overflow-y", "visible");
     } else {
+      $("#map_canvas").height($(window).height() - $("header").height());
       $("#right").width($("#map_canvas").width() - $("#left").width());
+      $("#right").height($("#map_canvas").height());
       $("#left").css("margin-left", "-" + $("#map_canvas").width() + "px");
       $("#body").height($("#body").height() - $("header").height());
     }
