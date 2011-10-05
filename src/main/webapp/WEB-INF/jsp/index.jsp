@@ -13,6 +13,7 @@
 </head>
 <body>
 <div class="main" id="container">
+  <header><h1>The Chicago Food Truck Locator</h1></header>
   <div id="right">
     <div id="map_wrapper">
       <div class="section" id="map_canvas"></div>
@@ -20,25 +21,16 @@
   </div>
   <div id="left">
     <div class="section">
-      <%-- Left column --%>
-      <h1>Chicago Food Truck Locator</h1>
-
-      <p>The Chicago Food Truck locator currently finds food trucks based on
-        their published schedules on their websites. For up-to-date information, please check their
-        twitter feeds.</p>
-
-      <p>If you are a food truck and would like to be included in this application or have other
-        suggestions,
-        please contact us via our twitter account <a target="_blank"
-                                                     href="http://twitter.com/chifoodtruckz">@chifoodtruckz</a>.
-      </p>
-
+      <c:if test="${not empty requestDate}">
+        Schedule for ${requestDate}
+      </c:if>
       <div class="sliderContainer">
         <div class="sliderTimeWrapper">Select a time: <span id="sliderTime"></span></div>
         <div id="slider"></div>
       </div>
       <hr/>
       <div id="foodTruckList">
+        <div class="flash">Determining your location for optimum results...</div>
       </div>
     </div>
   </div>
