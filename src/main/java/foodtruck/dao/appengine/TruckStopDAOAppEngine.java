@@ -76,10 +76,11 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
    * Deletes all the stops after the specified date/time.
    */
   @Override
-  public void deleteAfter(DateTime startTime) {
+  public void deleteAfter(DateTime startTime, String truckId) {
     DatastoreService dataStore = serviceProvider.get();
     Query q = new Query(STOP_KIND);
     q.addFilter(START_TIME_FIELD, Query.FilterOperator.GREATER_THAN_OR_EQUAL, startTime.toDate());
+    q.addFilter(TRUCK_ID_FIELD, Query.FilterOperator.EQUAL, truckId);
     ImmutableList.Builder<Key> keys = ImmutableList.builder();
     for (Entity entity : dataStore.prepare(q).asIterable()) {
       keys.add(entity.getKey());

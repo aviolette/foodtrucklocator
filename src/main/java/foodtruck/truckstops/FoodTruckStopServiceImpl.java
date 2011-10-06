@@ -54,7 +54,6 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   @Override
   public void updateStopsFor(LocalDate instant) {
     TimeRange theDay = new TimeRange(instant, zone);
-    truckStopDAO.deleteAfter(theDay.getStartDateTime());
     pullTruckSchedule(theDay);
   }
 
@@ -63,6 +62,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     Multimap<String, TruckStopMatch> matches = HashMultimap.create();
     for (Truck truck : trucks.allTrucks()) {
       try {
+        truckStopDAO.deleteAfter(theDay.getStartDateTime(), truck.getId());
         List<TruckStop> stops = googleCalendar.findForTime(truck, theDay);
         stops = alterStopsWithCurrentData(stops, matches.get(truck.getId()), truck);
         truckStopDAO.addStops(stops);
@@ -74,7 +74,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
 
   private List<TruckStop> alterStopsWithCurrentData(List<TruckStop> stops,
       Collection<TruckStopMatch> matches, Truck truck) {
-    log.log(Level.INFO, "Matches for {0}: {1}", new Object[] {truck.getId(), matches});
+    log.log(Level.INFO, "{0}: stops: {1}, matches {2}", new Object[] {truck.getId(), stops, matches});
     return stops;
   }
 

@@ -21,7 +21,7 @@ public interface TruckStopDAO {
   /**
    * Deletes all the truck stops after the specified instant
    */
-  void deleteAfter(DateTime startTime);
+  void deleteAfter(DateTime startTime, String truckId);
 
   /**
    * Adds the truckstops to the data store.
