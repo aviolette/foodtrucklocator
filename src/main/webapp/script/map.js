@@ -132,12 +132,13 @@ window.FoodTruckLocator = function() {
         var div = $('#location' + groupIndex + 'Section');
         div.append("<address class='locationName'>" + group.position.name + "</address>");
         if (group.distance) {
-          div.append("<span>" + group.distance + " miles away</span> <a href='http://maps.google.com/maps?q="+group.position.name+"'>map</a></br></br>")
+          div.append("<span>" + group.distance + " miles away</span></br>")
         }
+        div.append(" <a href='http://maps.google.com/maps?q="+group.position.name+"'>map</a><br/><br/>")
         $.each(group.trucks, function(idx, truck) {
           div.append("<div class='truckSectionTextOnly' id='truck" + truck.id + "'></div>");
           var truckDiv = $('#truck' + truck.id );
-          truckDiv.append("<a href='/" + truck.id + "'>" + truck.name + "</a><br/>");
+          truckDiv.append("<strong>" + truck.name + "</strong><br/>");
           if (truck.url) {
             truckDiv.append("Website: <a target='_blank' href='" + truck.url + "'>" + truck.url +
                 "</a><br/>")
@@ -145,7 +146,11 @@ window.FoodTruckLocator = function() {
           if (truck.twitterHandle) {
             truckDiv.append("Twitter: <a target='_blank' href='http://twitter.com/" + truck.twitterHandle +
                 "'>@" +
-                truck.twitterHandle + "</a><br/>")
+                truck.twitterHandle + "</a><br/>");
+          }
+          if (truck.foursquare) {
+            div.append("<a href='http://m.foursquare.com/venue/" + truck.foursquare +
+                "'><img alt='Checkin on foursquare' src='http://playfoursquare.s3.amazonaws.com/press/logo/checkin-blue.png'/></a><br/>");
           }
         });
       });

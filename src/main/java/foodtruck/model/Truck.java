@@ -1,5 +1,6 @@
 package foodtruck.model;
 
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -20,6 +21,7 @@ public class Truck {
   private final String iconUrl;
   private final Set<String> categories;
   private final String description;
+  private final String foursquareUrl;
 
   private Truck(Builder builder) {
     this.id = builder.id;
@@ -29,7 +31,11 @@ public class Truck {
     this.iconUrl = builder.iconUrl;
     this.categories = builder.categories;
     this.description = builder.description;
+    this.foursquareUrl = builder.foursquareUrl;
+  }
 
+  public @Nullable String getFoursquareUrl() {
+    return foursquareUrl;
   }
 
   public String getName() {
@@ -85,6 +91,7 @@ public class Truck {
         .add("url", url)
         .add("iconUrl", iconUrl)
         .add("twitterHandle", twitterHandle)
+        .add("foursquareUrl", foursquareUrl)
         .toString();
   }
 
@@ -96,6 +103,7 @@ public class Truck {
     private @Nullable String twitter;
     public Set<String> categories = ImmutableSet.of();
     public String description;
+    private String foursquareUrl;
 
     public Builder() {
     }
@@ -135,8 +143,15 @@ public class Truck {
       return this;
     }
 
+    public Builder foursquareUrl(@Nullable String foursquare) {
+      this.foursquareUrl = foursquare;
+      return this;
+    }
+
     public Truck build() {
       return new Truck(this);
     }
+
+    
   }
 }
