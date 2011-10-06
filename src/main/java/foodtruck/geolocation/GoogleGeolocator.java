@@ -1,5 +1,7 @@
 package foodtruck.geolocation;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,6 +25,7 @@ import foodtruck.model.Location;
 public class GoogleGeolocator implements GeoLocator {
   private final Pattern latLongExpression;
   private final WebResource geolocationResource;
+  private static final Logger log = Logger.getLogger(GoogleGeolocator.class.getName());
 
   @Inject
   public GoogleGeolocator(@GeoLocation WebResource geolocationResource) {
@@ -44,6 +47,8 @@ public class GoogleGeolocator implements GeoLocator {
         .queryParam("sensor", "true")
         .get(JSONObject.class);
     try {
+      log.log(Level.INFO, "Geolocation result for {0}: \n{1}",
+          new Object[] {location, obj.toString()});
       JSONArray results = obj.getJSONArray("results");
       if (results.length() > 0) {
         JSONObject loc =

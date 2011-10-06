@@ -2,7 +2,6 @@ package foodtruck.model;
 
 import javax.annotation.Nullable;
 
-import com.google.appengine.repackaged.com.google.common.base.Strings;
 import com.google.common.base.Objects;
 
 /**
@@ -37,8 +36,12 @@ public class Location {
     return this.name;
   }
 
-  public boolean isNamed() {
-    return !Strings.isNullOrEmpty(this.name);
+  // TODO: this probably should be refactored out of here
+  /**
+   * Return true if the location has been properly resolved.
+   */
+  public boolean isResolved() {
+    return lat != 0 && lng != 0;
   }
 
   @Override

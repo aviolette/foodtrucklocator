@@ -49,8 +49,12 @@ public class LocationDAOAppEngine implements LocationDAO {
       }
     }
     if (entity != null) {
-      return new Location((Double) entity.getProperty(LAT_FIELD),
-          (Double) entity.getProperty(LNG_FIELD), keyword);
+      Double lat = (Double) entity.getProperty(LAT_FIELD);
+      Double lng = (Double) entity.getProperty(LNG_FIELD);
+      if (lat == null || lng == null) {
+        return new Location(0, 0, keyword);
+      }
+      return new Location(lat, lng, keyword);
     }
     return null;
   }
@@ -76,6 +80,14 @@ public class LocationDAOAppEngine implements LocationDAO {
     entity.setProperty(NAME_FIELD, location.getName());
     entity.setProperty(LAT_FIELD, location.getLatitude());
     entity.setProperty(LNG_FIELD, location.getLongitude());
+    dataStore.put(entity);
+  }
+
+  @Override
+  public void saveAttemptFailed(String location) {
+    DatastoreService dataStore = provider.get();
+    final Entity entity = new Entity(LOCATION_KIND);
+    entity.setProperty(NAME_FIELD, location);
     dataStore.put(entity);
   }
 }

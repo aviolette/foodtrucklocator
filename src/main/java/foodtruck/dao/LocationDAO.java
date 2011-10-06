@@ -16,4 +16,9 @@ public interface LocationDAO {
    * Saves a location to the datastore.
    */
   void save(Location location);
+
+  /**
+   * Record that a lookup of this location failed.
+   */
+  void saveAttemptFailed(String location);
 }

@@ -52,19 +52,10 @@ public class CacheAndStoreLocatorTest extends EasyMockSupport {
   }
 
   @Test
-  public void shouldNotCacheUnnamedLocation() {
-    expect(dao.lookup(LOCATION_NAME)).andReturn(null);
-    expect(secondary.locate(LOCATION_NAME)).andReturn(unnamedLocation);
-    replayAll();
-    Location loc = locator.locate(LOCATION_NAME);
-    assertEquals(loc, unnamedLocation);
-    verifyAll();
-  }
-
-  @Test
   public void shouldReturnNullWhenNotFound() {
     expect(dao.lookup(LOCATION_NAME)).andReturn(null);
     expect(secondary.locate(LOCATION_NAME)).andReturn(null);
+    dao.saveAttemptFailed(LOCATION_NAME);
     replayAll();
     Location loc = locator.locate(LOCATION_NAME);
     assertNull(loc);

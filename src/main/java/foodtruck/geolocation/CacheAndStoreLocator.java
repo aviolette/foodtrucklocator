@@ -1,5 +1,7 @@
 package foodtruck.geolocation;
 
+import java.util.logging.Logger;
+
 import javax.annotation.Nullable;
 
 import com.google.inject.Inject;
@@ -16,6 +18,7 @@ import foodtruck.model.Location;
 public class CacheAndStoreLocator implements GeoLocator {
   private final LocationDAO dao;
   private final GeoLocator secondaryLocator;
+  private static final Logger log = Logger.getLogger(CacheAndStoreLocator.class.getName());
 
   @Inject
   public CacheAndStoreLocator(LocationDAO dao,
@@ -28,12 +31,17 @@ public class CacheAndStoreLocator implements GeoLocator {
   public @Nullable Location locate(String location) {
     Location loc = dao.lookup(location);
     if (loc != null) {
-      return loc;
+      // there were previous attempts at using the secondary locator which were unsuccessful
+      // so don't try again.
+      return loc.isResolved() ? loc : null;
     }
     loc = secondaryLocator.locate(location);
-    // only update named locations in the db
-    if (loc != null && loc.isNamed()) {
+    if (loc != null) {
       dao.save(loc);
+    } else {
+      // write that we tried to save this location so that we don't try again.
+      log.warning("Failed at attempt to geo locate: " + location);
+      dao.saveAttemptFailed(location);
     }
     return loc;
   }
