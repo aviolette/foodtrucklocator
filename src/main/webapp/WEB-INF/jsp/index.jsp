@@ -28,7 +28,7 @@
   <div id="left">
     <div class="section">
        <c:if test="${not empty requestDate}">
-        <h2>Schedule for ${requestDate}</h2>
+        <h2>Schedule for ${requestDate}&nbsp;<span id="timeValue">&nbsp;</span></h2>
       </c:if>
       <div class="sliderContainer">
         <div class="sliderTimeWrapper">Select a time: <span id="sliderTime"></span></div>

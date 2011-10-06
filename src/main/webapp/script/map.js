@@ -132,7 +132,7 @@ window.FoodTruckLocator = function() {
         var div = $('#location' + groupIndex + 'Section');
         div.append("<address class='locationName'>" + group.position.name + "</address>");
         if (group.distance) {
-          div.append("<span>" + group.distance + " miles away</span></br></br>")
+          div.append("<span>" + group.distance + " miles away</span> <a href='http://maps.google.com/maps?q="+group.position.name+"'>map</a></br></br>")
         }
         $.each(group.trucks, function(idx, truck) {
           div.append("<div class='truckSectionTextOnly' id='truck" + truck.id + "'></div>");
@@ -149,6 +149,7 @@ window.FoodTruckLocator = function() {
           }
         });
       });
+      $(".locationContent").css("margin", "0");
     };
   };
 
@@ -393,10 +394,22 @@ window.FoodTruckLocator = function() {
     $("hr").css("display", "block");
   }
 
+  function displayTime(time) {
+    $("#timeValue").css("display", "inline");
+    var minutes = (time.getMinutes() < 10) ? ("0" + time.getMinutes()) : time.getMinutes();
+    $("#timeValue").append("at " + time.getHours() + ":" + minutes);
+  }
+
   return {
     loadTrucksWithoutMap : function(time, date) {
+      $("#right").css("display", "none");
       $("#left").css("overflow-y", "visible");
+      $("header h1").css("float", "none");
+      $("#buttonSection").css("float", "none");
+      $("#body").css("clear", "none");
+      $("#left").css("margin-left", "0");
       hideControls();
+      displayTime(time);
       var truckView = new TruckListView(this.center, time, date.split("-")[0]);
       loadAllTrucks(truckView, date);
     },
