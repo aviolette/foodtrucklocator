@@ -40,7 +40,9 @@ public class ScheduleModule extends AbstractModule {
 
   @Provides
   public CalendarService provideCalendarService() {
-    return new CalendarService("foodtruck-app");
+    CalendarService service = new CalendarService("foodtruck-app");
+    service.setConnectTimeout(6000);
+    return service;
   }
 
   @Provides
