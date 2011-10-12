@@ -64,6 +64,7 @@ public class TruckStopServlet extends HttpServlet {
           arr.put(writer.writeGroup(group));
         }
       }
+      resp.setHeader("Cache-Control", "no-cache");
       resp.setHeader("Content-Type", "application/json");
       resp.getWriter().println(arr.toString());
     } catch (JSONException e) {

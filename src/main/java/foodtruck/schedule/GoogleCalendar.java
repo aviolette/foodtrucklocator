@@ -1,6 +1,7 @@
 package foodtruck.schedule;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,7 +38,7 @@ public class GoogleCalendar implements ScheduleStrategy {
   private final DateTimeZone defaultZone;
   private final GeoLocator geolocator;
   private static final Logger log = Logger.getLogger(GoogleCalendar.class.getName());
-
+  private final static int MAX_TRIES = 3;
   @Inject
   public GoogleCalendar(CalendarService calendarService,
       CalendarQueryFactory queryFactory, DateTimeZone defaultZone, GeoLocator geolocator) {
@@ -47,6 +48,7 @@ public class GoogleCalendar implements ScheduleStrategy {
     this.geolocator = geolocator;
   }
 
+  // TODO: rewrite this...its awfully crappy
   @Override
   public List<TruckStop> findForTime(Truck truck, TimeRange range) {
     CalendarQuery query = queryFactory.create();
@@ -58,7 +60,7 @@ public class GoogleCalendar implements ScheduleStrategy {
     query.setFullTextQuery(truck.getId());
     ImmutableList.Builder<TruckStop> builder = ImmutableList.builder();
     try {
-      CalendarEventFeed resultFeed = calendarService.query(query, CalendarEventFeed.class);
+      CalendarEventFeed resultFeed = calendarQuery(query);
       for (CalendarEventEntry entry : resultFeed.getEntries()) {
         Where where = Iterables.getFirst(entry.getLocations(), null);
         if (where == null) {
@@ -83,5 +85,19 @@ public class GoogleCalendar implements ScheduleStrategy {
       throw new RuntimeException(e);
     }
     return builder.build();
+  }
+
+  private CalendarEventFeed calendarQuery(CalendarQuery query)
+      throws IOException, ServiceException {
+    for (int i=0; i < MAX_TRIES; i++) {
+      try {
+        return calendarService.query(query, CalendarEventFeed.class);
+      } catch (Exception timeout) {
+        if ((i + 1) == MAX_TRIES) {
+          throw new RuntimeException(timeout);
+        }
+      }
+    }
+    throw new RuntimeException("Exhausted number of tries");
   }
 }
