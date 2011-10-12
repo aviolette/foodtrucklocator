@@ -15,7 +15,6 @@ import org.joda.time.DateTimeZone;
 import foodtruck.config.TruckConfigParser;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.model.Trucks;
-import twitter4j.TwitterFactory;
 
 /**
  * @author aviolette@gmail.com
@@ -33,11 +32,6 @@ public class ScheduleModule extends AbstractModule {
     return new URL(System.getProperty("calendar.feed.url"));
   }
 
-  @Provides @Named("foodtruck.twitter.list")
-  public int provideTwitterListId() {
-    return Integer.parseInt(System.getProperty("foodtruck.twitter.list"));
-  }
-
   @Provides
   public CalendarService provideCalendarService() {
     CalendarService service = new CalendarService("foodtruck-app");
@@ -49,11 +43,6 @@ public class ScheduleModule extends AbstractModule {
   public GoogleCalendar provideGoogleCalendarStrategy(CalendarService service,
       CalendarQueryFactory queryProvider, DateTimeZone zone, GeoLocator geoLocator) {
     return new GoogleCalendar(service, queryProvider, zone, geoLocator);
-  }
-
-  @Provides @Singleton
-  public TwitterFactoryWrapper provideTwitterFactory() {
-    return new TwitterFactoryWrapper(new TwitterFactory());
   }
 
   @Provides @Singleton

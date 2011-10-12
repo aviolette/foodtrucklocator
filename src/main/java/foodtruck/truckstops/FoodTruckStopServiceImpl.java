@@ -27,7 +27,6 @@ import foodtruck.model.TruckStop;
 import foodtruck.model.Trucks;
 import foodtruck.schedule.GoogleCalendar;
 import foodtruck.schedule.TruckStopMatch;
-import foodtruck.schedule.TwitterFeedSearch;
 
 /**
  * @author aviolette@gmail.com
@@ -39,16 +38,14 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   private final Trucks trucks;
   private static final Logger log = Logger.getLogger(FoodTruckStopServiceImpl.class.getName());
   private final DateTimeZone zone;
-  private TwitterFeedSearch feedSearch;
 
   @Inject
   public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, GoogleCalendar googleCalendar,
-      Trucks trucks, DateTimeZone zone, TwitterFeedSearch feedSearch) {
+      Trucks trucks, DateTimeZone zone) {
     this.truckStopDAO = truckStopDAO;
     this.googleCalendar = googleCalendar;
     this.trucks = trucks;
     this.zone = zone;
-    this.feedSearch = feedSearch;
   }
 
   @Override
@@ -58,7 +55,6 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   }
 
   private void pullTruckSchedule(TimeRange theDay) {
-//    Multimap<String, TruckStopMatch> matches = feedSearch.findTweets(2);
     Multimap<String, TruckStopMatch> matches = HashMultimap.create();
     for (Truck truck : trucks.allTrucks()) {
       try {
