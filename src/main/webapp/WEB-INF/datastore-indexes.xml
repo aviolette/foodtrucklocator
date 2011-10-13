@@ -8,7 +8,4 @@
       <property name="screenName" direction="asc"/>
       <property name="time" direction="asc"/>
   </datastore-index>
-  <datastore-index kind="Location" ancestor="false" source="manual">
-      <property name="name" direction="asc"/>
-  </datastore-index>
 </datastore-indexes>
