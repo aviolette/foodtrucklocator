@@ -4,4 +4,8 @@
       <property name="truckId" direction="asc"/>
       <property name="startTime" direction="asc"/>
   </datastore-index>
+  <datastore-index kind="Tweet" ancestor="false" source="manual">
+      <property name="screenName" direction="asc"/>
+      <property name="time" direction="asc"/>
+  </datastore-index>
 </datastore-indexes>

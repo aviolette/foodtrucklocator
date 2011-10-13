@@ -10,6 +10,7 @@ import foodtruck.dao.appengine.AppEngineDAOModule;
 import foodtruck.geolocation.GeolocationModule;
 import foodtruck.schedule.ScheduleModule;
 import foodtruck.truckstops.ServiceModule;
+import foodtruck.twitter.TwitterModule;
 import foodtruck.util.UtilModule;
 
 /**
@@ -30,6 +31,7 @@ public class FoodtruckConfig extends GuiceServletContextListener {
         new ServiceModule(),
         new ScheduleModule(),
         new UtilModule(),
+        new TwitterModule(),
         new FoodtruckServletModule()
     };
   }

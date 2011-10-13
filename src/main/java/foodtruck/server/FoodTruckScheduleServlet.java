@@ -56,5 +56,4 @@ public class FoodTruckScheduleServlet extends HttpServlet {
     }
     resp.getWriter().println(value);
   }
-
 }
