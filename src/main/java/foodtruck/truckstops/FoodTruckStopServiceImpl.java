@@ -25,7 +25,6 @@ import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStop;
 import foodtruck.model.Trucks;
 import foodtruck.schedule.GoogleCalendar;
-import foodtruck.schedule.TruckStopMatch;
 
 /**
  * @author aviolette@gmail.com
@@ -61,12 +60,6 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     } catch (Exception e) {
       log.log(Level.WARNING, "Exception thrown while refreshing trucks", e);
     }
-  }
-
-  private List<TruckStop> alterStopsWithCurrentData(List<TruckStop> stops,
-      Collection<TruckStopMatch> matches, Truck truck) {
-    log.log(Level.INFO, "{0}: stops: {1}, matches {2}", new Object[] {truck.getId(), stops, matches});
-    return stops;
   }
 
   @Override

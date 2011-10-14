@@ -123,6 +123,10 @@ window.FoodTruckLocator = function() {
     };
 
     self.finished = function(groups) {
+      if (groups.length == 0) {
+        menuSection.append("<div class='flash'>There are currently no food trucks on the streets that we know of.</div>");
+        return;
+      }
       var sorted = groups.sort(distanceSort);
       $.each(sorted, function(groupIndex, group) {
         menuSection.append("<div class='truckGroup' id='group" + groupIndex +"'></div>");
@@ -270,6 +274,10 @@ window.FoodTruckLocator = function() {
     }
 
     self.finished = function(groups) {
+      if (groups.length == 0) {
+        menuSection.append("<div class='flash'>There are currently no food trucks on the streets that we know of.</div>");
+        return;
+      }
       var sorted = groups.sort(function (a, b) {
         if (typeof a.distance == "undefined" || a.distance == null) {
           return 0;

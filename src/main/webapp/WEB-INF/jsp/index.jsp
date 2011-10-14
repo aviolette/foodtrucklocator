@@ -45,7 +45,7 @@
 <script src="//platform.twitter.com/widgets.js" type="text/javascript"></script></footer>
 </div>
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&libraries=geometry"></script>
-<script type="text/javascript" src="script/map.js?ver=7"></script>
+<script type="text/javascript" src="script/map.js?ver=8"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
 <script>window.jQuery || document.write("<script src='script/lib/jquery-1.6.2.min.js'>\x3C/script>")</script>
 <script type="text/javascript" src="script/lib/jquery-ui-1.8.16.custom.min.js"></script>
