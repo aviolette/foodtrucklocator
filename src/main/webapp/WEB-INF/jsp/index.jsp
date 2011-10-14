@@ -53,7 +53,7 @@
   <jsp:include page="include/google_analytics.jsp"/>
 </c:if>
 <script type="text/javascript">
-  $(function() {
+  $(document).ready(function() {
     // render +1 button
     var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
     po.src = 'https://apis.google.com/js/plusone.js';
