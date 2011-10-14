@@ -1,6 +1,5 @@
 package foodtruck.model;
 
-import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -22,6 +21,7 @@ public class Truck {
   private final Set<String> categories;
   private final String description;
   private final String foursquareUrl;
+  private final boolean twittalyzer;
 
   private Truck(Builder builder) {
     this.id = builder.id;
@@ -32,6 +32,7 @@ public class Truck {
     this.categories = builder.categories;
     this.description = builder.description;
     this.foursquareUrl = builder.foursquareUrl;
+    this.twittalyzer = builder.twittalyzer;
   }
 
   public @Nullable String getFoursquareUrl() {
@@ -66,6 +67,10 @@ public class Truck {
     return id;
   }
 
+  public boolean isUsingTwittalyzer() {
+    return twittalyzer;
+  }
+
   @Override
   public int hashCode() {
     return Objects.hashCode(id, name, url, iconUrl, twitterHandle);
@@ -92,6 +97,7 @@ public class Truck {
         .add("iconUrl", iconUrl)
         .add("twitterHandle", twitterHandle)
         .add("foursquareUrl", foursquareUrl)
+        .add("uses twittalyzer", twittalyzer)
         .toString();
   }
 
@@ -104,6 +110,7 @@ public class Truck {
     public Set<String> categories = ImmutableSet.of();
     public String description;
     private String foursquareUrl;
+    private boolean twittalyzer;
 
     public Builder() {
     }
@@ -145,6 +152,11 @@ public class Truck {
 
     public Builder foursquareUrl(@Nullable String foursquare) {
       this.foursquareUrl = foursquare;
+      return this;
+    }
+
+    public Builder useTwittalyzer(boolean twittalyzer) {
+      this.twittalyzer = twittalyzer;
       return this;
     }
 

@@ -11,7 +11,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import foodtruck.twitter.TwitterService;
-import foodtruck.util.Clock;
 
 /**
  * @author aviolette@gmail.com
@@ -20,12 +19,10 @@ import foodtruck.util.Clock;
 @Singleton
 public class TweetCacheUpdateServlet  extends HttpServlet implements Runnable {
   private final TwitterService service;
-  private final Clock clock;
 
   @Inject
-  public TweetCacheUpdateServlet(TwitterService service, Clock clock) {
+  public TweetCacheUpdateServlet(TwitterService service) {
     this.service = service;
-    this.clock = clock;
   }
 
   @Override
@@ -36,6 +33,7 @@ public class TweetCacheUpdateServlet  extends HttpServlet implements Runnable {
 
   @Override
   public void run() {
-    service.updateTwitterFeedsFor(clock.now().minusMinutes(30));
+    service.updateTwitterCache();
+    service.updateLocationsOfTwitterTrucks();
   }
 }

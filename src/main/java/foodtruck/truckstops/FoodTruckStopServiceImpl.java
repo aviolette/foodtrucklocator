@@ -83,7 +83,6 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
       builder.add(new TruckLocationGroup(null, c));
     }
     return builder.build();
-
   }
 
   @Override

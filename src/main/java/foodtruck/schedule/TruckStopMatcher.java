@@ -19,6 +19,7 @@ import foodtruck.geolocation.GeoLocator;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
+import foodtruck.model.TweetSummary;
 
 /**
  * Matches a tweet to a location, truck and time.
@@ -39,15 +40,14 @@ public class TruckStopMatcher {
     formatter = DateTimeFormat.forPattern("hh a").withZone(defaultZone);
   }
 
-  public @Nullable TruckStopMatch match(String tweetText, Truck truck, @Nullable Location tweetLocation,
-      DateTime tweetTime) {
-    String address = addressExtractor.parseFirst(tweetText);
+  public @Nullable TruckStopMatch match(Truck truck, TweetSummary tweet) {
+    String address = addressExtractor.parseFirst(tweet.getText());
     if (address == null) {
       return null;
     }
     Confidence confidence = Confidence.LOW;
 
-    Location location = tweetLocation;
+    Location location = tweet.getLocation();
     if (location == null) {
       location = geoLocator.locate(address);
       if (location == null) {
@@ -57,19 +57,19 @@ public class TruckStopMatcher {
       confidence = Confidence.MEDIUM;
     }
 
-    if (confidence != Confidence.MEDIUM && containsLandingStatement(tweetText)) {
+    if (confidence != Confidence.MEDIUM && containsLandingStatement(tweet.getText())) {
       confidence = Confidence.MEDIUM;
     }
 
-    final DateTime startTime = tweetTime;
-    DateTime endTime = parseEndTime(tweetText, startTime);
+    final DateTime startTime = tweet.getTime();
+    DateTime endTime = parseEndTime(tweet.getText(), startTime);
     if (endTime == null) {
       endTime = startTime.plusHours(2);
     }
 
     confidence = Confidence.HIGH;
     return new TruckStopMatch(confidence, new TruckStop(truck, startTime, endTime, location),
-        tweetText);
+        tweet.getText());
   }
 
   private DateTime parseEndTime(String tweetText, DateTime startTime) {

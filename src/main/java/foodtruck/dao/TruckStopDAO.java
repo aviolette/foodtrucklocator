@@ -33,4 +33,6 @@ public interface TruckStopDAO {
   List<TruckStop> findDuring(String truckId, LocalDate day);
 
   void deleteAfter(DateTime startDateTime);
+
+  void deleteAfter(DateTime dateTime, String truckId);
 }

@@ -1,6 +1,5 @@
 package foodtruck.twitter;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 /**
@@ -9,12 +8,18 @@ import org.joda.time.LocalDate;
  * @since 10/11/11
  */
 public interface TwitterService {
+  /**
+   * Puts all tweets since the last caching in the cache.
+   */
+  void updateTwitterCache();
 
   /**
-   * Puts all tweets after the specified time for all the trucks in the twitter cache.
-   * @param startTime the time of the first tweet to be included in the list.
+   * Purges all the tweets before the specified date
    */
-  void updateTwitterFeedsFor(DateTime startTime);
-
   void purgeTweetsBefore(LocalDate localDate);
+
+  /**
+   * Analyzes recent tweets and updates twitter-located-only trucks in the datastore
+   */
+  void updateLocationsOfTwitterTrucks();
 }
