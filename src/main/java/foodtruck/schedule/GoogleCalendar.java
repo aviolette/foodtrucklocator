@@ -60,6 +60,7 @@ public class GoogleCalendar implements ScheduleStrategy {
         defaultZone.toTimeZone()));
     query.setMaximumStartTime(new DateTime(range.getEndDateTime().toDate(),
         defaultZone.toTimeZone()));
+    query.setMaxResults(1000);
     query.setStringCustomParameter("singleevents", "true");
     ImmutableList.Builder<TruckStop> builder = ImmutableList.builder();
     try {
