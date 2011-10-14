@@ -19,11 +19,6 @@ public interface TruckStopDAO {
   Set<TruckStop> findAt(DateTime instant);
 
   /**
-   * Deletes all the truck stops after the specified instant
-   */
-  void deleteAfter(DateTime startTime, String truckId);
-
-  /**
    * Adds the truckstops to the data store.
    */
   void addStops(List<TruckStop> stops);
@@ -36,4 +31,6 @@ public interface TruckStopDAO {
    * @throws IllegalStateException if the truck specified is invalid
    */
   List<TruckStop> findDuring(String truckId, LocalDate day);
+
+  void deleteAfter(DateTime startDateTime);
 }

@@ -1,7 +1,6 @@
 package foodtruck.schedule;
 
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,6 +24,7 @@ import foodtruck.model.Location;
 import foodtruck.model.TimeRange;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
+import foodtruck.model.Trucks;
 import static foodtruck.schedule.TimeUtils.toJoda;
 
 /**
@@ -33,35 +33,42 @@ import static foodtruck.schedule.TimeUtils.toJoda;
  * @since 8/27/11
  */
 public class GoogleCalendar implements ScheduleStrategy {
+  private static final Logger log = Logger.getLogger(GoogleCalendar.class.getName());
+  private final static int MAX_TRIES = 3;
   private final CalendarService calendarService;
   private final CalendarQueryFactory queryFactory;
   private final DateTimeZone defaultZone;
   private final GeoLocator geolocator;
-  private static final Logger log = Logger.getLogger(GoogleCalendar.class.getName());
-  private final static int MAX_TRIES = 3;
+  private final Trucks trucks;
+
   @Inject
   public GoogleCalendar(CalendarService calendarService,
-      CalendarQueryFactory queryFactory, DateTimeZone defaultZone, GeoLocator geolocator) {
+      CalendarQueryFactory queryFactory, DateTimeZone defaultZone, GeoLocator geolocator,
+      Trucks trucks) {
     this.calendarService = calendarService;
     this.queryFactory = queryFactory;
     this.defaultZone = defaultZone;
     this.geolocator = geolocator;
+    this.trucks = trucks;
   }
 
   // TODO: rewrite this...its awfully crappy
   @Override
-  public List<TruckStop> findForTime(Truck truck, TimeRange range) {
+  public List<TruckStop> findForTime(TimeRange range) {
     CalendarQuery query = queryFactory.create();
     query.setMinimumStartTime(new DateTime(range.getStartDateTime().toDate(),
         defaultZone.toTimeZone()));
     query.setMaximumStartTime(new DateTime(range.getEndDateTime().toDate(),
         defaultZone.toTimeZone()));
     query.setStringCustomParameter("singleevents", "true");
-    query.setFullTextQuery(truck.getId());
     ImmutableList.Builder<TruckStop> builder = ImmutableList.builder();
     try {
       CalendarEventFeed resultFeed = calendarQuery(query);
       for (CalendarEventEntry entry : resultFeed.getEntries()) {
+        Truck truck = trucks.findById(entry.getTitle().getPlainText());
+        if (truck == null) {
+          continue;
+        }
         Where where = Iterables.getFirst(entry.getLocations(), null);
         if (where == null) {
           throw new IllegalStateException("No location specified");
@@ -71,7 +78,7 @@ public class GoogleCalendar implements ScheduleStrategy {
         if (location != null) {
           final TruckStop truckStop = new TruckStop(truck, toJoda(time.getStartTime(), defaultZone),
               toJoda(time.getEndTime(), defaultZone), location);
-          log.log(Level.FINE, "Loaded truckstop: {0}", truckStop);
+          log.log(Level.INFO, "Loaded truckstop: {0}", truckStop);
           builder.add(truckStop);
         } else {
           log.log(Level.WARNING, "Location could not be resolved for {0}, {1} between {2} and {3}",

@@ -3,7 +3,6 @@ package foodtruck.schedule;
 import java.util.List;
 
 import foodtruck.model.TimeRange;
-import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 
 /**
@@ -16,5 +15,5 @@ public interface ScheduleStrategy {
    * Finds all the truck stops for a truck over a time period on a day.
    * @return the list of stops sorted by time
    */
-  public List<TruckStop> findForTime(Truck truck, TimeRange range);
+  public List<TruckStop> findForTime(TimeRange range);
 }

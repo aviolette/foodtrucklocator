@@ -6,7 +6,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
@@ -55,16 +54,12 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   }
 
   private void pullTruckSchedule(TimeRange theDay) {
-    Multimap<String, TruckStopMatch> matches = HashMultimap.create();
-    for (Truck truck : trucks.allTrucks()) {
-      try {
-        truckStopDAO.deleteAfter(theDay.getStartDateTime(), truck.getId());
-        List<TruckStop> stops = googleCalendar.findForTime(truck, theDay);
-        stops = alterStopsWithCurrentData(stops, matches.get(truck.getId()), truck);
-        truckStopDAO.addStops(stops);
-      } catch (Exception e) {
-        log.log(Level.WARNING, "Exception thrown while refreshing truck: " + truck.getId(), e);
-      }
+    try {
+      List<TruckStop> stops = googleCalendar.findForTime(theDay);
+      truckStopDAO.deleteAfter(theDay.getStartDateTime());
+      truckStopDAO.addStops(stops);
+    } catch (Exception e) {
+      log.log(Level.WARNING, "Exception thrown while refreshing trucks", e);
     }
   }
 
