@@ -41,19 +41,25 @@ public class TruckStopMatcher {
   }
 
   public @Nullable TruckStopMatch match(Truck truck, TweetSummary tweet) {
-    String address = addressExtractor.parseFirst(tweet.getText());
-    if (address == null) {
-      return null;
-    }
     Confidence confidence = Confidence.LOW;
 
     Location location = tweet.getLocation();
+    String address = addressExtractor.parseFirst(tweet.getText());
+    if (address == null && location == null) {
+      return null;
+    }
     if (location == null) {
       location = geoLocator.locate(address);
       if (location == null) {
         return null;
       }
     } else {
+      // TODO: reverse geolocation lookup
+      if (address == null) {
+        location = new Location(location.getLatitude(), location.getLongitude(), "Unnamed Location");
+      } else {
+        location = new Location(location.getLatitude(), location.getLongitude(), address);
+      }
       confidence = Confidence.MEDIUM;
     }
 
