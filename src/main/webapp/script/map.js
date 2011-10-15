@@ -222,10 +222,11 @@ window.FoodTruckLocator = function() {
     };
 
     function buildGroupInfo(group, idx, letter) {
+      group.index = idx;
       menuSection.append("<div class='menuSection'  id='group" + idx + "'/>");
       var section = $('#group' + idx);
       var markerText = "&nbsp;";
-      markerText = "<img src='" + buildIconUrl(letter) + "'/>";
+      markerText = "<img id='markerIcon" + idx + "' src='" + buildIconUrl(letter) + "'/>";
       section.append("<div class='markerSection'>" + markerText + "</div>");
       section.append("<div class='locationContent' id='location" + idx +
           "Section' class='contentSection'></div>");
@@ -238,9 +239,8 @@ window.FoodTruckLocator = function() {
     }
 
     function buildIconForTruck(truck, contentDiv) {
-      menuSection.append("<div class='truckSection' id='truck" + truck.id + "'/>");
+      contentDiv.append("<div class='truckSection' id='truck" + truck.id + "'/>");
       var section = $('#truck' + truck.id);
-      section.append("<div class='markerSection'>&nbsp;</div>");
       section.append("<div class='iconSection'><img src='" + truck.iconUrl + "'/></div>");
       section.append("<div class='menuContent' id='truck" + truck.id +
           "Section' class='contentSection'></div>");
@@ -271,6 +271,7 @@ window.FoodTruckLocator = function() {
       google.maps.event.addListener(group.marker, 'click', function() {
         infowindow.open(map, group.marker);
       });
+      group.infowindow = infowindow;
     }
 
     self.finished = function(groups) {
@@ -292,6 +293,14 @@ window.FoodTruckLocator = function() {
           buildIconForTruck(truck, contentDiv);
         });
         buildInfoWindow(group);
+        $("#markerIcon" + groupIndex).click(function() {
+          $.each(sorted, function(gIndex, g) {
+            g.infowindow.close();
+            $(".menuSection").removeClass("hilightedSection");
+          });
+          group.infowindow.open(map, group.marker);
+          $("#group" + groupIndex).addClass("hilightedSection");
+        });
       });
       map.fitBounds(bounds);
     };
@@ -373,6 +382,7 @@ window.FoodTruckLocator = function() {
       $("#right").width($("#map_canvas").width() - $("#left").width());
       $("#right").height($("#map_canvas").height());
       $("#left").css("margin-left", "-" + $("#map_canvas").width() + "px");
+      $("#left").height($("#right").height())
       $("#body").height($("#body").height() - $("header").height());
     }
   }
@@ -384,7 +394,7 @@ window.FoodTruckLocator = function() {
 
   function loadAllTrucks(view, date) {
     // this isn't very practical on the desktop and takes a while on firefox
-    if (Modernizr.geolocation && Modernizer.touch) {
+    if (Modernizr.geolocation && Modernizr.touch) {
       navigator.geolocation.getCurrentPosition(function(position) {
         var currentLocation = new google.maps.LatLng(position.coords.latitude,
             position.coords.longitude);

@@ -78,8 +78,16 @@ footer {
 
 .menuSection {
     margin: 10px 0 0px 0;
-    padding: 10px 0 0 0;
+    padding: 10px;
     clear: left;
+}
+
+.menuSection:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
 }
 
 .truckGroup {
@@ -97,7 +105,7 @@ footer {
 }
 
 .menuContent {
-    margin-left: 95px;
+    margin-left: 70px;
 }
 
 .locationContent {
@@ -145,4 +153,8 @@ div.flash {
     background-color: #90ee90;
     padding:  10px;
     font-weight: bold;
+}
+
+.hilightedSection {
+    background-color: #EAEaEA;
 }
