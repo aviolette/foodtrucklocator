@@ -383,7 +383,8 @@ window.FoodTruckLocator = function() {
   }
 
   function loadAllTrucks(view, date) {
-    if (Modernizr.geolocation) {
+    // this isn't very practical on the desktop and takes a while on firefox
+    if (Modernizr.geolocation && Modernizer.touch) {
       navigator.geolocation.getCurrentPosition(function(position) {
         var currentLocation = new google.maps.LatLng(position.coords.latitude,
             position.coords.longitude);
