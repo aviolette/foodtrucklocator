@@ -5,6 +5,7 @@ import com.google.common.base.Objects;
 import foodtruck.model.TruckStop;
 
 /**
+ * Represents a matching of a truck to a tweet.
  * @author aviolette@gmail.com
  * @since 9/19/11
  */

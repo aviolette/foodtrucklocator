@@ -5,7 +5,6 @@ import java.util.List;
 import com.google.common.collect.Iterables;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -65,6 +64,15 @@ public class AddressExtractorTest {
   }
 
   @Test
+  public void testParse5() {
+    String tweet = "555w Kenzie your cupcakes are here! It sure is a great day for a cupcake!";
+    List<String> addresses = parser.parse(tweet);
+    assertNotNull(addresses);
+    assertEquals(1, addresses.size());
+    assertEquals("555w Kenzie, Chicago, IL", addresses.get(0));
+  }
+
+  @Test
   public void testParseIntersection() {
     String tweet = "Just landed at Rush and Walton foobar";
     List<String> addresses = parser.parse(tweet);
@@ -88,8 +96,26 @@ public class AddressExtractorTest {
     assertTweet("Kingsbury and Erie, Chicago, IL", tweet);
   }
 
+  @Test
   public void testParseIntersection4() {
-    assertTweet("Hubbard and Lasalle, Chicago, IL", "Alright #RiverNorth we're at Hubbard and LaSalle for the final stop of the night");
+    assertTweet("Hubbard and LaSalle, Chicago, IL", "Alright #RiverNorth we're at Hubbard and LaSalle for the final stop of the night");
+  }
+
+  @Test
+  public void testParseIntersection5() {
+    assertTweet("North and Wells, Chicago, IL", "Last call at North and Wells for the #KefirTruck! T-10 minutes!");
+  }
+
+  @Test
+  public void testKeyword() {
+    assertTweet("Harpo Studios", "Just landed at harpo.  Come get your yogurt");
+    assertTweet("Harpo Studios", "Just landed at Harpo.  Come get your yogurt");
+    assertTweet("Harpo Studios", "Just landed at Harpo Studios.  Come get your yogurt");
+    List<String> addresses = parser.parse("Come see @MamaGreenGoodie at the Men's Health Magazine Urbanathalon tomorrow at Grant Park. We will be parked on Columbus & Balbo.");
+    assertNotNull(addresses);
+    assertEquals(2, addresses.size());
+    assertEquals("Columbus & Balbo, Chicago, IL", addresses.get(0));
+    assertEquals("Grant Park", addresses.get(1));
   }
 
   private void assertTweet(String expected, String tweet) {

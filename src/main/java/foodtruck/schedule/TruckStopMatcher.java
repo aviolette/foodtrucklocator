@@ -40,6 +40,12 @@ public class TruckStopMatcher {
     formatter = DateTimeFormat.forPattern("hh a").withZone(defaultZone);
   }
 
+  /**
+   * Matches a truck to a location via a tweet.
+   * @param truck a truck
+   * @param tweet a tweet
+   * @return a TruckStopMatch if the match can be made, otherwise {@code null}
+   */
   public @Nullable TruckStopMatch match(Truck truck, TweetSummary tweet) {
     Confidence confidence = Confidence.LOW;
 
