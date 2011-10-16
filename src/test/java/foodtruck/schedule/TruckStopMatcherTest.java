@@ -77,4 +77,20 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getStop().getEndTime());
     verifyAll();
   }
+
+  @Test
+  public void testMatch_shouldReturnMatch() {
+    final String tweetText = "Oh yea oh yea beautiful night in the Chi. Come get ur froyo fix we are on the corner of Michigan and Ohio!";
+    final String address = "Michigan and Ohio";
+    Location location = new Location(-1, -2, address);
+    expect(extractor.parseFirst(tweetText)).andReturn(address);
+    expect(geolocator.locate(address)).andReturn(location);
+    replayAll();
+    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
+    TruckStopMatch match = topic.match(truck, tweet);
+    assertNotNull(match);
+    assertEquals(Confidence.HIGH, match.getConfidence());
+    assertEquals(address, match.getStop().getLocation().getName());
+    verifyAll();
+   }
 }

@@ -21,7 +21,7 @@ public class AddressExtractor {
   public AddressExtractor() {
     Function<String, String> cityAppender = new Function<String, String>() {
       public String apply(String input) {
-        return input + ", Chicago, IL";
+        return input.replace(" & ", " and ") + ", Chicago, IL";
       }
     };
     Function<String, String> keywordReplace = new Function<String, String>() {

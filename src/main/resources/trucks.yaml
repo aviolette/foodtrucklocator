@@ -164,6 +164,7 @@ name: Culture Yogurt
 categories: Dessert
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1484907277/logosmall_normal.jpg
 foursquare: 4e4bf6bb6365dbba614e6ffa
+twittalyzer: "on"
 ---
 id: adelitatruck
 twitter: adelitatruck
@@ -202,8 +203,8 @@ categories: Food
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1500530673/twitter_pic_normal.jpg
 foursquare: 4de668e2d1648041649ed635
 ---
-id: foreveryogurt
-twitter: foreveryogurt
+id: forevertruck
+twitter: forevertruck
 name: Forever Yogurt
 categories: Dessert
 url: http://www.foreveryogurt.com

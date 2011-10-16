@@ -128,13 +128,16 @@ public class TwitterServiceImpl implements TwitterService {
     log.log(Level.INFO, "Updating twitter trucks");
     for (Truck truck : trucks.allTwitterTrucks()) {
       List<TweetSummary> tweets =
-          tweetDAO.findTweetsAfter(clock.now().minusHours(2), truck.getId());
+          tweetDAO.findTweetsAfter(clock.now().minusHours(4), truck.getId());
       TruckStopMatch match = findMatch(tweets, truck);
       if (match != null) {
         // TODO: delete the conflicting stops, not all the stops
+        // TODO: find stop-departure/sold-out markers and terminate existing entries.
         log.log(Level.INFO, "Found match {0}", match);
         truckStopDAO.deleteAfter(clock.currentDay().toDateMidnight().toDateTime(), truck.getId());
         truckStopDAO.addStops(ImmutableList.<TruckStop>of(match.getStop()));
+      } else {
+        log.log(Level.INFO, "No matches for {0}", truck.getId());
       }
     }
   }

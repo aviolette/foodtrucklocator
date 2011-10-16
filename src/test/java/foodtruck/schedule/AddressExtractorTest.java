@@ -104,6 +104,7 @@ public class AddressExtractorTest {
   @Test
   public void testParseIntersection5() {
     assertTweet("North and Wells, Chicago, IL", "Last call at North and Wells for the #KefirTruck! T-10 minutes!");
+    assertTweet("Michigan and Ohio, Chicago, IL", "Oh yea oh yea beautiful night in the Chi. Come get ur froyo fix we are on the corner of Michigan and Ohio!");
   }
 
   @Test
@@ -114,7 +115,7 @@ public class AddressExtractorTest {
     List<String> addresses = parser.parse("Come see @MamaGreenGoodie at the Men's Health Magazine Urbanathalon tomorrow at Grant Park. We will be parked on Columbus & Balbo.");
     assertNotNull(addresses);
     assertEquals(2, addresses.size());
-    assertEquals("Columbus & Balbo, Chicago, IL", addresses.get(0));
+    assertEquals("Columbus and Balbo, Chicago, IL", addresses.get(0));
     assertEquals("Grant Park", addresses.get(1));
   }
 

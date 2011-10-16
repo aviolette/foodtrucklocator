@@ -48,7 +48,7 @@ public class TruckStopMatcher {
    */
   public @Nullable TruckStopMatch match(Truck truck, TweetSummary tweet) {
     Confidence confidence = Confidence.LOW;
-
+    // TODO: special handling of 4sq checkins to retrieve their location name
     Location location = tweet.getLocation();
     String address = addressExtractor.parseFirst(tweet.getText());
     if (address == null && location == null) {
@@ -76,7 +76,7 @@ public class TruckStopMatcher {
     final DateTime startTime = tweet.getTime();
     DateTime endTime = parseEndTime(tweet.getText(), startTime);
     if (endTime == null) {
-      endTime = startTime.plusHours(2);
+      endTime = startTime.plusHours(4);
     }
 
     confidence = Confidence.HIGH;
@@ -99,7 +99,7 @@ public class TruckStopMatcher {
 
   private boolean containsLandingStatement(String tweetText) {
     final String lc = tweetText.toLowerCase();
-    return Iterables.any(ImmutableList.of("landed", "we're @ ", "we are at", "we're at"),
+    return Iterables.any(ImmutableList.of("landed", "we're @ ", "we are at", "we're at", "we're on", "we are on", "here at", "here on", "we are enjoying"),
         new Predicate<String>() {
           @Override public boolean apply(String input) {
             return lc.contains(input);
