@@ -119,6 +119,17 @@ public class AddressExtractorTest {
     assertEquals("Grant Park", addresses.get(1));
   }
 
+  @Test
+  public void testTamaleSpaceshipFormat() {
+    assertTweet("Adler Planetarium", "Going strong at <<Adler Planetarium>> for \"Jenny & Mike's\" Wedding ;)");
+  }
+
+  @Test
+  public void testFoursquareFormat() {
+    assertTweet("694 Wine & Spirits", "Time for Wagyu! Come eat (@ 694 Wine & Spirits) http://t.co/mwKr61G6");
+  }
+
+
   private void assertTweet(String expected, String tweet) {
     List<String> addresses = parser.parse(tweet);
     assertNotNull(addresses);

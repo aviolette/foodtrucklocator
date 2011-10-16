@@ -25,22 +25,32 @@ public class AddressExtractor {
       }
     };
     Function<String, String> keywordReplace = new Function<String, String>() {
-      final ImmutableMap<String, String> keywords = ImmutableMap.of("@wttw", "WTTW", "harpo", "Harpo Studios", "grant park", "Grant Park");
+      final ImmutableMap<String, String> keywords = ImmutableMap.of("@wttw", "WTTW", "harpo",
+          "Harpo Studios", "grant park", "Grant Park", "aon", "Randolph and Columbus, Chicago, IL");
       public String apply(String input) {
         return keywords.get(input.toLowerCase());
       }
     };
     patterns = ImmutableList.of(
-        new PatternTransform(Pattern.compile("[a-zA-Z]+((\\s+(and)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))[a-zA-Z]+"), cityAppender),
-        new PatternTransform(Pattern.compile("(^:)*\\d+\\s*[NnSsEeWw]\\.*\\s+\\w+"), cityAppender),
-        new PatternTransform(Pattern.compile("@wttw|harpo|grant park", Pattern.CASE_INSENSITIVE), keywordReplace)
+        // foursquare format
+        new PatternTransform(Pattern.compile("\\(@ (.*)\\)"), null, true, 1),
+        // tamale spaceship format
+        new PatternTransform(Pattern.compile("<<(.*)>>"), null, true, 1),
+        // intersection format
+        new PatternTransform(Pattern.compile("[a-zA-Z]+((\\s+(and)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))[a-zA-Z]+"), cityAppender, false, 0),
+        // address format
+        new PatternTransform(Pattern.compile("(^:)*\\d+\\s*[NnSsEeWw]\\.*\\s+\\w+"), cityAppender, false, 0),
+        // keyword format
+        new PatternTransform(Pattern.compile("@wttw|harpo|grant park|aon", Pattern.CASE_INSENSITIVE), keywordReplace, false, 0)
     );
   }
 
   List<String> parse(String tweet) {
     ImmutableList.Builder<String> addresses = ImmutableList.builder();
     for ( PatternTransform  p : patterns) {
-      p.findAndMatch(tweet, addresses);
+      if (!p.findAndMatch(tweet, addresses)) {
+        break;
+      }
     }
     return addresses.build();
   }
@@ -52,18 +62,26 @@ public class AddressExtractor {
   private static class PatternTransform {
     private final Pattern pattern;
     private final @Nullable Function<String, String> transformer;
+    private final boolean breakHere;
+    private int group;
 
-    public PatternTransform(Pattern pattern, @Nullable Function<String, String> transformer) {
+    public PatternTransform(Pattern pattern, @Nullable Function<String, String> transformer,
+        boolean breakHere, int group) {
       this.pattern = pattern;
       this.transformer = transformer;
+      this.breakHere = breakHere;
+      this.group = group;
     }
 
-    public void findAndMatch(String tweet, ImmutableList.Builder<String> addresses) {
+    public boolean findAndMatch(String tweet, ImmutableList.Builder<String> addresses) {
       Matcher m = pattern.matcher(tweet);
       while (m.find()) {
-        String matched = tweet.substring(m.start(), m.end());
+
+        String matched = m.group(group);
         addresses.add(transformer == null ? matched : transformer.apply(matched));
+        if (breakHere) return false;
       }
+      return true;
     }
   }
 }
