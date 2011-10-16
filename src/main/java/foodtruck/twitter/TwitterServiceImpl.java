@@ -131,15 +131,36 @@ public class TwitterServiceImpl implements TwitterService {
           tweetDAO.findTweetsAfter(clock.now().minusHours(4), truck.getId());
       TruckStopMatch match = findMatch(tweets, truck);
       if (match != null) {
-        // TODO: delete the conflicting stops, not all the stops
-        // TODO: find stop-departure/sold-out markers and terminate existing entries.
         log.log(Level.INFO, "Found match {0}", match);
-        truckStopDAO.deleteAfter(clock.currentDay().toDateMidnight().toDateTime(), truck.getId());
-        truckStopDAO.addStops(ImmutableList.<TruckStop>of(match.getStop()));
+        resolveConflicting(truck, match.getStop());
       } else {
         log.log(Level.INFO, "No matches for {0}", truck.getId());
       }
     }
+  }
+
+  private void resolveConflicting(Truck truck, TruckStop stop) {
+    // TODO: delete the conflicting stops, not all the stops
+    // TODO: find stop-departure/sold-out markers and terminate existing entries.
+    List<TruckStop> existingStops = truckStopDAO.findDuring(truck.getId(), clock.currentDay());
+    List<TruckStop> toDelete = Lists.newLinkedList();
+    List<TruckStop> toAdd = Lists.newLinkedList();
+    for (TruckStop existingStop : existingStops) {
+      if (existingStop.getEndTime().isBefore(stop.getStartTime())) {
+      } else if (existingStop.getStartTime().isBefore(stop.getStartTime())
+          && existingStop.getEndTime().isAfter(stop.getStartTime())) {
+        // TODO: figure out how to do updates in appengine
+        toAdd.add(existingStop.withEndTime(stop.getStartTime()));
+        toDelete.add(existingStop);
+      } else if(existingStop.getStartTime().isBefore(stop.getEndTime())) {
+        // TODO: figure out how to do updates in appengine
+        toAdd.add(existingStop.withStartTime(stop.getEndTime()));
+        toDelete.add(existingStop);
+      }
+    }
+    toAdd.add(stop);
+    truckStopDAO.deleteStops(toDelete);
+    truckStopDAO.addStops(toAdd);
   }
 
   private TruckStopMatch findMatch(List<TweetSummary> tweets, Truck truck) {

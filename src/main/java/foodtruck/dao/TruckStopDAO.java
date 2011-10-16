@@ -35,4 +35,9 @@ public interface TruckStopDAO {
   void deleteAfter(DateTime startDateTime);
 
   void deleteAfter(DateTime dateTime, String truckId);
+
+  /**
+   * Deletes the stops after the specified time
+   */
+  void deleteStops(List<TruckStop> toDelete);
 }

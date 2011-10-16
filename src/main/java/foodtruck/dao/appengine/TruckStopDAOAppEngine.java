@@ -67,7 +67,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
       stops.add(new TruckStop(trucks.findById((String) entity.getProperty(TRUCK_ID_FIELD)),
           startTime, endTime,
           new Location((Double) entity.getProperty(LATITUDE_FIELD), (Double) entity.getProperty(
-              LONGITUDE_FIELD), (String) entity.getProperty(LOCATION_NAME_FIELD))));
+              LONGITUDE_FIELD), (String) entity.getProperty(LOCATION_NAME_FIELD)), entity.getKey()));
     }
     return stops.build();
   }
@@ -109,7 +109,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
       stops.add(new TruckStop(trucks.findById((String) entity.getProperty(TRUCK_ID_FIELD)),
           startTime, endTime,
           new Location((Double) entity.getProperty(LATITUDE_FIELD), (Double) entity.getProperty(
-              LONGITUDE_FIELD), (String) entity.getProperty(LOCATION_NAME_FIELD))));
+              LONGITUDE_FIELD), (String) entity.getProperty(LOCATION_NAME_FIELD)), entity.getKey()));
     }
     return stops.build();
   }
@@ -135,6 +135,16 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
     ImmutableList.Builder<Key> keys = ImmutableList.builder();
     for (Entity entity : dataStore.prepare(q).asIterable()) {
       keys.add(entity.getKey());
+    }
+    dataStore.delete(keys.build());
+  }
+
+  @Override
+  public void deleteStops(List<TruckStop> toDelete) {
+    DatastoreService dataStore = serviceProvider.get();
+    ImmutableList.Builder<Key> keys = ImmutableList.builder();
+    for (TruckStop stop : toDelete) {
+      keys.add((Key) stop.getKey());
     }
     dataStore.delete(keys.build());
   }

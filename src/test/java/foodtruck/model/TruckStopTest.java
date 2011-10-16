@@ -61,6 +61,6 @@ public class TruckStopTest {
   private TruckStop createTruckStop(DateTime startTime, DateTime endTime) {
     Truck truck = new Truck.Builder().name("foo").id("bar").build();
     Location location = new Location(-1.0d, -2.0d);
-    return new TruckStop(truck, startTime, endTime, location);
+    return new TruckStop(truck, startTime, endTime, location, null);
   }
 }

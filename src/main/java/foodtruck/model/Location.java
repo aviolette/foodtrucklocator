@@ -68,4 +68,11 @@ public class Location {
     Location obj = (Location) o;
     return lat == obj.lat && lng == obj.lng;
   }
+
+  /**
+   * Returns a new Location with an updated name
+   */
+  public Location withName(String name) {
+    return new Location(lat, lng, name);
+  }
 }

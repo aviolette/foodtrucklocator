@@ -78,7 +78,7 @@ public class GoogleCalendar implements ScheduleStrategy {
         final Location location = geolocator.locate(where.getValueString());
         if (location != null) {
           final TruckStop truckStop = new TruckStop(truck, toJoda(time.getStartTime(), defaultZone),
-              toJoda(time.getEndTime(), defaultZone), location);
+              toJoda(time.getEndTime(), defaultZone), location, null);
           log.log(Level.INFO, "Loaded truckstop: {0}", truckStop);
           builder.add(truckStop);
         } else {

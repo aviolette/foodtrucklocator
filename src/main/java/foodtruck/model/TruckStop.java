@@ -1,5 +1,7 @@
 package foodtruck.model;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.Objects;
 
 import org.joda.time.DateTime;
@@ -10,13 +12,15 @@ import org.joda.time.DateTime;
  * @author aviolette@gmail.com
  * @since Jul 12, 2011
  */
-public class TruckStop {
+public class TruckStop extends ModelEntity {
   private final Truck truck;
   private final DateTime startTime;
   private final DateTime endTime;
   private final Location location;
 
-  public TruckStop(Truck truck, DateTime startTime, DateTime endTime, Location location) {
+  public TruckStop(Truck truck, DateTime startTime, DateTime endTime, Location location,
+      @Nullable Object key) {
+    super(key);
     this.truck = truck;
     this.startTime = startTime;
     this.endTime = endTime;
@@ -71,5 +75,19 @@ public class TruckStop {
   public String toString() {
     return Objects.toStringHelper(this).add("truck", truck.getId()).add("startTime", startTime)
         .add("endTime", endTime).add("location", location).toString();
+  }
+
+  /**
+   * Returns a new TruckStop with a new startTime
+   */
+  public TruckStop withEndTime(DateTime startTime) {
+    return new TruckStop(truck, startTime, endTime, location, null);
+  }
+
+  /**
+   * Returns a new TruckStop with a new endTime
+   */
+  public TruckStop withStartTime(DateTime endTime) {
+    return new TruckStop(truck, startTime, endTime, location, null);
   }
 }

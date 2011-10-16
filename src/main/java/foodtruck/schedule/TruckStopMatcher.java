@@ -47,8 +47,6 @@ public class TruckStopMatcher {
    * @return a TruckStopMatch if the match can be made, otherwise {@code null}
    */
   public @Nullable TruckStopMatch match(Truck truck, TweetSummary tweet) {
-    Confidence confidence = Confidence.LOW;
-    // TODO: special handling of 4sq checkins to retrieve their location name
     Location location = tweet.getLocation();
     String address = addressExtractor.parseFirst(tweet.getText());
     if (address == null && location == null) {
@@ -62,25 +60,17 @@ public class TruckStopMatcher {
     } else {
       // TODO: reverse geolocation lookup
       if (address == null) {
-        location = new Location(location.getLatitude(), location.getLongitude(), "Unnamed Location");
+        location = location.withName("Unnamed Location");
       } else {
-        location = new Location(location.getLatitude(), location.getLongitude(), address);
+        location = location.withName(address);
       }
-      confidence = Confidence.MEDIUM;
     }
-
-    if (confidence != Confidence.MEDIUM && containsLandingStatement(tweet.getText())) {
-      confidence = Confidence.MEDIUM;
-    }
-
     final DateTime startTime = tweet.getTime();
     DateTime endTime = parseEndTime(tweet.getText(), startTime);
     if (endTime == null) {
       endTime = startTime.plusHours(4);
     }
-
-    confidence = Confidence.HIGH;
-    return new TruckStopMatch(confidence, new TruckStop(truck, startTime, endTime, location),
+    return new TruckStopMatch(Confidence.HIGH, new TruckStop(truck, startTime, endTime, location, null),
         tweet.getText());
   }
 
@@ -99,7 +89,8 @@ public class TruckStopMatcher {
 
   private boolean containsLandingStatement(String tweetText) {
     final String lc = tweetText.toLowerCase();
-    return Iterables.any(ImmutableList.of("landed", "we're @ ", "we are at", "we're at", "we're on", "we are on", "here at", "here on", "we are enjoying"),
+    return Iterables.any(ImmutableList.of("landed", "we're @ ", "we are at", "we're at", "we're on",
+        "we are on", "here at", "here on", "We moved to"),
         new Predicate<String>() {
           @Override public boolean apply(String input) {
             return lc.contains(input);
