@@ -1,6 +1,8 @@
 package foodtruck.server;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -18,6 +20,7 @@ import foodtruck.twitter.TwitterService;
  */
 @Singleton
 public class TweetCacheUpdateServlet  extends HttpServlet implements Runnable {
+  private static final Logger log = Logger.getLogger(TweetCacheUpdateServlet.class.getName());
   private final TwitterService service;
 
   @Inject
@@ -33,7 +36,11 @@ public class TweetCacheUpdateServlet  extends HttpServlet implements Runnable {
 
   @Override
   public void run() {
-    service.updateTwitterCache();
+    try {
+      service.updateTwitterCache();
+    } catch (Exception e) {
+      log.log(Level.WARNING, "Error updating twitter cache", e);
+    }
     service.updateLocationsOfTwitterTrucks();
   }
 }
