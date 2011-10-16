@@ -14,7 +14,6 @@ import com.google.inject.name.Named;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -59,10 +58,6 @@ public class FoodTruckServlet extends HttpServlet {
     }
     if (dateTime == null) {
       dateTime = clock.now();
-      // peg the time at something that actually returns results
-      if (dateTime.toLocalTime().isBefore(new LocalTime(11, 30))) {
-        dateTime = dateTime.withTime(11, 30, 0, 0);
-      }
     }
     req.setAttribute("center", mapCenter);
     String googleAnalytics = System.getProperty("foodtruck.google.analytics", null);
