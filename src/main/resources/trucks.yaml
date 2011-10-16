@@ -164,7 +164,6 @@ name: Culture Yogurt
 categories: Dessert
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1484907277/logosmall_normal.jpg
 foursquare: 4e4bf6bb6365dbba614e6ffa
-twittalyzer: "on"
 ---
 id: adelitatruck
 twitter: adelitatruck
@@ -374,3 +373,10 @@ name: Steakwch
 categories: Savory
 iconUrl: http://a1.twimg.com/profile_images/1443279567/Twitter_Pic_normal.JPG
 twittalyzer: "on"
+---
+id: twoitalians
+twitter: twoitalians
+name: Two Italians
+categories: Savory
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1504340611/023_normal.JPG
+twittalyzer: off
