@@ -11,6 +11,7 @@ import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
+ * Represents a Yahoo resource.
  * @author aviolette@gmail.com
  * @since 10/16/11
  */

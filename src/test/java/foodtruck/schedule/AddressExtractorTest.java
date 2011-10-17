@@ -131,7 +131,7 @@ public class AddressExtractorTest {
     assertTweet("694 Wine & Spirits", "Time for Wagyu! Come eat (@ 694 Wine & Spirits) http://t.co/mwKr61G6");
   }
 
-  @Test @Ignore("Fix later")
+  @Test
   public void testFoursquareFormatWithUserCount() {
     assertTweet("Soldier Field", "Family walk (@ Soldier Field w/ 2 others) [pic]: http://t.co/BJJjbmQt");
   }

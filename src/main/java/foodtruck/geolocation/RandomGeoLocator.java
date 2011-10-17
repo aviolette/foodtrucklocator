@@ -9,6 +9,7 @@ import com.google.inject.Inject;
 import foodtruck.model.Location;
 
 /**
+ * A geolocator that randomly selects between google and yahoo geolocators.
  * @author aviolette@gmail.com
  * @since 10/16/11
  */

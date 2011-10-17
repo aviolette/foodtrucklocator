@@ -31,9 +31,19 @@ public class AddressExtractor {
         return keywords.get(input.toLowerCase());
       }
     };
+    final Pattern others = Pattern.compile(" w/ \\d+ others");
+    Function<String, String> foursquareMassage = new Function<String, String>() {
+      @Override public String apply(String input) {
+        Matcher m = others.matcher(input);
+        if (m.find()) {
+          return input.substring(0, m.start());
+        }
+        return input;
+      }
+    };
     patterns = ImmutableList.of(
         // foursquare format
-        new PatternTransform(Pattern.compile("\\(@ (.*)\\)"), null, true, 1),
+        new PatternTransform(Pattern.compile("\\(@ (.*)\\)"), foursquareMassage, true, 1),
         // tamale spaceship format
         new PatternTransform(Pattern.compile("<<(.*)>>"), null, true, 1),
         // intersection format
