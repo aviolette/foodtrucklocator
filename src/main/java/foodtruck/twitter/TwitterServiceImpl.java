@@ -99,7 +99,7 @@ public class TwitterServiceImpl implements TwitterService {
   private @Nullable TweetSummary statusToTweet(Status status) {
     final String screenName = status.getUser().getScreenName().toLowerCase();
     Truck truck = trucks.findByTwitterId(screenName);
-    if (truck == null) {
+    if (truck == null || status.isRetweet()) {
       return null;
     }
     final GeoLocation geoLocation = status.getGeoLocation();
