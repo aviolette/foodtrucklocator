@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.common.collect.Iterables;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -121,12 +122,18 @@ public class AddressExtractorTest {
 
   @Test
   public void testTamaleSpaceshipFormat() {
-    assertTweet("Adler Planetarium", "Going strong at <<Adler Planetarium>> for \"Jenny & Mike's\" Wedding ;)");
+    assertTweet("Adler Planetarium",
+        "Going strong at <<Adler Planetarium>> for \"Jenny & Mike's\" Wedding ;)");
   }
 
   @Test
   public void testFoursquareFormat() {
     assertTweet("694 Wine & Spirits", "Time for Wagyu! Come eat (@ 694 Wine & Spirits) http://t.co/mwKr61G6");
+  }
+
+  @Test @Ignore("Fix later")
+  public void testFoursquareFormatWithUserCount() {
+    assertTweet("Soldier Field", "Family walk (@ Soldier Field w/ 2 others) [pic]: http://t.co/BJJjbmQt");
   }
 
 

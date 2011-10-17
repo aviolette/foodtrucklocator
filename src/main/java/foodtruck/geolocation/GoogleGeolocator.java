@@ -28,7 +28,7 @@ public class GoogleGeolocator implements GeoLocator {
   private static final Logger log = Logger.getLogger(GoogleGeolocator.class.getName());
 
   @Inject
-  public GoogleGeolocator(@GeoLocation WebResource geolocationResource) {
+  public GoogleGeolocator(@GoogleEndPoint WebResource geolocationResource) {
     latLongExpression = Pattern.compile("([\\-|\\d|\\.]+),\\s*([\\-|\\d|\\.]+)[\\s*,\\s*]?");
     this.geolocationResource = geolocationResource;
   }
