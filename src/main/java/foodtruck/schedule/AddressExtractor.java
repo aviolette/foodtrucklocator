@@ -26,7 +26,8 @@ public class AddressExtractor {
     };
     Function<String, String> keywordReplace = new Function<String, String>() {
       final ImmutableMap<String, String> keywords = ImmutableMap.of("@wttw", "WTTW", "harpo",
-          "Harpo Studios", "grant park", "Grant Park", "aon", "Randolph and Columbus, Chicago, IL");
+          "Harpo Studios", "grant park", "Grant Park", "aon", "Randolph and Columbus, Chicago, IL",
+          "presidential towers", "Presidential Towers");
       public String apply(String input) {
         return keywords.get(input.toLowerCase());
       }
@@ -51,7 +52,7 @@ public class AddressExtractor {
         // address format
         new PatternTransform(Pattern.compile("(^:)*\\d+\\s*[NnSsEeWw]\\.*\\s+\\w+"), cityAppender, false, 0),
         // keyword format
-        new PatternTransform(Pattern.compile("@wttw|harpo|grant park|aon", Pattern.CASE_INSENSITIVE), keywordReplace, false, 0)
+        new PatternTransform(Pattern.compile("@wttw|harpo|grant park|aon|presidential towers", Pattern.CASE_INSENSITIVE), keywordReplace, false, 0)
     );
   }
 
