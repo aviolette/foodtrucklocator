@@ -48,7 +48,7 @@ public class AddressExtractor {
         // tamale spaceship format
         new PatternTransform(Pattern.compile("<<(.*)>>"), null, true, 1),
         // intersection format
-        new PatternTransform(Pattern.compile("[a-zA-Z]+((\\s+(and)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))[a-zA-Z]+"), cityAppender, false, 0),
+        new PatternTransform(Pattern.compile("[A-Z0-9][a-zA-Z0-9]+((\\s+(and)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))[A-Z0-9][a-zA-Z0-9]+"), cityAppender, false, 0),
         // address format
         new PatternTransform(Pattern.compile("(^:)*\\d+\\s*[NnSsEeWw]\\.*\\s+\\w+"), cityAppender, false, 0),
         // keyword format

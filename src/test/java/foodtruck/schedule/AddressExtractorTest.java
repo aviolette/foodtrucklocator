@@ -109,6 +109,12 @@ public class AddressExtractorTest {
   }
 
   @Test
+  public void testOnlyParseMixedCasedIntersections() {
+    assertTweet("Randolph and Columbus, Chicago, IL", "Original tart, carrot cake, and cake batter today! Come and get it! Just arrived at Randolph & Columbus.");
+    assertTweet("13th and Michigan, Chicago, IL", "Original tart, carrot cake, and cake batter today! Come and get it! Just arrived at 13th and Michigan.");
+  }
+
+  @Test
   public void testKeyword() {
     assertTweet("Harpo Studios", "Just landed at harpo.  Come get your yogurt");
     assertTweet("Harpo Studios", "Just landed at Harpo.  Come get your yogurt");
