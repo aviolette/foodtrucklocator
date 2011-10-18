@@ -5,7 +5,7 @@ categories: Savory
 iconUrl: "http://a3.twimg.com/profile_images/1402134609/be86_1_1__normal.jpg"
 url: http://thetamalespaceship.com/
 foursquare: 4da48a23b521224b03cd34ee
-twittalyzer: "on"
+twittalyzer: "off"
 ---
 id: meatyballs1
 twitter: fossfoodtrucks
@@ -337,11 +337,12 @@ name: Heather Behm
 categories: Savory
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1268230955/IMG_6734_copy_normal.jpg
 ---
-id: donrafafoodtruck
+id: donraffoodtruck
 twitter: donraffoodtruck
 name: Don Rafa Food Truck
 categories: Savory
-iconUrl: http://twimg0-a.akamaihd.net/sticky/default_profile_images/default_profile_1_normal.png
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1591805989/logo_normal.jpg
+twittalyzer: "on"
 ---
 id: lilliesqchicago
 twitter: lillieqschicago
@@ -367,6 +368,7 @@ twitter: bigstartruck
 name: Big Star Food Truck
 categories: Savory
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/733151570/ComingSoon_normal.png
+twittalyzer: "on"
 ---
 id: steakwch
 twitter: steakwch
@@ -380,4 +382,4 @@ twitter: twoitalians
 name: Two Italians
 categories: Savory
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1504340611/023_normal.JPG
-twittalyzer: off
+twittalyzer: "on"
