@@ -4,8 +4,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
-import com.sun.jersey.api.client.WebResource;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -19,21 +17,16 @@ import foodtruck.model.Location;
  */
 public class YahooGeolocator implements GeoLocator {
   private static final Logger log = Logger.getLogger(YahooGeolocator.class.getName());
-  private final WebResource resource;
-  private final String yahooId;
+  private final YahooResource yahooResource;
 
   @Inject
-  public YahooGeolocator(@YahooEndPoint WebResource resource, @Named("yahoo.app.id") String yahooId) {
-    this.yahooId = yahooId;
-    this.resource = resource;
+  public YahooGeolocator(YahooResource yahooResource) {
+    this.yahooResource = yahooResource;
   }
 
   @Override
   public Location locate(String location) {
-    JSONObject obj = resource.queryParam("q", location)
-        .queryParam("flags", "j")
-        .queryParam("appid", yahooId)
-        .get(JSONObject.class);
+    JSONObject obj = yahooResource.findLocation(location);
     try {
       log.log(Level.INFO, "Geolocation result for {0}: \n{1}",
           new Object[] {location, obj.toString()});
@@ -43,6 +36,10 @@ public class YahooGeolocator implements GeoLocator {
       }
       JSONArray results = resultSet.getJSONArray("Results");
       JSONObject result = results.getJSONObject(0);
+      if (result.getInt("quality") < 40) {
+        log.log(Level.INFO, "Result was too granular");
+        return null;
+      }
       return new Location(Double.parseDouble(result.getString("latitude")),
           Double.parseDouble(result.getString("longitude")), location);
     } catch (JSONException e) {

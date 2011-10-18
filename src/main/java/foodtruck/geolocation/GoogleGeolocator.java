@@ -24,13 +24,13 @@ import foodtruck.model.Location;
  */
 public class GoogleGeolocator implements GeoLocator {
   private final Pattern latLongExpression;
-  private final WebResource geolocationResource;
   private static final Logger log = Logger.getLogger(GoogleGeolocator.class.getName());
+  private final GoogleResource googleResource;
 
   @Inject
-  public GoogleGeolocator(@GoogleEndPoint WebResource geolocationResource) {
+  public GoogleGeolocator(GoogleResource googleResource) {
     latLongExpression = Pattern.compile("([\\-|\\d|\\.]+),\\s*([\\-|\\d|\\.]+)[\\s*,\\s*]?");
-    this.geolocationResource = geolocationResource;
+    this.googleResource = googleResource;
   }
 
   @Override
@@ -43,22 +43,38 @@ public class GoogleGeolocator implements GeoLocator {
   }
 
   private @Nullable Location lookup(String location) {
-    JSONObject obj = geolocationResource.queryParam("address", location)
-        .queryParam("sensor", "true")
-        .get(JSONObject.class);
+    JSONObject obj = googleResource.findLocation(location);
     try {
       log.log(Level.INFO, "Geolocation result for {0}: \n{1}",
           new Object[] {location, obj.toString()});
       JSONArray results = obj.getJSONArray("results");
       if (results.length() > 0) {
+        final JSONObject firstResult = results.getJSONObject(0);
+        final JSONArray types = firstResult.getJSONArray("types");
+        if (arrayContains(types, "locality")) {
+          log.log(Level.INFO, "Result was too granular");
+          return null;
+        }
         JSONObject loc =
-            results.getJSONObject(0).getJSONObject("geometry").getJSONObject("location");
+            firstResult.getJSONObject("geometry").getJSONObject("location");
         return new Location(loc.getDouble("lat"), loc.getDouble("lng"), location);
       }
     } catch (JSONException e) {
       throw new RuntimeException(e);
     }
     return null;
+  }
+
+  private boolean arrayContains(@Nullable JSONArray arr, String searchWord) throws JSONException {
+    if (arr == null) {
+      return false;
+    }
+    for (int i=0; i < arr.length(); i++) {
+      if (searchWord.equals(arr.getString(i))) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @VisibleForTesting
