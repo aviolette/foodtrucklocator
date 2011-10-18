@@ -132,7 +132,8 @@ public class TwitterServiceImpl implements TwitterService {
       TruckStopMatch match = findMatch(tweets, truck);
       if (match != null) {
         log.log(Level.INFO, "Found match {0}", match);
-        resolveConflicting(truck, match.getStop());
+        truckStopDAO.deleteAfter(clock.currentDay().toDateMidnight().toDateTime(), truck.getId());
+        truckStopDAO.addStops(ImmutableList.<TruckStop>of(match.getStop()));
       } else {
         log.log(Level.INFO, "No matches for {0}", truck.getId());
       }
