@@ -138,7 +138,7 @@ window.FoodTruckLocator = function() {
         if (group.distance) {
           div.append("<span>" + group.distance + " miles away</span></br>")
         }
-        div.append(" <a href='http://maps.google.com/maps?q="+group.position.name+"'>map</a><br/><br/>")
+        div.append(" <a href='http://maps.google.com/maps?q="+group.position.latLng.lat()+","+group.position.latLng.lng()+"'>map</a><br/><br/>")
         $.each(group.trucks, function(idx, truck) {
           div.append("<div class='truckSectionTextOnly' id='truck" + truck.id + "'></div>");
           var truckDiv = $('#truck' + truck.id );
