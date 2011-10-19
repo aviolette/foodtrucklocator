@@ -12,6 +12,7 @@ import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -20,6 +21,7 @@ import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TweetSummary;
+import foodtruck.util.Clock;
 
 /**
  * Matches a tweet to a location, truck and time.
@@ -34,7 +36,7 @@ public class TruckStopMatcher {
 
   @Inject
   public TruckStopMatcher(AddressExtractor extractor, GeoLocator geoLocator,
-      DateTimeZone defaultZone) {
+      DateTimeZone defaultZone, Clock clock) {
     this.addressExtractor = extractor;
     this.geoLocator = geoLocator;
     this.timePattern = Pattern.compile("until (\\d+(:\\d+)*\\s*(p|pm|a|am)*)");
@@ -68,7 +70,12 @@ public class TruckStopMatcher {
         location = location.withName(address);
       }
     }
-    final DateTime startTime = tweet.getTime();
+    DateTime startTime = tweet.getTime();
+    // TODO: this is kind of a hack - this is a tweet announcing a future lunch location
+    if (startTime.toLocalTime().isBefore(new LocalTime(11, 0)) &&
+        (tweet.getText().contains("going") || tweet.getText().contains("gonna"))) {
+      startTime = startTime.withTime(11, 30, 0, 0);
+    }
     DateTime endTime =
         terminationTime == null ? parseEndTime(tweet.getText(), startTime) : terminationTime;
     if (endTime == null) {

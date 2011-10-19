@@ -31,9 +31,9 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   public void before() {
     extractor = createMock(AddressExtractor.class);
     geolocator = createMock(GeoLocator.class);
-    topic = new TruckStopMatcher(extractor, geolocator, DateTimeZone.UTC);
+    topic = new TruckStopMatcher(extractor, geolocator, DateTimeZone.UTC, null);
     truck = new Truck.Builder().id("foobar").build();
-    tweetTime = new DateTime(2011, 11, 10, 9, 8, 7, 7, DateTimeZone.UTC);
+    tweetTime = new DateTime(2011, 11, 10, 11, 13, 7, 7, DateTimeZone.UTC);
   }
 
   @Test
@@ -93,4 +93,23 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     assertEquals(address, match.getStop().getLocation().getName());
     verifyAll();
    }
+
+  @Test
+  public void testMatch_shouldDetectFutureLocation() {
+    final String tweetText = "Rush & UIC Medical Center DonRafa is gonna be in ur area today! Don't want to come out? call 312-498-9286 we... fb.me/1gKduQrvS";
+    final String address = "UIC";
+    Location location = new Location(-1, -2, address);
+    expect(extractor.parseFirst(tweetText)).andReturn(address);
+    expect(geolocator.locate(address)).andReturn(location);
+    tweetTime = new DateTime(2011, 11, 12, 9, 0, 0, 0, DateTimeZone.UTC);
+    replayAll();
+    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
+    TruckStopMatch match = topic.match(truck, tweet, null);
+    assertNotNull(match);
+    assertEquals(Confidence.HIGH, match.getConfidence());
+    assertEquals(address, match.getStop().getLocation().getName());
+    assertEquals(match.getStop().getStartTime(), tweetTime.withTime(11, 30, 0, 0));
+    verifyAll();
+
+  }
 }
