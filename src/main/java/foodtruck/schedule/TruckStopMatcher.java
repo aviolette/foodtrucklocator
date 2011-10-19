@@ -33,7 +33,8 @@ public class TruckStopMatcher {
   private final DateTimeFormatter formatter;
 
   @Inject
-  public TruckStopMatcher(AddressExtractor extractor, GeoLocator geoLocator, DateTimeZone defaultZone) {
+  public TruckStopMatcher(AddressExtractor extractor, GeoLocator geoLocator,
+      DateTimeZone defaultZone) {
     this.addressExtractor = extractor;
     this.geoLocator = geoLocator;
     this.timePattern = Pattern.compile("until (\\d+(:\\d+)*\\s*(p|pm|a|am)*)");
@@ -44,9 +45,11 @@ public class TruckStopMatcher {
    * Matches a truck to a location via a tweet.
    * @param truck a truck
    * @param tweet a tweet
+   * @param terminationTime an optional time to terminate any match
    * @return a TruckStopMatch if the match can be made, otherwise {@code null}
    */
-  public @Nullable TruckStopMatch match(Truck truck, TweetSummary tweet) {
+  public @Nullable TruckStopMatch match(Truck truck, TweetSummary tweet,
+      @Nullable DateTime terminationTime) {
     Location location = tweet.getLocation();
     String address = addressExtractor.parseFirst(tweet.getText());
     if (address == null && location == null) {
@@ -66,11 +69,13 @@ public class TruckStopMatcher {
       }
     }
     final DateTime startTime = tweet.getTime();
-    DateTime endTime = parseEndTime(tweet.getText(), startTime);
+    DateTime endTime =
+        terminationTime == null ? parseEndTime(tweet.getText(), startTime) : terminationTime;
     if (endTime == null) {
       endTime = startTime.plusHours(4);
     }
-    return new TruckStopMatch(Confidence.HIGH, new TruckStop(truck, startTime, endTime, location, null),
+    return new TruckStopMatch(Confidence.HIGH,
+        new TruckStop(truck, startTime, endTime, location, null),
         tweet.getText());
   }
 

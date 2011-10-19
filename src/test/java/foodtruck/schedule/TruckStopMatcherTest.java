@@ -42,7 +42,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     expect(extractor.parseFirst(tweetText)).andReturn(null);
     replayAll();
     TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
-    TruckStopMatch match = topic.match(truck, tweet);
+    TruckStopMatch match = topic.match(truck, tweet, null);
     assertNull(match);
     verifyAll();
   }
@@ -56,7 +56,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     expect(geolocator.locate(address)).andReturn(null);
     replayAll();
     TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
-    TruckStopMatch match = topic.match(truck, tweet);
+    TruckStopMatch match = topic.match(truck, tweet, null);
     assertNull(match);
     verifyAll();
   }
@@ -70,7 +70,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     expect(geolocator.locate(address)).andReturn(location);
     replayAll();
     TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
-    TruckStopMatch match = topic.match(truck, tweet);
+    TruckStopMatch match = topic.match(truck, tweet, null);
     assertNotNull(match);
     assertEquals(Confidence.HIGH, match.getConfidence());
     assertEquals(tweetTime, match.getStop().getStartTime());
@@ -87,7 +87,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     expect(geolocator.locate(address)).andReturn(location);
     replayAll();
     TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
-    TruckStopMatch match = topic.match(truck, tweet);
+    TruckStopMatch match = topic.match(truck, tweet, null);
     assertNotNull(match);
     assertEquals(Confidence.HIGH, match.getConfidence());
     assertEquals(address, match.getStop().getLocation().getName());

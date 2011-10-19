@@ -140,36 +140,29 @@ public class TwitterServiceImpl implements TwitterService {
     }
   }
 
-  private void resolveConflicting(Truck truck, TruckStop stop) {
-    // TODO: delete the conflicting stops, not all the stops
-    // TODO: find stop-departure/sold-out markers and terminate existing entries.
-    List<TruckStop> existingStops = truckStopDAO.findDuring(truck.getId(), clock.currentDay());
-    List<TruckStop> toDelete = Lists.newLinkedList();
-    List<TruckStop> toAdd = Lists.newLinkedList();
-    for (TruckStop existingStop : existingStops) {
-      if (existingStop.getEndTime().isBefore(stop.getStartTime())) {
-      } else if (existingStop.getStartTime().isBefore(stop.getStartTime())
-          && existingStop.getEndTime().isAfter(stop.getStartTime())) {
-        // TODO: figure out how to do updates in appengine
-        toAdd.add(existingStop.withEndTime(stop.getStartTime()));
-        toDelete.add(existingStop);
-      } else if(existingStop.getStartTime().isBefore(stop.getEndTime())) {
-        // TODO: figure out how to do updates in appengine
-        toAdd.add(existingStop.withStartTime(stop.getEndTime()));
-        toDelete.add(existingStop);
-      }
-    }
-    toAdd.add(stop);
-    truckStopDAO.deleteStops(toDelete);
-    truckStopDAO.addStops(toAdd);
-  }
-
   private TruckStopMatch findMatch(List<TweetSummary> tweets, Truck truck) {
+    DateTime terminationTime = null;
     for (TweetSummary tweet : tweets ) {
-      TruckStopMatch match = matcher.match(truck, tweet);
+      if (terminationTime == null) {
+        terminationTime = terminationText(tweet);
+        if (terminationTime != null) {
+          continue;
+        }
+      }
+      TruckStopMatch match = matcher.match(truck, tweet, terminationTime);
       if (match != null) {
         return match;
       }
+    }
+    return null;
+  }
+
+  // TODO: probably need an abstraction like TruckStopMatch to handle terminations
+  private DateTime terminationText(TweetSummary tweet) {
+    String tweetText = tweet.getText().toLowerCase();
+    if (tweetText.contains("sold out") || tweetText.contains("good-bye") ||
+        tweetText.contains("good night") || tweetText.contains("good bye")) {
+      return clock.now();
     }
     return null;
   }
