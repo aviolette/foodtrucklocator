@@ -12,6 +12,7 @@ import org.codehaus.jettison.json.JSONObject;
 import foodtruck.model.Location;
 
 /**
+ * A Geolocator instance that uses Yahoo's PlaceFinder service.
  * @author aviolette@gmail.com
  * @since 10/16/11
  */
