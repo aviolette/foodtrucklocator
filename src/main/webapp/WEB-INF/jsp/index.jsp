@@ -62,7 +62,7 @@
     FoodTruckLocator.center = new google.maps.LatLng(${center.latitude}, ${center.longitude});
     <c:choose>
       <c:when test="${empty showScheduleFor}">
-        if (Modernizr.touch) {
+        if (Modernizr.touch || ${mobile}) {
           FoodTruckLocator.loadTrucksWithoutMap(new Date(${requestTimeInMillis}), "${requestTime}");
         } else {
           FoodTruckLocator.loadTrucksWithMap(new Date(${requestTimeInMillis}), "${requestTime}");
