@@ -134,7 +134,7 @@ window.FoodTruckLocator = function() {
         section.append("<div class='locationContent' id='location" + groupIndex +
             "Section' class='contentSection'></div>");
         var div = $('#location' + groupIndex + 'Section');
-        div.append("<address class='locationName'>" + group.position.name + "</address>");
+        div.append("<address class='locationName mobile'>" + group.position.name + "</address>");
         if (group.distance) {
           div.append("<span>" + group.distance + " miles away</span></br>")
         }
@@ -142,18 +142,22 @@ window.FoodTruckLocator = function() {
         $.each(group.trucks, function(idx, truck) {
           div.append("<div class='truckSectionTextOnly' id='truck" + truck.id + "'></div>");
           var truckDiv = $('#truck' + truck.id );
-          truckDiv.append("<strong>" + truck.name + "</strong><br/>");
+          truckDiv.append("<div class='iconSection'><img src='" + truck.iconUrl + "'/></div>");
+          truckDiv.append("<div id='truckLeft" + truck.id + "' class='truckLeft'></div>");
+          var truckLeft = $("#truckLeft" + truck.id);
+
+          truckLeft.append("<strong>" + truck.name + "</strong><br/>");
           if (truck.url) {
-            truckDiv.append("Website: <a target='_blank' href='" + truck.url + "'>" + truck.url +
+            truckLeft.append("Website: <a target='_blank' href='" + truck.url + "'>" + truck.url +
                 "</a><br/>")
           }
           if (truck.twitterHandle) {
-            truckDiv.append("Twitter: <a target='_blank' href='http://twitter.com/" + truck.twitterHandle +
+            truckLeft.append("Twitter: <a target='_blank' href='http://twitter.com/" + truck.twitterHandle +
                 "'>@" +
                 truck.twitterHandle + "</a><br/>");
           }
           if (truck.foursquare) {
-            div.append("<a href='http://m.foursquare.com/venue/" + truck.foursquare +
+            truckLeft.append("<a href='http://m.foursquare.com/venue/" + truck.foursquare +
                 "'><img alt='Checkin on foursquare' src='http://playfoursquare.s3.amazonaws.com/press/logo/checkin-blue.png'/></a><br/>");
           }
         });

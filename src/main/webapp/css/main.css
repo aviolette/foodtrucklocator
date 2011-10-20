@@ -18,6 +18,14 @@ address {
     font-weight: bold;
 }
 
+address.mobile {
+    background-color: #256188;
+    color: white;
+    padding: 10px 5px;
+    display: block;
+    margin-bottom: 5px;
+}
+
 #map_canvas {
     min-width: 500px;
     min-height: 500px;
@@ -76,13 +84,13 @@ footer {
     margin: 0 0 10px 10px;
 }
 
-.menuSection {
+.menuSection, .truckSectionTextOnly {
     margin: 10px 0 0px 0;
     padding: 10px;
     clear: left;
 }
 
-.menuSection:after {
+.menuSection:after, .truckSectionTextOnly:after {
     content: ".";
     display: block;
     height: 0;
@@ -90,6 +98,9 @@ footer {
     visibility: hidden;
 }
 
+.truckLeft {
+    margin-left: 50px;
+}
 .truckGroup {
     padding: 15px 0;
 }
