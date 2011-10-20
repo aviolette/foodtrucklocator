@@ -161,7 +161,9 @@ public class TwitterServiceImpl implements TwitterService {
   private DateTime terminationText(TweetSummary tweet) {
     String tweetText = tweet.getText().toLowerCase();
     if (tweetText.contains("sold out") || tweetText.contains("good-bye") ||
-        tweetText.contains("good night") || tweetText.contains("good bye")) {
+        tweetText.contains("good night") || tweetText.contains("good bye")
+        || tweetText.contains("leaving") || tweetText.contains("heading")
+        || tweetText.contains("thanks") || tweetText.contains("thank you")) {
       return clock.now();
     }
     return null;
