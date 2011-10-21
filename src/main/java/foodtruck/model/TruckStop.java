@@ -80,14 +80,14 @@ public class TruckStop extends ModelEntity {
   /**
    * Returns a new TruckStop with a new startTime
    */
-  public TruckStop withEndTime(DateTime startTime) {
+  public TruckStop withStartTime(DateTime startTime) {
     return new TruckStop(truck, startTime, endTime, location, null);
   }
 
   /**
    * Returns a new TruckStop with a new endTime
    */
-  public TruckStop withStartTime(DateTime endTime) {
+  public TruckStop withEndTime(DateTime endTime) {
     return new TruckStop(truck, startTime, endTime, location, null);
   }
 }
