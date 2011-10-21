@@ -36,4 +36,11 @@ public class TerminationDetectorTest extends EasyMockSupport {
     assertEquals(now, detector.detect(tweetBuilder.text("Thank you U of Chicago for braving the weather today and South Loop for closing out our day!  Enjoy the rest of your night!").build()));
     verifyAll();
   }
+
+  @Test
+  public void test2() {
+    replayAll();
+    assertEquals(now, detector.detect(tweetBuilder.text("Thanks so very much AON&Streeterville!!").build()));
+    verifyAll();
+  }
 }
