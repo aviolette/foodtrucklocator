@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -123,6 +122,19 @@ public class TwitterServiceImpl implements TwitterService {
     tweetDAO.deleteBefore(localDate.toDateTimeAtStartOfDay());
   }
 
+  /**
+   * For trucks that use the twittalyzer, this code takes the existing schedule in the database
+   * (derived from calendar data and past tweets) and merges it with new twitter matches.
+   * The algorithm does the following:
+   * If there is a recent tweet that matches to a truck stop:
+   * for each existing stop:
+   * 1) If the existing stop's end time overlaps with the matched stop's start time,
+   * shorten the existing stop's end time to be the same as the matched stop's start time.
+   * 2) If the existing stop's start time overlaps with the matched stop's end time, shorten
+   * the matched stop's start time.
+   * 3) If the existing stop's contained with the match, then delete the stop
+   * 4) If the match is contained within the stop, then delete the stop
+   */
   @Override
   public void updateLocationsOfTwitterTrucks() {
     log.log(Level.INFO, "Updating twitter trucks");
@@ -132,8 +144,28 @@ public class TwitterServiceImpl implements TwitterService {
       TruckStopMatch match = findMatch(tweets, truck);
       if (match != null) {
         log.log(Level.INFO, "Found match {0}", match);
-        truckStopDAO.deleteAfter(clock.currentDay().toDateMidnight().toDateTime(), truck.getId());
-        truckStopDAO.addStops(ImmutableList.<TruckStop>of(match.getStop()));
+        List<TruckStop> currentStops = truckStopDAO.findDuring(truck.getId(), clock.currentDay());
+        List<TruckStop> deleteStops = Lists.newLinkedList();
+        List<TruckStop> addStops = Lists.newLinkedList();
+        TruckStop matchedStop = match.getStop();
+        for (TruckStop stop : currentStops) {
+          if (stop.getEndTime().isAfter(matchedStop.getStartTime()) &&
+              stop.getStartTime().isBefore(matchedStop.getStartTime())) {
+            deleteStops.add(stop);
+            addStops.add(stop.withEndTime(matchedStop.getStartTime()));
+          } else if (stop.getStartTime().isBefore(matchedStop.getEndTime()) &&
+              stop.getEndTime().isAfter(matchedStop.getEndTime())) {
+            matchedStop = matchedStop.withEndTime(stop.getStartTime());
+          } else if ((stop.getStartTime().equals(matchedStop.getStartTime()) || stop.getStartTime().isAfter(matchedStop.getStartTime())) &&
+              (stop.getEndTime().equals(matchedStop.getEndTime()) || stop.getEndTime().isBefore(matchedStop.getEndTime()))) {
+            deleteStops.add(stop);
+          }
+        }
+        if (!deleteStops.isEmpty()) {
+          truckStopDAO.deleteStops(deleteStops);
+        }
+        addStops.add(matchedStop);
+        truckStopDAO.addStops(addStops);
       } else {
         log.log(Level.INFO, "No matches for {0}", truck.getId());
       }

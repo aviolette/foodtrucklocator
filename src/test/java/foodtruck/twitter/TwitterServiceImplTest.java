@@ -41,6 +41,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
   private Truck truck2;
   private Truck truck3;
   private DateTime now;
+  private LocalDate currentDay;
 
   @Before
   public void before() {
@@ -54,7 +55,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     truckStopDAO = createMock(TruckStopDAO.class);
     final Clock clock = createMock(Clock.class);
     now = new DateTime(2011, 10, 9, 8, 0, 0, 0, zone);
-    final LocalDate currentDay = now.toLocalDate();
+    currentDay = now.toLocalDate();
     expect(clock.now()).andStubReturn(now);
     expect(clock.currentDay()).andStubReturn(currentDay);
     ImmutableMap<String, Truck> truckMap =
@@ -65,35 +66,112 @@ public class TwitterServiceImplTest extends EasyMockSupport {
         clock);
   }
 
-  // This will not be the default behavior, but is now
+  // Terminates last matching tweet at current time if a 'stop phrase' is found.
   @Test
-  public void testAddsAStopAndDeletesAllElseWhenMatchIsMade() {
-    TweetSummary tweet1 = new TweetSummary.Builder().text("tweet1").build();
+  public void testFindsTerminationTweetAndCapsLastTweet() {
+    TweetSummary tweet1 = new TweetSummary.Builder().text("sold out of #tamales for the day.. THANKS #chicago.. See you tomorrow!!").build();
     TweetSummary tweet2 = new TweetSummary.Builder().text("tweet2").build();
+    expect(truckStopDAO.findDuring(TRUCK_2_ID, currentDay)).andReturn(ImmutableList.<TruckStop>of());
     List<TweetSummary> tweets = ImmutableList.of(tweet1, tweet2);
     TruckStop stop = new TruckStop(truck2, now.minusHours(3), now.minusHours(2), new Location(-1, -2, "Foobar"), null);
     TruckStopMatch match = new TruckStopMatch(Confidence.HIGH, stop, "tweet2");
     expect(tweetDAO.findTweetsAfter(now.minusHours(4), TRUCK_2_ID)).andReturn(tweets);
-    expect(matcher.match(truck2, tweet1, null)).andReturn(null);
-    expect(matcher.match(truck2, tweet2, null)).andReturn(match);
-    truckStopDAO.deleteAfter(now.toDateMidnight().toDateTime(), TRUCK_2_ID);
+    expect(matcher.match(truck2, tweet2, now)).andReturn(match);
     truckStopDAO.addStops(ImmutableList.<TruckStop>of(stop));
     replayAll();
     service.updateLocationsOfTwitterTrucks();
     verifyAll();
   }
 
-  // Terminates last matching tweet at current time if a 'stop phrase' is found.
   @Test
-  public void testFindsTerminationTweetAndCapsLastTweet() {
-    TweetSummary tweet1 = new TweetSummary.Builder().text("sold out of #tamales for the day.. THANKS #chicago.. See you tomorrow!!").build();
-    TweetSummary tweet2 = new TweetSummary.Builder().text("tweet2").build();
-    List<TweetSummary> tweets = ImmutableList.of(tweet1, tweet2);
-    TruckStop stop = new TruckStop(truck2, now.minusHours(3), now.minusHours(2), new Location(-1, -2, "Foobar"), null);
-    TruckStopMatch match = new TruckStopMatch(Confidence.HIGH, stop, "tweet2");
+  public void testKeepsOlderEventWhenNoOverlap() {
+    TweetSummary tweet1 = new TweetSummary.Builder().time(now.minusHours(2)).text(
+        "We are at Kingsbury and Erie.").build();
+    List<TweetSummary> tweets = ImmutableList.of(tweet1);
     expect(tweetDAO.findTweetsAfter(now.minusHours(4), TRUCK_2_ID)).andReturn(tweets);
-    expect(matcher.match(truck2, tweet2, now)).andReturn(match);
-    truckStopDAO.deleteAfter(now.toDateMidnight().toDateTime(), TRUCK_2_ID);
+    TruckStop stop = new TruckStop(truck2, now.minusHours(3), now.minusHours(2), new Location(-1, -2, "Foobar"), null);
+    TruckStopMatch match = new TruckStopMatch(Confidence.HIGH, stop, tweet1.getText());
+    expect(matcher.match(truck2, tweet1, null)).andReturn(match);
+    Location loc = new Location(-3, -4, "First Location");
+    TruckStop stopBeforeCurrent = new TruckStop(truck2, now.minusHours(5).toDateTime(), now.minusHours(3), loc, null);
+    expect(truckStopDAO.findDuring(TRUCK_2_ID, currentDay)).andReturn(ImmutableList.<TruckStop>of(stopBeforeCurrent));
+    truckStopDAO.addStops(ImmutableList.<TruckStop>of(stop));
+    replayAll();
+    service.updateLocationsOfTwitterTrucks();
+    verifyAll();
+  }
+
+  @Test
+  public void testStopEndsAfterMatchStart() {
+    TweetSummary tweet1 = new TweetSummary.Builder().time(now.minusHours(2)).text(
+        "We are at Kingsbury and Erie.").build();
+    List<TweetSummary> tweets = ImmutableList.of(tweet1);
+    expect(tweetDAO.findTweetsAfter(now.minusHours(4), TRUCK_2_ID)).andReturn(tweets);
+    TruckStop matchStop = new TruckStop(truck2, now.minusHours(3), now.minusHours(2), new Location(-1, -2, "Foobar"), null);
+    TruckStopMatch match = new TruckStopMatch(Confidence.HIGH, matchStop, tweet1.getText());
+    expect(matcher.match(truck2, tweet1, null)).andReturn(match);
+    Location loc = new Location(-3, -4, "First Location");
+    TruckStop currentStop = new TruckStop(truck2, now.minusHours(4), now.minusMinutes(150), loc, null);
+    expect(truckStopDAO.findDuring(TRUCK_2_ID, currentDay)).andReturn(ImmutableList.<TruckStop>of(currentStop));
+    truckStopDAO.deleteStops(ImmutableList.<TruckStop>of(currentStop));
+    truckStopDAO.addStops(ImmutableList.<TruckStop>of(currentStop.withEndTime(matchStop.getStartTime()), matchStop));
+    replayAll();
+    service.updateLocationsOfTwitterTrucks();
+    verifyAll();
+  }
+
+  @Test
+   public void testMatchContainsCurrentStop() {
+     TweetSummary tweet1 = new TweetSummary.Builder().time(now.minusHours(2)).text(
+         "We are at Kingsbury and Erie.").build();
+     List<TweetSummary> tweets = ImmutableList.of(tweet1);
+     expect(tweetDAO.findTweetsAfter(now.minusHours(4), TRUCK_2_ID)).andReturn(tweets);
+     TruckStop matchStop = new TruckStop(truck2, now.minusHours(3), now.minusHours(2), new Location(-1, -2, "Foobar"), null);
+     TruckStopMatch match = new TruckStopMatch(Confidence.HIGH, matchStop, tweet1.getText());
+     expect(matcher.match(truck2, tweet1, null)).andReturn(match);
+     Location loc = new Location(-3, -4, "First Location");
+     TruckStop currentStop = new TruckStop(truck2, now.minusMinutes(3), now.minusMinutes(150), loc, null);
+     expect(truckStopDAO.findDuring(TRUCK_2_ID, currentDay)).andReturn(ImmutableList.<TruckStop>of(currentStop));
+    truckStopDAO.deleteStops(ImmutableList.<TruckStop>of(currentStop));
+     truckStopDAO.addStops(
+         ImmutableList.<TruckStop>of(matchStop));
+     replayAll();
+     service.updateLocationsOfTwitterTrucks();
+     verifyAll();
+   }
+
+
+ @Test
+  public void testStopStartsBeforeMatchEnds() {
+    TweetSummary tweet1 = new TweetSummary.Builder().time(now.minusHours(2)).text(
+        "We are at Kingsbury and Erie.").build();
+    List<TweetSummary> tweets = ImmutableList.of(tweet1);
+    expect(tweetDAO.findTweetsAfter(now.minusHours(4), TRUCK_2_ID)).andReturn(tweets);
+    TruckStop matchStop = new TruckStop(truck2, now.minusHours(3), now.minusHours(2), new Location(-1, -2, "Foobar"), null);
+    TruckStopMatch match = new TruckStopMatch(Confidence.HIGH, matchStop, tweet1.getText());
+    expect(matcher.match(truck2, tweet1, null)).andReturn(match);
+    Location loc = new Location(-3, -4, "First Location");
+    TruckStop currentStop = new TruckStop(truck2, now.minusMinutes(150), now.minusHours(1), loc, null);
+    expect(truckStopDAO.findDuring(TRUCK_2_ID, currentDay)).andReturn(ImmutableList.<TruckStop>of(currentStop));
+    truckStopDAO.addStops(
+        ImmutableList.<TruckStop>of(matchStop.withEndTime(currentStop.getStartTime())));
+    replayAll();
+    service.updateLocationsOfTwitterTrucks();
+    verifyAll();
+  }
+
+  @Test
+  public void testKeepsFutureEventWhenNoOverlap() {
+    TweetSummary tweet1 = new TweetSummary.Builder().time(now.minusHours(2)).text(
+        "We are at Kingsbury and Erie.").build();
+    List<TweetSummary> tweets = ImmutableList.of(tweet1);
+    expect(tweetDAO.findTweetsAfter(now.minusHours(4), TRUCK_2_ID)).andReturn(tweets);
+    TruckStop stop = new TruckStop(truck2, now.minusHours(3), now.minusHours(2), new Location(-1, -2, "Foobar"), null);
+    TruckStopMatch match = new TruckStopMatch(Confidence.HIGH, stop, tweet1.getText());
+    expect(matcher.match(truck2, tweet1, null)).andReturn(match);
+    Location loc = new Location(-3, -4, "First Location");
+    TruckStop stopAfter = new TruckStop(truck2, now.minusHours(1).toDateTime(), now, loc, null);
+    expect(truckStopDAO.findDuring(TRUCK_2_ID, currentDay)).andReturn(ImmutableList.<TruckStop>of(stopAfter));
     truckStopDAO.addStops(ImmutableList.<TruckStop>of(stop));
     replayAll();
     service.updateLocationsOfTwitterTrucks();
