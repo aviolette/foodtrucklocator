@@ -5,7 +5,6 @@ import java.util.List;
 import com.google.common.collect.Iterables;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -142,6 +141,11 @@ public class AddressExtractorTest {
     assertTweet("Soldier Field", "Family walk (@ Soldier Field w/ 2 others) [pic]: http://t.co/BJJjbmQt");
   }
 
+  @Test
+  public void testUofC() {
+    assertTweet("57th and Ellis, Chicago, IL", "Thank you U of Chicago for braving the weather today and South Loop for closing out our day!  Enjoy the rest of your night!");
+    assertTweet("57th and Ellis, Chicago, IL", "Another RAINY Day.. GiGi is making usual stop at UIC today. Ellis 57 & 58 11:30.  Ellis / 60th 1:30 @UofCGHI @UChicago @uicradio @uchiNOMgo");
+  }
 
   private void assertTweet(String expected, String tweet) {
     List<String> addresses = parser.parse(tweet);

@@ -17,7 +17,13 @@ import com.google.common.collect.Iterables;
  */
 public class AddressExtractor {
   private final List<PatternTransform> patterns;
-
+  private static Function<String, String> keyword(final String toWhat) {
+    return new Function<String, String>() {
+      @Override public String apply(@Nullable String input) {
+        return toWhat;
+      }
+    };
+  }
   public AddressExtractor() {
     Function<String, String> cityAppender = new Function<String, String>() {
       public String apply(String input) {
@@ -45,6 +51,8 @@ public class AddressExtractor {
     patterns = ImmutableList.of(
         // foursquare format
         new PatternTransform(Pattern.compile("\\(@ (.*)\\)"), foursquareMassage, true, 1),
+        // University of Chicago
+        new PatternTransform(Pattern.compile("U of Chicago|UofC|UChicago"), keyword("57th and Ellis, Chicago, IL"), true, 0),
         // tamale spaceship format
         new PatternTransform(Pattern.compile("<<(.*)>>"), null, true, 1),
         // intersection format
