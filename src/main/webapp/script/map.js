@@ -86,6 +86,7 @@ window.FoodTruckLocator = function() {
         context: document.body,
         dataType: 'json',
         success: function(data) {
+          self.removeAll();
           truckListener.start();
           $.each(data, function(idx, truckGroup) {
             if (typeof truckGroup['location'] != 'undefined') {
@@ -208,6 +209,12 @@ window.FoodTruckLocator = function() {
           self.trucks.loadTrucks(initialDate + "-" + time.join(""));
         }
       });
+
+      this.value = function(hour, min) {
+        var val = (hour * 60) + min;
+        displayTime(val);
+        $("#slider").slider("option", "value", val);
+      };
     };
     var slider = new TimeSlider(requestTime, requestDate);
     var bounds, menuSection = $("#foodTruckList");
@@ -280,7 +287,11 @@ window.FoodTruckLocator = function() {
 
     self.finished = function(groups) {
       if (groups.length == 0) {
-        menuSection.append("<div class='flash'>There are currently no food trucks on the streets that we know of.</div>");
+        menuSection.append("<div class='flash'>There are currently no food trucks on the streets that we know of. Most food trucks come on the streets at <a href='#' id='advanceTime'>11:30</a> or so.</div>");
+        $("#advanceTime").live("click", function(e) {
+          e.preventDefault();
+          slider.value(11, 30);
+        });
         return;
       }
       var sorted = groups.sort(function (a, b) {
