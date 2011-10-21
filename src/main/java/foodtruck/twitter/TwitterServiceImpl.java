@@ -21,6 +21,7 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.model.Trucks;
 import foodtruck.model.TweetSummary;
+import foodtruck.schedule.TerminationDetector;
 import foodtruck.schedule.TruckStopMatch;
 import foodtruck.schedule.TruckStopMatcher;
 import foodtruck.util.Clock;
@@ -44,11 +45,13 @@ public class TwitterServiceImpl implements TwitterService {
   private final TruckStopMatcher matcher;
   private final TruckStopDAO truckStopDAO;
   private final Clock clock;
+  private TerminationDetector terminationDetector;
 
   @Inject
   public TwitterServiceImpl(TwitterFactoryWrapper twitter, TweetCacheDAO tweetDAO,
       @Named("foodtruck.twitter.list") int twitterListId, Trucks trucks, DateTimeZone zone,
-      TruckStopMatcher matcher, TruckStopDAO truckStopDAO, Clock clock) {
+      TruckStopMatcher matcher, TruckStopDAO truckStopDAO, Clock clock,
+      TerminationDetector detector) {
     this.tweetDAO = tweetDAO;
     this.twitterFactory = twitter;
     this.twitterListId = twitterListId;
@@ -57,6 +60,7 @@ public class TwitterServiceImpl implements TwitterService {
     this.matcher = matcher;
     this.truckStopDAO = truckStopDAO;
     this.clock = clock;
+    this.terminationDetector = detector;
   }
 
   @Override
@@ -156,8 +160,10 @@ public class TwitterServiceImpl implements TwitterService {
           } else if (stop.getStartTime().isBefore(matchedStop.getEndTime()) &&
               stop.getEndTime().isAfter(matchedStop.getEndTime())) {
             matchedStop = matchedStop.withEndTime(stop.getStartTime());
-          } else if ((stop.getStartTime().equals(matchedStop.getStartTime()) || stop.getStartTime().isAfter(matchedStop.getStartTime())) &&
-              (stop.getEndTime().equals(matchedStop.getEndTime()) || stop.getEndTime().isBefore(matchedStop.getEndTime()))) {
+          } else if ((stop.getStartTime().equals(matchedStop.getStartTime()) ||
+              stop.getStartTime().isAfter(matchedStop.getStartTime())) &&
+              (stop.getEndTime().equals(matchedStop.getEndTime()) ||
+                  stop.getEndTime().isBefore(matchedStop.getEndTime()))) {
             deleteStops.add(stop);
           }
         }
@@ -174,9 +180,9 @@ public class TwitterServiceImpl implements TwitterService {
 
   private TruckStopMatch findMatch(List<TweetSummary> tweets, Truck truck) {
     DateTime terminationTime = null;
-    for (TweetSummary tweet : tweets ) {
+    for (TweetSummary tweet : tweets) {
       if (terminationTime == null) {
-        terminationTime = terminationText(tweet);
+        terminationTime = terminationDetector.detect(tweet);
         if (terminationTime != null) {
           continue;
         }
@@ -185,18 +191,6 @@ public class TwitterServiceImpl implements TwitterService {
       if (match != null) {
         return match;
       }
-    }
-    return null;
-  }
-
-  // TODO: probably need an abstraction like TruckStopMatch to handle terminations
-  private DateTime terminationText(TweetSummary tweet) {
-    String tweetText = tweet.getText().toLowerCase();
-    if (tweetText.contains("sold out") || tweetText.contains("good-bye") ||
-        tweetText.contains("good night") || tweetText.contains("good bye")
-        || tweetText.contains("leaving") || tweetText.contains("heading")
-        || tweetText.contains("thanks") || tweetText.contains("thank you")) {
-      return clock.now();
     }
     return null;
   }
