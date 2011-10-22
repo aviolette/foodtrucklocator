@@ -64,6 +64,9 @@ public class AddressExtractor {
         // Old Town
         new PatternTransform(Pattern.compile("old town", Pattern.CASE_INSENSITIVE),
             keyword("North and Wells, Chicago, IL"), true, 0),
+        // Lincoln Park Zoo
+        new PatternTransform(Pattern.compile("lincoln park zoo", Pattern.CASE_INSENSITIVE),
+            keyword("Lincoln Park Zoo, Chicago, IL"), true, 0),
         // tamale spaceship format
         new PatternTransform(Pattern.compile("<<(.*)>>"), null, true, 1),
         // intersection format
