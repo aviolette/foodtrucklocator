@@ -24,7 +24,8 @@ public class AddressExtractorTest {
 
   @Test
   public void testParse1() {
-    String tweet = "We're in a food truck flashmob at 4PM today across from 1601 N. Clark! Hello #HotFreshHistory www.chicagohs.org";
+    String tweet =
+        "We're in a food truck flashmob at 4PM today across from 1601 N. Clark! Hello #HotFreshHistory www.chicagohs.org";
     List<String> addresses = parser.parse(tweet);
     assertNotNull(addresses);
     assertEquals(1, addresses.size());
@@ -33,12 +34,13 @@ public class AddressExtractorTest {
 
   @Test
   public void testParse2() {
-    String tweet = "Wed Sched:  HS1: Monroe&Dearborn  HS2: Monroe&Wacker.  11:30am start times.  Waka Waka Chakalaka!!";
+    String tweet =
+        "Wed Sched:  HS1: Monroe&Dearborn  HS2: Monroe & Wacker.  11:30am start times.  Waka Waka Chakalaka!!";
     List<String> addresses = parser.parse(tweet);
     assertNotNull(addresses);
     assertEquals(2, addresses.size());
-    assertEquals("Monroe&Dearborn, Chicago, IL", addresses.get(0));
-    assertEquals("Monroe&Wacker, Chicago, IL", addresses.get(1));
+    assertEquals("Monroe and Dearborn, Chicago, IL", addresses.get(0));
+    assertEquals("Monroe and Wacker, Chicago, IL", addresses.get(1));
   }
 
   @Test
@@ -49,8 +51,8 @@ public class AddressExtractorTest {
     List<String> addresses = parser.parse(tweet);
     assertNotNull(addresses);
     assertEquals(2, addresses.size());
-    assertEquals("Dearborn/Monroe, Chicago, IL", addresses.get(0));
-    assertEquals("Monroe/Wacker, Chicago, IL", addresses.get(1));
+    assertEquals("Dearborn and Monroe, Chicago, IL", addresses.get(0));
+    assertEquals("Monroe and Wacker, Chicago, IL", addresses.get(1));
   }
 
   @Test
@@ -81,7 +83,7 @@ public class AddressExtractorTest {
     assertEquals("Rush and Walton, Chicago, IL", addresses.get(0));
   }
 
- @Test
+  @Test
   public void testParseIntersection2() {
     String tweet = "Gold Coast, we have landed at Rush and Walton...here until 6 pm";
     List<String> addresses = parser.parse(tweet);
@@ -90,7 +92,7 @@ public class AddressExtractorTest {
     assertEquals("Rush and Walton, Chicago, IL", addresses.get(0));
   }
 
- @Test
+  @Test
   public void testParseIntersection3() {
     String tweet = "Thanks Gold Coast! River North you ready?  Kingsbury and Erie, here we come!";
     assertTweet("Kingsbury and Erie, Chicago, IL", tweet);
@@ -98,19 +100,26 @@ public class AddressExtractorTest {
 
   @Test
   public void testParseIntersection4() {
-    assertTweet("Hubbard and LaSalle, Chicago, IL", "Alright #RiverNorth we're at Hubbard and LaSalle for the final stop of the night");
+    assertTweet("Hubbard and LaSalle, Chicago, IL",
+        "Alright #RiverNorth we're at Hubbard and LaSalle for the final stop of the night");
   }
 
   @Test
   public void testParseIntersection5() {
-    assertTweet("North and Wells, Chicago, IL", "Last call at North and Wells for the #KefirTruck! T-10 minutes!");
-    assertTweet("Michigan and Ohio, Chicago, IL", "Oh yea oh yea beautiful night in the Chi. Come get ur froyo fix we are on the corner of Michigan and Ohio!");
+    assertTweet("North and Wells, Chicago, IL",
+        "Last call at North and Wells for the #KefirTruck! T-10 minutes!");
+    assertTweet("Michigan and Ohio, Chicago, IL",
+        "Oh yea oh yea beautiful night in the Chi. Come get ur froyo fix we are on the corner of Michigan and Ohio!");
   }
 
   @Test
   public void testOnlyParseMixedCasedIntersections() {
-    assertTweet("Randolph and Columbus, Chicago, IL", "Original tart, carrot cake, and cake batter today! Come and get it! Just arrived at Randolph & Columbus.");
-    assertTweet("13th and Michigan, Chicago, IL", "Original tart, carrot cake, and cake batter today! Come and get it! Just arrived at 13th and Michigan.");
+    assertTweet("Randolph and Columbus, Chicago, IL",
+        "Original tart, carrot cake, and cake batter today! Come and get it! Just arrived at Randolph & Columbus.");
+    assertTweet("13th and Michigan, Chicago, IL",
+        "Original tart, carrot cake, and cake batter today! Come and get it! Just arrived at 13th and Michigan.");
+    assertTweet("13th and S Michigan, Chicago, IL",
+        "Bring your Sweet Tooth to 13th / S Michigan.  Sold the last Pumpkin Latte but still have Red Velvet, Choco Cocoa,... http://t.co/PtDKjth0");
   }
 
   @Test
@@ -118,7 +127,8 @@ public class AddressExtractorTest {
     assertTweet("Harpo Studios", "Just landed at harpo.  Come get your yogurt");
     assertTweet("Harpo Studios", "Just landed at Harpo.  Come get your yogurt");
     assertTweet("Harpo Studios", "Just landed at Harpo Studios.  Come get your yogurt");
-    List<String> addresses = parser.parse("Come see @MamaGreenGoodie at the Men's Health Magazine Urbanathalon tomorrow at Grant Park. We will be parked on Columbus & Balbo.");
+    List<String> addresses = parser.parse(
+        "Come see @MamaGreenGoodie at the Men's Health Magazine Urbanathalon tomorrow at Grant Park. We will be parked on Columbus & Balbo.");
     assertNotNull(addresses);
     assertEquals(2, addresses.size());
     assertEquals("Columbus and Balbo, Chicago, IL", addresses.get(0));
@@ -133,18 +143,27 @@ public class AddressExtractorTest {
 
   @Test
   public void testFoursquareFormat() {
-    assertTweet("694 Wine & Spirits", "Time for Wagyu! Come eat (@ 694 Wine & Spirits) http://t.co/mwKr61G6");
+    assertTweet("694 Wine & Spirits",
+        "Time for Wagyu! Come eat (@ 694 Wine & Spirits) http://t.co/mwKr61G6");
   }
 
   @Test
   public void testFoursquareFormatWithUserCount() {
-    assertTweet("Soldier Field", "Family walk (@ Soldier Field w/ 2 others) [pic]: http://t.co/BJJjbmQt");
+    assertTweet("Soldier Field",
+        "Family walk (@ Soldier Field w/ 2 others) [pic]: http://t.co/BJJjbmQt");
   }
 
   @Test
   public void testUofC() {
-    assertTweet("57th and Ellis, Chicago, IL", "Thank you U of Chicago for braving the weather today and South Loop for closing out our day!  Enjoy the rest of your night!");
-    assertTweet("57th and Ellis, Chicago, IL", "Another RAINY Day.. GiGi is making usual stop at UIC today. Ellis 57 & 58 11:30.  Ellis / 60th 1:30 @UofCGHI @UChicago @uicradio @uchiNOMgo");
+    assertTweet("57th and Ellis, Chicago, IL",
+        "Thank you U of Chicago for braving the weather today and South Loop for closing out our day!  Enjoy the rest of your night!");
+    assertTweet("57th and Ellis, Chicago, IL",
+        "Another RAINY Day.. GiGi is making usual stop at UIC today. Ellis 57 & 58 11:30.  Ellis / 60th 1:30 @UofCGHI @UChicago @uicradio @uchiNOMgo");
+  }
+
+  @Test
+  public void testOldTown() {
+    assertTweet("North and Wells, Chicago, IL", "#KefirTruck on the move! Next stop Old Town!!");
   }
 
   private void assertTweet(String expected, String tweet) {
