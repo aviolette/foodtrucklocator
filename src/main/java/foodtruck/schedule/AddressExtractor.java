@@ -17,6 +17,7 @@ import com.google.common.collect.Iterables;
  */
 public class AddressExtractor {
   private final List<PatternTransform> patterns;
+
   private static Function<String, String> keyword(final String toWhat) {
     return new Function<String, String>() {
       @Override public String apply(@Nullable String input) {
@@ -24,6 +25,7 @@ public class AddressExtractor {
       }
     };
   }
+
   public AddressExtractor() {
     Function<String, String> cityAppender = new Function<String, String>() {
       public String apply(String input) {
@@ -32,8 +34,9 @@ public class AddressExtractor {
     };
     Function<String, String> keywordReplace = new Function<String, String>() {
       final ImmutableMap<String, String> keywords = ImmutableMap.of("@wttw", "WTTW", "harpo",
-          "Harpo Studios", "grant park", "Grant Park", "aon", "Randolph and Columbus, Chicago, IL",
+          "Harpo Studios", "grant park", "Grant Park",
           "presidential towers", "Presidential Towers");
+
       public String apply(String input) {
         return keywords.get(input.toLowerCase());
       }
@@ -52,21 +55,31 @@ public class AddressExtractor {
         // foursquare format
         new PatternTransform(Pattern.compile("\\(@ (.*)\\)"), foursquareMassage, true, 1),
         // University of Chicago
-        new PatternTransform(Pattern.compile("U of Chicago|UofC|UChicago"), keyword("57th and Ellis, Chicago, IL"), true, 0),
+        new PatternTransform(
+            Pattern.compile("U of Chicago|UofC|UChicago", Pattern.CASE_INSENSITIVE),
+            keyword("57th and Ellis, Chicago, IL"), true, 0),
+        // AON
+        new PatternTransform(Pattern.compile("@aon| aon", Pattern.CASE_INSENSITIVE),
+            keyword("Randolph and Columbus, Chicago, IL"), true, 0),
         // tamale spaceship format
         new PatternTransform(Pattern.compile("<<(.*)>>"), null, true, 1),
         // intersection format
-        new PatternTransform(Pattern.compile("[A-Z0-9][a-zA-Z0-9]+((\\s+(and)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))[A-Z0-9][a-zA-Z0-9]+"), cityAppender, false, 0),
+        new PatternTransform(Pattern.compile(
+            "[A-Z0-9][a-zA-Z0-9]+((\\s+(and)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))[A-Z0-9][a-zA-Z0-9]+"),
+            cityAppender, false, 0),
         // address format
-        new PatternTransform(Pattern.compile("(^:)*\\d+\\s*[NnSsEeWw]\\.*\\s+\\w+"), cityAppender, false, 0),
+        new PatternTransform(Pattern.compile("(^:)*\\d+\\s*[NnSsEeWw]\\.*\\s+\\w+"), cityAppender,
+            false, 0),
         // keyword format
-        new PatternTransform(Pattern.compile("@wttw|harpo|grant park|aon|presidential towers", Pattern.CASE_INSENSITIVE), keywordReplace, false, 0)
+        new PatternTransform(
+            Pattern.compile("@wttw|harpo|grant park|presidential towers", Pattern.CASE_INSENSITIVE),
+            keywordReplace, false, 0)
     );
   }
 
   List<String> parse(String tweet) {
     ImmutableList.Builder<String> addresses = ImmutableList.builder();
-    for ( PatternTransform  p : patterns) {
+    for (PatternTransform p : patterns) {
       if (!p.findAndMatch(tweet, addresses)) {
         break;
       }
