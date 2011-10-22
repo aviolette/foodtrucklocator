@@ -10,6 +10,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import foodtruck.model.Location;
+import foodtruck.util.ServiceException;
 
 /**
  * A Geolocator instance that uses Yahoo's PlaceFinder service.
@@ -27,8 +28,8 @@ public class YahooGeolocator implements GeoLocator {
 
   @Override
   public Location locate(String location) {
-    JSONObject obj = yahooResource.findLocation(location);
     try {
+      JSONObject obj = yahooResource.findLocation(location);
       log.log(Level.INFO, "Geolocation result for {0}: \n{1}",
           new Object[] {location, obj.toString()});
       JSONObject resultSet = obj.getJSONObject("ResultSet");
@@ -38,13 +39,16 @@ public class YahooGeolocator implements GeoLocator {
       JSONArray results = resultSet.getJSONArray("Results");
       JSONObject result = results.getJSONObject(0);
       if (result.getInt("quality") < 40) {
-        log.log(Level.INFO, "Result was too granular");
+        log.log(Level.INFO, "Result was too broad");
         return null;
       }
       return new Location(Double.parseDouble(result.getString("latitude")),
           Double.parseDouble(result.getString("longitude")), location);
     } catch (JSONException e) {
-      throw new RuntimeException(e);
+      log.log(Level.WARNING, e.getMessage(), e);
+    } catch (ServiceException e) {
+      log.log(Level.WARNING, e.getMessage(), e);
     }
+    return null;
   }
 }

@@ -6,6 +6,8 @@ import com.sun.jersey.api.client.WebResource;
 
 import org.codehaus.jettison.json.JSONObject;
 
+import foodtruck.util.ServiceException;
+
 /**
  * Extracting out the resource for easier testing
  * @author aviolette@gmail.com
@@ -21,10 +23,21 @@ public class YahooResource {
     this.resource = resource;
   }
 
-  public JSONObject findLocation(String location) {
-    return resource.queryParam("q", location)
-        .queryParam("flags", "j")
-        .queryParam("appid", yahooId)
-        .get(JSONObject.class);
+  /**
+   * Calls the geolocation service and returns the JSON payload
+   * @param location the location
+   * @return the JSON Object
+   * @throws ServiceException if an error occurs calling the service
+   */
+  public JSONObject findLocation(String location) throws ServiceException {
+    try {
+      return resource.queryParam("q", location)
+          .queryParam("flags", "j")
+          .queryParam("appid", yahooId)
+          .header("Accept", "text/json; application/json")
+          .get(JSONObject.class);
+    } catch (RuntimeException rte) {
+      throw new ServiceException(rte);
+    }
   }
 }
