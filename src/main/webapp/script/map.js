@@ -10,7 +10,7 @@ window.FoodTruckLocator = function() {
     return a.distance > b.distance ? 1 : ((a.distance == b.distance) ? 0 : -1);
   }
 
-  function buildMarker(objectOnMap,letter, bounds, map) {
+  function buildMarker(objectOnMap, letter, bounds, map) {
     objectOnMap.marker = new google.maps.Marker({
       map: map,
       icon: buildIconUrl(letter),
@@ -38,7 +38,7 @@ window.FoodTruckLocator = function() {
     section.append("<div class='menuContent' id='" + truck.id +
         "Section' class='contentSection'></div>");
     var div = $('#' + truck.id + 'Section');
-    div.append("<a class='activationLink' href='/" +  truck.id + "'>" + truck.name + "</a><br/> ");
+    div.append("<a class='activationLink' href='/" + truck.id + "'>" + truck.name + "</a><br/> ");
     if (locationName) {
       div.append("<span class='locationName'>" + locationName + "</span></br>");
     }
@@ -125,12 +125,13 @@ window.FoodTruckLocator = function() {
 
     self.finished = function(groups) {
       if (groups.length == 0) {
-        menuSection.append("<div class='flash'>There are currently no food trucks on the streets that we know of.</div>");
+        menuSection
+            .append("<div class='flash'>There are currently no food trucks on the streets that we know of.</div>");
         return;
       }
       var sorted = groups.sort(distanceSort);
       $.each(sorted, function(groupIndex, group) {
-        menuSection.append("<div class='truckGroup' id='group" + groupIndex +"'></div>");
+        menuSection.append("<div class='truckGroup' id='group" + groupIndex + "'></div>");
         var section = $("#group" + groupIndex);
         section.append("<div class='locationContent' id='location" + groupIndex +
             "Section' class='contentSection'></div>");
@@ -139,10 +140,11 @@ window.FoodTruckLocator = function() {
         if (group.distance) {
           div.append("<span>" + group.distance + " miles away</span></br>")
         }
-        div.append(" <a href='http://maps.google.com/maps?q="+group.position.latLng.lat()+","+group.position.latLng.lng()+"'>map</a><br/><br/>")
+        div.append(" <a href='http://maps.google.com/maps?q=" + group.position.latLng.lat() + "," +
+            group.position.latLng.lng() + "'>map</a><br/><br/>")
         $.each(group.trucks, function(idx, truck) {
           div.append("<div class='truckSectionTextOnly' id='truck" + truck.id + "'></div>");
-          var truckDiv = $('#truck' + truck.id );
+          var truckDiv = $('#truck' + truck.id);
           truckDiv.append("<div class='iconSection'><img src='" + truck.iconUrl + "'/></div>");
           truckDiv.append("<div id='truckLeft" + truck.id + "' class='truckLeft'></div>");
           var truckLeft = $("#truckLeft" + truck.id);
@@ -153,7 +155,8 @@ window.FoodTruckLocator = function() {
                 "</a><br/>")
           }
           if (truck.twitterHandle) {
-            truckLeft.append("Twitter: <a target='_blank' href='http://twitter.com/" + truck.twitterHandle +
+            truckLeft.append("Twitter: <a target='_blank' href='http://twitter.com/" +
+                truck.twitterHandle +
                 "'>@" +
                 truck.twitterHandle + "</a><br/>");
           }
@@ -221,7 +224,7 @@ window.FoodTruckLocator = function() {
 
     self.start = function() {
       menuSection.empty();
-      bounds = new google.maps.LatLngBounds ();
+      bounds = new google.maps.LatLngBounds();
       bounds.extend(center);
     };
 
@@ -242,7 +245,8 @@ window.FoodTruckLocator = function() {
       section.append("<div class='locationContent' id='location" + idx +
           "Section' class='contentSection'></div>");
       var div = $('#location' + idx + 'Section');
-      div.append("<address class='locationName'>" + removeChicago(group.position.name) + "</address>");
+      div.append("<address class='locationName'>" + removeChicago(group.position.name) +
+          "</address>");
       if (group.distance) {
         div.append("<span>" + group.distance + " miles away</span></br></br>")
       }
@@ -276,7 +280,7 @@ window.FoodTruckLocator = function() {
       });
       contentString = contentString + "</ul>";
       var infowindow = new google.maps.InfoWindow({
-          content: contentString
+        content: contentString
       });
 
       google.maps.event.addListener(group.marker, 'click', function() {
@@ -287,7 +291,8 @@ window.FoodTruckLocator = function() {
 
     self.finished = function(groups) {
       if (groups.length == 0) {
-        menuSection.append("<div class='flash'>There are currently no food trucks on the streets that we know of. Most food trucks come on the streets at <a href='#' id='advanceTime'>11:30</a> or so.</div>");
+        menuSection
+            .append("<div class='flash'>There are currently no food trucks on the streets that we know of. Most food trucks come on the streets at <a href='#' id='advanceTime'>11:30</a> or so.</div>");
         $("#advanceTime").live("click", function(e) {
           e.preventDefault();
           slider.value(11, 30);
@@ -335,7 +340,7 @@ window.FoodTruckLocator = function() {
     self.start = function(tr) {
       menuSection.empty();
       menuSection.append("<a href='/'>&#171; Back to Main List</a><br/> ")
-      bounds  = new google.maps.LatLngBounds ();
+      bounds = new google.maps.LatLngBounds();
       bounds.extend(center);
       truck = tr;
       buildMenuItem(menuSection, truck, null, true, null);
@@ -344,12 +349,12 @@ window.FoodTruckLocator = function() {
     self.itemAdded = function(item, idx) {
       var letter = String.fromCharCode(65 + idx);
       buildMarker(item, letter, bounds, map);
-      menuSection.append("<div class='menuSection' id='menu" + idx +"'/>");
-      var section = $('#menu' + idx) ;
+      menuSection.append("<div class='menuSection' id='menu" + idx + "'/>");
+      var section = $('#menu' + idx);
       var markerText = "<img src='" + buildIconUrl(letter) + "'/>";
       section.append("<div class='markerSection'>" + markerText + "</div>");
       section.append("<div class='menuContent' id='menu" + idx +
-           "Section' class='contentSection'></div>");
+          "Section' class='contentSection'></div>");
       var div = $('#menu' + idx + 'Section');
       div.append(item.startTime + "<br/>");
       div.append(item.position.name);
@@ -367,26 +372,26 @@ window.FoodTruckLocator = function() {
     var scheduleItems = [];
 
     self.loadTruckSchedule = function(truckId) {
-       $.ajax({
-         url: "/service/schedule/" + truckId,
-         context: document.body,
-         dataType: 'json',
-         success: function(data) {
-           truck = data.truck;
-            scheduleListener.start(truck);
-           $.each(data.stops, function(idx, scheduleItem) {
-             var latlng = new google.maps.LatLng(scheduleItem.location.latitude,
-                 scheduleItem.location.longitude);
-             var locationName = (typeof scheduleItem.location['name'] == 'undefined') ? null :
-                 scheduleItem.location.name;
-             scheduleItem.position = {name: locationName, latLng : latlng }
-             scheduleItems.push(scheduleItem);
-             scheduleListener.itemAdded(scheduleItem, idx);
-           });
-           scheduleListener.finish();
-         }
-       });
-     };
+      $.ajax({
+        url: "/service/schedule/" + truckId,
+        context: document.body,
+        dataType: 'json',
+        success: function(data) {
+          truck = data.truck;
+          scheduleListener.start(truck);
+          $.each(data.stops, function(idx, scheduleItem) {
+            var latlng = new google.maps.LatLng(scheduleItem.location.latitude,
+                scheduleItem.location.longitude);
+            var locationName = (typeof scheduleItem.location['name'] == 'undefined') ? null :
+                scheduleItem.location.name;
+            scheduleItem.position = {name: locationName, latLng : latlng }
+            scheduleItems.push(scheduleItem);
+            scheduleListener.itemAdded(scheduleItem, idx);
+          });
+          scheduleListener.finish();
+        }
+      });
+    };
   };
 
   function fitMapToView() {
@@ -397,7 +402,9 @@ window.FoodTruckLocator = function() {
       $("#right").width($("#map_canvas").width() - $("#left").width());
       $("#right").height($("#map_canvas").height());
       $("#left").css("margin-left", "-" + $("#map_canvas").width() + "px");
-      $("#left").height($("#right").height())
+      $("#left").height($("#right").height());
+      $("#foodTruckList").height($("#left").height() - $("#sliderContainer").height() -
+          $("header").height() - 75);
       $("#body").height($("#body").height() - $("header").height());
     }
   }
