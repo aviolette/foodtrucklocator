@@ -53,7 +53,8 @@ public class TruckStopMatcher {
   public @Nullable TruckStopMatch match(Truck truck, TweetSummary tweet,
       @Nullable DateTime terminationTime) {
     Location location = tweet.getLocation();
-    String address = addressExtractor.parseFirst(tweet.getText());
+    final String tweetText = tweet.getText();
+    String address = addressExtractor.parseFirst(tweetText);
     if (address == null && location == null) {
       return null;
     }
@@ -71,19 +72,24 @@ public class TruckStopMatcher {
       }
     }
     DateTime startTime = tweet.getTime();
+    final boolean morning = startTime.toLocalTime().isBefore(new LocalTime(11, 0));
+    // TODO: this signals a schedule being tweeted, for now we can't handle that
+    if (morning && tweetText.toLowerCase().contains("schedule")) {
+      return null;
+    }
     // TODO: this is kind of a hack - this is a tweet announcing a future lunch location
-    if (startTime.toLocalTime().isBefore(new LocalTime(11, 0)) &&
-        (tweet.getText().contains("going") || tweet.getText().contains("gonna"))) {
+    if (morning &&
+        (tweetText.contains("going") || tweetText.contains("gonna"))) {
       startTime = startTime.withTime(11, 30, 0, 0);
     }
     DateTime endTime =
-        terminationTime == null ? parseEndTime(tweet.getText(), startTime) : terminationTime;
+        terminationTime == null ? parseEndTime(tweetText, startTime) : terminationTime;
     if (endTime == null) {
       endTime = startTime.plusHours(4);
     }
     return new TruckStopMatch(Confidence.HIGH,
         new TruckStop(truck, startTime, endTime, location, null),
-        tweet.getText());
+        tweetText);
   }
 
   private DateTime parseEndTime(String tweetText, DateTime startTime) {
