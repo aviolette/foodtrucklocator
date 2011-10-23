@@ -105,6 +105,12 @@ public class AddressExtractorTest {
   }
 
   @Test
+  public void testParseIntersectionWithAtNotation() {
+    assertTweet("Wabash and Ohio, Chicago, IL",
+        "The PURPLE Bus scooted on down Wabash at Ohio!");
+  }
+
+  @Test
   public void testParseIntersection5() {
     assertTweet("North and Wells, Chicago, IL",
         "Last call at North and Wells for the #KefirTruck! T-10 minutes!");

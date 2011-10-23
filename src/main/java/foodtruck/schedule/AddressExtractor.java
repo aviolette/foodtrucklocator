@@ -29,7 +29,8 @@ public class AddressExtractor {
   public AddressExtractor() {
     Function<String, String> cityAppender = new Function<String, String>() {
       public String apply(String input) {
-        return input.replaceAll("(&|\\/)", " and ").replace("  and  ", " and ") + ", Chicago, IL";
+        return input.replaceAll("(&|\\/)", " and ").replace(" at ", " and ").replace("  and  ",
+            " and ") + ", Chicago, IL";
       }
     };
     Function<String, String> keywordReplace = new Function<String, String>() {
@@ -71,7 +72,7 @@ public class AddressExtractor {
         new PatternTransform(Pattern.compile("<<(.*)>>"), null, true, 1),
         // intersection format
         new PatternTransform(Pattern.compile(
-            "(N|E|W|S\\s+)?[A-Z0-9][a-zA-Z0-9]+((\\s+(and)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))(N|E|W|S\\s+)?[A-Z0-9][a-zA-Z0-9]+"),
+            "(N|E|W|S\\s+)?[A-Z0-9][a-zA-Z0-9]+((\\s+(and|at)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))(N|E|W|S\\s+)?[A-Z0-9][a-zA-Z0-9]+"),
             cityAppender, false, 0),
         // address format
         new PatternTransform(Pattern.compile("(^:)*\\d+\\s*[NnSsEeWw]\\.*\\s+\\w+"), cityAppender,
