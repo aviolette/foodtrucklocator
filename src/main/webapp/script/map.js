@@ -273,12 +273,15 @@ window.FoodTruckLocator = function() {
     }
 
     function buildInfoWindow(group) {
-      var contentString = "<address class='locaitonName'>" + group.position.name + "</address>";
-      contentString = contentString + "<ul>"
+      var contentString = "<div class='infoWindowContent'><address class='locaitonName'>" +
+          group.position.name + "</address>";
+      contentString = contentString + "<ul class='iconList'>"
       $.each(group.trucks, function(truckIdx, truck) {
-        contentString += "<li>" + truck.name + "</li>"
+        contentString +=
+            "<li class='iconListItem' style='background-image: url(" + truck.iconUrl + ")'>" +
+                truck.name + "</li>"
       });
-      contentString = contentString + "</ul>";
+      contentString = contentString + "</ul></div>";
       var infowindow = new google.maps.InfoWindow({
         content: contentString
       });
