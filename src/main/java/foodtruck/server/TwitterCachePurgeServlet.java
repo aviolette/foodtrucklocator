@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import foodtruck.twitter.TwitterService;
 import foodtruck.util.Clock;
@@ -16,6 +17,7 @@ import foodtruck.util.Clock;
  * @author aviolette@gmail.com
  * @since 10/11/11
  */
+@Singleton
 public class TwitterCachePurgeServlet extends HttpServlet implements Runnable {
   private final TwitterService service;
   private final Clock clock;
@@ -34,6 +36,6 @@ public class TwitterCachePurgeServlet extends HttpServlet implements Runnable {
 
   @Override
   public void run() {
-    service.purgeTweetsBefore(clock.currentDay().minusDays(1));
+    service.purgeTweetsBefore(clock.currentDay());
   }
 }
