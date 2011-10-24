@@ -1,5 +1,7 @@
 package foodtruck.schedule;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,10 +31,12 @@ import foodtruck.util.Clock;
  * @since 9/22/11
  */
 public class TruckStopMatcher {
+  private static final Logger log = Logger.getLogger(TruckStopMatcher.class.getName());
   private final AddressExtractor addressExtractor;
   private final GeoLocator geoLocator;
   private final Pattern timePattern;
   private final DateTimeFormatter formatter;
+  private final Pattern dowPattern;
 
   @Inject
   public TruckStopMatcher(AddressExtractor extractor, GeoLocator geoLocator,
@@ -40,6 +44,9 @@ public class TruckStopMatcher {
     this.addressExtractor = extractor;
     this.geoLocator = geoLocator;
     this.timePattern = Pattern.compile("until (\\d+(:\\d+)*\\s*(p|pm|a|am)*)");
+    this.dowPattern = Pattern.compile(
+        "\\b(MON|TUE|WED|THU|FRI|SAT|SUN|monday|tuesday|wednesday|thursday|friday|saturday|sunday)\\b",
+        Pattern.CASE_INSENSITIVE);
     formatter = DateTimeFormat.forPattern("hh a").withZone(defaultZone);
   }
 
@@ -77,6 +84,12 @@ public class TruckStopMatcher {
     if (morning && tweetText.toLowerCase().contains("schedule")) {
       return null;
     }
+
+    if (dowPattern.matcher(tweetText).find()) {
+      log.log(Level.FINE, "Didn't match '{0}' because it contained a day of the week", tweetText);
+      return null;
+    }
+
     // TODO: this is kind of a hack - this is a tweet announcing a future lunch location
     if (morning &&
         (tweetText.contains("going") || tweetText.contains("gonna"))) {

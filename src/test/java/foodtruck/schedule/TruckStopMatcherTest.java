@@ -80,7 +80,8 @@ public class TruckStopMatcherTest extends EasyMockSupport {
 
   @Test
   public void testMatch_shouldReturnMatch() {
-    final String tweetText = "Oh yea oh yea beautiful night in the Chi. Come get ur froyo fix we are on the corner of Michigan and Ohio!";
+    final String tweetText =
+        "Oh yea oh yea beautiful night in the Chi. Come get ur froyo fix we are on the corner of Michigan and Ohio!";
     final String address = "Michigan and Ohio";
     Location location = new Location(-1, -2, address);
     expect(extractor.parseFirst(tweetText)).andReturn(address);
@@ -92,11 +93,12 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     assertEquals(Confidence.HIGH, match.getConfidence());
     assertEquals(address, match.getStop().getLocation().getName());
     verifyAll();
-   }
+  }
 
   @Test
   public void testMatch_shouldDetectFutureLocation() {
-    final String tweetText = "Rush & UIC Medical Center DonRafa is gonna be in ur area today! Don't want to come out? call 312-498-9286 we... fb.me/1gKduQrvS";
+    final String tweetText =
+        "Rush & UIC Medical Center DonRafa is gonna be in ur area today! Don't want to come out? call 312-498-9286 we... fb.me/1gKduQrvS";
     final String address = "UIC";
     Location location = new Location(-1, -2, address);
     expect(extractor.parseFirst(tweetText)).andReturn(address);
@@ -110,6 +112,39 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     assertEquals(address, match.getStop().getLocation().getName());
     assertEquals(match.getStop().getStartTime(), tweetTime.withTime(11, 30, 0, 0));
     verifyAll();
+  }
 
+  // for now, we can't handle tweets like this.
+  @Test
+  public void testMatch_shouldntMatchDayOfWeek() {
+    final String tweetText =
+        "5411empanadas: MON: Oak and Michigan / TUE: Univ of Chicago (Hyde Park) / WED: Dearborn & Monroe / THU: Columbus & Randolph / FRI: Wacker & Van Buren";
+    final String address = "Oak and Michigan";
+    Location location = new Location(-1, -2, address);
+    expect(extractor.parseFirst(tweetText)).andReturn(address);
+    expect(geolocator.locate(address)).andReturn(location);
+    tweetTime = new DateTime(2011, 11, 12, 9, 0, 0, 0, DateTimeZone.UTC);
+    replayAll();
+    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
+    TruckStopMatch match = topic.match(truck, tweet, null);
+    assertNull(match);
+    verifyAll();
+  }
+
+  // for now, we can't handle tweets like this.
+  @Test
+  public void testMatch_shouldntMatchDayOfWeek2() {
+    final String tweetText =
+        "We hope you having a great weekend, see you on Monday <<Wells & Monroe>> pic.twitter.com/1ewdrgKF";
+    final String address = "Wells and Monroe";
+    Location location = new Location(-1, -2, address);
+    expect(extractor.parseFirst(tweetText)).andReturn(address);
+    expect(geolocator.locate(address)).andReturn(location);
+    tweetTime = new DateTime(2011, 11, 12, 9, 0, 0, 0, DateTimeZone.UTC);
+    replayAll();
+    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
+    TruckStopMatch match = topic.match(truck, tweet, null);
+    assertNull(match);
+    verifyAll();
   }
 }
