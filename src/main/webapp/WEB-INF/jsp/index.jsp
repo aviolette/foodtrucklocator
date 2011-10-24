@@ -52,7 +52,6 @@
     </div>
   </div>
   <script src="//platform.twitter.com/widgets.js" type="text/javascript"></script>
-  </footer>
 </div>
 <script type="text/javascript"
         src="http://maps.google.com/maps/api/js?sensor=false&libraries=geometry"></script>
