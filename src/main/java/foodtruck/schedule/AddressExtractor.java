@@ -68,6 +68,9 @@ public class AddressExtractor {
         // Lincoln Park Zoo
         new PatternTransform(Pattern.compile("lincoln park zoo", Pattern.CASE_INSENSITIVE),
             keyword("Lincoln Park Zoo, Chicago, IL"), true, 0),
+        // Northeastern
+        new PatternTransform(Pattern.compile("\\bNEIU\\b", Pattern.CASE_INSENSITIVE),
+            keyword("5500 North Saint Louis Avenue, Chicago, IL"), true, 0),
         // tamale spaceship format
         new PatternTransform(Pattern.compile("<<(.*)>>"), null, true, 1),
         // intersection format

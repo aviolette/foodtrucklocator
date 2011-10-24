@@ -169,6 +169,12 @@ public class AddressExtractorTest {
   }
 
   @Test
+  public void testNEIU() {
+    assertTweet("5500 North Saint Louis Avenue, Chicago, IL",
+        "Hey guys we are right in front of NEIU! On Bryn Mawr you cant miss us!");
+  }
+
+  @Test
   public void testOldTown() {
     assertTweet("North and Wells, Chicago, IL", "#KefirTruck on the move! Next stop Old Town!!");
   }
