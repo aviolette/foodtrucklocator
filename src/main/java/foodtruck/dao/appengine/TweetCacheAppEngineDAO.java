@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
@@ -14,7 +15,6 @@ import org.joda.time.DateTimeZone;
 
 import foodtruck.dao.TweetCacheDAO;
 import foodtruck.model.Location;
-import foodtruck.model.TruckStop;
 import foodtruck.model.TweetSummary;
 
 /**
@@ -51,13 +51,13 @@ public class TweetCacheAppEngineDAO implements TweetCacheDAO {
     q.addSort(TWEET_TIME, Query.SortDirection.DESCENDING);
     ImmutableList.Builder<TweetSummary> tweets = ImmutableList.builder();
     for (Entity entity : dataStore.prepare(q).asIterable()) {
-      Double lat = (Double)entity.getProperty(TWEET_LOCATION_LAT);
-      Double lng = (Double)entity.getProperty(TWEET_LOCATION_LNG);
+      Double lat = (Double) entity.getProperty(TWEET_LOCATION_LAT);
+      Double lng = (Double) entity.getProperty(TWEET_LOCATION_LNG);
       Location location = null;
       if (lat != null && lng != null) {
         location = new Location(lat, lng);
       }
-      DateTime dateTime = new DateTime((Date)entity.getProperty(TWEET_TIME), zone);
+      DateTime dateTime = new DateTime((Date) entity.getProperty(TWEET_TIME), zone);
       TweetSummary tweet = new TweetSummary.Builder()
           .id((Long) entity.getProperty(TWEET_ID))
           .location(location)
@@ -72,7 +72,14 @@ public class TweetCacheAppEngineDAO implements TweetCacheDAO {
 
   @Override
   public void deleteBefore(DateTime dateTime) {
-
+    DatastoreService dataStore = provider.get();
+    Query q = new Query(TWEET_KIND);
+    q.addFilter(TWEET_TIME, Query.FilterOperator.LESS_THAN_OR_EQUAL, dateTime.toDate());
+    ImmutableList.Builder<Key> keys = ImmutableList.builder();
+    for (Entity entity : dataStore.prepare(q).asIterable()) {
+      keys.add(entity.getKey());
+    }
+    dataStore.delete(keys.build());
   }
 
   @Override public void setLastTweetId(long id) {
@@ -93,7 +100,7 @@ public class TweetCacheAppEngineDAO implements TweetCacheDAO {
     if (entity == null) {
       return 0;
     }
-    return (Long)entity.getProperty(TWEET_SINCE);
+    return (Long) entity.getProperty(TWEET_SINCE);
   }
 
   @Override
