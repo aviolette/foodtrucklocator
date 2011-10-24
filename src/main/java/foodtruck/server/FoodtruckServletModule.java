@@ -18,6 +18,7 @@ public class FoodtruckServletModule extends ServletModule {
   protected void configureServlets() {
     serve("/cron/recache").with(FoodTruckUpdaterServlet.class);
     serve("/cron/tweets").with(TweetCacheUpdateServlet.class);
+    serve("/admin/dashboard").with(DashboardServlet.class);
     serve("/service/schedule/*").with(FoodTruckScheduleServlet.class);
     serve("/service/stops*").with(TruckStopServlet.class);
     serveRegex("/[\\w]*").with(FoodTruckServlet.class);
