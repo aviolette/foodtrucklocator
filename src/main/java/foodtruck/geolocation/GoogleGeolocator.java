@@ -9,7 +9,6 @@ import javax.annotation.Nullable;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Inject;
-import com.sun.jersey.api.client.WebResource;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -39,7 +38,14 @@ public class GoogleGeolocator implements GeoLocator {
     if (loc != null) {
       return loc;
     }
+    if (!isEnabled()) {
+      return null;
+    }
     return lookup(location);
+  }
+
+  private boolean isEnabled() {
+    return "true".equals(System.getProperty("google.geolocator.enabled", "true"));
   }
 
   private @Nullable Location lookup(String location) {
@@ -69,7 +75,7 @@ public class GoogleGeolocator implements GeoLocator {
     if (arr == null) {
       return false;
     }
-    for (int i=0; i < arr.length(); i++) {
+    for (int i = 0; i < arr.length(); i++) {
       if (searchWord.equals(arr.getString(i))) {
         return true;
       }
