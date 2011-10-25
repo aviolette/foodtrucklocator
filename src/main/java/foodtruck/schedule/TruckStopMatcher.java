@@ -37,6 +37,7 @@ public class TruckStopMatcher {
   private final Pattern timePattern;
   private final DateTimeFormatter formatter;
   private final Pattern dowPattern;
+  private final Pattern futurePattern;
 
   @Inject
   public TruckStopMatcher(AddressExtractor extractor, GeoLocator geoLocator,
@@ -45,8 +46,9 @@ public class TruckStopMatcher {
     this.geoLocator = geoLocator;
     this.timePattern = Pattern.compile("until (\\d+(:\\d+)*\\s*(p|pm|a|am)*)");
     this.dowPattern = Pattern.compile(
-        "\\b(MON|TUE|WED|THU|FRI|SAT|SUN|monday|tuesday|wednesday|thursday|friday|saturday|sunday)\\b",
+        "\\b(MON|TUE|WED|THU|FRI|SAT|SUN|monday|tuesday|wednesday|thursday|friday|saturday|sunday|2morrow|tomorrow)\\b",
         Pattern.CASE_INSENSITIVE);
+    this.futurePattern = Pattern.compile("going|gonna|today|2day", Pattern.CASE_INSENSITIVE);
     formatter = DateTimeFormat.forPattern("hh a").withZone(defaultZone);
   }
 
@@ -81,7 +83,7 @@ public class TruckStopMatcher {
     DateTime startTime = tweet.getTime();
     final boolean morning = startTime.toLocalTime().isBefore(new LocalTime(11, 0));
     // TODO: this signals a schedule being tweeted, for now we can't handle that
-    if (morning && tweetText.toLowerCase().contains("schedule")) {
+    if (morning && (tweetText.toLowerCase().contains("schedule"))) {
       return null;
     }
 
@@ -91,8 +93,8 @@ public class TruckStopMatcher {
     }
 
     // TODO: this is kind of a hack - this is a tweet announcing a future lunch location
-    if (morning &&
-        (tweetText.contains("going") || tweetText.contains("gonna"))) {
+
+    if (morning && futurePattern.matcher(tweetText).find()) {
       startTime = startTime.withTime(11, 30, 0, 0);
     }
     DateTime endTime =
