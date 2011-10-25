@@ -31,7 +31,7 @@ window.FoodTruckLocator = function() {
     var section = $('#' + truck.id);
     var markerText = "&nbsp;";
     if (!letterUsed) {
-      markerText = "<img src='" + buildIconUrl(letter) + "'/>";
+      markerText = "<img class='iconMarker' src='" + buildIconUrl(letter) + "'/>";
     }
     section.append("<div class='markerSection'>" + markerText + "</div>");
     section.append("<div class='iconSection'> <img src='" + truck.iconUrl + "'/></div>");
@@ -126,7 +126,7 @@ window.FoodTruckLocator = function() {
     self.finished = function(groups) {
       if (groups.length == 0) {
         menuSection
-            .append("<div class='flash'>There are currently no food trucks on the streets that we know of.</div>");
+            .append("<div class='flash'>There are presently no food trucks on the road.  Most are on the road around 11:30. Coming soon, you will be able to advance the time from the mobile web app.</div>");
         return;
       }
       var sorted = groups.sort(distanceSort);
@@ -240,7 +240,8 @@ window.FoodTruckLocator = function() {
       menuSection.append("<div class='menuSection'  id='group" + idx + "'/>");
       var section = $('#group' + idx);
       var markerText = "&nbsp;";
-      markerText = "<img id='markerIcon" + idx + "' src='" + buildIconUrl(letter) + "'/>";
+      markerText =
+          "<img class='markerIcon' id='markerIcon" + idx + "' src='" + buildIconUrl(letter) + "'/>";
       section.append("<div class='markerSection'>" + markerText + "</div>");
       section.append("<div class='locationContent' id='location" + idx +
           "Section' class='contentSection'></div>");
@@ -295,7 +296,7 @@ window.FoodTruckLocator = function() {
     self.finished = function(groups) {
       if (groups.length == 0) {
         menuSection
-            .append("<div class='flash'>There are currently no food trucks on the streets that we know of. Most food trucks come on the streets at <a href='#' id='advanceTime'>11:30</a> or so.</div>");
+            .append("<div class='flash'>Presently, there are no food trucks on the road. Most food trucks come on the streets at <a href='#' id='advanceTime'>11:30</a> or so.</div>");
         $("#advanceTime").live("click", function(e) {
           e.preventDefault();
           slider.value(11, 30);

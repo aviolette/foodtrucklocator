@@ -190,3 +190,7 @@ li.iconListItem {
 .infoWindowContent {
     margin: 10px;
 }
+
+.markerIcon:hover {
+    cursor: pointer;
+}
