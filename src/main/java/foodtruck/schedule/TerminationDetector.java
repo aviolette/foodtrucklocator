@@ -13,7 +13,8 @@ public class TerminationDetector {
   // TODO: probably need an abstraction like TruckStopMatch to handle terminations
   public DateTime detect(TweetSummary tweet) {
     String tweetText = tweet.getText().toLowerCase();
-    if (tweetText.contains("last call")) {
+    // TODO: use regex
+    if (tweetText.contains("last call") || tweetText.contains("almost sold out!")) {
       return tweet.getTime().plusMinutes(15);
     }
     if (tweetText.contains("sold out") || tweetText.contains("good-bye") ||

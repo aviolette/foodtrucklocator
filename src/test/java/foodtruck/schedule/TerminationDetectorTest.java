@@ -25,6 +25,13 @@ public class TerminationDetectorTest {
   }
 
   @Test
+  public void testPartialSellOut() {
+    assertEquals(tweetTime.plusMinutes(15), detector.detect(tweetBuilder.text(
+        "SweetSpotMac: Almost sold out!still got pistachio, strawberry and our special Reese's treat! come get it while it last!Were in front of the tribune tower!")
+        .build()));
+  }
+
+  @Test
   public void testThankYou() {
     assertEquals(tweetTime, detector.detect(tweetBuilder.text(
         "Thank you U of Chicago for braving the weather today and South Loop for closing out our day!  Enjoy the rest of your night!")
@@ -43,6 +50,12 @@ public class TerminationDetectorTest {
   @Test
   public void testGoodNight() {
     assertEquals(tweetTime, detector.detect(tweetBuilder.text("Good night Chicago!").build()));
+  }
+
+  @Test
+  public void testAllSoldOut() {
+    assertEquals(tweetTime, detector.detect(
+        tweetBuilder.text("LQMeatMobile: All sold out for the day! Thanks everyone!").build()));
   }
 
   @Test
