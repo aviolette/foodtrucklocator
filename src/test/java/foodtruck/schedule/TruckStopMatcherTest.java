@@ -131,6 +131,23 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     verifyAll();
   }
 
+  @Test
+  public void testMatch_shouldMatchTodaysSchedule() {
+    final String tweetText = "SweetRideChi: TUES STOPS:  1130a - Taylor & Wood\n" +
+        "1245p - UIC Campus Vernon Park Circle by BSB bldg\n" +
+        "245p - Wacker & Lasalle\n" +
+        "430p... http://t.co/EDVtU2XM";
+    final String address = "Taylor & Wood";
+    Location location = new Location(-1, -2, address);
+    expect(extractor.parseFirst(tweetText)).andReturn(address);
+    expect(geolocator.locate(address)).andReturn(location);
+    replayAll();
+    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
+    TruckStopMatch match = topic.match(truck, tweet, null);
+    assertNull(match);
+    verifyAll();
+  }
+
   // for now, we can't handle tweets like this.
   @Test
   public void testMatch_shouldntMatchDayOfWeek2() {

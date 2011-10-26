@@ -83,7 +83,8 @@ public class TruckStopMatcher {
     DateTime startTime = tweet.getTime();
     final boolean morning = startTime.toLocalTime().isBefore(new LocalTime(11, 0));
     // TODO: this signals a schedule being tweeted, for now we can't handle that
-    if (morning && (tweetText.toLowerCase().contains("schedule"))) {
+    if (tweetText.toLowerCase().contains("stops") ||
+        (morning && (tweetText.toLowerCase().contains("schedule")))) {
       return null;
     }
 
