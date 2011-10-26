@@ -182,10 +182,10 @@ public class TwitterServiceImpl implements TwitterService {
     DateTime terminationTime = null;
     for (TweetSummary tweet : tweets) {
       if (terminationTime == null) {
-        log.log(Level.FINE, "Found tweet {0}", tweet);
+        log.log(Level.INFO, "Found tweet {0}", tweet);
         terminationTime = terminationDetector.detect(tweet);
         if (terminationTime != null) {
-          log.log(Level.FINE, "Detected termination");
+          log.log(Level.INFO, "Detected termination");
           continue;
         }
       }
