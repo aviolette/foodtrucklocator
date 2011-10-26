@@ -159,7 +159,11 @@ public class TwitterServiceImpl implements TwitterService {
             addStops.add(stop.withEndTime(matchedStop.getStartTime()));
           } else if (stop.getStartTime().isBefore(matchedStop.getEndTime()) &&
               stop.getEndTime().isAfter(matchedStop.getEndTime())) {
-            matchedStop = matchedStop.withEndTime(stop.getStartTime());
+            if (stop.getLocation().equals(matchedStop.getLocation())) {
+              deleteStops.add(stop);
+            } else {
+              matchedStop = matchedStop.withEndTime(stop.getStartTime());
+            }
           } else if ((stop.getStartTime().equals(matchedStop.getStartTime()) ||
               stop.getStartTime().isAfter(matchedStop.getStartTime())) &&
               (stop.getEndTime().equals(matchedStop.getEndTime()) ||
