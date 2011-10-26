@@ -32,6 +32,7 @@ import foodtruck.util.Clock;
  */
 public class TruckStopMatcher {
   private static final Logger log = Logger.getLogger(TruckStopMatcher.class.getName());
+  public static final int DEFAULT_STOP_LENGTH_IN_HOURS = 2;
   private final AddressExtractor addressExtractor;
   private final GeoLocator geoLocator;
   private final Pattern timePattern;
@@ -101,7 +102,7 @@ public class TruckStopMatcher {
     DateTime endTime =
         terminationTime == null ? parseEndTime(tweetText, startTime) : terminationTime;
     if (endTime == null) {
-      endTime = startTime.plusHours(4);
+      endTime = startTime.plusHours(DEFAULT_STOP_LENGTH_IN_HOURS);
     }
     return new TruckStopMatch(Confidence.HIGH,
         new TruckStop(truck, startTime, endTime, location, null),
