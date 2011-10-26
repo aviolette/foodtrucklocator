@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.common.collect.Iterables;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -75,6 +76,11 @@ public class AddressExtractorTest {
   }
 
   @Test
+  public void testParse6() {
+    assertTweet("600 W. Chicago, Chicago, IL", "600 W. Chicago. En route.");
+  }
+
+  @Test
   public void testParseIntersection() {
     String tweet = "Just landed at Rush and Walton foobar";
     List<String> addresses = parser.parse(tweet);
@@ -130,6 +136,12 @@ public class AddressExtractorTest {
   }
 
   @Test
+  public void testIntersection6() {
+    assertTweet("Kingsbury and Erie, Chicago, IL",
+        "StarfruitCafe: The #KefirTruck is @Kingsbury and Erie! Come enjoy some frozen kefir and some great weather! Flavors are strawberry and original.");
+  }
+
+  @Test
   public void testKeyword() {
     assertTweet("Harpo Studios", "Just landed at harpo.  Come get your yogurt");
     assertTweet("Harpo Studios", "Just landed at Harpo.  Come get your yogurt");
@@ -177,6 +189,13 @@ public class AddressExtractorTest {
   @Test
   public void testOldTown() {
     assertTweet("North and Wells, Chicago, IL", "#KefirTruck on the move! Next stop Old Town!!");
+  }
+
+  @Test @Ignore("Not ready for prime time")
+  public void testIntersectionWithMixedCase() {
+    assertTweet("North Avenue and Cannon Drive, Chicago, IL",
+        "Hey we just arrived at North Fields on North ave and Cannon dr. We are in the zoo parking lot!");
+    assertTweet("Wacker and Van Buren, Chicago, IL", "adelitatruck: Wacker and van buren today");
   }
 
   private void assertTweet(String expected, String tweet) {
