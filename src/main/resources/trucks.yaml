@@ -5,7 +5,7 @@ categories: Savory
 iconUrl: "http://a3.twimg.com/profile_images/1402134609/be86_1_1__normal.jpg"
 url: http://thetamalespaceship.com/
 foursquare: 4da48a23b521224b03cd34ee
-twittalyzer: "on"
+twittalyzer: "off"
 ---
 id: meatyballs1
 twitter: fossfoodtrucks
@@ -63,6 +63,7 @@ name: The Southern Mac and Cheese Truck
 categories: American
 iconUrl: http://si0.twimg.com/profile_images/1214705421/Mac_and_Cheese_Truck_Media_Shot_-_low_res_normal.jpg
 foursquare: 4db6f3e74b226b343dbf212c
+twittalyzer: "on"
 ---
 id: sweetridechi
 twitter: sweetridechi
@@ -336,6 +337,7 @@ name: Meatloaf-a-go-go
 categories: Savory
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1562762202/gogorectangle_normal.png
 foursquare: 4e85fc31b634ae3cdbc9d05a
+twittalyzer: "on"
 ---
 id: brownsugarcafe
 twitter: brownsugar_cafe
