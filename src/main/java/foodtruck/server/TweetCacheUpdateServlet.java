@@ -19,7 +19,7 @@ import foodtruck.twitter.TwitterService;
  * @since 10/11/11
  */
 @Singleton
-public class TweetCacheUpdateServlet  extends HttpServlet implements Runnable {
+public class TweetCacheUpdateServlet extends HttpServlet implements Runnable {
   private static final Logger log = Logger.getLogger(TweetCacheUpdateServlet.class.getName());
   private final TwitterService service;
 
@@ -41,6 +41,6 @@ public class TweetCacheUpdateServlet  extends HttpServlet implements Runnable {
     } catch (Exception e) {
       log.log(Level.WARNING, "Error updating twitter cache", e);
     }
-    service.updateLocationsOfTwitterTrucks();
+    service.twittalyze();
   }
 }

@@ -88,7 +88,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     expect(matcher.match(truck2, tweet2, now)).andReturn(match);
     truckStopDAO.addStops(ImmutableList.<TruckStop>of(stop));
     replayAll();
-    service.updateLocationsOfTwitterTrucks();
+    service.twittalyze();
     verifyAll();
   }
 
@@ -111,7 +111,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
         .andReturn(ImmutableList.<TruckStop>of(stopBeforeCurrent));
     truckStopDAO.addStops(ImmutableList.<TruckStop>of(stop));
     replayAll();
-    service.updateLocationsOfTwitterTrucks();
+    service.twittalyze();
     verifyAll();
   }
 
@@ -136,7 +136,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     truckStopDAO.addStops(ImmutableList.<TruckStop>of(currentStop.withEndTime(
         matchStop.getStartTime()), matchStop));
     replayAll();
-    service.updateLocationsOfTwitterTrucks();
+    service.twittalyze();
     verifyAll();
   }
 
@@ -161,7 +161,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     truckStopDAO.addStops(
         ImmutableList.<TruckStop>of(matchStop));
     replayAll();
-    service.updateLocationsOfTwitterTrucks();
+    service.twittalyze();
     verifyAll();
   }
 
@@ -186,7 +186,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     truckStopDAO.addStops(
         ImmutableList.<TruckStop>of(matchStop.withEndTime(currentStop.getStartTime())));
     replayAll();
-    service.updateLocationsOfTwitterTrucks();
+    service.twittalyze();
     verifyAll();
   }
 
@@ -208,7 +208,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
         .andReturn(ImmutableList.<TruckStop>of(stopAfter));
     truckStopDAO.addStops(ImmutableList.<TruckStop>of(stop));
     replayAll();
-    service.updateLocationsOfTwitterTrucks();
+    service.twittalyze();
     verifyAll();
   }
 }

@@ -21,5 +21,5 @@ public interface TwitterService {
   /**
    * Analyzes recent tweets and updates twitter-located-only trucks in the datastore
    */
-  void updateLocationsOfTwitterTrucks();
+  void twittalyze();
 }

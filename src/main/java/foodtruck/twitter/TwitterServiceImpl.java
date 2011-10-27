@@ -143,7 +143,7 @@ public class TwitterServiceImpl implements TwitterService {
    * 4) If the match is contained within the stop, then delete the stop
    */
   @Override
-  public void updateLocationsOfTwitterTrucks() {
+  public void twittalyze() {
     log.log(Level.INFO, "Updating twitter trucks");
     for (Truck truck : trucks.allTwitterTrucks()) {
       List<TweetSummary> tweets =

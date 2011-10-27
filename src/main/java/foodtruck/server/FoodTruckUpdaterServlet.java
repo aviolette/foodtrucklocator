@@ -25,7 +25,8 @@ public class FoodTruckUpdaterServlet extends HttpServlet implements Runnable {
   private final TwitterService twitterService;
 
   @Inject
-  public FoodTruckUpdaterServlet(FoodTruckStopService service, Clock clock, TwitterService twitterService) {
+  public FoodTruckUpdaterServlet(FoodTruckStopService service, Clock clock,
+      TwitterService twitterService) {
     this.twitterService = twitterService;
     this.service = service;
     this.clock = clock;
@@ -40,6 +41,6 @@ public class FoodTruckUpdaterServlet extends HttpServlet implements Runnable {
   @Override
   public void run() {
     service.updateStopsFor(clock.currentDay());
-    twitterService.updateLocationsOfTwitterTrucks();
+    twitterService.twittalyze();
   }
 }
