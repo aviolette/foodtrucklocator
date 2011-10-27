@@ -60,7 +60,7 @@ public class AddressExtractor {
             Pattern.compile("U of Chicago|UofC|UChicago", Pattern.CASE_INSENSITIVE),
             keyword("57th and Ellis, Chicago, IL"), true, 0),
         // AON
-        new PatternTransform(Pattern.compile("@aon| aon", Pattern.CASE_INSENSITIVE),
+        new PatternTransform(Pattern.compile("@aon| aon|#aon", Pattern.CASE_INSENSITIVE),
             keyword("Randolph and Columbus, Chicago, IL"), true, 0),
         // Old Town
         new PatternTransform(Pattern.compile("old town", Pattern.CASE_INSENSITIVE),

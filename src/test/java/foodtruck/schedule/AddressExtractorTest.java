@@ -187,6 +187,12 @@ public class AddressExtractorTest {
   }
 
   @Test
+  public void testAON() {
+    assertTweet("Randolph and Columbus, Chicago, IL",
+        "The Tamale Guy is @ #aon center today!! hot, handmade, fresh #tamales.. pork,chicken and veggie!! #chicago #foodtrucks #fb");
+  }
+
+  @Test
   public void testOldTown() {
     assertTweet("North and Wells, Chicago, IL", "#KefirTruck on the move! Next stop Old Town!!");
   }
