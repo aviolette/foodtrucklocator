@@ -67,7 +67,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     terminationDetector = createMock(TerminationDetector.class);
     service = new TwitterServiceImpl(twitterFactory, tweetDAO, listId, trucks, zone, matcher,
         truckStopDAO,
-        clock, terminationDetector);
+        clock, terminationDetector, new LocalCacheUpdater());
   }
 
   // Terminates last matching tweet at current time if a 'stop phrase' is found.

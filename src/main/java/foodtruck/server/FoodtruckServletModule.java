@@ -22,6 +22,7 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/admin/dashboard").with(DashboardServlet.class);
     serve("/service/schedule/*").with(FoodTruckScheduleServlet.class);
     serve("/service/stops*").with(TruckStopServlet.class);
+    serve("/service/tweets").with(TweetUpdateServlet.class);
     serveRegex("/[\\w]*").with(FoodTruckServlet.class);
   }
 
@@ -33,5 +34,10 @@ public class FoodtruckServletModule extends ServletModule {
   @Provides @Named("center")
   public Location provideMapCenter() {
     return new Location(41.8807438, -87.6293867);
+  }
+
+  @Provides @Named("remote.tweet.update")
+  public boolean provideIsTweetUpdateEnabled() {
+    return "true".equals(System.getProperty("remote.tweet.update"));
   }
 }

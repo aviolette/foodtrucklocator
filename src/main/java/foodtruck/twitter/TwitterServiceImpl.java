@@ -45,13 +45,14 @@ public class TwitterServiceImpl implements TwitterService {
   private final TruckStopMatcher matcher;
   private final TruckStopDAO truckStopDAO;
   private final Clock clock;
-  private TerminationDetector terminationDetector;
+  private final TerminationDetector terminationDetector;
+  private final TweetCacheUpdater remoteUpdater;
 
   @Inject
   public TwitterServiceImpl(TwitterFactoryWrapper twitter, TweetCacheDAO tweetDAO,
       @Named("foodtruck.twitter.list") int twitterListId, Trucks trucks, DateTimeZone zone,
       TruckStopMatcher matcher, TruckStopDAO truckStopDAO, Clock clock,
-      TerminationDetector detector) {
+      TerminationDetector detector, TweetCacheUpdater updater) {
     this.tweetDAO = tweetDAO;
     this.twitterFactory = twitter;
     this.twitterListId = twitterListId;
@@ -61,6 +62,7 @@ public class TwitterServiceImpl implements TwitterService {
     this.truckStopDAO = truckStopDAO;
     this.clock = clock;
     this.terminationDetector = detector;
+    this.remoteUpdater = updater;
   }
 
   @Override
@@ -83,6 +85,7 @@ public class TwitterServiceImpl implements TwitterService {
         }
       }
       tweetDAO.save(summaries);
+      remoteUpdater.update(summaries);
     } catch (TwitterException e) {
       throw new RuntimeException(e);
     }
