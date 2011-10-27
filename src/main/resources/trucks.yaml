@@ -411,13 +411,21 @@ id: ducknrolltruck
 twitter: ducknrolltruck
 name: Duck n Roll Food Truck
 categories: Savory
-iconUrl: https://twimg0-a.akamaihd.net/profile_images/1460919739/Final_Duck_Logo_v2_normal.jpg
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1460919739/Final_Duck_Logo_v2_normal.jpg
 twittalyzer: "on"
 ---
 id: baomouth
 twitter: baomouth
 name: Wow Bao
 categories: Asian
-iconUrl: https://twimg0-a.akamaihd.net/profile_images/565404613/twitter_icon_normal.jpg
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/565404613/twitter_icon_normal.jpg
+twittalyzer: "on"
+---
+id: trafficjamfood
+twitter: trafficjamfood
+name: Traffic Jam Food
+categories: Savory
+url: http://www.jamrestaurant.com/
+iconUrl: http://a2.twimg.com/profile_images/1607815357/TJ_normal
 twittalyzer: "on"
 
