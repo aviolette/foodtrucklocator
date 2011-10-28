@@ -142,6 +142,12 @@ public class AddressExtractorTest {
   }
 
   @Test
+  public void testIntersection7() {
+    assertTweet("Aberdeen and Randolph, Chicago, IL",
+        "TheWagyuWagon: At corner of Aberdeen n Randolph ready to serve!");
+  }
+
+  @Test
   public void testKeyword() {
     assertTweet("Harpo Studios", "Just landed at harpo.  Come get your yogurt");
     assertTweet("Harpo Studios", "Just landed at Harpo.  Come get your yogurt");
@@ -152,6 +158,22 @@ public class AddressExtractorTest {
     assertEquals(2, addresses.size());
     assertEquals("Columbus and Balbo, Chicago, IL", addresses.get(0));
     assertEquals("Grant Park", addresses.get(1));
+  }
+
+  @Test
+  public void testBetweenTwoStreets() {
+    assertTweet("Madison and Dearborn, Chicago, IL",
+        "BaoMouth: Chase Tower, on Madison between Dearborn & Clark, the BAO-Mobile is heading your way shortly #BunsOnTheRun");
+    assertTweet("Huron and Fairbanks, Chicago, IL",
+        "FossFoodTrucks: Meatyballs have landed on Huron between Fairbanks & Mcclurg. Come and grab some balls for the next 25 minutes.");
+    assertTweet("Chicago and Franklin, Chicago, IL",
+        "stemartaen: Chicago and Franklin between 1:20 and 1:30 today.  #veganfoodtruck");
+  }
+
+  @Test
+  public void testSearsTower() {
+    assertTweet("Wacker and Adams, Chicago, IL",
+        "BergsteinsNY: Sears/Willis today! Soup, sandwich, kugel, cabbage rolls!");
   }
 
   @Test
@@ -190,6 +212,15 @@ public class AddressExtractorTest {
   public void testAON() {
     assertTweet("Randolph and Columbus, Chicago, IL",
         "The Tamale Guy is @ #aon center today!! hot, handmade, fresh #tamales.. pork,chicken and veggie!! #chicago #foodtrucks #fb");
+  }
+
+  @Test @Ignore(
+      "Want to handle these lower case intersections.  Should match preposition before the intersection?")
+  public void testSpecialCaseIntersection() {
+    assertTweet("Clinton and Lake, Chicago, IL",
+        "SweetiecakesC: Yeah the sun is out! Come down to Clinton/lake for some cupcakes w tamales,,,, yum yum");
+    assertTweet("Rush and Oak, Chicago, IL",
+        "We got parking on rush and oak! Come celebrate with us - we're fully stocked!");
   }
 
   @Test

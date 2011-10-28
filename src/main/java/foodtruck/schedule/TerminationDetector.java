@@ -17,9 +17,13 @@ public class TerminationDetector {
     if (tweetText.contains("last call") || tweetText.contains("almost sold out!")) {
       return tweet.getTime().plusMinutes(15);
     }
+    if (tweetText.contains("sold out of")) {
+      return null;
+    }
     if (tweetText.contains("sold out") || tweetText.contains("good-bye") ||
         tweetText.contains("good night") || tweetText.contains("good bye")
-        || tweetText.contains("leaving") || tweetText.contains("heading out")
+        || tweetText.contains("leaving")
+        || tweetText.contains("heading back to our")
         || tweetText.contains("thanks") || tweetText.contains("thank you")) {
       return tweet.getTime();
     }

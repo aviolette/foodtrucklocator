@@ -30,7 +30,7 @@ public class AddressExtractor {
     Function<String, String> cityAppender = new Function<String, String>() {
       public String apply(String input) {
         return input.replaceAll("(&|\\/)", " and ").replace(" at ", " and ").replace("  and  ",
-            " and ") + ", Chicago, IL";
+            " and ").replace(" between ", " and ").replace(" n ", " and ") + ", Chicago, IL";
       }
     };
     Function<String, String> keywordReplace = new Function<String, String>() {
@@ -71,12 +71,21 @@ public class AddressExtractor {
         // Northeastern
         new PatternTransform(Pattern.compile("\\bNEIU\\b", Pattern.CASE_INSENSITIVE),
             keyword("5500 North Saint Louis Avenue, Chicago, IL"), true, 0),
+        // Willis Tower
+        new PatternTransform(Pattern.compile("sears|willis", Pattern.CASE_INSENSITIVE),
+            keyword("Wacker and Adams, Chicago, IL"), true, 0),
         // tamale spaceship format
         new PatternTransform(Pattern.compile("<<(.*)>>"), null, true, 1),
+        // Between two streets
+        new PatternTransform(Pattern.compile(
+            "([A-Z0-9][a-zA-Z0-9]+ between [A-Z0-9][a-zA-Z0-9]+)((\\s+(and|at)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))(N|E|W|S\\s+)?[A-Z0-9][a-zA-Z0-9]+"),
+            cityAppender, true, 1),
         // intersection format
         new PatternTransform(Pattern.compile(
-            "(N|E|W|S\\s+)?[A-Z0-9][a-zA-Z0-9]+((\\s+(and|at)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))(N|E|W|S\\s+)?[A-Z0-9][a-zA-Z0-9]+"),
+            "(N|E|W|S\\s+)?[A-Z0-9][a-zA-Z0-9]+((\\s+(and|at|n)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))(N|E|W|S\\s+)?[A-Z0-9][a-zA-Z0-9]+"),
             cityAppender, false, 0),
+        // special case intersections
+
         // address format
         new PatternTransform(Pattern.compile("(^:)*\\d+\\s*[NnSsEeWw]\\.*\\s+\\w+"), cityAppender,
             false, 0),
