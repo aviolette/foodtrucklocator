@@ -31,6 +31,7 @@ public class TweetCacheAppEngineDAO implements TweetCacheDAO {
   private static final String TWEET_TIME = "time";
   private static final String TWEET_ID = "tweetId";
   private static final String TWEET_SINCE = "lastTweetId";
+  private static final String TWEET_IGNORE = "ignore";
   private final DatastoreServiceProvider provider;
   private final DateTimeZone zone;
 
@@ -60,6 +61,7 @@ public class TweetCacheAppEngineDAO implements TweetCacheDAO {
       DateTime dateTime = new DateTime((Date) entity.getProperty(TWEET_TIME), zone);
       TweetSummary tweet = new TweetSummary.Builder()
           .id((Long) entity.getProperty(TWEET_ID))
+          .ignoreInTwittalyzer(Boolean.TRUE.equals(entity.getProperty(TWEET_IGNORE)))
           .location(location)
           .time(dateTime)
           .text((String) entity.getProperty(TWEET_TEXT))
@@ -117,6 +119,7 @@ public class TweetCacheAppEngineDAO implements TweetCacheDAO {
       entity.setProperty(TWEET_TEXT, tweet.getText());
       entity.setProperty(TWEET_TIME, tweet.getTime().toDate());
       entity.setProperty(TWEET_ID, tweet.getId());
+      entity.setProperty(TWEET_IGNORE, tweet.getIgnoreInTwittalyzer());
       dataStore.put(entity);
     }
   }

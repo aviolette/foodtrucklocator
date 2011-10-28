@@ -17,6 +17,7 @@ public class TweetSummary {
   private final String text;
   private final DateTime time;
   private final long id;
+  private final boolean ignoreInTwittalyzer;
 
   public TweetSummary(Builder builder) {
     this.text = builder.text;
@@ -24,6 +25,7 @@ public class TweetSummary {
     this.time = builder.time;
     this.screenName = builder.screenName;
     this.id = builder.id;
+    this.ignoreInTwittalyzer = builder.ignoreInTwittalyzer;
   }
 
   public String getScreenName() {
@@ -71,19 +73,24 @@ public class TweetSummary {
         .toString();
   }
 
+  public boolean getIgnoreInTwittalyzer() {
+    return ignoreInTwittalyzer;
+  }
+
   public static class Builder {
     private String screenName;
     private Location location;
     private DateTime time;
     private String text;
     private long id;
+    private boolean ignoreInTwittalyzer;
 
     public TweetSummary build() {
       return new TweetSummary(this);
     }
 
     public Builder text(String text) {
-      this.text  = text;
+      this.text = text;
       return this;
     }
 
@@ -98,7 +105,12 @@ public class TweetSummary {
     }
 
     public Builder id(long id) {
-      this.id  = id;
+      this.id = id;
+      return this;
+    }
+
+    public Builder ignoreInTwittalyzer(boolean ignore) {
+      this.ignoreInTwittalyzer = ignore;
       return this;
     }
 

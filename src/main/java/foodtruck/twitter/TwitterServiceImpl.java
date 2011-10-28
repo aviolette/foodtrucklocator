@@ -188,6 +188,10 @@ public class TwitterServiceImpl implements TwitterService {
   private TruckStopMatch findMatch(List<TweetSummary> tweets, Truck truck) {
     DateTime terminationTime = null;
     for (TweetSummary tweet : tweets) {
+      if (tweet.getIgnoreInTwittalyzer()) {
+        log.log(Level.INFO, "Ignoring tweet: {0}", tweet);
+        continue;
+      }
       if (terminationTime == null) {
         log.log(Level.INFO, "Found tweet {0}", tweet);
         terminationTime = terminationDetector.detect(tweet);
