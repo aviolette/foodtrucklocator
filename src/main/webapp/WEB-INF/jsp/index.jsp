@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
-  <title>Chicago Food Truck Locator</title>
+  <title>Chicago Food Truck Finder</title>
   <link rel="stylesheet" href="css/base.css"/>
   <link rel="stylesheet" href="css/main.css"/>
   <link type="text/css" href="css/start/jquery-ui-1.8.16.custom.css" rel="stylesheet"/>
@@ -13,7 +13,7 @@
 </head>
 <body>
 <div class="main" id="container">
-  <header><h1>The Chicago Food Truck Locator</h1>
+  <header><h1>The Chicago Food Truck Finder</h1>
 
     <div id="buttonSection">
       <a href="https://twitter.com/chifoodtruckz" class="twitter-follow-button" data-button="grey"
