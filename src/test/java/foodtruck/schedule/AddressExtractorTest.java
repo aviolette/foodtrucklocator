@@ -148,6 +148,11 @@ public class AddressExtractorTest {
   }
 
   @Test
+  public void testIntersection8() {
+    assertTweet("Kingsbury and Erie, Chicago, IL", "#KefirTruck at Kingsbury and Erie!");
+  }
+
+  @Test
   public void testKeyword() {
     assertTweet("Harpo Studios", "Just landed at harpo.  Come get your yogurt");
     assertTweet("Harpo Studios", "Just landed at Harpo.  Come get your yogurt");
@@ -202,6 +207,25 @@ public class AddressExtractorTest {
         "Another RAINY Day.. GiGi is making usual stop at UIC today. Ellis 57 & 58 11:30.  Ellis / 60th 1:30 @UofCGHI @UChicago @uicradio @uchiNOMgo");
   }
 
+  @Test @Ignore
+  public void testSouthLoop() {
+    assertTweet("13th and Michigan Avenue, Chicago, IL",
+        "GiGisBakeShop: My apologies South Loop..got a spot and opened the window to a crowd of hungry CUPCAKE lovers!  Parked at 13th / S... http://t.co/JUE2oB8A");
+  }
+
+
+  @Test @Ignore
+  public void testSpecialCaseBetween() {
+    // I know I can't detect all special cases, but 57th/58th/Ellis seems to be specified a
+    // whole bunch of different ways.  Just search for the combination of 57th, 58th and Ellis somewhere
+    // in the string
+    assertTweet("57th and Ellis, Chicago, IL",
+        "GiGisBakeShop: GiGi and the PURPLE Bus has moved to to Ellis (57th / 58th)..Come get a cupcake!");
+    assertTweet("57th and Ellis, Chicago, IL", "Sweetie cakes in Hyde park! 57is & ellis");
+    assertTweet("57th and Ellis, Chicago, IL",
+        "hautesausage: We r on 57th in front of The Reg till 1:35pm.");
+  }
+
   @Test
   public void testNEIU() {
     assertTweet("5500 North Saint Louis Avenue, Chicago, IL",
@@ -214,6 +238,28 @@ public class AddressExtractorTest {
         "The Tamale Guy is @ #aon center today!! hot, handmade, fresh #tamales.. pork,chicken and veggie!! #chicago #foodtrucks #fb");
   }
 
+  @Test
+  public void testIntersectionBlvd() {
+    assertTweet("Jackson Blvd and Wacker, Chicago, IL",
+        "fidotogo: We are at Jackson Blvd and Wacker Drive! It's beautiful out! Come on out! :)");
+    assertTweet("North Ave and Sheffield, Chicago, IL",
+        "Landed at North Ave and Sheffield!  Come get your CUPCAKES!!");
+  }
+
+  @Test @Ignore("Multi-word street name")
+  public void testMultiwordStreetName() {
+    assertTweet("Wacker and Van Buren, Chicago, IL",
+        "HomageSF: Landed at Wacker and Van Buren.  Old spot is closed for good. Esquites is on the menu per a special request.");
+  }
+
+  @Test @Ignore("merchandise mart")
+  public void testMerchandiseMart() {
+    assertTweet("Merchandise Mart",
+        "brownbagtruck: En route Merch Mart! Might be running a skoach late! Post upon landing! 600 W, shooting for 12:30 still!");
+    assertTweet("Merchandise Mart",
+        "Rollin deep w/ @courageouscakes today! 11:30 Mart, 12:30 600 W Chicago. Are you ready? Post upon landing!");
+  }
+
   @Test @Ignore(
       "Want to handle these lower case intersections.  Should match preposition before the intersection?")
   public void testSpecialCaseIntersection() {
@@ -221,6 +267,8 @@ public class AddressExtractorTest {
         "SweetiecakesC: Yeah the sun is out! Come down to Clinton/lake for some cupcakes w tamales,,,, yum yum");
     assertTweet("Rush and Oak, Chicago, IL",
         "We got parking on rush and oak! Come celebrate with us - we're fully stocked!");
+    assertTweet("Clinton and Lake, Chicago, IL",
+        "CourageousCakes: Guess what chicken butt....cruising to Adams/clinton early!!");
   }
 
   @Test
