@@ -2,7 +2,9 @@ package foodtruck.schedule;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.LocalTime;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import foodtruck.model.TweetSummary;
@@ -61,6 +63,12 @@ public class TerminationDetectorTest {
   }
 
   @Test
+  public void onTheMove() {
+    assertTweet(tweetTime,
+        "The BAO-Mobile is on the move. Heading to Merchandise Mart #fb #BunsOnTheRun");
+  }
+
+  @Test
   public void test2() {
     assertEquals(tweetTime,
         detector.detect(tweetBuilder.text("Thanks so very much AON&Streeterville!!").build()));
@@ -75,6 +83,13 @@ public class TerminationDetectorTest {
   public void testAllSoldOut() {
     assertEquals(tweetTime, detector.detect(
         tweetBuilder.text("LQMeatMobile: All sold out for the day! Thanks everyone!").build()));
+  }
+
+  @Test @Ignore(
+      "Not sure if the TruckStopMatcher or this should handle this tweet, because it specifies a location too. Clearly my model needs a bit of refactoring")
+  public void testClosingUp() {
+    assertTweet(tweetTime.toLocalDate().toDateTime(new LocalTime(8, 0)),
+        "GiGi and the PURPLE Bus are closing up at 8 pm South Loop. THANK YOU Friends, Fans and Neighbors for another great... fb.me/NHqk7qmp");
   }
 
   @Test
