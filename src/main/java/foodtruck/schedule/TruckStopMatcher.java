@@ -39,6 +39,7 @@ public class TruckStopMatcher {
   private final DateTimeFormatter formatter;
   private final Pattern dowPattern;
   private final Pattern futurePattern;
+  private final Clock clock;
 
   @Inject
   public TruckStopMatcher(AddressExtractor extractor, GeoLocator geoLocator,
@@ -51,6 +52,7 @@ public class TruckStopMatcher {
         Pattern.CASE_INSENSITIVE);
     this.futurePattern = Pattern.compile("going|gonna|today|2day", Pattern.CASE_INSENSITIVE);
     formatter = DateTimeFormat.forPattern("hh a").withZone(defaultZone);
+    this.clock = clock;
   }
 
   /**
@@ -89,8 +91,10 @@ public class TruckStopMatcher {
       return null;
     }
 
+    // TODO: we need to make sure that it doesn't contain the current day of the week
+    // For instance: Arrived at Michigan and Walton. Come get your Sunday macaron going!
     if (dowPattern.matcher(tweetText).find()) {
-      log.log(Level.FINE, "Didn't match '{0}' because it contained a day of the week", tweetText);
+      log.log(Level.INFO, "Didn't match '{0}' because it contained a day of the week", tweetText);
       return null;
     }
 
