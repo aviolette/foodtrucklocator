@@ -92,7 +92,7 @@ foursquare: 4e037bf8c65b8061424e9805
 ---
 id: hautesausage1
 twitter: hautesausage
-name: Haute Sausage 1
+name: Haute Sausage
 categories: American
 url: http://www.hautesausage.com/
 iconUrl: http://si0.twimg.com/profile_images/1325400326/HSlogoFB_normal.jpg
@@ -100,19 +100,19 @@ foursquare: 4dc2d50ab0fb490416b87ae6
 ---
 id: hautesausage2
 twitter: hautesausage
-name: Haute Sausage 2
+name: Haute Sausage
 categories: American
 url: http://www.hautesausage.com/
 iconUrl: http://si0.twimg.com/profile_images/1325400326/HSlogoFB_normal.jpg
 foursquare: 4dc2d50ab0fb490416b87ae6
 ---
-id: hautesausage3
-twitter: hautesausage
-name: Big Sausage
-categories: American
-url: http://www.hautesausage.com/
-iconUrl: http://si0.twimg.com/profile_images/1325400326/HSlogoFB_normal.jpg
-foursquare: 4dc2d50ab0fb490416b87ae6
+id: suzysamosas
+twitter: suzysamosas
+name: Suzy Samosas
+categories: Indian
+url: http://suzysingh.com
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1542394745/photo__18__normal.JPG
+twittalyzer: "on"
 ---
 id: gigisbakeshop
 twitter: gigisbakeshop
@@ -443,6 +443,6 @@ id: mjexpress14
 twitter: mjexpress14
 name: Mojo Express
 categories: Coffee
-iconUrl: https://twimg0-a.akamaihd.net/sticky/default_profile_images/default_profile_5_normal.png
+iconUrl: http://twimg0-a.akamaihd.net/sticky/default_profile_images/default_profile_5_normal.png
 twittalyzer: "on"
 
