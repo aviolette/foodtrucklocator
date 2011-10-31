@@ -13,6 +13,7 @@ import com.google.inject.Inject;
 
 import foodtruck.dao.LocationDAO;
 import foodtruck.model.Location;
+import foodtruck.util.Clock;
 
 /**
  * @author aviolette@gmail.com
@@ -24,11 +25,14 @@ public class LocationDAOAppEngine implements LocationDAO {
   private static final String NAME_FIELD = "name";
   private static final String LAT_FIELD = "lat";
   private static final String LNG_FIELD = "lng";
+  private static final String TIMESTAMP_FIELD = "createdate";
   private static final Logger log = Logger.getLogger(LocationDAOAppEngine.class.getName());
+  private final Clock clock;
 
   @Inject
-  public LocationDAOAppEngine(DatastoreServiceProvider provider) {
+  public LocationDAOAppEngine(DatastoreServiceProvider provider, Clock clock) {
     this.provider = provider;
+    this.clock = clock;
   }
 
   @Override
@@ -44,7 +48,7 @@ public class LocationDAOAppEngine implements LocationDAO {
       log.log(Level.WARNING, "Got too many results exception for: {0}", keyword);
       try {
         deleteDuplicates(keyword, dataStore);
-      } catch(Exception e) {
+      } catch (Exception e) {
         log.log(Level.WARNING, "Error deleting duplicates", e);
       }
     }
@@ -80,6 +84,7 @@ public class LocationDAOAppEngine implements LocationDAO {
     entity.setProperty(NAME_FIELD, location.getName());
     entity.setProperty(LAT_FIELD, location.getLatitude());
     entity.setProperty(LNG_FIELD, location.getLongitude());
+    entity.setProperty(TIMESTAMP_FIELD, clock.now().toDate());
     dataStore.put(entity);
   }
 
