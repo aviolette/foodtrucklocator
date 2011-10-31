@@ -4,6 +4,7 @@ import org.easymock.EasyMockSupport;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import foodtruck.geolocation.GeoLocator;
@@ -65,6 +66,25 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   public void testMatch_shouldReturnHighConfidenceWhenAtLocationUntil() {
     final String tweetText = "Gold Coast, we have landed at Rush and Walton...here until 6 pm!";
     final String address = "Rush and Walton";
+    Location location = new Location(-1, -2, address);
+    expect(extractor.parseFirst(tweetText)).andReturn(address);
+    expect(geolocator.locate(address)).andReturn(location);
+    replayAll();
+    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
+    TruckStopMatch match = topic.match(truck, tweet, null);
+    assertNotNull(match);
+    assertEquals(Confidence.HIGH, match.getConfidence());
+    assertEquals(tweetTime, match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getStop().getEndTime());
+    verifyAll();
+  }
+
+
+  @Test @Ignore
+  public void testMatch_includesCurrentDayOfTheWeek() {
+    final String tweetText =
+        "SweetSpotMac: Arrived at Michigan and Walton. Come get your Sunday macaron going!";
+    final String address = "Michigan and Walton";
     Location location = new Location(-1, -2, address);
     expect(extractor.parseFirst(tweetText)).andReturn(address);
     expect(geolocator.locate(address)).andReturn(location);
