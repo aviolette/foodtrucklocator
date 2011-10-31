@@ -244,6 +244,8 @@ public class AddressExtractorTest {
         "fidotogo: We are at Jackson Blvd and Wacker Drive! It's beautiful out! Come on out! :)");
     assertTweet("North Ave and Sheffield, Chicago, IL",
         "Landed at North Ave and Sheffield!  Come get your CUPCAKES!!");
+    assertTweet("Michigan and Walton, Chicago, IL",
+        "Arrived at Michigan and Walton. Come get your Sunday macaron going!");
   }
 
   @Test @Ignore("Multi-word street name")
