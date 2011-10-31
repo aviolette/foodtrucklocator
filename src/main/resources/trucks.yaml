@@ -5,7 +5,7 @@ categories: Savory
 iconUrl: "http://a3.twimg.com/profile_images/1402134609/be86_1_1__normal.jpg"
 url: http://thetamalespaceship.com/
 foursquare: 4da48a23b521224b03cd34ee
-twittalyzer: "off"
+twittalyzer: "on"
 ---
 id: meatyballs1
 twitter: fossfoodtrucks
@@ -38,6 +38,7 @@ name: 5411 Empanadas
 categories: Savory
 iconUrl: "http://si0.twimg.com/profile_images/749153715/twitter2_normal.jpg"
 foursquare: 4cf936ed8df52c0f590197be
+twittalyzer: "on"
 ---
 id: gaztrowagon
 twitter: wherezthewagon
@@ -54,7 +55,7 @@ name: The Slide Ride
 categories: Sandwich
 iconUrl: http://si0.twimg.com/profile_images/1323538462/ribeye_normal.jpg
 foursquare: 4d9e5fc8640b54817800ca2d
-twittalyzer: "off"
+twittalyzer: "on"
 ---
 id: thesouthernmac
 twitter: thesouthernmac
