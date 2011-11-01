@@ -152,6 +152,13 @@ public class AddressExtractorTest {
     assertTweet("Kingsbury and Erie, Chicago, IL", "#KefirTruck at Kingsbury and Erie!");
   }
 
+  @Test @Ignore(
+      "Should recognize 'the library' when the food truck is mjexpress14.  need context specific address locations")
+  public void testContextSpecificLocation() {
+    assertTweet("834 Lake St, Oak Park, IL",
+        "hello everyone, mj express is by the library.  comey by");
+  }
+
   @Test
   public void testKeyword() {
     assertTweet("Harpo Studios", "Just landed at harpo.  Come get your yogurt");
