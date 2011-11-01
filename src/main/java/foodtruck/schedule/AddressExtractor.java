@@ -74,6 +74,9 @@ public class AddressExtractor {
         // Willis Tower
         new PatternTransform(Pattern.compile("sears|willis", Pattern.CASE_INSENSITIVE),
             keyword("Wacker and Adams, Chicago, IL"), true, 0),
+        // UIC
+        new PatternTransform(Pattern.compile("UIC", Pattern.CASE_INSENSITIVE),
+            keyword("Vernon Park Circle, Chicago, IL"), true, 0),
         // tamale spaceship format
         new PatternTransform(Pattern.compile("<<(.*)>>"), null, true, 1),
         // Between two streets

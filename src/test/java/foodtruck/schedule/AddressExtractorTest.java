@@ -207,6 +207,12 @@ public class AddressExtractorTest {
         "Another RAINY Day.. GiGi is making usual stop at UIC today. Ellis 57 & 58 11:30.  Ellis / 60th 1:30 @UofCGHI @UChicago @uicradio @uchiNOMgo");
   }
 
+  @Test
+  public void testUIC() {
+    assertTweet("Vernon Park Circle, Chicago, IL",
+        "UIC the #KefirTruck has landed! Come treat yourself between classes with a cup of frozen goodness. Flavors are pumpkin spice and original.");
+  }
+
   @Test @Ignore
   public void testSouthLoop() {
     assertTweet("13th and Michigan Avenue, Chicago, IL",
