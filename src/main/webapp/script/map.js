@@ -181,13 +181,13 @@ window.FoodTruckLocator = function() {
     var trucks = null;
     var TimeSlider = function(initialTime, initialDate) {
       var sliderValue = (initialTime.getHours() * 60) +
-          (Math.floor(initialTime.getMinutes() / 15) * 15);
+          (Math.floor(initialTime.getMinutes() / 5) * 5);
 
       function computeTime(value, twelveHour) {
         // yuck - cleanup
         var val = value / 60;
         var hour = Math.floor(val);
-        var min = (val - hour) * 60;
+        var min = Math.round((val - hour) * 60);
         if (hour > 12 && twelveHour) {
           hour = hour - 12;
         }
@@ -203,7 +203,7 @@ window.FoodTruckLocator = function() {
 
       displayTime(sliderValue);
       $("#slider").slider({
-        min: 0,  max: 1440, value : sliderValue, step: 15,
+        min: 0,  max: 1440, value : sliderValue, step: 5,
         slide : function(event, ui) {
           displayTime(ui.value);
         },
