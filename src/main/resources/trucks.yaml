@@ -101,6 +101,14 @@ foursquare: 4dc2d50ab0fb490416b87ae6
 ---
 id: hautesausage2
 twitter: hautesausage
+name: Haute Sausage
+categories: American
+url: http://www.hautesausage.com/
+iconUrl: http://si0.twimg.com/profile_images/1325400326/HSlogoFB_normal.jpg
+foursquare: 4dc2d50ab0fb490416b87ae6
+---
+id: hautesausage3
+twitter: hautesausage
 name: Big Sausage
 categories: American
 url: http://www.hautesausage.com/
@@ -137,6 +145,7 @@ name: Mama Green Goodie
 categories: Desserts
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1416523084/profile_normal.jpg
 foursquare: 4e837228b6341921482bd055
+twittalyzer: "on"
 ---
 id: themoremobile
 twitter: themoremobile
@@ -154,6 +163,7 @@ name: Homage Street Food
 categories: Food
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1491944244/logo_orange_and_black_twit_normal.jpg
 foursquare: 4e231cb415207ed86eb64058
+twittalyzer: "on"
 ---
 id: bridgeportpasty
 twitter: bridgeportpasty
@@ -162,6 +172,7 @@ name: Bridgeport Pasty
 categories: Dessert
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1271453607/3111-logo-brownlet-350px_normal.jpg
 foursquare: 4e8c8fc793adecfdb971a040
+twittalyzer: "on"
 ---
 id: culture
 twitter: culture
@@ -177,6 +188,7 @@ name: La Adelita
 categories: Mexican
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1408203936/FOODTRUCK_normal.jpg
 foursquare: 4e1ddcbdd4c0893099615491
+twittalyzer: "on"
 ---
 id: rzjp6cakes
 twitter: rzjp6cakes
@@ -210,6 +222,7 @@ categories: Food
 url: http://www.brownbaglunchtruck.com/
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1500530673/twitter_pic_normal.jpg
 foursquare: 4de668e2d1648041649ed635
+twittalyzer: "on"
 ---
 id: forevertruck
 twitter: forevertruck
@@ -236,6 +249,7 @@ categories: Dessert
 url: http://www.cupcakesforcourage.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1268075878/twitter_logo_normal.jpg
 foursquare: 4dd6cc877d8b322663e0276c
+twittalyzer: "on"
 ---
 id: jerkinonwheels
 twitter: jerkinonwheels
@@ -295,13 +309,12 @@ url: http://www.flirtycupcakes.com/
 iconUrl: http://si0.twimg.com/profile_images/720492263/small_logo_normal.jpg
 foursquare: 4b990b1cf964a520975d35e3
 ---
-id: bayouexpress
+id: mobilefoodunit
 twitter: mobilefoodunit
 name: Bayou Express
 categories: Cajun
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1393048160/mfuLOGO_normal.png
 foursquare: 4b990b1cf964a520975d35e3
-twittalyzer: "on"
 ---
 id: chickpeadelight
 twitter: chickpeadelight
