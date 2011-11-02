@@ -79,6 +79,9 @@ public class AddressExtractor {
         // Northeastern
         new PatternTransform(Pattern.compile("\\bNEIU\\b", Pattern.CASE_INSENSITIVE),
             keyword("5500 North Saint Louis Avenue, Chicago, IL"), true, 0),
+        // address format
+        new PatternTransform(Pattern.compile("(^:)*\\d+\\s*[NnSsEeWw]\\.?\\s+\\w+"), cityAppender,
+            true, 0),
         // Willis Tower
         new PatternTransform(Pattern.compile("sears|willis", Pattern.CASE_INSENSITIVE),
             keyword("Wacker and Adams, Chicago, IL"), true, 0),
@@ -102,10 +105,6 @@ public class AddressExtractor {
                 INTERSECTION_PARTIAL),
             cityAppender, false, 0),
         // special case intersections
-
-        // address format
-        new PatternTransform(Pattern.compile("(^:)*\\d+\\s*[NnSsEeWw]\\.*\\s+\\w+"), cityAppender,
-            false, 0),
         // keyword format
         new PatternTransform(
             Pattern.compile("@wttw|grant park|presidential towers", Pattern.CASE_INSENSITIVE),

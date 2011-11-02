@@ -79,6 +79,12 @@ public class AddressExtractorTest {
   }
 
   @Test
+  public void testParseFuckedUpAddress() {
+    assertTweet("321 S Wacker, Chicago, IL",
+        "Landed! 321 S Wacker (at Van Buren) near Willis Tower. Pulled pork chicken sammiches, coleslaw or baked beans, & sauce for $10! Cash only!");
+  }
+
+  @Test
   public void testParse6() {
     assertTweet("600 W. Chicago, Chicago, IL", "600 W. Chicago. En route.");
   }
