@@ -66,7 +66,7 @@ public class TruckStopMatcher {
       @Nullable DateTime terminationTime) {
     Location location = tweet.getLocation();
     final String tweetText = tweet.getText();
-    String address = addressExtractor.parseFirst(tweetText);
+    String address = addressExtractor.parseFirst(tweetText, truck);
     if (address == null && location == null) {
       return null;
     }

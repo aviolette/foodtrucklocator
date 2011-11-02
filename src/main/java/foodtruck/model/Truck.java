@@ -22,6 +22,7 @@ public class Truck {
   private final String description;
   private final String foursquareUrl;
   private final boolean twittalyzer;
+  private final String defaultCity;
 
   private Truck(Builder builder) {
     this.id = builder.id;
@@ -33,6 +34,7 @@ public class Truck {
     this.description = builder.description;
     this.foursquareUrl = builder.foursquareUrl;
     this.twittalyzer = builder.twittalyzer;
+    this.defaultCity = builder.defaultCity;
   }
 
   public @Nullable String getFoursquareUrl() {
@@ -111,6 +113,7 @@ public class Truck {
     public String description;
     private String foursquareUrl;
     private boolean twittalyzer;
+    private String defaultCity = "Chicago, IL";
 
     public Builder() {
     }
@@ -140,6 +143,11 @@ public class Truck {
       return this;
     }
 
+    public Builder defaultCity(String defaultCity) {
+      this.defaultCity = defaultCity;
+      return this;
+    }
+
     public Builder description(@Nullable String description) {
       this.description = description;
       return this;
@@ -164,6 +172,6 @@ public class Truck {
       return new Truck(this);
     }
 
-    
+
   }
 }

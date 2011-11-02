@@ -30,6 +30,10 @@ public class TruckConfigParserImpl implements TruckConfigParser {
         (Iterable) yaml.loadAll(new BufferedReader(new FileReader(url)));
     ImmutableMap.Builder<String, Truck> truckBuilder = ImmutableMap.builder();
     for (Map<String, Object> truckMap : trucks) {
+      String defaultCity = (String) truckMap.get("defaultCity");
+      if (defaultCity == null) {
+        defaultCity = "Chicago, IL";
+      }
       Truck truck = new Truck.Builder()
           .id((String) truckMap.get("id"))
           .name((String) truckMap.get("name"))
@@ -40,6 +44,7 @@ public class TruckConfigParserImpl implements TruckConfigParser {
           .twitterHandle((String) truckMap.get("twitter"))
           .foursquareUrl((String) truckMap.get("foursquare"))
           .useTwittalyzer("on".equals(truckMap.get("twittalyzer")))
+          .defaultCity(defaultCity)
           .build();
       log.log(Level.INFO, "Loaded truck: {0}", truck);
       truckBuilder.put(truck.getId(), truck);

@@ -11,12 +11,16 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 
+import foodtruck.model.Truck;
+
 /**
  * @author aviolette@gmail.com
  * @since Jul 20, 2011
  */
 public class AddressExtractor {
   private final List<PatternTransform> patterns;
+  private final static String INTERSECTION_PARTIAL =
+      "(N|E|W|S\\s+)?[A-Z0-9][a-zA-Z0-9]+(\\s+(Drive|Dr|Buren|Blvd|Ave)\\.?)?";
 
   private static Function<String, String> keyword(final String toWhat) {
     return new Function<String, String>() {
@@ -57,8 +61,12 @@ public class AddressExtractor {
         new PatternTransform(Pattern.compile("\\(@ (.*)\\)"), foursquareMassage, true, 1),
         // University of Chicago
         new PatternTransform(
-            Pattern.compile("U of Chicago|UofC|UChicago", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("U of Chicago|UofC|UChicago|The Reg\\b", Pattern.CASE_INSENSITIVE),
             keyword("57th and Ellis, Chicago, IL"), true, 0),
+        // Harpo Studios
+        new PatternTransform(
+            Pattern.compile("harpo\\b", Pattern.CASE_INSENSITIVE), keyword("Harpo Studios"), true,
+            0),
         // AON
         new PatternTransform(Pattern.compile("@aon| aon|#aon", Pattern.CASE_INSENSITIVE),
             keyword("Randolph and Columbus, Chicago, IL"), true, 0),
@@ -85,11 +93,13 @@ public class AddressExtractor {
             cityAppender, true, 1),
         // intersection format preceded by at
         new PatternTransform(Pattern.compile(
-            "[A-Z0-9][a-zA-Z0-9]+\\s+at\\s+((N|E|W|S\\s+)?[A-Z0-9][a-zA-Z0-9]+(\\s+(Blvd|Ave)\\.?)?((\\s+(and|at|n)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))(N|E|W|S\\s+)?[A-Z0-9][a-zA-Z0-9]+(\\s+(Blvd|Ave)\\.?)?)"),
+            "[A-Z0-9][a-zA-Z0-9]+\\s+at\\s+(" + INTERSECTION_PARTIAL +
+                "((\\s+(and|at|n)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))" + INTERSECTION_PARTIAL + ")"),
             cityAppender, true, 1),
         // intersection format
         new PatternTransform(Pattern.compile(
-            "(N|E|W|S\\s+)?[A-Z0-9][a-zA-Z0-9]+(\\s+(Blvd|Ave)\\.?)?((\\s+(and|at|n)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))(N|E|W|S\\s+)?[A-Z0-9][a-zA-Z0-9]+(\\s+(Blvd|Ave)\\.?)?"),
+            INTERSECTION_PARTIAL + "((\\s+(and|at|n)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))" +
+                INTERSECTION_PARTIAL),
             cityAppender, false, 0),
         // special case intersections
 
@@ -98,13 +108,14 @@ public class AddressExtractor {
             false, 0),
         // keyword format
         new PatternTransform(
-            Pattern.compile("@wttw|harpo|grant park|presidential towers", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("@wttw|grant park|presidential towers", Pattern.CASE_INSENSITIVE),
             keywordReplace, false, 0)
     );
   }
 
-  List<String> parse(String tweet) {
+  List<String> parse(String tweet, Truck truck) {
     ImmutableList.Builder<String> addresses = ImmutableList.builder();
+    applyTruckSpecificMatches(tweet, truck, addresses);
     for (PatternTransform p : patterns) {
       if (!p.findAndMatch(tweet, addresses)) {
         break;
@@ -113,8 +124,18 @@ public class AddressExtractor {
     return addresses.build();
   }
 
-  public String parseFirst(String tweetText) {
-    return Iterables.getFirst(parse(tweetText), null);
+  private void applyTruckSpecificMatches(String tweet, Truck truck,
+      ImmutableList.Builder<String> addresses) {
+    // TODO: implement this as a set of pattern matchers on a truck
+    if ("mjexpress14".equals(truck.getId())) {
+      if (tweet.toLowerCase().contains("library")) {
+        addresses.add("834 Lake St, Oak Park, IL");
+      }
+    }
+  }
+
+  public String parseFirst(String tweetText, Truck truck) {
+    return Iterables.getFirst(parse(tweetText, truck), null);
   }
 
   private static class PatternTransform {
