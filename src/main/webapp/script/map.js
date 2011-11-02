@@ -46,7 +46,7 @@ window.FoodTruckLocator = function() {
       div.append("<span>" + distance + " miles away</span></br>")
     }
     if (truck.url) {
-      div.append("Website: <a target='_blank' href='" + truck.url + "'>" + truck.url +
+      div.append("<a target='_blank' href='" + truck.url + "'>" + truck.url +
           "</a><br/>")
     }
     if (truck.twitterHandle) {
@@ -151,14 +151,14 @@ window.FoodTruckLocator = function() {
 
           truckLeft.append("<strong>" + truck.name + "</strong><br/>");
           if (truck.url) {
-            truckLeft.append("Website: <a target='_blank' href='" + truck.url + "'>" + truck.url +
+            truckLeft.append("<a target='_blank' href='" + truck.url + "'>" + truck.url +
                 "</a><br/>")
           }
           if (truck.twitterHandle) {
-            truckLeft.append("Twitter: <a target='_blank' href='http://twitter.com/" +
+            truckLeft.append("<a target='_blank' href='http://twitter.com/" +
                 truck.twitterHandle +
-                "'>@" +
-                truck.twitterHandle + "</a><br/>");
+                "'><img alt='@" +
+                truck.twitterHandle + "' src='/img/twitter32x32.png'/></a><br/>");
           }
           if (truck.foursquare) {
             truckLeft.append("<a href='http://m.foursquare.com/venue/" + truck.foursquare +
@@ -261,16 +261,21 @@ window.FoodTruckLocator = function() {
       section.append("<div class='menuContent' id='truck" + truck.id +
           "Section' class='contentSection'></div>");
       var div = $('#truck' + truck.id + 'Section');
-      div.append("<a href='/" + truck.id + "'>" + truck.name + "</a><br/>");
-      if (truck.url) {
-        div.append("Website: <a target='_blank' href='" + truck.url + "'>" + truck.url +
-            "</a><br/>")
-      }
+      div.append("<a class='truckLink' href='/" + truck.id + "'>" + truck.name + "</a><br/>");
+      var infoRow = "<div class='infoRow'>";
+
       if (truck.twitterHandle) {
-        div.append("Twitter: <a target='_blank' href='http://twitter.com/" + truck.twitterHandle +
-            "'>@" +
-            truck.twitterHandle + "</a><br/>")
+        infoRow += "<a target='_blank' href='http://twitter.com/" + truck.twitterHandle +
+            "'><img alt='@" +
+                truck.twitterHandle + "' src='/img/twitter16x16.png'/></a> ";
       }
+      if (truck.facebook) {
+        infoRow += "<a target='_blank' href='http://facebook.com/" + truck.facebook +
+            "'><img alt='" +
+                truck.facebook + "' src='/img/facebook16x16.png'/></a> ";
+      }
+      infoRow += '</div>';
+      div.append(infoRow);
     }
 
     function buildInfoWindow(group) {
