@@ -101,7 +101,7 @@ foursquare: 4dc2d50ab0fb490416b87ae6
 ---
 id: hautesausage2
 twitter: hautesausage
-name: Haute Sausage
+name: Big Sausage
 categories: American
 url: http://www.hautesausage.com/
 iconUrl: http://si0.twimg.com/profile_images/1325400326/HSlogoFB_normal.jpg
@@ -109,7 +109,7 @@ foursquare: 4dc2d50ab0fb490416b87ae6
 ---
 id: suzysamosas
 twitter: suzysamosas
-name: Suzy Samosas
+name: Suzy Samosa (on Haute Sausage)
 categories: Indian
 url: http://suzysingh.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1542394745/photo__18__normal.JPG
@@ -178,13 +178,14 @@ categories: Mexican
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1408203936/FOODTRUCK_normal.jpg
 foursquare: 4e1ddcbdd4c0893099615491
 ---
-id: sweetiecakes
-twitter: Rzjp6Cakes
+id: rzjp6cakes
+twitter: rzjp6cakes
 name: Sweetie Cakes
 categories: Dessert
 url: http://www.tasteofsweetiecakes.com/
 iconUrl: http://a3.twimg.com/profile_images/1508155810/sweetie_cakes_logo_normal.png
 foursquare: 4e5a9052cc3f85b29cb27822
+twittalyzer: "on"
 ---
 id: bergsteinsny
 twitter: bergsteinsny
@@ -193,6 +194,7 @@ categories: Food
 url: http://www.bergsteinsdeli.com/foodtruck.php
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1187497687/twitter_normal.jpg
 foursquare: 4dee5b322271e7b446341b64
+twittalyzer: "on"
 ---
 id: smgfoodtruck
 twitter: smgfoodtruck
