@@ -99,8 +99,7 @@ public class TruckStopMatcher {
     }
 
     // TODO: this is kind of a hack - this is a tweet announcing a future lunch location
-
-    if (morning && futurePattern.matcher(tweetText).find()) {
+    if (morning) {
       startTime = startTime.withTime(11, 30, 0, 0);
     }
     DateTime endTime =
