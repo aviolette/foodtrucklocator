@@ -3,6 +3,8 @@ package foodtruck.dao.appengine;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -27,6 +29,7 @@ import foodtruck.model.Trucks;
  * @since Jul 12, 2011
  */
 public class TruckStopDAOAppEngine implements TruckStopDAO {
+  private static final Logger log = Logger.getLogger(TruckStopDAOAppEngine.class.getName());
   private static final String STOP_KIND = "Truck";
   private static final String START_TIME_FIELD = "startTime";
   private static final String END_TIME_FIELD = "endTime";
@@ -64,10 +67,16 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
       if (instant.isBefore(startTime) || instant.isAfter(upperBound)) {
         continue;
       }
-      stops.add(new TruckStop(trucks.findById((String) entity.getProperty(TRUCK_ID_FIELD)),
-          startTime, endTime,
-          new Location((Double) entity.getProperty(LATITUDE_FIELD), (Double) entity.getProperty(
-              LONGITUDE_FIELD), (String) entity.getProperty(LOCATION_NAME_FIELD)), entity.getKey()));
+      final String truckId = (String) entity.getProperty(TRUCK_ID_FIELD);
+      try {
+        stops.add(new TruckStop(trucks.findById(truckId),
+            startTime, endTime,
+            new Location((Double) entity.getProperty(LATITUDE_FIELD), (Double) entity.getProperty(
+                LONGITUDE_FIELD), (String) entity.getProperty(LOCATION_NAME_FIELD)),
+            entity.getKey()));
+      } catch (RuntimeException rt) {
+        log.log(Level.WARNING, "Error for truckId: " + truckId, rt);
+      }
     }
     return stops.build();
   }
@@ -109,7 +118,8 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
       stops.add(new TruckStop(trucks.findById((String) entity.getProperty(TRUCK_ID_FIELD)),
           startTime, endTime,
           new Location((Double) entity.getProperty(LATITUDE_FIELD), (Double) entity.getProperty(
-              LONGITUDE_FIELD), (String) entity.getProperty(LOCATION_NAME_FIELD)), entity.getKey()));
+              LONGITUDE_FIELD), (String) entity.getProperty(LOCATION_NAME_FIELD)),
+          entity.getKey()));
     }
     return stops.build();
   }
