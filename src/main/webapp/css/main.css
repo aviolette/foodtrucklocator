@@ -60,12 +60,12 @@ header h1 {
 }
 
 #map_wrapper {
-    margin-left: 400px;
+    margin-left: 425px;
 }
 
 #left {
     float: left;
-    width: 400px;
+    width: 425px;
     margin-left: -100%;
     max-height: 100%;
     z-index: 0;
@@ -124,7 +124,7 @@ footer {
 }
 
 .locationContent {
-    margin-left: 47px;
+    margin-left: 35px;
 }
 
 .markerSection {
@@ -196,7 +196,7 @@ li.iconListItem {
 }
 
 a.truckLink {
-    font-size: 1.2em;
+    font-size: 1.1em;
     text-decoration: none !important;
     color: blue !important;
 }
