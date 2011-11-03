@@ -230,6 +230,12 @@ public class AddressExtractorTest {
         "UIC the #KefirTruck has landed! Come treat yourself between classes with a cup of frozen goodness. Flavors are pumpkin spice and original.");
   }
 
+  @Test
+  public void testUICRush() {
+    assertTweet("600 South Paulina, Chicago, IL",
+        "UIC Rush recevied requests to return we are back in 5 minutes :) !!");
+  }
+
   @Test @Ignore
   public void testSouthLoop() {
     assertTweet("13th and Michigan Avenue, Chicago, IL",

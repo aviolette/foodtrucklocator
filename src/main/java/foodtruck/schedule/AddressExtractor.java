@@ -85,6 +85,10 @@ public class AddressExtractor {
         // Willis Tower
         new PatternTransform(Pattern.compile("sears|willis", Pattern.CASE_INSENSITIVE),
             keyword("Wacker and Adams, Chicago, IL"), true, 0),
+        // Rush Medical
+        new PatternTransform(Pattern
+            .compile("\\buic\\b(.*)\\brush\\b|\\brush\\b(.*)\\buic\\b", Pattern.CASE_INSENSITIVE),
+            keyword("600 South Paulina, Chicago, IL"), true, 0),
         // UIC
         new PatternTransform(Pattern.compile("UIC\\b", Pattern.CASE_INSENSITIVE),
             keyword("Vernon Park Circle, Chicago, IL"), true, 0),
@@ -126,9 +130,11 @@ public class AddressExtractor {
   private void applyTruckSpecificMatches(String tweet, Truck truck,
       ImmutableList.Builder<String> addresses) {
     // TODO: implement this as a set of pattern matchers on a truck
+    final String lowerCaseTweet = tweet.toLowerCase();
     if ("mjexpress14".equals(truck.getId())) {
-      if (tweet.toLowerCase().contains("library")) {
+      if (lowerCaseTweet.contains("library")) {
         addresses.add("834 Lake St, Oak Park, IL");
+        return;
       }
     }
   }
