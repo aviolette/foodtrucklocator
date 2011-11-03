@@ -99,6 +99,7 @@ public class TruckStopMatcher {
     }
 
     // TODO: this is kind of a hack - this is a tweet announcing a future lunch location
+    // Cupcake trucks and such should not be matched at all by this rule since they make many frequent stops
     if (morning) {
       startTime = startTime.withTime(11, 30, 0, 0);
     }
