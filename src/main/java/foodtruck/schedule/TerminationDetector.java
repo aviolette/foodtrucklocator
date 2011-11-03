@@ -23,6 +23,7 @@ public class TerminationDetector {
     if (tweetText.contains("sold out") || tweetText.contains("good-bye") ||
         tweetText.contains("good night") || tweetText.contains("good bye")
         || tweetText.contains("leaving")
+        || tweetText.contains("till next time") || tweetText.contains("til next time")
         || tweetText.contains("heading back to our") || tweetText.contains("is on the move")
         || tweetText.contains("are on the move")
         || tweetText.contains("thanks") || tweetText.contains("thank you")) {

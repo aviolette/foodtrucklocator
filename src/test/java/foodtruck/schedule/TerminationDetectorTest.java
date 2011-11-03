@@ -75,6 +75,12 @@ public class TerminationDetectorTest {
   }
 
   @Test
+  public void testTilNextTime() {
+    assertTweet(tweetTime,
+        "ChiTownTamale: SOLD!! we heart you #chicago!! till next time.. #fb #tamales #foodtrucks");
+  }
+
+  @Test
   public void testGoodNight() {
     assertEquals(tweetTime, detector.detect(tweetBuilder.text("Good night Chicago!").build()));
   }
