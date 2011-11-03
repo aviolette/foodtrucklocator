@@ -127,6 +127,12 @@ public class AddressExtractorTest {
   }
 
   @Test
+  public void testWttw() {
+    assertTweet("WTTW",
+        "Ok we'll be @wttw @neiulife for 10 more minutes then heading over to @Grubhub. Who wants some duck gumbo?");
+  }
+
+  @Test
   public void testParseIntersection5() {
     assertTweet("North and Wells, Chicago, IL",
         "Last call at North and Wells for the #KefirTruck! T-10 minutes!");
