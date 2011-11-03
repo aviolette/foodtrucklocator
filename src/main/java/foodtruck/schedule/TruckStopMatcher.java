@@ -51,7 +51,7 @@ public class TruckStopMatcher {
         "\\b(MON|TUE|WED|THU|FRI|SAT|SUN|monday|tuesday|wednesday|thursday|friday|saturday|sunday|2morrow|tomorrow)\\b",
         Pattern.CASE_INSENSITIVE);
     this.futurePattern = Pattern.compile("going|gonna|today|2day", Pattern.CASE_INSENSITIVE);
-    formatter = DateTimeFormat.forPattern("hh a").withZone(defaultZone);
+    formatter = DateTimeFormat.forPattern("hha").withZone(defaultZone);
     this.clock = clock;
   }
 
@@ -120,8 +120,14 @@ public class TruckStopMatcher {
       if (s.endsWith("p") || s.endsWith("a")) {
         s = s + "m";
       }
-      return formatter.parseDateTime(s).withDate(startTime.getYear(), startTime.getMonthOfYear(),
-          startTime.getDayOfMonth());
+      try {
+        s = s.replace(" ", "");
+        return formatter.parseDateTime(s).withDate(startTime.getYear(), startTime.getMonthOfYear(),
+            startTime.getDayOfMonth());
+      } catch (IllegalArgumentException iae) {
+        log.log(Level.WARNING, iae.getMessage(), iae);
+        return null;
+      }
     }
     return null;
   }

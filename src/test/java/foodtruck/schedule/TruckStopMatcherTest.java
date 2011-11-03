@@ -79,6 +79,23 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     verifyAll();
   }
 
+  @Test
+  public void testMatch_anotherUntil() {
+    final String tweetText = "At 353 N Desplaines until 8pm with @bigstarchicago & @HomageSF !!";
+    final String address = "Rush and Walton";
+    Location location = new Location(-1, -2, address);
+    expect(extractor.parseFirst(tweetText, truck)).andReturn(address);
+    expect(geolocator.locate(address)).andReturn(location);
+    replayAll();
+    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
+    TruckStopMatch match = topic.match(truck, tweet, null);
+    assertNotNull(match);
+    assertEquals(Confidence.HIGH, match.getConfidence());
+    assertEquals(tweetTime, match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(20, 0, 0, 0), match.getStop().getEndTime());
+    verifyAll();
+  }
+
 
   @Test @Ignore
   public void testMatch_includesCurrentDayOfTheWeek() {
