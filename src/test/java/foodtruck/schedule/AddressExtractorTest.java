@@ -236,6 +236,12 @@ public class AddressExtractorTest {
         "UIC Rush recevied requests to return we are back in 5 minutes :) !!");
   }
 
+  public void testUICMedical() {
+    assertTweet("Wood and Taylor, Chicago, IL",
+        "UIC Medical District today at 11:30! Menu is posted at thesouthernmac.com fb.me/PnVGkbvf");
+
+  }
+
   @Test @Ignore
   public void testSouthLoop() {
     assertTweet("13th and Michigan Avenue, Chicago, IL",

@@ -87,8 +87,13 @@ public class AddressExtractor {
             keyword("Wacker and Adams, Chicago, IL"), true, 0),
         // Rush Medical
         new PatternTransform(Pattern
-            .compile("\\buic\\b(.*)\\brush\\b|\\brush\\b(.*)\\buic\\b", Pattern.CASE_INSENSITIVE),
+            .compile("\\buic\\b(.*)\\brush\\b|\\brush\\b(.*)\\buic\\b|\\brush medical\\b",
+                Pattern.CASE_INSENSITIVE),
             keyword("600 South Paulina, Chicago, IL"), true, 0),
+        // UIC Medical
+        new PatternTransform(Pattern
+            .compile("\\buic medical\\b", Pattern.CASE_INSENSITIVE),
+            keyword("Wood and Taylor, Chicago, IL"), true, 0),
         // UIC
         new PatternTransform(Pattern.compile("UIC\\b", Pattern.CASE_INSENSITIVE),
             keyword("Vernon Park Circle, Chicago, IL"), true, 0),
