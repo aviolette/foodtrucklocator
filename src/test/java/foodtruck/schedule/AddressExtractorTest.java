@@ -236,6 +236,17 @@ public class AddressExtractorTest {
         "GiGisBakeShop: My apologies South Loop..got a spot and opened the window to a crowd of hungry CUPCAKE lovers!  Parked at 13th / S... http://t.co/JUE2oB8A");
   }
 
+  @Test
+  public void testIntersection10() {
+    assertTweet("Damen and Schiller, Chicago, IL",
+        "Arrived at south end of Wicker Park on Damen and Schiller.");
+  }
+
+  @Test
+  public void testMixedCaseIntersection() {
+    assertTweet("Wacker and LaSalle, Chicago, IL",
+        "Was able to make it out to Wacker & LaSalle for a quick stop!! @CareerBuilder come on down... We'll be leaving just after 4pm.");
+  }
 
   @Test
   public void testSpecialCaseBetween() {
