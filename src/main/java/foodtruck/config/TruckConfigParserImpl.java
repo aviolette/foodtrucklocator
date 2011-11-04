@@ -44,6 +44,7 @@ public class TruckConfigParserImpl implements TruckConfigParser {
           .twitterHandle((String) truckMap.get("twitter"))
           .foursquareUrl((String) truckMap.get("foursquare"))
           .useTwittalyzer("on".equals(truckMap.get("twittalyzer")))
+          .facebook((String) truckMap.get("facebook"))
           .defaultCity(defaultCity)
           .build();
       log.log(Level.INFO, "Loaded truck: {0}", truck);

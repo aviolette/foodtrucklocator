@@ -271,7 +271,7 @@ window.FoodTruckLocator = function() {
             truck.twitterHandle + "' src='/img/twitter16x16.png'/></a> ";
       }
       if (truck.facebook) {
-        infoRow += "<a target='_blank' href='http://facebook.com/" + truck.facebook +
+        infoRow += "<a target='_blank' href='http://facebook.com" + truck.facebook +
             "'><img alt='" +
             truck.facebook + "' src='/img/facebook16x16.png'/></a> ";
       }

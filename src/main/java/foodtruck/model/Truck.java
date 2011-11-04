@@ -23,6 +23,7 @@ public class Truck {
   private final String foursquareUrl;
   private final boolean twittalyzer;
   private final String defaultCity;
+  private final String facebook;
 
   private Truck(Builder builder) {
     this.id = builder.id;
@@ -35,6 +36,7 @@ public class Truck {
     this.foursquareUrl = builder.foursquareUrl;
     this.twittalyzer = builder.twittalyzer;
     this.defaultCity = builder.defaultCity;
+    this.facebook = builder.facebook;
   }
 
   public @Nullable String getFoursquareUrl() {
@@ -73,6 +75,10 @@ public class Truck {
     return twittalyzer;
   }
 
+  public @Nullable String getFacebook() {
+    return facebook;
+  }
+
   @Override
   public int hashCode() {
     return Objects.hashCode(id, name, url, iconUrl, twitterHandle);
@@ -100,6 +106,7 @@ public class Truck {
         .add("twitterHandle", twitterHandle)
         .add("foursquareUrl", foursquareUrl)
         .add("uses twittalyzer", twittalyzer)
+        .add("facebook URI", facebook)
         .toString();
   }
 
@@ -114,6 +121,7 @@ public class Truck {
     private String foursquareUrl;
     private boolean twittalyzer;
     private String defaultCity = "Chicago, IL";
+    private String facebook;
 
     public Builder() {
     }
@@ -172,6 +180,9 @@ public class Truck {
       return new Truck(this);
     }
 
-
+    public Builder facebook(@Nullable String facebook) {
+      this.facebook = facebook;
+      return this;
+    }
   }
 }
