@@ -172,6 +172,7 @@ window.FoodTruckLocator = function() {
 
   var TruckGroupMap = function(center, requestTime, requestDate) {
     var self = this;
+    self.showDistance = true;
     var map = new google.maps.Map(document.getElementById("map_canvas"), {
       zoom: 13,
       center: center,
@@ -248,7 +249,7 @@ window.FoodTruckLocator = function() {
       var div = $('#location' + idx + 'Section');
       div.append("<address class='locationName'>" + removeChicago(group.position.name) +
           "</address>");
-      if (group.distance) {
+      if (group.distance && self.showDistance) {
         div.append("<span>" + group.distance + " miles away</span></br></br>")
       }
       return div;
@@ -267,12 +268,12 @@ window.FoodTruckLocator = function() {
       if (truck.twitterHandle) {
         infoRow += "<a target='_blank' href='http://twitter.com/" + truck.twitterHandle +
             "'><img alt='@" +
-                truck.twitterHandle + "' src='/img/twitter16x16.png'/></a> ";
+            truck.twitterHandle + "' src='/img/twitter16x16.png'/></a> ";
       }
       if (truck.facebook) {
         infoRow += "<a target='_blank' href='http://facebook.com/" + truck.facebook +
             "'><img alt='" +
-                truck.facebook + "' src='/img/facebook16x16.png'/></a> ";
+            truck.facebook + "' src='/img/facebook16x16.png'/></a> ";
       }
       infoRow += '</div>';
       div.append(infoRow);
@@ -418,12 +419,13 @@ window.FoodTruckLocator = function() {
     }
   }
 
-  function loadWithoutGeo(view, date) {
-    var truckObj = new Trucks(view);
+  function loadWithoutGeo(view, date, center) {
+    view.showDistance = false;
+    var truckObj = new Trucks(view, center);
     truckObj.loadTrucks(date, null);
   }
 
-  function loadAllTrucks(view, date) {
+  function loadAllTrucks(view, date, center) {
     // this isn't very practical on the desktop and takes a while on firefox
     if (Modernizr.geolocation && Modernizr.touch) {
       navigator.geolocation.getCurrentPosition(function(position) {
@@ -432,10 +434,10 @@ window.FoodTruckLocator = function() {
         var truckObj = new Trucks(view, currentLocation);
         truckObj.loadTrucks(date);
       }, function() {
-        loadWithoutGeo(view, date)
+        loadWithoutGeo(view, date, center)
       });
     } else {
-      loadWithoutGeo(view, date);
+      loadWithoutGeo(view, date, center);
     }
   }
 
@@ -472,7 +474,7 @@ window.FoodTruckLocator = function() {
       fitMapToView();
       showControls();
       var truckView = new TruckGroupMap(this.center, time, date.split("-")[0]);
-      loadAllTrucks(truckView, date);
+      loadAllTrucks(truckView, date, this.center);
     },
     loadTruckSchedule : function(truckId) {
       fitMapToView();
