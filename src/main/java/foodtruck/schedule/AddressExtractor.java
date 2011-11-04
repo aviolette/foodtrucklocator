@@ -20,7 +20,7 @@ import foodtruck.model.Truck;
 public class AddressExtractor {
   private final List<PatternTransform> patterns;
   private final static String INTERSECTION_PARTIAL =
-      "(N|E|W|S\\s+)?[A-Z0-9][a-zA-Z0-9]+(\\s+(Drive|Dr|Buren|Blvd|Ave)\\.?)?";
+      "(N|E|W|S\\s+)?[A-Z0-9][a-zA-Z0-9]+(\\s+(Drive|Dr|Buren|BUREN|Blvd|Ave)\\.?)?";
 
   private static Function<String, String> keyword(final String toWhat) {
     return new Function<String, String>() {
