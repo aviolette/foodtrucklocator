@@ -6,8 +6,9 @@ iconUrl: "http://a3.twimg.com/profile_images/1402134609/be86_1_1__normal.jpg"
 url: http://thetamalespaceship.com/
 foursquare: 4da48a23b521224b03cd34ee
 twittalyzer: "on"
+facebook: /pages/Tamalespace101/160864303980025
 ---
-id: meatyballs1
+id: fossfoodtrucks
 twitter: fossfoodtrucks
 name: Meatyballs 1
 categories: Savory
@@ -15,6 +16,7 @@ url: http://www.meatyballsmobile.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1204282220/Meatyballs_Mobile_Logo_A_normal.jpg
 foursquare: 4cb70527651cb7135bf03a3a
 twittalyzer: "on"
+facebook: /MeatyballsMobile
 ---
 id: meatyballs2
 twitter: fossfoodtrucks
@@ -23,6 +25,7 @@ categories: Savory
 url: http://www.meatyballsmobile.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1204282220/Meatyballs_Mobile_Logo_A_normal.jpg
 foursquare: 4cb70527651cb7135bf03a3a
+facebook: /MeatyballsMobile
 ---
 id: meatyballs3
 twitter: fossfoodtrucks
@@ -31,6 +34,7 @@ name: Meatyballs 3
 categories: Savory
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1204282220/Meatyballs_Mobile_Logo_A_normal.jpg
 foursquare: 4cb70527651cb7135bf03a3a
+facebook: /MeatyballsMobile
 ---
 id: 5411empanadas
 url: http://5411empanadas.com/
@@ -40,6 +44,7 @@ categories: Savory
 iconUrl: "http://si0.twimg.com/profile_images/749153715/twitter2_normal.jpg"
 foursquare: 4cf936ed8df52c0f590197be
 twittalyzer: "on"
+facebook: /5411empanadas
 ---
 id: gaztrowagon
 twitter: wherezthewagon
@@ -48,6 +53,7 @@ categories: American
 url: http://www.gaztro-wagon.com/
 iconUrl: http://si0.twimg.com/profile_images/781557064/GaztroWagon_B_B_Stacked_normal.png
 foursquare: 4c76a054d8948cfa2ef46ada
+facebook: /pages/Gaztro-Wagon/119467254768063
 ---
 id: theslideride
 twitter: theslideride
@@ -57,6 +63,7 @@ categories: Sandwich
 iconUrl: http://si0.twimg.com/profile_images/1323538462/ribeye_normal.jpg
 foursquare: 4d9e5fc8640b54817800ca2d
 twittalyzer: "on"
+facebook: /pages/The-Slide-Ride/147387535325500
 ---
 id: thesouthernmac
 twitter: thesouthernmac
@@ -66,6 +73,7 @@ categories: American
 iconUrl: http://si0.twimg.com/profile_images/1214705421/Mac_and_Cheese_Truck_Media_Shot_-_low_res_normal.jpg
 foursquare: 4db6f3e74b226b343dbf212c
 twittalyzer: "on"
+facebook: /macandcheesetruck
 ---
 id: sweetridechi
 twitter: sweetridechi
@@ -75,6 +83,7 @@ url: http://www.sweetridesf.com/
 iconUrl: http://si0.twimg.com/profile_images/1165252076/Sweet_Ride_Truck_normal.jpg
 foursquare: 4dade04e6e81e2dffdbbf99b
 twittalyzer: "on"
+facebook: /sweetride
 ---
 id: flirtycupcakes
 twitter: flirtycupcakes
@@ -83,6 +92,7 @@ categories: Cupcakes
 url: http://www.flirtycupcakes.com/
 iconUrl: http://si0.twimg.com/profile_images/720492263/small_logo_normal.jpg
 foursquare: 4b990b1cf964a520975d35e3
+facebook: /flirtycupcakes
 ---
 id: taquerofusion
 twitter: taquerofusion
@@ -92,6 +102,7 @@ url: http://www.taquerofusion.com/
 iconUrl: http://si0.twimg.com/profile_images/1312553461/LogoTwitter_normal.jpg
 foursquare: 4e037bf8c65b8061424e9805
 twittalyzer: "on"
+facebook: /taquerofusion
 ---
 id: hautesausage1
 twitter: hautesausage
@@ -100,6 +111,7 @@ categories: American
 url: http://www.hautesausage.com/
 iconUrl: http://si0.twimg.com/profile_images/1325400326/HSlogoFB_normal.jpg
 foursquare: 4dc2d50ab0fb490416b87ae6
+facebook: /hautesausage
 ---
 id: hautesausage2
 twitter: hautesausage
@@ -108,6 +120,7 @@ categories: American
 url: http://www.hautesausage.com/
 iconUrl: http://si0.twimg.com/profile_images/1325400326/HSlogoFB_normal.jpg
 foursquare: 4dc2d50ab0fb490416b87ae6
+facebook: /hautesausage
 ---
 id: hautesausage3
 twitter: hautesausage
@@ -116,14 +129,16 @@ categories: American
 url: http://www.hautesausage.com/
 iconUrl: http://si0.twimg.com/profile_images/1325400326/HSlogoFB_normal.jpg
 foursquare: 4dc2d50ab0fb490416b87ae6
+facebook: /hautesausage
 ---
 id: suzysamosas
 twitter: suzysamosas
-name: Suzy Samosa (on Haute Sausage)
+name: Suzy Samosas
 categories: Indian
 url: http://suzysingh.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1542394745/photo__18__normal.JPG
 twittalyzer: "on"
+facebook: /pages/Suzys-Samosas-Food-Truck/123902457709199
 ---
 id: gigisbakeshop
 twitter: gigisbakeshop
@@ -132,6 +147,7 @@ categories: Cupcake
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1503976385/GiGI_TAG_v07_normal.jpg
 twittalyzer: "on"
 foursquare: 4e66a54262e1706d82473eb7
+facebook: /GiGisBakeShop
 ---
 id: thepiemachine
 twitter: thepiemachine
@@ -148,6 +164,7 @@ categories: Desserts
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1416523084/profile_normal.jpg
 foursquare: 4e837228b6341921482bd055
 twittalyzer: "on"
+facebook: /pages/Mama-Greens-Gourmet-Goodies/139420512741550
 ---
 id: themoremobile
 twitter: themoremobile
@@ -157,6 +174,7 @@ url: http://www.morecupcakes.com/
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1121172140/moremobile_normal.jpg
 foursquare: 4c8a7e6755f9b713ad994add
 twittalyzer: "on"
+facebook: /morecupcakes
 ---
 id: homagesf
 twitter: homagesf
@@ -166,6 +184,7 @@ categories: Food
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1491944244/logo_orange_and_black_twit_normal.jpg
 foursquare: 4e231cb415207ed86eb64058
 twittalyzer: "on"
+facebook: /pages/Homage-Street-Food/100851666668024
 ---
 id: bridgeportpasty
 twitter: bridgeportpasty
@@ -175,6 +194,7 @@ categories: Dessert
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1271453607/3111-logo-brownlet-350px_normal.jpg
 foursquare: 4e8c8fc793adecfdb971a040
 twittalyzer: "on"
+facebook: /bridgeportpasty
 ---
 id: culture
 twitter: culture
@@ -192,6 +212,7 @@ categories: Mexican
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1408203936/FOODTRUCK_normal.jpg
 foursquare: 4e1ddcbdd4c0893099615491
 twittalyzer: "on"
+facebook: /pages/La-Adelita-Truck/239654979394840
 ---
 id: rzjp6cakes
 twitter: rzjp6cakes
@@ -201,6 +222,7 @@ url: http://www.tasteofsweetiecakes.com/
 iconUrl: http://a3.twimg.com/profile_images/1508155810/sweetie_cakes_logo_normal.png
 foursquare: 4e5a9052cc3f85b29cb27822
 twittalyzer: "on"
+facebook: /profile.php?id=100002613259602
 ---
 id: bergsteinsny
 twitter: bergsteinsny
@@ -210,6 +232,7 @@ url: http://www.bergsteinsdeli.com/foodtruck.php
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1187497687/twitter_normal.jpg
 foursquare: 4dee5b322271e7b446341b64
 twittalyzer: "on"
+facebook: /pages/Bergsteins-NY-Deli/294750952946
 ---
 id: smgfoodtruck
 twitter: smgfoodtruck
@@ -218,6 +241,7 @@ categories: Dessert
 url: http://www.sweetmissgivings.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1192829259/photo_normal.JPG
 twittalyzer: "on"
+facebook: /pages/Sweet-Miss-Givings-Bakery/102615459778492
 ---
 id: brownbagtruck
 twitter: brownbagtruck
@@ -227,6 +251,7 @@ url: http://www.brownbaglunchtruck.com/
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1500530673/twitter_pic_normal.jpg
 foursquare: 4de668e2d1648041649ed635
 twittalyzer: "on"
+facebook: /brownbaglunchtruck
 ---
 id: forevertruck
 twitter: forevertruck
@@ -236,6 +261,7 @@ url: http://www.foreveryogurt.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1332195359/twitterlogo1_normal.png
 foursquare: 4e8a2dc12c5b5dc29df63d76
 twittalyzer: "on"
+facebook: http://www.foreveryogurt.com
 ---
 id: foreveryogurt
 twitter: foreveryogurt
@@ -245,6 +271,7 @@ url: http://www.foreveryogurt.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1332195359/twitterlogo1_normal.png
 foursquare: 4e8a2dc12c5b5dc29df63d76
 twittalyzer: "on"
+facebook: http://www.foreveryogurt.com
 ---
 id: courageouscakes
 twitter: courageouscakes
@@ -254,6 +281,7 @@ url: http://www.cupcakesforcourage.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1268075878/twitter_logo_normal.jpg
 foursquare: 4dd6cc877d8b322663e0276c
 twittalyzer: "on"
+facebook: /cupcakesforcourage
 ---
 id: jerkinonwheels
 twitter: jerkinonwheels
@@ -262,6 +290,7 @@ categories: Food
 url: http://www.jerkinonwheels.com/
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1514860552/0001Xf_normal.jpg
 twittalyzer: "on"
+facebook: /JerkinOnWheels
 ---
 id: thewagyuwagon
 twitter: thewagyuwagon
@@ -271,6 +300,7 @@ url: http://www.thewagyuwagon.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1310282168/D_2_WagyuWagon_ID_Identity_normal.jpg
 foursquare: 4e5933f21f6e804280c2753e
 twittalyzer: "on"
+facebook: /TheWagyuWagon
 ---
 id: flavor180
 twitter: flavor180
@@ -279,6 +309,7 @@ categories: Food
 url: http://www.flavor180.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1252308145/flavor-new_normal.jpg
 foursquare: 4e2f8e2c8130c05c18cefbef
+facebook: /pages/Flavor180/134965526568765
 ---
 id: flavor1802
 twitter: flavor180
@@ -287,6 +318,7 @@ categories: Food
 url: http://www.flavor180.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1252308145/flavor-new_normal.jpg
 foursquare: 4e2f8e2c8130c05c18cefbef
+facebook: /pages/Flavor180/134965526568765
 ---
 id: fidotogo
 twitter: fidotogo
@@ -296,6 +328,7 @@ url: http://www.fidotogo.net
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1344354728/truck4profile_normal.jpg
 twittalyzer: "on"
 foursquare: 4de95f941520132cb978fdf2
+facebook: /fidotogo
 ---
 id: zullosfoodtruck
 twitter: zullosfoodtruck
@@ -305,6 +338,7 @@ url: http://www.zullosinc.com
 iconUrl: http://a2.twimg.com/profile_images/1472969323/logozullo_normal.jpg
 foursquare: 4e4ac0c6315100ba6f72d3dc
 twittalyzer: "on"
+facebook: /ZullosFoodTruck
 ---
 id: flirtycupcakes2
 twitter: firtycupcakes
@@ -313,6 +347,7 @@ categories: Desserts
 url: http://www.flirtycupcakes.com/
 iconUrl: http://si0.twimg.com/profile_images/720492263/small_logo_normal.jpg
 foursquare: 4b990b1cf964a520975d35e3
+facebook: /flirtycupcakes
 ---
 id: mobilefoodunit
 twitter: mobilefoodunit
@@ -321,6 +356,7 @@ categories: Cajun
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1393048160/mfuLOGO_normal.png
 foursquare: 4b990b1cf964a520975d35e3
 twittalyzer: "on"
+facebook: /pages/Mobile-Food-Unit/204196292961297
 ---
 id: chickpeadelight
 twitter: chickpeadelight
@@ -337,6 +373,7 @@ categories: yogurt
 url: http://www.starfruitcafe.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1432329264/starfruittruck_normal.JPG
 twittalyzer: "on"
+facebook: /StarfruitCafe
 ---
 id: chitowntamale
 twitter: chitowntamale
@@ -346,6 +383,7 @@ url: http://www.chitowntamale.com/
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1589067061/Tamale_Guy_logo_blk-gry-blue_outline_2_normal.jpg
 foursquare: 4e834b6f722e73eaf4938516
 twittalyzer: "on"
+facebook: /chitowntamale
 ---
 id: jagrillonthego
 twitter: jagrillonthego
@@ -354,6 +392,7 @@ categories: Jamaican
 url: http://www.jagrill.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1460964594/037_normal.JPG
 twittalyzer: "on"
+facebook: /jagrill
 ---
 id: meatloafagogo
 twitter: meatloafagogo
@@ -362,6 +401,7 @@ categories: Savory
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1562762202/gogorectangle_normal.png
 foursquare: 4e85fc31b634ae3cdbc9d05a
 twittalyzer: "on"
+facebook: /meatloafagogo
 ---
 id: sugarpiecafe
 twitter: sugarpiecafe
@@ -383,6 +423,7 @@ name: Don Rafa Food Truck
 categories: Savory
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1591805989/logo_normal.jpg
 twittalyzer: "on"
+facebook: /DonRafaRestaurants
 ---
 id: lqmeatmobile
 twitter: lqmeatmobile
@@ -390,12 +431,14 @@ name: Lillies Q Chicago
 categories: Savory
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1317636505/NewLilliesQlogo_normal.jpg
 twittalyzer: "on"
+facebook: /LilliesQ
 ---
 id: puffsofdoom
 twitter: puffsofdoom
 name: Puffs of Doom
 categories: Sweet
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1340187108/Logo_Final_normal.png
+facebook: /puffsofdoom
 ---
 id: sweetspotmac
 twitter: sweetspotmac
@@ -405,6 +448,7 @@ categories: Sweet
 foursquare: 4e9f0e2a7beb438c5e7bd7d0
 twittalyzer: "on"
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1514611309/Logo_SweetSpotMac_Block4C_Avatar_normal.jpg
+facebook: /SweetSpotMacarons
 ---
 id: bigstartruck
 twitter: bigstartruck
@@ -433,6 +477,7 @@ name: Ste Martaen
 categories: Savory
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/203922487/stemartaen_logo_normal.jpg
 twittalyzer: "on"
+facebook: /SteMartaen
 ---
 id: ducknrolltruck
 twitter: ducknrolltruck
@@ -440,6 +485,7 @@ name: Duck n Roll Food Truck
 categories: Savory
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1460919739/Final_Duck_Logo_v2_normal.jpg
 twittalyzer: "on"
+facebook: /DucknRoll
 ---
 id: baomouth
 twitter: baomouth
@@ -447,6 +493,7 @@ name: Wow Bao
 categories: Asian
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/565404613/twitter_icon_normal.jpg
 twittalyzer: "on"
+facebook: /hotasianbuns
 ---
 id: trafficjamfood
 twitter: trafficjamfood
@@ -475,6 +522,20 @@ twitter: papostacos
 name: Papos Tacos
 categories: Mexican
 iconUrl: https://twimg0-a.akamaihd.net/profile_images/1612295747/efr8d9MJ_normal
+twittalyzer: "on"
+---
+id: cookieswflavor
+twitter: cookieswflavor
+name: Cookies with Flavor
+categories: Cookies
+iconUrl: https://twimg0-a.akamaihd.net/profile_images/1250848560/burgandy_3pck_normal.jpg
+twittalyzer: "on"
+---
+id: beaversdonuts
+twitter: beaversdonuts
+name: Beavers Donuts
+categories: Donuts
+iconUrl: https://twimg0-a.akamaihd.net/profile_images/1619739185/photo_1_normal.JPG
 twittalyzer: "on"
 
 
