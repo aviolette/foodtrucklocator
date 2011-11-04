@@ -168,6 +168,12 @@ public class AddressExtractorTest {
   }
 
   @Test
+  public void testJeffJack() {
+    assertTweet("Jefferson and Jackson, Chicago, IL",
+        "CourageousCakes: Ok Jeff/jack finally here! #greenmachine moves a bit slower in the rain!");
+  }
+
+  @Test
   public void testContextSpecificLocation() {
     assertTweet("834 Lake St, Oak Park, IL",
         "hello everyone, mj express is by the library.  comey by",

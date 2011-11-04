@@ -64,6 +64,8 @@ public class AddressExtractor {
             Pattern.compile("U of Chicago|UofC|UChicago|Ellis \\(57 / 58\\)|The Reg\\b",
                 Pattern.CASE_INSENSITIVE),
             keyword("57th and Ellis, Chicago, IL"), true, 0),
+        new PatternTransform(Pattern.compile("\\bjeff/jack\\b", Pattern.CASE_INSENSITIVE),
+            keyword("Jefferson and Jackson, Chicago, IL"), false, 0),
         // Harpo Studios
         new PatternTransform(
             Pattern.compile("harpo\\b", Pattern.CASE_INSENSITIVE), keyword("Harpo Studios"), true,
