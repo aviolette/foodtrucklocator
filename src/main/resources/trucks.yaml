@@ -521,21 +521,28 @@ id: papostacos
 twitter: papostacos
 name: Papos Tacos
 categories: Mexican
-iconUrl: https://twimg0-a.akamaihd.net/profile_images/1612295747/efr8d9MJ_normal
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1612295747/efr8d9MJ_normal
 twittalyzer: "on"
 ---
 id: cookieswflavor
 twitter: cookieswflavor
 name: Cookies with Flavor
 categories: Cookies
-iconUrl: https://twimg0-a.akamaihd.net/profile_images/1250848560/burgandy_3pck_normal.jpg
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1250848560/burgandy_3pck_normal.jpg
 twittalyzer: "on"
 ---
 id: beaversdonuts
 twitter: beaversdonuts
 name: Beavers Donuts
 categories: Donuts
-iconUrl: https://twimg0-a.akamaihd.net/profile_images/1619739185/photo_1_normal.JPG
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1619739185/photo_1_normal.JPG
+twittalyzer: "on"
+---
+id: fireituptruck
+twitter: fireituptruck
+name: Fire It Up
+categories: Barbecue
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1474737057/FIU_normal.jpg
 twittalyzer: "on"
 
 
