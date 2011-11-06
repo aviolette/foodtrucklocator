@@ -222,5 +222,23 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     verifyAll();
   }
 
+  @Test
+  public void testMatch_shouldMatchDayOfWeekIfCurrentDay() {
+    final String tweetText =
+        "GiGisBakeShop: Hello SUNDAY!  The PURPLE Bus is headed out...Look for us at 13th / S Michigan 11:15 am, Lincoln Square 1:30 pm";
+    final String address = "Foo and Bar";
+    Location location = new Location(-1, -2, address);
+    expect(extractor.parseFirst(tweetText, truck)).andReturn(address);
+    expect(geolocator.locate(address)).andReturn(location);
+    tweetTime = new DateTime(2011, 11, 6, 9, 0, 0, 0, DateTimeZone.UTC);
+    replayAll();
+    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
+    TruckStopMatch match = topic.match(truck, tweet, null);
+    assertNotNull(match);
+    assertEquals(Confidence.HIGH, match.getConfidence());
+    assertEquals(address, match.getStop().getLocation().getName());
+    assertEquals(match.getStop().getStartTime(), tweetTime.withTime(11, 30, 0, 0));
+    verifyAll();
+  }
   // TODO: Handle this: tamalespace101: The tamalespaceship will be landing at <<324 S Racine>> @ethylsdive loaded with delicious tamales for dinner 6-9pm come and get them!!
 }

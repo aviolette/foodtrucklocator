@@ -20,6 +20,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.geolocation.GeoLocator;
+import foodtruck.model.DayOfWeek;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
@@ -85,9 +86,8 @@ public class TruckStopMatcher {
       return null;
     }
 
-    // TODO: we need to make sure that it doesn't contain the current day of the week
-    // For instance: Arrived at Michigan and Walton. Come get your Sunday macaron going!
-    if (dowPattern.matcher(tweetText).find()) {
+    if (!tweetText.toLowerCase().contains(DayOfWeek.current().toString()) &&
+        dowPattern.matcher(tweetText).find()) {
       log.log(Level.INFO, "Didn't match '{0}' because it contained a day of the week", tweetText);
       return null;
     }
