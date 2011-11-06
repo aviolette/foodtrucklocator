@@ -81,6 +81,7 @@ public class TwitterServiceImpl implements TwitterService {
         }
         TweetSummary tweet = statusToTweet(status);
         if (tweet != null) {
+          log.log(Level.INFO, "Tweet {0}: ", tweet);
           summaries.add(tweet);
         }
       }
