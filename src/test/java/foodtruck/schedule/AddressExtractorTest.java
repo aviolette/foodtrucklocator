@@ -204,6 +204,10 @@ public class AddressExtractorTest {
         "stemartaen: Chicago and Franklin between 1:20 and 1:30 today.  #veganfoodtruck");
     assertTweet("Chicago and Fairbanks, Chicago, IL",
         "We're on Chicago b/w Fairbanks and LSD. @punkrawk82 @ashesbodashes @jketay @deitranotdietra @chifoodtruckgal");
+    assertTweet("Erie and Franklin, Chicago, IL",
+        "Hey all! I'm hanging in Erie in between Franklin and Orleans.  Let's party...its monday!");
+    assertTweet("Wabash and Van Buren, Chicago, IL",
+        "thesouthernmac: Alright folks, sorry, we're on Wabash between Van Buren and Jackson!");
   }
 
   @Test

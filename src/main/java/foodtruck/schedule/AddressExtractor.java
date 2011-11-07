@@ -35,7 +35,8 @@ public class AddressExtractor {
       public String apply(String input) {
         return
             input.replaceAll("(&|b\\/w|\\/)", " and ").replace(" at ", " and ").replace("  and  ",
-                " and ").replace(" between ", " and ").replace(" n ", " and ").trim() +
+                " and ").replace(" between ", " and ").replace(" in", "").replace(" n ", " and ")
+                .trim() +
                 ", Chicago, IL";
       }
     };
@@ -108,7 +109,8 @@ public class AddressExtractor {
         new PatternTransform(Pattern.compile("<<(.*)>>"), null, true, 1),
         // Between two streets
         new PatternTransform(Pattern.compile(
-            "([A-Z0-9][a-zA-Z0-9]+ (between|b/w) [A-Z0-9][a-zA-Z0-9]+)((\\s+(and|at)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))(N|E|W|S\\s+)?[A-Z0-9][a-zA-Z0-9]+"),
+            "(" + INTERSECTION_PARTIAL + " ((in )?between|b/w) " + INTERSECTION_PARTIAL +
+                ")((\\s+(and|at)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))" + INTERSECTION_PARTIAL),
             cityAppender, true, 1),
         // intersection format preceded by at
         new PatternTransform(Pattern.compile(
