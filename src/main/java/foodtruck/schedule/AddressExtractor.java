@@ -72,6 +72,8 @@ public class AddressExtractor {
         new PatternTransform(
             Pattern.compile("harpo\\b", Pattern.CASE_INSENSITIVE), keyword("Harpo Studios"), true,
             0),
+        new PatternTransform(Pattern.compile("Trump", Pattern.CASE_INSENSITIVE),
+            keyword("400 North Wabash, Chicago, IL"), true, 0),
         // AON
         new PatternTransform(Pattern.compile("@aon| aon|#aon", Pattern.CASE_INSENSITIVE),
             keyword("Randolph and Columbus, Chicago, IL"), true, 0),

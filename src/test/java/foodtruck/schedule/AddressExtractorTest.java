@@ -213,6 +213,12 @@ public class AddressExtractorTest {
   }
 
   @Test
+  public void testTrumpTower() {
+    assertTweet("400 North Wabash, Chicago, IL",
+        "The BAO-Mobile is at Trump Tower. #fb #BunsOnTheRun");
+  }
+
+  @Test
   public void testTamaleSpaceshipFormat() {
     assertTweet("Adler Planetarium",
         "Going strong at <<Adler Planetarium>> for \"Jenny & Mike's\" Wedding ;)");
