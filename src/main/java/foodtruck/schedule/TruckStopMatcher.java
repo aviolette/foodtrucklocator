@@ -7,9 +7,6 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
@@ -20,7 +17,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.geolocation.GeoLocator;
-import foodtruck.model.DayOfWeek;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
@@ -42,24 +38,44 @@ public class TruckStopMatcher {
   private final GeoLocator geoLocator;
   private final Pattern timePattern;
   private final DateTimeFormatter formatter;
-  private final Pattern dowPattern;
-  private final Pattern futurePattern;
   private final Clock clock;
   private final Pattern timeRangePattern;
-  private final Pattern numberMatcher;
+  private final Pattern monPattern;
+  private final Pattern tuesPattern;
+  private final Pattern wedPattern;
+  private final Pattern thursPattern;
+  private final Pattern friPattern;
+  private final Pattern satPattern;
+  private final Pattern sunPattern;
 
   @Inject
   public TruckStopMatcher(AddressExtractor extractor, GeoLocator geoLocator,
       DateTimeZone defaultZone, Clock clock) {
     this.addressExtractor = extractor;
     this.geoLocator = geoLocator;
-    this.numberMatcher = Pattern.compile("(\\d+)(:\\d+)?");
     this.timePattern = Pattern.compile("until (" + TIME_PATTERN + ")");
     this.timeRangePattern = Pattern.compile(TIME_RANGE_PATTERN);
-    this.dowPattern = Pattern.compile(
-        "\\b(MON|TUE|WED|THU|FRI|SAT|SUN|monday|tuesday|wednesday|thursday|friday|saturday|sunday|2morrow|tomorrow)\\b",
+    this.monPattern = Pattern.compile(
+        "\\b(TUE|WED|THU|FRI|SAT|SUN|tuesday|wednesday|thursday|friday|saturday|sunday|tues|thurs|2morrow|tomorrow)\\b",
         Pattern.CASE_INSENSITIVE);
-    this.futurePattern = Pattern.compile("going|gonna|today|2day", Pattern.CASE_INSENSITIVE);
+    this.tuesPattern = Pattern.compile(
+        "\\b(MON|WED|THU|FRI|SAT|SUN|monday|wednesday|thursday|friday|saturday|sunday|thurs|2morrow|tomorrow)\\b",
+        Pattern.CASE_INSENSITIVE);
+    this.wedPattern = Pattern.compile(
+        "\\b(MON|TUE|THU|FRI|SAT|SUN|monday|tuesday|thursday|friday|saturday|sunday|tues|thurs|2morrow|tomorrow)\\b",
+        Pattern.CASE_INSENSITIVE);
+    this.thursPattern = Pattern.compile(
+        "\\b(MON|TUE|WED|FRI|SAT|SUN|monday|tuesday|wednesday|friday|saturday|sunday|tues|2morrow|tomorrow)\\b",
+        Pattern.CASE_INSENSITIVE);
+    this.friPattern = Pattern.compile(
+        "\\b(MON|TUE|WED|THU|SAT|SUN|monday|tuesday|wednesday|thursday|saturday|sunday|tues|thurs|2morrow|tomorrow)\\b",
+        Pattern.CASE_INSENSITIVE);
+    this.satPattern = Pattern.compile(
+        "\\b(MON|TUE|WED|THU|FRI|SUN|monday|tuesday|wednesday|thursday|friday|sunday|tues|thurs|2morrow|tomorrow)\\b",
+        Pattern.CASE_INSENSITIVE);
+    this.sunPattern = Pattern.compile(
+        "\\b(MON|TUE|WED|THU|FRI|SAT|monday|tuesday|wednesday|thursday|friday|saturday|tues|thurs|2morrow|tomorrow)\\b",
+        Pattern.CASE_INSENSITIVE);
     formatter = DateTimeFormat.forPattern("hhmma").withZone(defaultZone);
     this.clock = clock;
   }
@@ -86,8 +102,7 @@ public class TruckStopMatcher {
       return null;
     }
 
-    if (!tweetText.toLowerCase().contains(DayOfWeek.current().toString()) &&
-        dowPattern.matcher(tweetText).find()) {
+    if (matchesOtherDay(tweetText)) {
       log.log(Level.INFO, "Didn't match '{0}' because it contained a day of the week", tweetText);
       return null;
     }
@@ -119,6 +134,25 @@ public class TruckStopMatcher {
     return new TruckStopMatch(Confidence.HIGH,
         new TruckStop(truck, startTime, endTime, location, null),
         tweetText);
+  }
+
+  private boolean matchesOtherDay(String tweetText) {
+    switch (clock.dayOfWeek()) {
+      case monday:
+        return monPattern.matcher(tweetText).find();
+      case tuesday:
+        return tuesPattern.matcher(tweetText).find();
+      case wednesday:
+        return wedPattern.matcher(tweetText).find();
+      case thursday:
+        return thursPattern.matcher(tweetText).find();
+      case friday:
+        return friPattern.matcher(tweetText).find();
+      case saturday:
+        return satPattern.matcher(tweetText).find();
+      default:
+        return sunPattern.matcher(tweetText).find();
+    }
   }
 
   private Location extractLocation(TweetSummary tweet, Truck truck) {
@@ -198,16 +232,5 @@ public class TruckStopMatcher {
       return parseTime(matcher.group(1), startTime.toLocalDate(), null);
     }
     return null;
-  }
-
-  private boolean containsLandingStatement(String tweetText) {
-    final String lc = tweetText.toLowerCase();
-    return Iterables.any(ImmutableList.of("landed", "we're @ ", "we are at", "we're at", "we're on",
-        "we are on", "here at", "here on", "We moved to"),
-        new Predicate<String>() {
-          @Override public boolean apply(String input) {
-            return lc.contains(input);
-          }
-        });
   }
 }

@@ -8,9 +8,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import foodtruck.geolocation.GeoLocator;
+import foodtruck.model.DayOfWeek;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TweetSummary;
+import foodtruck.util.Clock;
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -27,12 +29,15 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   private TruckStopMatcher topic;
   private Truck truck;
   private DateTime tweetTime;
+  private Clock clock;
 
   @Before
   public void before() {
     extractor = createMock(AddressExtractor.class);
     geolocator = createMock(GeoLocator.class);
-    topic = new TruckStopMatcher(extractor, geolocator, DateTimeZone.UTC, null);
+    clock = createMock(Clock.class);
+    expect(clock.dayOfWeek()).andStubReturn(DayOfWeek.sunday);
+    topic = new TruckStopMatcher(extractor, geolocator, DateTimeZone.UTC, clock);
     truck = new Truck.Builder().id("foobar").build();
     tweetTime = new DateTime(2011, 11, 10, 11, 13, 7, 7, DateTimeZone.UTC);
   }
@@ -211,6 +216,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     final String tweetText =
         "We hope you having a great weekend, see you on Monday <<Wells & Monroe>> pic.twitter.com/1ewdrgKF";
     final String address = "Wells and Monroe";
+    expect(clock.dayOfWeek()).andReturn(DayOfWeek.sunday);
     Location location = new Location(-1, -2, address);
     expect(extractor.parseFirst(tweetText, truck)).andReturn(address);
     expect(geolocator.locate(address)).andReturn(location);
@@ -238,6 +244,22 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     assertEquals(Confidence.HIGH, match.getConfidence());
     assertEquals(address, match.getStop().getLocation().getName());
     assertEquals(match.getStop().getStartTime(), tweetTime.withTime(11, 30, 0, 0));
+    verifyAll();
+  }
+
+  @Test
+  public void testMatch_shouldNotMatchDayOfWeekIfTomorrow() {
+    final String tweetText =
+        "CourageousCakes: @5411empanadas ahhh no uofc tues?? I shall starve";
+    final String address = "Foo and Bar";
+    Location location = new Location(-1, -2, address);
+    expect(extractor.parseFirst(tweetText, truck)).andReturn(address);
+    expect(geolocator.locate(address)).andReturn(location);
+    tweetTime = new DateTime(2011, 11, 7, 9, 0, 0, 0, DateTimeZone.UTC);
+    replayAll();
+    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
+    TruckStopMatch match = topic.match(truck, tweet, null);
+    assertNull(match);
     verifyAll();
   }
   // TODO: Handle this: tamalespace101: The tamalespaceship will be landing at <<324 S Racine>> @ethylsdive loaded with delicious tamales for dinner 6-9pm come and get them!!

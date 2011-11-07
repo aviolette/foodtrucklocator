@@ -1,7 +1,6 @@
 package foodtruck.model;
 
 import org.joda.time.DateTimeConstants;
-import org.joda.time.LocalDate;
 
 /**
  * An enum for each day of the week.
@@ -23,24 +22,5 @@ public enum DayOfWeek {
 
   public int getConstant() {
     return isoConstant;
-  }
-
-  public static DayOfWeek current() {
-    LocalDate date = new LocalDate();
-    switch (date.getDayOfWeek()) {
-      case DateTimeConstants.MONDAY:
-        return monday;
-      case DateTimeConstants.TUESDAY:
-        return tuesday;
-      case DateTimeConstants.WEDNESDAY:
-        return wednesday;
-      case DateTimeConstants.THURSDAY:
-        return thursday;
-      case DateTimeConstants.FRIDAY:
-        return friday;
-      case DateTimeConstants.SATURDAY:
-        return saturday;
-    }
-    return sunday;
   }
 }
