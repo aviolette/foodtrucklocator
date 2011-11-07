@@ -202,6 +202,8 @@ public class AddressExtractorTest {
         "FossFoodTrucks: Meatyballs have landed on Huron between Fairbanks & Mcclurg. Come and grab some balls for the next 25 minutes.");
     assertTweet("Chicago and Franklin, Chicago, IL",
         "stemartaen: Chicago and Franklin between 1:20 and 1:30 today.  #veganfoodtruck");
+    assertTweet("Chicago and Fairbanks, Chicago, IL",
+        "We're on Chicago b/w Fairbanks and LSD. @punkrawk82 @ashesbodashes @jketay @deitranotdietra @chifoodtruckgal");
   }
 
   @Test
