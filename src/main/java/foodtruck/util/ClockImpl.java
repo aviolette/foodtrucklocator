@@ -3,8 +3,11 @@ package foodtruck.util;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
+
+import foodtruck.model.DayOfWeek;
 
 /**
  * @author aviolette@gmail.com
@@ -26,5 +29,23 @@ public class ClockImpl implements Clock {
   @Override
   public LocalDate currentDay() {
     return new LocalDate(zone);
+  }
+
+  @Override public DayOfWeek dayOfWeek() {
+    switch (currentDay().getDayOfWeek()) {
+      case DateTimeConstants.MONDAY:
+        return DayOfWeek.monday;
+      case DateTimeConstants.TUESDAY:
+        return DayOfWeek.tuesday;
+      case DateTimeConstants.WEDNESDAY:
+        return DayOfWeek.wednesday;
+      case DateTimeConstants.THURSDAY:
+        return DayOfWeek.thursday;
+      case DateTimeConstants.FRIDAY:
+        return DayOfWeek.friday;
+      case DateTimeConstants.SATURDAY:
+        return DayOfWeek.saturday;
+    }
+    return DayOfWeek.sunday;
   }
 }

@@ -3,6 +3,8 @@ package foodtruck.util;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
+import foodtruck.model.DayOfWeek;
+
 /**
  * A clock that returns the current time for the current zone.
  * @author aviolette@gmail.com
@@ -18,4 +20,9 @@ public interface Clock {
    * Returns the current day in the current time zone.
    */
   LocalDate currentDay();
+
+  /**
+   * Returns the current day of the week
+   */
+  DayOfWeek dayOfWeek();
 }
