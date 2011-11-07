@@ -343,6 +343,12 @@ public class AddressExtractorTest {
     assertTweet("Wacker and Van Buren, Chicago, IL", "adelitatruck: Wacker and van buren today");
   }
 
+  @Test
+  public void testSpecialIntersection() {
+    assertTweet("N Milwaukee Ave & W Grand Ave & N Halsted St, Chicago, IL",
+        "#latenighttamales @grand halsted milwaukee.. till 3:30AM.. next to @ORANGE_CHICAGO & @BuddhaLounge #foodtrucks #chicago #fb #tamales");
+  }
+
   private void assertTweet(String expected, String tweetText, Truck truck) {
     List<String> addresses = parser.parse(tweetText, truck);
     assertNotNull(addresses);

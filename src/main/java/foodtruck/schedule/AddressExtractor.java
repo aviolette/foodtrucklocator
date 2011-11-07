@@ -145,6 +145,12 @@ public class AddressExtractor {
         return;
       }
     }
+
+    String tmpTweet = tweet.toLowerCase();
+    if (tmpTweet.contains("grand") && tmpTweet.contains("halsted") &&
+        tmpTweet.contains("milwaukee")) {
+      addresses.add("N Milwaukee Ave & W Grand Ave & N Halsted St, Chicago, IL");
+    }
   }
 
   public String parseFirst(String tweetText, Truck truck) {
