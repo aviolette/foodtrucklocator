@@ -121,6 +121,9 @@ public class AddressExtractor {
                 INTERSECTION_PARTIAL),
             cityAppender, false, 0),
         // special case intersections
+        // Merchandise Mart
+        new PatternTransform(Pattern.compile("Merch(andise)? mart", Pattern.CASE_INSENSITIVE),
+            keyword("Merchandise Mart"), true, 0),
         // keyword format
         new PatternTransform(
             Pattern.compile("@wttw|grant park|presidential towers", Pattern.CASE_INSENSITIVE),

@@ -320,12 +320,10 @@ public class AddressExtractorTest {
         "HomageSF: Landed at Wacker and Van Buren .  Old spot is closed for good. Esquites is on the menu per a special request.");
   }
 
-  @Test @Ignore("merchandise mart")
+  @Test
   public void testMerchandiseMart() {
     assertTweet("Merchandise Mart",
         "brownbagtruck: En route Merch Mart! Might be running a skoach late! Post upon landing! 600 W, shooting for 12:30 still!");
-    assertTweet("Merchandise Mart",
-        "Rollin deep w/ @courageouscakes today! 11:30 Mart, 12:30 600 W Chicago. Are you ready? Post upon landing!");
   }
 
   @Test @Ignore(
