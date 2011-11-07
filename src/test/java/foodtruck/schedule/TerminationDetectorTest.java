@@ -86,6 +86,11 @@ public class TerminationDetectorTest {
   }
 
   @Test
+  public void testNextWeek() {
+    assertTweet(tweetTime, "Clinton and Lake see you next week with your twisted taco.");
+  }
+
+  @Test
   public void testAllSoldOut() {
     assertEquals(tweetTime, detector.detect(
         tweetBuilder.text("LQMeatMobile: All sold out for the day! Thanks everyone!").build()));
