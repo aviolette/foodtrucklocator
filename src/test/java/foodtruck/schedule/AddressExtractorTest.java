@@ -216,6 +216,12 @@ public class AddressExtractorTest {
   }
 
   @Test
+  public void testNear() {
+    assertTweet("Superior and Lawndale, Chicago, IL",
+        "Last call for some delicious in #Streeterville. Leaving at 2:30. Hurry over to Superior near Lawndale");
+  }
+
+  @Test
   public void testSearsTower() {
     assertTweet("Wacker and Adams, Chicago, IL",
         "BergsteinsNY: Sears/Willis today! Soup, sandwich, kugel, cabbage rolls!");

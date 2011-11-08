@@ -22,7 +22,7 @@ public class AddressExtractor {
   private final static String INTERSECTION_PARTIAL =
       "(N|E|W|S\\s+)?[A-Z0-9][a-zA-Z0-9]+(\\s+(Drive|Dr|Buren|BUREN|Blvd|Ave)\\.?)?";
   private final static String INTERSECTION_AND =
-      "((\\s+(and|at|n)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))";
+      "((\\s+(and|at|near|n)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))";
 
   private static Function<String, String> keyword(final String toWhat) {
     return new Function<String, String>() {
@@ -38,7 +38,7 @@ public class AddressExtractor {
         return
             input.replaceAll("(&|b\\/w|\\/)", " and ").replace(" at ", " and ").replace("  and  ",
                 " and ").replace(" between ", " and ").replace(" in", "").replace(" n ", " and ")
-                .replace(" on ", " and ")
+                .replace(" on ", " and ").replace(" near ", " and ")
                 .trim() +
                 ", Chicago, IL";
       }
@@ -127,8 +127,7 @@ public class AddressExtractor {
             cityAppender, true, 1),
         // intersection format
         new PatternTransform(Pattern.compile(
-            INTERSECTION_PARTIAL + "((\\s+(and|at|n)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))" +
-                INTERSECTION_PARTIAL),
+            INTERSECTION_PARTIAL + INTERSECTION_AND + INTERSECTION_PARTIAL),
             cityAppender, false, 0),
         // special case intersections
         // Merchandise Mart
