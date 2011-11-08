@@ -51,13 +51,13 @@
     <dependency>
       <groupId>com.google</groupId>
       <artifactId>appengine-local-runtime-shared</artifactId>
-      <version>1.5.1</version>
+      <version>1.6.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.google</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.5.1</version>
+      <version>1.6.0</version>
     </dependency>
     <!-- installed these manually from the google gdata java client -->
     <dependency>
