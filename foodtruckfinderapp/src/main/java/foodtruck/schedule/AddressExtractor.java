@@ -133,9 +133,11 @@ public class AddressExtractor {
         // Merchandise Mart
         new PatternTransform(Pattern.compile("Merch(andise)? mart", Pattern.CASE_INSENSITIVE),
             keyword("Merchandise Mart"), true, 0),
+        new PatternTransform(Pattern.compile("wttw", Pattern.CASE_INSENSITIVE),
+            keyword("WTTW"), true, 0),
         // keyword format
         new PatternTransform(
-            Pattern.compile("@wttw|grant park|presidential towers", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("grant park|presidential towers", Pattern.CASE_INSENSITIVE),
             keywordReplace, false, 0)
     );
   }
