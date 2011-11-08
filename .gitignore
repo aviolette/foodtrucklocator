@@ -3,4 +3,4 @@ cfl.iml
 out
 target
 .idea
-src/main/resources/twitter4j.properties
+foodtruckfinderapp/src/main/resources/twitter4j.properties
