@@ -4,7 +4,6 @@ import org.easymock.EasyMockSupport;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import foodtruck.geolocation.GeoLocator;
@@ -102,7 +101,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
 
-  @Test @Ignore
+  @Test
   public void testMatch_includesCurrentDayOfTheWeek() {
     final String tweetText =
         "SweetSpotMac: Arrived at Michigan and Walton. Come get your Sunday macaron going!";
@@ -116,7 +115,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     assertNotNull(match);
     assertEquals(Confidence.HIGH, match.getConfidence());
     assertEquals(tweetTime, match.getStop().getStartTime());
-    assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getStop().getEndTime());
     verifyAll();
   }
 
