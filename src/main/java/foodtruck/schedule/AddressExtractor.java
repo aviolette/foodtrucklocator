@@ -21,6 +21,8 @@ public class AddressExtractor {
   private final List<PatternTransform> patterns;
   private final static String INTERSECTION_PARTIAL =
       "(N|E|W|S\\s+)?[A-Z0-9][a-zA-Z0-9]+(\\s+(Drive|Dr|Buren|BUREN|Blvd|Ave)\\.?)?";
+  private final static String INTERSECTION_AND =
+      "((\\s+(and|at|n)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))";
 
   private static Function<String, String> keyword(final String toWhat) {
     return new Function<String, String>() {
@@ -36,6 +38,7 @@ public class AddressExtractor {
         return
             input.replaceAll("(&|b\\/w|\\/)", " and ").replace(" at ", " and ").replace("  and  ",
                 " and ").replace(" between ", " and ").replace(" in", "").replace(" n ", " and ")
+                .replace(" on ", " and ")
                 .trim() +
                 ", Chicago, IL";
       }
@@ -107,6 +110,11 @@ public class AddressExtractor {
             keyword("Vernon Park Circle, Chicago, IL"), true, 0),
         // tamale spaceship format
         new PatternTransform(Pattern.compile("<<(.*)>>"), null, true, 1),
+        // Between two streets
+        new PatternTransform(Pattern.compile(
+            "Landed between " + INTERSECTION_PARTIAL + INTERSECTION_AND + "(" +
+                INTERSECTION_PARTIAL + " on " + INTERSECTION_PARTIAL + ")"),
+            cityAppender, true, 9),
         // Between two streets
         new PatternTransform(Pattern.compile(
             "(" + INTERSECTION_PARTIAL + " ((in )?between|b/w) " + INTERSECTION_PARTIAL +

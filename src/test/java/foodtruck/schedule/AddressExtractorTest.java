@@ -211,6 +211,11 @@ public class AddressExtractorTest {
   }
 
   @Test
+  public void testAlternateBetweenFormat() {
+    assertTweet("Orleans and Kinzie, Chicago, IL", "Landed between Franklin and Orleans on Kinzie");
+  }
+
+  @Test
   public void testSearsTower() {
     assertTweet("Wacker and Adams, Chicago, IL",
         "BergsteinsNY: Sears/Willis today! Soup, sandwich, kugel, cabbage rolls!");
