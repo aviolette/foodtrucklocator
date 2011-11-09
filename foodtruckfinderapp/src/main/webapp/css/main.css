@@ -27,8 +27,6 @@ address.mobile {
 }
 
 #map_canvas {
-    min-width: 500px;
-    min-height: 500px;
     height: 100%;
     width: 100%;
 }
@@ -203,4 +201,8 @@ a.truckLink {
 
 .infoRow {
     padding-top: 5px;
+}
+
+.timeSelect {
+    display: none;
 }
