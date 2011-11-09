@@ -189,6 +189,8 @@ public class AddressExtractorTest {
     assertTweet("Harpo Studios", "Just landed at harpo.  Come get your yogurt");
     assertTweet("Harpo Studios", "Just landed at Harpo.  Come get your yogurt");
     assertTweet("Harpo Studios", "Just landed at Harpo Studios.  Come get your yogurt");
+    assertTweet("Harpo Studios", "Happy wednesday ! At Rosie Show , w Duck & roll!");
+
     List<String> addresses = parser.parse(
         "Come see @MamaGreenGoodie at the Men's Health Magazine Urbanathalon tomorrow at Grant Park. We will be parked on Columbus & Balbo.",
         truck);

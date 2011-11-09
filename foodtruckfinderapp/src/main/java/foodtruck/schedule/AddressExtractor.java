@@ -74,7 +74,8 @@ public class AddressExtractor {
             keyword("Jefferson and Jackson, Chicago, IL"), false, 0),
         // Harpo Studios
         new PatternTransform(
-            Pattern.compile("harpo\\b", Pattern.CASE_INSENSITIVE), keyword("Harpo Studios"), true,
+            Pattern.compile("(harpo|rosie)\\b", Pattern.CASE_INSENSITIVE), keyword("Harpo Studios"),
+            true,
             0),
         new PatternTransform(Pattern.compile("Trump", Pattern.CASE_INSENSITIVE),
             keyword("400 North Wabash, Chicago, IL"), true, 0),
