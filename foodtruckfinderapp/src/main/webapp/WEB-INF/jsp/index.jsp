@@ -40,7 +40,7 @@
             <div id="slider"></div>
           </div>
           <div class="timeSelect">
-            Select a time: <select>
+            Select a time: <select id="hourSelect">
             <option>1</option>
             <option>2</option>
             <option>3</option>
@@ -54,17 +54,17 @@
             <option>11</option>
             <option>12</option>
           </select>
-            &nbsp;<select>
+            &nbsp;<select id="minSelect">
             <option>00</option>
             <option>15</option>
             <option>30</option>
             <option>45</option>
           </select>
-            &nbsp;<select>
+            &nbsp;<select id="ampmSelect">
             <option>am</option>
             <option>pm</option>
           </select>
-            &nbsp;<input type="button" value="go"/>
+            &nbsp;<input type="button" id="timeGoButton" value="Find Trucks"/>
           </div>
           <hr/>
         </div>

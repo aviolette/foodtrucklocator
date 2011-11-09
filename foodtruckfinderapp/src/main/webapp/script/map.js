@@ -116,6 +116,31 @@ window.FoodTruckLocator = function() {
   var TruckListView = function(center, requestTime, requestDate) {
     var self = this;
     var menuSection = $("#foodTruckList");
+    var trucks = null;
+
+    function setupTimeSelector() {
+      var ampm = "am";
+      var hours = requestTime.getHours();
+      if (hours > 12) {
+        hours = hours - 12;
+        ampm = "pm";
+      }
+      var minutes = Math.floor(requestTime.getMinutes() / 15) * 15;
+      $("#hourSelect").val(hours);
+      $("#minSelect").val(minutes);
+      $("#ampmSelect").val(ampm);
+      $("#timeGoButton").live("click", function() {
+        var selectedHour = $("#hourSelect").val();
+        var selectedMin = $("#minSelect").val();
+        var selectedAmPm = $("#ampmSelect").val();
+        if (selectedAmPm == "pm") {
+          selectedHour = parseInt(selectedHour) + 12;
+        }
+        self.trucks.loadTrucks(requestDate + "-" + selectedHour + "" + selectedMin);
+      });
+    }
+
+    setupTimeSelector();
     self.start = function() {
       menuSection.empty();
     };
@@ -126,7 +151,7 @@ window.FoodTruckLocator = function() {
     self.finished = function(groups) {
       if (groups.length == 0) {
         menuSection
-            .append("<div class='flash'>There are presently no food trucks on the road.  Most are on the road around 11:30. Coming soon, you will be able to advance the time from the mobile web app.</div>");
+            .append("<div class='flash'>There are presently no food trucks on the road.  Most are on the road around 11:30.</div>");
         return;
       }
       var sorted = groups.sort(distanceSort);
@@ -413,11 +438,14 @@ window.FoodTruckLocator = function() {
   function fitMapToView() {
     if (Modernizr.touch) {
       $("#left").css("overflow-y", "visible");
+      $("#left").width(250);
+      $("#map_wrapper").css("margin-left", "250px");
+      $("#map_canvas").width($(window).width() - 250);
     } else {
-      $("#map_canvas").height($(window).height() - $("header").height());
       $("#right").width($("#map_canvas").width() - $("#left").width());
-      $("#right").height($("#map_canvas").height());
       $("#left").css("margin-left", "-" + $("#map_canvas").width() + "px");
+      $("#map_canvas").height($(window).height() - $("header").height());
+      $("#right").height($("#map_canvas").height());
       $("#left").height($("#right").height());
       $("#foodTruckList").height($("#left").height() - $("#sliderContainer").height() -
           $("header").height() - 75);
@@ -447,12 +475,20 @@ window.FoodTruckLocator = function() {
     }
   }
 
-  function hideControls() {
+  function showControlsForNoMap() {
+    $("#right").css("display", "none");
+    $("#left").css("overflow-y", "visible");
+    $("header h1").css("float", "none");
+    $("#buttonSection").css("float", "none");
+    $("#body").css("clear", "none");
+    $("#left").css("margin-left", "0");
+    $("#left").css("overflow-y", "visible");
     $(".sliderContainer").css("display", "none");
-    $("hr").css("display", "none");
+//    $("hr").css("display", "none");
+    $(".timeSelect").css("display", "block");
   }
 
-  function showControls() {
+  function showControlsForMap() {
     $(".sliderContainer").css("display", "block");
     $("hr").css("display", "block");
   }
@@ -471,14 +507,7 @@ window.FoodTruckLocator = function() {
       return Modernizr.touch && window.innerHeight > window.innerWidth;
     },
     loadTrucksWithoutMap : function(time, date) {
-      $("#right").css("display", "none");
-      $("#left").css("overflow-y", "visible");
-      $("header h1").css("float", "none");
-      $("#buttonSection").css("float", "none");
-      $("#body").css("clear", "none");
-      $("#left").css("margin-left", "0");
-      $("#left").css("overflow-y", "visible");
-      hideControls();
+      showControlsForNoMap();
       displayTime(time);
       var truckView = new TruckListView(this.center, time, date.split("-")[0]);
       loadAllTrucks(truckView, date);
@@ -486,13 +515,13 @@ window.FoodTruckLocator = function() {
     loadTrucksWithMap : function(time, date) {
       $("#right").css("display", "block");
       fitMapToView();
-      showControls();
+      showControlsForMap();
       var truckView = new TruckGroupMap(this.center, time, date.split("-")[0]);
       loadAllTrucks(truckView, date, this.center);
     },
     loadTruckSchedule : function(truckId) {
       fitMapToView();
-      hideControls();
+      showControlsForNoMap();
       var truckView = new ScheduleMap(this.center);
       var schedule = new Schedule(truckView);
       schedule.loadTruckSchedule(truckId);
