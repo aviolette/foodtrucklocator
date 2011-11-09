@@ -140,8 +140,10 @@ window.FoodTruckLocator = function() {
         if (group.distance) {
           div.append("<span>" + group.distance + " miles away</span></br>")
         }
-        div.append(" <a href='http://maps.google.com/maps?q=" + group.position.latLng.lat() + "," +
-            group.position.latLng.lng() + "'>map</a><br/><br/>")
+        div
+            .append(" <a style='font-size:1.2em;font-weight: bold' href='http://maps.google.com/maps?q=" +
+            group.position.latLng.lat() + "," +
+            group.position.latLng.lng() + "'>view map</a><br/><br/>")
         $.each(group.trucks, function(idx, truck) {
           div.append("<div class='truckSectionTextOnly' id='truck" + truck.id + "'></div>");
           var truckDiv = $('#truck' + truck.id);
@@ -150,20 +152,24 @@ window.FoodTruckLocator = function() {
           var truckLeft = $("#truckLeft" + truck.id);
 
           truckLeft.append("<strong>" + truck.name + "</strong><br/>");
-          if (truck.url) {
-            truckLeft.append("<a target='_blank' href='" + truck.url + "'>" + truck.url +
-                "</a><br/>")
-          }
+          var infoRow = "<div class='infoRow'>";
+
           if (truck.twitterHandle) {
-            truckLeft.append("<a target='_blank' href='http://twitter.com/" +
-                truck.twitterHandle +
+            infoRow += "<a target='_blank' href='http://twitter.com/" + truck.twitterHandle +
                 "'><img alt='@" +
-                truck.twitterHandle + "' src='/img/twitter32x32.png'/></a><br/>");
+                truck.twitterHandle + "' src='/img/twitter32x32.png'/></a> ";
+          }
+          if (truck.facebook) {
+            infoRow += "<a target='_blank' href='http://facebook.com" + truck.facebook +
+                "'><img alt='" +
+                truck.facebook + "' src='/img/facebook32x32.png'/></a> ";
           }
           if (truck.foursquare) {
-            truckLeft.append("<a href='http://m.foursquare.com/venue/" + truck.foursquare +
-                "'><img alt='Checkin on foursquare' src='http://playfoursquare.s3.amazonaws.com/press/logo/checkin-blue.png'/></a><br/>");
+            infoRow += "<a href='http://m.foursquare.com/venue/" + truck.foursquare +
+                "'><img alt='Checkin on foursquare' src='/img/foursquare32x32.png'/></a>";
           }
+          infoRow += '</div>';
+          truckLeft.append(infoRow);
         });
       });
       $(".locationContent").css("margin", "0");
