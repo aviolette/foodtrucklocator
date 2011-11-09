@@ -95,7 +95,7 @@ public class TruckStopMatcher {
       return null;
     }
     DateTime startTime = null;
-    final boolean morning = tweet.getTime().toLocalTime().isBefore(new LocalTime(11, 0));
+    final boolean morning = tweet.getTime().toLocalTime().isBefore(new LocalTime(10, 30));
     // TODO: this signals a schedule being tweeted, for now we can't handle that
     if (tweetText.toLowerCase().contains("stops") ||
         (morning && (tweetText.toLowerCase().contains("schedule")))) {
@@ -114,6 +114,9 @@ public class TruckStopMatcher {
       final LocalDate date = tweet.getTime().toLocalDate();
       startTime = parseTime(m.group(1), date, null);
       endTime = parseTime(m.group(4), date, endTime);
+      if (endTime != null && terminationTime != null && endTime.isAfter(terminationTime)) {
+        endTime = terminationTime;
+      }
     }
     if (startTime == null) {
       // Cupcake trucks and such should not be matched at all by this rule since they make many frequent stops
@@ -125,8 +128,7 @@ public class TruckStopMatcher {
       }
     }
     if (endTime == null) {
-      endTime =
-          terminationTime == null ? parseEndTime(tweetText, startTime) : terminationTime;
+      endTime = terminationTime == null ? parseEndTime(tweetText, startTime) : terminationTime;
     }
     if (endTime == null) {
       endTime = startTime.plusHours(DEFAULT_STOP_LENGTH_IN_HOURS);
@@ -168,7 +170,7 @@ public class TruckStopMatcher {
       }
     } else {
       // TODO: reverse geolocation lookup
-      if (address == null) {
+      if (address == null || geoLocator.locate(address) == null) {
         return location.withName("Unnamed Location");
       } else {
         return location.withName(address);
