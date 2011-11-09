@@ -464,6 +464,12 @@ window.FoodTruckLocator = function() {
   }
 
   return {
+    isTouchScreenLandscape : function() {
+      return Modernizr.touch && window.innerWidth > window.innerHeight;
+    },
+    isTouchScreenPortrait : function() {
+      return Modernizr.touch && window.innerHeight > window.innerWidth;
+    },
     loadTrucksWithoutMap : function(time, date) {
       $("#right").css("display", "none");
       $("#left").css("overflow-y", "visible");
@@ -471,12 +477,14 @@ window.FoodTruckLocator = function() {
       $("#buttonSection").css("float", "none");
       $("#body").css("clear", "none");
       $("#left").css("margin-left", "0");
+      $("#left").css("overflow-y", "visible");
       hideControls();
       displayTime(time);
       var truckView = new TruckListView(this.center, time, date.split("-")[0]);
       loadAllTrucks(truckView, date);
     },
     loadTrucksWithMap : function(time, date) {
+      $("#right").css("display", "block");
       fitMapToView();
       showControls();
       var truckView = new TruckGroupMap(this.center, time, date.split("-")[0]);
