@@ -19,9 +19,6 @@
       <a href="https://twitter.com/chifoodtruckz" class="twitter-follow-button" data-button="grey"
          data-text-color="#FFF" data-link-color="#FFF">Follow @chifoodtruckz</a>
       <script src="//platform.twitter.com/widgets.js" type="text/javascript"></script>
-      <g:plusone size="medium"></g:plusone> <a href="https://twitter.com/share"
-                                               class="twitter-share-button" data-count="horizontal"
-                                               data-via="chifoodtruckz">Tweet</a>
       <script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
     </div>
   </header>
@@ -51,7 +48,6 @@
       </div>
     </div>
   </div>
-  <script src="//platform.twitter.com/widgets.js" type="text/javascript"></script>
 </div>
 <script type="text/javascript"
         src="http://maps.google.com/maps/api/js?sensor=false&libraries=geometry"></script>
@@ -65,14 +61,6 @@ document.write("<script src='script/lib/jquery-1.6.2.min.js'>\x3C/script>")</scr
 </c:if>
 <script type="text/javascript">
   $(document).ready(function() {
-    // render +1 button
-    var po = document.createElement('script');
-    po.type = 'text/javascript';
-    po.async = true;
-    po.src = 'https://apis.google.com/js/plusone.js';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(po, s);
-
     FoodTruckLocator.center = new google.maps.LatLng(${center.latitude}, ${center.longitude});
     <c:choose>
     <c:when test="${empty showScheduleFor}">
