@@ -133,8 +133,12 @@ window.FoodTruckLocator = function() {
         var selectedHour = $("#hourSelect").val();
         var selectedMin = $("#minSelect").val();
         var selectedAmPm = $("#ampmSelect").val();
-        if (selectedAmPm == "pm") {
+        if (selectedAmPm == "pm" && parseInt(selectedHour) != 12) {
           selectedHour = parseInt(selectedHour) + 12;
+        } else if (selectedAmPm == "am" && parseInt(selectedHour) == 12) {
+          selectedHour = "00";
+        } else if (parseInt(selectedHour) < 10) {
+          selectedHour = "0" + selectedHour;
         }
         self.trucks.loadTrucks(requestDate + "-" + selectedHour + "" + selectedMin);
       });
