@@ -161,6 +161,8 @@ public class AddressExtractor {
       if (lowerCaseTweet.contains("library")) {
         addresses.add("834 Lake St, Oak Park, IL");
         return;
+      } else if (lowerCaseTweet.contains("theater")) {
+        addresses.add("1010 Lake St, Oak Park, IL");
       }
     }
 

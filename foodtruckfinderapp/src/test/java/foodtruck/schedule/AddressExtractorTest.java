@@ -175,9 +175,13 @@ public class AddressExtractorTest {
 
   @Test
   public void testContextSpecificLocation() {
+    final Truck mjexpress14 =
+        new Truck.Builder().id("mjexpress14").defaultCity("Oak Park, IL").build();
     assertTweet("834 Lake St, Oak Park, IL",
         "hello everyone, mj express is by the library.  comey by",
-        new Truck.Builder().id("mjexpress14").defaultCity("Oak Park, IL").build());
+        mjexpress14);
+    assertTweet("1010 Lake St, Oak Park, IL",
+        "hello everyone mj express out. By the OP theater.  stop by", mjexpress14);
   }
 
   @Test
