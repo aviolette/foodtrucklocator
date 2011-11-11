@@ -138,7 +138,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   @Test
   public void testMatch_shouldDetectTimeRange() {
     final String tweetText =
-        "The tamalespaceship will be landing at our weekly spot <<Dearborn & Monroe>> 11-1:30 last chance to get your tamale fix before the weekend!!";
+        "The tamalespaceship will be landing at our weekly spot <<Dearborn & Monroe>> 11a.m.-1:30p.m. last chance to get your tamale fix before the weekend!!";
     final String address = "Dearborn and Monroe";
     Location location = new Location(-1, -2, address);
     expect(extractor.parseFirst(tweetText, truck)).andReturn(address);
