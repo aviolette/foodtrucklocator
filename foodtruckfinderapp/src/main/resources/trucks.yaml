@@ -145,8 +145,7 @@ twitter: gigisbakeshop
 name: Gigis Bake Shop
 categories: Cupcake
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1503976385/GiGI_TAG_v07_normal.jpg
-twittalyzer: "off"
-twittalyzer: "off"
+twittalyzer: "on"
 foursquare: 4e66a54262e1706d82473eb7
 facebook: /GiGisBakeShop
 ---
@@ -184,7 +183,7 @@ name: Homage Street Food
 categories: Food
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1491944244/logo_orange_and_black_twit_normal.jpg
 foursquare: 4e231cb415207ed86eb64058
-twittalyzer: "off"
+twittalyzer: "on"
 facebook: /pages/Homage-Street-Food/100851666668024
 ---
 id: bridgeportpasty
@@ -281,7 +280,7 @@ categories: Dessert
 url: http://www.cupcakesforcourage.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1268075878/twitter_logo_normal.jpg
 foursquare: 4dd6cc877d8b322663e0276c
-twittalyzer: "off"
+twittalyzer: "on"
 facebook: /cupcakesforcourage
 ---
 id: jerkinonwheels
@@ -401,7 +400,7 @@ name: Meatloaf-a-go-go
 categories: Savory
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1562762202/gogorectangle_normal.png
 foursquare: 4e85fc31b634ae3cdbc9d05a
-twittalyzer: "off"
+twittalyzer: "on"
 facebook: /meatloafagogo
 ---
 id: sugarpiecafe
@@ -477,7 +476,7 @@ twitter: stemartaen
 name: Ste Martaen
 categories: Savory
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/203922487/stemartaen_logo_normal.jpg
-twittalyzer: "off"
+twittalyzer: "on"
 facebook: /SteMartaen
 ---
 id: ducknrolltruck
