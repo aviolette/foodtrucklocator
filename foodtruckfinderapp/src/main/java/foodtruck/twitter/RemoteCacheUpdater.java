@@ -12,7 +12,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import foodtruck.model.TweetSummary;
-import foodtruck.server.JsonWriter;
+import foodtruck.server.api.JsonWriter;
 
 /**
  * @author aviolette@gmail.com

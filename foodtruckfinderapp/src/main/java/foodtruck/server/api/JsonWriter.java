@@ -1,4 +1,4 @@
-package foodtruck.server;
+package foodtruck.server.api;
 
 import java.util.Collection;
 

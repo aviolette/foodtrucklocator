@@ -1,4 +1,4 @@
-package foodtruck.server;
+package foodtruck.server.job;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package foodtruck.server;
+package foodtruck.server.dashboard;
 
 import java.io.IOException;
 

@@ -7,6 +7,13 @@ import com.google.inject.servlet.ServletModule;
 import org.joda.time.DateTimeZone;
 
 import foodtruck.model.Location;
+import foodtruck.server.api.FoodTruckScheduleServlet;
+import foodtruck.server.api.TruckStopServlet;
+import foodtruck.server.api.TweetUpdateServlet;
+import foodtruck.server.dashboard.DashboardServlet;
+import foodtruck.server.job.FoodTruckUpdaterServlet;
+import foodtruck.server.job.TweetCacheUpdateServlet;
+import foodtruck.server.job.TwitterCachePurgeServlet;
 
 /**
  * @author aviolette

@@ -1,4 +1,4 @@
-package foodtruck.server;
+package foodtruck.server.api;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -40,7 +40,7 @@ public class FoodTruckScheduleServlet extends HttpServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     String truckId = req.getPathInfo().substring(1);
-    LocalDate day =  clock.currentDay();
+    LocalDate day = clock.currentDay();
     String value;
     try {
       TruckSchedule schedule = stopService.findStopsForDay(truckId, day);
