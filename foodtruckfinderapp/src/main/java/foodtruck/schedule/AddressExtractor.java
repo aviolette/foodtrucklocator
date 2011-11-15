@@ -20,7 +20,7 @@ import foodtruck.model.Truck;
 public class AddressExtractor {
   private final List<PatternTransform> patterns;
   private final static String INTERSECTION_PARTIAL =
-      "(N|E|W|S\\s+)?[A-Z0-9][a-zA-Z0-9]+(\\s+(Drive|Dr|Buren|BUREN|Blvd|Ave)\\.?)?";
+      "(N|E|W|S\\s+)?[A-Z0-9][a-zA-Z0-9]+(\\s+(st|St|Drive|Dr|Buren|BUREN|Blvd|Ave)\\.?)?";
   private final static String INTERSECTION_AND =
       "((\\s+(and|at|near|n)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))";
 
@@ -134,6 +134,9 @@ public class AddressExtractor {
         // Merchandise Mart
         new PatternTransform(Pattern.compile("Merch(andise)? mart", Pattern.CASE_INSENSITIVE),
             keyword("Merchandise Mart"), true, 0),
+        // kickoff bar
+        new PatternTransform(Pattern.compile("@kickoffbar", Pattern.CASE_INSENSITIVE),
+            keyword("4630 W. Lawrence Ave., Chicago, IL"), true, 0),
         new PatternTransform(Pattern.compile("wttw", Pattern.CASE_INSENSITIVE),
             keyword("WTTW"), true, 0),
         // keyword format

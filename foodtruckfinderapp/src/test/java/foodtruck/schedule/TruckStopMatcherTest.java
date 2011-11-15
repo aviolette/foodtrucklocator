@@ -4,6 +4,7 @@ import org.easymock.EasyMockSupport;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import foodtruck.geolocation.GeoLocator;
@@ -260,5 +261,23 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     assertNull(match);
     verifyAll();
   }
-  // TODO: Handle this: tamalespace101: The tamalespaceship will be landing at <<324 S Racine>> @ethylsdive loaded with delicious tamales for dinner 6-9pm come and get them!!
+
+  @Test @Ignore
+  public void testMatch_shouldStartAtSpecifiedTime() {
+    final String tweetText = "GiGisBakeShop: @GiGisBakeShop NEXT STOP Randolph & Franklin 1:15 pm!";
+    final String address = "Foo and Bar";
+    Location location = new Location(-1, -2, address);
+    expect(extractor.parseFirst(tweetText, truck)).andReturn(address);
+    expect(geolocator.locate(address)).andReturn(location);
+    tweetTime = new DateTime(2011, 11, 6, 9, 0, 0, 0, DateTimeZone.UTC);
+    replayAll();
+    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
+    TruckStopMatch match = topic.match(truck, tweet, null);
+    assertNotNull(match);
+    assertEquals(Confidence.HIGH, match.getConfidence());
+    assertEquals(address, match.getStop().getLocation().getName());
+    assertEquals(match.getStop().getStartTime(), tweetTime.withTime(13, 15, 0, 0));
+    verifyAll();
+
+  }
 }

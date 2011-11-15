@@ -36,6 +36,7 @@ public class TruckStopMatcher {
       "(" + TIME_PATTERN + ")\\s*-\\s*(" + TIME_PATTERN + ")[\\s|\\.&&[^\\-]]";
   private final AddressExtractor addressExtractor;
   private final GeoLocator geoLocator;
+  private final Pattern endTimePattern;
   private final Pattern timePattern;
   private final DateTimeFormatter formatter;
   private final Clock clock;
@@ -53,7 +54,8 @@ public class TruckStopMatcher {
       DateTimeZone defaultZone, Clock clock) {
     this.addressExtractor = extractor;
     this.geoLocator = geoLocator;
-    this.timePattern = Pattern.compile("until (" + TIME_PATTERN + ")");
+    this.timePattern = Pattern.compile(TIME_PATTERN);
+    this.endTimePattern = Pattern.compile("until (" + TIME_PATTERN + ")");
     this.timeRangePattern = Pattern.compile(TIME_RANGE_PATTERN);
     this.monPattern = Pattern.compile(
         "\\b(TUE|WED|THU|FRI|SAT|SUN|tuesday|wednesday|thursday|friday|saturday|sunday|tues|thurs|2morrow|tomorrow)\\b",
@@ -230,7 +232,7 @@ public class TruckStopMatcher {
   }
 
   private @Nullable DateTime parseEndTime(String tweetText, DateTime startTime) {
-    Matcher matcher = timePattern.matcher(tweetText);
+    Matcher matcher = endTimePattern.matcher(tweetText);
     if (matcher.find()) {
       return parseTime(matcher.group(1), startTime.toLocalDate(), null);
     }

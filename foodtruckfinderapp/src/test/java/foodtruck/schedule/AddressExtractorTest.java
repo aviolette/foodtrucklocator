@@ -376,6 +376,24 @@ public class AddressExtractorTest {
         "#latenighttamales @grand halsted milwaukee.. till 3:30AM.. next to @ORANGE_CHICAGO & @BuddhaLounge #foodtrucks #chicago #fb #tamales");
   }
 
+  @Test
+  public void testKickoffBar() {
+    assertTweet("4630 W. Lawrence Ave., Chicago, IL",
+        "Holy frijoles, now that was a crowd.  Wiped us out, thanks everyone for joining us at @kickoffbar.  GO BEARS");
+  }
+
+  @Test
+  public void testStreet() {
+    assertTweet("Oak St and Michigan Ave, Chicago, IL",
+        "Oak St & Michigan Ave!  We'll be in your area for lunch by 11:30! Come try our new Twisted Soup- Sopita Caribe (Caribbean Chicken Rice Soup)");
+  }
+
+  @Test @Ignore
+  public void testADirectionFromIntersection() {
+    assertTweet("Superior and Fairbanks, Chicago, IL",
+        "Looks like we'll be trying to park on SUPERIOR east of Fairbanks at 11:20am. Nos vemos!");
+  }
+
   private void assertTweet(String expected, String tweetText, Truck truck) {
     List<String> addresses = parser.parse(tweetText, truck);
     assertNotNull(addresses);
