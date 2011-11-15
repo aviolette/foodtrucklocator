@@ -1,6 +1,7 @@
 package foodtruck.server.dashboard;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -12,24 +13,30 @@ import com.google.inject.Singleton;
 
 /**
  * @author aviolette@gmail.com
- * @since 10/23/11
+ * @since 11/14/11
  */
 @Singleton
-public class DashboardServlet extends HttpServlet {
+public class TruckDashboardServlet extends HttpServlet {
+  private static final Logger log = Logger.getLogger(TruckDashboardServlet.class.getName());
+
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
+    final String truckId = req.getRequestURI().substring(1);
+    log.info("Loading dashboard for " + truckId);
+
+
+    final String jsp = "/WEB-INF/jsp/dashboard/truckDashboard.jsp";
+    // hack required when using * patterns in guice
     req = new HttpServletRequestWrapper(req) {
       public Object getAttribute(String name) {
         if ("org.apache.catalina.jsp_file".equals(name)) {
-          String path = super.getServletPath();
-          return path;
+          return jsp;
         }
         return super.getAttribute(name);
       }
     };
-
-    req.getRequestDispatcher("/WEB-INF/jsp/dashboard.jsp").forward(req, resp);
+    req.getRequestDispatcher(jsp).forward(req, resp);
   }
 
   @Override

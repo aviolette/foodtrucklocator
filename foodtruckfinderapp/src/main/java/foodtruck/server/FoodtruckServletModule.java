@@ -11,6 +11,7 @@ import foodtruck.server.api.FoodTruckScheduleServlet;
 import foodtruck.server.api.TruckStopServlet;
 import foodtruck.server.api.TweetUpdateServlet;
 import foodtruck.server.dashboard.DashboardServlet;
+import foodtruck.server.dashboard.TruckDashboardServlet;
 import foodtruck.server.job.FoodTruckUpdaterServlet;
 import foodtruck.server.job.TweetCacheUpdateServlet;
 import foodtruck.server.job.TwitterCachePurgeServlet;
@@ -26,6 +27,7 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/cron/recache").with(FoodTruckUpdaterServlet.class);
     serve("/cron/tweets").with(TweetCacheUpdateServlet.class);
     serve("/cron/tweetPurge").with(TwitterCachePurgeServlet.class);
+    serve("/admin/dashboard/*").with(TruckDashboardServlet.class);
     serve("/admin/dashboard").with(DashboardServlet.class);
     serve("/service/schedule/*").with(FoodTruckScheduleServlet.class);
     serve("/service/stops*").with(TruckStopServlet.class);
