@@ -345,6 +345,8 @@ public class AddressExtractorTest {
   public void testMerchandiseMart() {
     assertTweet("Merchandise Mart",
         "brownbagtruck: En route Merch Mart! Might be running a skoach late! Post upon landing! 600 W, shooting for 12:30 still!");
+    assertTweet("Merchandise Mart",
+        "Getting ready to head out to #MerchandiseMart! See you soon. 11:30 a.m.-1:30 pm. @Centro_Media @christieburgner @crazygemini12");
   }
 
   @Test @Ignore(

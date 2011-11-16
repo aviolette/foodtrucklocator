@@ -132,7 +132,8 @@ public class AddressExtractor {
             cityAppender, false, 0),
         // special case intersections
         // Merchandise Mart
-        new PatternTransform(Pattern.compile("Merch(andise)? mart", Pattern.CASE_INSENSITIVE),
+        new PatternTransform(
+            Pattern.compile("Merch(andise)? mart|#MerchandiseMart", Pattern.CASE_INSENSITIVE),
             keyword("Merchandise Mart"), true, 0),
         // kickoff bar
         new PatternTransform(Pattern.compile("@kickoffbar", Pattern.CASE_INSENSITIVE),
