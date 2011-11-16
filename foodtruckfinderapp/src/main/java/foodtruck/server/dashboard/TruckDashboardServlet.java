@@ -9,7 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
+import foodtruck.twitter.TwitterService;
 
 /**
  * @author aviolette@gmail.com
@@ -18,13 +21,18 @@ import com.google.inject.Singleton;
 @Singleton
 public class TruckDashboardServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(TruckDashboardServlet.class.getName());
+  private final TwitterService twitterService;
+
+  @Inject
+  public TruckDashboardServlet(TwitterService twitterService) {
+    this.twitterService = twitterService;
+  }
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     final String truckId = req.getRequestURI().substring(1);
     log.info("Loading dashboard for " + truckId);
-
 
     final String jsp = "/WEB-INF/jsp/dashboard/truckDashboard.jsp";
     // hack required when using * patterns in guice
