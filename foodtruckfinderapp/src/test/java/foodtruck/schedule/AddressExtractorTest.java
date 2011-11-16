@@ -373,6 +373,12 @@ public class AddressExtractorTest {
   }
 
   @Test
+  public void testIntersectionWithMixedCaseForCertainVendors() {
+    assertTweet("58th and ellis, Chicago, IL", "We are at 58th and ellis",
+        new Truck.Builder().id("steakwch").build());
+  }
+
+  @Test
   public void testSpecialIntersection() {
     assertTweet("N Milwaukee Ave & W Grand Ave & N Halsted St, Chicago, IL",
         "#latenighttamales @grand halsted milwaukee.. till 3:30AM.. next to @ORANGE_CHICAGO & @BuddhaLounge #foodtrucks #chicago #fb #tamales");

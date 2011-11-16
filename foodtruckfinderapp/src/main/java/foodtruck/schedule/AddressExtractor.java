@@ -1,6 +1,7 @@
 package foodtruck.schedule;
 
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -9,6 +10,7 @@ import javax.annotation.Nullable;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
 import foodtruck.model.Truck;
@@ -130,6 +132,11 @@ public class AddressExtractor {
         new PatternTransform(Pattern.compile(
             INTERSECTION_PARTIAL + INTERSECTION_AND + INTERSECTION_PARTIAL),
             cityAppender, false, 0),
+        // case-insensitive intersection
+        new PatternTransform(Pattern.compile(
+            "at (" + INTERSECTION_PARTIAL + INTERSECTION_AND + INTERSECTION_PARTIAL + ")",
+            Pattern.CASE_INSENSITIVE),
+            cityAppender, false, 1, ImmutableSet.of("steakwch", "rzjp6cakes")),
         // special case intersections
         // Merchandise Mart
         new PatternTransform(
@@ -150,8 +157,9 @@ public class AddressExtractor {
   List<String> parse(String tweet, Truck truck) {
     ImmutableList.Builder<String> addresses = ImmutableList.builder();
     applyTruckSpecificMatches(tweet, truck, addresses);
+    String truckId = truck.getId();
     for (PatternTransform p : patterns) {
-      if (!p.findAndMatch(tweet, addresses)) {
+      if (!p.findAndMatch(tweet, addresses, truckId)) {
         break;
       }
     }
@@ -187,19 +195,29 @@ public class AddressExtractor {
     private final @Nullable Function<String, String> transformer;
     private final boolean breakHere;
     private int group;
+    private Set<String> restrictionSet;
 
     public PatternTransform(Pattern pattern, @Nullable Function<String, String> transformer,
         boolean breakHere, int group) {
+      this(pattern, transformer, breakHere, group, ImmutableSet.<String>of());
+    }
+
+    public PatternTransform(Pattern pattern, @Nullable Function<String, String> transformer,
+        boolean breakHere, int group, Set<String> restrictionSet) {
       this.pattern = pattern;
       this.transformer = transformer;
       this.breakHere = breakHere;
       this.group = group;
+      this.restrictionSet = restrictionSet;
     }
 
-    public boolean findAndMatch(String tweet, ImmutableList.Builder<String> addresses) {
+    public boolean findAndMatch(String tweet, ImmutableList.Builder<String> addresses,
+        String truckId) {
+      if (!restrictionSet.isEmpty() && !restrictionSet.contains(truckId)) {
+        return true;
+      }
       Matcher m = pattern.matcher(tweet);
       while (m.find()) {
-
         String matched = m.group(group);
         addresses.add(transformer == null ? matched : transformer.apply(matched));
         if (breakHere) return false;
