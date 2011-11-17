@@ -2,6 +2,8 @@ package foodtruck.dao;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import org.joda.time.DateTime;
 
 import foodtruck.model.TweetSummary;
@@ -21,4 +23,8 @@ public interface TweetCacheDAO {
   long getLastTweetId();
 
   void save(List<TweetSummary> tweet);
+
+  @Nullable TweetSummary findByTweetId(long id);
+
+  void saveOrUpdate(TweetSummary summary);
 }

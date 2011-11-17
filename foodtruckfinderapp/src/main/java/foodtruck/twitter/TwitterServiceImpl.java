@@ -186,6 +186,20 @@ public class TwitterServiceImpl implements TwitterService {
     }
   }
 
+  @Override public List<TweetSummary> findForTruck(String truckId) {
+    return tweetDAO.findTweetsAfter(clock.currentDay().toDateMidnight().toDateTime(), truckId);
+  }
+
+  @Override public @Nullable TweetSummary findByTweetId(long id) {
+    return tweetDAO.findByTweetId(id);
+
+  }
+
+  @Override public void save(TweetSummary summary) {
+    tweetDAO.saveOrUpdate(summary);
+
+  }
+
   private TruckStopMatch findMatch(List<TweetSummary> tweets, Truck truck) {
     DateTime terminationTime = null;
     for (TweetSummary tweet : tweets) {

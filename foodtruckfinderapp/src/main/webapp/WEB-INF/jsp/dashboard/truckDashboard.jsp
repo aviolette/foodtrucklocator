@@ -1,3 +1,4 @@
+<%@ include file="../common.jsp" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,10 +66,7 @@
   </style>
 
   <!-- Le fav and touch icons -->
-  <link rel="shortcut icon" href="images/favicon.ico">
-  <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
-  <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+  <link rel="shortcut icon" href="/favicon.ico">
 </head>
 
 <body>
@@ -97,8 +95,25 @@
     <div class="row">
       <div class="span14">
         <h2>Tweets</h2>
-
-
+        <table>
+          <thead>
+            <tr>
+              <td>&nbsp;</td>
+              <td>Time</td>
+              <td>Text</td>
+            </tr>
+          </thead>
+          <tbody>
+            <c:forEach var="tweet" items="${tweets}">
+              <tr>
+                <td><input type="button" class="ignoreButton btn primary" id="${tweet.id}" value="<c:choose><c:when test="${tweet.ignoreInTwittalyzer}">Unignore</c:when><c:otherwise>Ignore</c:otherwise></c:choose>"/>
+                  </td>
+                <td>${tweet.time}</td>
+                <td>${tweet.text}</td>
+              </tr>
+            </c:forEach>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -106,6 +121,26 @@
   <footer>
     <p></p>
   </footer>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
+  <script type="text/javascript">
+    $(".ignoreButton").click(function(evt) {
+      var id = $(this).attr("id");
+      var value = $(this).attr("value");
+      var ignore = value == "Ignore";
+      var button = $(this);
+      $.ajax({
+        context: document.body,
+        data: JSON.stringify({id: id, ignore: ignore}),
+        contentType: 'application/json',
+        dataType: 'json',
+        type: 'POST',
+        success: function() {
+          button.attr("value", ignore ? "Unignore" : "Ignore")
+        }
+      });
+    });
+  </script>
 
 </div>
 <!-- /container -->

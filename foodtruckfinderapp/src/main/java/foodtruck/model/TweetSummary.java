@@ -11,7 +11,7 @@ import org.joda.time.DateTime;
  * @author aviolette@gmail.com
  * @since 10/11/11
  */
-public class TweetSummary {
+public class TweetSummary extends ModelEntity {
   private final String screenName;
   private final Location location;
   private final String text;
@@ -20,6 +20,7 @@ public class TweetSummary {
   private final boolean ignoreInTwittalyzer;
 
   public TweetSummary(Builder builder) {
+    super(builder.key);
     this.text = builder.text;
     this.location = builder.location;
     this.time = builder.time;
@@ -84,6 +85,20 @@ public class TweetSummary {
     private String text;
     private long id;
     private boolean ignoreInTwittalyzer;
+    private Object key;
+
+    public Builder() {
+    }
+
+    public Builder(TweetSummary summary) {
+      this.screenName = summary.screenName;
+      this.location = summary.location;
+      this.time = summary.time;
+      this.text = summary.text;
+      this.id = summary.id;
+      this.ignoreInTwittalyzer = summary.ignoreInTwittalyzer;
+      this.key = summary.key;
+    }
 
     public TweetSummary build() {
       return new TweetSummary(this);
@@ -106,6 +121,11 @@ public class TweetSummary {
 
     public Builder id(long id) {
       this.id = id;
+      return this;
+    }
+
+    public Builder key(@Nullable Object key) {
+      this.key = key;
       return this;
     }
 

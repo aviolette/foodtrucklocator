@@ -3,6 +3,8 @@ package foodtruck.dao.appengine;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
@@ -52,21 +54,7 @@ public class TweetCacheAppEngineDAO implements TweetCacheDAO {
     q.addSort(TWEET_TIME, Query.SortDirection.DESCENDING);
     ImmutableList.Builder<TweetSummary> tweets = ImmutableList.builder();
     for (Entity entity : dataStore.prepare(q).asIterable()) {
-      Double lat = (Double) entity.getProperty(TWEET_LOCATION_LAT);
-      Double lng = (Double) entity.getProperty(TWEET_LOCATION_LNG);
-      Location location = null;
-      if (lat != null && lng != null) {
-        location = new Location(lat, lng);
-      }
-      DateTime dateTime = new DateTime((Date) entity.getProperty(TWEET_TIME), zone);
-      TweetSummary tweet = new TweetSummary.Builder()
-          .id((Long) entity.getProperty(TWEET_ID))
-          .ignoreInTwittalyzer(Boolean.TRUE.equals(entity.getProperty(TWEET_IGNORE)))
-          .location(location)
-          .time(dateTime)
-          .text((String) entity.getProperty(TWEET_TEXT))
-          .userId((String) entity.getProperty(TWEET_SCREEN_NAME))
-          .build();
+      TweetSummary tweet = fromEntity(entity);
       tweets.add(tweet);
     }
     return tweets.build();
@@ -109,18 +97,57 @@ public class TweetCacheAppEngineDAO implements TweetCacheDAO {
   public void save(List<TweetSummary> tweets) {
     DatastoreService dataStore = provider.get();
     for (TweetSummary tweet : tweets) {
-      final Entity entity = new Entity(TWEET_KIND);
-      entity.setProperty(TWEET_SCREEN_NAME, tweet.getScreenName());
-      final Location location = tweet.getLocation();
-      if (location != null) {
-        entity.setProperty(TWEET_LOCATION_LAT, location.getLatitude());
-        entity.setProperty(TWEET_LOCATION_LNG, location.getLongitude());
-      }
-      entity.setProperty(TWEET_TEXT, tweet.getText());
-      entity.setProperty(TWEET_TIME, tweet.getTime().toDate());
-      entity.setProperty(TWEET_ID, tweet.getId());
-      entity.setProperty(TWEET_IGNORE, tweet.getIgnoreInTwittalyzer());
-      dataStore.put(entity);
+      saveOrUpdate(tweet, dataStore);
     }
+  }
+
+  @Override public @Nullable TweetSummary findByTweetId(long id) {
+    DatastoreService dataStore = provider.get();
+    Query q = new Query(TWEET_KIND);
+    q.addFilter(TWEET_ID, Query.FilterOperator.EQUAL, id);
+    Entity entity = dataStore.prepare(q).asSingleEntity();
+    if (entity == null) {
+      return null;
+    }
+    return fromEntity(entity);
+  }
+
+  @Override public void saveOrUpdate(TweetSummary tweet) {
+    DatastoreService dataStore = provider.get();
+    saveOrUpdate(tweet, dataStore);
+  }
+
+  private void saveOrUpdate(TweetSummary tweet, DatastoreService dataStore) {
+    final Entity entity = (tweet.getKey() == null) ? new Entity(TWEET_KIND) : new Entity((Key)tweet.getKey());
+    entity.setProperty(TWEET_SCREEN_NAME, tweet.getScreenName());
+    final Location location = tweet.getLocation();
+    if (location != null) {
+      entity.setProperty(TWEET_LOCATION_LAT, location.getLatitude());
+      entity.setProperty(TWEET_LOCATION_LNG, location.getLongitude());
+    }
+    entity.setProperty(TWEET_TEXT, tweet.getText());
+    entity.setProperty(TWEET_TIME, tweet.getTime().toDate());
+    entity.setProperty(TWEET_ID, tweet.getId());
+    entity.setProperty(TWEET_IGNORE, tweet.getIgnoreInTwittalyzer());
+    dataStore.put(entity);
+  }
+
+  private TweetSummary fromEntity(Entity entity) {
+    Double lat = (Double) entity.getProperty(TWEET_LOCATION_LAT);
+    Double lng = (Double) entity.getProperty(TWEET_LOCATION_LNG);
+    Location location = null;
+    if (lat != null && lng != null) {
+      location = new Location(lat, lng);
+    }
+    DateTime dateTime = new DateTime((Date) entity.getProperty(TWEET_TIME), zone);
+    return new TweetSummary.Builder()
+        .id((Long) entity.getProperty(TWEET_ID))
+        .ignoreInTwittalyzer(Boolean.TRUE.equals(entity.getProperty(TWEET_IGNORE)))
+        .location(location)
+        .time(dateTime)
+        .key(entity.getKey())
+        .text((String) entity.getProperty(TWEET_TEXT))
+        .userId((String) entity.getProperty(TWEET_SCREEN_NAME))
+        .build();
   }
 }
