@@ -161,24 +161,10 @@ public class TruckStopMatcher {
 
   private Location extractLocation(TweetSummary tweet, Truck truck) {
     String address = addressExtractor.parseFirst(tweet.getText(), truck);
-    Location location = tweet.getLocation();
-    if (address == null && location == null) {
+    if (address == null) {
       return null;
     }
-    if (location == null) {
-      location = geoLocator.locate(address);
-      if (location == null) {
-        return null;
-      }
-    } else {
-      // TODO: reverse geolocation lookup
-      if (address == null || geoLocator.locate(address) == null) {
-        return location.withName("Unnamed Location");
-      } else {
-        return location.withName(address);
-      }
-    }
-    return location;
+    return geoLocator.locate(address);
   }
 
   private @Nullable DateTime parseTime(String timeText, LocalDate date, @Nullable DateTime after) {
