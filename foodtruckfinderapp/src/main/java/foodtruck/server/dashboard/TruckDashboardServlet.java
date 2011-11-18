@@ -64,8 +64,10 @@ public class TruckDashboardServlet extends HttpServlet {
     body = URLDecoder.decode(body, "UTF-8");
     try {
       JSONObject bodyObj = new JSONObject(body);
-      TweetSummary summary = twitterService.findByTweetId(bodyObj.getLong("id"));
+      final long tweetId = bodyObj.getLong("id");
+      TweetSummary summary = twitterService.findByTweetId(tweetId);
       if (summary == null) {
+        log.info("COULDN'T FIND TWEET ID: " + tweetId);
         resp.setStatus(404);
         return;
       }
