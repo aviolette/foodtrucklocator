@@ -33,6 +33,14 @@ public class TerminationDetectorTest {
   }
 
   @Test
+  public void testApologies() {
+    assertEquals(tweetTime,
+        detector.detect(tweetBuilder.text(
+            "ducknrolltruck: Apologies Aon center we had to move. Will let you know the new location in a few. Popo made us leave.")
+            .build()));
+  }
+
+  @Test
   public void testHeadingBack() {
     assertEquals(tweetTime, detector.detect(tweetBuilder.text(
         "Heading back to our store in Lincoln Park, come visit us to try our delicious and unique meatloaf!")
