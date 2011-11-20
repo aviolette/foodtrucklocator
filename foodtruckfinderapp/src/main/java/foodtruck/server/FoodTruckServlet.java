@@ -1,6 +1,7 @@
 package foodtruck.server;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -31,9 +32,10 @@ public class FoodTruckServlet extends HttpServlet {
   private final DateTimeFormatter timeFormatter;
   private final Clock clock;
   private final DateTimeFormatter dateFormatter;
+  private static final Logger log = Logger.getLogger(FoodTruckServlet.class.getName());
 
   @Inject
-  public FoodTruckServlet( DateTimeZone zone, @Named("center") Location centerLocation,
+  public FoodTruckServlet(DateTimeZone zone, @Named("center") Location centerLocation,
       Clock clock) {
     this.clock = clock;
     this.mapCenter = centerLocation;
@@ -45,6 +47,11 @@ public class FoodTruckServlet extends HttpServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     final String path = req.getRequestURI();
+    if (req.getServerName().contains("chifoodtruckz.com")) {
+      resp.setStatus(301);
+      resp.setHeader("Location", "http://www.chicagofoodtruckfinder.com" + path);
+      return;
+    }
     if (!Strings.isNullOrEmpty(path)) {
       req.setAttribute("showScheduleFor", path.substring(1));
     }
