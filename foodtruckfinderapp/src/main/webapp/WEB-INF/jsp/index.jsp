@@ -5,6 +5,8 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+  <meta name="description"
+        content="Find food trucks on the streets of Chicago by time and location.  Results are updated in real-time throughout the day."/>
   <title>Chicago Food Truck Finder</title>
   <link rel="stylesheet" href="css/base.css"/>
   <link rel="stylesheet" href="css/main.css"/>
