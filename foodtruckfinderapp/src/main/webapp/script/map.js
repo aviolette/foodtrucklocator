@@ -26,37 +26,6 @@ window.FoodTruckLocator = function() {
     return location;
   }
 
-  function buildMenuItem(menuSection, truck, letter, letterUsed, locationName, distance) {
-    menuSection.append("<div class='menuSection' id='" + truck.id + "'/>");
-    var section = $('#' + truck.id);
-    var markerText = "&nbsp;";
-    if (!letterUsed) {
-      markerText = "<img class='iconMarker' src='" + buildIconUrl(letter) + "'/>";
-    }
-    section.append("<div class='markerSection'>" + markerText + "</div>");
-    section.append("<div class='iconSection'> <img src='" + truck.iconUrl + "'/></div>");
-    section.append("<div class='menuContent' id='" + truck.id +
-        "Section' class='contentSection'></div>");
-    var div = $('#' + truck.id + 'Section');
-    div.append("<a class='activationLink' href='/" + truck.id + "'>" + truck.name + "</a><br/> ");
-    if (locationName) {
-      div.append("<span class='locationName'>" + locationName + "</span></br>");
-    }
-    if (distance) {
-      div.append("<span>" + distance + " miles away</span></br>")
-    }
-    if (truck.url) {
-      div.append("<a target='_blank' href='" + truck.url + "'>" + truck.url +
-          "</a><br/>")
-    }
-    if (truck.twitterHandle) {
-      div.append("Twitter: <a target='_blank' href='http://twitter.com/" + truck.twitterHandle +
-          "'>@" +
-          truck.twitterHandle + "</a><br/>")
-    }
-  }
-
-
   var TruckGroup = function(location) {
     var self = this;
     self.trucks = [];
@@ -290,6 +259,20 @@ window.FoodTruckLocator = function() {
       return div;
     }
 
+    function buildTruckInfoDialog(truck) {
+      var $truckDialog = $("#truckDialog");
+      $truckDialog.attr("title", truck.name);
+      $("#truckIcon").attr("src", truck.iconUrl);
+      var $truckSocial = $("#truckSocial");
+      $truckSocial.empty();
+      if (truck.twitterHandle) {
+        $truckSocial.append("<a target='_blank' href='http://twitter.com/" + truck.twitterHandle +
+            "'><img alt='@" +
+            truck.twitterHandle + "' src='/img/twitter32x32.png'/></a> ");
+      }
+      $truckDialog.dialog();
+    }
+
     function buildIconForTruck(truck, contentDiv) {
       contentDiv.append("<div class='truckSection' id='truck" + truck.id + "'/>");
       var section = $('#truck' + truck.id);
@@ -297,9 +280,14 @@ window.FoodTruckLocator = function() {
       section.append("<div class='menuContent' id='truck" + truck.id +
           "Section' class='contentSection'></div>");
       var div = $('#truck' + truck.id + 'Section');
-      div.append("<a class='truckLink' href='/" + truck.id + "'>" + truck.name + "</a><br/>");
+      div.append("<a class='truckLink truckLink" + truck.id + "' href='#'>" + truck.name +
+          "</a><br/>");
       var infoRow = "<div class='infoRow'>";
 
+      $(".truckLink" + truck.id).click(function(evt) {
+        evt.stopPropagation();
+        buildTruckInfoDialog(truck);
+      });
       if (truck.twitterHandle) {
         infoRow += "<a target='_blank' href='http://twitter.com/" + truck.twitterHandle +
             "'><img alt='@" +
@@ -371,74 +359,6 @@ window.FoodTruckLocator = function() {
     };
   };
 
-  var ScheduleMap = function(center) {
-    var map = new google.maps.Map(document.getElementById("map_canvas"), {
-      zoom: 13,
-      center: center,
-      maxZoom : 15,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-    });
-    var self = this;
-    var bounds, truck;
-    var menuSection = $("#foodTruckList");
-
-    self.start = function(tr) {
-      menuSection.empty();
-      menuSection.append("<a href='/'>&#171; Back to Main List</a><br/> ")
-      bounds = new google.maps.LatLngBounds();
-      bounds.extend(center);
-      truck = tr;
-      buildMenuItem(menuSection, truck, null, true, null);
-    };
-
-    self.itemAdded = function(item, idx) {
-      var letter = String.fromCharCode(65 + idx);
-      buildMarker(item, letter, bounds, map);
-      menuSection.append("<div class='menuSection' id='menu" + idx + "'/>");
-      var section = $('#menu' + idx);
-      var markerText = "<img src='" + buildIconUrl(letter) + "'/>";
-      section.append("<div class='markerSection'>" + markerText + "</div>");
-      section.append("<div class='menuContent' id='menu" + idx +
-          "Section' class='contentSection'></div>");
-      var div = $('#menu' + idx + 'Section');
-      div.append(item.startTime + "<br/>");
-      div.append(item.position.name);
-
-    };
-
-    self.finish = function() {
-      map.fitBounds(bounds);
-    }
-  };
-
-  var Schedule = function(scheduleListener) {
-    var self = this;
-    var truck = null;
-    var scheduleItems = [];
-
-    self.loadTruckSchedule = function(truckId) {
-      $.ajax({
-        url: "/service/schedule/" + truckId,
-        context: document.body,
-        dataType: 'json',
-        success: function(data) {
-          truck = data.truck;
-          scheduleListener.start(truck);
-          $.each(data.stops, function(idx, scheduleItem) {
-            var latlng = new google.maps.LatLng(scheduleItem.location.latitude,
-                scheduleItem.location.longitude);
-            var locationName = (typeof scheduleItem.location['name'] == 'undefined') ? null :
-                scheduleItem.location.name;
-            scheduleItem.position = {name: locationName, latLng : latlng }
-            scheduleItems.push(scheduleItem);
-            scheduleListener.itemAdded(scheduleItem, idx);
-          });
-          scheduleListener.finish();
-        }
-      });
-    };
-  };
-
   function fitMapToView() {
     if (Modernizr.touch) {
       $("#left").css("overflow-y", "visible");
@@ -488,7 +408,6 @@ window.FoodTruckLocator = function() {
     $("#left").css("margin-left", "0");
     $("#left").css("overflow-y", "visible");
     $(".sliderContainer").css("display", "none");
-//    $("hr").css("display", "none");
     $(".timeSelect").css("display", "block");
   }
 
@@ -522,13 +441,6 @@ window.FoodTruckLocator = function() {
       showControlsForMap();
       var truckView = new TruckGroupMap(this.center, time, date.split("-")[0]);
       loadAllTrucks(truckView, date, this.center);
-    },
-    loadTruckSchedule : function(truckId) {
-      fitMapToView();
-      showControlsForNoMap();
-      var truckView = new ScheduleMap(this.center);
-      var schedule = new Schedule(truckView);
-      schedule.loadTruckSchedule(truckId);
     }
   };
 }();

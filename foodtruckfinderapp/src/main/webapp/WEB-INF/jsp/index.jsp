@@ -10,7 +10,9 @@
   <title>Chicago Food Truck Finder</title>
   <link rel="stylesheet" href="css/base.css"/>
   <link rel="stylesheet" href="css/main.css"/>
-  <link type="text/css" href="css/start/jquery-ui-1.8.16.custom.css" rel="stylesheet"/>
+  <link type="text/css"
+        href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/start/jquery-ui.css"
+        rel="stylesheet"/>
   <script src="script/lib/modernizr-1.7.min.js"></script>
 </head>
 <body>
@@ -84,27 +86,34 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
 <script>window.jQuery ||
 document.write("<script src='script/lib/jquery-1.6.2.min.js'>\x3C/script>")</script>
-<script type="text/javascript" src="script/lib/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript"
+        src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
 <c:if test="${google_analytics_ua != null}">
   <jsp:include page="include/google_analytics.jsp"/>
 </c:if>
 <script type="text/javascript">
   $(document).ready(function() {
     FoodTruckLocator.center = new google.maps.LatLng(${center.latitude}, ${center.longitude});
-    <c:choose>
-    <c:when test="${empty showScheduleFor}">
     if (FoodTruckLocator.isTouchScreenPortrait() || ${mobile}) {
       FoodTruckLocator.loadTrucksWithoutMap(new Date(${requestTimeInMillis}), "${requestTime}");
     } else {
       FoodTruckLocator.loadTrucksWithMap(new Date(${requestTimeInMillis}), "${requestTime}");
     }
-    </c:when>
-    <c:otherwise>
-    FoodTruckLocator.loadTruckSchedule("${showScheduleFor}");
-    </c:otherwise>
-    </c:choose>
   });
 </script>
+<%-- truck dialog // TODO: move to separate JSP --%>
+<div id="truckDialog" title="Food Truck Details" style="display:none">
+  <div id="truckIconDiv" class="truckSection">
+    <div class="iconSection">
+      <img id="truckIcon"/>
+    </div>
+    <div class="menuContent">
+      <div id="truckSocial" class="infoRow">
+
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
 
