@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -37,6 +38,7 @@ import twitter4j.TwitterException;
  */
 public class TwitterServiceImpl implements TwitterService {
   private static final Logger log = Logger.getLogger(TwitterServiceImpl.class.getName());
+  @VisibleForTesting static final int HOURS_BACK_TO_SEARCH = 6;
   private final TweetCacheDAO tweetDAO;
   private final TwitterFactoryWrapper twitterFactory;
   private final int twitterListId;
@@ -147,8 +149,9 @@ public class TwitterServiceImpl implements TwitterService {
   public void twittalyze() {
     log.log(Level.INFO, "Updating twitter trucks");
     for (Truck truck : trucks.allTwitterTrucks()) {
+      // TODO: this number should probably be configurable
       List<TweetSummary> tweets =
-          tweetDAO.findTweetsAfter(clock.now().minusHours(4), truck.getId());
+          tweetDAO.findTweetsAfter(clock.now().minusHours(HOURS_BACK_TO_SEARCH), truck.getId());
       TruckStopMatch match = findMatch(tweets, truck);
       if (match != null) {
         log.log(Level.INFO, "Found match {0}", match);
