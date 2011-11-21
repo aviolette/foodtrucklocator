@@ -147,6 +147,9 @@ public class AddressExtractor {
             keyword("4630 W. Lawrence Ave., Chicago, IL"), true, 0),
         new PatternTransform(Pattern.compile("wttw", Pattern.CASE_INSENSITIVE),
             keyword("WTTW"), true, 0),
+        // tribune tower
+        new PatternTransform(Pattern.compile("tribune tower", Pattern.CASE_INSENSITIVE),
+            keyword("Tribune Tower, Chicago, IL"), true, 0),
         // keyword format
         new PatternTransform(
             Pattern.compile("grant park|presidential towers", Pattern.CASE_INSENSITIVE),

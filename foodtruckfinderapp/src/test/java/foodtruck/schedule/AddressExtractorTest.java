@@ -240,6 +240,12 @@ public class AddressExtractorTest {
   }
 
   @Test
+  public void testTribuneTower() {
+    assertTweet("Tribune Tower, Chicago, IL",
+        "Headed to Tribune Tower! See you in 5");
+  }
+
+  @Test
   public void testTamaleSpaceshipFormat() {
     assertTweet("Adler Planetarium",
         "Going strong at <<Adler Planetarium>> for \"Jenny & Mike's\" Wedding ;)");
