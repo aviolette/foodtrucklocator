@@ -31,7 +31,7 @@ import foodtruck.util.Clock;
 public class TruckStopMatcher {
   private static final Logger log = Logger.getLogger(TruckStopMatcher.class.getName());
   public static final int DEFAULT_STOP_LENGTH_IN_HOURS = 2;
-  public static final String TIME_PATTERN = "\\d+(:\\d+)*\\s*(p|pm|a|am|a\\.m\\.|p\\.m\\.)?";
+  public static final String TIME_PATTERN = "(\\d+(:\\d+)*\\s*(p|pm|a|am|a\\.m\\.|p\\.m\\.)?)|noon";
   private static final String TIME_RANGE_PATTERN =
       "(" + TIME_PATTERN + ")\\s*-\\s*(" + TIME_PATTERN + ")[\\s|\\.&&[^\\-]]";
   private final AddressExtractor addressExtractor;
@@ -120,7 +120,7 @@ public class TruckStopMatcher {
     if (m.find()) {
       final LocalDate date = tweet.getTime().toLocalDate();
       startTime = parseTime(m.group(1), date, null);
-      endTime = parseTime(m.group(4), date, endTime);
+      endTime = parseTime(m.group(5), date, endTime);
       if (endTime != null && terminationTime != null && endTime.isAfter(terminationTime)) {
         endTime = terminationTime;
       }
@@ -182,6 +182,9 @@ public class TruckStopMatcher {
   }
 
   private @Nullable DateTime parseTime(String timeText, LocalDate date, @Nullable DateTime after) {
+    if (timeText.toLowerCase().equals("noon")) {
+      timeText = "12:00p.m.";
+    }
     timeText = timeText.replace(".", "");
     if (timeText.endsWith("p") || timeText.endsWith("a")) {
       timeText = timeText + "m";

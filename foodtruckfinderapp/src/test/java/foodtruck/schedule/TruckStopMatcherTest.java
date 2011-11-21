@@ -157,6 +157,26 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
   @Test
+  public void testMatch_shouldDetectTimeRangeNoon() {
+    final String tweetText =
+        "The tamalespaceship will be landing at our weekly spot <<Dearborn & Monroe>> 11a.m.-noon. last chance to get your tamale fix before the weekend!!";
+    final String address = "Dearborn and Monroe";
+    Location location = new Location(-1, -2, address);
+    expect(extractor.parseFirst(tweetText, truck)).andReturn(address);
+    expect(geolocator.locate(address)).andReturn(location);
+    tweetTime = new DateTime(2011, 11, 12, 9, 0, 0, 0, DateTimeZone.UTC);
+    replayAll();
+    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
+    TruckStopMatch match = topic.match(truck, tweet, null);
+    assertNotNull(match);
+    assertEquals(Confidence.HIGH, match.getConfidence());
+    assertEquals(address, match.getStop().getLocation().getName());
+    assertEquals(match.getStop().getStartTime(), tweetTime.withTime(11, 0, 0, 0));
+    assertEquals(match.getStop().getEndTime(), tweetTime.withTime(12, 0, 0, 0));
+    verifyAll();
+  }
+
+  @Test
   public void testMatch_shouldDetectFutureLocation() {
     final String tweetText =
         "Rush & UIC Medical Center DonRafa is gonna be in ur area today! Don't want to come out? call 312-498-9286 we... fb.me/1gKduQrvS";
