@@ -136,7 +136,7 @@ public class AddressExtractor {
         new PatternTransform(Pattern.compile(
             "at (" + INTERSECTION_PARTIAL + INTERSECTION_AND + INTERSECTION_PARTIAL + ")",
             Pattern.CASE_INSENSITIVE),
-            cityAppender, false, 1, ImmutableSet.of("steakwch", "rzjp6cakes")),
+            cityAppender, false, 1, ImmutableSet.of("steakwch", "rzjp6cakes", "flirtycupcakes")),
         // special case intersections
         // Merchandise Mart
         new PatternTransform(
