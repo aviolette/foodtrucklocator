@@ -1,10 +1,12 @@
 package foodtruck.model;
 
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -24,6 +26,7 @@ public class Truck {
   private final boolean twittalyzer;
   private final String defaultCity;
   private final String facebook;
+  private final Pattern matchOnlyIf;
 
   private Truck(Builder builder) {
     this.id = builder.id;
@@ -37,6 +40,7 @@ public class Truck {
     this.twittalyzer = builder.twittalyzer;
     this.defaultCity = builder.defaultCity;
     this.facebook = builder.facebook;
+    this.matchOnlyIf = builder.matchOnlyIf;
   }
 
   public @Nullable String getFoursquareUrl() {
@@ -110,6 +114,10 @@ public class Truck {
         .toString();
   }
 
+  public Pattern getMatchOnlyIf() {
+    return matchOnlyIf;
+  }
+
   public static class Builder {
     private String id;
     private String name;
@@ -122,8 +130,24 @@ public class Truck {
     private boolean twittalyzer;
     private String defaultCity = "Chicago, IL";
     private String facebook;
+    private Pattern matchOnlyIf;
 
     public Builder() {
+    }
+
+    public Builder(Truck truck) {
+      this.id = truck.id;
+      this.name = truck.name;
+      this.url = truck.url;
+      this.iconUrl = truck.iconUrl;
+      this.twitter = truck.twitterHandle;
+      this.categories = truck.categories;
+      this.description = truck.description;
+      this.foursquareUrl = truck.foursquareUrl;
+      this.twittalyzer = truck.twittalyzer;
+      this.defaultCity = truck.defaultCity;
+      this.facebook = truck.facebook;
+      this.matchOnlyIf = truck.matchOnlyIf;
     }
 
     public Builder id(String id) {
@@ -148,6 +172,15 @@ public class Truck {
 
     public Builder categories(ImmutableSet<String> categories) {
       this.categories = categories;
+      return this;
+    }
+
+    public Builder matchOnlyIf(@Nullable String regex) {
+      if (!Strings.isNullOrEmpty(regex)) {
+        this.matchOnlyIf = Pattern.compile(regex);
+      } else {
+        this.matchOnlyIf = null;
+      }
       return this;
     }
 

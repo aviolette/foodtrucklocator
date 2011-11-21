@@ -502,6 +502,7 @@ categories: Asian
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/565404613/twitter_icon_normal.jpg
 twittalyzer: "on"
 facebook: /hotasianbuns
+matchonlyif: "#bunsontherun"
 ---
 id: trafficjamfood
 twitter: trafficjamfood

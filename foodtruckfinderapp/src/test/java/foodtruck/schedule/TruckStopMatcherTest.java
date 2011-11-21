@@ -278,6 +278,35 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     assertEquals(address, match.getStop().getLocation().getName());
     assertEquals(match.getStop().getStartTime(), tweetTime.withTime(13, 15, 0, 0));
     verifyAll();
+  }
 
+  @Test
+  public void testMatch_shouldNotMatchWhenHashNotPresent() {
+    final String tweetText =
+        "Oooops on the handshake between Chris and Taylor - next time try a fistbump #AMA2011";
+    truck = new Truck.Builder(truck).matchOnlyIf("#bunsontherun").build();
+    replayAll();
+    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
+    TruckStopMatch match = topic.match(truck, tweet, null);
+    assertNull(match);
+    verifyAll();
+  }
+
+  @Test
+  public void testMatch_shouldMatchWhenHasMatchOnlyIfExpression() {
+    final String tweetText =
+        "Oooops on the handshake between Chris and Taylor - next time try a fistbump #BunsOnTheRun";
+    truck = new Truck.Builder(truck).matchOnlyIf("#bunsontherun").build();
+    final String address = "Chris and Taylor";
+    Location location = new Location(-1, -2, address);
+    expect(extractor.parseFirst(tweetText, truck)).andReturn(address);
+    expect(geolocator.locate(address)).andReturn(location);
+    replayAll();
+    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
+    TruckStopMatch match = topic.match(truck, tweet, null);
+    assertNotNull(match);
+    assertEquals(Confidence.HIGH, match.getConfidence());
+    assertEquals(tweetTime, match.getStop().getStartTime());
+    verifyAll();
   }
 }

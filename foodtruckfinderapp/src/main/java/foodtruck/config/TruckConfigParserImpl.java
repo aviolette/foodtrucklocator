@@ -46,6 +46,7 @@ public class TruckConfigParserImpl implements TruckConfigParser {
           .useTwittalyzer("on".equals(truckMap.get("twittalyzer")))
           .facebook((String) truckMap.get("facebook"))
           .defaultCity(defaultCity)
+          .matchOnlyIf((String) truckMap.get("matchOnlyIf"))
           .build();
       log.log(Level.INFO, "Loaded truck: {0}", truck);
       truckBuilder.put(truck.getId(), truck);

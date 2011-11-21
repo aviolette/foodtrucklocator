@@ -92,6 +92,11 @@ public class TruckStopMatcher {
   public @Nullable TruckStopMatch match(Truck truck, TweetSummary tweet,
       @Nullable DateTime terminationTime) {
     final String tweetText = tweet.getText();
+    if (verifyMatchOnlyExpression(truck, tweetText)) {
+      log.log(Level.INFO, "Didn't match '{0}' because it didn't contain match-only expression",
+          tweetText);
+      return null;
+    }
     Location location = extractLocation(tweet, truck);
     if (location == null) {
       return null;
@@ -138,6 +143,15 @@ public class TruckStopMatcher {
     return new TruckStopMatch(Confidence.HIGH,
         new TruckStop(truck, startTime, endTime, location, null),
         tweetText);
+  }
+
+  private boolean verifyMatchOnlyExpression(Truck truck, String tweetText) {
+    Pattern p = truck.getMatchOnlyIf();
+    if (p != null) {
+      Matcher m = p.matcher(tweetText.toLowerCase());
+      return !m.find();
+    }
+    return false;
   }
 
   private boolean matchesOtherDay(String tweetText) {
