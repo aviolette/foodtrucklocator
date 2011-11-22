@@ -261,7 +261,6 @@ window.FoodTruckLocator = function() {
 
     function buildTruckInfoDialog(truck) {
       var $truckDialog = $("#truckDialog");
-      $truckDialog.attr("title", truck.name);
       $("#truckIcon").attr("src", truck.iconUrl);
       var $truckSocial = $("#truckSocial");
       $truckSocial.empty();
@@ -296,7 +295,7 @@ window.FoodTruckLocator = function() {
           $.each(data.stops, function(idx, stop) {
             $truckSchedule.append("<li>" + stop.startTime + " " + stop.location.name + "</li>")
           });
-          $truckDialog.dialog({minWidth: 500, modal: true});
+          $truckDialog.dialog({minWidth: 500, modal: true, title: truck.name});
         }});
     }
 
