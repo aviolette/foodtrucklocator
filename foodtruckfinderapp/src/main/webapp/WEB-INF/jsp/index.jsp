@@ -108,11 +108,13 @@ document.write("<script src='script/lib/jquery-1.6.2.min.js'>\x3C/script>")</scr
       <img id="truckIcon"/>
     </div>
     <div class="menuContent">
-      <div id="truckSocial" class="infoRow">
-
-      </div>
+      <div id="truckSocial" class="infoRow"></div>
     </div>
   </div>
+  <div id="truckInfo"></div>
+  <h3>Scheduled Stops</h3>
+  <ul id="truckSchedule"></ul>
+</div>
 </div>
 </body>
 </html>

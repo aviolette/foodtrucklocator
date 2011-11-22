@@ -270,7 +270,34 @@ window.FoodTruckLocator = function() {
             "'><img alt='@" +
             truck.twitterHandle + "' src='/img/twitter32x32.png'/></a> ");
       }
-      $truckDialog.dialog();
+      if (truck.foursquare) {
+        $truckSocial.append("<a target='_blank' href='http://foursquare.com/venue/" +
+            truck.foursquare +
+            "'><img alt='Checkin on foursquare' src='/img/foursquare32x32.png'/></a> ");
+      }
+      if (truck.facebook) {
+        $truckSocial.append("<a target='_blank' href='http://facebook.com" + truck.facebook +
+            "'><img alt='" +
+            truck.facebook + "' src='/img/facebook32x32.png'/></a> ");
+      }
+      var $truckInfo = $("#truckInfo");
+      $truckInfo.empty();
+      if (truck.url) {
+        $truckInfo.append("<h3>Website</h3><a target='_blank' href='" + truck.url + "'>" +
+            truck.url + "</a>");
+      }
+      $.ajax({
+        url: "/service/schedule/" + truck.id,
+        context: document.body,
+        dataType: 'json',
+        success: function(data) {
+          var $truckSchedule = $("#truckSchedule");
+          $truckSchedule.empty();
+          $.each(data.stops, function(idx, stop) {
+            $truckSchedule.append("<li>" + stop.startTime + " " + stop.location.name + "</li>")
+          });
+          $truckDialog.dialog({minWidth: 500, modal: true});
+        }});
     }
 
     function buildIconForTruck(truck, contentDiv) {
