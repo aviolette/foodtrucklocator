@@ -1,5 +1,7 @@
 package foodtruck.schedule;
 
+import com.google.common.collect.ImmutableList;
+
 import org.easymock.EasyMockSupport;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -46,7 +48,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   @Test
   public void testMatch_shouldReturnNullWhenNoAddress() {
     final String tweetText = "foobar";
-    expect(extractor.parseFirst(tweetText, truck)).andReturn(null);
+    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.<String>of());
     replayAll();
     TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
     TruckStopMatch match = topic.match(truck, tweet, null);
@@ -59,7 +61,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     final String tweetText = "Culture: Last call Erie and Kingsbury, outta here in 15 minutes, " +
         "then off to our next River North location, Hubbard & LaSalle";
     final String address = "Erie and Kingsbury";
-    expect(extractor.parseFirst(tweetText, truck)).andReturn(address);
+    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(null);
     replayAll();
     TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
@@ -73,7 +75,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     final String tweetText = "Gold Coast, we have landed at Rush and Walton...here until 6 pm!";
     final String address = "Rush and Walton";
     Location location = new Location(-1, -2, address);
-    expect(extractor.parseFirst(tweetText, truck)).andReturn(address);
+    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     replayAll();
     TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
@@ -90,7 +92,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     final String tweetText = "At 353 N Desplaines until 8pm with @bigstarchicago & @HomageSF !!";
     final String address = "Rush and Walton";
     Location location = new Location(-1, -2, address);
-    expect(extractor.parseFirst(tweetText, truck)).andReturn(address);
+    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     replayAll();
     TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
@@ -109,7 +111,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
         "SweetSpotMac: Arrived at Michigan and Walton. Come get your Sunday macaron going!";
     final String address = "Michigan and Walton";
     Location location = new Location(-1, -2, address);
-    expect(extractor.parseFirst(tweetText, truck)).andReturn(address);
+    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     replayAll();
     TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
@@ -126,7 +128,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
         "Oh yea oh yea beautiful night in the Chi. Come get ur froyo fix we are on the corner of Michigan and Ohio!";
     final String address = "Michigan and Ohio";
     Location location = new Location(-1, -2, address);
-    expect(extractor.parseFirst(tweetText, truck)).andReturn(address);
+    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     replayAll();
     TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
@@ -143,7 +145,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
         "The tamalespaceship will be landing at our weekly spot <<Dearborn & Monroe>> 11a.m.-1:30p.m. last chance to get your tamale fix before the weekend!!";
     final String address = "Dearborn and Monroe";
     Location location = new Location(-1, -2, address);
-    expect(extractor.parseFirst(tweetText, truck)).andReturn(address);
+    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     tweetTime = new DateTime(2011, 11, 12, 9, 0, 0, 0, DateTimeZone.UTC);
     replayAll();
@@ -163,7 +165,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
         "The tamalespaceship will be landing at our weekly spot <<Dearborn & Monroe>> 11a.m.-noon. last chance to get your tamale fix before the weekend!!";
     final String address = "Dearborn and Monroe";
     Location location = new Location(-1, -2, address);
-    expect(extractor.parseFirst(tweetText, truck)).andReturn(address);
+    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     tweetTime = new DateTime(2011, 11, 12, 9, 0, 0, 0, DateTimeZone.UTC);
     replayAll();
@@ -183,7 +185,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
         "Rush & UIC Medical Center DonRafa is gonna be in ur area today! Don't want to come out? call 312-498-9286 we... fb.me/1gKduQrvS";
     final String address = "UIC";
     Location location = new Location(-1, -2, address);
-    expect(extractor.parseFirst(tweetText, truck)).andReturn(address);
+    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     tweetTime = new DateTime(2011, 11, 12, 9, 0, 0, 0, DateTimeZone.UTC);
     replayAll();
@@ -203,7 +205,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
         "5411empanadas: MON: Oak and Michigan / TUE: Univ of Chicago (Hyde Park) / WED: Dearborn & Monroe / THU: Columbus & Randolph / FRI: Wacker & Van Buren";
     final String address = "Oak and Michigan";
     Location location = new Location(-1, -2, address);
-    expect(extractor.parseFirst(tweetText, truck)).andReturn(address);
+    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     tweetTime = new DateTime(2011, 11, 12, 9, 0, 0, 0, DateTimeZone.UTC);
     replayAll();
@@ -221,7 +223,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
         "430p... http://t.co/EDVtU2XM";
     final String address = "Taylor & Wood";
     Location location = new Location(-1, -2, address);
-    expect(extractor.parseFirst(tweetText, truck)).andReturn(address);
+    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     replayAll();
     TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
@@ -238,7 +240,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     final String address = "Wells and Monroe";
     expect(clock.dayOfWeek()).andReturn(DayOfWeek.sunday);
     Location location = new Location(-1, -2, address);
-    expect(extractor.parseFirst(tweetText, truck)).andReturn(address);
+    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     tweetTime = new DateTime(2011, 11, 12, 9, 0, 0, 0, DateTimeZone.UTC);
     replayAll();
@@ -254,7 +256,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
         "GiGisBakeShop: Hello SUNDAY!  The PURPLE Bus is headed out...Look for us at 13th / S Michigan 11:15 am, Lincoln Square 1:30 pm";
     final String address = "Foo and Bar";
     Location location = new Location(-1, -2, address);
-    expect(extractor.parseFirst(tweetText, truck)).andReturn(address);
+    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     tweetTime = new DateTime(2011, 11, 6, 9, 0, 0, 0, DateTimeZone.UTC);
     replayAll();
@@ -273,7 +275,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
         "CourageousCakes: @5411empanadas ahhh no uofc tues?? I shall starve";
     final String address = "Foo and Bar";
     Location location = new Location(-1, -2, address);
-    expect(extractor.parseFirst(tweetText, truck)).andReturn(address);
+    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     tweetTime = new DateTime(2011, 11, 7, 9, 0, 0, 0, DateTimeZone.UTC);
     replayAll();
@@ -288,7 +290,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     final String tweetText = "GiGisBakeShop: @GiGisBakeShop NEXT STOP Randolph & Franklin 1:15 pm!";
     final String address = "Foo and Bar";
     Location location = new Location(-1, -2, address);
-    expect(extractor.parseFirst(tweetText, truck)).andReturn(address);
+    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     tweetTime = new DateTime(2011, 11, 6, 9, 0, 0, 0, DateTimeZone.UTC);
     replayAll();
@@ -320,7 +322,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     truck = new Truck.Builder(truck).matchOnlyIf("#bunsontherun").build();
     final String address = "Chris and Taylor";
     Location location = new Location(-1, -2, address);
-    expect(extractor.parseFirst(tweetText, truck)).andReturn(address);
+    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     replayAll();
     TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();

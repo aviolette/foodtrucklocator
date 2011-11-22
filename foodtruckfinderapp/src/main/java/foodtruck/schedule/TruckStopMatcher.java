@@ -1,5 +1,6 @@
 package foodtruck.schedule;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -174,12 +175,15 @@ public class TruckStopMatcher {
     }
   }
 
-  private Location extractLocation(TweetSummary tweet, Truck truck) {
-    String address = addressExtractor.parseFirst(tweet.getText(), truck);
-    if (address == null) {
-      return null;
+  private @Nullable Location extractLocation(TweetSummary tweet, Truck truck) {
+    List<String> addresses = addressExtractor.parse(tweet.getText(), truck);
+    for (String address : addresses) {
+      Location loc = geoLocator.locate(address, GeolocationGranularity.NARROW);
+      if (loc != null) {
+        return loc;
+      }
     }
-    return geoLocator.locate(address, GeolocationGranularity.NARROW);
+    return null;
   }
 
   private @Nullable DateTime parseTime(String timeText, LocalDate date, @Nullable DateTime after) {
