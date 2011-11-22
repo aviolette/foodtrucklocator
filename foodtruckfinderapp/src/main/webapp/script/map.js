@@ -311,7 +311,7 @@ window.FoodTruckLocator = function() {
       var infoRow = "<div class='infoRow'>";
 
       $(".truckLink" + truck.id).click(function(evt) {
-        evt.stopPropagation();
+        evt.preventDefault();
         buildTruckInfoDialog(truck);
       });
       if (truck.twitterHandle) {
