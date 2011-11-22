@@ -165,6 +165,7 @@ categories: Desserts
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1416523084/profile_normal.jpg
 foursquare: 4e837228b6341921482bd055
 twittalyzer: "on"
+url: http://www.mamagreengoodies.com/
 facebook: /pages/Mama-Greens-Gourmet-Goodies/139420512741550
 ---
 id: themoremobile
@@ -424,6 +425,7 @@ name: Don Rafa Food Truck
 categories: Savory
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1591805989/logo_normal.jpg
 twittalyzer: "on"
+foursquare: 4eae101b0039f003c3d8265a
 facebook: /DonRafaRestaurants
 ---
 id: lqmeatmobile
@@ -462,6 +464,7 @@ id: steakwch
 twitter: steakwch
 name: Steakwch
 categories: Savory
+foursquare: 4e0a778b52b14bd098d116eb
 iconUrl: http://a1.twimg.com/profile_images/1443279567/Twitter_Pic_normal.JPG
 twittalyzer: "on"
 ---
@@ -469,6 +472,7 @@ id: steakwch2
 twitter: steakwch
 name: Steakwch
 categories: Savory
+foursquare: 4e0a778b52b14bd098d116eb
 iconUrl: http://a1.twimg.com/profile_images/1443279567/Twitter_Pic_normal.JPG
 twittalyzer: "off"
 ---
@@ -494,6 +498,7 @@ categories: Savory
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1460919739/Final_Duck_Logo_v2_normal.jpg
 twittalyzer: "on"
 facebook: /DucknRoll
+url: http://www.ducknrolltruck.com/
 ---
 id: baomouth
 twitter: baomouth
@@ -501,6 +506,7 @@ name: Wow Bao
 categories: Asian
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/565404613/twitter_icon_normal.jpg
 twittalyzer: "on"
+url: http://www.wowbao.com/
 facebook: /hotasianbuns
 matchonlyif: "#bunsontherun"
 ---
