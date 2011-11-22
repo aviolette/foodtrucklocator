@@ -33,7 +33,7 @@ public class GoogleGeolocator implements GeoLocator {
   }
 
   @Override
-  public Location locate(String location) {
+  public Location locate(String location, GeolocationGranularity granularity) {
     Location loc = parseLatLong(location);
     if (loc != null) {
       return loc;
@@ -41,14 +41,14 @@ public class GoogleGeolocator implements GeoLocator {
     if (!isEnabled()) {
       return null;
     }
-    return lookup(location);
+    return lookup(location, granularity);
   }
 
   private boolean isEnabled() {
     return "true".equals(System.getProperty("google.geolocator.enabled", "true"));
   }
 
-  private @Nullable Location lookup(String location) {
+  private @Nullable Location lookup(String location, GeolocationGranularity granularity) {
     JSONObject obj = googleResource.findLocation(location);
     try {
       log.log(Level.INFO, "Geolocation result for {0}: \n{1}",
@@ -61,8 +61,18 @@ public class GoogleGeolocator implements GeoLocator {
           log.log(Level.INFO, "Result was too granular");
           return null;
         }
+        final JSONObject geometry = firstResult.getJSONObject("geometry");
+        String locationType = geometry.optString("location_type", null);
+        if (granularity == GeolocationGranularity.NARROW && ("GEOMETRIC_CENTER".equals(locationType)
+            || "APPROXIMATE".equals(locationType))) {
+          // TODO: inefficient
+          if (arrayContains(types, "point_of_interest") || arrayContains(types, "establishment")) {
+            log.log(Level.INFO, "Location type was: " + locationType);
+            return null;
+          }
+        }
         JSONObject loc =
-            firstResult.getJSONObject("geometry").getJSONObject("location");
+            geometry.getJSONObject("location");
         return new Location(loc.getDouble("lat"), loc.getDouble("lng"), location);
       }
     } catch (JSONException e) {

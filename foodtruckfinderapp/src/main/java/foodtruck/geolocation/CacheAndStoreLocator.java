@@ -28,14 +28,14 @@ public class CacheAndStoreLocator implements GeoLocator {
   }
 
   @Override
-  public @Nullable Location locate(String location) {
+  public @Nullable Location locate(String location, GeolocationGranularity granularity) {
     Location loc = dao.lookup(location);
     if (loc != null) {
       // there were previous attempts at using the secondary locator which were unsuccessful
       // so don't try again.
       return loc.isResolved() ? loc : null;
     }
-    loc = secondaryLocator.locate(location);
+    loc = secondaryLocator.locate(location, granularity);
     if (loc != null) {
       dao.save(loc);
     } else {

@@ -27,7 +27,7 @@ public class YahooGeolocator implements GeoLocator {
   }
 
   @Override
-  public Location locate(String location) {
+  public Location locate(String location, GeolocationGranularity granularity) {
     try {
       JSONObject obj = yahooResource.findLocation(location);
       log.log(Level.INFO, "Geolocation result for {0}: \n{1}",

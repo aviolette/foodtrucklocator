@@ -35,7 +35,7 @@ public class CacheAndStoreLocatorTest extends EasyMockSupport {
   public void shouldReturnCachedLocationIfFound() {
     expect(dao.lookup(LOCATION_NAME)).andReturn(namedLocation);
     replayAll();
-    Location loc = locator.locate(LOCATION_NAME);
+    Location loc = locator.locate(LOCATION_NAME, GeolocationGranularity.BROAD);
     assertEquals(loc, namedLocation);
     verifyAll();
   }
@@ -43,10 +43,10 @@ public class CacheAndStoreLocatorTest extends EasyMockSupport {
   @Test
   public void shouldPerformGeoLookupAndSaveInCacheIfNotFoundInCache() {
     expect(dao.lookup(LOCATION_NAME)).andReturn(null);
-    expect(secondary.locate(LOCATION_NAME)).andReturn(namedLocation);
+    expect(secondary.locate(LOCATION_NAME, GeolocationGranularity.BROAD)).andReturn(namedLocation);
     dao.save(namedLocation);
     replayAll();
-    Location loc = locator.locate(LOCATION_NAME);
+    Location loc = locator.locate(LOCATION_NAME, GeolocationGranularity.BROAD);
     assertEquals(loc, namedLocation);
     verifyAll();
   }
@@ -54,10 +54,10 @@ public class CacheAndStoreLocatorTest extends EasyMockSupport {
   @Test
   public void shouldReturnNullWhenNotFound() {
     expect(dao.lookup(LOCATION_NAME)).andReturn(null);
-    expect(secondary.locate(LOCATION_NAME)).andReturn(null);
+    expect(secondary.locate(LOCATION_NAME, GeolocationGranularity.BROAD)).andReturn(null);
     dao.saveAttemptFailed(LOCATION_NAME);
     replayAll();
-    Location loc = locator.locate(LOCATION_NAME);
+    Location loc = locator.locate(LOCATION_NAME, GeolocationGranularity.BROAD);
     assertNull(loc);
     verifyAll();
   }

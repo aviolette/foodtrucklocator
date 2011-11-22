@@ -20,6 +20,7 @@ import com.google.inject.Inject;
 import org.joda.time.DateTimeZone;
 
 import foodtruck.geolocation.GeoLocator;
+import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
 import foodtruck.model.TimeRange;
 import foodtruck.model.Truck;
@@ -75,7 +76,8 @@ public class GoogleCalendar implements ScheduleStrategy {
           throw new IllegalStateException("No location specified");
         }
         When time = Iterables.getFirst(entry.getTimes(), null);
-        final Location location = geolocator.locate(where.getValueString());
+        final Location location = geolocator.locate(where.getValueString(),
+            GeolocationGranularity.BROAD);
         if (location != null) {
           final TruckStop truckStop = new TruckStop(truck, toJoda(time.getStartTime(), defaultZone),
               toJoda(time.getEndTime(), defaultZone), location, null);
@@ -97,7 +99,7 @@ public class GoogleCalendar implements ScheduleStrategy {
 
   private CalendarEventFeed calendarQuery(CalendarQuery query)
       throws IOException, ServiceException {
-    for (int i=0; i < MAX_TRIES; i++) {
+    for (int i = 0; i < MAX_TRIES; i++) {
       try {
         return calendarService.query(query, CalendarEventFeed.class);
       } catch (Exception timeout) {

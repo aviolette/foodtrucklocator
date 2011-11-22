@@ -26,7 +26,7 @@ public class RandomGeoLocator implements GeoLocator {
   }
 
   @Override
-  public @Nullable Location locate(String location) {
+  public @Nullable Location locate(String location, GeolocationGranularity granularity) {
     GeoLocator primary, backup;
     if (random.nextBoolean()) {
       primary = googleGeolocator;
@@ -35,9 +35,9 @@ public class RandomGeoLocator implements GeoLocator {
       primary = yahooGeolocator;
       backup = googleGeolocator;
     }
-    Location loc = primary.locate(location);
+    Location loc = primary.locate(location, granularity);
     if (loc == null) {
-      return backup.locate(location);
+      return backup.locate(location, granularity);
     }
     return loc;
   }

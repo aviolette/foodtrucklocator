@@ -17,6 +17,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.geolocation.GeoLocator;
+import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
@@ -178,7 +179,7 @@ public class TruckStopMatcher {
     if (address == null) {
       return null;
     }
-    return geoLocator.locate(address);
+    return geoLocator.locate(address, GeolocationGranularity.NARROW);
   }
 
   private @Nullable DateTime parseTime(String timeText, LocalDate date, @Nullable DateTime after) {

@@ -12,5 +12,5 @@ public interface GeoLocator {
   /**
    * Produces a location from the input string or {@code null} if the location cannot be found
    */
-  @Nullable Location locate(String location);
+  @Nullable Location locate(String location, GeolocationGranularity granularity);
 }
