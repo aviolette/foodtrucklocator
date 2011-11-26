@@ -115,7 +115,7 @@ public class AddressExtractor {
         new PatternTransform(Pattern.compile("<<(.*)>>"), null, true, 1),
         // Between two streets
         new PatternTransform(Pattern.compile(
-            "Landed between " + INTERSECTION_PARTIAL + INTERSECTION_AND + "(" +
+            "between " + INTERSECTION_PARTIAL + INTERSECTION_AND + "(" +
                 INTERSECTION_PARTIAL + " on " + INTERSECTION_PARTIAL + ")"),
             cityAppender, true, 9),
         // Between two streets
@@ -136,7 +136,7 @@ public class AddressExtractor {
         new PatternTransform(Pattern.compile(
             "at (" + INTERSECTION_PARTIAL + INTERSECTION_AND + INTERSECTION_PARTIAL + ")",
             Pattern.CASE_INSENSITIVE),
-            cityAppender, false, 1, ImmutableSet.of("steakwch", "rzjp6cakes", "flirtycupcakes")),
+            cityAppender, false, 1, ImmutableSet.of("steakwch", "rzjp6cakes", "flirtycupcakes", "theslideride")),
         // special case intersections
         // Merchandise Mart
         new PatternTransform(
