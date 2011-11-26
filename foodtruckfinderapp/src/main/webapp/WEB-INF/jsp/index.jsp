@@ -44,7 +44,7 @@
             <div id="slider"></div>
           </div>
           <div class="timeSelect">
-            Select a time: <select id="hourSelect">
+            Select a time: <br/><select id="hourSelect">
             <option>1</option>
             <option>2</option>
             <option>3</option>
