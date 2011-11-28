@@ -13,11 +13,18 @@ public class TruckStopMatch {
   private final Confidence confidence;
   private final TruckStop stop;
   private final String text;
+  private final boolean terminated;
 
-  public TruckStopMatch(Confidence confidence, TruckStop stop, String text) {
+  public TruckStopMatch(Confidence confidence, TruckStop stop, String text,
+      boolean terminated) {
     this.confidence = confidence;
     this.stop = stop;
     this.text = text;
+    this.terminated = terminated;
+  }
+
+  public boolean isTerminated() {
+    return terminated;
   }
 
   public Confidence getConfidence() {

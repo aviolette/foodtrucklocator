@@ -144,7 +144,7 @@ public class TruckStopMatcher {
     }
     return new TruckStopMatch(Confidence.HIGH,
         new TruckStop(truck, startTime, endTime, location, null),
-        tweetText);
+        tweetText, terminationTime != null);
   }
 
   private boolean verifyMatchOnlyExpression(Truck truck, String tweetText) {

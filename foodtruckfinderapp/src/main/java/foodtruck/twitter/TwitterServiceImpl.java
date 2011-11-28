@@ -160,14 +160,20 @@ public class TwitterServiceImpl implements TwitterService {
         List<TruckStop> addStops = Lists.newLinkedList();
         TruckStop matchedStop = match.getStop();
         for (TruckStop stop : currentStops) {
+          boolean locationsSame = stop.getLocation().equals(matchedStop.getLocation());
           if (stop.getEndTime().isAfter(matchedStop.getStartTime()) &&
               stop.getStartTime().isBefore(matchedStop.getStartTime())) {
             deleteStops.add(stop);
-            addStops.add(stop.withEndTime(matchedStop.getStartTime()));
+            if (locationsSame) {
+              matchedStop = matchedStop.withStartTime(stop.getStartTime());
+            } else {
+              addStops.add(stop.withEndTime(matchedStop.getStartTime()));
+            }
           } else if (stop.getStartTime().isBefore(matchedStop.getEndTime()) &&
               stop.getEndTime().isAfter(matchedStop.getEndTime())) {
-            if (stop.getLocation().equals(matchedStop.getLocation())) {
+            if ( locationsSame && !match.isTerminated()) {
               deleteStops.add(stop);
+              matchedStop = matchedStop.withEndTime(stop.getEndTime());
             } else {
               matchedStop = matchedStop.withEndTime(stop.getStartTime());
             }
@@ -176,6 +182,7 @@ public class TwitterServiceImpl implements TwitterService {
               (stop.getEndTime().equals(matchedStop.getEndTime()) ||
                   stop.getEndTime().isBefore(matchedStop.getEndTime()))) {
             deleteStops.add(stop);
+            matchedStop = matchedStop.withStartTime(stop.getStartTime());
           }
         }
         if (!deleteStops.isEmpty()) {
