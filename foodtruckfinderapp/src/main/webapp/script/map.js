@@ -467,6 +467,13 @@ window.FoodTruckLocator = function() {
       showControlsForMap();
       var truckView = new TruckGroupMap(this.center, time, date.split("-")[0]);
       loadAllTrucks(truckView, date, this.center);
+    },
+    init : function(mobile, rtDate, rtParam) {
+      if (this.isTouchScreenPortrait() || mobile) {
+        this.loadTrucksWithoutMap(rtDate, rtParam);
+      } else {
+        this.loadTrucksWithMap(rtDate, rtParam);
+      }
     }
   };
 }();
