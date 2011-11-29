@@ -22,8 +22,6 @@
     <div id="buttonSection">
       <a href="https://twitter.com/chifoodtruckz" class="twitter-follow-button" data-button="grey"
          data-text-color="#FFF" data-link-color="#FFF">Follow @chifoodtruckz</a>
-      <script src="//platform.twitter.com/widgets.js" type="text/javascript"></script>
-      <script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
     </div>
   </header>
   <div id="body">
@@ -84,13 +82,8 @@
         src="http://maps.google.com/maps/api/js?sensor=false&libraries=geometry"></script>
 <script type="text/javascript" src="script/map.js?ver=20"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
-<script>window.jQuery ||
-document.write("<script src='script/lib/jquery-1.6.2.min.js'>\x3C/script>")</script>
 <script type="text/javascript"
         src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
-<c:if test="${google_analytics_ua != null}">
-  <jsp:include page="include/google_analytics.jsp"/>
-</c:if>
 <script type="text/javascript">
   $(document).ready(function() {
     FoodTruckLocator.center = new google.maps.LatLng(${center.latitude}, ${center.longitude});
@@ -111,7 +104,13 @@ document.write("<script src='script/lib/jquery-1.6.2.min.js'>\x3C/script>")</scr
   <h3>Scheduled Stops</h3>
   <ul id="truckSchedule"></ul>
 </div>
-</div>
+<script src="//s.btstatic.com/tag.js">{
+  site: "zIOrUTR"
+}</script>
+<noscript>
+  <iframe src="//s.thebrighttag.com/iframe?c=zIOrUTR" width="1" height="1" frameborder="0"
+          scrolling="no" marginheight="0" marginwidth="0"></iframe>
+</noscript>
 </body>
 </html>
 
