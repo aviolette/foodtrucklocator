@@ -41,6 +41,16 @@ public class TerminationDetectorTest {
   }
 
   @Test
+  public void testThatsAWrap() {
+    assertEquals(tweetTime,
+        detector.detect(
+            tweetBuilder.text("That's a wrap Harpo! See next week. And off to UIC").build()));
+    assertEquals(tweetTime,
+        detector.detect(
+            tweetBuilder.text("Thats a wrap Harpo! See next week. And off to UIC").build()));
+  }
+
+  @Test
   public void testHeadingBack() {
     assertEquals(tweetTime, detector.detect(tweetBuilder.text(
         "Heading back to our store in Lincoln Park, come visit us to try our delicious and unique meatloaf!")
