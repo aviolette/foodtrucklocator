@@ -7,14 +7,22 @@ import javax.annotation.Nullable;
 
 import com.google.appengine.repackaged.com.google.common.base.Predicate;
 import com.google.appengine.repackaged.com.google.common.collect.Iterables;
+import com.google.common.collect.Ordering;
 
 /**
  * A database of trucks that can be retrieved by their id.
  * @author aviolette@gmail.com
  * @since 9/22/11
  */
-public class Trucks  {
+public class Trucks {
   private final Map<String, Truck> trucks;
+  public static Ordering<Truck> BY_NAME = new Ordering<Truck>() {
+    @Override
+    public int compare(@Nullable Truck left, @Nullable Truck right) {
+      return left.getName().compareTo(right.getName());
+    }
+  };
+
   public Trucks(Map<String, Truck> trucks) {
     this.trucks = trucks;
   }

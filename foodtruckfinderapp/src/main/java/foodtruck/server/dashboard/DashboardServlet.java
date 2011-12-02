@@ -8,7 +8,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
+import foodtruck.model.Trucks;
 
 /**
  * @author aviolette@gmail.com
@@ -16,6 +19,13 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class DashboardServlet extends HttpServlet {
+  private final Trucks trucks;
+
+  @Inject
+  public DashboardServlet(Trucks trucks) {
+    this.trucks = trucks;
+  }
+
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
@@ -28,8 +38,8 @@ public class DashboardServlet extends HttpServlet {
         return super.getAttribute(name);
       }
     };
-
-    req.getRequestDispatcher("/WEB-INF/jsp/dashboard.jsp").forward(req, resp);
+    req.setAttribute("trucks", Trucks.BY_NAME.immutableSortedCopy(trucks.allTrucks()));
+    req.getRequestDispatcher("/WEB-INF/jsp/dashboard/dashboard.jsp").forward(req, resp);
   }
 
   @Override
