@@ -214,6 +214,8 @@ public class AddressExtractorTest {
         "Hey all! I'm hanging in Erie in between Franklin and Orleans.  Let's party...its monday!");
     assertTweet("Wabash and Van Buren, Chicago, IL",
         "thesouthernmac: Alright folks, sorry, we're on Wabash between Van Buren and Jackson!");
+    assertTweet("ellis and 57th, Chicago, IL",
+        "We are on ellis between 57th and 58th", new Truck.Builder().id("steakwch").build());
   }
 
   @Test

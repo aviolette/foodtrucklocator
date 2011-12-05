@@ -123,6 +123,12 @@ public class AddressExtractor {
             "(" + INTERSECTION_PARTIAL + " ((in )?between|b/w) " + INTERSECTION_PARTIAL +
                 ")((\\s+(and|at)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))" + INTERSECTION_PARTIAL),
             cityAppender, true, 1),
+        // Between two streets
+        new PatternTransform(Pattern.compile(
+            "(" + INTERSECTION_PARTIAL + " ((in )?between|b/w) " + INTERSECTION_PARTIAL +
+                ")((\\s+(and|at)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))" + INTERSECTION_PARTIAL,
+            Pattern.CASE_INSENSITIVE),
+            cityAppender, true, 1, ImmutableSet.of("steakwch")),
         // intersection format preceded by at
         new PatternTransform(Pattern.compile(
             "[A-Z0-9][a-zA-Z0-9]+\\s+at\\s+(" + INTERSECTION_PARTIAL +
@@ -136,7 +142,8 @@ public class AddressExtractor {
         new PatternTransform(Pattern.compile(
             "at (" + INTERSECTION_PARTIAL + INTERSECTION_AND + INTERSECTION_PARTIAL + ")",
             Pattern.CASE_INSENSITIVE),
-            cityAppender, false, 1, ImmutableSet.of("steakwch", "rzjp6cakes", "flirtycupcakes", "theslideride")),
+            cityAppender, false, 1,
+            ImmutableSet.of("steakwch", "rzjp6cakes", "flirtycupcakes", "theslideride")),
         // special case intersections
         // Merchandise Mart
         new PatternTransform(
