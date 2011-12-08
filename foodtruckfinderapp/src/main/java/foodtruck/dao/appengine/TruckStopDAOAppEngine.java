@@ -6,6 +6,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Nullable;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -100,13 +102,15 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
   }
 
   @Override
-  public List<TruckStop> findDuring(String truckId, LocalDate day) {
+  public List<TruckStop> findDuring(@Nullable String truckId, LocalDate day) {
     DatastoreService dataStore = serviceProvider.get();
     Query q = new Query(STOP_KIND);
     // TODO: google's filters can't do range comparisons...ugh...here I search the lower bound
     q.addFilter(START_TIME_FIELD, Query.FilterOperator.GREATER_THAN_OR_EQUAL,
         day.toDateMidnight(zone).toDate());
-    q.addFilter(TRUCK_ID_FIELD, Query.FilterOperator.EQUAL, truckId);
+    if (truckId != null) {
+      q.addFilter(TRUCK_ID_FIELD, Query.FilterOperator.EQUAL, truckId);
+    }
     q.addSort(START_TIME_FIELD, Query.SortDirection.ASCENDING);
     ImmutableList.Builder<TruckStop> stops = ImmutableList.builder();
     for (Entity entity : dataStore.prepare(q).asIterable()) {

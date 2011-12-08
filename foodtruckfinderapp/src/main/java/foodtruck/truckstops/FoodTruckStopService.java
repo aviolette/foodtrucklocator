@@ -5,6 +5,7 @@ import java.util.Set;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
+import foodtruck.model.DailySchedule;
 import foodtruck.model.TruckLocationGroup;
 import foodtruck.model.TruckSchedule;
 
@@ -32,4 +33,11 @@ public interface FoodTruckStopService {
    * @return a list of truck stops ordered by time (ascending)
    */
   TruckSchedule findStopsForDay(String truckId, LocalDate day);
+
+  /**
+   * Returns schedule for all the trucks on the current day.
+   * @param day a day
+   * @return the current schedule
+   */
+  DailySchedule findStopsForDay(LocalDate day);
 }

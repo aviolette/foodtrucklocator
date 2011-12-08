@@ -48,7 +48,7 @@ public class RemoteCacheUpdater implements TweetCacheUpdater {
 
   private JSONObject toJSON(TweetSummary tweet) throws JSONException {
     JSONObject loc =
-        (tweet.getLocation() == null) ? null : jsonWriter.writeLocation(tweet.getLocation());
+        (tweet.getLocation() == null) ? null : jsonWriter.writeLocation(tweet.getLocation(), 0);
     return new JSONObject()
         .put("text", tweet.getText())
         .put("time", tweet.getTime().getMillis())

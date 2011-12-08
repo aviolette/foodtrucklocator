@@ -1,7 +1,12 @@
 package foodtruck.server.api;
 
-import java.util.Collection;
 
+import java.util.Map;
+
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
 import org.codehaus.jettison.json.JSONArray;
@@ -11,6 +16,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import foodtruck.model.DailySchedule;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckLocationGroup;
@@ -33,11 +39,11 @@ public class JsonWriter {
   public JSONObject writeGroup(TruckLocationGroup group) throws
       JSONException {
     return new org.codehaus.jettison.json.JSONObject()
-        .put("location", writeLocation(group.getLocation()))
+        .put("location", writeLocation(group.getLocation(), 0))
         .put("trucks", writeTrucks(group.getTrucks()));
   }
 
-  public JSONArray writeTrucks(Collection<Truck> trucks) throws JSONException {
+  public JSONArray writeTrucks(Iterable<Truck> trucks) throws JSONException {
     JSONArray arr = new JSONArray();
     for (Truck truck : trucks) {
       arr.put(writeTruck(truck));
@@ -57,11 +63,15 @@ public class JsonWriter {
         .put("url", truck.getUrl());
   }
 
-  public JSONObject writeLocation(Location location) throws JSONException {
-    return new org.codehaus.jettison.json.JSONObject()
+  public JSONObject writeLocation(Location location, int id) throws JSONException {
+    JSONObject obj = new JSONObject()
         .put("latitude", location.getLatitude())
         .put("longitude", location.getLongitude())
         .put("name", location.getName());
+    if (id != 0) {
+      obj.put("id", id);
+    }
+    return obj;
   }
 
   public JSONObject writeSchedule(TruckSchedule schedule) throws JSONException {
@@ -72,11 +82,42 @@ public class JsonWriter {
     JSONArray arr = new JSONArray();
     for (TruckStop stop : schedule.getStops()) {
       JSONObject truckStop = new JSONObject()
-          .put("location", writeLocation(stop.getLocation()))
+          .put("location", writeLocation(stop.getLocation(), 0))
           .put("startTime", timeFormatter.print(stop.getStartTime()))
           .put("endTime", timeFormatter.print(stop.getEndTime()));
       arr.put(truckStop);
     }
     return obj.put("stops", arr);
+  }
+
+
+  public JSONObject writeSchedule(DailySchedule schedule) throws JSONException {
+    JSONObject payload = new JSONObject();
+    Iterable<Truck> trucks =
+        Iterables.transform(schedule.getStops(), new Function<TruckStop, Truck>() {
+          @Override public Truck apply(TruckStop input) {
+            return input.getTruck();
+          }
+        });
+    Map<Location, Integer> locations = Maps.newHashMap();
+    JSONArray locationArr = new JSONArray();
+    int i = 1;
+    for (TruckStop stop : schedule.getStops()) {
+      locations.put(stop.getLocation(), i++);
+      locationArr.put(writeLocation(stop.getLocation(), i));
+    }
+    JSONArray schedules = new JSONArray();
+    for (TruckStop stop : schedule.getStops()) {
+      JSONObject truckStop = new JSONObject()
+          .put("location", locations.get(stop.getLocation()))
+          .put("truckId", stop.getTruck().getId())
+          .put("startTime", timeFormatter.print(stop.getStartTime()))
+          .put("endTime", timeFormatter.print(stop.getEndTime()));
+      schedules.put(truckStop);
+    }
+    payload.put("trucks", writeTrucks(ImmutableSet.copyOf(trucks)));
+    payload.put("locations", locationArr);
+    payload.put("stops", schedules);
+    return payload;
   }
 }

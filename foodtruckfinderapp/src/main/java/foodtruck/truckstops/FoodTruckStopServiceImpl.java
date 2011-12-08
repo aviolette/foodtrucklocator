@@ -17,6 +17,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 
 import foodtruck.dao.TruckStopDAO;
+import foodtruck.model.DailySchedule;
 import foodtruck.model.Location;
 import foodtruck.model.TimeRange;
 import foodtruck.model.Truck;
@@ -92,5 +93,11 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
       throw new IllegalStateException("Invalid truck id specified: " + truckId);
     }
     return new TruckSchedule(truck, day, truckStopDAO.findDuring(truckId, day));
+  }
+
+  @Override
+  public DailySchedule findStopsForDay(LocalDate day) {
+    List<TruckStop> stops = truckStopDAO.findDuring(null, day);
+    return new DailySchedule(stops);
   }
 }

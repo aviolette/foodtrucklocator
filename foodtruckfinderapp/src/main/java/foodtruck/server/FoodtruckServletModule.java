@@ -7,6 +7,7 @@ import com.google.inject.servlet.ServletModule;
 import org.joda.time.DateTimeZone;
 
 import foodtruck.model.Location;
+import foodtruck.server.api.DailyScheduleServlet;
 import foodtruck.server.api.FoodTruckScheduleServlet;
 import foodtruck.server.api.TruckStopServlet;
 import foodtruck.server.api.TweetUpdateServlet;
@@ -17,6 +18,7 @@ import foodtruck.server.job.TweetCacheUpdateServlet;
 import foodtruck.server.job.TwitterCachePurgeServlet;
 
 /**
+ * Wires all the endpoints for the application.
  * @author aviolette
  * @since Jul 12, 2011
  */
@@ -30,6 +32,7 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/admin/dashboard/*").with(TruckDashboardServlet.class);
     serve("/admin/dashboard").with(DashboardServlet.class);
     serve("/service/schedule/*").with(FoodTruckScheduleServlet.class);
+    serve("/service/schedule").with(DailyScheduleServlet.class);
     serve("/service/stops*").with(TruckStopServlet.class);
     serve("/service/tweets").with(TweetUpdateServlet.class);
     serveRegex("/[\\w]*").with(FoodTruckServlet.class);

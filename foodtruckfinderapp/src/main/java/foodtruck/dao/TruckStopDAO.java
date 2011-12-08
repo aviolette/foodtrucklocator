@@ -3,6 +3,8 @@ package foodtruck.dao;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
@@ -30,7 +32,7 @@ public interface TruckStopDAO {
    * @return the list of truck stops
    * @throws IllegalStateException if the truck specified is invalid
    */
-  List<TruckStop> findDuring(String truckId, LocalDate day);
+  List<TruckStop> findDuring(@Nullable String truckId, LocalDate day);
 
   void deleteAfter(DateTime startDateTime);
 
