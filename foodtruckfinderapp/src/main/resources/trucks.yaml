@@ -517,7 +517,7 @@ iconUrl: http://twimg0-a.akamaihd.net/profile_images/565404613/twitter_icon_norm
 twittalyzer: "on"
 url: http://www.wowbao.com/
 facebook: /hotasianbuns
-matchonlyif: "#bunsontherun"
+matchOnlyIf: "#bunsontherun"
 ---
 id: trafficjamfood
 twitter: trafficjamfood
