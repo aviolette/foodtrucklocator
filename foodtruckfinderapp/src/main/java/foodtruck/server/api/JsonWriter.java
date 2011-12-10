@@ -112,6 +112,8 @@ public class JsonWriter {
           .put("location", locations.get(stop.getLocation()))
           .put("truckId", stop.getTruck().getId())
           .put("startTime", timeFormatter.print(stop.getStartTime()))
+          .put("startMillis", stop.getStartTime().getMillis())
+          .put ("endMillis", stop.getEndTime().getMillis())
           .put("endTime", timeFormatter.print(stop.getEndTime()));
       schedules.put(truckStop);
     }

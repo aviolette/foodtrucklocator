@@ -80,14 +80,16 @@
 </div>
 <script type="text/javascript"
         src="http://maps.google.com/maps/api/js?sensor=false&libraries=geometry"></script>
-<script type="text/javascript" src="script/map.js?ver=20"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
 <script type="text/javascript"
         src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+<script type="text/javascript" src="script/lib/underscore-min.js"></script>
+<script type="text/javascript" src="script/lib/backbone-min.js"></script>
+<script type="text/javascript" src="script/map.js?ver=20"></script>
 <script type="text/javascript">
   $(document).ready(function() {
-    FoodTruckLocator.center = new google.maps.LatLng(${center.latitude}, ${center.longitude});
-    FoodTruckLocator.init(${mobile}, new Date(${requestTimeInMillis}), "${requestTime}");
+    FoodTruckLocator.run(${mobile}, new google.maps.LatLng(${center.latitude}, ${center.longitude}),
+      new Date(${requestTimeInMillis}), ${payload});
   });
 </script>
 <%-- truck dialog // TODO: move to separate JSP --%>
@@ -104,9 +106,7 @@
   <h3>Scheduled Stops</h3>
   <ul id="truckSchedule"></ul>
 </div>
-<script src="//s.btstatic.com/tag.js">{
-  site: "zIOrUTR"
-}</script>
+<script src="//s.btstatic.com/tag.js">{ site: "zIOrUTR" }</script>
 <noscript>
   <iframe src="//s.thebrighttag.com/iframe?c=zIOrUTR" width="1" height="1" frameborder="0"
           scrolling="no" marginheight="0" marginwidth="0"></iframe>

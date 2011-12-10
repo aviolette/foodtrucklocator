@@ -13,12 +13,17 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
+import org.codehaus.jettison.json.JSONException;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import foodtruck.dao.ScheduleDAO;
+import foodtruck.model.DailySchedule;
 import foodtruck.model.Location;
+import foodtruck.server.api.JsonWriter;
+import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 
 /**
@@ -33,14 +38,20 @@ public class FoodTruckServlet extends HttpServlet {
   private final Clock clock;
   private final DateTimeFormatter dateFormatter;
   private static final Logger log = Logger.getLogger(FoodTruckServlet.class.getName());
+  private final FoodTruckStopService stopService;
+  private ScheduleDAO scheduleCacher;
+  private JsonWriter writer;
 
   @Inject
   public FoodTruckServlet(DateTimeZone zone, @Named("center") Location centerLocation,
-      Clock clock) {
+      Clock clock, FoodTruckStopService service, JsonWriter writer, ScheduleDAO scheduleCacher) {
     this.clock = clock;
     this.mapCenter = centerLocation;
     this.timeFormatter = DateTimeFormat.forPattern("YYYYMMdd-HHmm").withZone(zone);
     this.dateFormatter = DateTimeFormat.forPattern("EEE MMM dd, YYYY");
+    this.stopService = service;
+    this.writer = writer;
+    this.scheduleCacher = scheduleCacher;
   }
 
   @Override
@@ -71,11 +82,23 @@ public class FoodTruckServlet extends HttpServlet {
     if (googleAnalytics != null) {
       req.setAttribute("google_analytics_ua", googleAnalytics);
     }
+
+    String payload = scheduleCacher.findSchedule(clock.currentDay());
+    if (payload == null) {
+      DailySchedule schedule = stopService.findStopsForDay(clock.currentDay());
+      try {
+        payload = writer.writeSchedule(schedule).toString();
+      } catch (JSONException e) {
+        // TODO: fix this
+        throw new RuntimeException(e);
+      }
+    }
     final String mode = req.getParameter("mode");
     req.setAttribute("mobile", "mobile".equals(mode));
     req.setAttribute("requestDate", dateFormatter.print(dateTime));
     req.setAttribute("requestTime", timeFormatter.print(dateTime));
     req.setAttribute("requestTimeInMillis", dateTime.getMillis());
+    req.setAttribute("payload", payload);
     req.getRequestDispatcher("/WEB-INF/jsp/index.jsp").forward(req, resp);
   }
 }
