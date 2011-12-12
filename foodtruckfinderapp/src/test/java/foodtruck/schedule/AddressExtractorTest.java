@@ -271,6 +271,8 @@ public class AddressExtractorTest {
         "Thank you U of Chicago for braving the weather today and South Loop for closing out our day!  Enjoy the rest of your night!");
     assertTweet("57th and Ellis, Chicago, IL",
         "Another RAINY Day.. GiGi is making usual stop at UIC today. Ellis 57 & 58 11:30.  Ellis / 60th 1:30 @UofCGHI @UChicago @uicradio @uchiNOMgo");
+    assertTweet("57th and Ellis, Chicago, IL",
+        "Who's in the mood for falafels! On our way to U of C!!");
   }
 
   @Test
