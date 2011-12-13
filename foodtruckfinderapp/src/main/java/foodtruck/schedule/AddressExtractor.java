@@ -144,7 +144,8 @@ public class AddressExtractor {
             Pattern.CASE_INSENSITIVE),
             cityAppender, false, 1,
             ImmutableSet
-                .of("steakwch", "rzjp6cakes", "flirtycupcakes", "theslideride", "caponiesexp")),
+                .of("steakwch", "rzjp6cakes", "flirtycupcakes", "theslideride", "caponiesexp",
+                    "pecanandcharlie")),
         // special case intersections
         // Merchandise Mart
         new PatternTransform(
@@ -201,6 +202,15 @@ public class AddressExtractor {
     return Iterables.getFirst(parse(tweetText, truck), null);
   }
 
+  private static boolean inNegativeList(String address, String truckId) {
+    if ("fidotogo".equals(truckId)) {
+      return address.equals("5212 N. Clark, Chicago, IL");
+    } else if ("thesouthernmac".equals(truckId)) {
+      return address.equals("60 E. Lake, Chicago, IL");
+    }
+    return false;
+  }
+
   private static class PatternTransform {
     private final Pattern pattern;
     private final @Nullable Function<String, String> transformer;
@@ -230,7 +240,11 @@ public class AddressExtractor {
       Matcher m = pattern.matcher(tweet);
       while (m.find()) {
         String matched = m.group(group);
-        addresses.add(transformer == null ? matched : transformer.apply(matched));
+        final String address = transformer == null ? matched : transformer.apply(matched);
+        if (inNegativeList(address, truckId)) {
+          continue;
+        }
+        addresses.add(address);
         if (breakHere) return false;
       }
       return true;

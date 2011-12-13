@@ -412,6 +412,24 @@ public class AddressExtractorTest {
         "Looks like we'll be trying to park on SUPERIOR east of Fairbanks at 11:20am. Nos vemos!");
   }
 
+  @Test
+  public void testNegativeList_fidotogo() {
+    List<String> addresses = parser.parse(
+        "Doggy holiday gift packages now available at @Urban_Orchard  5212 N. Clark Street. All cookies are now on sale! Ck out facebook.com/fidotogo",
+        new Truck.Builder().id("fidotogo").build());
+    assertNotNull(addresses);
+    assertEquals(0, addresses.size());
+  }
+
+  @Test
+  public void testNegativeList_thesouthernmac() {
+    List<String> addresses = parser.parse(
+        "Heading back... thanks everyone! Stop by the store at 60 E. Lake or order for delivery.",
+        new Truck.Builder().id("thesouthernmac").build());
+    assertNotNull(addresses);
+    assertEquals(0, addresses.size());
+  }
+
   private void assertTweet(String expected, String tweetText, Truck truck) {
     List<String> addresses = parser.parse(tweetText, truck);
     assertNotNull(addresses);
