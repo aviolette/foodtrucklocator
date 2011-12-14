@@ -430,6 +430,12 @@ public class AddressExtractorTest {
     assertEquals(0, addresses.size());
   }
 
+  @Test
+  public void testBrownLineStops() {
+    assertTweet("Paulina Brown Line",
+        "thesouthernmac: Paulina Brown Line for a little while longer!!");
+  }
+
   private void assertTweet(String expected, String tweetText, Truck truck) {
     List<String> addresses = parser.parse(tweetText, truck);
     assertNotNull(addresses);

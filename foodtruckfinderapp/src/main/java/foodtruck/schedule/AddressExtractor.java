@@ -77,8 +77,10 @@ public class AddressExtractor {
         // Harpo Studios
         new PatternTransform(
             Pattern.compile("(harpo|rosie)\\b", Pattern.CASE_INSENSITIVE), keyword("Harpo Studios"),
-            true,
-            0),
+            true, 0),
+        // Brown line stops
+        new PatternTransform(Pattern.compile("(Paulina|Sedgwick) Brown Line",
+            Pattern.CASE_INSENSITIVE), null, true, 0),
         new PatternTransform(Pattern.compile("Trump", Pattern.CASE_INSENSITIVE),
             keyword("400 North Wabash, Chicago, IL"), true, 0),
         // AON
