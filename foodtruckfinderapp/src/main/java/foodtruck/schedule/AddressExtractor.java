@@ -204,9 +204,14 @@ public class AddressExtractor {
 
   private static boolean inNegativeList(String address, String truckId) {
     if ("fidotogo".equals(truckId)) {
-      return address.equals("5212 N. Clark, Chicago, IL");
+      return address.equals("5212 N. Clark, Chicago, IL") ||
+          address.equals("729 W Randolph, Chicago, IL");
     } else if ("thesouthernmac".equals(truckId)) {
       return address.equals("60 E. Lake, Chicago, IL");
+    } else if ("gaztrowagon".equals(truckId)) {
+      return address.toLowerCase().equals("5973 n clark, chicago, il");
+    } else if ("keifertruck".equals(truckId)) {
+      return address.equals("Merchandise Mart");
     }
     return false;
   }
