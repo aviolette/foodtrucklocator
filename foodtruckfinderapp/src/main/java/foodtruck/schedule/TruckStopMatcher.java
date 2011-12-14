@@ -60,25 +60,25 @@ public class TruckStopMatcher {
     this.endTimePattern = Pattern.compile("until (" + TIME_PATTERN + ")");
     this.timeRangePattern = Pattern.compile(TIME_RANGE_PATTERN);
     this.monPattern = Pattern.compile(
-        "\\b(TUE|WED|THU|FRI|SAT|SUN|tuesday|wednesday|thursday|friday|saturday|sunday|tues|thurs|2morrow|tomorrow)\\b",
+        "\\b(TUE|WED|THU|FRI|SAT|SUN|tuesday|wednesday|thursday|friday|saturday|sunday|tues|thurs|2morrow|tomorrow|ma–ana)\\b",
         Pattern.CASE_INSENSITIVE);
     this.tuesPattern = Pattern.compile(
-        "\\b(MON|WED|THU|FRI|SAT|SUN|monday|wednesday|thursday|friday|saturday|sunday|thurs|2morrow|tomorrow)\\b",
+        "\\b(MON|WED|THU|FRI|SAT|SUN|monday|wednesday|thursday|friday|saturday|sunday|thurs|2morrow|tomorrow|ma–ana)\\b",
         Pattern.CASE_INSENSITIVE);
     this.wedPattern = Pattern.compile(
-        "\\b(MON|TUE|THU|FRI|SAT|SUN|monday|tuesday|thursday|friday|saturday|sunday|tues|thurs|2morrow|tomorrow)\\b",
+        "\\b(MON|TUE|THU|FRI|SAT|SUN|monday|tuesday|thursday|friday|saturday|sunday|tues|thurs|2morrow|tomorrow|ma–ana)\\b",
         Pattern.CASE_INSENSITIVE);
     this.thursPattern = Pattern.compile(
-        "\\b(MON|TUE|WED|FRI|SAT|SUN|monday|tuesday|wednesday|friday|saturday|sunday|tues|2morrow|tomorrow)\\b",
+        "\\b(MON|TUE|WED|FRI|SAT|SUN|monday|tuesday|wednesday|friday|saturday|sunday|tues|2morrow|tomorrow|ma–ana)\\b",
         Pattern.CASE_INSENSITIVE);
     this.friPattern = Pattern.compile(
-        "\\b(MON|TUE|WED|THU|SAT|SUN|monday|tuesday|wednesday|thursday|saturday|sunday|tues|thurs|2morrow|tomorrow)\\b",
+        "\\b(MON|TUE|WED|THU|SAT|SUN|monday|tuesday|wednesday|thursday|saturday|sunday|tues|thurs|2morrow|tomorrow|ma–ana)\\b",
         Pattern.CASE_INSENSITIVE);
     this.satPattern = Pattern.compile(
-        "\\b(MON|TUE|WED|THU|FRI|SUN|monday|tuesday|wednesday|thursday|friday|sunday|tues|thurs|2morrow|tomorrow)\\b",
+        "\\b(MON|TUE|WED|THU|FRI|SUN|monday|tuesday|wednesday|thursday|friday|sunday|tues|thurs|2morrow|tomorrow|ma–ana)\\b",
         Pattern.CASE_INSENSITIVE);
     this.sunPattern = Pattern.compile(
-        "\\b(MON|TUE|WED|THU|FRI|SAT|monday|tuesday|wednesday|thursday|friday|saturday|tues|thurs|2morrow|tomorrow)\\b",
+        "\\b(MON|TUE|WED|THU|FRI|SAT|monday|tuesday|wednesday|thursday|friday|saturday|tues|thurs|2morrow|tomorrow|ma–ana)\\b",
         Pattern.CASE_INSENSITIVE);
     formatter = DateTimeFormat.forPattern("hhmma").withZone(defaultZone);
     this.clock = clock;
