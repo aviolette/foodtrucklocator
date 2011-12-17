@@ -77,6 +77,7 @@ window.FoodTruckLocator = function() {
 
   var MapView = Backbone.View.extend({
     initialize : function() {
+      this.groups = [];
       this.map = new google.maps.Map(document.getElementById("map_canvas"), {
         zoom: 13,
         center: this.options.center,
@@ -130,9 +131,20 @@ window.FoodTruckLocator = function() {
       var slider = new TimeSlider(self.currentTime);
       return this;
     },
+    removeAllMarkers : function() {
+      var groups = this.groups || [];
+      $.each(groups, function(idx, group) {
+        if (group.marker) {
+          group.marker.setMap(null);
+          group.marker = null;
+        }
+      });
+      this.groups = [];
+    },
     render: function() {
       var self = this;
-      var groups = this.model.getGroups(self.currentTime);
+      self.removeAllMarkers();
+      var groups = self.groups = this.model.getGroups(self.currentTime);
       var bounds = new google.maps.LatLngBounds();
       bounds.extend(this.options.center);
       var menuSection = $("#foodTruckList");
@@ -143,7 +155,8 @@ window.FoodTruckLocator = function() {
         var section = $('#group' + idx);
         var markerText = "&nbsp;";
         markerText =
-            "<img class='markerIcon' id='markerIcon" + idx + "' src='" + buildIconUrl(letter) + "'/>";
+            "<img class='markerIcon' id='markerIcon" + idx + "' src='" + buildIconUrl(letter) +
+                "'/>";
         section.append("<div class='markerSection'>" + markerText + "</div>");
         section.append("<div class='locationContent' id='location" + idx +
             "Section' class='contentSection'></div>");
@@ -155,6 +168,7 @@ window.FoodTruckLocator = function() {
         }
         return div;
       }
+
       function buildIconForTruck(truck, contentDiv) {
         contentDiv.append("<div class='truckSection' id='truck" + truck.id + "'/>");
         var section = $('#truck' + truck.id);
@@ -203,6 +217,7 @@ window.FoodTruckLocator = function() {
         });
         group.infowindow = infowindow;
       }
+
       var sorted = groups.sort(function (a, b) {
         if (typeof a.distance == "undefined" || a.distance == null) {
           return 0;
