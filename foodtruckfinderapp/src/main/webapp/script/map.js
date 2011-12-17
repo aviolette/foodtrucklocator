@@ -36,6 +36,9 @@ window.FoodTruckLocator = function() {
   };
 
   var Trucks = Backbone.Model.extend({
+    url : function() {
+      return '/service/schedule';
+    },
     getTrucks : function() {
       var self = this;
       if (typeof(this.trucks) != "undefined") {
@@ -83,6 +86,8 @@ window.FoodTruckLocator = function() {
 
   var MapView = Backbone.View.extend({
     initialize : function() {
+      this.showControlsForMap();
+      this.fitMapToView();
       this.groups = [];
       this.map = new google.maps.Map(document.getElementById("map_canvas"), {
         zoom: 13,
@@ -136,6 +141,28 @@ window.FoodTruckLocator = function() {
       self.currentTime = self.model.get("initialTime");
       self.slider = new TimeSlider(self.currentTime);
       return this;
+    },
+    showControlsForMap : function() {
+      $(".sliderContainer").css("display", "block");
+      $("hr").css("display", "block");
+    },
+    fitMapToView :function() {
+      $("#right").css("display", "block");
+      if (Modernizr.touch) {
+        $("#left").css("overflow-y", "visible");
+        $("#left").width(250);
+        $("#map_wrapper").css("margin-left", "250px");
+        $("#map_canvas").width($(window).width() - 250);
+      } else {
+        $("#right").width($("#map_canvas").width() - $("#left").width());
+        $("#left").css("margin-left", "-" + $("#map_canvas").width() + "px");
+        $("#map_canvas").height($(window).height() - $("header").height());
+        $("#right").height($("#map_canvas").height());
+        $("#left").height($("#right").height());
+        $("#foodTruckList").height($("#left").height() - $("#sliderContainer").height() -
+            $("header").height() - 75);
+        $("#body").height($("#body").height() - $("header").height());
+      }
     },
     removeAllMarkers : function() {
       var groups = this.groups || [];
@@ -261,24 +288,6 @@ window.FoodTruckLocator = function() {
     }
   });
 
-  function fitMapToView() {
-    if (Modernizr.touch) {
-      $("#left").css("overflow-y", "visible");
-      $("#left").width(250);
-      $("#map_wrapper").css("margin-left", "250px");
-      $("#map_canvas").width($(window).width() - 250);
-    } else {
-      $("#right").width($("#map_canvas").width() - $("#left").width());
-      $("#left").css("margin-left", "-" + $("#map_canvas").width() + "px");
-      $("#map_canvas").height($(window).height() - $("header").height());
-      $("#right").height($("#map_canvas").height());
-      $("#left").height($("#right").height());
-      $("#foodTruckList").height($("#left").height() - $("#sliderContainer").height() -
-          $("header").height() - 75);
-      $("#body").height($("#body").height() - $("header").height());
-    }
-  }
-
   function loadWithoutGeo(view, date, center) {
     view.showDistance = false;
     var truckObj = new Trucks(view, center);
@@ -313,11 +322,6 @@ window.FoodTruckLocator = function() {
     $(".timeSelect").css("display", "block");
   }
 
-  function showControlsForMap() {
-    $(".sliderContainer").css("display", "block");
-    $("hr").css("display", "block");
-  }
-
   function displayTime(time) {
     $("#timeValue").css("display", "inline");
     var minutes = (time.getMinutes() < 10) ? ("0" + time.getMinutes()) : time.getMinutes();
@@ -343,9 +347,6 @@ window.FoodTruckLocator = function() {
       displayTime(time);
     },
     loadTrucksWithMap : function(center, time, mobilePayload) {
-      $("#right").css("display", "block");
-      fitMapToView();
-      showControlsForMap();
       var trucks = new Trucks({initialTime: time, center: center});
       var view = new MapView({ center : center, model : trucks, el : "map_canvas"});
       trucks.bind('change:payload', function(model, payload) {
