@@ -58,6 +58,7 @@ window.FoodTruckLocator = function() {
       var self = this, groups = [],groupMap = {};
       var payload = this.get("payload");
       var trucks = self.getTrucks();
+      var center = this.get("center");
       $.each(payload.stops, function(idx, stop) {
         if (time >= stop.startMillis && time < stop.endMillis) {
           var truckGroup = groupMap[stop.location.name];
@@ -65,6 +66,11 @@ window.FoodTruckLocator = function() {
             var latlng = new google.maps.LatLng(stop.location.latitude,
                 stop.location.longitude);
             truckGroup = new TruckGroup({name: stop.location.name, latLng : latlng });
+            if (center) {
+              distance = google.maps.geometry.spherical.computeDistanceBetween(center,
+                  truckGroup.position.latLng, 3959);
+              truckGroup.distance = Math.round(distance * 100) / 100;
+            }
             groupMap[stop.location.name] = truckGroup;
             groups.push(truckGroup);
           }
@@ -128,7 +134,7 @@ window.FoodTruckLocator = function() {
         };
       };
       self.currentTime = self.model.get("initialTime");
-      var slider = new TimeSlider(self.currentTime);
+      self.slider = new TimeSlider(self.currentTime);
       return this;
     },
     removeAllMarkers : function() {
@@ -218,6 +224,15 @@ window.FoodTruckLocator = function() {
         group.infowindow = infowindow;
       }
 
+      if (groups.length == 0) {
+        menuSection
+            .append("<div class='flash'>Presently, there are no food trucks on the road. Most food trucks come on the streets at <a href='#' id='advanceTime'>11:30</a> or so.</div>");
+        $("#advanceTime").live("click", function(e) {
+          e.preventDefault();
+          self.slider.value(11, 30);
+        });
+        return;
+      }
       var sorted = groups.sort(function (a, b) {
         if (typeof a.distance == "undefined" || a.distance == null) {
           return 0;
@@ -331,7 +346,7 @@ window.FoodTruckLocator = function() {
       $("#right").css("display", "block");
       fitMapToView();
       showControlsForMap();
-      var trucks = new Trucks({initialTime: time});
+      var trucks = new Trucks({initialTime: time, center: center});
       var view = new MapView({ center : center, model : trucks, el : "map_canvas"});
       trucks.bind('change:payload', function(model, payload) {
         model.linkLocations(payload);
