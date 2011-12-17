@@ -384,7 +384,7 @@ name: Keifer Truck
 categories: yogurt
 url: http://www.starfruitcafe.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1432329264/starfruittruck_normal.JPG
-twittalyzer: "on"
+twittalyzer: "off"
 facebook: /StarfruitCafe
 ---
 id: chitowntamale
@@ -630,6 +630,14 @@ twitter: alexbeebakeshop
 name: Alexander Beetle
 categories: Food
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1413372809/image_normal.jpg
+twittalyzer: "on"
+---
+id: currycruiser
+twitter: currycruiser
+name: Curry Cruiser
+categories: Food
+url: http://www.currycruiser.com/
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1629237144/Screen_Shot_2011-11-08_at_1.25.31_PM_normal.png
 twittalyzer: "on"
 
 
