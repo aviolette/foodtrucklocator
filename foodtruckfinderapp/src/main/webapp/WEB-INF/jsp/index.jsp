@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+  <meta name="author" content="Andrew Violette, @aviolette/@chifoodtruckz on twitter"/>
   <meta name="description"
         content="Find food trucks on the streets of Chicago by time and location.  Results are updated in real-time throughout the day."/>
   <title>Chicago Food Truck Finder</title>
@@ -89,7 +90,7 @@
 <script type="text/javascript">
   $(document).ready(function() {
     FoodTruckLocator.run(${mobile}, new google.maps.LatLng(${center.latitude}, ${center.longitude}),
-      new Date(${requestTimeInMillis}), ${payload});
+        new Date(${requestTimeInMillis}), ${payload});
   });
 </script>
 <%-- truck dialog // TODO: move to separate JSP --%>
@@ -106,7 +107,9 @@
   <h3>Scheduled Stops</h3>
   <ul id="truckSchedule"></ul>
 </div>
-<script src="//s.btstatic.com/tag.js">{ site: "zIOrUTR" }</script>
+<script src="//s.btstatic.com/tag.js">{
+  site: "zIOrUTR"
+}</script>
 <noscript>
   <iframe src="//s.thebrighttag.com/iframe?c=zIOrUTR" width="1" height="1" frameborder="0"
           scrolling="no" marginheight="0" marginwidth="0"></iframe>
