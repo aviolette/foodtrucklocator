@@ -84,6 +84,112 @@ window.FoodTruckLocator = function() {
     }
   });
 
+  var ListView = Backbone.View.extend({
+    initialize : function() {
+      var self = this;
+      self.showControls();
+      self.currentTime = self.model.get("initialTime");
+      self.displayTime(self.currentTime);
+      self.setupTimeSelector();
+    },
+    showControls : function() {
+      $("#right").css("display", "none");
+      $("#left").css("overflow-y", "visible");
+      $("header h1").css("float", "none");
+      $("#buttonSection").css("float", "none");
+      $("#body").css("clear", "none");
+      $("#left").css("margin-left", "0");
+      $("#left").css("overflow-y", "visible");
+      $(".sliderContainer").css("display", "none");
+      $(".timeSelect").css("display", "block");
+    },
+    displayTime : function(time) {
+      $("#timeValue").css("display", "inline");
+      var minutes = (time.getMinutes() < 10) ? ("0" + time.getMinutes()) : time.getMinutes();
+      $("#timeValue").append("at " + time.getHours() + ":" + minutes);
+    },
+    render : function() {
+      var self = this;
+      var groups = self.groups = this.model.getGroups(self.currentTime);
+      var menuSection = $("#foodTruckList");
+      menuSection.empty();
+      if (groups.length == 0) {
+        menuSection
+            .append("<div class='flash'>There are presently no food trucks on the road.  Most are on the road around 11:30.</div>");
+        return;
+      }
+      var sorted = groups.sort(distanceSort);
+      $.each(sorted, function(groupIndex, group) {
+        menuSection.append("<div class='truckGroup' id='group" + groupIndex + "'></div>");
+        var section = $("#group" + groupIndex);
+        section.append("<div class='locationContent' id='location" + groupIndex +
+            "Section' class='contentSection'></div>");
+        var div = $('#location' + groupIndex + 'Section');
+        div.append("<address class='locationName mobile'>" + group.position.name + "</address>");
+        if (group.distance) {
+          div.append("<span>" + group.distance + " miles away</span></br>")
+        }
+        div
+            .append(" <a style='font-size:1.2em;font-weight: bold' href='http://maps.google.com/maps?q=" +
+            group.position.latLng.lat() + "," +
+            group.position.latLng.lng() + "'>view map</a><br/><br/>")
+        $.each(group.trucks, function(idx, truck) {
+          div.append("<div class='truckSectionTextOnly' id='truck" + truck.id + "'></div>");
+          var truckDiv = $('#truck' + truck.id);
+          truckDiv.append("<div class='iconSection'><img src='" + truck.iconUrl + "'/></div>");
+          truckDiv.append("<div id='truckLeft" + truck.id + "' class='truckLeft'></div>");
+          var truckLeft = $("#truckLeft" + truck.id);
+
+          truckLeft.append("<strong>" + truck.name + "</strong><br/>");
+          var infoRow = "<div class='infoRow'>";
+
+          if (truck.twitterHandle) {
+            infoRow += "<a target='_blank' href='http://twitter.com/" + truck.twitterHandle +
+                "'><img alt='@" +
+                truck.twitterHandle + "' src='/img/twitter32x32.png'/></a> ";
+          }
+          if (truck.facebook) {
+            infoRow += "<a target='_blank' href='http://facebook.com" + truck.facebook +
+                "'><img alt='" +
+                truck.facebook + "' src='/img/facebook32x32.png'/></a> ";
+          }
+          if (truck.foursquare) {
+            infoRow += "<a href='http://m.foursquare.com/venue/" + truck.foursquare +
+                "'><img alt='Checkin on foursquare' src='/img/foursquare32x32.png'/></a>";
+          }
+          infoRow += '</div>';
+          truckLeft.append(infoRow);
+        });
+      });
+      $(".locationContent").css("margin", "0");
+
+    },
+    setupTimeSelector : function() {
+      var self = this, ampm = "am";
+      var hours = self.currentTime.getHours();
+      if (hours > 12) {
+        hours = hours - 12;
+        ampm = "pm";
+      }
+      var minutes = Math.floor(self.currentTime.getMinutes() / 15) * 15;
+      $("#hourSelect").val(hours);
+      $("#minSelect").val(minutes);
+      $("#ampmSelect").val(ampm);
+      $("#timeGoButton").live("click", function() {
+        var selectedHour = parseInt($("#hourSelect").val());
+        var selectedMin = parseInt($("#minSelect").val());
+        var selectedAmPm = $("#ampmSelect").val();
+        if (selectedAmPm == "pm" && parseInt(selectedHour) != 12) {
+          selectedHour = parseInt(selectedHour) + 12;
+        }
+        self.currentTime.setHours(selectedHour);
+        self.currentTime.setMinutes(selectedMin);
+        self.render();
+      });
+    }
+
+  });
+
   var MapView = Backbone.View.extend({
     initialize : function() {
       this.showControlsForMap();
@@ -288,46 +394,6 @@ window.FoodTruckLocator = function() {
     }
   });
 
-  function loadWithoutGeo(view, date, center) {
-    view.showDistance = false;
-    var truckObj = new Trucks(view, center);
-    truckObj.loadTrucks(date, null);
-  }
-
-  function loadAllTrucks(view, date, center) {
-    // this isn't very practical on the desktop and takes a while on firefox
-    if (Modernizr.geolocation && Modernizr.touch) {
-      navigator.geolocation.getCurrentPosition(function(position) {
-        var currentLocation = new google.maps.LatLng(position.coords.latitude,
-            position.coords.longitude);
-        var truckObj = new Trucks(view, currentLocation);
-        truckObj.loadTrucks(date);
-      }, function() {
-        loadWithoutGeo(view, date, center)
-      });
-    } else {
-      loadWithoutGeo(view, date, center);
-    }
-  }
-
-  function showControlsForNoMap() {
-    $("#right").css("display", "none");
-    $("#left").css("overflow-y", "visible");
-    $("header h1").css("float", "none");
-    $("#buttonSection").css("float", "none");
-    $("#body").css("clear", "none");
-    $("#left").css("margin-left", "0");
-    $("#left").css("overflow-y", "visible");
-    $(".sliderContainer").css("display", "none");
-    $(".timeSelect").css("display", "block");
-  }
-
-  function displayTime(time) {
-    $("#timeValue").css("display", "inline");
-    var minutes = (time.getMinutes() < 10) ? ("0" + time.getMinutes()) : time.getMinutes();
-    $("#timeValue").append("at " + time.getHours() + ":" + minutes);
-  }
-
   return {
     isTouchScreenLandscape : function() {
       return Modernizr.touch && window.innerWidth > window.innerHeight;
@@ -335,25 +401,33 @@ window.FoodTruckLocator = function() {
     isTouchScreenPortrait : function() {
       return Modernizr.touch && window.innerHeight > window.innerWidth;
     },
-    run : function(mobile, center, time, modelPayload) {
+    load : function(mobile, center, time, modelPayload) {
+      var view, trucks = new Trucks({initialTime: time, center: center});
       if (this.isTouchScreenPortrait() || mobile) {
-        this.loadTrucksWithoutMap(center, time, modelPayload);
+        view = new ListView({center : center, model : trucks, el: "foodTruckList"});
       } else {
-        this.loadTrucksWithMap(center, time, modelPayload);
+        view = new MapView({ center : center, model : trucks, el : "map_canvas"});
       }
-    },
-    loadTrucksWithoutMap : function(center, time, mobilePayload) {
-      showControlsForNoMap();
-      displayTime(time);
-    },
-    loadTrucksWithMap : function(center, time, mobilePayload) {
-      var trucks = new Trucks({initialTime: time, center: center});
-      var view = new MapView({ center : center, model : trucks, el : "map_canvas"});
       trucks.bind('change:payload', function(model, payload) {
         model.linkLocations(payload);
         view.render();
       });
-      trucks.set({ payload : mobilePayload });
+      trucks.set({ payload : modelPayload });
+
+    },
+    run : function(mobile, center, time, modelPayload) {
+      var self = this;
+      if (Modernizr.geolocation && Modernizr.touch) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          var currentLocation = new google.maps.LatLng(position.coords.latitude,
+              position.coords.longitude);
+          self.load(mobile, currentLocation, time, modelPayload);
+        }, function() {
+          self.load(mobile, center, time, modelPayload);
+        });
+      } else {
+        self.load(mobile, center, time, modelPayload);
+      }
     }
   };
 }();
