@@ -19,13 +19,13 @@ import foodtruck.util.Clock;
  * @since Jul 13, 2011
  */
 @Singleton
-public class FoodTruckUpdaterServlet extends HttpServlet implements Runnable {
+public class RecacheServlet extends HttpServlet implements Runnable {
   private final FoodTruckStopService service;
   private final Clock clock;
   private final TwitterService twitterService;
 
   @Inject
-  public FoodTruckUpdaterServlet(FoodTruckStopService service, Clock clock,
+  public RecacheServlet(FoodTruckStopService service, Clock clock,
       TwitterService twitterService) {
     this.twitterService = twitterService;
     this.service = service;

@@ -148,6 +148,7 @@ public class TwitterServiceImpl implements TwitterService {
   @Override
   public void twittalyze() {
     log.log(Level.INFO, "Updating twitter trucks");
+    boolean changed = false;
     for (Truck truck : trucks.allTwitterTrucks()) {
       // TODO: this number should probably be configurable
       List<TweetSummary> tweets =
@@ -171,7 +172,7 @@ public class TwitterServiceImpl implements TwitterService {
             }
           } else if (stop.getStartTime().isBefore(matchedStop.getEndTime()) &&
               stop.getEndTime().isAfter(matchedStop.getEndTime())) {
-            if ( locationsSame && !match.isTerminated()) {
+            if (locationsSame && !match.isTerminated()) {
               deleteStops.add(stop);
               matchedStop = matchedStop.withEndTime(stop.getEndTime());
             } else {
@@ -188,6 +189,7 @@ public class TwitterServiceImpl implements TwitterService {
         if (!deleteStops.isEmpty()) {
           truckStopDAO.deleteStops(deleteStops);
         }
+        changed = true;
         addStops.add(matchedStop);
         truckStopDAO.addStops(addStops);
       } else {
