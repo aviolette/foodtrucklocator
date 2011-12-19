@@ -86,7 +86,7 @@
         src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
 <script type="text/javascript" src="script/lib/underscore-min.js"></script>
 <script type="text/javascript" src="script/lib/backbone-min.js"></script>
-<script type="text/javascript" src="script/map.js?ver=21"></script>
+<script type="text/javascript" src="script/map.js?ver=22"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     FoodTruckLocator.run(${mobile}, new google.maps.LatLng(${center.latitude}, ${center.longitude}),
@@ -107,9 +107,7 @@
   <h3>Scheduled Stops</h3>
   <ul id="truckSchedule"></ul>
 </div>
-<script src="//s.btstatic.com/tag.js">{
-  site: "zIOrUTR"
-}</script>
+<script src="//s.btstatic.com/tag.js">{ site: "zIOrUTR" }</script>
 <noscript>
   <iframe src="//s.thebrighttag.com/iframe?c=zIOrUTR" width="1" height="1" frameborder="0"
           scrolling="no" marginheight="0" marginwidth="0"></iframe>

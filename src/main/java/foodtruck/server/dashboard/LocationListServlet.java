@@ -8,43 +8,27 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
-import foodtruck.model.Trucks;
 
 /**
  * @author aviolette@gmail.com
- * @since 10/23/11
+ * @since 12/19/11
  */
 @Singleton
-public class DashboardServlet extends HttpServlet {
-  private final Trucks trucks;
-
-  @Inject
-  public DashboardServlet(Trucks trucks) {
-    this.trucks = trucks;
-  }
-
+public class LocationListServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
+    final String jsp = "/WEB-INF/jsp/dashboard/locationDashboard.jsp";
     req = new HttpServletRequestWrapper(req) {
       public Object getAttribute(String name) {
         if ("org.apache.catalina.jsp_file".equals(name)) {
-          String path = super.getServletPath();
-          return path;
+          return jsp;
         }
         return super.getAttribute(name);
       }
     };
-    req.setAttribute("trucks", Trucks.BY_NAME.immutableSortedCopy(trucks.allTrucks()));
-    req.getRequestDispatcher("/WEB-INF/jsp/dashboard/dashboard.jsp").forward(req, resp);
-  }
-
-  @Override
-  protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
-    super.doPost(req, resp);
+    req.setAttribute("nav", "locations");
+    req.getRequestDispatcher(jsp).forward(req, resp);
   }
 }

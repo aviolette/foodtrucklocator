@@ -26,19 +26,20 @@ import foodtruck.twitter.TwitterService;
  * @since 11/14/11
  */
 @Singleton
-public class TruckDashboardServlet extends HttpServlet {
-  private static final Logger log = Logger.getLogger(TruckDashboardServlet.class.getName());
+public class TruckServlet extends HttpServlet {
+  private static final Logger log = Logger.getLogger(TruckServlet.class.getName());
   private final TwitterService twitterService;
 
   @Inject
-  public TruckDashboardServlet(TwitterService twitterService) {
+  public TruckServlet(TwitterService twitterService) {
     this.twitterService = twitterService;
   }
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-    final String truckId = req.getRequestURI().substring(17);
+    final String requestURI = req.getRequestURI();
+    final String truckId = requestURI.substring(14);
     log.info("Loading dashboard for " + truckId);
 
     final List<TweetSummary> tweetSummaries = twitterService.findForTruck(truckId);

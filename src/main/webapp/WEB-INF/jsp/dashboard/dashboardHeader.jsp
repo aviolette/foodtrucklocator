@@ -3,9 +3,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Bootstrap, from Twitter</title>
-  <meta name="description" content="">
-  <meta name="author" content="">
+  <title>Administrative Dashboard</title>
+  <meta name="description" content="Administrative Dashboard">
+  <meta name="author" content="Andrew Violette">
 
   <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
   <!--[if lt IE 9]>
@@ -74,11 +74,11 @@
 <div class="topbar">
   <div class="fill">
     <div class="container">
-      <a class="brand" href="#">Chicago Food Truck Finder</a>
+      <a class="brand" href="#">CFTF - Admin Dashboard</a>
       <ul class="nav">
-        <li class="active"><a href="#">Home</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#contact">Contact</a></li>
+        <li<c:if test="${nav == 'home'}"> class="active"</c:if>><a href="/admin">Home</a></li>
+        <li<c:if test="${nav == 'trucks'}"> class="active"</c:if>><a href="/admin/trucks">Trucks</a></li>
+        <li<c:if test="${nav == 'locations'}"> class="active"</c:if>><a href="/admin/locations">Locations</a></li>
       </ul>
     </div>
   </div>
@@ -94,6 +94,6 @@
     </div>
     <div class="row">
       <div class="span14">
-
+       <div class="alert-message" style="display:none" id="flash">&nbsp;</div>
 
 
