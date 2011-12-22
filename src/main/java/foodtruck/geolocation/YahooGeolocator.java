@@ -38,7 +38,7 @@ public class YahooGeolocator implements GeoLocator {
       }
       JSONArray results = resultSet.getJSONArray("Results");
       JSONObject result = results.getJSONObject(0);
-      if (result.getInt("quality") < 40) {
+      if (result.getInt("Quality") < 40) {
         log.log(Level.INFO, "Result was too broad");
         return null;
       }

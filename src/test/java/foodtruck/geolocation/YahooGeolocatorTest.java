@@ -1,11 +1,13 @@
 package foodtruck.geolocation;
 
+import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.easymock.EasyMockSupport;
 import org.junit.Before;
 import org.junit.Test;
 
 import foodtruck.model.Location;
+import foodtruck.util.ServiceException;
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -46,5 +48,19 @@ public class YahooGeolocatorTest extends EasyMockSupport {
         GeolocationGranularity.BROAD);
     assertEquals(new Location(41.880730, -87.629379, "Dearborn and Monroe, Chicago, IL"), location);
     verifyAll();
+  }
+
+  @Test
+  public void testYahooOutOfState() throws JSONException, ServiceException {
+    String jsonText =
+        "{\"ResultSet\":{\"version\":\"1.0\",\"Error\":0,\"ErrorMessage\":\"No error\",\"Locale\":\"us_US\",\"Quality\":10,\"Found\":2,\"Results\":[{\"quality\":72,\"latitude\":\"26.912504\",\"longitude\":\"-80.262489\",\"offsetlat\":\"26.912504\",\"offsetlon\":\"-80.262489\",\"radius\":12600,\"name\":\"\",\"line1\":\"Walgreens Dr\",\"line2\":\"Jupiter, FL  33478\",\"line3\":\"\",\"line4\":\"United States\",\"house\":\"\",\"street\":\"Walgreens Dr\",\"xstreet\":\"\",\"unittype\":\"\",\"unit\":\"\",\"postal\":\"33478\",\"neighborhood\":\"\",\"city\":\"Jupiter\",\"county\":\"Palm Beach County\",\"state\":\"Florida\",\"country\":\"United States\",\"countrycode\":\"US\",\"statecode\":\"FL\",\"countycode\":\"\",\"uzip\":\"33478\",\"hash\":\"\",\"woeid\":12772341,\"woetype\":11},{\"quality\":72,\"latitude\":\"35.209148\",\"longitude\":\"-111.602699\",\"offsetlat\":\"35.209148\",\"offsetlon\":\"-111.602699\",\"radius\":49200,\"name\":\"\",\"line1\":\"N Walgreens St\",\"line2\":\"Flagstaff, AZ  86004\",\"line3\":\"\",\"line4\":\"United States\",\"house\":\"\",\"street\":\"N Walgreens St\",\"xstreet\":\"\",\"unittype\":\"\",\"unit\":\"\",\"postal\":\"86004\",\"neighborhood\":\"\",\"city\":\"Flagstaff\",\"county\":\"Coconino County\",\"state\":\"Arizona\",\"country\":\"United States\",\"countrycode\":\"US\",\"statecode\":\"AZ\",\"countycode\":\"\",\"uzip\":\"86004\",\"hash\":\"\",\"woeid\":12794775,\"woetype\":11}]}}";
+    JSONObject returnCode = new JSONObject(jsonText);
+    expect(resource.findLocation("Dearborn and Monroe, Chicago, IL")).andReturn(returnCode);
+    replayAll();
+    Location location = yahooGeolocator.locate("Dearborn and Monroe, Chicago, IL",
+        GeolocationGranularity.BROAD);
+    assertNull(location);
+    verifyAll();
+
   }
 }
