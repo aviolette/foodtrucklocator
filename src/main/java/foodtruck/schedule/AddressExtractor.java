@@ -65,8 +65,6 @@ public class AddressExtractor {
       }
     };
     patterns = ImmutableList.of(
-        // foursquare format
-        new PatternTransform(Pattern.compile("\\(@ (.*)\\)"), foursquareMassage, true, 1),
         // University of Chicago
         new PatternTransform(
             Pattern.compile("U of Chicago|UofC|U of C|UChicago|Ellis \\(57 / 58\\)|The Reg\\b",
