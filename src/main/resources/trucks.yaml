@@ -645,7 +645,14 @@ twitter: getcurriedaway
 name: Curried
 categories: Indian Food
 url: http://www.curried.com
-iconUrl: https://twimg0-a.akamaihd.net/profile_images/1330464121/Curried_normal.png
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1330464121/Curried_normal.png
+twittalyzer: "on"
+---
+id: gettapolpetta
+twitter: gettapolpetta
+name: Getta Polpetta Truck
+categories: Food
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1675541664/twitter-logo_normal.jpg
 twittalyzer: "on"
 
 
