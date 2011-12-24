@@ -25,6 +25,8 @@ public class AddressExtractor {
       "(N|E|W|S\\s+)?[A-Z0-9][a-zA-Z0-9]+(\\s+(st|St|Drive|Dr|Buren|BUREN|Blvd|Ave)\\.?)?";
   private final static String INTERSECTION_AND =
       "((\\s+(and|at|near|n)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))";
+  private final static Pattern NUMBER_AND_NUMBER =
+      Pattern.compile("(\\d+) and (\\d+), Chicago, IL");
 
   private static Function<String, String> keyword(final String toWhat) {
     return new Function<String, String>() {
@@ -213,7 +215,8 @@ public class AddressExtractor {
     } else if ("keifertruck".equals(truckId)) {
       return address.equals("Merchandise Mart");
     }
-    return false;
+    // TODO: should probably adjust my regex's but its a little easier to do here.
+    return NUMBER_AND_NUMBER.matcher(address).find();
   }
 
   private static class PatternTransform {

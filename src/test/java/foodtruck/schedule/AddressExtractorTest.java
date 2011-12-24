@@ -431,6 +431,15 @@ public class AddressExtractorTest {
   }
 
   @Test
+  public void testDontMatchNumberAndNumber() {
+    String tweet =
+        "brownbagtruck: @courageouscakes + @brownbagtruck + chicken + waffles = YUM!!! 12/27 & 12/28 11AM-2PM, pickup & carry out only! DETAILS:http://t.co/R1WRzQLH";
+    List<String> addresses = parser.parse(tweet, truck);
+    assertNotNull(addresses);
+    assertEquals(0, addresses.size());
+  }
+
+  @Test
   public void testBrownLineStops() {
     assertTweet("Paulina Brown Line",
         "thesouthernmac: Paulina Brown Line for a little while longer!!");
