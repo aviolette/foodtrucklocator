@@ -32,7 +32,7 @@ window.FoodTruckLocator = function() {
     self.position = location;
     self.addTruck = function(truck) {
       self.trucks.push(truck);
-    }
+    };
   };
 
   var Trucks = Backbone.Model.extend({
@@ -56,6 +56,29 @@ window.FoodTruckLocator = function() {
       $.each(payload.stops, function(idx, stop) {
         stop.location = locations[stop.location - 1];
       });
+    },
+    getLocationGroups : function() {
+      var self = this, groups = [],groupMap = {};
+      var payload = this.get("payload");
+      var trucks = self.getTrucks();
+      var center = this.get("center");
+      $.each(payload.stops, function(idx, stop) {
+        var truckGroup = groupMap[stop.location.name];
+        if (typeof(truckGroup) == "undefined") {
+          var latlng = new google.maps.LatLng(stop.location.latitude,
+              stop.location.longitude);
+          truckGroup = new TruckGroup({name: stop.location.name, latLng : latlng });
+          if (center) {
+            distance = google.maps.geometry.spherical.computeDistanceBetween(center,
+                truckGroup.position.latLng, 3959);
+            truckGroup.distance = Math.round(distance * 100) / 100;
+          }
+          groupMap[stop.location.name] = truckGroup;
+          groups.push(truckGroup);
+        }
+        truckGroup.addTruck({startTime : stop.startTime, truck: trucks[stop.truckId]});
+      });
+      return groups;
     },
     getGroups : function(time) {
       var self = this, groups = [],groupMap = {};
@@ -190,17 +213,116 @@ window.FoodTruckLocator = function() {
 
   });
 
-  var MapView = Backbone.View.extend({
-    initialize : function() {
-      this.showControlsForMap();
-      this.fitMapToView();
-      this.groups = [];
-      this.map = new google.maps.Map(document.getElementById("map_canvas"), {
+  var BaseMapView = {
+    initializeMap : function() {
+      var self = this;
+      self.fitMapToView();
+      self.map = new google.maps.Map(document.getElementById("map_canvas"), {
         zoom: 13,
-        center: this.options.center,
+        center: self.options.center,
         maxZoom : 15,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       });
+      return this;
+    },
+    removeAllMarkers : function() {
+      var groups = this.groups || [];
+      $.each(groups, function(idx, group) {
+        if (group.marker) {
+          group.marker.setMap(null);
+          group.marker = null;
+        }
+      });
+      this.groups = [];
+    },
+    fitMapToView :function() {
+      $("#right").css("display", "block");
+      if (Modernizr.touch) {
+        $("#left").css("overflow-y", "visible");
+        $("#left").width(250);
+        $("#map_wrapper").css("margin-left", "250px");
+        $("#map_canvas").width($(window).width() - 250);
+      } else {
+        $("#right").width($("#map_canvas").width() - $("#left").width());
+        $("#left").css("margin-left", "-" + $("#map_canvas").width() + "px");
+        $("#map_canvas").height($(window).height() - $("header").height());
+        $("#right").height($("#map_canvas").height());
+        $("#left").height($("#right").height());
+        $("#foodTruckList").height($("#left").height() - $("#sliderContainer").height() -
+            $("header").height() - 75);
+        $("#body").height($("#body").height() - $("header").height());
+      }
+    },
+    buildGroupInfo : function(group, idx, letter, menuSection) {
+      group.index = idx;
+      menuSection.append("<div class='menuSection'  id='group" + idx + "'/>");
+      var section = $('#group' + idx);
+      var markerText = "&nbsp;";
+      markerText =
+          "<img class='markerIcon' id='markerIcon" + idx + "' src='" + buildIconUrl(letter) +
+              "'/>";
+      section.append("<div class='markerSection'>" + markerText + "</div>");
+      section.append("<div class='locationContent' id='location" + idx +
+          "Section' class='contentSection'></div>");
+      var div = $('#location' + idx + 'Section');
+      div.append("<address class='locationName'>" + removeChicago(group.position.name) +
+          "</address>");
+      if (group.distance && self.showDistance) {
+        div.append("<span>" + group.distance + " miles away</span></br></br>")
+      }
+      return div;
+    }
+
+  };
+
+  var ScheduleView = Backbone.View.extend($.extend({
+    initialize : function() {
+      this.groups = [];
+      this.initializeMap();
+    },
+    render : function() {
+      var self = this;
+      self.removeAllMarkers();
+      var groups = self.groups = this.model.getLocationGroups();
+      var bounds = new google.maps.LatLngBounds();
+      bounds.extend(this.options.center);
+      var menuSection = $("#foodTruckList");
+      menuSection.empty();
+      var sorted = groups.sort(function (a, b) {
+        if (typeof a.distance == "undefined" || a.distance == null) {
+          return 0;
+        }
+        return a.distance > b.distance ? 1 : ((a.distance == b.distance) ? 0 : -1);
+      });
+      $.each(sorted, function(groupIndex, group) {
+        var letter = String.fromCharCode(65 + groupIndex);
+        buildMarker(group, letter, bounds, self.map);
+        var contentDiv = self.buildGroupInfo(group, groupIndex, letter, menuSection);
+/*
+        $.each(group.trucks, function(idx, truck) {
+          buildIconForTruck(truck, contentDiv);
+        });
+        buildInfoWindow(group);
+        $("#markerIcon" + groupIndex).click(function() {
+          $.each(sorted, function(gIndex, g) {
+            g.infowindow.close();
+            $(".menuSection").removeClass("hilightedSection");
+          });
+          group.infowindow.open(self.map, group.marker);
+          $("#group" + groupIndex).addClass("hilightedSection");
+        });
+        */
+      });
+      self.map.fitBounds(bounds);
+
+    }
+  }, BaseMapView));
+
+  var MapView = Backbone.View.extend($.extend({
+    initialize : function() {
+      this.showControlsForMap();
+      this.initializeMap();
+      this.groups = [];
       var self = this;
       var TimeSlider = function(initialTime) {
         var sliderValue = (initialTime.getHours() * 60) +
@@ -251,34 +373,6 @@ window.FoodTruckLocator = function() {
     showControlsForMap : function() {
       $(".sliderContainer").css("display", "block");
       $("hr").css("display", "block");
-    },
-    fitMapToView :function() {
-      $("#right").css("display", "block");
-      if (Modernizr.touch) {
-        $("#left").css("overflow-y", "visible");
-        $("#left").width(250);
-        $("#map_wrapper").css("margin-left", "250px");
-        $("#map_canvas").width($(window).width() - 250);
-      } else {
-        $("#right").width($("#map_canvas").width() - $("#left").width());
-        $("#left").css("margin-left", "-" + $("#map_canvas").width() + "px");
-        $("#map_canvas").height($(window).height() - $("header").height());
-        $("#right").height($("#map_canvas").height());
-        $("#left").height($("#right").height());
-        $("#foodTruckList").height($("#left").height() - $("#sliderContainer").height() -
-            $("header").height() - 75);
-        $("#body").height($("#body").height() - $("header").height());
-      }
-    },
-    removeAllMarkers : function() {
-      var groups = this.groups || [];
-      $.each(groups, function(idx, group) {
-        if (group.marker) {
-          group.marker.setMap(null);
-          group.marker = null;
-        }
-      });
-      this.groups = [];
     },
     render: function() {
       var self = this;
@@ -416,7 +510,7 @@ window.FoodTruckLocator = function() {
       $.each(sorted, function(groupIndex, group) {
         var letter = String.fromCharCode(65 + groupIndex);
         buildMarker(group, letter, bounds, self.map);
-        var contentDiv = buildGroupInfo(group, groupIndex, letter);
+        var contentDiv = self.buildGroupInfo(group, groupIndex, letter, menuSection);
         $.each(group.trucks, function(idx, truck) {
           buildIconForTruck(truck, contentDiv);
         });
@@ -433,7 +527,9 @@ window.FoodTruckLocator = function() {
       self.map.fitBounds(bounds);
       return this;
     }
-  });
+  }, BaseMapView));
+
+
 
   return {
     isTouchScreenLandscape : function() {
@@ -442,19 +538,34 @@ window.FoodTruckLocator = function() {
     isTouchScreenPortrait : function() {
       return Modernizr.touch && window.innerHeight > window.innerWidth;
     },
-    load : function(mobile, center, time, modelPayload) {
-      var view, trucks = new Trucks({initialTime: time, center: center});
-      if (this.isTouchScreenPortrait() || mobile) {
+    setupView : function(trucks, mobile, center) {
+      var view;
+      if (Modernizr.touch || mobile) {
         view = new ListView({center : center, model : trucks, el: "foodTruckList"});
-      } else {
+      } else if($("timeViewButton").checked) {
         view = new MapView({ center : center, model : trucks, el : "map_canvas"});
+      } else {
+        view = new ScheduleView({ center : center, model : trucks, el : "map_canvas"});
       }
+      trucks.unbind("change:payload");
       trucks.bind('change:payload', function(model, payload) {
-        model.linkLocations(payload);
         view.render();
       });
+      return view;
+    },
+    load : function(mobile, center, time, modelPayload) {
+      // TODO: remove this logic once we have an equiv. view for mobile
+      var self = this, trucks = new Trucks({initialTime: time, center: center});
+      if (Modernizr.touch || mobile) {
+        $("#viewSelect").css("display", "none");
+      } else {
+        $(".pickViewButton").click(function() {
+          self.setupView().render(trucks, mobile, center);
+        });
+      }
+      trucks.linkLocations(modelPayload);
+      this.setupView(trucks, mobile, center);
       trucks.set({ payload : modelPayload });
-
     },
     run : function(mobile, center, time, modelPayload) {
       var self = this;
