@@ -57,7 +57,7 @@ public class TruckStopMatcher {
     this.addressExtractor = extractor;
     this.geoLocator = geoLocator;
     this.timePattern = Pattern.compile(TIME_PATTERN);
-    this.endTimePattern = Pattern.compile("until (" + TIME_PATTERN + ")");
+    this.endTimePattern = Pattern.compile("\\b(until|til|till) (" + TIME_PATTERN + ")");
     this.timeRangePattern = Pattern.compile(TIME_RANGE_PATTERN);
     this.monPattern = Pattern.compile(
         "\\b(TUE|WED|THU|FRI|SAT|SUN|tuesday|wednesday|thursday|friday|saturday|sunday|tues|thurs|2morrow|tomorrow|ma–ana)\\b",
@@ -242,7 +242,7 @@ public class TruckStopMatcher {
   private @Nullable DateTime parseEndTime(String tweetText, DateTime startTime) {
     Matcher matcher = endTimePattern.matcher(tweetText);
     if (matcher.find()) {
-      return parseTime(matcher.group(1), startTime.toLocalDate(), null);
+      return parseTime(matcher.group(2), startTime.toLocalDate(), null);
     }
     return null;
   }
