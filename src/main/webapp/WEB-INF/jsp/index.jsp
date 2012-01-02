@@ -38,8 +38,11 @@
             <h2>Schedule for ${requestDate}&nbsp;<span id="timeValue">&nbsp;</span></h2>
           </c:if>
           <div id="viewSelect">
-            Show results by: <input type="radio" class="pickViewButton" checked="checked" name="pickView" id="timeViewButton"/> <label for="pickView">Time</label>
-            <input type="radio" class="pickViewButton" name="pickView" id="locationViewButton"/> <label for="locationViewButton">Location</label>
+            Show results by: <input type="radio" class="pickViewButton" checked="checked"
+                                    name="pickView" id="timeViewButton"/> <label
+              for="timeViewButton">Time</label>
+            <input type="radio" class="pickViewButton" name="pickView" id="locationViewButton"/>
+            <label for="locationViewButton">Location</label>
           </div>
           <div class="sliderContainer">
             <div class="sliderTimeWrapper">Select a time: <strong><span
@@ -113,7 +116,9 @@ document.write("<script src='script/lib/jquery-1.6.2.min.js'>\x3C/script>")</scr
   <h3>Scheduled Stops</h3>
   <ul id="truckSchedule"></ul>
 </div>
-<script src="//s.btstatic.com/tag.js">{ site: "zIOrUTR" }</script>
+<script src="//s.btstatic.com/tag.js">{
+  site: "zIOrUTR"
+}</script>
 <noscript>
   <iframe src="//s.thebrighttag.com/iframe?c=zIOrUTR" width="1" height="1" frameborder="0"
           scrolling="no" marginheight="0" marginwidth="0"></iframe>
