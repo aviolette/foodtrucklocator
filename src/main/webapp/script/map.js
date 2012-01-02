@@ -299,8 +299,18 @@ window.FoodTruckLocator = function() {
       }
       infoRow += '</div>';
       div.append(infoRow);
-    }
-    ,
+    },
+    setupMarkerBounce : function(groupIndex, marker) {
+      if (marker.getAnimation() != null) {
+        return;
+      }
+      $("#markerIcon" + groupIndex).click(function() {
+        marker.setAnimation(google.maps.Animation.BOUNCE);
+        setTimeout(function() {
+          marker.setAnimation(null);
+        }, 3000);
+      });
+    },
     buildTruckInfoDialog : function(truck) {
       var $truckDialog = $("#truckDialog");
       $("#truckIcon").attr("src", truck.iconUrl);
@@ -360,6 +370,11 @@ window.FoodTruckLocator = function() {
       bounds.extend(this.options.center);
       var menuSection = $("#foodTruckList");
       menuSection.empty();
+      if (groups.length == 0) {
+        menuSection
+            .append("<div class='flash'>Wow, there are no trucks out on the road today.  That sucks!</div>");
+        return;
+      }
       var sorted = groups.sort(function (a, b) {
         if (typeof a.distance == "undefined" || a.distance == null) {
           return 0;
@@ -379,12 +394,10 @@ window.FoodTruckLocator = function() {
           self.buildIconForTruck(truckTime.truck, contentDiv, "timeIdx" + idx);
         });
         $("#markerIcon" + groupIndex).click(function() {
-          $.each(sorted, function(gIndex, g) {
-            g.infowindow.close();
-            $(".menuSection").removeClass("hilightedSection");
-          });
-          group.infowindow.open(self.map, group.marker);
-          $("#group" + groupIndex).addClass("hilightedSection");
+          group.marker.setAnimation(google.maps.Animation.BOUNCE);
+          setTimeout(function() {
+            group.marker.setAnimation(null);
+          }, 3000);
         });
       });
       self.map.fitBounds(bounds);
@@ -456,27 +469,6 @@ window.FoodTruckLocator = function() {
       bounds.extend(this.options.center);
       var menuSection = $("#foodTruckList");
       menuSection.empty();
-
-      function buildInfoWindow(group) {
-        var contentString = "<div class='infoWindowContent'><address class='locaitonName'>" +
-            group.position.name + "</address>";
-        contentString = contentString + "<ul class='iconList'>"
-        $.each(group.trucks, function(truckIdx, truck) {
-          contentString +=
-              "<li class='iconListItem' style='background-image: url(" + truck.iconUrl + ")'>" +
-                  truck.name + "</li>"
-        });
-        contentString = contentString + "</ul></div>";
-        var infowindow = new google.maps.InfoWindow({
-          content: contentString
-        });
-
-        google.maps.event.addListener(group.marker, 'click', function() {
-          infowindow.open(self.map, group.marker);
-        });
-        group.infowindow = infowindow;
-      }
-
       if (groups.length == 0) {
         menuSection
             .append("<div class='flash'>Presently, there are no food trucks on the road. Most food trucks come on the streets at <a href='#' id='advanceTime'>11:30</a> or so.</div>");
@@ -499,15 +491,7 @@ window.FoodTruckLocator = function() {
         $.each(group.trucks, function(idx, truck) {
           self.buildIconForTruck(truck, contentDiv, "");
         });
-        buildInfoWindow(group);
-        $("#markerIcon" + groupIndex).click(function() {
-          $.each(sorted, function(gIndex, g) {
-            g.infowindow.close();
-            $(".menuSection").removeClass("hilightedSection");
-          });
-          group.infowindow.open(self.map, group.marker);
-          $("#group" + groupIndex).addClass("hilightedSection");
-        });
+        self.setupMarkerBounce(groupIndex, group.marker);
       });
       self.map.fitBounds(bounds);
       return this;

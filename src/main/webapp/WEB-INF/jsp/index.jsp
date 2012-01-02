@@ -39,16 +39,22 @@
           </c:if>
           <div id="viewSelect">
             Show results by: <input type="radio" class="pickViewButton" checked="checked"
-                                    name="pickView" id="timeViewButton"/> <label
-              for="timeViewButton">Time</label>
-            <input type="radio" class="pickViewButton" name="pickView" id="locationViewButton"/>
-            <label for="locationViewButton">Location</label>
+                                    name="pickView" id="timeViewButton"/><label
+              for="timeViewButton">&nbsp;Time</label>
+            <input type="radio" class="pickViewButton" name="pickView"
+                   id="locationViewButton"/><label for="locationViewButton">&nbsp;Location</label>
           </div>
           <div class="sliderContainer">
             <div class="sliderTimeWrapper">Select a time: <strong><span
                 id="sliderTime"></span></strong></div>
             <div id="slider"></div>
           </div>
+          <%--
+          <div id="locationFilter">
+            Show results within <input type="text" size="2"/> miles of Dearborn and Monroe.</br>
+            <a href="#">Change my location.</a>
+          </div>
+          --%>
           <div class="timeSelect">
             Select a time: <br/><select id="hourSelect">
             <option>1</option>
@@ -95,7 +101,7 @@ document.write("<script src='script/lib/jquery-1.6.2.min.js'>\x3C/script>")</scr
         src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
 <script type="text/javascript" src="script/lib/underscore-min.js"></script>
 <script type="text/javascript" src="script/lib/backbone-min.js"></script>
-<script type="text/javascript" src="script/map.js?ver=22"></script>
+<script type="text/javascript" src="script/map.js?ver=23"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     FoodTruckLocator.run(${mobile}, new google.maps.LatLng(${center.latitude}, ${center.longitude}),
