@@ -35,16 +35,19 @@ window.FoodTruckLocator = function() {
     };
   };
 
-  var Trucks = Backbone.Model.extend({
-    url : function() {
-      return '/service/schedule';
+  var Trucks = {
+    setPayload : function(payload) {
+      this.payload = payload;
+    },
+    setCenter : function(center) {
+      this.center = center;
     },
     getTrucks : function() {
       var self = this;
       if (typeof(this.trucks) != "undefined") {
         return this.trucks;
       }
-      var payload = this.get("payload");
+      var payload = self.payload;
       self.trucks = {};
       $.each(payload.trucks, function(idx, truck) {
         self.trucks[truck.id] = truck;
@@ -59,9 +62,9 @@ window.FoodTruckLocator = function() {
     },
     getLocationGroups : function() {
       var self = this, groups = [],groupMap = {};
-      var payload = this.get("payload");
+      var payload = this.payload;
       var trucks = self.getTrucks();
-      var center = this.get("center");
+      var center = this.center;
       $.each(payload.stops, function(idx, stop) {
         var truckGroup = groupMap[stop.location.name];
         if (typeof(truckGroup) == "undefined") {
@@ -82,9 +85,9 @@ window.FoodTruckLocator = function() {
     },
     getGroups : function(time) {
       var self = this, groups = [],groupMap = {};
-      var payload = this.get("payload");
+      var payload = this.payload;
       var trucks = self.getTrucks();
-      var center = this.get("center");
+      var center = this.center;
       $.each(payload.stops, function(idx, stop) {
         if (time >= stop.startMillis && time < stop.endMillis) {
           var truckGroup = groupMap[stop.location.name];
@@ -105,13 +108,13 @@ window.FoodTruckLocator = function() {
       });
       return groups;
     }
-  });
+  };
 
   var ListView = Backbone.View.extend({
     initialize : function() {
       var self = this;
       self.showControls();
-      self.currentTime = self.model.get("initialTime");
+      self.currentTime = self.options.initialTime;
       self.displayTime(self.currentTime);
       self.setupTimeSelector();
     },
@@ -355,8 +358,6 @@ window.FoodTruckLocator = function() {
   var LocationView = Backbone.View.extend($.extend({
     initialize : function(options) {
       this.groups = [];
-      this.showControlsForLocation();
-      this.initializeMap(this.options.map);
     },
     showControlsForLocation : function() {
       $(".sliderContainer").css("display", "none");
@@ -364,6 +365,8 @@ window.FoodTruckLocator = function() {
     },
     render : function() {
       var self = this;
+      this.showControlsForLocation();
+      this.initializeMap(this.options.map);
       self.removeAllMarkers();
       var groups = self.groups = this.model.getLocationGroups();
       var bounds = new google.maps.LatLngBounds();
@@ -391,7 +394,7 @@ window.FoodTruckLocator = function() {
             contentDiv.append("<h3>" + truckTime.startTime + "</h3><br/>");
           }
           lastTime = truckTime.startTime;
-          self.buildIconForTruck(truckTime.truck, contentDiv, "timeIdx" + idx);
+          self.buildIconForTruck(truckTime.truck, contentDiv, "timeIdx" + groupIndex + "-" + idx);
         });
         $("#markerIcon" + groupIndex).click(function() {
           group.marker.setAnimation(google.maps.Animation.BOUNCE);
@@ -407,8 +410,6 @@ window.FoodTruckLocator = function() {
 
   var TimeView = Backbone.View.extend($.extend({
     initialize : function() {
-      this.showControlsForMap();
-      this.initializeMap(this.options.map);
       this.groups = [];
       var self = this;
       var TimeSlider = function(initialTime) {
@@ -453,7 +454,7 @@ window.FoodTruckLocator = function() {
           $("#slider").slider("option", "value", val);
         };
       };
-      self.currentTime = self.model.get("initialTime");
+      self.currentTime = self.options.initialTime;
       self.slider = new TimeSlider(self.currentTime);
       return this;
     },
@@ -463,6 +464,8 @@ window.FoodTruckLocator = function() {
     },
     render: function() {
       var self = this;
+      this.showControlsForMap();
+      this.initializeMap(this.options.map);
       self.removeAllMarkers();
       var groups = self.groups = this.model.getGroups(self.currentTime);
       var bounds = new google.maps.LatLngBounds();
@@ -494,6 +497,7 @@ window.FoodTruckLocator = function() {
         self.setupMarkerBounce(groupIndex, group.marker);
       });
       self.map.fitBounds(bounds);
+      self.initialized = true;
       return this;
     }
   }, BaseMapView));
@@ -506,10 +510,19 @@ window.FoodTruckLocator = function() {
     isTouchScreenPortrait : function() {
       return Modernizr.touch && window.innerHeight > window.innerWidth;
     },
-    setupView : function(trucks, mobile, center) {
-      var view;
+    pickView : function(trucks, mobile, center, time) {
+      var self = this;
+      if ($("#timeViewButton:checked").val() == "on") {
+        this.currentView = this.timeView;
+      } else {
+        this.currentView = this.locationView;
+      }
+      return this.currentView;
+    },
+    setupView : function(trucks, mobile, center, time) {
+      var self = this;
       if (Modernizr.touch || mobile) {
-        view = new ListView({center : center, model : trucks, el: "foodTruckList"});
+        this.currentView = new ListView({initialTime: time, center : center, model : trucks, el: "foodTruckList"});
       } else {
         if (typeof(this.map) == 'undefined') {
           this.map = new google.maps.Map(document.getElementById("map_canvas"), {
@@ -519,35 +532,33 @@ window.FoodTruckLocator = function() {
             mapTypeId: google.maps.MapTypeId.ROADMAP
           });
         }
-        var initParams = { map: this.map, center : center, model : trucks, el : "map_canvas"};
-        if ($("#timeViewButton:checked").val() == "on") {
-          view = new TimeView(initParams);
-        } else {
-          view = new LocationView(initParams);
-        }
+        var initParams = { initialTime: time, map: this.map, center : center, model : trucks, el : "map_canvas"};
+        this.timeView = new TimeView(initParams);
+        this.locationView = new LocationView(initParams);
+        this.pickView(trucks, mobile, center, time);
       }
-      trucks.unbind("change:payload");
-      trucks.bind('change:payload', function(model, payload) {
-        view.render();
-      });
-      return view;
+      return self.currentView;
     },
     load : function(mobile, center, time, modelPayload) {
       // TODO: remove this logic once we have an equiv. view for mobile
-      var self = this, trucks = new Trucks({initialTime: time, center: center});
+      var self = this, trucks = Trucks;
+      trucks.setCenter(center);
       if (Modernizr.touch || mobile) {
         $("#viewSelect").css("display", "none");
       } else {
         $(".pickViewButton").click(function() {
-          self.setupView(trucks, mobile, center).render(trucks, mobile, center);
+          self.currentView.removeAllMarkers();
+          self.pickView(trucks, mobile, center, time).render();
         });
       }
       trucks.linkLocations(modelPayload);
-      this.setupView(trucks, mobile, center);
-      trucks.set({ payload : modelPayload });
+      this.setupView(trucks, mobile, center, time);
+      trucks.setPayload(modelPayload);
+      this.currentView.render();
     },
     run : function(mobile, center, time, modelPayload) {
       var self = this;
+      self.currentView = null;
       if (Modernizr.geolocation && Modernizr.touch) {
         navigator.geolocation.getCurrentPosition(function(position) {
           var currentLocation = new google.maps.LatLng(position.coords.latitude,
