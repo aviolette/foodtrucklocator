@@ -52,6 +52,11 @@ header h1 {
     float: left;
 }
 
+h3 {
+    padding: 5px 0;
+    margin: 5px 0 0 0;
+}
+
 #right {
     float: left;
     width: 100%;

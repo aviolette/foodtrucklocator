@@ -37,11 +37,24 @@
           <c:if test="${not empty requestDate}">
             <h2>Schedule for ${requestDate}&nbsp;<span id="timeValue">&nbsp;</span></h2>
           </c:if>
+          <div id="viewSelect">
+            Show results by: <input type="radio" class="pickViewButton" checked="checked"
+                                    name="pickView" id="timeViewButton"/><label
+              for="timeViewButton">&nbsp;Time</label>
+            <input type="radio" class="pickViewButton" name="pickView"
+                   id="locationViewButton"/><label for="locationViewButton">&nbsp;Location</label>
+          </div>
           <div class="sliderContainer">
             <div class="sliderTimeWrapper">Select a time: <strong><span
                 id="sliderTime"></span></strong></div>
             <div id="slider"></div>
           </div>
+          <%--
+          <div id="locationFilter">
+            Show results within <input type="text" size="2"/> miles of Dearborn and Monroe.</br>
+            <a href="#">Change my location.</a>
+          </div>
+          --%>
           <div class="timeSelect">
             Select a time: <br/><select id="hourSelect">
             <option>1</option>
@@ -82,11 +95,13 @@
 <script type="text/javascript"
         src="http://maps.google.com/maps/api/js?sensor=false&libraries=geometry"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
+<script>window.jQuery ||
+document.write("<script src='script/lib/jquery-1.6.2.min.js'>\x3C/script>")</script>
 <script type="text/javascript"
         src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
 <script type="text/javascript" src="script/lib/underscore-min.js"></script>
 <script type="text/javascript" src="script/lib/backbone-min.js"></script>
-<script type="text/javascript" src="script/map.js?ver=22"></script>
+<script type="text/javascript" src="script/map.js?ver=23"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     FoodTruckLocator.run(${mobile}, new google.maps.LatLng(${center.latitude}, ${center.longitude}),
@@ -107,7 +122,9 @@
   <h3>Scheduled Stops</h3>
   <ul id="truckSchedule"></ul>
 </div>
-<script src="//s.btstatic.com/tag.js">{ site: "zIOrUTR" }</script>
+<script src="//s.btstatic.com/tag.js">{
+  site: "zIOrUTR"
+}</script>
 <noscript>
   <iframe src="//s.thebrighttag.com/iframe?c=zIOrUTR" width="1" height="1" frameborder="0"
           scrolling="no" marginheight="0" marginwidth="0"></iframe>
