@@ -3,6 +3,27 @@ window.FoodTruckLocator = function() {
     return "http://www.google.com/mapfiles/marker" + letter + ".png"
   }
 
+  function setCookie(name,value,days) {
+      if (days) {
+          var date = new Date();
+          date.setTime(date.getTime()+(days*24*60*60*1000));
+          var expires = "; expires="+date.toGMTString();
+      }
+      else var expires = "";
+      document.cookie = name+"="+value+expires+"; path=/";
+  }
+
+  function getCookie(name) {
+      var nameEQ = name + "=";
+      var ca = document.cookie.split(';');
+      for(var i=0;i < ca.length;i++) {
+          var c = ca[i];
+          while (c.charAt(0)==' ') c = c.substring(1,c.length);
+          if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+      }
+      return null;
+  }
+
   function distanceSort(a, b) {
     if (typeof a.distance == "undefined" || a.distance == null) {
       return 0;
@@ -358,17 +379,107 @@ window.FoodTruckLocator = function() {
   var LocationView = Backbone.View.extend($.extend({
     initialize : function(options) {
       this.groups = [];
+      this.geocoder = new google.maps.Geocoder();
+      this.defaultFilterParams = { filter : true, locationName: 'Dearborn and Monroe, Chicago, IL',
+        radius: 10, locationCoords: { lat: 41.8807438, lng: -87.6293867} };
+      var self = this;
+      $("#radius").live("change", function(e) {
+        self.saveRadius(parseFloat($(this).attr("value")));
+        self.render();
+      });
+      $("#filterLocations").live("change", function(e) {
+        self.persistLocationParams();
+        self.render();
+      });
+      $("#changeLocationLink").live("click", function(e) {
+        e.preventDefault();
+        var addr = prompt("Please enter an address or intersection", null);
+        if (!addr) {
+          return;
+        }
+        if (!addr.match(/,/)) {
+          addr = addr + ", Chicago, IL";
+        }
+        self.geocoder.geocode( { 'address': addr }, function(results, status) {
+          if (status == google.maps.GeocoderStatus.OK) {
+            self.defaultFilterParams['locationName'] = addr;
+            self.defaultFilterParams['locationCoords'] = { lat : results[0].geometry.location.lat(),
+              lng : results[0].geometry.location.lng() };
+            self.persistLocationParams();
+            self.render();
+
+          } else {
+            alert("Unable to geocode your address");
+          }
+        });
+      })
     },
     showControlsForLocation : function() {
       $(".sliderContainer").css("display", "none");
       $("hr").css("display", "block");
+      $("#locationFilter").css("display", "block");
+      var locationSetup = this.getFilterParams();
+      $("#radius").attr("value", locationSetup.radius);
+      $("#filterLocationName").html(locationSetup.locationName);
+    },
+    getFilterParams : function() {
+      var radius = parseFloat(getCookie("radius"));
+      if (radius && radius != NaN) {
+        this.defaultFilterParams['radius'] = parseFloat(radius);
+      } else {
+        this.defaultFilterParams['radius'] = 10;
+      }
+      var filter = getCookie("filter");
+      this.defaultFilterParams.filter = "false" != filter;
+
+      var locationName = getCookie("locationName");
+      if (locationName) {
+        this.defaultFilterParams['locationName'] = locationName;
+      }
+      var latitude = getCookie("latitude");
+      var longitude = getCookie("longitude");
+      if (latitude && longitude) {
+        this.defaultFilterParams["locationCoords"] = { lat : parseFloat(latitude), lng : parseFloat(longitude) };
+      }
+      return this.defaultFilterParams;
+    },
+    getDefaultFilterParams : function() {
+      return this.defaultFilterParams;
+    },
+    persistLocationParams : function() {
+      setCookie("filter", this.defaultFilterParams['filter'], 365);
+      setCookie("radius", this.defaultFilterParams['radius'], 365);
+      setCookie("locationName", this.defaultFilterParams['locationName'], 365);
+      setCookie("latitude", this.defaultFilterParams['locationCoords']['lat'], 365);
+      setCookie("longitude", this.defaultFilterParams['locationCoords']['lng'], 365);
+    },
+    saveRadius : function(radius) {
+      this.defaultFilterParams['radius'] = radius;
+      this.persistLocationParams();
+    },
+    filterLocations : function(groups) {
+      if(!$("#filterLocations").is(":checked")) {
+        return groups;
+      }
+      var filtered = [];
+      var filterParams = this.getFilterParams();
+      var latlng = new google.maps.LatLng(filterParams.locationCoords.lat,
+                filterParams.locationCoords.lng);
+      $.each(groups, function(index, group) {
+        var distance = google.maps.geometry.spherical.computeDistanceBetween(latlng,
+                group.position.latLng, 3959);
+        if (distance <= filterParams.radius) {
+          filtered.push(group);
+        }
+      });
+      return filtered;
     },
     render : function() {
       var self = this;
       this.showControlsForLocation();
       this.initializeMap(this.options.map);
       self.removeAllMarkers();
-      var groups = self.groups = this.model.getLocationGroups();
+      var groups = self.groups = self.filterLocations(this.model.getLocationGroups());
       var bounds = new google.maps.LatLngBounds();
       bounds.extend(this.options.center);
       var menuSection = $("#foodTruckList");
@@ -461,6 +572,7 @@ window.FoodTruckLocator = function() {
     showControlsForMap : function() {
       $(".sliderContainer").css("display", "block");
       $("hr").css("display", "block");
+      $("#locationFilter").css("display", "none");
     },
     render: function() {
       var self = this;
@@ -528,7 +640,7 @@ window.FoodTruckLocator = function() {
           this.map = new google.maps.Map(document.getElementById("map_canvas"), {
             zoom: 13,
             center: center,
-            maxZoom : 15,
+            maxZoom : 18,
             mapTypeId: google.maps.MapTypeId.ROADMAP
           });
         }

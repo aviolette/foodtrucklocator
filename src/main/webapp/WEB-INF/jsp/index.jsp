@@ -49,12 +49,10 @@
                 id="sliderTime"></span></strong></div>
             <div id="slider"></div>
           </div>
-          <%--
           <div id="locationFilter">
-            Show results within <input type="text" size="2"/> miles of Dearborn and Monroe.</br>
-            <a href="#">Change my location.</a>
+            <input type="checkbox" id="filterLocations" checked="checked"/> &nbsp;Show results within <input type="text" id="radius" size="2"/> miles of <strong id="filterLocationName">Dearborn and Monroe</strong>.</br>
+            <a href="#" id="changeLocationLink">Change my location.</a>
           </div>
-          --%>
           <div class="timeSelect">
             Select a time: <br/><select id="hourSelect">
             <option>1</option>
@@ -122,6 +120,7 @@ document.write("<script src='script/lib/jquery-1.6.2.min.js'>\x3C/script>")</scr
   <h3>Scheduled Stops</h3>
   <ul id="truckSchedule"></ul>
 </div>
+<%-- brighttag script --%>
 <script src="//s.btstatic.com/tag.js">{
   site: "zIOrUTR"
 }</script>
