@@ -128,4 +128,15 @@ public class TerminationDetectorTest {
             tweetBuilder.text("Culture: Last Call River North!!  If you are on your way, tweet us")
                 .build()));
   }
+
+  @Test
+  public void testThx() {
+    assertTweet(tweetTime,
+        "Ok #Aon @britticisms @ClearlyBrittany @GrouponChicago @aggiefong this duck is flying home. See u all after the holiday. Thx 4 stopping by.");
+  }
+
+  @Test
+  public void testSeeYaLater() {
+    assertTweet(tweetTime, "See ya later AON. HAPPY HOLIDAYS, TWEEPS! Stay warm out there.");
+  }
 }
