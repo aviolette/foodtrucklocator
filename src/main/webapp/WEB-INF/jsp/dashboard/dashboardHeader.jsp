@@ -77,8 +77,10 @@
       <a class="brand" href="#">CFTF - Admin Dashboard</a>
       <ul class="nav">
         <li<c:if test="${nav == 'home'}"> class="active"</c:if>><a href="/admin">Home</a></li>
-        <li<c:if test="${nav == 'trucks'}"> class="active"</c:if>><a href="/admin/trucks">Trucks</a></li>
-        <li<c:if test="${nav == 'locations'}"> class="active"</c:if>><a href="/admin/locations">Locations</a></li>
+        <li<c:if test="${nav == 'trucks'}"> class="active"</c:if>><a href="/admin/trucks">Trucks</a>
+        </li>
+        <li<c:if test="${nav == 'locations'}"> class="active"</c:if>><a href="/admin/locations">Locations</a>
+        </li>
       </ul>
     </div>
   </div>
@@ -88,12 +90,12 @@
 
   <div class="content">
     <div class="page-header">
-      <h1>Dashboard
-        <small>Supporting text or tagline</small>
+      <h1><c:choose><c:when
+          test="${empty(headerName)}">Dashboard</c:when><c:otherwise>${headerName}</c:otherwise></c:choose>
       </h1>
     </div>
     <div class="row">
       <div class="span14">
-       <div class="alert-message" style="display:none" id="flash">&nbsp;</div>
+        <div class="alert-message" style="display:none" id="flash">&nbsp;</div>
 
 

@@ -18,6 +18,7 @@ import com.google.inject.Singleton;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import foodtruck.model.Trucks;
 import foodtruck.model.TweetSummary;
 import foodtruck.twitter.TwitterService;
 
@@ -29,10 +30,12 @@ import foodtruck.twitter.TwitterService;
 public class TruckServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(TruckServlet.class.getName());
   private final TwitterService twitterService;
+  private final Trucks trucks;
 
   @Inject
-  public TruckServlet(TwitterService twitterService) {
+  public TruckServlet(TwitterService twitterService, Trucks trucks) {
     this.twitterService = twitterService;
+    this.trucks = trucks;
   }
 
   @Override
@@ -55,6 +58,7 @@ public class TruckServlet extends HttpServlet {
         return super.getAttribute(name);
       }
     };
+    req.setAttribute("headerName", this.trucks.findById(truckId).getName());
     req.getRequestDispatcher(jsp).forward(req, resp);
   }
 
