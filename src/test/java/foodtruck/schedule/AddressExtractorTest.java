@@ -445,6 +445,18 @@ public class AddressExtractorTest {
         "thesouthernmac: Paulina Brown Line for a little while longer!!");
   }
 
+  @Test @Ignore("Not implemented yet")
+  public void testNearIntersection() {
+    assertTweet("Superior and Fairbanks, Chicago, IL",
+        "5411empanadas: Landed on Superior just east of Fairbanks.");
+    assertTweet("Superior and Fairbanks, Chicago, IL",
+        "5411empanadas: Landed on Superior just south of Fairbanks.");
+    assertTweet("Superior and Fairbanks, Chicago, IL",
+        "5411empanadas: Landed on Superior just north of Fairbanks.");
+    assertTweet("Superior and Fairbanks, Chicago, IL",
+        "5411empanadas: Landed on Superior just west of Fairbanks.");
+  }
+
   private void assertTweet(String expected, String tweetText, Truck truck) {
     List<String> addresses = parser.parse(tweetText, truck);
     assertNotNull(addresses);
