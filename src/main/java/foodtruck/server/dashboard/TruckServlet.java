@@ -20,7 +20,9 @@ import org.codehaus.jettison.json.JSONObject;
 
 import foodtruck.model.Trucks;
 import foodtruck.model.TweetSummary;
+import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.twitter.TwitterService;
+import foodtruck.util.Clock;
 
 /**
  * @author aviolette@gmail.com
@@ -31,11 +33,16 @@ public class TruckServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(TruckServlet.class.getName());
   private final TwitterService twitterService;
   private final Trucks trucks;
+  private final FoodTruckStopService truckService;
+  private final Clock clock;
 
   @Inject
-  public TruckServlet(TwitterService twitterService, Trucks trucks) {
+  public TruckServlet(TwitterService twitterService, Trucks trucks,
+      FoodTruckStopService truckService, Clock clock) {
     this.twitterService = twitterService;
     this.trucks = trucks;
+    this.truckService = truckService;
+    this.clock = clock;
   }
 
   @Override
@@ -44,10 +51,8 @@ public class TruckServlet extends HttpServlet {
     final String requestURI = req.getRequestURI();
     final String truckId = requestURI.substring(14);
     log.info("Loading dashboard for " + truckId);
-
     final List<TweetSummary> tweetSummaries = twitterService.findForTruck(truckId);
     req.setAttribute("tweets", tweetSummaries);
-
     final String jsp = "/WEB-INF/jsp/dashboard/truckDashboard.jsp";
     // hack required when using * patterns in guice
     req = new HttpServletRequestWrapper(req) {
@@ -58,7 +63,8 @@ public class TruckServlet extends HttpServlet {
         return super.getAttribute(name);
       }
     };
-    req.setAttribute("headerName", this.trucks.findById(truckId).getName());
+    req.setAttribute("headerName", trucks.findById(truckId).getName());
+    req.setAttribute("schedule", truckService.findStopsForDay(truckId, clock.currentDay()));
     req.getRequestDispatcher(jsp).forward(req, resp);
   }
 

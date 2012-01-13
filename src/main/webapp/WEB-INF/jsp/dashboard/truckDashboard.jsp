@@ -1,4 +1,12 @@
 <%@include file="dashboardHeader.jsp" %>
+<h2>Schedule</h2>
+<table>
+  <tbody>
+    <c:forEach var="stop" items="${schedule.stops}">
+      <tr><td>${stop.startTime}</td><td>${stop.endTime}</td><td>${stop.location.name}</td></tr>
+    </c:forEach>
+  </tbody>
+</table>
 <h2>Tweets</h2>
 <table>
   <thead>
