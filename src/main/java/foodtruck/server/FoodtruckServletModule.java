@@ -1,6 +1,7 @@
 package foodtruck.server;
 
 import com.google.inject.Provides;
+import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import com.google.inject.servlet.ServletModule;
 
@@ -12,8 +13,8 @@ import foodtruck.server.api.FoodTruckScheduleServlet;
 import foodtruck.server.api.TruckStopServlet;
 import foodtruck.server.api.TweetUpdateServlet;
 import foodtruck.server.dashboard.AdminDashboardServlet;
-import foodtruck.server.dashboard.TruckListServlet;
 import foodtruck.server.dashboard.LocationListServlet;
+import foodtruck.server.dashboard.TruckListServlet;
 import foodtruck.server.dashboard.TruckServlet;
 import foodtruck.server.job.RecacheServlet;
 import foodtruck.server.job.TweetCacheUpdateServlet;
@@ -28,6 +29,10 @@ public class FoodtruckServletModule extends ServletModule {
 
   @Override
   protected void configureServlets() {
+    if ("true".equals(System.getProperty("enable.remote_api"))) {
+      bind(com.google.apphosting.utils.remoteapi.RemoteApiServlet.class).in(Singleton.class);
+      serve("/remote_api").with(com.google.apphosting.utils.remoteapi.RemoteApiServlet.class);
+    }
     serve("/cron/recache").with(RecacheServlet.class);
     serve("/cron/tweets").with(TweetCacheUpdateServlet.class);
     serve("/cron/tweetPurge").with(TwitterCachePurgeServlet.class);
@@ -39,6 +44,7 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/service/schedule").with(DailyScheduleServlet.class);
     serve("/service/stops*").with(TruckStopServlet.class);
     serve("/service/tweets").with(TweetUpdateServlet.class);
+    serve("/heatmap").with(HeatmapServlet.class);
     serveRegex("/[\\w]*").with(FoodTruckServlet.class);
   }
 
