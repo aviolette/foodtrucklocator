@@ -25,15 +25,24 @@
       for (var i = 0; i < datapoints.length; i++) {
         // Construct the circle for each value in citymap. We scale population by 20.
         var city = datapoints[i];
+        var weight = city[2];
+        var opacity = 0.85;
+        var color = "#ff4500";
+        var radius = 20;
+        if (weight > 10) {
+          opacity = 0.85;
+          color = (weight > 100) ? "#ff0000" : "ff4500";
+          radius = 30;
+        }
         var populationOptions = {
-          strokeColor: "#FF0000",
-          strokeOpacity: 0.8,
+          strokeColor: color,
+          strokeOpacity: opacity,
           strokeWeight: 2,
-          fillColor: "#FF0000",
-          fillOpacity: 0.35,
+          fillColor: color,
+          fillOpacity: opacity,
           map: map,
           center: new google.maps.LatLng(city[0], city[1]),
-          radius: 100
+          radius: radius
         };
         var cityCircle = new google.maps.Circle(populationOptions);
       }
