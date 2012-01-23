@@ -15,7 +15,7 @@ categories: Savory
 url: http://www.meatyballsmobile.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1204282220/Meatyballs_Mobile_Logo_A_normal.jpg
 foursquare: 4cb70527651cb7135bf03a3a
-twittalyzer: "on"
+twittalyzer: "off"
 facebook: /MeatyballsMobile
 ---
 id: meatyballs2
@@ -138,7 +138,7 @@ name: Suzy Samosas
 categories: Indian
 url: http://suzysingh.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1542394745/photo__18__normal.JPG
-twittalyzer: "on"
+twittalyzer: "off"
 facebook: /pages/Suzys-Samosas-Food-Truck/123902457709199
 ---
 id: gigisbakeshop
@@ -185,7 +185,7 @@ name: Homage Street Food
 categories: Food
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1491944244/logo_orange_and_black_twit_normal.jpg
 foursquare: 4e231cb415207ed86eb64058
-twittalyzer: "on"
+twittalyzer: "off"
 facebook: /pages/Homage-Street-Food/100851666668024
 ---
 id: bridgeportpasty
@@ -205,7 +205,7 @@ name: Culture Yogurt
 categories: Dessert
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1484907277/logosmall_normal.jpg
 foursquare: 4e4bf6bb6365dbba614e6ffa
-twittalyzer: "on"
+twittalyzer: "off"
 ---
 id: adelitatruck
 twitter: adelitatruck
@@ -262,7 +262,7 @@ categories: Dessert
 url: http://www.foreveryogurt.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1332195359/twitterlogo1_normal.png
 foursquare: 4e8a2dc12c5b5dc29df63d76
-twittalyzer: "on"
+twittalyzer: "off"
 facebook: http://www.foreveryogurt.com
 ---
 id: foreveryogurt
@@ -272,7 +272,7 @@ categories: Dessert
 url: http://www.foreveryogurt.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1332195359/twitterlogo1_normal.png
 foursquare: 4e8a2dc12c5b5dc29df63d76
-twittalyzer: "on"
+twittalyzer: "off"
 facebook: http://www.foreveryogurt.com
 ---
 id: courageouscakes
@@ -467,7 +467,7 @@ name: Sweet Spot Macarons
 url: http://www.sweetspotmacarons.com
 categories: Sweet
 foursquare: 4e9f0e2a7beb438c5e7bd7d0
-twittalyzer: "on"
+twittalyzer: "off"
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1514611309/Logo_SweetSpotMac_Block4C_Avatar_normal.jpg
 facebook: /SweetSpotMacarons
 ---
@@ -669,4 +669,12 @@ name: Gia Via Sweets
 categories: Sweet
 url: http://www.giaviasweets.com/
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1558342471/GiaVia_Sweets_normal.png
+twittalyzer: "on"
+---
+id: eleaven
+twitter: eleaven
+name: e.leaven Food Co.
+categories: Sweet
+url: http://www.eleavenfood.com
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/580743327/images_normal.jpg
 twittalyzer: "on"
