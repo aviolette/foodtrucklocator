@@ -110,9 +110,11 @@ public class AddressExtractor {
         new PatternTransform(Pattern
             .compile("\\buic medical\\b", Pattern.CASE_INSENSITIVE),
             keyword("Wood and Taylor, Chicago, IL"), true, 0),
+/*
         // UIC
         new PatternTransform(Pattern.compile("UIC\\b", Pattern.CASE_INSENSITIVE),
             keyword("Vernon Park Circle, Chicago, IL"), true, 0),
+            */
         // tamale spaceship format
         new PatternTransform(Pattern.compile("<<(.*)>>"), null, true, 1),
         // Between two streets

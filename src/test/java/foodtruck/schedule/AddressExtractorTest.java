@@ -275,7 +275,7 @@ public class AddressExtractorTest {
         "Who's in the mood for falafels! On our way to U of C!!");
   }
 
-  @Test
+  @Test @Ignore("Too many false positives")
   public void testUIC() {
     assertTweet("Vernon Park Circle, Chicago, IL",
         "UIC the #KefirTruck has landed! Come treat yourself between classes with a cup of frozen goodness. Flavors are pumpkin spice and original.");
