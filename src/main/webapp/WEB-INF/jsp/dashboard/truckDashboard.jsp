@@ -1,10 +1,14 @@
 <%@include file="dashboardHeader.jsp" %>
 <h2>Schedule</h2>
 <table>
-  <tbody>
-    <c:forEach var="stop" items="${schedule.stops}">
-      <tr><td>${stop.startTime}</td><td>${stop.endTime}</td><td>${stop.location.name}</td></tr>
-    </c:forEach>
+  <thead>
+  <tr>
+    <td>Start Time</td>
+    <td>End Time</td>
+    <td>Location</td>
+  </tr>
+  </thead>
+  <tbody id="scheduleTable">
   </tbody>
 </table>
 <h2>Tweets</h2>
@@ -30,6 +34,15 @@
 </table>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
 <script type="text/javascript">
+  var schedule = ${schedule};
+  function refreshSchedule() {
+    var scheduleTable = $("#scheduleTable");
+    scheduleTable.empty();
+    $.each(schedule["stops"], function(truckIndex, stop) {
+      scheduleTable.append("<tr><td>" + stop.startTime + "</td><td>" + stop.endTime + "</td><td>" + stop.location.name +"</td></tr>")
+    })
+  }
+  refreshSchedule();
   $(".ignoreButton").click(function(evt) {
     var id = $(this).attr("id");
     var value = $(this).attr("value");

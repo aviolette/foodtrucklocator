@@ -20,6 +20,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 import foodtruck.model.Trucks;
 import foodtruck.model.TweetSummary;
+import foodtruck.server.api.JsonWriter;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.twitter.TwitterService;
 import foodtruck.util.Clock;
@@ -35,14 +36,16 @@ public class TruckServlet extends HttpServlet {
   private final Trucks trucks;
   private final FoodTruckStopService truckService;
   private final Clock clock;
+  private final JsonWriter writer;
 
   @Inject
   public TruckServlet(TwitterService twitterService, Trucks trucks,
-      FoodTruckStopService truckService, Clock clock) {
+      FoodTruckStopService truckService, Clock clock, JsonWriter writer) {
     this.twitterService = twitterService;
     this.trucks = trucks;
     this.truckService = truckService;
     this.clock = clock;
+    this.writer = writer;
   }
 
   @Override
@@ -64,7 +67,11 @@ public class TruckServlet extends HttpServlet {
       }
     };
     req.setAttribute("headerName", trucks.findById(truckId).getName());
-    req.setAttribute("schedule", truckService.findStopsForDay(truckId, clock.currentDay()));
+    try {
+      req.setAttribute("schedule", writer.writeSchedule(truckService.findStopsForDay(truckId, clock.currentDay())));
+    } catch (JSONException e) {
+      throw new RuntimeException(e);
+    }
     req.getRequestDispatcher(jsp).forward(req, resp);
   }
 
