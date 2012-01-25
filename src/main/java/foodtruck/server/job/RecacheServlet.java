@@ -7,9 +7,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import foodtruck.model.Truck;
+import foodtruck.model.Trucks;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.twitter.TwitterService;
 import foodtruck.util.Clock;
@@ -19,28 +22,30 @@ import foodtruck.util.Clock;
  * @since Jul 13, 2011
  */
 @Singleton
-public class RecacheServlet extends HttpServlet implements Runnable {
+public class RecacheServlet extends HttpServlet {
   private final FoodTruckStopService service;
   private final Clock clock;
   private final TwitterService twitterService;
+  private final Trucks trucks;
 
   @Inject
   public RecacheServlet(FoodTruckStopService service, Clock clock,
-      TwitterService twitterService) {
+      TwitterService twitterService, Trucks trucks) {
     this.twitterService = twitterService;
     this.service = service;
     this.clock = clock;
+    this.trucks = trucks;
   }
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-    run();
-  }
-
-  @Override
-  public void run() {
-    service.updateStopsFor(clock.currentDay());
+    final String truck = req.getParameter("truck");
+    if (!Strings.isNullOrEmpty(truck)) {
+      service.updateStopsForTruck(clock.currentDay(), trucks.findById(truck));
+    } else {
+      service.updateStopsFor(clock.currentDay());
+    }
     twitterService.twittalyze();
   }
 }

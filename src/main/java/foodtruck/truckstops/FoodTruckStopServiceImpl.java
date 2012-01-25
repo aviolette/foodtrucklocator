@@ -48,6 +48,14 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   }
 
   @Override
+  public void updateStopsForTruck(LocalDate instant, Truck truck) {
+    TimeRange theDay = new TimeRange(instant, zone);
+    List<TruckStop> stops = googleCalendar.findForTime(theDay, truck);
+    truckStopDAO.deleteAfter(theDay.getStartDateTime(), truck.getId());
+    truckStopDAO.addStops(stops);
+  }
+
+  @Override
   public void updateStopsFor(LocalDate instant) {
     TimeRange theDay = new TimeRange(instant, zone);
     pullTruckSchedule(theDay);
@@ -55,7 +63,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
 
   private void pullTruckSchedule(TimeRange theDay) {
     try {
-      List<TruckStop> stops = googleCalendar.findForTime(theDay);
+      List<TruckStop> stops = googleCalendar.findForTime(theDay, null);
       truckStopDAO.deleteAfter(theDay.getStartDateTime());
       truckStopDAO.addStops(stops);
     } catch (Exception e) {

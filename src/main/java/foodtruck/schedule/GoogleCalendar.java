@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Nullable;
+
 import com.google.appengine.repackaged.com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.gdata.client.calendar.CalendarQuery;
@@ -55,13 +57,16 @@ public class GoogleCalendar implements ScheduleStrategy {
 
   // TODO: rewrite this...its awfully crappy
   @Override
-  public List<TruckStop> findForTime(TimeRange range) {
+  public List<TruckStop> findForTime(TimeRange range, @Nullable Truck searchTruck) {
     CalendarQuery query = queryFactory.create();
     query.setMinimumStartTime(new DateTime(range.getStartDateTime().toDate(),
         defaultZone.toTimeZone()));
     query.setMaximumStartTime(new DateTime(range.getEndDateTime().toDate(),
         defaultZone.toTimeZone()));
     query.setMaxResults(1000);
+    if (searchTruck != null) {
+      query.setFullTextQuery(searchTruck.getId());
+    }
     query.setStringCustomParameter("singleevents", "true");
     ImmutableList.Builder<TruckStop> builder = ImmutableList.builder();
     try {

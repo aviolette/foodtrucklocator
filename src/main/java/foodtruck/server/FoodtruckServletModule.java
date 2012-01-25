@@ -8,6 +8,7 @@ import com.google.inject.servlet.ServletModule;
 import org.joda.time.DateTimeZone;
 
 import foodtruck.model.Location;
+import foodtruck.server.api.AdminTruckStopServlet;
 import foodtruck.server.api.DailyScheduleServlet;
 import foodtruck.server.api.FoodTruckScheduleServlet;
 import foodtruck.server.api.TruckStopServlet;
@@ -26,7 +27,6 @@ import foodtruck.server.job.TwitterCachePurgeServlet;
  * @since Jul 12, 2011
  */
 public class FoodtruckServletModule extends ServletModule {
-
   @Override
   protected void configureServlets() {
     if ("true".equals(System.getProperty("enable.remote_api"))) {
@@ -40,6 +40,7 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/admin/trucks/*").with(TruckServlet.class);
     serve("/admin/trucks").with(TruckListServlet.class);
     serve("/admin/locations").with(LocationListServlet.class);
+    serve("/admin/service/stop/*").with(AdminTruckStopServlet.class);
     serve("/service/schedule/*").with(FoodTruckScheduleServlet.class);
     serve("/service/schedule").with(DailyScheduleServlet.class);
     serve("/service/stops*").with(TruckStopServlet.class);

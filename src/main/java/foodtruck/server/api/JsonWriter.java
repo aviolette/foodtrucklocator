@@ -3,6 +3,7 @@ package foodtruck.server.api;
 
 import java.util.Map;
 
+import com.google.appengine.api.datastore.Key;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
@@ -83,11 +84,16 @@ public class JsonWriter {
     for (TruckStop stop : schedule.getStops()) {
       JSONObject truckStop = new JSONObject()
           .put("location", writeLocation(stop.getLocation(), 0))
+          .put("id", writeKey(stop.getKey()))
           .put("startTime", timeFormatter.print(stop.getStartTime()))
           .put("endTime", timeFormatter.print(stop.getEndTime()));
       arr.put(truckStop);
     }
     return obj.put("stops", arr);
+  }
+
+  private long writeKey(Object key) {
+    return ((Key)key).getId();
   }
 
 

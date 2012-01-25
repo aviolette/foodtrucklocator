@@ -6,6 +6,7 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import foodtruck.model.DailySchedule;
+import foodtruck.model.Truck;
 import foodtruck.model.TruckLocationGroup;
 import foodtruck.model.TruckSchedule;
 
@@ -40,4 +41,6 @@ public interface FoodTruckStopService {
    * @return the current schedule
    */
   DailySchedule findStopsForDay(LocalDate day);
+
+  void updateStopsForTruck(LocalDate instant, Truck truck);
 }

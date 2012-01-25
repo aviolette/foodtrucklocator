@@ -6,6 +6,7 @@
     <td>Start Time</td>
     <td>End Time</td>
     <td>Location</td>
+    <td>&nbsp;</td>
   </tr>
   </thead>
   <tbody id="scheduleTable">
@@ -32,6 +33,7 @@
   </c:forEach>
   </tbody>
 </table>
+<button class="btn primary" id="recacheButton">Recache</button>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
 <script type="text/javascript">
   var schedule = ${schedule};
@@ -39,10 +41,25 @@
     var scheduleTable = $("#scheduleTable");
     scheduleTable.empty();
     $.each(schedule["stops"], function(truckIndex, stop) {
-      scheduleTable.append("<tr><td>" + stop.startTime + "</td><td>" + stop.endTime + "</td><td>" + stop.location.name +"</td></tr>")
+      scheduleTable.append("<tr><td>" + stop.startTime + "</td><td>" + stop.endTime + "</td><td>"
+          + stop.location.name +"</td><td><button class='btn danger'>End Now</button>&nbsp;" +
+          "<button id='truckDelete" + truckIndex + "' class='btn danger'>Delete</button></td></tr>");
+      $("#truckDelete" + truckIndex).click(function(e) {
+        e.preventDefault();
+        alert(stop.id);
+      });
     })
   }
   refreshSchedule();
+  $("#recacheButton").click(function(evt) {
+    $.ajax({
+      url: "/cron/recache?truck=${truckId}",
+      context: document.body,
+      dataType: 'json',
+      success: function(data) {
+        refreshSchedule();
+      }});
+  });
   $(".ignoreButton").click(function(evt) {
     var id = $(this).attr("id");
     var value = $(this).attr("value");

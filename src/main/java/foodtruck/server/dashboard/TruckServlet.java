@@ -67,6 +67,7 @@ public class TruckServlet extends HttpServlet {
       }
     };
     req.setAttribute("headerName", trucks.findById(truckId).getName());
+    req.setAttribute("truckId", truckId);
     try {
       req.setAttribute("schedule", writer.writeSchedule(truckService.findStopsForDay(truckId, clock.currentDay())));
     } catch (JSONException e) {
