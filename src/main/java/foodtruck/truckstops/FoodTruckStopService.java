@@ -9,6 +9,7 @@ import foodtruck.model.DailySchedule;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckLocationGroup;
 import foodtruck.model.TruckSchedule;
+import foodtruck.model.TruckStop;
 
 /**
  * Service for manipulating food truck stops.
@@ -43,4 +44,8 @@ public interface FoodTruckStopService {
   DailySchedule findStopsForDay(LocalDate day);
 
   void updateStopsForTruck(LocalDate instant, Truck truck);
+
+  TruckStop findById(long stopId);
+
+  void delete(long stopId);
 }

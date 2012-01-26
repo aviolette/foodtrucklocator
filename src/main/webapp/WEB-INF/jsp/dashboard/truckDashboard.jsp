@@ -36,26 +36,45 @@
 <button class="btn primary" id="recacheButton">Recache</button>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
 <script type="text/javascript">
-  var schedule = ${schedule};
   function refreshSchedule() {
     var scheduleTable = $("#scheduleTable");
     scheduleTable.empty();
-    $.each(schedule["stops"], function(truckIndex, stop) {
-      scheduleTable.append("<tr><td>" + stop.startTime + "</td><td>" + stop.endTime + "</td><td>"
-          + stop.location.name +"</td><td><button class='btn danger'>End Now</button>&nbsp;" +
-          "<button id='truckDelete" + truckIndex + "' class='btn danger'>Delete</button></td></tr>");
-      $("#truckDelete" + truckIndex).click(function(e) {
-        e.preventDefault();
-        alert(stop.id);
-      });
+    $.ajax({
+      url: '/service/schedule/${truckId}',
+      type: 'GET',
+      dataType: 'json',
+      success : function(schedule) {
+        $.each(schedule["stops"], function(truckIndex, stop) {
+          scheduleTable.append("<tr><td>" + stop.startTime + "</td><td>" + stop.endTime + "</td><td>"
+              + stop.location.name +"</td><td><button class='btn danger'>End Now</button>&nbsp;" +
+              "<button id='truckDelete" + truckIndex + "' class='btn danger'>Delete</button></td></tr>");
+          $("#truckDelete" + truckIndex).click(function(e) {
+            e.preventDefault();
+            $.ajax({
+              url: "/admin/service/stop/" + stop.id,
+              type: 'DELETE',
+              complete: function() {
+                refreshSchedule();
+              }
+            })
+          });
+        })
+      }
     })
   }
   refreshSchedule();
-  $("#recacheButton").click(function(evt) {
+  var $recacheButton = $("#recacheButton");
+  $recacheButton.click(function(evt) {
+    $recacheButton.empty();
+    $recacheButton.append("Refreshing...")
     $.ajax({
       url: "/cron/recache?truck=${truckId}",
       context: document.body,
       dataType: 'json',
+      complete: function() {
+        $recacheButton.empty();
+        $recacheButton.append("Refresh")
+      },
       success: function(data) {
         refreshSchedule();
       }});

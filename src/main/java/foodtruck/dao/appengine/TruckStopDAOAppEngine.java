@@ -11,7 +11,9 @@ import javax.annotation.Nullable;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -118,14 +120,19 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
       if (startTime.isAfter(day.plusDays(1).toDateMidnight(zone))) {
         continue;
       }
-      final DateTime endTime = new DateTime((Date) entity.getProperty(END_TIME_FIELD), zone);
-      stops.add(new TruckStop(trucks.findById((String) entity.getProperty(TRUCK_ID_FIELD)),
-          startTime, endTime,
-          new Location((Double) entity.getProperty(LATITUDE_FIELD), (Double) entity.getProperty(
-              LONGITUDE_FIELD), (String) entity.getProperty(LOCATION_NAME_FIELD)),
-          entity.getKey()));
+      stops.add(toTruckStop(entity));
     }
     return stops.build();
+  }
+
+  private TruckStop toTruckStop(Entity entity) {
+    final DateTime startTime = new DateTime((Date) entity.getProperty(START_TIME_FIELD), zone);
+    final DateTime endTime = new DateTime((Date) entity.getProperty(END_TIME_FIELD), zone);
+    return new TruckStop(trucks.findById((String) entity.getProperty(TRUCK_ID_FIELD)),
+        startTime, endTime,
+        new Location((Double) entity.getProperty(LATITUDE_FIELD), (Double) entity.getProperty(
+            LONGITUDE_FIELD), (String) entity.getProperty(LOCATION_NAME_FIELD)),
+        entity.getKey());
   }
 
   @Override
@@ -161,5 +168,22 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
       keys.add((Key) stop.getKey());
     }
     dataStore.delete(keys.build());
+  }
+
+  @Override public TruckStop findById(long stopId) {
+    DatastoreService dataStore = serviceProvider.get();
+    Key key = KeyFactory.createKey(STOP_KIND, stopId);
+    try {
+      Entity entity = dataStore.get(key);
+      return toTruckStop(entity);
+    } catch (EntityNotFoundException e) {
+      return null;
+    }
+  }
+
+  @Override public void delete(long stopId) {
+    DatastoreService dataStore = serviceProvider.get();
+    Key key = KeyFactory.createKey(STOP_KIND, stopId);
+    dataStore.delete(key);
   }
 }

@@ -55,6 +55,14 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     truckStopDAO.addStops(stops);
   }
 
+  @Override public TruckStop findById(long stopId) {
+    return truckStopDAO.findById(stopId);
+  }
+
+  @Override public void delete(long stopId) {
+    truckStopDAO.delete(stopId);
+  }
+
   @Override
   public void updateStopsFor(LocalDate instant) {
     TimeRange theDay = new TimeRange(instant, zone);

@@ -42,4 +42,8 @@ public interface TruckStopDAO {
    * Deletes the stops after the specified time
    */
   void deleteStops(List<TruckStop> toDelete);
+
+  TruckStop findById(long stopId);
+
+  void delete(long stopId);
 }
