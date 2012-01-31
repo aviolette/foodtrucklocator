@@ -6,6 +6,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
@@ -55,12 +57,16 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     truckStopDAO.addStops(stops);
   }
 
-  @Override public TruckStop findById(long stopId) {
+  @Override public @Nullable TruckStop findById(long stopId) {
     return truckStopDAO.findById(stopId);
   }
 
   @Override public void delete(long stopId) {
     truckStopDAO.delete(stopId);
+  }
+
+  @Override public void update(TruckStop truckStop) {
+    truckStopDAO.update(truckStop);
   }
 
   @Override

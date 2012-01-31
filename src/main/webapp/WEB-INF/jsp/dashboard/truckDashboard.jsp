@@ -23,13 +23,13 @@
   </thead>
   <tbody>
   <c:forEach var="tweet" items="${tweets}">
-  <tr>
-    <td><input type="button" class="ignoreButton btn primary" id="${tweet.id}"
-               value="<c:choose><c:when test="${tweet.ignoreInTwittalyzer}">Unignore</c:when><c:otherwise>Ignore</c:otherwise></c:choose>"/>
-    </td>
-    <td>${tweet.time}</td>
-    <td>${tweet.text}</td>
-  </tr>
+    <tr>
+      <td><input type="button" class="ignoreButton btn primary" id="${tweet.id}"
+                 value="<c:choose><c:when test="${tweet.ignoreInTwittalyzer}">Unignore</c:when><c:otherwise>Ignore</c:otherwise></c:choose>"/>
+      </td>
+      <td>${tweet.time}</td>
+      <td>${tweet.text}</td>
+    </tr>
   </c:forEach>
   </tbody>
 </table>
@@ -45,9 +45,31 @@
       dataType: 'json',
       success : function(schedule) {
         $.each(schedule["stops"], function(truckIndex, stop) {
-          scheduleTable.append("<tr><td>" + stop.startTime + "</td><td>" + stop.endTime + "</td><td>"
-              + stop.location.name +"</td><td><button class='btn danger'>End Now</button>&nbsp;" +
-              "<button id='truckDelete" + truckIndex + "' class='btn danger'>Delete</button></td></tr>");
+          scheduleTable.append("<tr><td>" + stop.startTime + "</td><td>" + stop.endTime +
+              "</td><td>"
+              + stop.location.name + "</td><td><button  id='truckEndNow" + truckIndex +
+              "' class='btn danger'>End Now</button>&nbsp;" +
+              "<button id='truckDelete" + truckIndex +
+              "' class='btn danger'>Delete</button></td></tr>");
+          $("#truckEndNow" + truckIndex).click(function(e) {
+            e.preventDefault();
+            var now = new Date();
+            var hour = now.getHours();
+            var ampm = "AM";
+            if (hour > 12) {
+              ampm = "PM";
+              hour = hour - 12;
+            }
+            stop.endTime = hour + ":" + now.getMinutes() + " " + ampm;
+            stop.truckId = "${truckId}";
+            $.ajax({
+              url: "/admin/service/stop/" + stop.id,
+              type: 'PUT',
+              contentType: 'application/json',
+              data: JSON.stringify(stop),
+              success: refreshSchedule
+            });
+          });
           $("#truckDelete" + truckIndex).click(function(e) {
             e.preventDefault();
             $.ajax({

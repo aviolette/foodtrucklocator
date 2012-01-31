@@ -92,15 +92,20 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
   public void addStops(List<TruckStop> stops) {
     DatastoreService service = DatastoreServiceFactory.getDatastoreService();
     for (TruckStop stop : stops) {
-      Entity truckStop = new Entity(STOP_KIND);
-      truckStop.setProperty(TRUCK_ID_FIELD, stop.getTruck().getId());
-      truckStop.setProperty(START_TIME_FIELD, stop.getStartTime().toDate());
-      truckStop.setProperty(END_TIME_FIELD, stop.getEndTime().toDate());
-      truckStop.setProperty(LATITUDE_FIELD, stop.getLocation().getLatitude());
-      truckStop.setProperty(LONGITUDE_FIELD, stop.getLocation().getLongitude());
-      truckStop.setProperty(LOCATION_NAME_FIELD, stop.getLocation().getName());
+      Entity truckStop = toEntity(stop, null);
       service.put(truckStop);
     }
+  }
+
+  private Entity toEntity(TruckStop stop, Entity entity) {
+    Entity truckStop = entity == null ? new Entity(STOP_KIND) : entity;
+    truckStop.setProperty(TRUCK_ID_FIELD, stop.getTruck().getId());
+    truckStop.setProperty(START_TIME_FIELD, stop.getStartTime().toDate());
+    truckStop.setProperty(END_TIME_FIELD, stop.getEndTime().toDate());
+    truckStop.setProperty(LATITUDE_FIELD, stop.getLocation().getLatitude());
+    truckStop.setProperty(LONGITUDE_FIELD, stop.getLocation().getLongitude());
+    truckStop.setProperty(LOCATION_NAME_FIELD, stop.getLocation().getName());
+    return truckStop;
   }
 
   @Override
@@ -185,5 +190,17 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
     DatastoreService dataStore = serviceProvider.get();
     Key key = KeyFactory.createKey(STOP_KIND, stopId);
     dataStore.delete(key);
+  }
+
+  @Override public void update(TruckStop truckStop) {
+    DatastoreService dataStore = serviceProvider.get();
+    Key key = KeyFactory.createKey(STOP_KIND, (Long) truckStop.getKey());
+    try {
+      Entity entity = dataStore.get(key);
+      entity = toEntity(truckStop, entity);
+      dataStore.put(entity);
+    } catch (EntityNotFoundException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

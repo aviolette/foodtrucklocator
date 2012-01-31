@@ -46,4 +46,6 @@ public interface TruckStopDAO {
   TruckStop findById(long stopId);
 
   void delete(long stopId);
+
+  void update(TruckStop truckStop);
 }

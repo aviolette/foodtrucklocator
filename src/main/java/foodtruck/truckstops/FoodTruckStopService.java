@@ -2,6 +2,8 @@ package foodtruck.truckstops;
 
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
@@ -45,7 +47,21 @@ public interface FoodTruckStopService {
 
   void updateStopsForTruck(LocalDate instant, Truck truck);
 
-  TruckStop findById(long stopId);
+  /**
+   * Finds a food truck stop by id.
+   * @param stopId the stop id
+   * @return the truck stop or {@code null} if it could not be found
+   */
+  @Nullable TruckStop findById(long stopId);
 
+  /**
+   * Deletes a stop specified by id
+   * @param stopId the stop id
+   */
   void delete(long stopId);
+
+  /**
+   * Updates a truck stop with new information.
+   */
+  void update(TruckStop truckStop);
 }
