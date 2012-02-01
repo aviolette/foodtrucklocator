@@ -12,6 +12,8 @@ import org.joda.time.format.DateTimeFormatter;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import foodtruck.geolocation.GeoLocator;
+import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
@@ -27,12 +29,14 @@ public class JsonReader {
   private DateTimeFormatter format;
   private final Trucks trucks;
   private final Clock clock;
+  private final GeoLocator geolocator;
 
   @Inject
-  public JsonReader(Clock clock, Trucks trucks, DateTimeZone zone) {
+  public JsonReader(Clock clock, Trucks trucks, DateTimeZone zone, GeoLocator geolocator) {
     this.trucks = trucks;
     this.clock = clock;
     this.format = DateTimeFormat.forPattern("hh:mm a").withZone(zone);
+    this.geolocator = geolocator;
   }
 
   TruckStop read(JSONObject obj) throws JSONException {
@@ -43,8 +47,15 @@ public class JsonReader {
         .withDate(today.getYear(), today.getMonthOfYear(), today.getDayOfMonth());
     DateTime endTime = format.parseDateTime(obj.getString("endTime"))
         .withDate(today.getYear(), today.getMonthOfYear(), today.getDayOfMonth());
-    Location location = parseLocation(obj.getJSONObject("location"));
-    checkNotNull(location, "Location is unparsable");
+    final JSONObject loc = obj.optJSONObject("location");
+    Location location;
+    if (loc == null) {
+      location = geolocator.locate(obj.getString("locationName"), GeolocationGranularity.NARROW);
+      checkNotNull(location, "Location couldn't be resolved");
+    } else {
+      location = parseLocation(loc);
+      checkNotNull(location, "Location is unparsable");
+    }
     checkState(location.isResolved(), "Location is not resolved");
     long key = obj.getLong("id");
     return new TruckStop(truck, startTime, endTime, location, key);

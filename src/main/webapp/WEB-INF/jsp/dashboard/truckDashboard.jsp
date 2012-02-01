@@ -34,7 +34,43 @@
   </tbody>
 </table>
 <button class="btn primary" id="recacheButton">Recache</button>
+
+<div id="edit-stop" class="modal hide fade">
+  <div class="modal-header">
+    <a href="#" class="close">&times;</a>
+    <h3>Edit Stop</h3>
+  </div>
+  <div class="modal-body">
+    <form>
+      <fieldset>
+    <div class="clearfix">
+      <label for="startTimeInput">Start time</label>
+      <div class="input">
+        <input id="startTimeInput" type="text"/>
+      </div>
+    </div>
+    <div class="clearfix">
+      <label for="endTimeInput">End time</label>
+      <div class="input">
+        <input id="endTimeInput" type="text"/>
+      </div>
+    </div>
+    <div class="clearfix">
+      <label for="locationInput">Location</label>
+      <div class="input">
+        <input id="locationInput" type="text"/>
+      </div>
+    </div>
+        </fieldset>
+      </form>
+  </div>
+  <div class="modal-footer">
+    <a id="saveButton" href="#" class="btn primary">Save</a>
+    <a id="cancelButton"  href="#" class="btn secondary">Cancel</a>
+  </div>
+</div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
+<script type="text/javascript" src="/bootstrap/js/bootstrap-modal.js"></script>
 <script type="text/javascript">
   function refreshSchedule() {
     var scheduleTable = $("#scheduleTable");
@@ -50,7 +86,40 @@
               + stop.location.name + "</td><td><button  id='truckEndNow" + truckIndex +
               "' class='btn danger'>End Now</button>&nbsp;" +
               "<button id='truckDelete" + truckIndex +
-              "' class='btn danger'>Delete</button></td></tr>");
+              "' class='btn danger'>Delete</button>&nbsp;<button class='btn danger' id='truckEdit" +
+              truckIndex +"'>Edit</button></td></tr>");
+          $("#truckEdit" + truckIndex).click(function(e) {
+            $("#startTimeInput").attr("value", stop.startTime);
+            $("#endTimeInput").attr("value", stop.endTime);
+            $("#locationInput").attr("value", stop.location.name);
+            $("#edit-stop").modal({ keyboard : true, backdrop: true});
+            $("#saveButton").click(function(e) {
+              e.preventDefault();
+              stop.startTime = $("#startTimeInput").attr("value");
+              stop.endTime = $("#endTimeInput").attr("value");
+              var locationName = $("#locationInput").attr("value");
+              if (locationName != stop.location.name) {
+                stop.locationName = locationName;
+                delete stop.location;
+              }
+              stop.truckId = "${truckId}";
+              $.ajax({
+                url: "/admin/service/stop/" + stop.id,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(stop),
+                complete : function() {
+                  $("#edit-stop").modal('hide');
+                },
+                success: refreshSchedule
+              });
+
+            });
+            $("#cancelButton").click(function(e) {
+              e.preventDefault();
+              $("#edit-stop").modal('hide');
+            });
+          });
           $("#truckEndNow" + truckIndex).click(function(e) {
             e.preventDefault();
             var now = new Date();
