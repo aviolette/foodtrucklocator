@@ -570,7 +570,7 @@ twittalyzer: "off"
 id: beaversdonuts
 twitter: beaversdonuts
 name: Beavers Donuts
-categories: Donuts
+categories: Breakfast,Coffee
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1619739185/photo_1_normal.JPG
 twittalyzer: "on"
 ---
@@ -683,7 +683,7 @@ twittalyzer: "on"
 id: eleaven
 twitter: eleaven
 name: e.leaven Food Co.
-categories: Sweet
+categories: Breakfast,Coffee,Lunch
 url: http://www.eleavenfood.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/580743327/images_normal.jpg
 twittalyzer: "on"

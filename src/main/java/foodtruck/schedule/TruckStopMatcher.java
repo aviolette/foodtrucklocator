@@ -129,7 +129,7 @@ public class TruckStopMatcher {
     }
     if (startTime == null) {
       // Cupcake trucks and such should not be matched at all by this rule since they make many frequent stops
-      if (!morning) {
+      if (!morning || truck.getCategories().contains("Breakfast")) {
         startTime = tweet.getTime();
       } else {
         startTime = tweet.getTime().withTime(11, 30, 0, 0);

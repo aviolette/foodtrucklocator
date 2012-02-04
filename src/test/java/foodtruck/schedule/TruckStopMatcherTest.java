@@ -1,6 +1,7 @@
 package foodtruck.schedule;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 import org.easymock.EasyMockSupport;
 import org.joda.time.DateTime;
@@ -230,6 +231,27 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     assertEquals(Confidence.HIGH, match.getConfidence());
     assertEquals(address, match.getStop().getLocation().getName());
     assertEquals(match.getStop().getStartTime(), tweetTime.withTime(11, 30, 0, 0));
+    verifyAll();
+  }
+
+  @Test
+  public void testMatch_shouldNotDetectFutureLocationIfBreakfastTruck() {
+    final String tweetText =
+        "BeaversDonuts: Good Morning! The window is open at Erie and Franklin in front of @FlairTower222, come on over we are here till 9ish.";
+    truck = new Truck.Builder().id("foobar").name("FOO").twitterHandle("bar")
+        .categories(ImmutableSet.of("Breakfast")).build();
+    final String address = "UIC";
+    Location location = new Location(-1, -2, address);
+    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
+    expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
+    tweetTime = new DateTime(2011, 11, 12, 7, 0, 0, 0, DateTimeZone.UTC);
+    replayAll();
+    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
+    TruckStopMatch match = topic.match(truck, tweet, null);
+    assertNotNull(match);
+    assertEquals(Confidence.HIGH, match.getConfidence());
+    assertEquals(address, match.getStop().getLocation().getName());
+    assertEquals(match.getStop().getStartTime(), tweetTime);
     verifyAll();
   }
 
