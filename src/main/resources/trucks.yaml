@@ -549,6 +549,7 @@ id: mjexpress14
 twitter: mjexpress14
 name: Mojo Express
 categories: Coffee
+defaultCity: Oak Park, IL
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1738009047/stock-illustration-15652507-coffee-sign_normal.jpg
 twittalyzer: "on"
 ---
@@ -609,6 +610,14 @@ name: Pecan and Charlie
 categories: Food
 facebook: /PecanandCharlies
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1642068394/blondmonkey_normal.JPG
+twittalyzer: "on"
+---
+# this is with the old spelling for backward compatibility
+id: chubbyweiners
+twitter: chubbywieners
+name: Chubby Wieners
+categories: Food
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1629862898/image_normal.jpg
 twittalyzer: "on"
 ---
 id: chubbywieners
