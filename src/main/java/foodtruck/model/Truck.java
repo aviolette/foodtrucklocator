@@ -47,6 +47,10 @@ public class Truck {
     return foursquareUrl;
   }
 
+  public String getDefaultCity() {
+    return defaultCity;
+  }
+
   public String getName() {
     return name;
   }

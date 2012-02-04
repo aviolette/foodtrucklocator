@@ -100,7 +100,7 @@ public class AddressExtractor {
             true, 0),
         // Willis Tower
         new PatternTransform(Pattern.compile("sears|willis", Pattern.CASE_INSENSITIVE),
-            keyword("Wacker and Adams, Chicago, IL"), true, 0),
+            keyword("Wacker and Van Buren, Chicago, IL"), true, 0),
         // Rush Medical
         new PatternTransform(Pattern
             .compile("\\buic\\b(.*)\\brush\\b|\\brush\\b(.*)\\buic\\b|\\brush medical\\b",
@@ -155,9 +155,6 @@ public class AddressExtractor {
         new PatternTransform(
             Pattern.compile("Merch(andise)? mart|#MerchandiseMart", Pattern.CASE_INSENSITIVE),
             keyword("Merchandise Mart"), true, 0),
-        // kickoff bar
-        new PatternTransform(Pattern.compile("@kickoffbar", Pattern.CASE_INSENSITIVE),
-            keyword("4630 W. Lawrence Ave., Chicago, IL"), true, 0),
         new PatternTransform(Pattern.compile("wttw", Pattern.CASE_INSENSITIVE),
             keyword("WTTW"), true, 0),
         // tribune tower

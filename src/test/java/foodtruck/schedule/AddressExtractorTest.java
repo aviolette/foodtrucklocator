@@ -231,7 +231,7 @@ public class AddressExtractorTest {
 
   @Test
   public void testSearsTower() {
-    assertTweet("Wacker and Adams, Chicago, IL",
+    assertTweet("Wacker and Van Buren, Chicago, IL",
         "BergsteinsNY: Sears/Willis today! Soup, sandwich, kugel, cabbage rolls!");
   }
 
@@ -392,12 +392,6 @@ public class AddressExtractorTest {
   public void testSpecialIntersection() {
     assertTweet("N Milwaukee Ave & W Grand Ave & N Halsted St, Chicago, IL",
         "#latenighttamales @grand halsted milwaukee.. till 3:30AM.. next to @ORANGE_CHICAGO & @BuddhaLounge #foodtrucks #chicago #fb #tamales");
-  }
-
-  @Test
-  public void testKickoffBar() {
-    assertTweet("4630 W. Lawrence Ave., Chicago, IL",
-        "Holy frijoles, now that was a crowd.  Wiped us out, thanks everyone for joining us at @kickoffbar.  GO BEARS");
   }
 
   @Test
