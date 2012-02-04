@@ -194,9 +194,12 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
 
   @Override public void update(TruckStop truckStop) {
     DatastoreService dataStore = serviceProvider.get();
-    Key key = KeyFactory.createKey(STOP_KIND, (Long) truckStop.getKey());
+    Entity entity = null;
     try {
-      Entity entity = dataStore.get(key);
+      if (!truckStop.isNew()) {
+        Key key = KeyFactory.createKey(STOP_KIND, (Long) truckStop.getKey());
+        entity = dataStore.get(key);
+      }
       entity = toEntity(truckStop, entity);
       dataStore.put(entity);
     } catch (EntityNotFoundException e) {

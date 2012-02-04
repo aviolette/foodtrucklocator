@@ -15,4 +15,8 @@ public abstract class ModelEntity {
   public Object getKey() {
     return key;
   }
+
+  public boolean isNew() {
+    return key == null || (key instanceof Long && ((Long) key) < 1);
+  }
 }

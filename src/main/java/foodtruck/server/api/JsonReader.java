@@ -57,8 +57,8 @@ public class JsonReader {
       checkNotNull(location, "Location is unparsable");
     }
     checkState(location.isResolved(), "Location is not resolved");
-    long key = obj.getLong("id");
-    return new TruckStop(truck, startTime, endTime, location, key);
+    long key = obj.optLong("id", 0);
+    return new TruckStop(truck, startTime, endTime, location, (key > 0) ? key : null);
   }
 
   private Location parseLocation(JSONObject location) throws JSONException {
@@ -67,6 +67,4 @@ public class JsonReader {
     String name = location.getString("name");
     return new Location(lat, lng, name);
   }
-
-
 }
