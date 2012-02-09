@@ -1,5 +1,6 @@
 package foodtruck.truckstops;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -7,6 +8,7 @@ import javax.annotation.Nullable;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
+import foodtruck.model.TruckStatus;
 import foodtruck.model.DailySchedule;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckLocationGroup;
@@ -64,4 +66,6 @@ public interface FoodTruckStopService {
    * Updates a truck stop with new information.
    */
   void update(TruckStop truckStop);
+
+  List<TruckStatus> findCurrentAndPreviousStop(LocalDate day);
 }

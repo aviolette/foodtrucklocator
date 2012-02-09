@@ -90,4 +90,8 @@ public class TruckStop extends ModelEntity {
   public TruckStop withEndTime(DateTime endTime) {
     return new TruckStop(truck, startTime, endTime, location, null);
   }
+
+  public boolean activeDuring(DateTime dateTime) {
+    return startTime.equals(dateTime) || (dateTime.isAfter(startTime) && dateTime.isBefore(endTime));
+  }
 }

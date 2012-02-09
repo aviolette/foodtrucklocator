@@ -8,8 +8,12 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
@@ -19,6 +23,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 
 import foodtruck.dao.TruckStopDAO;
+import foodtruck.model.TruckStatus;
 import foodtruck.model.DailySchedule;
 import foodtruck.model.Location;
 import foodtruck.model.TimeRange;
@@ -28,6 +33,7 @@ import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStop;
 import foodtruck.model.Trucks;
 import foodtruck.schedule.GoogleCalendar;
+import foodtruck.util.Clock;
 
 /**
  * @author aviolette@gmail.com
@@ -39,14 +45,16 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   private final Trucks trucks;
   private static final Logger log = Logger.getLogger(FoodTruckStopServiceImpl.class.getName());
   private final DateTimeZone zone;
+  private final Clock clock;
 
   @Inject
   public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, GoogleCalendar googleCalendar,
-      Trucks trucks, DateTimeZone zone) {
+      Trucks trucks, DateTimeZone zone, Clock clock) {
     this.truckStopDAO = truckStopDAO;
     this.googleCalendar = googleCalendar;
     this.trucks = trucks;
     this.zone = zone;
+    this.clock = clock;
   }
 
   @Override
@@ -121,5 +129,27 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   public DailySchedule findStopsForDay(LocalDate day) {
     List<TruckStop> stops = truckStopDAO.findDuring(null, day);
     return new DailySchedule(stops);
+  }
+
+  @Override public List<TruckStatus> findCurrentAndPreviousStop(LocalDate day) {
+    List<TruckStop> stops = truckStopDAO.findDuring(null, day);
+    ImmutableList.Builder<TruckStatus> truckInfo = ImmutableList.builder();
+    DateTime now = clock.now();
+    for (final Truck truck : trucks.allTrucks()) {
+      boolean activeToday = false;
+      TruckStop currentStop = null;
+
+      for (final TruckStop truckStop : stops) {
+        if (truckStop.getTruck().getId().equals(truck.getId())) {
+          activeToday = true;
+          if (truckStop.activeDuring(now)) {
+            currentStop = truckStop;
+            break;
+          }
+        }
+      }
+      truckInfo.add(new TruckStatus(truck, activeToday, currentStop, null));
+    }
+    return TruckStatus.BY_NAME.immutableSortedCopy(truckInfo.build());
   }
 }
