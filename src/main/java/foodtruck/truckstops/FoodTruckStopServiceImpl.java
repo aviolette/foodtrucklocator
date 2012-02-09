@@ -138,17 +138,20 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     for (final Truck truck : trucks.allTrucks()) {
       boolean activeToday = false;
       TruckStop currentStop = null;
-
+      TruckStop nextStop = null;
       for (final TruckStop truckStop : stops) {
         if (truckStop.getTruck().getId().equals(truck.getId())) {
           activeToday = true;
           if (truckStop.activeDuring(now)) {
             currentStop = truckStop;
-            break;
+          } else if (truckStop.getStartTime().isAfter(now) &&
+              (nextStop == null || truckStop.getStartTime().isBefore(nextStop.getStartTime()))) {
+            nextStop = truckStop;
           }
+
         }
       }
-      truckInfo.add(new TruckStatus(truck, activeToday, currentStop, null));
+      truckInfo.add(new TruckStatus(truck, activeToday, currentStop, nextStop));
     }
     return TruckStatus.BY_NAME.immutableSortedCopy(truckInfo.build());
   }

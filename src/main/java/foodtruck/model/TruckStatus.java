@@ -16,25 +16,25 @@ public class TruckStatus {
     }
   };
 
-  private final TruckStop previousStop;
+  private final TruckStop nextStop;
   private final TruckStop currentStop;
   private final Truck truck;
   private final boolean active;
 
   public TruckStatus(Truck truck, boolean isActive, @Nullable TruckStop current,
-      @Nullable TruckStop previousStop) {
+      @Nullable TruckStop nextStop) {
     this.active = isActive;
     this.truck = truck;
     this.currentStop = current;
-    this.previousStop = previousStop;
+    this.nextStop = nextStop;
   }
 
   public boolean isActive() {
     return active;
   }
 
-  public TruckStop getPreviousStop() {
-    return previousStop;
+  public TruckStop getNextStop() {
+    return nextStop;
   }
 
   public TruckStop getCurrentStop() {
