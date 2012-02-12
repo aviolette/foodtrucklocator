@@ -19,6 +19,7 @@ public class AdminDashboardServlet extends HttpServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     req.setAttribute("nav", "home");
-    req.getRequestDispatcher("/WEB-INF/jsp/dashboard/index.jsp").forward(req, resp);
+    resp.setStatus(302);
+    resp.setHeader("Location", "/admin/trucks");
   }
 }

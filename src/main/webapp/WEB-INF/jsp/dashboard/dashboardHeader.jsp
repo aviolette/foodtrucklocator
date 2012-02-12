@@ -12,6 +12,8 @@
   <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
 
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
+
   <!-- Le styles -->
   <link href="/bootstrap/bootstrap.css" rel="stylesheet">
   <style type="text/css">
@@ -76,7 +78,6 @@
     <div class="container">
       <a class="brand" href="#">CFTF - Admin Dashboard</a>
       <ul class="nav">
-        <li<c:if test="${nav == 'home'}"> class="active"</c:if>><a href="/admin">Home</a></li>
         <li<c:if test="${nav == 'trucks'}"> class="active"</c:if>><a href="/admin/trucks">Trucks</a>
         </li>
         <li<c:if test="${nav == 'locations'}"> class="active"</c:if>><a href="/admin/locations">Locations</a>
