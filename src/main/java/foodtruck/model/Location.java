@@ -2,6 +2,7 @@ package foodtruck.model;
 
 import javax.annotation.Nullable;
 
+import com.google.appengine.api.datastore.Key;
 import com.google.common.base.Objects;
 
 /**
@@ -9,19 +10,17 @@ import com.google.common.base.Objects;
  * @author aviolette@gmail.com
  * @since Jul 12, 2011
  */
-public class Location {
+public class Location extends ModelEntity {
   private final double lng;
   private final double lat;
   private final String name;
-
-  public Location(double lat, double lng, @Nullable String name) {
-    this.lat = lat;
-    this.lng = lng;
-    this.name = name;
-  }
-
-  public Location(double lat, double lng) {
-    this(lat, lng, null);
+  private final boolean valid;
+  public Location(Builder builder) {
+    super(builder.key);
+    lng = builder.lng;
+    lat = builder.lat;
+    name = builder.name;
+    valid = builder.valid;
   }
 
   public double getLatitude() {
@@ -34,6 +33,10 @@ public class Location {
 
   public String getName() {
     return this.name;
+  }
+
+  public boolean isValid() {
+    return this.valid;
   }
 
   // TODO: this probably should be refactored out of here
@@ -69,10 +72,70 @@ public class Location {
     return lat == obj.lat && lng == obj.lng;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static Builder builder(Location loc) {
+    return new Builder(loc);
+  }
+
   /**
    * Returns a new Location with an updated name
    */
   public Location withName(String name) {
-    return new Location(lat, lng, name);
+    return builder(this).name(name).build();
+  }
+
+  public Location withKey(Object key) {
+    return builder(this).key(key).build();
+  }
+
+  public static class Builder {
+    private Object key;
+    private double lat;
+    private double lng;
+    private String name;
+    private boolean valid = true;
+
+    public Builder(Location location) {
+      key = location.getKey();
+      lat = location.getLatitude();
+      lng = location.getLongitude();
+      name = location.getName();
+      valid = location.isValid();
+    }
+
+    public Builder() {
+    }
+
+    public Builder key(Object key) {
+      this.key = key;
+      return this;
+    }
+
+    public Builder lat(double latitude) {
+      this.lat = latitude;
+      return this;
+    }
+
+    public Builder lng(double longitude) {
+      this.lng = longitude;
+      return this;
+    }
+
+    public Builder name(String name) {
+      this.name = name;
+      return this;
+    }
+
+    public Builder valid(boolean valid) {
+      this.valid = valid;
+      return this;
+    }
+
+    public Location build() {
+      return new Location(this);
+    }
   }
 }

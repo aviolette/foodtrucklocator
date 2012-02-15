@@ -114,8 +114,8 @@ public class TwitterServiceImpl implements TwitterService {
     final GeoLocation geoLocation = status.getGeoLocation();
     Location location = null;
     if (geoLocation != null) {
-      location = new Location(geoLocation.getLatitude(),
-          geoLocation.getLongitude());
+      location = Location.builder().lat(geoLocation.getLatitude())
+          .lng(geoLocation.getLongitude()).build();
     }
     final DateTime tweetTime = new DateTime(status.getCreatedAt(), defaultZone);
     return new TweetSummary.Builder()

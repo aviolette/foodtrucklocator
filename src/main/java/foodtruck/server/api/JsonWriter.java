@@ -40,7 +40,7 @@ public class JsonWriter {
   public JSONObject writeGroup(TruckLocationGroup group) throws
       JSONException {
     return new org.codehaus.jettison.json.JSONObject()
-        .put("location", writeLocation(group.getLocation(), 0))
+        .put("location", writeLocation(group.getLocation(), 0, false))
         .put("trucks", writeTrucks(group.getTrucks()));
   }
 
@@ -64,11 +64,15 @@ public class JsonWriter {
         .put("url", truck.getUrl());
   }
 
-  public JSONObject writeLocation(Location location, int id) throws JSONException {
+  public JSONObject writeLocation(Location location, int id, boolean fullOptions)
+      throws JSONException {
     JSONObject obj = new JSONObject()
         .put("latitude", location.getLatitude())
         .put("longitude", location.getLongitude())
         .put("name", location.getName());
+    if (fullOptions) {
+      obj.put("key", location.getKey());
+    }
     if (id != 0) {
       obj.put("id", id);
     }
@@ -83,7 +87,7 @@ public class JsonWriter {
     JSONArray arr = new JSONArray();
     for (TruckStop stop : schedule.getStops()) {
       JSONObject truckStop = new JSONObject()
-          .put("location", writeLocation(stop.getLocation(), 0))
+          .put("location", writeLocation(stop.getLocation(), 0, false))
           .put("id", writeKey(stop.getKey()))
           .put("startTime", timeFormatter.print(stop.getStartTime()))
           .put("endTime", timeFormatter.print(stop.getEndTime()));
@@ -110,7 +114,7 @@ public class JsonWriter {
     int i = 1;
     for (TruckStop stop : schedule.getStops()) {
       locations.put(stop.getLocation(), i++);
-      locationArr.put(writeLocation(stop.getLocation(), i));
+      locationArr.put(writeLocation(stop.getLocation(), i, false));
     }
     JSONArray schedules = new JSONArray();
     for (TruckStop stop : schedule.getStops()) {

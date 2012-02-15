@@ -46,7 +46,7 @@ public class YahooGeolocatorTest extends EasyMockSupport {
     replayAll();
     Location location = yahooGeolocator.locate("Dearborn and Monroe, Chicago, IL",
         GeolocationGranularity.BROAD);
-    assertEquals(new Location(41.880730, -87.629379, "Dearborn and Monroe, Chicago, IL"), location);
+    assertEquals(Location.builder().lat(41.880730).lng(-87.629379).name("Dearborn and Monroe, Chicago, IL").build(), location);
     verifyAll();
   }
 

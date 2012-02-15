@@ -37,7 +37,7 @@ public class CacheAndStoreLocator implements GeoLocator {
     }
     loc = secondaryLocator.locate(location, granularity);
     if (loc != null) {
-      dao.save(loc);
+      loc = dao.save(loc);
     } else {
       // write that we tried to save this location so that we don't try again.
       log.warning("Failed at attempt to geo locate: " + location);

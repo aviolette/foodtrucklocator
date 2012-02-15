@@ -316,7 +316,7 @@ public class GoogleGeolocatorTest extends EasyMockSupport {
     replayAll();
     Location location = geoLocator.locate("Dearborn and Monroe, Chicago, IL",
         GeolocationGranularity.BROAD);
-    assertEquals(new Location(41.8807438, -87.6293867, "Dearborn and Monroe, Chicago, IL"),
+    assertEquals(Location.builder().lat(41.8807438).lng(-87.6293867).name("Dearborn and Monroe, Chicago, IL").build(),
         location);
     verifyAll();
   }

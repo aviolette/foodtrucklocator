@@ -73,7 +73,7 @@ public class GoogleGeolocator implements GeoLocator {
         }
         JSONObject loc =
             geometry.getJSONObject("location");
-        return new Location(loc.getDouble("lat"), loc.getDouble("lng"), location);
+        return Location.builder().lat(loc.getDouble("lat")).lng(loc.getDouble("lng")).name(location).build();
       }
     } catch (JSONException e) {
       throw new RuntimeException(e);
@@ -98,8 +98,9 @@ public class GoogleGeolocator implements GeoLocator {
     Matcher m = latLongExpression.matcher(location);
     if (m.find()) {
       String name = m.end() == location.length() ? null : location.substring(m.end()).trim();
-      return new Location(Double.parseDouble(m.group(1)), Double.parseDouble(m.group(2)),
-          name);
+      return Location.builder()
+          .lat(Double.parseDouble(m.group(1)))
+          .lng(Double.parseDouble(m.group(2))).name(name).build();
     }
     return null;
   }

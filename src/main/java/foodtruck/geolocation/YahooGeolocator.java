@@ -46,8 +46,8 @@ public class YahooGeolocator implements GeoLocator {
         log.log(Level.INFO, "Result was too broad");
         return null;
       }
-      return new Location(Double.parseDouble(result.getString("latitude")),
-          Double.parseDouble(result.getString("longitude")), location);
+      return Location.builder().lat(Double.parseDouble(result.getString("latitude")))
+          .lng(Double.parseDouble(result.getString("longitude"))).name(location).build();
     } catch (JSONException e) {
       log.log(Level.WARNING, e.getMessage(), e);
     } catch (ServiceException e) {

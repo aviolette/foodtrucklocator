@@ -27,8 +27,8 @@ public class CacheAndStoreLocatorTest extends EasyMockSupport {
     dao = createMock(LocationDAO.class);
     secondary = createMock(GeoLocator.class);
     locator = new CacheAndStoreLocator(dao, secondary);
-    namedLocation = new Location(-3, -4, LOCATION_NAME);
-    unnamedLocation = new Location(-4, -5, null);
+    namedLocation = Location.builder().lat(-3).lng(-4).name(LOCATION_NAME).build();
+    unnamedLocation = Location.builder().lat(-4).lng(-5).build();
   }
 
   @Test
@@ -44,7 +44,7 @@ public class CacheAndStoreLocatorTest extends EasyMockSupport {
   public void shouldPerformGeoLookupAndSaveInCacheIfNotFoundInCache() {
     expect(dao.lookup(LOCATION_NAME)).andReturn(null);
     expect(secondary.locate(LOCATION_NAME, GeolocationGranularity.BROAD)).andReturn(namedLocation);
-    dao.save(namedLocation);
+    expect(dao.save(namedLocation)).andReturn(namedLocation);
     replayAll();
     Location loc = locator.locate(LOCATION_NAME, GeolocationGranularity.BROAD);
     assertEquals(loc, namedLocation);

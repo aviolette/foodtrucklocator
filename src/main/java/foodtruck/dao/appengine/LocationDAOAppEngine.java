@@ -3,11 +3,16 @@ package foodtruck.dao.appengine;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Nullable;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 
@@ -26,6 +31,8 @@ public class LocationDAOAppEngine implements LocationDAO {
   private static final String LAT_FIELD = "lat";
   private static final String LNG_FIELD = "lng";
   private static final String TIMESTAMP_FIELD = "createdate";
+  private static final String VALID_FIELD = "valid";
+
   private static final Logger log = Logger.getLogger(LocationDAOAppEngine.class.getName());
   private final Clock clock;
 
@@ -53,12 +60,7 @@ public class LocationDAOAppEngine implements LocationDAO {
       }
     }
     if (entity != null) {
-      Double lat = (Double) entity.getProperty(LAT_FIELD);
-      Double lng = (Double) entity.getProperty(LNG_FIELD);
-      if (lat == null || lng == null) {
-        return new Location(0, 0, keyword);
-      }
-      return new Location(lat, lng, keyword);
+      return toLocation(entity);
     }
     return null;
   }
@@ -78,14 +80,27 @@ public class LocationDAOAppEngine implements LocationDAO {
   }
 
   @Override
-  public void save(Location location) {
+  public Location save(Location location) {
     DatastoreService dataStore = provider.get();
-    final Entity entity = new Entity(LOCATION_KIND);
+
+    Entity entity = null;
+    if (location.isNew()) {
+      entity = new Entity(LOCATION_KIND);
+    } else {
+      Key key = KeyFactory.createKey(LOCATION_KIND, (Long) location.getKey());
+      try {
+        entity = dataStore.get(key);
+      } catch (EntityNotFoundException e) {
+        throw Throwables.propagate(e);
+      }
+    }
     entity.setProperty(NAME_FIELD, location.getName());
     entity.setProperty(LAT_FIELD, location.getLatitude());
     entity.setProperty(LNG_FIELD, location.getLongitude());
     entity.setProperty(TIMESTAMP_FIELD, clock.now().toDate());
-    dataStore.put(entity);
+    entity.setProperty(VALID_FIELD, location.isValid());
+    Key key = dataStore.put(entity);
+    return location.withKey(key.getId());
   }
 
   @Override
@@ -93,6 +108,31 @@ public class LocationDAOAppEngine implements LocationDAO {
     DatastoreService dataStore = provider.get();
     final Entity entity = new Entity(LOCATION_KIND);
     entity.setProperty(NAME_FIELD, location);
+    entity.setProperty(VALID_FIELD, false);
     dataStore.put(entity);
+  }
+
+  @Override public @Nullable Location findByKey(long id) {
+    DatastoreService dataStore = provider.get();
+    Key key = KeyFactory.createKey(LOCATION_KIND, id);
+    try {
+      Entity entity = dataStore.get(key);
+      return toLocation(entity);
+    } catch (EntityNotFoundException e) {
+      return null;
+    }
+  }
+
+  private Location toLocation(Entity entity) {
+    Double lat = (Double) entity.getProperty(LAT_FIELD);
+    Double lng = (Double) entity.getProperty(LNG_FIELD);
+    Boolean valid = (Boolean)entity.getProperty(VALID_FIELD);
+    Object key = entity.getKey().getId();
+    Location.Builder builder =
+        Location.builder().name((String) entity.getProperty(NAME_FIELD)).key(key);
+    if (lat == null || lng == null || !valid) {
+      return builder.valid(false).build();
+    }
+    return builder.lat(lat).lng(lng).build();
   }
 }

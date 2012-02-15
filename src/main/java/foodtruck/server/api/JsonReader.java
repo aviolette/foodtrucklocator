@@ -39,7 +39,7 @@ public class JsonReader {
     this.geolocator = geolocator;
   }
 
-  TruckStop read(JSONObject obj) throws JSONException {
+  public TruckStop readTruckStop(JSONObject obj) throws JSONException {
     Truck truck = trucks.findById(obj.getString("truckId"));
     checkNotNull(truck);
     LocalDate today = clock.currentDay();
@@ -61,10 +61,19 @@ public class JsonReader {
     return new TruckStop(truck, startTime, endTime, location, (key > 0) ? key : null);
   }
 
+  public Location readLocation(JSONObject obj) throws JSONException {
+    double lat = obj.getDouble("latitude");
+    double lng = obj.getDouble("longitude");
+    String name = obj.getString("name");
+    long key = obj.optLong("key", 0);
+    return Location.builder().lat(lat).lng(lng).name(name).key((key > 0) ? key : null).build();
+  }
+
+
   private Location parseLocation(JSONObject location) throws JSONException {
     double lat = location.getDouble("latitude");
     double lng = location.getDouble("longitude");
     String name = location.getString("name");
-    return new Location(lat, lng, name);
+    return Location.builder().lat(lat).lng(lng).name(name).build();
   }
 }

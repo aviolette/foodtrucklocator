@@ -14,6 +14,7 @@ import foodtruck.server.api.FoodTruckScheduleServlet;
 import foodtruck.server.api.TruckStopServlet;
 import foodtruck.server.api.TweetUpdateServlet;
 import foodtruck.server.dashboard.AdminDashboardServlet;
+import foodtruck.server.dashboard.LocationEditServlet;
 import foodtruck.server.dashboard.LocationListServlet;
 import foodtruck.server.dashboard.TruckListServlet;
 import foodtruck.server.dashboard.TruckServlet;
@@ -39,6 +40,7 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/admin").with(AdminDashboardServlet.class);
     serve("/admin/trucks/*").with(TruckServlet.class);
     serve("/admin/trucks").with(TruckListServlet.class);
+    serve("/admin/locations/*").with(LocationEditServlet.class);
     serve("/admin/locations").with(LocationListServlet.class);
     serve("/admin/service/stop/*").with(AdminTruckStopServlet.class);
     serve("/service/schedule/*").with(FoodTruckScheduleServlet.class);
@@ -56,7 +58,7 @@ public class FoodtruckServletModule extends ServletModule {
 
   @Provides @Named("center")
   public Location provideMapCenter() {
-    return new Location(41.8807438, -87.6293867);
+    return Location.builder().lat(41.8807438).lng(-87.6293867).build();
   }
 
   @Provides @Named("remote.tweet.update")

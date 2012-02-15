@@ -75,7 +75,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   public void testMatch_shouldReturnHighConfidenceWhenAtLocationUntil() {
     final String tweetText = "Gold Coast, we have landed at Rush and Walton...here until 6 pm!";
     final String address = "Rush and Walton";
-    Location location = new Location(-1, -2, address);
+    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
     expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     replayAll();
@@ -92,7 +92,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   public void testMatch_shouldReturnHighConfidenceWhenAtLocationTil() {
     final String tweetText = "Gold Coast, we have landed at Rush and Walton...here til 6 pm!";
     final String address = "Rush and Walton";
-    Location location = new Location(-1, -2, address);
+    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
     expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     replayAll();
@@ -110,7 +110,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   public void testMatch_shouldReturnHighConfidenceWhenAtLocationTill() {
     final String tweetText = "Gold Coast, we have landed at Rush and Walton...here till 6 pm!";
     final String address = "Rush and Walton";
-    Location location = new Location(-1, -2, address);
+    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
     expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     replayAll();
@@ -127,7 +127,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   public void testMatch_anotherUntil() {
     final String tweetText = "At 353 N Desplaines until 8pm with @bigstarchicago & @HomageSF !!";
     final String address = "Rush and Walton";
-    Location location = new Location(-1, -2, address);
+    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
     expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     replayAll();
@@ -146,7 +146,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     final String tweetText =
         "SweetSpotMac: Arrived at Michigan and Walton. Come get your Sunday macaron going!";
     final String address = "Michigan and Walton";
-    Location location = new Location(-1, -2, address);
+    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
     expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     replayAll();
@@ -163,7 +163,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     final String tweetText =
         "Oh yea oh yea beautiful night in the Chi. Come get ur froyo fix we are on the corner of Michigan and Ohio!";
     final String address = "Michigan and Ohio";
-    Location location = new Location(-1, -2, address);
+    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
     expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     replayAll();
@@ -180,7 +180,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     final String tweetText =
         "The tamalespaceship will be landing at our weekly spot <<Dearborn & Monroe>> 11a.m.-1:30p.m. last chance to get your tamale fix before the weekend!!";
     final String address = "Dearborn and Monroe";
-    Location location = new Location(-1, -2, address);
+    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
     expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     tweetTime = new DateTime(2011, 11, 12, 9, 0, 0, 0, DateTimeZone.UTC);
@@ -200,7 +200,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     final String tweetText =
         "The tamalespaceship will be landing at our weekly spot <<Dearborn & Monroe>> 11a.m.-noon. last chance to get your tamale fix before the weekend!!";
     final String address = "Dearborn and Monroe";
-    Location location = new Location(-1, -2, address);
+    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
     expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     tweetTime = new DateTime(2011, 11, 12, 9, 0, 0, 0, DateTimeZone.UTC);
@@ -220,7 +220,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     final String tweetText =
         "Rush & UIC Medical Center DonRafa is gonna be in ur area today! Don't want to come out? call 312-498-9286 we... fb.me/1gKduQrvS";
     final String address = "UIC";
-    Location location = new Location(-1, -2, address);
+    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
     expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     tweetTime = new DateTime(2011, 11, 12, 9, 0, 0, 0, DateTimeZone.UTC);
@@ -241,7 +241,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     truck = new Truck.Builder().id("foobar").name("FOO").twitterHandle("bar")
         .categories(ImmutableSet.of("Breakfast")).build();
     final String address = "UIC";
-    Location location = new Location(-1, -2, address);
+    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
     expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     tweetTime = new DateTime(2011, 11, 12, 7, 0, 0, 0, DateTimeZone.UTC);
@@ -261,7 +261,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     final String tweetText =
         "5411empanadas: MON: Oak and Michigan / TUE: Univ of Chicago (Hyde Park) / WED: Dearborn & Monroe / THU: Columbus & Randolph / FRI: Wacker & Van Buren";
     final String address = "Oak and Michigan";
-    Location location = new Location(-1, -2, address);
+    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
     expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     tweetTime = new DateTime(2011, 11, 12, 9, 0, 0, 0, DateTimeZone.UTC);
@@ -279,7 +279,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
         "245p - Wacker & Lasalle\n" +
         "430p... http://t.co/EDVtU2XM";
     final String address = "Taylor & Wood";
-    Location location = new Location(-1, -2, address);
+    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
     expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     replayAll();
@@ -296,7 +296,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
         "We hope you having a great weekend, see you on Monday <<Wells & Monroe>> pic.twitter.com/1ewdrgKF";
     final String address = "Wells and Monroe";
     expect(clock.dayOfWeek()).andReturn(DayOfWeek.sunday);
-    Location location = new Location(-1, -2, address);
+    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
     expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     tweetTime = new DateTime(2011, 11, 12, 9, 0, 0, 0, DateTimeZone.UTC);
@@ -312,7 +312,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     final String tweetText =
         "GiGisBakeShop: Hello SUNDAY!  The PURPLE Bus is headed out...Look for us at 13th / S Michigan 11:15 am, Lincoln Square 1:30 pm";
     final String address = "Foo and Bar";
-    Location location = new Location(-1, -2, address);
+    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
     expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     tweetTime = new DateTime(2011, 11, 6, 9, 0, 0, 0, DateTimeZone.UTC);
@@ -331,7 +331,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     final String tweetText =
         "CourageousCakes: @5411empanadas ahhh no uofc tues?? I shall starve";
     final String address = "Foo and Bar";
-    Location location = new Location(-1, -2, address);
+    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
     expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     tweetTime = new DateTime(2011, 11, 7, 9, 0, 0, 0, DateTimeZone.UTC);
@@ -346,7 +346,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   public void testMatch_shouldStartAtSpecifiedTime() {
     final String tweetText = "GiGisBakeShop: @GiGisBakeShop NEXT STOP Randolph & Franklin 1:15 pm!";
     final String address = "Foo and Bar";
-    Location location = new Location(-1, -2, address);
+    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
     expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     tweetTime = new DateTime(2011, 11, 6, 9, 0, 0, 0, DateTimeZone.UTC);
@@ -378,7 +378,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
         "Oooops on the handshake between Chris and Taylor - next time try a fistbump #BunsOnTheRun";
     truck = new Truck.Builder(truck).matchOnlyIf("#bunsontherun").build();
     final String address = "Chris and Taylor";
-    Location location = new Location(-1, -2, address);
+    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
     expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
     expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     replayAll();

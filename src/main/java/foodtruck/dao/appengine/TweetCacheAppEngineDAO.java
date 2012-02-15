@@ -137,7 +137,7 @@ public class TweetCacheAppEngineDAO implements TweetCacheDAO {
     Double lng = (Double) entity.getProperty(TWEET_LOCATION_LNG);
     Location location = null;
     if (lat != null && lng != null) {
-      location = new Location(lat, lng);
+      location = Location.builder().lat(lat).lng(lng).build();
     }
     DateTime dateTime = new DateTime((Date) entity.getProperty(TWEET_TIME), zone);
     return new TweetSummary.Builder()

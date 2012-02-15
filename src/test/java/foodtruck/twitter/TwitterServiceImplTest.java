@@ -70,8 +70,8 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     service = new TwitterServiceImpl(twitterFactory, tweetDAO, listId, trucks, zone, matcher,
         truckStopDAO,
         clock, terminationDetector, new LocalCacheUpdater());
-    loca = new Location(1, 2, "a");
-    locb = new Location(3, 4, "b");
+    loca = Location.builder().lat(1).lng(2).name("a").build();
+    locb = Location.builder().lat(3).lng(4).name("b").build();
     final TweetSummary basicTweet = new TweetSummary.Builder().time(now.minusHours(2)).text(
         "We are at Kingsbury and Erie.").build();
     List<TweetSummary> tweets = ImmutableList.of(basicTweet);
@@ -98,7 +98,8 @@ public class TwitterServiceImplTest extends EasyMockSupport {
         .andReturn(ImmutableList.<TruckStop>of());
     List<TweetSummary> tweets = ImmutableList.of(tweet1, tweet2);
     TruckStop stop =
-        new TruckStop(truck2, now.minusHours(3), now.minusHours(2), new Location(-1, -2, "Foobar"),
+        new TruckStop(truck2, now.minusHours(3), now.minusHours(2),
+            Location.builder().lat(-1).lng(-2).name("Foobar").build(),
             null);
     TruckStopMatch match = new TruckStopMatch(Confidence.HIGH, stop, "tweet2", false);
     expect(tweetDAO

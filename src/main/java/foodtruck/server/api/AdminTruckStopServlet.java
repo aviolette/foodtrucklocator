@@ -49,7 +49,7 @@ public class AdminTruckStopServlet extends HttpServlet {
     try {
       final String json = new String(ByteStreams.toByteArray(req.getInputStream()));
       JSONObject jsonPayload = new JSONObject(json);
-      TruckStop truckStop = reader.read(jsonPayload);
+      TruckStop truckStop = reader.readTruckStop(jsonPayload);
       stopService.update(truckStop);
     } catch (JSONException e) {
       throw new RuntimeException(e);

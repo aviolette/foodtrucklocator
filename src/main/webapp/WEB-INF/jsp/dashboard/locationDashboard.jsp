@@ -12,12 +12,16 @@
   </fieldset>
 </form>
 
-<%--
-<ul class="results">
-<c:forEach var="result" items="results">
-  <li><a href="">${result.name}</a></li>
-</c:forEach>
+<h3>Results</h3>
+<ul id="results">
+
 </ul>
 
---%>
+<script type="text/javascript">
+  var resultsJson = ${results};
+  var $resultList = $(results);
+  $.each(resultsJson, function(idx, result) {
+    $resultList.append("<li><a href='/admin/locations/" + result.key + "'>" + result.name + "</a></li>");
+  });
+</script>
 <%@include file="dashboardFooter.jsp" %>

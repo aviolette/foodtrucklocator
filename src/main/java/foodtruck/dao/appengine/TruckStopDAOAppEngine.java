@@ -75,8 +75,8 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
       try {
         stops.add(new TruckStop(trucks.findById(truckId),
             startTime, endTime,
-            new Location((Double) entity.getProperty(LATITUDE_FIELD), (Double) entity.getProperty(
-                LONGITUDE_FIELD), (String) entity.getProperty(LOCATION_NAME_FIELD)),
+            Location.builder().lat((Double) entity.getProperty(LATITUDE_FIELD)).lng((Double) entity.getProperty(
+                LONGITUDE_FIELD)).name((String) entity.getProperty(LOCATION_NAME_FIELD)).build(),
             entity.getKey()));
       } catch (RuntimeException rt) {
         log.log(Level.WARNING, "Error for truckId: " + truckId, rt);
@@ -135,8 +135,8 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
     final DateTime endTime = new DateTime((Date) entity.getProperty(END_TIME_FIELD), zone);
     return new TruckStop(trucks.findById((String) entity.getProperty(TRUCK_ID_FIELD)),
         startTime, endTime,
-        new Location((Double) entity.getProperty(LATITUDE_FIELD), (Double) entity.getProperty(
-            LONGITUDE_FIELD), (String) entity.getProperty(LOCATION_NAME_FIELD)),
+        Location.builder().lat((Double) entity.getProperty(LATITUDE_FIELD)).lng((Double) entity.getProperty(
+                LONGITUDE_FIELD)).name((String) entity.getProperty(LOCATION_NAME_FIELD)).build(),
         entity.getKey());
   }
 
