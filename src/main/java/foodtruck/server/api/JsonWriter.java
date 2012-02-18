@@ -71,6 +71,7 @@ public class JsonWriter {
         .put("longitude", location.getLongitude())
         .put("name", location.getName());
     if (fullOptions) {
+      obj.put("valid", location.isValid());
       obj.put("key", location.getKey());
     }
     if (id != 0) {
@@ -97,7 +98,7 @@ public class JsonWriter {
   }
 
   private long writeKey(Object key) {
-    return ((Key)key).getId();
+    return ((Key) key).getId();
   }
 
 
@@ -123,7 +124,7 @@ public class JsonWriter {
           .put("truckId", stop.getTruck().getId())
           .put("startTime", timeFormatter.print(stop.getStartTime()))
           .put("startMillis", stop.getStartTime().getMillis())
-          .put ("endMillis", stop.getEndTime().getMillis())
+          .put("endMillis", stop.getEndTime().getMillis())
           .put("endTime", timeFormatter.print(stop.getEndTime()));
       schedules.put(truckStop);
     }

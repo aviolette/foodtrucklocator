@@ -64,9 +64,11 @@ public class JsonReader {
   public Location readLocation(JSONObject obj) throws JSONException {
     double lat = obj.getDouble("latitude");
     double lng = obj.getDouble("longitude");
+    boolean valid = obj.getBoolean("valid");
     String name = obj.getString("name");
     long key = obj.optLong("key", 0);
-    return Location.builder().lat(lat).lng(lng).name(name).key((key > 0) ? key : null).build();
+    return Location.builder().lat(lat).lng(lng).name(name).key((key > 0) ? key : null)
+        .valid(valid).build();
   }
 
 

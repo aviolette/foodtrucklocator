@@ -55,10 +55,12 @@ public class LocationEditServlet extends HttpServlet {
     };
 
     Location location = locationDAO.findByKey(Long.valueOf(keyIndex));
-    try {
-      req.setAttribute("location", writer.writeLocation(location, 0, true));
-    } catch (JSONException e) {
-      throw new RuntimeException(e);
+    if (location != null) {
+      try {
+        req.setAttribute("location", writer.writeLocation(location, 0, true));
+      } catch (JSONException e) {
+        throw new RuntimeException(e);
+      }
     }
     req.getRequestDispatcher(jsp).forward(req, resp);
   }

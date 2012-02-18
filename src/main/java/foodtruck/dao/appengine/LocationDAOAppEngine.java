@@ -126,13 +126,16 @@ public class LocationDAOAppEngine implements LocationDAO {
   private Location toLocation(Entity entity) {
     Double lat = (Double) entity.getProperty(LAT_FIELD);
     Double lng = (Double) entity.getProperty(LNG_FIELD);
-    Boolean valid = (Boolean)entity.getProperty(VALID_FIELD);
+    Boolean valid = (Boolean) entity.getProperty(VALID_FIELD);
     Object key = entity.getKey().getId();
     Location.Builder builder =
         Location.builder().name((String) entity.getProperty(NAME_FIELD)).key(key);
-    if (lat == null || lng == null || !valid) {
-      return builder.valid(false).build();
+    boolean isValid = valid == null || valid;
+    if (lat == null || lng == null) {
+      builder.valid(false);
+    } else {
+      builder.lat(lat).lng(lng).valid(isValid);
     }
-    return builder.lat(lat).lng(lng).build();
+    return builder.build();
   }
 }
