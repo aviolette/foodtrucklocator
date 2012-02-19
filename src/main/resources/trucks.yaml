@@ -442,6 +442,7 @@ name: Heather Behm
 categories: Savory
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1268230955/IMG_6734_copy_normal.jpg
 twittalyzer: "on"
+inactive: true
 ---
 id: donraffoodtruck
 twitter: donraffoodtruck
@@ -723,3 +724,11 @@ name: Enemy Kitchen
 categories: Savory
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1813925574/Rakowitz_Sketch_sq_normal.jpg
 twittalyzer: "on"
+---
+id: myfalafel
+twitter: myfalafel
+name: Falafel Brothers
+categories: Savory
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1634282158/falafel_brothers_twitter_normal.jpg
+twittalyzer: "on"
+inactive: true
