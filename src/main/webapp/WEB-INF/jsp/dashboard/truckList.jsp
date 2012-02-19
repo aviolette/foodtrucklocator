@@ -75,7 +75,7 @@
             link.removeClass("disabled");
           },
           success: function() {
-            alert("Success");
+            window.location.reload();
           }
         });
       });
