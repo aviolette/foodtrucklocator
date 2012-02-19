@@ -34,6 +34,10 @@ public class TruckConfigParserImpl implements TruckConfigParser {
       if (defaultCity == null) {
         defaultCity = "Chicago, IL";
       }
+      Boolean inactive = (Boolean) truckMap.get("inactive");
+      if (inactive == null) {
+        inactive = false;
+      }
       Truck truck = new Truck.Builder()
           .id((String) truckMap.get("id"))
           .name((String) truckMap.get("name"))
@@ -46,6 +50,7 @@ public class TruckConfigParserImpl implements TruckConfigParser {
           .useTwittalyzer("on".equals(truckMap.get("twittalyzer")))
           .facebook((String) truckMap.get("facebook"))
           .defaultCity(defaultCity)
+          .inactive(inactive)
           .matchOnlyIf((String) truckMap.get("matchOnlyIf"))
           .build();
       log.log(Level.INFO, "Loaded truck: {0}", truck);

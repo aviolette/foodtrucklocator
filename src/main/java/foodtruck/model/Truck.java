@@ -27,6 +27,7 @@ public class Truck {
   private final String defaultCity;
   private final String facebook;
   private final Pattern matchOnlyIf;
+  private final boolean inactive;
 
   private Truck(Builder builder) {
     this.id = builder.id;
@@ -41,6 +42,7 @@ public class Truck {
     this.defaultCity = builder.defaultCity;
     this.facebook = builder.facebook;
     this.matchOnlyIf = builder.matchOnlyIf;
+    this.inactive = builder.inactive;
   }
 
   public @Nullable String getFoursquareUrl() {
@@ -87,9 +89,13 @@ public class Truck {
     return facebook;
   }
 
+  public boolean isInactive() {
+    return inactive;
+  }
+
   @Override
   public int hashCode() {
-    return Objects.hashCode(id, name, url, iconUrl, twitterHandle);
+    return Objects.hashCode(id, name, url, iconUrl, twitterHandle, inactive);
   }
 
   @Override
@@ -101,7 +107,8 @@ public class Truck {
     }
     Truck truck = (Truck) o;
     return id.equals(truck.id) && name.equals(truck.name) && iconUrl.equals(truck.iconUrl) &&
-        Objects.equal(twitterHandle, truck.twitterHandle) && Objects.equal(url, truck.url);
+        Objects.equal(twitterHandle, truck.twitterHandle) && Objects.equal(url, truck.url)
+        && inactive == truck.inactive;
   }
 
   @Override
@@ -115,6 +122,7 @@ public class Truck {
         .add("foursquareUrl", foursquareUrl)
         .add("uses twittalyzer", twittalyzer)
         .add("facebook URI", facebook)
+        .add("inactive", inactive)
         .toString();
   }
 
@@ -135,6 +143,7 @@ public class Truck {
     private String defaultCity = "Chicago, IL";
     private String facebook;
     private Pattern matchOnlyIf;
+    private boolean inactive;
 
     public Builder() {
     }
@@ -152,6 +161,7 @@ public class Truck {
       this.defaultCity = truck.defaultCity;
       this.facebook = truck.facebook;
       this.matchOnlyIf = truck.matchOnlyIf;
+      this.inactive = truck.inactive;
     }
 
     public Builder id(String id) {
@@ -219,6 +229,11 @@ public class Truck {
 
     public Builder facebook(@Nullable String facebook) {
       this.facebook = facebook;
+      return this;
+    }
+
+    public Builder inactive(Boolean inactive) {
+      this.inactive = inactive;
       return this;
     }
   }

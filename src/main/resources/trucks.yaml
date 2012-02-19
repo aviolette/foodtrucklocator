@@ -17,6 +17,7 @@ iconUrl: http://twimg0-a.akamaihd.net/profile_images/1204282220/Meatyballs_Mobil
 foursquare: 4cb70527651cb7135bf03a3a
 twittalyzer: "off"
 facebook: /MeatyballsMobile
+inactive: true
 ---
 id: meatyballs2
 twitter: fossfoodtrucks
@@ -26,6 +27,7 @@ url: http://www.meatyballsmobile.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1204282220/Meatyballs_Mobile_Logo_A_normal.jpg
 foursquare: 4cb70527651cb7135bf03a3a
 facebook: /MeatyballsMobile
+inactive: true
 ---
 id: meatyballs3
 twitter: fossfoodtrucks
@@ -35,6 +37,7 @@ categories: Savory
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1204282220/Meatyballs_Mobile_Logo_A_normal.jpg
 foursquare: 4cb70527651cb7135bf03a3a
 facebook: /MeatyballsMobile
+inactive: true
 ---
 id: 5411empanadas
 url: http://5411empanadas.com/
@@ -54,6 +57,7 @@ url: http://www.gaztro-wagon.com/
 iconUrl: http://si0.twimg.com/profile_images/781557064/GaztroWagon_B_B_Stacked_normal.png
 foursquare: 4c76a054d8948cfa2ef46ada
 facebook: /pages/Gaztro-Wagon/119467254768063
+inactive: true
 ---
 id: theslideride
 twitter: theslideride
@@ -116,12 +120,13 @@ facebook: /hautesausage
 ---
 id: hautesausage2
 twitter: hautesausage
-name: Haute Sausage
+name: Haute Sausage (Truck 2)
 categories: American
 url: http://www.hautesausage.com/
 iconUrl: http://si0.twimg.com/profile_images/1325400326/HSlogoFB_normal.jpg
 foursquare: 4dc2d50ab0fb490416b87ae6
 facebook: /hautesausage
+inactive: true
 ---
 id: hautesausage3
 twitter: hautesausage
@@ -131,6 +136,7 @@ url: http://www.hautesausage.com/
 iconUrl: http://si0.twimg.com/profile_images/1325400326/HSlogoFB_normal.jpg
 foursquare: 4dc2d50ab0fb490416b87ae6
 facebook: /hautesausage
+inactive: true
 ---
 id: suzysamosas
 twitter: suzysamosas
@@ -140,6 +146,7 @@ url: http://suzysingh.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1542394745/photo__18__normal.JPG
 twittalyzer: "off"
 facebook: /pages/Suzys-Samosas-Food-Truck/123902457709199
+inactive: true
 ---
 id: gigisbakeshop
 twitter: gigisbakeshop
@@ -157,6 +164,7 @@ categories: Pies
 url: http://www.uptownpies.com
 iconUrl: http://a1.twimg.com/profile_images/1428015678/Logo_Design_normal.png
 foursquare: 4e2770e1152078c77b06f233
+inactive: true
 ---
 id: mamagreengoodie
 twitter: mamagreengoodie
@@ -167,6 +175,7 @@ foursquare: 4e837228b6341921482bd055
 twittalyzer: "on"
 url: http://www.mamagreengoodies.com/
 facebook: /pages/Mama-Greens-Gourmet-Goodies/139420512741550
+inactive: true
 ---
 id: themoremobile
 twitter: themoremobile
@@ -187,6 +196,7 @@ iconUrl: http://twimg0-a.akamaihd.net/profile_images/1491944244/logo_orange_and_
 foursquare: 4e231cb415207ed86eb64058
 twittalyzer: "off"
 facebook: /pages/Homage-Street-Food/100851666668024
+inactive: true
 ---
 id: bridgeportpasty
 twitter: bridgeportpasty
@@ -206,6 +216,7 @@ categories: Dessert
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1484907277/logosmall_normal.jpg
 foursquare: 4e4bf6bb6365dbba614e6ffa
 twittalyzer: "off"
+inactive: true
 ---
 id: adelitatruck
 twitter: adelitatruck
@@ -235,6 +246,7 @@ iconUrl: http://twimg0-a.akamaihd.net/profile_images/1187497687/twitter_normal.j
 foursquare: 4dee5b322271e7b446341b64
 twittalyzer: "on"
 facebook: /pages/Bergsteins-NY-Deli/294750952946
+inactive: true
 ---
 id: smgfoodtruck
 twitter: smgfoodtruck
@@ -244,6 +256,7 @@ url: http://www.sweetmissgivings.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1192829259/photo_normal.JPG
 twittalyzer: "on"
 facebook: /pages/Sweet-Miss-Givings-Bakery/102615459778492
+inactive: true
 ---
 id: brownbagtruck
 twitter: brownbagtruck
@@ -264,6 +277,7 @@ iconUrl: http://twimg0-a.akamaihd.net/profile_images/1332195359/twitterlogo1_nor
 foursquare: 4e8a2dc12c5b5dc29df63d76
 twittalyzer: "off"
 facebook: http://www.foreveryogurt.com
+inactive: true
 ---
 id: foreveryogurt
 twitter: foreveryogurt
@@ -274,6 +288,7 @@ iconUrl: http://twimg0-a.akamaihd.net/profile_images/1332195359/twitterlogo1_nor
 foursquare: 4e8a2dc12c5b5dc29df63d76
 twittalyzer: "off"
 facebook: http://www.foreveryogurt.com
+inactive: true
 ---
 id: courageouscakes
 twitter: courageouscakes
@@ -285,16 +300,6 @@ foursquare: 4dd6cc877d8b322663e0276c
 twittalyzer: "on"
 facebook: /cupcakesforcourage
 ---
-id: courageouscakes2
-twitter: courageouscakes
-name: Cupcakes for Courage
-categories: Dessert
-url: http://www.cupcakesforcourage.com
-iconUrl: http://twimg0-a.akamaihd.net/profile_images/1739700855/Dark_Chocolate-Chocolate2_normal.jpg
-foursquare: 4dd6cc877d8b322663e0276c
-twittalyzer: "off"
-facebook: /cupcakesforcourage
----
 id: jerkinonwheels
 twitter: jerkinonwheels
 name: Jerkin on Wheels
@@ -303,6 +308,7 @@ url: http://www.jerkinonwheels.com/
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1514860552/0001Xf_normal.jpg
 twittalyzer: "on"
 facebook: /JerkinOnWheels
+inactive: true
 ---
 id: thewagyuwagon
 twitter: thewagyuwagon
@@ -322,6 +328,7 @@ url: http://www.flavor180.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1252308145/flavor-new_normal.jpg
 foursquare: 4e2f8e2c8130c05c18cefbef
 facebook: /pages/Flavor180/134965526568765
+inactive: true
 ---
 id: flavor1802
 twitter: flavor180
@@ -331,6 +338,7 @@ url: http://www.flavor180.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1252308145/flavor-new_normal.jpg
 foursquare: 4e2f8e2c8130c05c18cefbef
 facebook: /pages/Flavor180/134965526568765
+inactive: true
 ---
 id: fidotogo
 twitter: fidotogo
@@ -341,6 +349,7 @@ iconUrl: http://twimg0-a.akamaihd.net/profile_images/1344354728/truck4profile_no
 twittalyzer: "on"
 foursquare: 4de95f941520132cb978fdf2
 facebook: /fidotogo
+inactive: true
 ---
 id: zullosfoodtruck
 twitter: zullosfoodtruck
@@ -369,6 +378,7 @@ iconUrl: http://twimg0-a.akamaihd.net/profile_images/1393048160/mfuLOGO_normal.p
 foursquare: 4b990b1cf964a520975d35e3
 twittalyzer: "on"
 facebook: /pages/Mobile-Food-Unit/204196292961297
+inactive: true
 ---
 id: chickpeadelight
 twitter: chickpeadelight
@@ -377,6 +387,7 @@ categories: Food
 url: http://www.chickpeadelights.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1525691204/logo_small_normal.jpg
 twittalyzer: "on"
+inactive: true
 ---
 id: starfruitcafe
 twitter: starfruitcafe
@@ -386,6 +397,7 @@ url: http://www.starfruitcafe.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1432329264/starfruittruck_normal.JPG
 twittalyzer: "off"
 facebook: /StarfruitCafe
+inactive: true
 ---
 id: chitowntamale
 twitter: chitowntamale
@@ -396,6 +408,7 @@ iconUrl: http://twimg0-a.akamaihd.net/profile_images/1589067061/Tamale_Guy_logo_
 foursquare: 4e834b6f722e73eaf4938516
 twittalyzer: "on"
 facebook: /chitowntamale
+inactive: true
 ---
 id: jagrillonthego
 twitter: jagrillonthego
@@ -421,6 +434,7 @@ name: Sugar Pie Cafe
 categories: Sweet
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1540568772/cupcake_1_normal.jpg
 twittalyzer: "on"
+inactive: true
 ---
 id: hummingbirdtogo
 twitter: hummingbirdtogo
@@ -453,6 +467,7 @@ name: Puffs of Doom
 categories: Sweet
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1340187108/Logo_Final_normal.png
 facebook: /puffsofdoom
+inactive: true
 ---
 id: puffsofdoom2
 twitter: puffsofdoom
@@ -460,6 +475,7 @@ name: Puffs of Doom
 categories: Sweet
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1340187108/Logo_Final_normal.png
 facebook: /puffsofdoom
+inactive: true
 ---
 id: sweetspotmac
 twitter: sweetspotmac
@@ -470,6 +486,7 @@ foursquare: 4e9f0e2a7beb438c5e7bd7d0
 twittalyzer: "off"
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1514611309/Logo_SweetSpotMac_Block4C_Avatar_normal.jpg
 facebook: /SweetSpotMacarons
+inactive: true
 ---
 id: bigstartruck
 twitter: bigstartruck
@@ -477,6 +494,7 @@ name: Big Star Food Truck
 categories: Savory
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/733151570/ComingSoon_normal.png
 twittalyzer: "on"
+inactive: true
 ---
 id: steakwch
 twitter: steakwch
@@ -485,6 +503,7 @@ categories: Savory
 foursquare: 4e0a778b52b14bd098d116eb
 iconUrl: http://a1.twimg.com/profile_images/1443279567/Twitter_Pic_normal.JPG
 twittalyzer: "on"
+inactive: true
 ---
 id: steakwch2
 twitter: steakwch
@@ -493,6 +512,7 @@ categories: Savory
 foursquare: 4e0a778b52b14bd098d116eb
 iconUrl: http://a1.twimg.com/profile_images/1443279567/Twitter_Pic_normal.JPG
 twittalyzer: "off"
+inactive: true
 ---
 id: twoitalians
 twitter: twoitalians
@@ -500,6 +520,7 @@ name: Two Italians
 categories: Savory
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1504340611/023_normal.JPG
 twittalyzer: "on"
+inactive: true
 ---
 id: stemartaen
 twitter: stemartaen
@@ -528,6 +549,7 @@ twittalyzer: "on"
 url: http://www.wowbao.com/
 facebook: /hotasianbuns
 matchOnlyIf: "#bunsontherun"
+inactive: true
 ---
 id: trafficjamfood
 twitter: trafficjamfood
@@ -536,6 +558,7 @@ categories: Savory
 url: http://www.jamrestaurant.com/
 iconUrl: http://a2.twimg.com/profile_images/1607815357/TJ_normal
 twittalyzer: "on"
+inactive: true
 ---
 id: samichbox
 twitter: samichbox
@@ -559,6 +582,7 @@ name: Papos Tacos
 categories: Mexican
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1612295747/efr8d9MJ_normal
 twittalyzer: "on"
+inactive: true
 ---
 id: cookieswflavor
 twitter: cookieswflavor
@@ -566,6 +590,7 @@ name: Cookies with Flavor
 categories: Cookies
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1250848560/burgandy_3pck_normal.jpg
 twittalyzer: "off"
+inactive: true
 ---
 id: beaversdonuts
 twitter: beaversdonuts
@@ -580,6 +605,7 @@ name: Fire It Up
 categories: Barbecue
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1474737057/FIU_normal.jpg
 twittalyzer: "on"
+inactive: true
 ---
 id: tamalefoodie
 twitter: tamalefoodie
@@ -619,6 +645,7 @@ name: Chubby Wieners
 categories: Food
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1629862898/image_normal.jpg
 twittalyzer: "on"
+inactive: true
 ---
 id: chubbywieners
 twitter: chubbywieners
@@ -640,6 +667,7 @@ name: Alexander Beetle
 categories: Food
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1413372809/image_normal.jpg
 twittalyzer: "on"
+inactive: true
 ---
 id: currycruiser
 twitter: currycruiser
@@ -656,6 +684,7 @@ categories: Indian Food
 url: http://www.curried.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1330464121/Curried_normal.png
 twittalyzer: "off"
+inactive: true
 ---
 id: gettapolpetta
 twitter: gettapolpetta

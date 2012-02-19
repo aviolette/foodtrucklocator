@@ -27,6 +27,23 @@
   </c:forEach>
   </tbody>
 </table>
+<h3>Trucks That Are Inactive Today</h3>
+<table>
+  <thead>
+  <tr>
+    <th>Truck</th>
+  </tr>
+  </thead>
+  <tbody>
+  <c:forEach var="truckStops" items="${trucks}">
+    <c:if test="${!truckStops.active && !truckStops.truck.inactive}">
+      <tr>
+        <td><a href="/admin/trucks/${truckStops.truck.id}">${truckStops.truck.name}</a></td>
+      </tr>
+    </c:if>
+  </c:forEach>
+  </tbody>
+</table>
 <h3>Inactive Trucks</h3>
 <table>
   <thead>
@@ -36,7 +53,7 @@
   </thead>
   <tbody>
   <c:forEach var="truckStops" items="${trucks}">
-    <c:if test="${!truckStops.active}">
+    <c:if test="${!truckStops.active && truckStops.truck.inactive}">
       <tr>
         <td><a href="/admin/trucks/${truckStops.truck.id}">${truckStops.truck.name}</a></td>
       </tr>

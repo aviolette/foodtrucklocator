@@ -61,6 +61,7 @@ public class JsonWriter {
         .put("facebook", truck.getFacebook())
         .put("foursquare", truck.getFoursquareUrl())
         .put("name", truck.getName())
+        .put("inactive", truck.isInactive())
         .put("url", truck.getUrl());
   }
 
