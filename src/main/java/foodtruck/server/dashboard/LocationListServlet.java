@@ -13,8 +13,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
 
+import foodtruck.dao.LocationDAO;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
@@ -28,11 +28,13 @@ import foodtruck.server.api.JsonWriter;
 public class LocationListServlet extends HttpServlet {
   private final GeoLocator locator;
   private final JsonWriter writer;
+  private final LocationDAO locationDAO;
 
   @Inject
-  public LocationListServlet(GeoLocator locator, JsonWriter writer) {
+  public LocationListServlet(GeoLocator locator, JsonWriter writer, LocationDAO locationDAO) {
     this.locator = locator;
     this.writer = writer;
+    this.locationDAO = locationDAO;
   }
 
   @Override
@@ -52,16 +54,14 @@ public class LocationListServlet extends HttpServlet {
     JSONArray results = new JSONArray();
     if (!Strings.isNullOrEmpty(searchField)) {
       Location location = locator.locate(searchField, GeolocationGranularity.NARROW);
+      if (location == null) {
+        location = locationDAO.lookup(searchField);
+      }
       if (location != null) {
-        try {
-          results.put(writer.writeLocation(location, 0, true));
-        } catch (JSONException e) {
-          throw new RuntimeException(e);
-        }
+        resp.sendRedirect("/admin/locations/" + location.getKey());
+        return;
       }
     }
-
-    req.setAttribute("results", results.toString());
     req.setAttribute("nav", "locations");
     req.getRequestDispatcher(jsp).forward(req, resp);
   }
