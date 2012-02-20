@@ -12,8 +12,6 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import org.codehaus.jettison.json.JSONArray;
-
 import foodtruck.dao.LocationDAO;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
@@ -50,8 +48,7 @@ public class LocationListServlet extends HttpServlet {
       }
     };
 
-    String searchField = req.getParameter("searchfield");
-    JSONArray results = new JSONArray();
+    String searchField = req.getParameter("q");
     if (!Strings.isNullOrEmpty(searchField)) {
       Location location = locator.locate(searchField, GeolocationGranularity.NARROW);
       if (location == null) {

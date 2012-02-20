@@ -16,12 +16,22 @@
   <tbody>
   <c:forEach var="truckStops" items="${trucks}">
     <c:if test="${truckStops.active}">
+
       <tr>
         <td><a href="/admin/trucks/${truckStops.truck.id}">${truckStops.truck.name}</a></td>
         <td><c:choose><c:when
-            test="${!empty(truckStops.currentStop)}">${truckStops.currentStop.location.name}</c:when><c:otherwise>Not Active</c:otherwise></c:choose></td>
+            test="${!empty(truckStops.currentStop)}"><c:url value="/admin/locations"
+                                                            var="locationUrl">
+          <c:param name="q" value="${truckStops.currentStop.location.name}"/>
+        </c:url><a
+            href="${locationUrl}">${truckStops.currentStop.location.name}</a></c:when><c:otherwise>Not Active</c:otherwise></c:choose>
+        </td>
         <td><c:choose><c:when
-            test="${!empty(truckStops.nextStop)}">${truckStops.nextStop.location.name}</c:when><c:otherwise>None</c:otherwise></c:choose></td>
+            test="${!empty(truckStops.nextStop)}"><c:url value="/admin/locations" var="locationUrl">
+          <c:param name="q" value="${truckStops.nextStop.location.name}"/>
+        </c:url><a
+            href="${locationUrl}">${truckStops.nextStop.location.name}</a></c:when><c:otherwise>None</c:otherwise></c:choose>
+        </td>
       </tr>
     </c:if>
   </c:forEach>
@@ -44,23 +54,25 @@
   </c:forEach>
   </tbody>
 </table>
-<h3>Inactive Trucks</h3>
-<table>
-  <thead>
-  <tr>
-    <th>Truck</th>
-  </tr>
-  </thead>
-  <tbody>
-  <c:forEach var="truckStops" items="${trucks}">
-    <c:if test="${!truckStops.active && truckStops.truck.inactive}">
-      <tr>
-        <td><a href="/admin/trucks/${truckStops.truck.id}">${truckStops.truck.name}</a></td>
-      </tr>
-    </c:if>
-  </c:forEach>
-  </tbody>
-</table>
+<div id="inactiveTrucks">
+  <h3>Inactive Trucks</h3>
+  <table>
+    <thead>
+    <tr>
+      <th>Truck</th>
+    </tr>
+    </thead>
+    <tbody>
+    <c:forEach var="truckStops" items="${trucks}">
+      <c:if test="${!truckStops.active && truckStops.truck.inactive}">
+        <tr>
+          <td><a href="/admin/trucks/${truckStops.truck.id}">${truckStops.truck.name}</a></td>
+        </tr>
+      </c:if>
+    </c:forEach>
+    </tbody>
+  </table>
+</div>
 <script type="text/javascript">
   (function() {
     function bindAjaxCallToButton(button, url) {
