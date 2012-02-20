@@ -62,6 +62,7 @@ public class LocationEditServlet extends HttpServlet {
         throw new RuntimeException(e);
       }
     }
+    req.setAttribute("nav", "locations");
     req.getRequestDispatcher(jsp).forward(req, resp);
   }
 
