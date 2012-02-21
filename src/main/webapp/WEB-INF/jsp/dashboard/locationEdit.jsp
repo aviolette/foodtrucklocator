@@ -6,6 +6,9 @@
 
 <div id="map_canvas" style="width:500px; height:300px; padding-bottom:20px;"></div>
 
+<div>
+  <a id="locationSearchButton" href="#">Search for a location</a>
+</div>
 
 <form>
   <fieldset>
@@ -110,6 +113,37 @@
       $("#longitude").attr("value", marker.position.lng());
     });
 
+    var geocoder = new google.maps.Geocoder();
+    var bounds = new google.maps.LatLngBounds();
+    bounds.extend(markerLat);
+    var $locationSearchButton = $("#locationSearchButton");
+    $locationSearchButton.click(function() {
+
+      var addr = prompt("Please enter an address or intersection", null);
+      if (!addr) {
+        return;
+      }
+      if (!addr.match(/,/)) {
+        addr = addr + ", Chicago, IL";
+      }
+      geocoder.geocode({ 'address': addr }, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+          for (var i = 0; i < results.length; i++) {
+            var marker = new google.maps.Marker({
+              draggable: false,
+              icon: 'http://maps.google.com/mapfiles/marker_green.png',
+              position: results[i].geometry.location,
+              map: map
+            });
+            bounds.extend(results[i].geometry.location);
+          }
+          map.fitBounds(bounds);
+        } else {
+          alert("Unable to geocode your address");
+        }
+      });
+
+    });
   });
 </script>
 
