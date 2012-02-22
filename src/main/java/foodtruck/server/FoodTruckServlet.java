@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -77,7 +78,7 @@ public class FoodTruckServlet extends HttpServlet {
     if (dateTime == null) {
       dateTime = clock.now();
     }
-    req.setAttribute("center", mapCenter);
+    req.setAttribute("center", getCenter(req.getCookies(), mapCenter));
     String googleAnalytics = System.getProperty("foodtruck.google.analytics", null);
     if (googleAnalytics != null) {
       req.setAttribute("google_analytics_ua", googleAnalytics);
@@ -100,5 +101,20 @@ public class FoodTruckServlet extends HttpServlet {
     req.setAttribute("requestTimeInMillis", dateTime.getMillis());
     req.setAttribute("payload", payload);
     req.getRequestDispatcher("/WEB-INF/jsp/index.jsp").forward(req, resp);
+  }
+
+  private Location getCenter(Cookie[] cookies, Location defaultValue) {
+    double lat = 0, lng = 0;
+    for (int i = 0; i < cookies.length; i++) {
+      if ("latitude".equals(cookies[i].getName())) {
+        lat = Double.valueOf(cookies[i].getValue());
+      } else if ("longitude".equals(cookies[i].getName())) {
+        lng = Double.valueOf(cookies[i].getValue());
+      }
+    }
+    if (lat != 0 && lng != 0) {
+      return Location.builder().lat(lat).lng(lng).build();
+    }
+    return defaultValue;
   }
 }
