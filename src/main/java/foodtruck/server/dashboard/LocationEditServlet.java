@@ -5,7 +5,6 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.base.Throwables;
@@ -18,6 +17,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 import foodtruck.dao.LocationDAO;
 import foodtruck.model.Location;
+import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.server.api.JsonReader;
 import foodtruck.server.api.JsonWriter;
 
@@ -43,17 +43,7 @@ public class LocationEditServlet extends HttpServlet {
     final String jsp = "/WEB-INF/jsp/dashboard/locationEdit.jsp";
     final String path = req.getRequestURI();
     final String keyIndex = path.substring(path.lastIndexOf("/") + 1);
-
-    // hack required when using * patterns in guice
-    req = new HttpServletRequestWrapper(req) {
-      public Object getAttribute(String name) {
-        if ("org.apache.catalina.jsp_file".equals(name)) {
-          return jsp;
-        }
-        return super.getAttribute(name);
-      }
-    };
-
+    req = new GuiceHackRequestWrapper(req, jsp);
     Location location = locationDAO.findByKey(Long.valueOf(keyIndex));
     if (location != null) {
       try {

@@ -5,7 +5,6 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.base.Strings;
@@ -16,6 +15,7 @@ import foodtruck.dao.LocationDAO;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
+import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.server.api.JsonWriter;
 
 /**
@@ -39,15 +39,7 @@ public class LocationListServlet extends HttpServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     final String jsp = "/WEB-INF/jsp/dashboard/locationDashboard.jsp";
-    req = new HttpServletRequestWrapper(req) {
-      public Object getAttribute(String name) {
-        if ("org.apache.catalina.jsp_file".equals(name)) {
-          return jsp;
-        }
-        return super.getAttribute(name);
-      }
-    };
-
+    req = new GuiceHackRequestWrapper(req, jsp);
     String searchField = req.getParameter("q");
     if (!Strings.isNullOrEmpty(searchField)) {
       Location location = locator.locate(searchField, GeolocationGranularity.NARROW);

@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.io.ByteStreams;
@@ -20,6 +19,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 import foodtruck.model.Trucks;
 import foodtruck.model.TweetSummary;
+import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.server.api.JsonWriter;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.twitter.TwitterService;
@@ -58,18 +58,12 @@ public class TruckServlet extends HttpServlet {
     req.setAttribute("tweets", tweetSummaries);
     final String jsp = "/WEB-INF/jsp/dashboard/truckDashboard.jsp";
     // hack required when using * patterns in guice
-    req = new HttpServletRequestWrapper(req) {
-      public Object getAttribute(String name) {
-        if ("org.apache.catalina.jsp_file".equals(name)) {
-          return jsp;
-        }
-        return super.getAttribute(name);
-      }
-    };
+    req = new GuiceHackRequestWrapper(req, jsp);
     req.setAttribute("headerName", trucks.findById(truckId).getName());
     req.setAttribute("truckId", truckId);
     try {
-      req.setAttribute("schedule", writer.writeSchedule(truckService.findStopsForDay(truckId, clock.currentDay())));
+      req.setAttribute("schedule",
+          writer.writeSchedule(truckService.findStopsForDay(truckId, clock.currentDay())));
     } catch (JSONException e) {
       throw new RuntimeException(e);
     }
