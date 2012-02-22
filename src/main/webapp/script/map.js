@@ -3,25 +3,25 @@ window.FoodTruckLocator = function() {
     return "http://www.google.com/mapfiles/marker" + letter + ".png"
   }
 
-  function setCookie(name,value,days) {
-      if (days) {
-          var date = new Date();
-          date.setTime(date.getTime()+(days*24*60*60*1000));
-          var expires = "; expires="+date.toGMTString();
-      }
-      else var expires = "";
-      document.cookie = name+"="+value+expires+"; path=/";
+  function setCookie(name, value, days) {
+    if (days) {
+      var date = new Date();
+      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+      var expires = "; expires=" + date.toGMTString();
+    }
+    else var expires = "";
+    document.cookie = name + "=" + value + expires + "; path=/";
   }
 
   function getCookie(name) {
-      var nameEQ = name + "=";
-      var ca = document.cookie.split(';');
-      for(var i=0;i < ca.length;i++) {
-          var c = ca[i];
-          while (c.charAt(0)==' ') c = c.substring(1,c.length);
-          if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-      }
-      return null;
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
   }
 
   function distanceSort(a, b) {
@@ -400,11 +400,12 @@ window.FoodTruckLocator = function() {
         if (!addr.match(/,/)) {
           addr = addr + ", Chicago, IL";
         }
-        self.geocoder.geocode( { 'address': addr }, function(results, status) {
+        self.geocoder.geocode({ 'address': addr }, function(results, status) {
           if (status == google.maps.GeocoderStatus.OK) {
             self.defaultFilterParams['locationName'] = addr;
             self.defaultFilterParams['locationCoords'] = { lat : results[0].geometry.location.lat(),
               lng : results[0].geometry.location.lng() };
+            self.model.setCenter(results[0].geometry.location);
             self.persistLocationParams();
             self.render();
 
@@ -439,7 +440,8 @@ window.FoodTruckLocator = function() {
       var latitude = getCookie("latitude");
       var longitude = getCookie("longitude");
       if (latitude && longitude) {
-        this.defaultFilterParams["locationCoords"] = { lat : parseFloat(latitude), lng : parseFloat(longitude) };
+        this.defaultFilterParams["locationCoords"] =
+        { lat : parseFloat(latitude), lng : parseFloat(longitude) };
       }
       return this.defaultFilterParams;
     },
@@ -458,16 +460,16 @@ window.FoodTruckLocator = function() {
       this.persistLocationParams();
     },
     filterLocations : function(groups) {
-      if(!$("#filterLocations").is(":checked")) {
+      if (!$("#filterLocations").is(":checked")) {
         return groups;
       }
       var filtered = [];
       var filterParams = this.getFilterParams();
       var latlng = new google.maps.LatLng(filterParams.locationCoords.lat,
-                filterParams.locationCoords.lng);
+          filterParams.locationCoords.lng);
       $.each(groups, function(index, group) {
         var distance = google.maps.geometry.spherical.computeDistanceBetween(latlng,
-                group.position.latLng, 3959);
+            group.position.latLng, 3959);
         if (distance <= filterParams.radius) {
           filtered.push(group);
         }
@@ -634,7 +636,8 @@ window.FoodTruckLocator = function() {
     setupView : function(trucks, mobile, center, time) {
       var self = this;
       if (Modernizr.touch || mobile) {
-        this.currentView = new ListView({initialTime: time, center : center, model : trucks, el: "foodTruckList"});
+        this.currentView =
+            new ListView({initialTime: time, center : center, model : trucks, el: "foodTruckList"});
       } else {
         if (typeof(this.map) == 'undefined') {
           this.map = new google.maps.Map(document.getElementById("map_canvas"), {
@@ -644,7 +647,8 @@ window.FoodTruckLocator = function() {
             mapTypeId: google.maps.MapTypeId.ROADMAP
           });
         }
-        var initParams = { initialTime: time, map: this.map, center : center, model : trucks, el : "map_canvas"};
+        var initParams = { initialTime: time, map: this
+            .map, center : center, model : trucks, el : "map_canvas"};
         this.timeView = new TimeView(initParams);
         this.locationView = new LocationView(initParams);
         this.pickView(trucks, mobile, center, time);
