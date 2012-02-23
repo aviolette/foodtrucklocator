@@ -600,6 +600,9 @@ name: Beavers Donuts
 categories: Breakfast,Coffee
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1619739185/photo_1_normal.JPG
 twittalyzer: "on"
+facebook: /BeaversDonuts
+url: http://beaversdonuts.com/
+foursquare: 4f2d75d7e4b04796495abac1
 ---
 id: fireituptruck
 twitter: fireituptruck
@@ -623,6 +626,8 @@ name: King Schnitzel
 categories: Food
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1519640131/SK_SideDoor_26x29_normal.png
 twittalyzer: "on"
+url: http://www.chicagoschnitzelking.blogspot.com/
+foursquare: 4ec54fd70e617a27fa146c11
 ---
 id: caponiesexp
 twitter: caponiesexp
@@ -631,6 +636,8 @@ categories: Food
 url: http://www.caponiespizza.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1575510885/caponies_normal.jpg
 twittalyzer: "on"
+facebook: /pages/Caponies-Express/107599149379
+foursquare: 4f32c443e4b0e6be3c82f72e
 ---
 id: pecanandcharlie
 twitter: pecanandcharlie
@@ -648,6 +655,7 @@ categories: Food
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1629862898/image_normal.jpg
 twittalyzer: "on"
 inactive: true
+foursquare: 4eb4edf6b8030fb582a54210
 ---
 id: chubbywieners
 twitter: chubbywieners
@@ -655,6 +663,9 @@ name: Chubby Wieners
 categories: Food
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1629862898/image_normal.jpg
 twittalyzer: "on"
+foursquare: 4eb4edf6b8030fb582a54210
+url: http://www.chubbywieners.com/
+facebook: /chubbywieners
 ---
 id: jbalbertospizza
 twitter: jbalbertospizza
@@ -678,6 +689,7 @@ categories: Food
 url: http://www.currycruiser.com/
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1629237144/Screen_Shot_2011-11-08_at_1.25.31_PM_normal.png
 twittalyzer: "on"
+facebook: /currycruiser
 ---
 id: getcurriedaway
 twitter: getcurriedaway
@@ -694,6 +706,9 @@ name: Getta Polpetta Truck
 categories: Food
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1675541664/twitter-logo_normal.jpg
 twittalyzer: "on"
+url: http://www.gettapolpetta.com/
+facebook: /pages/Getta-Polpetta/177411165664191
+foursquare: 4ef20855e5e8d8d3dcd7df2b
 ---
 id: phbakery
 twitter: phbakery
@@ -702,6 +717,8 @@ categories: Savory
 url: http://pleasanthousebakery.com/
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1670357503/pie_truck_normal.jpg
 twittalyzer: "on"
+foursquare: 4f05e5db6d8687fe67151dc3
+facebook: /pages/Pleasant-House-Bakery/171705856203359
 ---
 id: giaviasweets
 twitter: giaviasweets
@@ -710,6 +727,7 @@ categories: Sweet
 url: http://www.giaviasweets.com/
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1558342471/GiaVia_Sweets_normal.png
 twittalyzer: "on"
+facebook: /GiaViaSweets
 ---
 id: eleaven
 twitter: eleaven
@@ -718,6 +736,7 @@ categories: Breakfast,Coffee,Lunch
 url: http://www.eleavenfood.com
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/580743327/images_normal.jpg
 twittalyzer: "on"
+foursquare: 4f1dacbee4b083823465eff6
 ---
 id: enemykitchen
 twitter: enemykitchen
