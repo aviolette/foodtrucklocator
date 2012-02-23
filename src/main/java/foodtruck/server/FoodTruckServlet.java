@@ -3,6 +3,7 @@ package foodtruck.server;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import javax.annotation.Nullable;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
@@ -103,8 +104,11 @@ public class FoodTruckServlet extends HttpServlet {
     req.getRequestDispatcher("/WEB-INF/jsp/index.jsp").forward(req, resp);
   }
 
-  private Location getCenter(Cookie[] cookies, Location defaultValue) {
+  private Location getCenter(@Nullable Cookie[] cookies, Location defaultValue) {
     double lat = 0, lng = 0;
+    if (cookies == null) {
+      return defaultValue;
+    }
     for (int i = 0; i < cookies.length; i++) {
       if ("latitude".equals(cookies[i].getName())) {
         lat = Double.valueOf(cookies[i].getValue());
