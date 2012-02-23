@@ -50,7 +50,9 @@
             <div id="slider"></div>
           </div>
           <div id="locationFilter">
-            <input type="checkbox" id="filterLocations" checked="checked"/> &nbsp;Show results within <input type="text" id="radius" size="2"/> miles of <strong id="filterLocationName">Dearborn and Monroe</strong>.</br>
+            <input type="checkbox" id="filterLocations" checked="checked"/> &nbsp;Show results
+            within <input type="text" id="radius" size="2"/> miles of <strong
+              id="filterLocationName">Dearborn and Monroe</strong>.</br>
             <a href="#" id="changeLocationLink">Change my location.</a>
           </div>
           <div class="timeSelect">
@@ -99,7 +101,7 @@ document.write("<script src='script/lib/jquery-1.6.2.min.js'>\x3C/script>")</scr
         src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
 <script type="text/javascript" src="script/lib/underscore-min.js"></script>
 <script type="text/javascript" src="script/lib/backbone-min.js"></script>
-<script type="text/javascript" src="script/map.js?ver=23"></script>
+<script type="text/javascript" src="script/map.js?ver=24"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     FoodTruckLocator.run(${mobile}, new google.maps.LatLng(${center.latitude}, ${center.longitude}),
