@@ -83,7 +83,9 @@
     $("#endTimeInput").attr("value", stop.endTime);
     $("#locationInput").attr("value", stop.location.name);
     $("#edit-stop").modal({ show: true, keyboard : true, backdrop: true});
-    $("#saveButton").click(function(e) {
+    var $saveButton = $("#saveButton");
+    $saveButton.unbind('click');
+    $saveButton.click(function(e) {
       e.preventDefault();
       stop.startTime = $("#startTimeInput").attr("value");
       stop.endTime = $("#endTimeInput").attr("value");
@@ -104,7 +106,9 @@
         success: afterwards
       });
     });
-    $("#cancelButton").click(function(e) {
+    var $cancelButton = $("#cancelButton");
+    $cancelButton.unbind("click");
+    $cancelButton.click(function(e) {
       e.preventDefault();
       $("#edit-stop").modal('hide');
     });
