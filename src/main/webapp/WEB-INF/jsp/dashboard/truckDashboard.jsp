@@ -123,11 +123,12 @@
       success : function(schedule) {
         $.each(schedule["stops"], function(truckIndex, stop) {
           scheduleTable.append("<tr><td>" + stop.startTime + "</td><td>" + stop.endTime +
-              "</td><td>"
-              + stop.location.name + "</td><td><button  id='truckEndNow" + truckIndex +
+              "</td><td><a href='/admin/locations?q=" + encodeURIComponent(stop.location.name) +
+              "'>"
+              + stop.location.name + "</a></td><td><button  id='truckEndNow" + truckIndex +
               "' class='btn danger'>End Now</button>&nbsp;" +
               "<button id='truckDelete" + truckIndex +
-              "' class='btn danger'>Delete</button>&nbsp;<button class='btn danger' id='truckEdit" +
+              "' class='btn danger'>Delete</button>&nbsp;<button class='btn' id='truckEdit" +
               truckIndex + "'>Edit</button></td></tr>");
           $("#truckEdit" + truckIndex).click(function(e) {
             invokeEditDialog(stop, refreshSchedule);
