@@ -454,6 +454,16 @@ twittalyzer: "on"
 foursquare: 4eae101b0039f003c3d8265a
 facebook: /DonRafaRestaurants
 ---
+id: donraffoodtruck2
+twitter: donraffoodtruck
+name: Don Rafa Food Truck #2
+categories: Savory
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1591805989/logo_normal.jpg
+twittalyzer: "off"
+inactive: true
+foursquare: 4eae101b0039f003c3d8265a
+facebook: /DonRafaRestaurants
+---
 id: lqmeatmobile
 twitter: lqmeatmobile
 name: Lillies Q Chicago
