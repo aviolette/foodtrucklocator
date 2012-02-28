@@ -13,6 +13,7 @@ import com.google.common.collect.Ordering;
  * A database of trucks that can be retrieved by their id.
  * @author aviolette@gmail.com
  * @since 9/22/11
+ * @deprecated use TruckDAO instead
  */
 public class Trucks {
   private final Map<String, Truck> trucks;
