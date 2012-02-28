@@ -4,6 +4,7 @@ import com.google.inject.AbstractModule;
 
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.ScheduleDAO;
+import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.dao.TweetCacheDAO;
 
@@ -18,5 +19,6 @@ public class AppEngineDAOModule extends AbstractModule {
     bind(LocationDAO.class).to(LocationDAOAppEngine.class);
     bind(TweetCacheDAO.class).to(TweetCacheAppEngineDAO.class);
     bind(ScheduleDAO.class).to(ScheduleDAOAppEngine.class);
+    bind(TruckDAO.class).to(TruckDAOAppEngine.class);
   }
 }

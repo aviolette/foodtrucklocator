@@ -14,7 +14,7 @@ import com.google.common.collect.ImmutableSet;
  * @author aviolette@gmail.com
  * @since Jul 12, 2011
  */
-public class Truck {
+public class Truck extends ModelEntity {
   private final String id;
   private final String name;
   private final String twitterHandle;
@@ -30,6 +30,7 @@ public class Truck {
   private final boolean inactive;
 
   private Truck(Builder builder) {
+    super(builder.key);
     this.id = builder.id;
     this.name = builder.name;
     this.twitterHandle = builder.twitter;
@@ -130,6 +131,10 @@ public class Truck {
     return matchOnlyIf;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   public static class Builder {
     private String id;
     private String name;
@@ -144,6 +149,7 @@ public class Truck {
     private String facebook;
     private Pattern matchOnlyIf;
     private boolean inactive;
+    private Object key;
 
     public Builder() {
     }
@@ -162,6 +168,12 @@ public class Truck {
       this.facebook = truck.facebook;
       this.matchOnlyIf = truck.matchOnlyIf;
       this.inactive = truck.inactive;
+      this.key = truck.key;
+    }
+
+    public Builder key(Object key) {
+      this.key = key;
+      return this;
     }
 
     public Builder id(String id) {

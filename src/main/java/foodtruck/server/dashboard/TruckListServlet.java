@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import foodtruck.model.Trucks;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 
@@ -20,13 +19,11 @@ import foodtruck.util.Clock;
  */
 @Singleton
 public class TruckListServlet extends HttpServlet {
-  private final Trucks trucks;
   private final FoodTruckStopService stopService;
   private final Clock clock;
 
   @Inject
-  public TruckListServlet(Trucks trucks, FoodTruckStopService service, Clock clock) {
-    this.trucks = trucks;
+  public TruckListServlet(FoodTruckStopService service, Clock clock) {
     this.stopService = service;
     this.clock = clock;
   }
