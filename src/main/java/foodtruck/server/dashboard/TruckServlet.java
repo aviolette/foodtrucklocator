@@ -1,8 +1,10 @@
 package foodtruck.server.dashboard;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -17,6 +19,7 @@ import com.google.inject.Singleton;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import foodtruck.model.Truck;
 import foodtruck.model.Trucks;
 import foodtruck.model.TweetSummary;
 import foodtruck.server.GuiceHackRequestWrapper;
@@ -52,7 +55,28 @@ public class TruckServlet extends HttpServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     final String requestURI = req.getRequestURI();
-    final String truckId = requestURI.substring(14);
+    String truckId = requestURI.substring(14);
+    if (truckId.endsWith("/configuration")) {
+      truckId = truckId.substring(0, truckId.length() - 14);
+      editConfiguration(truckId, req, resp);
+    } else {
+      loadDashboard(truckId, req, resp);
+    }
+  }
+
+  private void editConfiguration(String truckId, HttpServletRequest req, HttpServletResponse resp)
+      throws IOException, ServletException {
+    log.info("Loading configuration for " + truckId);
+    final String jsp = "/WEB-INF/jsp/dashboard/truckEdit.jsp";
+    // hack required when using * patterns in guice
+    req = new GuiceHackRequestWrapper(req, jsp);
+    req.setAttribute("headerName", "Edit");
+    req.setAttribute("truck", trucks.findById(truckId));
+    req.getRequestDispatcher(jsp).forward(req, resp);
+  }
+
+  private void loadDashboard(String truckId, HttpServletRequest req, HttpServletResponse resp)
+      throws IOException, ServletException {
     log.info("Loading dashboard for " + truckId);
     final List<TweetSummary> tweetSummaries = twitterService.findForTruck(truckId);
     req.setAttribute("tweets", tweetSummaries);
@@ -68,11 +92,40 @@ public class TruckServlet extends HttpServlet {
       throw new RuntimeException(e);
     }
     req.getRequestDispatcher(jsp).forward(req, resp);
+
   }
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
+    if (req.getRequestURI().endsWith("/configuration")) {
+      handleConfigurationPost(req, resp);
+    } else {
+      handleTweetUpdate(req, resp);
+    }
+  }
+
+  private void handleConfigurationPost(HttpServletRequest req, HttpServletResponse resp) {
+    String contentType = req.getContentType();
+    String truckId = req.getRequestURI().substring(14);
+    if (truckId.endsWith("/configuration")) {
+      truckId = truckId.substring(0, truckId.length() - 14);
+    }
+    if ("application/x-www-form-urlencoded".equals(contentType)) {
+      Truck truck = truckFromForm(req.getParameterMap(), truckId);
+      System.out.println("HERE");
+    }
+  }
+
+  private Truck truckFromForm(Map parameterMap, String truckId) {
+    Truck.Builder builder = Truck.builder();
+    builder.id(truckId)
+        .url((String) parameterMap.get("url"));
+    return builder.build();
+  }
+
+  private void handleTweetUpdate(HttpServletRequest req, HttpServletResponse resp)
+      throws IOException {
     String body = new String(ByteStreams.toByteArray(req.getInputStream()));
     body = URLDecoder.decode(body, "UTF-8");
     try {
@@ -91,5 +144,6 @@ public class TruckServlet extends HttpServlet {
       throw new RuntimeException(e);
     }
     resp.setStatus(204);
+
   }
 }
