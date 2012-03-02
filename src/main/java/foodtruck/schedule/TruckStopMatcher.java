@@ -36,6 +36,7 @@ public class TruckStopMatcher {
   public static final String TIME_PATTERN = "(\\d+(:\\d+)*\\s*(p|pm|a|am|a\\.m\\.|p\\.m\\.)?)|noon";
   private static final String TIME_RANGE_PATTERN =
       "(" + TIME_PATTERN + ")\\s*-\\s*(" + TIME_PATTERN + ")[\\s|\\.&&[^\\-]]";
+  private final Pattern retweetPattern;
   private final AddressExtractor addressExtractor;
   private final GeoLocator geoLocator;
   private final Pattern endTimePattern;
@@ -59,6 +60,7 @@ public class TruckStopMatcher {
     this.timePattern = Pattern.compile(TIME_PATTERN);
     this.endTimePattern = Pattern.compile("\\b(until|til|till) (" + TIME_PATTERN + ")");
     this.timeRangePattern = Pattern.compile(TIME_RANGE_PATTERN);
+    this.retweetPattern = Pattern.compile("\\bRT @");
     this.monPattern = Pattern.compile(
         "\\b(TUE|WED|THU|FRI|SAT|SUN|tuesday|wednesday|thursday|friday|saturday|sunday|tues|thurs|2morrow|tomorrow|ma–ana)\\b",
         Pattern.CASE_INSENSITIVE);
@@ -94,6 +96,13 @@ public class TruckStopMatcher {
   public @Nullable TruckStopMatch match(Truck truck, TweetSummary tweet,
       @Nullable DateTime terminationTime) {
     final String tweetText = tweet.getText();
+
+    if (isRetweet(tweetText)) {
+      log.log(Level.INFO, "Didn't match '{0}' because it is a retweet",
+          tweetText);
+      return null;
+    }
+
     if (verifyMatchOnlyExpression(truck, tweetText)) {
       log.log(Level.INFO, "Didn't match '{0}' because it didn't contain match-only expression",
           tweetText);
@@ -145,6 +154,10 @@ public class TruckStopMatcher {
     return new TruckStopMatch(Confidence.HIGH,
         new TruckStop(truck, startTime, endTime, location, null),
         tweetText, terminationTime != null);
+  }
+
+  private boolean isRetweet(String tweetText) {
+    return retweetPattern.matcher(tweetText).find();
   }
 
   private boolean verifyMatchOnlyExpression(Truck truck, String tweetText) {

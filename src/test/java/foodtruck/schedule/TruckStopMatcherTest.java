@@ -389,4 +389,27 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     assertEquals(tweetTime, match.getStop().getStartTime());
     verifyAll();
   }
+
+  @Test
+  public void testMatch_shouldNotMatchWhenRetweet() {
+    final String tweetText =
+        "Mmmm... RT @theslideride we are on Clinton & Lake";
+    final String address = "Clinton and Lake";
+    replayAll();
+    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
+    TruckStopMatch match = topic.match(truck, tweet, null);
+    assertNull(match);
+    verifyAll();
+  }
+
+  @Test
+  public void testMatch_shouldNotMatchWhenRetweetWithNoPreceedingText() {
+    final String tweetText =
+        "RT @theslideride we are on Clinton & Lake";
+    replayAll();
+    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
+    TruckStopMatch match = topic.match(truck, tweet, null);
+    assertNull(match);
+    verifyAll();
+  }
 }
