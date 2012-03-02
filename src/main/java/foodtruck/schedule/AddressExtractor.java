@@ -24,7 +24,7 @@ public class AddressExtractor {
   private final static String INTERSECTION_PARTIAL =
       "(N|E|W|S\\s+)?[A-Z0-9][a-zA-Z0-9]+(\\s+(st|St|Drive|Dr|Buren|BUREN|Blvd|Ave)\\.?)?";
   private final static String INTERSECTION_AND =
-      "((\\s+(and|at|near|n)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))";
+      "((\\s+(and|near|n)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))";
   private final static Pattern NUMBER_AND_NUMBER =
       Pattern.compile("(\\d+) and (\\d+), Chicago, IL");
 
@@ -125,18 +125,18 @@ public class AddressExtractor {
         // Between two streets
         new PatternTransform(Pattern.compile(
             "(" + INTERSECTION_PARTIAL + " ((in )?between|b/w) " + INTERSECTION_PARTIAL +
-                ")((\\s+(and|at)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))" + INTERSECTION_PARTIAL),
+                ")((\\s+(and)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))" + INTERSECTION_PARTIAL),
             cityAppender, true, 1),
         // Between two streets
         new PatternTransform(Pattern.compile(
             "(" + INTERSECTION_PARTIAL + " ((in )?between|b/w) " + INTERSECTION_PARTIAL +
-                ")((\\s+(and|at)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))" + INTERSECTION_PARTIAL,
+                ")((\\s+(and)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))" + INTERSECTION_PARTIAL,
             Pattern.CASE_INSENSITIVE),
             cityAppender, true, 1, ImmutableSet.of("steakwch")),
         // intersection format preceded by at
         new PatternTransform(Pattern.compile(
             "[A-Z0-9][a-zA-Z0-9]+\\s+at\\s+(" + INTERSECTION_PARTIAL +
-                "((\\s+(and|at|n)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))" + INTERSECTION_PARTIAL + ")"),
+                "((\\s+(and|n)\\s+)|(\\s*(\\&|\\\\|\\/)\\s*))" + INTERSECTION_PARTIAL + ")"),
             cityAppender, true, 1),
         // intersection format
         new PatternTransform(Pattern.compile(
