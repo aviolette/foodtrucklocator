@@ -65,6 +65,7 @@ public class TruckDAOAppEngine implements TruckDAO {
         .foursquareUrl((String) entity.getProperty(TRUCK_FOURSQUARE_URL_FIELD))
         .iconUrl((String) entity.getProperty(TRUCK_ICON_URL))
         .name((String) entity.getProperty(TRUCK_NAME_FIELD))
+        .matchOnlyIf((String) entity.getProperty(MATCH_REGEX_FIELD))
         .url((String) entity.getProperty(TRUCK_URL))
         .useTwittalyzer((Boolean) entity.getProperty(TRUCK_TWITTALYZER_FIELD))
         .build();
@@ -106,7 +107,7 @@ public class TruckDAOAppEngine implements TruckDAO {
     truckEntity.setProperty(TRUCK_TWITTALYZER_FIELD, truck.isUsingTwittalyzer());
     truckEntity.setProperty(TRUCK_DEFAULT_CITY_FIELD, truck.getDefaultCity());
     truckEntity.setProperty(TRUCK_FACEBOOK_FIELD, truck.getFacebook());
-//    truckEntity.setProperty(MATCH_REGEX_FIELD, truck.getMatchOnlyIf());
+    truckEntity.setProperty(MATCH_REGEX_FIELD, truck.getMatchOnlyIfString());
     truckEntity.setProperty(INACTIVE_FIELD, truck.isInactive());
     return truckEntity;
   }

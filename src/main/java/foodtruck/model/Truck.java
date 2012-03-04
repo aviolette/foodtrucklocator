@@ -127,7 +127,11 @@ public class Truck extends ModelEntity {
         .toString();
   }
 
-  public Pattern getMatchOnlyIf() {
+  public @Nullable String getMatchOnlyIfString() {
+    return matchOnlyIf == null ? null : matchOnlyIf.toString();
+  }
+
+  public @Nullable Pattern getMatchOnlyIf() {
     return matchOnlyIf;
   }
 

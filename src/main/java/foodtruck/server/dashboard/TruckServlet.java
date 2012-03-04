@@ -1,10 +1,9 @@
 package foodtruck.server.dashboard;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -12,6 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -19,6 +20,7 @@ import com.google.inject.Singleton;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
 import foodtruck.model.Trucks;
 import foodtruck.model.TweetSummary;
@@ -40,15 +42,17 @@ public class TruckServlet extends HttpServlet {
   private final FoodTruckStopService truckService;
   private final Clock clock;
   private final JsonWriter writer;
+  private final TruckDAO truckDAO;
 
   @Inject
   public TruckServlet(TwitterService twitterService, Trucks trucks,
-      FoodTruckStopService truckService, Clock clock, JsonWriter writer) {
+      FoodTruckStopService truckService, Clock clock, JsonWriter writer, TruckDAO truckDAO) {
     this.twitterService = twitterService;
     this.trucks = trucks;
     this.truckService = truckService;
     this.clock = clock;
     this.writer = writer;
+    this.truckDAO = truckDAO;
   }
 
   @Override
@@ -71,7 +75,7 @@ public class TruckServlet extends HttpServlet {
     // hack required when using * patterns in guice
     req = new GuiceHackRequestWrapper(req, jsp);
     req.setAttribute("headerName", "Edit");
-    req.setAttribute("truck", trucks.findById(truckId));
+    req.setAttribute("truck", truckDAO.findById(truckId));
     req.getRequestDispatcher(jsp).forward(req, resp);
   }
 
@@ -105,22 +109,38 @@ public class TruckServlet extends HttpServlet {
     }
   }
 
-  private void handleConfigurationPost(HttpServletRequest req, HttpServletResponse resp) {
+  private void handleConfigurationPost(HttpServletRequest req, HttpServletResponse resp)
+      throws IOException {
     String contentType = req.getContentType();
     String truckId = req.getRequestURI().substring(14);
     if (truckId.endsWith("/configuration")) {
       truckId = truckId.substring(0, truckId.length() - 14);
-    }
-    if ("application/x-www-form-urlencoded".equals(contentType)) {
-      Truck truck = truckFromForm(req.getParameterMap(), truckId);
-      System.out.println("HERE");
+      if ("application/x-www-form-urlencoded".equals(contentType)) {
+        Truck truck = truckFromForm(req, truckId);
+        truckDAO.save(truck);
+        resp.sendRedirect(req.getRequestURI());
+      }
     }
   }
 
-  private Truck truckFromForm(Map parameterMap, String truckId) {
+  private Truck truckFromForm(HttpServletRequest request, String truckId) {
     Truck.Builder builder = Truck.builder();
     builder.id(truckId)
-        .url((String) parameterMap.get("url"));
+        .key(truckId)
+        .defaultCity(request.getParameter("defaultCity"))
+        .description(request.getParameter("description"))
+        .facebook(request.getParameter("facebook"))
+        .foursquareUrl(request.getParameter("foursquareUrl"))
+        .iconUrl(request.getParameter("iconUrl"))
+        .name(request.getParameter("name"))
+        .twitterHandle(request.getParameter("twitterHandle"))
+        .url(request.getParameter("url"));
+    final String[] optionsArray = request.getParameterValues("options");
+    Set<String> options = ImmutableSet.copyOf(optionsArray == null ? new String[0] : optionsArray);
+    builder.inactive(options.contains("inactive"));
+    builder.useTwittalyzer(options.contains("twittalyzer"));
+    String matchRegex = request.getParameter("matchOnlyIf");
+    builder.matchOnlyIf(Strings.isNullOrEmpty(matchRegex) ? null : matchRegex);
     return builder.build();
   }
 
