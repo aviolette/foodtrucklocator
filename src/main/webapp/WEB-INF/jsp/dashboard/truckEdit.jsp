@@ -78,7 +78,7 @@
       </ul>
     </div>
   </div>
-  <input type="submit" value="Update"/>
+  <input type="submit" class="btn primary" value="Update"/>
 </form>
 
 <%@ include file="dashboardFooter.jsp" %>

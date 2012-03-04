@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
@@ -22,13 +23,13 @@ import org.codehaus.jettison.json.JSONObject;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
-import foodtruck.model.Trucks;
 import foodtruck.model.TweetSummary;
 import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.server.api.JsonWriter;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.twitter.TwitterService;
 import foodtruck.util.Clock;
+import foodtruck.util.Link;
 
 /**
  * @author aviolette@gmail.com
@@ -38,17 +39,15 @@ import foodtruck.util.Clock;
 public class TruckServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(TruckServlet.class.getName());
   private final TwitterService twitterService;
-  private final Trucks trucks;
   private final FoodTruckStopService truckService;
   private final Clock clock;
   private final JsonWriter writer;
   private final TruckDAO truckDAO;
 
   @Inject
-  public TruckServlet(TwitterService twitterService, Trucks trucks,
+  public TruckServlet(TwitterService twitterService,
       FoodTruckStopService truckService, Clock clock, JsonWriter writer, TruckDAO truckDAO) {
     this.twitterService = twitterService;
-    this.trucks = trucks;
     this.truckService = truckService;
     this.clock = clock;
     this.writer = writer;
@@ -75,7 +74,11 @@ public class TruckServlet extends HttpServlet {
     // hack required when using * patterns in guice
     req = new GuiceHackRequestWrapper(req, jsp);
     req.setAttribute("headerName", "Edit");
-    req.setAttribute("truck", truckDAO.findById(truckId));
+    final Truck truck = truckDAO.findById(truckId);
+    req.setAttribute("truck", truck);
+    req.setAttribute("breadcrumbs", ImmutableList.of(new Link("Trucks", "/admin/trucks"),
+        new Link(truck.getName(), "/admin/trucks/" + truckId),
+        new Link("Edit", "/admin/trucks/" + truckId + "/configuration")));
     req.getRequestDispatcher(jsp).forward(req, resp);
   }
 
@@ -87,8 +90,11 @@ public class TruckServlet extends HttpServlet {
     final String jsp = "/WEB-INF/jsp/dashboard/truckDashboard.jsp";
     // hack required when using * patterns in guice
     req = new GuiceHackRequestWrapper(req, jsp);
-    req.setAttribute("headerName", trucks.findById(truckId).getName());
+    final String name = truckDAO.findById(truckId).getName();
+    req.setAttribute("headerName", name);
     req.setAttribute("truckId", truckId);
+    req.setAttribute("breadcrumbs", ImmutableList.of(new Link("Trucks", "/admin/trucks"),
+        new Link(name, "/admin/trucks" + truckId)));
     try {
       req.setAttribute("schedule",
           writer.writeSchedule(truckService.findStopsForDay(truckId, clock.currentDay())));
@@ -118,7 +124,7 @@ public class TruckServlet extends HttpServlet {
       if ("application/x-www-form-urlencoded".equals(contentType)) {
         Truck truck = truckFromForm(req, truckId);
         truckDAO.save(truck);
-        resp.sendRedirect(req.getRequestURI());
+        resp.sendRedirect("/admin/trucks/" + truckId);
       }
     }
   }

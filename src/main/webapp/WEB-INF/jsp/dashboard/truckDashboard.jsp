@@ -1,4 +1,7 @@
 <%@include file="dashboardHeader.jsp" %>
+
+<a href="/admin/trucks/${truckId}/configuration">Edit</a>
+
 <h2>Schedule</h2>
 <table>
   <thead>
