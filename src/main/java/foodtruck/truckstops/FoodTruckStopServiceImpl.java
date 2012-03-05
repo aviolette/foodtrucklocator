@@ -29,7 +29,6 @@ import foodtruck.model.TruckLocationGroup;
 import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStatus;
 import foodtruck.model.TruckStop;
-import foodtruck.model.Trucks;
 import foodtruck.schedule.GoogleCalendar;
 import foodtruck.util.Clock;
 
@@ -41,17 +40,15 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   private final TruckStopDAO truckStopDAO;
   private final TruckDAO truckDAO;
   private final GoogleCalendar googleCalendar;
-  private final Trucks trucks;
   private static final Logger log = Logger.getLogger(FoodTruckStopServiceImpl.class.getName());
   private final DateTimeZone zone;
   private final Clock clock;
 
   @Inject
   public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, GoogleCalendar googleCalendar,
-      Trucks trucks, DateTimeZone zone, Clock clock, TruckDAO truckDAO) {
+      DateTimeZone zone, Clock clock, TruckDAO truckDAO) {
     this.truckStopDAO = truckStopDAO;
     this.googleCalendar = googleCalendar;
-    this.trucks = trucks;
     this.zone = zone;
     this.clock = clock;
     this.truckDAO = truckDAO;
@@ -97,7 +94,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   public Set<TruckLocationGroup> findFoodTruckGroups(DateTime dateTime) {
     Multimap<Location, Truck> locations = LinkedListMultimap.create();
     Set<Truck> allTrucks = Sets.newHashSet();
-    allTrucks.addAll(trucks.allTrucks());
+    allTrucks.addAll(truckDAO.findAll());
     for (TruckStop stop : truckStopDAO.findAt(dateTime)) {
       locations.put(stop.getLocation(), stop.getTruck());
       allTrucks.remove(stop.getTruck());
@@ -118,7 +115,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
 
   @Override
   public TruckSchedule findStopsForDay(String truckId, LocalDate day) {
-    Truck truck = trucks.findById(truckId);
+    Truck truck = truckDAO.findById(truckId);
     if (truck == null) {
       throw new IllegalStateException("Invalid truck id specified: " + truckId);
     }

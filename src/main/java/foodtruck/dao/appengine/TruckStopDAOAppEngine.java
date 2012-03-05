@@ -23,10 +23,11 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.Location;
 import foodtruck.model.TruckStop;
-import foodtruck.model.Trucks;
 
 /**
  * @author aviolette@gmail.com
@@ -40,17 +41,17 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
   private static final String LATITUDE_FIELD = "latitude";
   private static final String LONGITUDE_FIELD = "longitude";
   private static final String TRUCK_ID_FIELD = "truckId";
-  private final Trucks trucks;
   private final DatastoreServiceProvider serviceProvider;
   private final DateTimeZone zone;
   private static final String LOCATION_NAME_FIELD = "locationName";
+  private final TruckDAO truckDAO;
 
   @Inject
-  public TruckStopDAOAppEngine(Trucks trucks, DatastoreServiceProvider provider,
-      DateTimeZone zone) {
-    this.trucks = trucks;
+  public TruckStopDAOAppEngine(DatastoreServiceProvider provider,
+      DateTimeZone zone, TruckDAO truckDAO) {
     this.serviceProvider = provider;
     this.zone = zone;
+    this.truckDAO = checkNotNull(truckDAO);
   }
 
   /**
@@ -73,7 +74,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
       }
       final String truckId = (String) entity.getProperty(TRUCK_ID_FIELD);
       try {
-        stops.add(new TruckStop(trucks.findById(truckId),
+        stops.add(new TruckStop(truckDAO.findById(truckId),
             startTime, endTime,
             Location.builder().lat((Double) entity.getProperty(LATITUDE_FIELD)).lng((Double) entity.getProperty(
                 LONGITUDE_FIELD)).name((String) entity.getProperty(LOCATION_NAME_FIELD)).build(),
@@ -133,7 +134,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
   private TruckStop toTruckStop(Entity entity) {
     final DateTime startTime = new DateTime((Date) entity.getProperty(START_TIME_FIELD), zone);
     final DateTime endTime = new DateTime((Date) entity.getProperty(END_TIME_FIELD), zone);
-    return new TruckStop(trucks.findById((String) entity.getProperty(TRUCK_ID_FIELD)),
+    return new TruckStop(truckDAO.findById((String) entity.getProperty(TRUCK_ID_FIELD)),
         startTime, endTime,
         Location.builder().lat((Double) entity.getProperty(LATITUDE_FIELD)).lng((Double) entity.getProperty(
                 LONGITUDE_FIELD)).name((String) entity.getProperty(LOCATION_NAME_FIELD)).build(),

@@ -21,13 +21,13 @@ import com.google.inject.Inject;
 
 import org.joda.time.DateTimeZone;
 
+import foodtruck.dao.TruckDAO;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
 import foodtruck.model.TimeRange;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
-import foodtruck.model.Trucks;
 import static foodtruck.schedule.TimeUtils.toJoda;
 
 /**
@@ -42,17 +42,17 @@ public class GoogleCalendar implements ScheduleStrategy {
   private final CalendarQueryFactory queryFactory;
   private final DateTimeZone defaultZone;
   private final GeoLocator geolocator;
-  private final Trucks trucks;
+  private final TruckDAO truckDAO;
 
   @Inject
   public GoogleCalendar(CalendarService calendarService,
       CalendarQueryFactory queryFactory, DateTimeZone defaultZone, GeoLocator geolocator,
-      Trucks trucks) {
+      TruckDAO truckDAO) {
     this.calendarService = calendarService;
     this.queryFactory = queryFactory;
     this.defaultZone = defaultZone;
     this.geolocator = geolocator;
-    this.trucks = trucks;
+    this.truckDAO = truckDAO;
   }
 
   // TODO: rewrite this...its awfully crappy
@@ -72,7 +72,7 @@ public class GoogleCalendar implements ScheduleStrategy {
     try {
       CalendarEventFeed resultFeed = calendarQuery(query);
       for (CalendarEventEntry entry : resultFeed.getEntries()) {
-        Truck truck = trucks.findById(entry.getTitle().getPlainText());
+        Truck truck = truckDAO.findById(entry.getTitle().getPlainText());
         if (truck == null) {
           continue;
         }

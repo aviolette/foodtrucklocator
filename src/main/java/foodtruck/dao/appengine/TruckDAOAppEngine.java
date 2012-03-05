@@ -96,6 +96,23 @@ public class TruckDAOAppEngine implements TruckDAO {
 
   }
 
+  @Override public Truck findByTwitterId(String screenName) {
+    // TODO: this is wrong, but functional for now
+    return findById(screenName);
+  }
+
+  @Override public Collection<Truck> findAllTwitterTrucks() {
+    DatastoreService dataStore = provider.get();
+    Query q = new Query(TRUCK_KIND);
+    q.addFilter(TRUCK_TWITTALYZER_FIELD, Query.FilterOperator.EQUAL, true);
+    ImmutableSet.Builder<Truck> trucks = ImmutableSet.builder();
+    for (Entity entity : dataStore.prepare(q).asIterable()) {
+      Truck truck = fromEntity(entity);
+      trucks.add(truck);
+    }
+    return trucks.build();
+  }
+
   private Entity toEntity(Truck truck, Entity entity) {
     Entity truckEntity = entity == null ? new Entity(TRUCK_KIND, truck.getId()) : entity;
     truckEntity.setProperty(TRUCK_NAME_FIELD, truck.getName());

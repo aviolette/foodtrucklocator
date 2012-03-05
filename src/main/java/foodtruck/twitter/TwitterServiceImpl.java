@@ -15,12 +15,12 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 
+import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.dao.TweetCacheDAO;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
-import foodtruck.model.Trucks;
 import foodtruck.model.TweetSummary;
 import foodtruck.schedule.TerminationDetector;
 import foodtruck.schedule.TruckStopMatch;
@@ -42,29 +42,29 @@ public class TwitterServiceImpl implements TwitterService {
   private final TweetCacheDAO tweetDAO;
   private final TwitterFactoryWrapper twitterFactory;
   private final int twitterListId;
-  private final Trucks trucks;
   private final DateTimeZone defaultZone;
   private final TruckStopMatcher matcher;
   private final TruckStopDAO truckStopDAO;
   private final Clock clock;
   private final TerminationDetector terminationDetector;
   private final TweetCacheUpdater remoteUpdater;
+  private final TruckDAO truckDAO;
 
   @Inject
   public TwitterServiceImpl(TwitterFactoryWrapper twitter, TweetCacheDAO tweetDAO,
-      @Named("foodtruck.twitter.list") int twitterListId, Trucks trucks, DateTimeZone zone,
+      @Named("foodtruck.twitter.list") int twitterListId, DateTimeZone zone,
       TruckStopMatcher matcher, TruckStopDAO truckStopDAO, Clock clock,
-      TerminationDetector detector, TweetCacheUpdater updater) {
+      TerminationDetector detector, TweetCacheUpdater updater, TruckDAO truckDAO) {
     this.tweetDAO = tweetDAO;
     this.twitterFactory = twitter;
     this.twitterListId = twitterListId;
-    this.trucks = trucks;
     this.defaultZone = zone;
     this.matcher = matcher;
     this.truckStopDAO = truckStopDAO;
     this.clock = clock;
     this.terminationDetector = detector;
     this.remoteUpdater = updater;
+    this.truckDAO = truckDAO;
   }
 
   @Override
@@ -107,7 +107,7 @@ public class TwitterServiceImpl implements TwitterService {
 
   private @Nullable TweetSummary statusToTweet(Status status) {
     final String screenName = status.getUser().getScreenName().toLowerCase();
-    Truck truck = trucks.findByTwitterId(screenName);
+    Truck truck = truckDAO.findByTwitterId(screenName);
     if (truck == null || status.isRetweet()) {
       return null;
     }
@@ -149,7 +149,7 @@ public class TwitterServiceImpl implements TwitterService {
   public void twittalyze() {
     log.log(Level.INFO, "Updating twitter trucks");
     boolean changed = false;
-    for (Truck truck : trucks.allTwitterTrucks()) {
+    for (Truck truck : truckDAO.findAllTwitterTrucks()) {
       // TODO: this number should probably be configurable
       List<TweetSummary> tweets =
           tweetDAO.findTweetsAfter(clock.now().minusHours(HOURS_BACK_TO_SEARCH), truck.getId());

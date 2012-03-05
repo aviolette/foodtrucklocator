@@ -12,12 +12,12 @@ import org.joda.time.format.DateTimeFormatter;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import foodtruck.dao.TruckDAO;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
-import foodtruck.model.Trucks;
 import foodtruck.util.Clock;
 
 /**
@@ -25,22 +25,21 @@ import foodtruck.util.Clock;
  * @since 1/26/12
  */
 public class JsonReader {
-
   private DateTimeFormatter format;
-  private final Trucks trucks;
   private final Clock clock;
   private final GeoLocator geolocator;
+  private final TruckDAO truckDAO;
 
   @Inject
-  public JsonReader(Clock clock, Trucks trucks, DateTimeZone zone, GeoLocator geolocator) {
-    this.trucks = trucks;
+  public JsonReader(Clock clock, TruckDAO trucks, DateTimeZone zone, GeoLocator geolocator) {
+    this.truckDAO = trucks;
     this.clock = clock;
     this.format = DateTimeFormat.forPattern("hh:mm a").withZone(zone);
     this.geolocator = geolocator;
   }
 
   public TruckStop readTruckStop(JSONObject obj) throws JSONException {
-    Truck truck = trucks.findById(obj.getString("truckId"));
+    Truck truck = truckDAO.findById(obj.getString("truckId"));
     checkNotNull(truck);
     LocalDate today = clock.currentDay();
     DateTime startTime = format.parseDateTime(obj.getString("startTime"))

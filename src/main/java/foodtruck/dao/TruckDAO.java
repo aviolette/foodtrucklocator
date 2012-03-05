@@ -21,4 +21,8 @@ public interface TruckDAO {
   @Nullable Truck findById(String id);
 
   public void save(Truck truck);
+
+  Truck findByTwitterId(String screenName);
+
+  Collection<Truck> findAllTwitterTrucks();
 }

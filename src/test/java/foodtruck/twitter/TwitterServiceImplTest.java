@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 import org.easymock.EasyMockSupport;
 import org.joda.time.DateTime;
@@ -12,6 +13,7 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 
+import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.dao.TweetCacheDAO;
 import foodtruck.model.Location;
@@ -47,6 +49,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
   private TruckStop matchedStop;
   private DateTime matchStartTime;
   private DateTime matchEndTime;
+  private TruckDAO truckDAO;
 
   @Before
   public void before() {
@@ -64,12 +67,15 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     expect(clock.currentDay()).andStubReturn(currentDay);
     ImmutableMap<String, Truck> truckMap =
         ImmutableMap.of(TRUCK_1_ID, truck1, TRUCK_2_ID, truck2);
-    final Trucks trucks = new Trucks(truckMap);
+    truckDAO = createMock(TruckDAO.class);
+    expect(truckDAO.findById(TRUCK_1_ID)).andStubReturn(truck1);
+    expect(truckDAO.findById(TRUCK_1_ID)).andStubReturn(truck2);
+    expect(truckDAO.findAllTwitterTrucks()).andReturn(ImmutableSet.of( truck2));
     final int listId = 123;
     terminationDetector = createMock(TerminationDetector.class);
-    service = new TwitterServiceImpl(twitterFactory, tweetDAO, listId, trucks, zone, matcher,
+    service = new TwitterServiceImpl(twitterFactory, tweetDAO, listId, zone, matcher,
         truckStopDAO,
-        clock, terminationDetector, new LocalCacheUpdater());
+        clock, terminationDetector, new LocalCacheUpdater(), truckDAO);
     loca = Location.builder().lat(1).lng(2).name("a").build();
     locb = Location.builder().lat(3).lng(4).name("b").build();
     final TweetSummary basicTweet = new TweetSummary.Builder().time(now.minusHours(2)).text(

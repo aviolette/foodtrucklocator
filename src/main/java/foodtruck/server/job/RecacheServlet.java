@@ -11,8 +11,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import foodtruck.model.Truck;
-import foodtruck.model.Trucks;
+import foodtruck.dao.TruckDAO;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.twitter.TwitterService;
 import foodtruck.util.Clock;
@@ -26,15 +25,15 @@ public class RecacheServlet extends HttpServlet {
   private final FoodTruckStopService service;
   private final Clock clock;
   private final TwitterService twitterService;
-  private final Trucks trucks;
+  private final TruckDAO truckDAO;
 
   @Inject
   public RecacheServlet(FoodTruckStopService service, Clock clock,
-      TwitterService twitterService, Trucks trucks) {
+      TwitterService twitterService, TruckDAO truckDAO) {
     this.twitterService = twitterService;
     this.service = service;
     this.clock = clock;
-    this.trucks = trucks;
+    this.truckDAO = truckDAO;
   }
 
   @Override
@@ -42,7 +41,7 @@ public class RecacheServlet extends HttpServlet {
       throws ServletException, IOException {
     final String truck = req.getParameter("truck");
     if (!Strings.isNullOrEmpty(truck)) {
-      service.updateStopsForTruck(clock.currentDay(), trucks.findById(truck));
+      service.updateStopsForTruck(clock.currentDay(), truckDAO.findById(truck));
     } else {
       service.updateStopsFor(clock.currentDay());
     }

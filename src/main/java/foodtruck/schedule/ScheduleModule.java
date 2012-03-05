@@ -13,6 +13,7 @@ import com.google.inject.name.Named;
 import org.joda.time.DateTimeZone;
 
 import foodtruck.config.TruckConfigParser;
+import foodtruck.dao.TruckDAO;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.model.Trucks;
 
@@ -41,16 +42,9 @@ public class ScheduleModule extends AbstractModule {
 
   @Provides
   public GoogleCalendar provideGoogleCalendarStrategy(CalendarService service,
-      CalendarQueryFactory queryProvider, DateTimeZone zone, GeoLocator geoLocator, Trucks trucks) {
-    return new GoogleCalendar(service, queryProvider, zone, geoLocator, trucks);
-  }
-
-  @Provides @Singleton
-  public Trucks providesTrucks(TruckConfigParser parser)
-      throws FileNotFoundException {
-    String url =
-        Thread.currentThread().getContextClassLoader().getResource("trucks.yaml").getFile();
-    return parser.parse(url);
+      CalendarQueryFactory queryProvider, DateTimeZone zone, GeoLocator geoLocator,
+      TruckDAO truckDAO) {
+    return new GoogleCalendar(service, queryProvider, zone, geoLocator, truckDAO);
   }
 }
 
