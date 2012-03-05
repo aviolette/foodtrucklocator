@@ -23,7 +23,7 @@
   <tbody id="scheduleTable">
   </tbody>
 </table>
-<button class="btn primary" id="addButton">New Event</button>
+<button class="btn primary" id="addButton">New Event</button> &nbsp; <button class="btn" id="recacheButton">Reload from calendar</button>
 <h2>Tweets</h2>
 <table>
   <thead>
@@ -45,7 +45,7 @@
   </c:forEach>
   </tbody>
 </table>
-<button class="btn" id="recacheButton">Recache</button>
+
 &nbsp;
 
 <div id="edit-stop" class="modal hide fade">
