@@ -1,21 +1,17 @@
 package foodtruck.schedule;
 
-import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import com.google.gdata.client.calendar.CalendarService;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
-import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
 import org.joda.time.DateTimeZone;
 
-import foodtruck.config.TruckConfigParser;
 import foodtruck.dao.TruckDAO;
 import foodtruck.geolocation.GeoLocator;
-import foodtruck.model.Trucks;
 
 /**
  * @author aviolette@gmail.com
