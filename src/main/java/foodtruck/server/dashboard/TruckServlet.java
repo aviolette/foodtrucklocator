@@ -90,9 +90,11 @@ public class TruckServlet extends HttpServlet {
     final String jsp = "/WEB-INF/jsp/dashboard/truckDashboard.jsp";
     // hack required when using * patterns in guice
     req = new GuiceHackRequestWrapper(req, jsp);
-    final String name = truckDAO.findById(truckId).getName();
+    final Truck truck = truckDAO.findById(truckId);
+    final String name = truck.getName();
     req.setAttribute("headerName", name);
     req.setAttribute("truckId", truckId);
+    req.setAttribute("truck", truck);
     req.setAttribute("breadcrumbs", ImmutableList.of(new Link("Trucks", "/admin/trucks"),
         new Link(name, "/admin/trucks" + truckId)));
     try {

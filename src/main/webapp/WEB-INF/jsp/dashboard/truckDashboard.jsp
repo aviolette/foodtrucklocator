@@ -1,6 +1,14 @@
 <%@include file="dashboardHeader.jsp" %>
 
-<a href="/admin/trucks/${truckId}/configuration">Edit</a>
+<h2>Configuration <small>(<a href="/admin/trucks/${truckId}/configuration">edit</a>)</small></h2>
+
+
+<table>
+  <tr><td>Facebook</td><td><c:choose><c:when test="${empty(truck.facebook)}">none</c:when><c:otherwise><a target="_blank" href="http://facebook.com${truck.facebook}">http://facebook.com${truck.facebook}</a></c:otherwise></c:choose></td></tr>
+  <tr><td>Foursquare</td><td><c:choose><c:when test="${empty(truck.foursquareUrl)}">none</c:when><c:otherwise><a target="_blank" href="http://foursquare.com/v/${truck.foursquareUrl}">http://foursquare.com/v/${truck.foursquareUrl}</a></c:otherwise></c:choose></td></tr>
+  <tr><td>Twitter</td><td><c:choose><c:when test="${empty(truck.twitterHandle)}">none</c:when><c:otherwise><a target="_blank" href="http://twitter.com/${truck.twitterHandle}">${truck.twitterHandle}</a></c:otherwise></c:choose></td></tr>
+  <tr><td>Website</td><td><c:choose><c:when test="${empty(truck.url)}">none</c:when><c:otherwise><a target="_blank" href="${truck.url}">${truck.url}</a></c:otherwise></c:choose></td></tr>
+</table>
 
 <h2>Schedule</h2>
 <table>
@@ -28,7 +36,7 @@
   <tbody>
   <c:forEach var="tweet" items="${tweets}">
     <tr>
-      <td><input type="button" class="ignoreButton btn primary" id="${tweet.id}"
+      <td><input type="button" class="ignoreButton btn" id="${tweet.id}"
                  value="<c:choose><c:when test="${tweet.ignoreInTwittalyzer}">Unignore</c:when><c:otherwise>Ignore</c:otherwise></c:choose>"/>
       </td>
       <td>${tweet.time}</td>
@@ -37,7 +45,7 @@
   </c:forEach>
   </tbody>
 </table>
-<button class="btn primary" id="recacheButton">Recache</button>
+<button class="btn" id="recacheButton">Recache</button>
 &nbsp;
 
 <div id="edit-stop" class="modal hide fade">
