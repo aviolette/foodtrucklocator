@@ -62,7 +62,7 @@
   <tbody>
   <c:forEach var="tweet" items="${tweets}">
     <tr>
-      <td><joda:format value="${tweet.time}" style="-S"/></td>
+      <td style="width:50px !important"><joda:format value="${tweet.time}" style="-S"/></td>
       <td>${tweet.text}</td>
     </tr>
   </c:forEach>

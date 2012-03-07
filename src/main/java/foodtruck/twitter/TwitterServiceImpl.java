@@ -198,9 +198,12 @@ public class TwitterServiceImpl implements TwitterService {
     }
   }
 
+  /**
+   * Ignore tweets so they are not matched in upcoming requests
+   */
   private void ignoreTweets(List<TweetSummary> tweets) {
     List<TweetSummary> l = Lists.newLinkedList();
-    for(TweetSummary tweet : tweets) {
+    for (TweetSummary tweet : tweets) {
       TweetSummary summary = new TweetSummary.Builder(tweet).ignoreInTwittalyzer(true).build();
       l.add(summary);
     }
@@ -208,7 +211,8 @@ public class TwitterServiceImpl implements TwitterService {
   }
 
   @Override public List<TweetSummary> findForTruck(String truckId) {
-    return tweetDAO.findTweetsAfter(clock.currentDay().toDateMidnight().toDateTime(), truckId, true);
+    return tweetDAO
+        .findTweetsAfter(clock.currentDay().toDateMidnight().toDateTime(), truckId, true);
   }
 
   @Override public @Nullable TweetSummary findByTweetId(long id) {
