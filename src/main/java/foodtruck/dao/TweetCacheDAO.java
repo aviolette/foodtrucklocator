@@ -14,7 +14,7 @@ import foodtruck.model.TweetSummary;
  * @since 10/11/11
  */
 public interface TweetCacheDAO {
-  public List<TweetSummary> findTweetsAfter(DateTime time, String truckId);
+  public List<TweetSummary> findTweetsAfter(DateTime time, String truckId, boolean includeIgnored);
 
   public void deleteBefore(DateTime dateTime);
 

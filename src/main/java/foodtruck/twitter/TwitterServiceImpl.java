@@ -148,12 +148,13 @@ public class TwitterServiceImpl implements TwitterService {
   @Override
   public void twittalyze() {
     log.log(Level.INFO, "Updating twitter trucks");
-    boolean changed = false;
     for (Truck truck : truckDAO.findAllTwitterTrucks()) {
       // TODO: this number should probably be configurable
       List<TweetSummary> tweets =
-          tweetDAO.findTweetsAfter(clock.now().minusHours(HOURS_BACK_TO_SEARCH), truck.getId());
+          tweetDAO.findTweetsAfter(clock.now().minusHours(HOURS_BACK_TO_SEARCH), truck.getId(),
+              false);
       TruckStopMatch match = findMatch(tweets, truck);
+      ignoreTweets(tweets);
       if (match != null) {
         log.log(Level.INFO, "Found match {0}", match);
         List<TruckStop> currentStops = truckStopDAO.findDuring(truck.getId(), clock.currentDay());
@@ -189,7 +190,6 @@ public class TwitterServiceImpl implements TwitterService {
         if (!deleteStops.isEmpty()) {
           truckStopDAO.deleteStops(deleteStops);
         }
-        changed = true;
         addStops.add(matchedStop);
         truckStopDAO.addStops(addStops);
       } else {
@@ -198,8 +198,17 @@ public class TwitterServiceImpl implements TwitterService {
     }
   }
 
+  private void ignoreTweets(List<TweetSummary> tweets) {
+    List<TweetSummary> l = Lists.newLinkedList();
+    for(TweetSummary tweet : tweets) {
+      TweetSummary summary = new TweetSummary.Builder(tweet).ignoreInTwittalyzer(true).build();
+      l.add(summary);
+    }
+    tweetDAO.save(l);
+  }
+
   @Override public List<TweetSummary> findForTruck(String truckId) {
-    return tweetDAO.findTweetsAfter(clock.currentDay().toDateMidnight().toDateTime(), truckId);
+    return tweetDAO.findTweetsAfter(clock.currentDay().toDateMidnight().toDateTime(), truckId, true);
   }
 
   @Override public @Nullable TweetSummary findByTweetId(long id) {

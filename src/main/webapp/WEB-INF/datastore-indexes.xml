@@ -8,4 +8,9 @@
       <property name="screenName" direction="asc"/>
       <property name="time" direction="asc"/>
   </datastore-index>
+  <datastore-index kind="Tweet" ancestor="false" source="manual">
+        <property name="ignore" direction="asc"/>
+        <property name="screenName" direction="asc"/>
+        <property name="time" direction="desc"/>
+  </datastore-index>
 </datastore-indexes>

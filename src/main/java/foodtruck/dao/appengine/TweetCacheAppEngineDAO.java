@@ -45,12 +45,15 @@ public class TweetCacheAppEngineDAO implements TweetCacheDAO {
 
 
   @Override
-  public List<TweetSummary> findTweetsAfter(DateTime time, String truckId) {
+  public List<TweetSummary> findTweetsAfter(DateTime time, String truckId, boolean includeIgnored) {
     DatastoreService dataStore = provider.get();
     Query q = new Query(TWEET_KIND);
     q.addFilter(TWEET_TIME, Query.FilterOperator.GREATER_THAN_OR_EQUAL,
         time.toDate());
     q.addFilter(TWEET_SCREEN_NAME, Query.FilterOperator.EQUAL, truckId);
+    if (!includeIgnored) {
+      q.addFilter(TWEET_IGNORE, Query.FilterOperator.EQUAL, false);
+    }
     q.addSort(TWEET_TIME, Query.SortDirection.DESCENDING);
     ImmutableList.Builder<TweetSummary> tweets = ImmutableList.builder();
     for (Entity entity : dataStore.prepare(q).asIterable()) {
