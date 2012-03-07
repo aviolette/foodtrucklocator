@@ -268,7 +268,7 @@ window.FoodTruckLocator = function() {
         $("#left").height($("#right").height());
         $("#left").css("min-height", $("#right").height() + "px");
         $("#foodTruckList").height($("#right").height() - $(".sliderContainer").height() -
-            $("header").height() - 75);
+            $("header").height() - this.headerHeight());
         $("#body").height($("#body").height() - $("header").height());
       }
     },
@@ -414,6 +414,9 @@ window.FoodTruckLocator = function() {
           }
         });
       })
+    },
+    headerHeight : function() {
+      return 100;
     },
     showControlsForLocation : function() {
       $(".sliderContainer").css("display", "none");
@@ -570,6 +573,9 @@ window.FoodTruckLocator = function() {
       self.currentTime = self.options.initialTime;
       self.slider = new TimeSlider(self.currentTime);
       return this;
+    },
+    headerHeight : function() {
+      return 75;
     },
     showControlsForMap : function() {
       $(".sliderContainer").css("display", "block");
