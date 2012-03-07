@@ -1,13 +1,38 @@
 <%@include file="dashboardHeader.jsp" %>
 
-<h2>Configuration <small>(<a href="/admin/trucks/${truckId}/configuration">edit</a>)</small></h2>
+<img src="${truck.iconUrl}"/>
 
+<h2>Configuration
+  <small>(<a href="/admin/trucks/${truckId}/configuration">edit</a>)</small>
+</h2>
 
 <table>
-  <tr><td>Facebook</td><td><c:choose><c:when test="${empty(truck.facebook)}">none</c:when><c:otherwise><a target="_blank" href="http://facebook.com${truck.facebook}">http://facebook.com${truck.facebook}</a></c:otherwise></c:choose></td></tr>
-  <tr><td>Foursquare</td><td><c:choose><c:when test="${empty(truck.foursquareUrl)}">none</c:when><c:otherwise><a target="_blank" href="http://foursquare.com/v/${truck.foursquareUrl}">http://foursquare.com/v/${truck.foursquareUrl}</a></c:otherwise></c:choose></td></tr>
-  <tr><td>Twitter</td><td><c:choose><c:when test="${empty(truck.twitterHandle)}">none</c:when><c:otherwise><a target="_blank" href="http://twitter.com/${truck.twitterHandle}">${truck.twitterHandle}</a></c:otherwise></c:choose></td></tr>
-  <tr><td>Website</td><td><c:choose><c:when test="${empty(truck.url)}">none</c:when><c:otherwise><a target="_blank" href="${truck.url}">${truck.url}</a></c:otherwise></c:choose></td></tr>
+  <tr>
+    <td>Facebook</td>
+    <td><c:choose><c:when test="${empty(truck.facebook)}">none</c:when><c:otherwise><a
+        target="_blank"
+        href="http://facebook.com${truck.facebook}">http://facebook.com${truck.facebook}</a></c:otherwise></c:choose>
+    </td>
+  </tr>
+  <tr>
+    <td>Foursquare</td>
+    <td><c:choose><c:when test="${empty(truck.foursquareUrl)}">none</c:when><c:otherwise><a
+        target="_blank" href="http://foursquare.com/v/${truck.foursquareUrl}">http://foursquare.com/v/${truck.foursquareUrl}</a></c:otherwise></c:choose>
+    </td>
+  </tr>
+  <tr>
+    <td>Twitter</td>
+    <td><c:choose><c:when test="${empty(truck.twitterHandle)}">none</c:when><c:otherwise><a
+        target="_blank"
+        href="http://twitter.com/${truck.twitterHandle}">${truck.twitterHandle}</a></c:otherwise></c:choose>
+    </td>
+  </tr>
+  <tr>
+    <td>Website</td>
+    <td><c:choose><c:when test="${empty(truck.url)}">none</c:when><c:otherwise><a target="_blank"
+                                                                                  href="${truck.url}">${truck.url}</a></c:otherwise></c:choose>
+    </td>
+  </tr>
 </table>
 
 <h2>Schedule</h2>
@@ -23,12 +48,13 @@
   <tbody id="scheduleTable">
   </tbody>
 </table>
-<button class="btn primary" id="addButton">New Event</button> &nbsp; <button class="btn" id="recacheButton">Reload from calendar</button>
+<button class="btn primary" id="addButton">New Event</button>
+&nbsp;
+<button class="btn" id="recacheButton">Reload from calendar</button>
 <h2>Tweets</h2>
 <table>
   <thead>
   <tr>
-    <td>&nbsp;</td>
     <td>Time</td>
     <td>Text</td>
   </tr>
@@ -36,10 +62,7 @@
   <tbody>
   <c:forEach var="tweet" items="${tweets}">
     <tr>
-      <td><input type="button" class="ignoreButton btn" id="${tweet.id}"
-                 value="<c:choose><c:when test="${tweet.ignoreInTwittalyzer}">Unignore</c:when><c:otherwise>Ignore</c:otherwise></c:choose>"/>
-      </td>
-      <td>${tweet.time}</td>
+      <td><joda:format value="${tweet.time}" style="-S"/></td>
       <td>${tweet.text}</td>
     </tr>
   </c:forEach>
@@ -197,22 +220,6 @@
       success: function(data) {
         refreshSchedule();
       }});
-  });
-  $(".ignoreButton").click(function(evt) {
-    var id = $(this).attr("id");
-    var value = $(this).attr("value");
-    var ignore = value == "Ignore";
-    var button = $(this);
-    $.ajax({
-      context: document.body,
-      data: JSON.stringify({id: id, ignore: ignore}),
-      contentType: 'application/json',
-      dataType: 'json',
-      type: 'POST',
-      success: function() {
-        button.attr("value", ignore ? "Unignore" : "Ignore")
-      }
-    });
   });
 </script>
 <%@include file="dashboardFooter.jsp" %>
