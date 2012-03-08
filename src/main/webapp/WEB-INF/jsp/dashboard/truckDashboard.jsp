@@ -55,14 +55,14 @@
 <table>
   <thead>
   <tr>
-    <td>Time</td>
+    <td style="width: 100px">Time</td>
     <td>Text</td>
   </tr>
   </thead>
   <tbody>
   <c:forEach var="tweet" items="${tweets}">
     <tr>
-      <td style="width:50px !important"><joda:format value="${tweet.time}" style="-S"/></td>
+      <td style="width:100px !important"><joda:format value="${tweet.time}" style="-S"/></td>
       <td>${tweet.text}</td>
     </tr>
   </c:forEach>
