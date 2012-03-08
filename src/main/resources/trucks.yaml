@@ -762,3 +762,19 @@ categories: Savory
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1634282158/falafel_brothers_twitter_normal.jpg
 twittalyzer: "on"
 inactive: true
+---
+id: theroosttruck
+twitter: theroosttruck
+name: The Roost Truck
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1815152973/Roost__merged_normal.png
+categories: Savory
+twittalyzer: "on"
+inactive: true
+---
+id: babycakestruck
+twitter: babycakestruck
+name: Babycakes Chicago
+categories: Savory
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1879823043/pancakes_tall_normal.jpg
+twittalyzer: "on"
+inactive: true
