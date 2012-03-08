@@ -65,6 +65,13 @@
     </div>
   </div>
   <div class="clearfix">
+    <label for="categories">Categories</label>
+
+    <div class="input">
+      <input type="text" id="categories" name="categories" value="${truck.categoryList}"/>
+    </div>
+  </div>
+  <div class="clearfix">
     <label id="options">Options</label>
 
     <div class="input">

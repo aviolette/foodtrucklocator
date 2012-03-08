@@ -36,6 +36,7 @@ public class TruckDAOAppEngine implements TruckDAO {
   private static final String TRUCK_FACEBOOK_FIELD = "facebookUrl";
   private static final String MATCH_REGEX_FIELD = "matchOnlyIf";
   private static final String INACTIVE_FIELD = "inactive";
+  private static final String CATEGORIES_FIELD = "categories";
 
   @Inject
   public TruckDAOAppEngine(DatastoreServiceProvider provider) {
@@ -55,6 +56,7 @@ public class TruckDAOAppEngine implements TruckDAO {
 
   private Truck fromEntity(Entity entity) {
     Truck.Builder builder = Truck.builder();
+    Collection categoriesList = (Collection)entity.getProperty(CATEGORIES_FIELD);
     return builder.id(entity.getKey().getName())
         .key(entity.getKey())
         .inactive((Boolean) entity.getProperty(INACTIVE_FIELD))
@@ -67,6 +69,8 @@ public class TruckDAOAppEngine implements TruckDAO {
         .name((String) entity.getProperty(TRUCK_NAME_FIELD))
         .matchOnlyIf((String) entity.getProperty(MATCH_REGEX_FIELD))
         .url((String) entity.getProperty(TRUCK_URL))
+        .categories(categoriesList == null ? ImmutableSet.<String>of() :
+            ImmutableSet.copyOf(categoriesList))
         .useTwittalyzer((Boolean) entity.getProperty(TRUCK_TWITTALYZER_FIELD))
         .build();
   }
@@ -126,6 +130,7 @@ public class TruckDAOAppEngine implements TruckDAO {
     truckEntity.setProperty(TRUCK_FACEBOOK_FIELD, truck.getFacebook());
     truckEntity.setProperty(MATCH_REGEX_FIELD, truck.getMatchOnlyIfString());
     truckEntity.setProperty(INACTIVE_FIELD, truck.isInactive());
+    truckEntity.setProperty(CATEGORIES_FIELD, truck.getCategories());
     return truckEntity;
   }
 }

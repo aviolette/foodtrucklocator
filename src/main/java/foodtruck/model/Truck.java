@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
@@ -56,6 +57,10 @@ public class Truck extends ModelEntity {
 
   public String getName() {
     return name;
+  }
+
+  public String getCategoryList() {
+    return Joiner.on(",").join(categories);
   }
 
   public Set<String> getCategories() {
