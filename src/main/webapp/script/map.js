@@ -47,6 +47,19 @@ window.FoodTruckLocator = function() {
     return location;
   }
 
+  function flash(message, type) {
+    var $flash = $("#flash");
+    $flash.empty();
+    $flash.append("<p>" + message + "</p>");
+    $flash.addClass(type);
+    $flash.css("display", "block");
+  }
+
+  function dismissFlash() {
+    var $flash = $("#flash");
+    $flash.css("display", "none");
+  }
+
   var TruckGroup = function(location) {
     var self = this;
     self.trucks = [];
@@ -140,15 +153,17 @@ window.FoodTruckLocator = function() {
       self.setupTimeSelector();
     },
     showControls : function() {
-      $("#right").css("display", "none");
-      $("#left").css("overflow-y", "visible");
-      $("header h1").css("float", "none");
-      $("#buttonSection").css("float", "none");
-      $("#body").css("clear", "none");
-      $("#left").css("margin-left", "0");
-      $("#left").css("overflow-y", "visible");
-      $(".sliderContainer").css("display", "none");
-      $(".timeSelect").css("display", "block");
+      /*
+       $("#right").css("display", "none");
+       $("#left").css("overflow-y", "visible");
+       $("header h1").css("float", "none");
+       $("#buttonSection").css("float", "none");
+       $("#body").css("clear", "none");
+       $("#left").css("margin-left", "0");
+       $("#left").css("overflow-y", "visible");
+       $(".sliderContainer").css("display", "none");
+       $(".timeSelect").css("display", "block");
+       */
     },
     displayTime : function(time) {
       $("#timeValue").css("display", "inline");
@@ -292,22 +307,16 @@ window.FoodTruckLocator = function() {
     },
     buildGroupInfo : function(group, idx, letter, menuSection) {
       group.index = idx;
-      menuSection.append("<div class='menuSection'  id='group" + idx + "'/>");
+      menuSection.append("<dt class='menuSection'  id='group" + idx + "'/>");
       var section = $('#group' + idx);
-      var markerText = "&nbsp;";
-      markerText =
+      section.append(
           "<img class='markerIcon' id='markerIcon" + idx + "' src='" + buildIconUrl(letter) +
-              "'/>";
-      section.append("<div class='markerSection'>" + markerText + "</div>");
-      section.append("<div class='locationContent' id='location" + idx +
-          "Section' class='contentSection'></div>");
-      var div = $('#location' + idx + 'Section');
-      div.append("<address class='locationName'>" + removeChicago(group.position.name) +
-          "</address>");
-      if (group.distance) {
-        div.append("<span>" + group.distance + " miles away</span></br></br>")
+              "'/>");
+      section.append(removeChicago(group.position.name));
+      if (group.distance && self.showDistance) {
+        section.append("<span>" + group.distance + " miles away</span></br></br>")
       }
-      return div;
+      return section;
     },
     buildTruckInfoLink : function(div, truck) {
       var self = this;
@@ -320,27 +329,9 @@ window.FoodTruckLocator = function() {
       });
     },
     buildIconForTruck : function(truck, contentDiv, prefix) {
-      contentDiv.append("<div class='truckSection' id='truck" + prefix + truck.id + "'/>");
+      contentDiv.append("<dd class='truckSection' id='truck" + prefix + truck.id + "'/>");
       var section = $('#truck' + prefix + truck.id);
-      section.append("<div class='iconSection'><img src='" + truck.iconUrl + "'/></div>");
-      section.append("<div class='menuContent' id='truck" + prefix + truck.id +
-          "Section' class='contentSection'></div>");
-      var div = $('#truck' + prefix + truck.id + 'Section');
-
-      this.buildTruckInfoLink(div, truck);
-      var infoRow = "<div class='infoRow'>";
-      if (truck.twitterHandle) {
-        infoRow += "<a target='_blank' href='http://twitter.com/" + truck.twitterHandle +
-            "'><img alt='@" +
-            truck.twitterHandle + "' src='/img/twitter16x16.png'/></a> ";
-      }
-      if (truck.facebook) {
-        infoRow += "<a target='_blank' href='http://facebook.com" + truck.facebook +
-            "'><img alt='" +
-            truck.facebook + "' src='/img/facebook16x16.png'/></a> ";
-      }
-      infoRow += '</div>';
-      div.append(infoRow);
+      this.buildTruckInfoLink(section, truck);
     },
     setupMarkerBounce : function(groupIndex, marker) {
       if (marker.getAnimation() != null) {
@@ -389,7 +380,9 @@ window.FoodTruckLocator = function() {
           $.each(data.stops, function(idx, stop) {
             $truckSchedule.append("<li>" + stop.startTime + " " + stop.location.name + "</li>")
           });
-          $truckDialog.dialog({minWidth: 500, modal: true, title: truck.name});
+          $("#truckTitle").empty();
+          $("#truckTitle").append(truck.name);
+          $truckDialog.modal({ show: true, keyboard : true, backdrop: true});
         }});
     }
   };
@@ -553,50 +546,8 @@ window.FoodTruckLocator = function() {
     initialize : function() {
       this.groups = [];
       var self = this;
-      var TimeSlider = function(initialTime) {
-        var sliderValue = (initialTime.getHours() * 60) +
-            (Math.floor(initialTime.getMinutes() / 5) * 5);
-
-        function computeTime(value, twelveHour) {
-          // yuck - cleanup
-          var val = value / 60;
-          var hour = Math.floor(val);
-          var min = Math.round((val - hour) * 60);
-          if (hour > 12 && twelveHour) {
-            hour = hour - 12;
-          }
-          hour = (hour < 10) ? "0" + hour : "" + hour;
-          min = (min < 10) ? "0" + min : "" + min;
-          return [hour, min];
-        }
-
-        function displayTime(value) {
-          var time = computeTime(value, true);
-          $("#sliderTime").empty().append(time.join(":"));
-        }
-
-        displayTime(sliderValue);
-        $("#slider").slider({
-          min: 0,  max: 1440, value : sliderValue, step: 5,
-          slide : function(event, ui) {
-            displayTime(ui.value);
-          },
-          change: function(event, ui) {
-            var time = computeTime(ui.value, false);
-            self.currentTime.setHours(time[0]);
-            self.currentTime.setMinutes(time[1]);
-            self.render();
-          }
-        });
-
-        this.value = function(hour, min) {
-          var val = (hour * 60) + min;
-          displayTime(val);
-          $("#slider").slider("option", "value", val);
-        };
-      };
       self.currentTime = self.options.initialTime;
-      self.slider = new TimeSlider(self.currentTime);
+      self.setupTimeSelector();
       return this;
     },
     buildGroupLinkItem : function(truck) {
@@ -608,9 +559,29 @@ window.FoodTruckLocator = function() {
       return 75;
     },
     showControlsForMap : function() {
-      $(".sliderContainer").css("display", "block");
-      $("hr").css("display", "block");
-      $("#locationFilter").css("display", "none");
+    },
+    setupTimeSelector : function() {
+      var self = this, ampm = "am";
+      var hours = self.currentTime.getHours();
+      if (hours > 12) {
+        hours = hours - 12;
+        ampm = "pm";
+      }
+      var minutes = Math.floor(self.currentTime.getMinutes() / 15) * 15;
+      $("#hourSelect").val(hours);
+      $("#minSelect").val(minutes);
+      $("#ampmSelect").val(ampm);
+      $("#timeGoButton").live("click", function() {
+        var selectedHour = parseInt($("#hourSelect").val());
+        var selectedMin = parseInt($("#minSelect").val());
+        var selectedAmPm = $("#ampmSelect").val();
+        if (selectedAmPm == "pm" && parseInt(selectedHour) != 12) {
+          selectedHour = parseInt(selectedHour) + 12;
+        }
+        self.currentTime.setHours(selectedHour);
+        self.currentTime.setMinutes(selectedMin);
+        self.render();
+      });
     },
     render: function() {
       var self = this;
@@ -623,14 +594,17 @@ window.FoodTruckLocator = function() {
       var menuSection = $("#foodTruckList");
       menuSection.empty();
       if (groups.length == 0) {
-        menuSection
-            .append("<div class='flash'>Presently, there are no food trucks on the road. Most food trucks come on the streets at <a href='#' id='advanceTime'>11:30</a> or so.</div>");
+        flash("Presently, there are no food trucks on the road. Most food trucks come on the streets at <a href='#' id='advanceTime'>11:30</a> or so.")
         $("#advanceTime").live("click", function(e) {
           e.preventDefault();
-          self.slider.value(11, 30);
+          $("#hourSelect").val("11");
+          $("#minSelect").val("30");
+          $("#ampmSelect").val("am");
+          $("#timeGoButton").click();
         });
         return;
       }
+      dismissFlash();
       var sorted = groups.sort(function (a, b) {
         if (typeof a.distance == "undefined" || a.distance == null) {
           return 0;
@@ -640,9 +614,9 @@ window.FoodTruckLocator = function() {
       $.each(sorted, function(groupIndex, group) {
         var letter = String.fromCharCode(65 + groupIndex);
         buildMarker(group, letter, bounds, self.map);
-        var contentDiv = self.buildGroupInfo(group, groupIndex, letter, menuSection);
+        var contentDT = self.buildGroupInfo(group, groupIndex, letter, menuSection);
         $.each(group.trucks, function(idx, truck) {
-          self.buildIconForTruck(truck, contentDiv, "");
+          self.buildIconForTruck(truck, menuSection, "");
         });
         self.setupMarkerBounce(groupIndex, group.marker);
         self.buildInfoWindow(group);
@@ -663,7 +637,7 @@ window.FoodTruckLocator = function() {
     },
     pickView : function(trucks, mobile, center, time) {
       var self = this;
-      if ($("#timeViewButton:checked").val() == "on") {
+      if ($("#timePill").hasClass("active")) {
         this.currentView = this.timeView;
       } else {
         this.currentView = this.locationView;
@@ -699,7 +673,10 @@ window.FoodTruckLocator = function() {
       if (Modernizr.touch || mobile) {
         $("#viewSelect").css("display", "none");
       } else {
-        $(".pickViewButton").click(function() {
+        $("ul.pills a").click(function(e) {
+          e.preventDefault();
+          $("ul.pills li").removeClass("active");
+          $(this.parentElement).addClass("active");
           self.currentView.removeAllMarkers();
           self.pickView(trucks, mobile, center, time).render();
         });

@@ -9,54 +9,52 @@
   <meta name="description"
         content="Find food trucks on the streets of Chicago by time and location.  Results are updated in real-time throughout the day."/>
   <title>Chicago Food Truck Finder</title>
-  <link rel="stylesheet" href="css/base.css"/>
-  <link rel="stylesheet" href="css/main.css"/>
-  <link type="text/css"
-        href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/start/jquery-ui.css"
-        rel="stylesheet"/>
+  <link href="/bootstrap/bootstrap.css" rel="stylesheet"/>
+  <link href="/css/main.css?ver=2" rel="stylesheet"/>
   <script src="script/lib/modernizr-1.7.min.js"></script>
 </head>
 <body>
-<div class="main" id="container">
-  <header><h1>The Chicago Food Truck Finder</h1>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="container-fluid">
+      <a class="brand" href="/">Chicago Food Truck Finder</a>
+      <ul class="nav">
+        <li><a href="#settings">Settings</a></li>
+        <li><a href="#about">About</a></li>
+      </ul>
+      <p class="pull-right"><a href="https://twitter.com/chifoodtruckz"
+                               class="twitter-follow-button" data-button="grey"
+                               data-text-color="#FFF" data-link-color="#FFF">Follow
+        @chifoodtruckz</a></p>
+    </div>
+  </div>
+</div>
 
-    <div id="buttonSection">
-      <a href="https://twitter.com/chifoodtruckz" class="twitter-follow-button" data-button="grey"
-         data-text-color="#FFF" data-link-color="#FFF">Follow @chifoodtruckz</a>
-    </div>
-  </header>
-  <div id="body">
-    <div id="right">
-      <div id="map_wrapper">
-        <div class="section" id="map_canvas"></div>
+<div class="container-fluid">
+  <div class="sidebar">
+    <div class="well">
+      <c:if test="${not empty requestDate}">
+        <h4>Schedule for ${requestDate}&nbsp;<span id="timeValue">&nbsp;</span></h4>
+      </c:if>
+      <div id="viewSelect">
+        Show results by:
+        <ul class="pills">
+          <li id="timePill" class="active"><a href="#time">Time</a></li>
+          <li><a href="#location">Location</a></li>
+        </ul>
       </div>
-    </div>
-    <div id="left">
-      <div class="section">
-        <div id="controlSection">
-          <c:if test="${not empty requestDate}">
-            <h2>Schedule for ${requestDate}&nbsp;<span id="timeValue">&nbsp;</span></h2>
-          </c:if>
-          <div id="viewSelect">
-            Show results by: <input type="radio" class="pickViewButton" checked="checked"
-                                    name="pickView" id="timeViewButton"/><label
-              for="timeViewButton">&nbsp;Time</label>
-            <input type="radio" class="pickViewButton" name="pickView"
-                   id="locationViewButton"/><label for="locationViewButton">&nbsp;Location</label>
-          </div>
-          <div class="sliderContainer">
-            <div class="sliderTimeWrapper">Select a time: <strong><span
-                id="sliderTime"></span></strong></div>
-            <div id="slider"></div>
-          </div>
-          <div id="locationFilter">
-            <input type="checkbox" id="filterLocations" checked="checked"/> &nbsp;Show results
-            within <input type="text" id="radius" size="2"/> miles of <strong
-              id="filterLocationName">Dearborn and Monroe</strong>.</br>
-            <a href="#" id="changeLocationLink">Change my location.</a>
-          </div>
-          <div class="timeSelect">
-            Select a time: <br/><select id="hourSelect">
+      <!--
+      <div id="locationFilter" style="display:none">
+        <input type="checkbox" id="filterLocations" checked="checked"/> &nbsp;Show results
+        within <input type="text" id="radius" size="2"/> miles of <strong
+          id="filterLocationName">Dearborn and Monroe</strong>.</br>
+        <a href="#" id="changeLocationLink">Change my location.</a>
+      </div>
+      -->
+      <div>Select a time</div>
+      <div class="clearfix">
+        <div class="input">
+          <div class="inline-inputs"><select class="mini" id="hourSelect">
             <option>1</option>
             <option>2</option>
             <option>3</option>
@@ -69,26 +67,29 @@
             <option>10</option>
             <option>11</option>
             <option>12</option>
-          </select>
-            &nbsp;<select id="minSelect">
+          </select> <select class="mini" id="minSelect">
             <option>00</option>
             <option>15</option>
             <option>30</option>
             <option>45</option>
-          </select>
-            &nbsp;<select id="ampmSelect">
+          </select> <select class="mini" id="ampmSelect">
             <option>am</option>
             <option>pm</option>
-          </select>
-            &nbsp;<input type="button" id="timeGoButton" value="Find Trucks"/>
+          </select> <input type="button" id="timeGoButton" class="btn primary" value="Find"/>
           </div>
-          <hr/>
         </div>
-        <div id="foodTruckList">
-          <div class="flash">Determining your location for optimum results...</div>
-        </div>
-
       </div>
+    </div>
+    <div>
+      <div class="alert-message warning" style="display:none" id="flash"></div>
+      <dl id="foodTruckList">
+
+      </dl>
+    </div>
+  </div>
+  <div class="content">
+    <div id="map_wrapper">
+      <div class="section" id="map_canvas"></div>
     </div>
   </div>
 </div>
@@ -97,11 +98,10 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
 <script>window.jQuery ||
 document.write("<script src='script/lib/jquery-1.6.2.min.js'>\x3C/script>")</script>
-<script type="text/javascript"
-        src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
 <script type="text/javascript" src="script/lib/underscore-min.js"></script>
 <script type="text/javascript" src="script/lib/backbone-min.js"></script>
-<script type="text/javascript" src="script/map.js?ver=30"></script>
+<script type="text/javascript" src="/bootstrap/js/bootstrap-modal.js"></script>
+<script type="text/javascript" src="script/map.js?ver=31"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     FoodTruckLocator.run(${mobile}, new google.maps.LatLng(${center.latitude}, ${center.longitude}),
@@ -109,18 +109,25 @@ document.write("<script src='script/lib/jquery-1.6.2.min.js'>\x3C/script>")</scr
   });
 </script>
 <%-- truck dialog // TODO: move to separate JSP --%>
-<div id="truckDialog" title="Food Truck Details" style="display:none">
-  <div id="truckIconDiv" class="truckSection">
-    <div class="iconSection">
-      <img id="truckIcon"/>
-    </div>
-    <div class="menuContent">
-      <div id="truckSocial" class="infoRow"></div>
-    </div>
+<div id="truckDialog" class="modal hide fade">
+  <div class="modal-header">
+    <a href="#" class="close">&times;</a>
+
+    <h3 id="truckTitle"></h3>
   </div>
-  <div id="truckInfo"></div>
-  <h3>Scheduled Stops</h3>
-  <ul id="truckSchedule"></ul>
+  <div class="modal-body">
+    <div id="truckIconDiv" class="truckSection">
+      <div class="iconSection">
+        <img id="truckIcon"/>
+      </div>
+      <div class="menuContent">
+        <div id="truckSocial" class="infoRow"></div>
+      </div>
+    </div>
+    <div id="truckInfo"></div>
+    <h3>Scheduled Stops</h3>
+    <ul id="truckSchedule"></ul>
+  </div>
 </div>
 <%-- brighttag script --%>
 <script src="//s.btstatic.com/tag.js">{
