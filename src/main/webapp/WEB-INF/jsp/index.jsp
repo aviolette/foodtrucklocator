@@ -43,39 +43,52 @@
           <li><a href="#location">Location</a></li>
         </ul>
       </div>
-      <!--
+<%--
+      <div id="locationControls">
+        <div >
+          <label for="radius">Filter trucks w/in &nbsp;</label>
+          <div class="input">
+            <div class="input-prepend">
+              <label class="add-on active"><input id="filterLocations" checked="checked" type="checkbox"/></label>
+              <input class="mini" id="radius" name="prependedInput2" size="3" type="text"> miles of your location
+            </div>
+          </div>
+        </div>
+      </div>
+      --%>
       <div id="locationFilter" style="display:none">
         <input type="checkbox" id="filterLocations" checked="checked"/> &nbsp;Show results
-        within <input type="text" id="radius" size="2"/> miles of <strong
+        within <input class="mini" type="text" id="radius" size="2"/> miles of <strong
           id="filterLocationName">Dearborn and Monroe</strong>.</br>
         <a href="#" id="changeLocationLink">Change my location.</a>
       </div>
-      -->
-      <div>Select a time</div>
-      <div class="clearfix">
-        <div class="input">
-          <div class="inline-inputs"><select class="mini" id="hourSelect">
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-            <option>6</option>
-            <option>7</option>
-            <option>8</option>
-            <option>9</option>
-            <option>10</option>
-            <option>11</option>
-            <option>12</option>
-          </select> <select class="mini" id="minSelect">
-            <option>00</option>
-            <option>15</option>
-            <option>30</option>
-            <option>45</option>
-          </select> <select class="mini" id="ampmSelect">
-            <option>am</option>
-            <option>pm</option>
-          </select> <input type="button" id="timeGoButton" class="btn primary" value="Find"/>
+      <div id="timeControls">
+        <div>Select a time</div>
+        <div class="clearfix">
+          <div class="input">
+            <div class="inline-inputs"><select class="mini" id="hourSelect">
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+              <option>6</option>
+              <option>7</option>
+              <option>8</option>
+              <option>9</option>
+              <option>10</option>
+              <option>11</option>
+              <option>12</option>
+            </select> <select class="mini" id="minSelect">
+              <option>00</option>
+              <option>15</option>
+              <option>30</option>
+              <option>45</option>
+            </select> <select class="mini" id="ampmSelect">
+              <option>am</option>
+              <option>pm</option>
+            </select> <input type="button" id="timeGoButton" class="btn primary" value="Find"/>
+            </div>
           </div>
         </div>
       </div>

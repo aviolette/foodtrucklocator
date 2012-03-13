@@ -287,22 +287,11 @@ window.FoodTruckLocator = function() {
       group.infowindow = infowindow;
     },
     fitMapToView :function() {
-      $("#right").css("display", "block");
       if (Modernizr.touch) {
-        $("#left").css("overflow-y", "visible");
-        $("#left").width(250);
         $("#map_wrapper").css("margin-left", "250px");
         $("#map_canvas").width($(window).width() - 250);
       } else {
-        $("#right").width($(window).width() - $("#left").width());
-        $("#left").css("margin-left", "-" + $("#map_canvas").width() + "px");
         $("#map_canvas").height($(window).height() - $("header").height());
-        $("#right").height($("#map_canvas").height());
-        $("#left").height($("#right").height());
-        $("#left").css("min-height", $("#right").height() + "px");
-        $("#foodTruckList").height($("#right").height() - $(".sliderContainer").height() -
-            $("header").height() - this.headerHeight());
-        $("#body").height($("#body").height() - $("header").height());
       }
     },
     buildGroupInfo : function(group, idx, letter, menuSection) {
@@ -313,8 +302,8 @@ window.FoodTruckLocator = function() {
           "<img class='markerIcon' id='markerIcon" + idx + "' src='" + buildIconUrl(letter) +
               "'/>");
       section.append(removeChicago(group.position.name));
-      if (group.distance && self.showDistance) {
-        section.append("<span>" + group.distance + " miles away</span></br></br>")
+      if (group.distance) {
+        menuSection.append("<dd>" + group.distance + " miles away</dd>")
       }
       return section;
     },
@@ -332,6 +321,7 @@ window.FoodTruckLocator = function() {
       contentDiv.append("<dd class='truckSection' id='truck" + prefix + truck.id + "'/>");
       var section = $('#truck' + prefix + truck.id);
       this.buildTruckInfoLink(section, truck);
+      return section;
     },
     setupMarkerBounce : function(groupIndex, marker) {
       if (marker.getAnimation() != null) {
@@ -436,7 +426,7 @@ window.FoodTruckLocator = function() {
       return 100;
     },
     showControlsForLocation : function() {
-      $(".sliderContainer").css("display", "none");
+      $("#timeControls").css("display", "none");
       $("hr").css("display", "block");
       $("#locationFilter").css("display", "block");
       var locationSetup = this.getFilterParams();
@@ -498,8 +488,8 @@ window.FoodTruckLocator = function() {
     },
     render : function() {
       var self = this;
-      this.showControlsForLocation();
-      this.initializeMap(this.options.map);
+      self.showControlsForLocation();
+      self.initializeMap(self.options.map);
       self.removeAllMarkers();
       var groups = self.groups = self.filterLocations(this.model.getLocationGroups());
       var bounds = new google.maps.LatLngBounds();
@@ -507,8 +497,7 @@ window.FoodTruckLocator = function() {
       var menuSection = $("#foodTruckList");
       menuSection.empty();
       if (groups.length == 0) {
-        menuSection
-            .append("<div class='flash'>Wow, there are no trucks out on the road today.  That sucks!</div>");
+        flash("Wow, there are no trucks out on the road today.  That sucks!");
         return;
       }
       var sorted = groups.sort(function (a, b) {
@@ -523,12 +512,9 @@ window.FoodTruckLocator = function() {
         var contentDiv = self.buildGroupInfo(group, groupIndex, letter, menuSection);
         var lastTime = null;
         $.each(group.trucks, function(idx, truckTime) {
-          if (lastTime != truckTime.startTime) {
-            contentDiv.append("<h3>" + truckTime.startTime + "</h3><br/>");
-          }
           lastTime = truckTime.startTime;
-          self.buildIconForTruck(truckTime.truck, contentDiv, "timeIdx" + groupIndex + "-" + idx);
-          self.buildInfoWindow(group);
+          var section = self.buildIconForTruck(truckTime.truck, contentDiv, "timeIdx" + groupIndex + "-" + idx);
+          section.prepend(truckTime.startTime + " - ");
         });
         $("#markerIcon" + groupIndex).click(function() {
           group.marker.setAnimation(google.maps.Animation.BOUNCE);
@@ -559,6 +545,8 @@ window.FoodTruckLocator = function() {
       return 75;
     },
     showControlsForMap : function() {
+      $("#timeControls").css("display", "block");
+      $("#locationFilter").css("display", "none");
     },
     setupTimeSelector : function() {
       var self = this, ampm = "am";
