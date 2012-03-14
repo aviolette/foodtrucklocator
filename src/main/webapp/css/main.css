@@ -13,3 +13,8 @@ body {
 .well {
     margin-top: 10px;
 }
+
+#foodTruckList {
+    overflow-y: auto;
+}
+

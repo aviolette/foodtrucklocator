@@ -153,17 +153,6 @@ window.FoodTruckLocator = function() {
       self.setupTimeSelector();
     },
     showControls : function() {
-      /*
-       $("#right").css("display", "none");
-       $("#left").css("overflow-y", "visible");
-       $("header h1").css("float", "none");
-       $("#buttonSection").css("float", "none");
-       $("#body").css("clear", "none");
-       $("#left").css("margin-left", "0");
-       $("#left").css("overflow-y", "visible");
-       $(".sliderContainer").css("display", "none");
-       $(".timeSelect").css("display", "block");
-       */
     },
     displayTime : function(time) {
       $("#timeValue").css("display", "inline");
@@ -176,25 +165,21 @@ window.FoodTruckLocator = function() {
       var menuSection = $("#foodTruckList");
       menuSection.empty();
       if (groups.length == 0) {
-        menuSection
-            .append("<div class='flash'>There are presently no food trucks on the road.  Most are on the road around 11:30.</div>");
+        flash("There are presently no food trucks on the road.  Most are on the road around 11:30.");
         return;
       }
       var sorted = groups.sort(distanceSort);
       $.each(sorted, function(groupIndex, group) {
-        menuSection.append("<div class='truckGroup' id='group" + groupIndex + "'></div>");
+        menuSection.append("<dt class='truckGroup' id='group" + groupIndex + "'></dt>");
         var section = $("#group" + groupIndex);
-        section.append("<div class='locationContent' id='location" + groupIndex +
-            "Section' class='contentSection'></div>");
-        var div = $('#location' + groupIndex + 'Section');
-        div.append("<address class='locationName mobile'>" + group.position.name + "</address>");
+        section.append("<address class='locationName mobile'>" + group.position.name + "</address>");
         if (group.distance) {
-          div.append("<span>" + group.distance + " miles away</span></br>")
+          menuSection.append("<dd>" + group.distance + " miles away</dd>")
         }
-        div
-            .append(" <a style='font-size:1.2em;font-weight: bold' href='http://maps.google.com/maps?q=" +
+        menuSection
+            .append("<dd><a style='font-size:1.2em;font-weight: bold' href='http://maps.google.com/maps?q=" +
             group.position.latLng.lat() + "," +
-            group.position.latLng.lng() + "'>view map</a><br/><br/>")
+            group.position.latLng.lng() + "'>view map</a></dd>")
         $.each(group.trucks, function(idx, truck) {
           div.append("<div class='truckSectionTextOnly' id='truck" + truck.id + "'></div>");
           var truckDiv = $('#truck' + truck.id);
@@ -291,7 +276,8 @@ window.FoodTruckLocator = function() {
         $("#map_wrapper").css("margin-left", "250px");
         $("#map_canvas").width($(window).width() - 250);
       } else {
-        $("#map_canvas").height($(window).height() - $("header").height());
+        $("#map_canvas").height($(window).height() - $("#topBar").height());
+        $("#foodTruckList").height(window.innerHeight - $("#sidebarHeader").height() - 90 );
       }
     },
     buildGroupInfo : function(group, idx, letter, menuSection) {
@@ -590,9 +576,11 @@ window.FoodTruckLocator = function() {
           $("#ampmSelect").val("am");
           $("#timeGoButton").click();
         });
+        self.fitMapToView();
         return;
       }
-      dismissFlash();
+      dismissFlash(self);
+      self.fitMapToView();
       var sorted = groups.sort(function (a, b) {
         if (typeof a.distance == "undefined" || a.distance == null) {
           return 0;
@@ -634,7 +622,11 @@ window.FoodTruckLocator = function() {
     },
     setupView : function(trucks, mobile, center, time) {
       var self = this;
-      if (Modernizr.touch || mobile) {
+      alert("PORTRAIT" + self.isTouchScreenPortrait());
+      alert("LANDSCAPE" + self.isTouchScreenLandscape());
+      alert("FOOBAR");
+      alert("MOBILE" + mobile);
+      if (self.isTouchScreenPortrait() || mobile) {
         this.currentView =
             new ListView({initialTime: time, center : center, model : trucks, el: "foodTruckList"});
       } else {

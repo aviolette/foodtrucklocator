@@ -14,7 +14,7 @@
   <script src="script/lib/modernizr-1.7.min.js"></script>
 </head>
 <body>
-<div class="topbar">
+<div id="topBar" class="topbar">
   <div class="topbar-inner">
     <div class="container-fluid">
       <a class="brand" href="/">Chicago Food Truck Finder</a>
@@ -32,6 +32,7 @@
 
 <div class="container-fluid">
   <div class="sidebar">
+    <div id="sidebarHeader">
     <div class="well">
       <c:if test="${not empty requestDate}">
         <h4>Schedule for ${requestDate}&nbsp;<span id="timeValue">&nbsp;</span></h4>
@@ -93,8 +94,10 @@
         </div>
       </div>
     </div>
-    <div>
       <div class="alert-message warning" style="display:none" id="flash"></div>
+      </div>
+    <div>
+
       <dl id="foodTruckList">
 
       </dl>
