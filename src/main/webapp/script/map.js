@@ -1,20 +1,6 @@
-window.FoodTruckLocator = function(orientationOverride) {
+window.FoodTruckLocator = function() {
   function buildIconUrl(letter) {
     return "http://www.google.com/mapfiles/marker" + letter + ".png"
-  }
-
-  function isTouchScreenLandscape() {
-    return (typeof orientationOverride == "string" && orientationOverride == "landscape") ||
-        Modernizr.touch && window.innerWidth > window.innerHeight;
-  }
-
-  function isTouchScreenPortrait()  {
-    return (typeof orientationOverride == "string" && orientationOverride == "portrait") ||
-        Modernizr.touch && window.innerHeight > window.innerWidth;
-  }
-
-  function isTouchScreen() {
-    return Modernizr.touch || (typeof orientationOverride != "undefined");
   }
 
   function setCookie(name, value, days) {
@@ -270,24 +256,24 @@ window.FoodTruckLocator = function(orientationOverride) {
     buildInfoWindow : function(group) {
       var self = this;
       var contentString = "<div class='infoWindowContent'><address class='locaitonName'>" +
-           group.position.name + "</address>";
-       contentString = contentString + "<ul class='iconList'>"
-       $.each(group.trucks, function(truckIdx, truck) {
-         contentString += self.buildGroupLinkItem(truck);
-       });
-       contentString = contentString + "</ul></div>";
-       var infowindow = new google.maps.InfoWindow({
-         content: contentString
-       });
+          group.position.name + "</address>";
+      contentString = contentString + "<ul class='iconList'>"
+      $.each(group.trucks, function(truckIdx, truck) {
+        contentString += self.buildGroupLinkItem(truck);
+      });
+      contentString = contentString + "</ul></div>";
+      var infowindow = new google.maps.InfoWindow({
+        content: contentString
+      });
 
-       google.maps.event.addListener(group.marker, 'click', function() {
-         infowindow.open(self.map, group.marker);
-       });
-       group.infowindow = infowindow;
+      google.maps.event.addListener(group.marker, 'click', function() {
+        infowindow.open(self.map, group.marker);
+      });
+      group.infowindow = infowindow;
     },
     fitMapToView :function() {
       $("#right").css("display", "block");
-      if (isTouchScreen()) {
+      if (Modernizr.touch) {
         $("#left").css("overflow-y", "visible");
         $("#left").width(250);
         $("#map_wrapper").css("margin-left", "250px");
@@ -448,8 +434,9 @@ window.FoodTruckLocator = function(orientationOverride) {
       })
     },
     buildGroupLinkItem : function(truckTime) {
-      return "<li class='iconListItem' style='background-image: url(" + truckTime.truck.iconUrl + ")'>" +
-              truckTime.startTime + " - " + truckTime.truck.name + "</li>";
+      return "<li class='iconListItem' style='background-image: url(" + truckTime.truck.iconUrl +
+          ")'>" +
+          truckTime.startTime + " - " + truckTime.truck.name + "</li>";
 
     },
     headerHeight : function() {
@@ -462,12 +449,6 @@ window.FoodTruckLocator = function(orientationOverride) {
       var locationSetup = this.getFilterParams();
       $("#radius").attr("value", locationSetup.radius);
       $("#filterLocationName").html(locationSetup.locationName);
-      if (isTouchScreenLandscape()) {
-        $("#left").css("display", "none");
-        $("#right").css("margin-left", "0");
-        $("#map_wrapper").css("margin-left", "0 !important");
-        $("#right").css("float", "none");
-      }
     },
     getFilterParams : function() {
       var radius = parseFloat(getCookie("radius"));
@@ -620,7 +601,7 @@ window.FoodTruckLocator = function(orientationOverride) {
     },
     buildGroupLinkItem : function(truck) {
       return "<li class='iconListItem' style='background-image: url(" + truck.iconUrl + ")'>" +
-              truck.name + "</li>";
+          truck.name + "</li>";
 
     },
     headerHeight : function() {
@@ -674,9 +655,15 @@ window.FoodTruckLocator = function(orientationOverride) {
 
 
   return {
+    isTouchScreenLandscape : function() {
+      return Modernizr.touch && window.innerWidth > window.innerHeight;
+    },
+    isTouchScreenPortrait : function() {
+      return Modernizr.touch && window.innerHeight > window.innerWidth;
+    },
     pickView : function(trucks, mobile, center, time) {
       var self = this;
-      if ($("#timeViewButton:checked").val() == "on" && !isTouchScreen()) {
+      if ($("#timeViewButton:checked").val() == "on") {
         this.currentView = this.timeView;
       } else {
         this.currentView = this.locationView;
@@ -685,7 +672,7 @@ window.FoodTruckLocator = function(orientationOverride) {
     },
     setupView : function(trucks, mobile, center, time) {
       var self = this;
-      if (isTouchScreenPortrait() || mobile) {
+      if (Modernizr.touch || mobile) {
         this.currentView =
             new ListView({initialTime: time, center : center, model : trucks, el: "foodTruckList"});
       } else {
@@ -709,7 +696,7 @@ window.FoodTruckLocator = function(orientationOverride) {
       // TODO: remove this logic once we have an equiv. view for mobile
       var self = this, trucks = Trucks;
       trucks.setCenter(center);
-      if (isTouchScreen() || mobile) {
+      if (Modernizr.touch || mobile) {
         $("#viewSelect").css("display", "none");
       } else {
         $(".pickViewButton").click(function() {
