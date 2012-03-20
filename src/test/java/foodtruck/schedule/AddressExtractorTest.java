@@ -85,8 +85,10 @@ public class AddressExtractorTest {
   }
 
   @Test
-  public void testParse6() {
-    assertTweet("600 W. Chicago, Chicago, IL", "600 W. Chicago. En route.");
+  public void test600WestNormalization() {
+    assertTweet("600 West Chicago Avenue, Chicago, IL", "Sold out!!! Thanks folks!! See u friday at 600 w. Chicago!!");
+    assertTweet("600 West Chicago Avenue, Chicago, IL", "We are here 600 w! Come get ur tamale on!!!");
+    assertTweet("600 West Chicago Avenue, Chicago, IL", "Attn mothertruckers! We'll be at 600 w. Chicago/larabee (smokers corner) at 11am today! Serving cheese, chicken and pork Get your tamale on!");
   }
 
   @Test
@@ -270,7 +272,7 @@ public class AddressExtractorTest {
     assertTweet("57th and Ellis, Chicago, IL",
         "Thank you U of Chicago for braving the weather today and South Loop for closing out our day!  Enjoy the rest of your night!");
     assertTweet("57th and Ellis, Chicago, IL",
-        "Another RAINY Day.. GiGi is making usual stop at UIC today. Ellis 57 & 58 11:30.  Ellis / 60th 1:30 @UofCGHI @UChicago @uicradio @uchiNOMgo");
+        "Another RAINY Day.. GiGi is making usual stop at UIC today. Ellis 57 & 58 11:30.   1:30 @UofCGHI @UChicago @uicradio @uchiNOMgo");
     assertTweet("57th and Ellis, Chicago, IL",
         "Who's in the mood for falafels! On our way to U of C!!");
   }
@@ -354,7 +356,7 @@ public class AddressExtractorTest {
   @Test
   public void testMerchandiseMart() {
     assertTweet("Merchandise Mart",
-        "brownbagtruck: En route Merch Mart! Might be running a skoach late! Post upon landing! 600 W, shooting for 12:30 still!");
+        "brownbagtruck: En route Merch Mart! Might be running a skoach late! Post upon landing!");
     assertTweet("Merchandise Mart",
         "Getting ready to head out to #MerchandiseMart! See you soon. 11:30 a.m.-1:30 pm. @Centro_Media @christieburgner @crazygemini12");
   }
@@ -454,7 +456,7 @@ public class AddressExtractorTest {
   private void assertTweet(String expected, String tweetText, Truck truck) {
     List<String> addresses = parser.parse(tweetText, truck);
     assertNotNull(addresses);
-    assertEquals(1, addresses.size());
+    assertEquals("Addresses: " + addresses, 1, addresses.size());
     assertEquals(expected, addresses.get(0));
   }
 

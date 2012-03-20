@@ -67,11 +67,10 @@ public class AddressExtractor {
       }
     };
     patterns = ImmutableList.of(
-        // University of Chicago
-        new PatternTransform(
-            Pattern.compile("U of Chicago|UofC|U of C|UChicago|Ellis \\(57 / 58\\)|The Reg\\b",
-                Pattern.CASE_INSENSITIVE),
-            keyword("57th and Ellis, Chicago, IL"), true, 0),
+
+        new PatternTransform(Pattern.compile("(600(\\s*w\\S*)\\s+Chicago)", Pattern.CASE_INSENSITIVE),
+            keyword("600 West Chicago Avenue, Chicago, IL"), true, 0),
+
         new PatternTransform(Pattern.compile("\\bjeff/jack\\b", Pattern.CASE_INSENSITIVE),
             keyword("Jefferson and Jackson, Chicago, IL"), false, 0),
         // Harpo Studios
@@ -157,9 +156,19 @@ public class AddressExtractor {
             keyword("Merchandise Mart"), true, 0),
         new PatternTransform(Pattern.compile("wttw", Pattern.CASE_INSENSITIVE),
             keyword("WTTW"), true, 0),
+        // University of Chicago
+        new PatternTransform(
+            Pattern.compile("U of Chicago|UofC|U of C|UChicago|Ellis \\(57 / 58\\)|The Reg\\b",
+                Pattern.CASE_INSENSITIVE),
+            keyword("57th and Ellis, Chicago, IL"), true, 0),
         // tribune tower
         new PatternTransform(Pattern.compile("tribune tower", Pattern.CASE_INSENSITIVE),
             keyword("Tribune Tower, Chicago, IL"), true, 0),
+
+        // 600 West Chicago (part 2)
+        new PatternTransform(Pattern.compile("600\\s*w\\S*", Pattern.CASE_INSENSITIVE),
+            keyword("600 West Chicago Avenue, Chicago, IL"), true, 0),
+
         // keyword format
         new PatternTransform(
             Pattern.compile("grant park|presidential towers", Pattern.CASE_INSENSITIVE),
