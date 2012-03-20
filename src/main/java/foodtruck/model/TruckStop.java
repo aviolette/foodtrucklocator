@@ -81,14 +81,14 @@ public class TruckStop extends ModelEntity {
    * Returns a new TruckStop with a new startTime
    */
   public TruckStop withStartTime(DateTime startTime) {
-    return new TruckStop(truck, startTime, endTime, location, null);
+    return new TruckStop(truck, startTime, endTime, location, getKey());
   }
 
   /**
    * Returns a new TruckStop with a new endTime
    */
   public TruckStop withEndTime(DateTime endTime) {
-    return new TruckStop(truck, startTime, endTime, location, null);
+    return new TruckStop(truck, startTime, endTime, location, getKey());
   }
 
   public boolean activeDuring(DateTime dateTime) {

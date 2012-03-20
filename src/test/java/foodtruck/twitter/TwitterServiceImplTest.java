@@ -93,32 +93,6 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     expect(matcher.match(truck2, basicTweet, null)).andStubReturn(matched);
   }
 
-  // Terminates last matching tweet at current time if a 'stop phrase' is found.
-  @Test
-  public void testFindsTerminationTweetAndCapsLastTweet() {
-    TweetSummary tweet1 = new TweetSummary.Builder()
-        .text("sold out of #tamales for the day.. THANKS #chicago.. See you tomorrow!!").build();
-    TweetSummary tweet2 = new TweetSummary.Builder().text("tweet2").build();
-    expect(terminationDetector.detect(tweet1)).andReturn(now);
-    expect(truckStopDAO.findDuring(TRUCK_2_ID, currentDay))
-        .andReturn(ImmutableList.<TruckStop>of());
-    List<TweetSummary> tweets = ImmutableList.of(tweet1, tweet2);
-    TruckStop stop =
-        new TruckStop(truck2, now.minusHours(3), now.minusHours(2),
-            Location.builder().lat(-1).lng(-2).name("Foobar").build(),
-            null);
-    TruckStopMatch match = new TruckStopMatch(Confidence.HIGH, stop, "tweet2", false);
-    expect(tweetDAO
-        .findTweetsAfter(now.minusHours(TwitterServiceImpl.HOURS_BACK_TO_SEARCH), TRUCK_2_ID, false))
-        .andReturn(tweets);
-    expectTweetsIgnored(tweets);
-    expect(matcher.match(truck2, tweet2, now)).andReturn(match);
-    truckStopDAO.addStops(ImmutableList.<TruckStop>of(stop));
-    replayAll();
-    service.twittalyze();
-    verifyAll();
-  }
-
   private void expectTweetsIgnored(List<TweetSummary> tweets) {
     // saves the lists of tweets
     tweetDAO.save(EasyMock.<List<TweetSummary>>anyObject());

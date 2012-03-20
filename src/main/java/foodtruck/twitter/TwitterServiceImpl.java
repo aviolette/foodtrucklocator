@@ -154,6 +154,7 @@ public class TwitterServiceImpl implements TwitterService {
           tweetDAO.findTweetsAfter(clock.now().minusHours(HOURS_BACK_TO_SEARCH), truck.getId(),
               false);
       TruckStopMatch match = findMatch(tweets, truck);
+      DateTime terminationTime = findTermination(tweets, truck);
       ignoreTweets(tweets);
       if (match != null) {
         log.log(Level.INFO, "Found match {0}", match);
@@ -192,6 +193,15 @@ public class TwitterServiceImpl implements TwitterService {
         }
         addStops.add(matchedStop);
         truckStopDAO.addStops(addStops);
+      } else if(terminationTime != null) {
+        List<TruckStop> currentStops = truckStopDAO.findDuring(truck.getId(), clock.currentDay());
+        for (TruckStop stop : currentStops) {
+          if (stop.activeDuring(terminationTime)) {
+            stop = stop.withEndTime(terminationTime);
+            truckStopDAO.update(stop);
+            break;
+          }
+        }
       } else {
         log.log(Level.INFO, "No matches for {0}", truck.getId());
       }
@@ -225,22 +235,28 @@ public class TwitterServiceImpl implements TwitterService {
 
   }
 
+  private @Nullable DateTime findTermination(List<TweetSummary> tweets, Truck truck) {
+    for (TweetSummary tweet : tweets) {
+      if (tweet.getIgnoreInTwittalyzer()) {
+        continue;
+      }
+      DateTime terminationTime = terminationDetector.detect(tweet);
+      if (terminationTime != null) {
+        log.log(Level.INFO, "Detected termination for truck: {0} with tweet: {1}",
+            new Object[] {truck.getId(), tweet.getText()});
+        return terminationTime;
+      }
+    }
+    return null;
+  }
+
   private TruckStopMatch findMatch(List<TweetSummary> tweets, Truck truck) {
-    DateTime terminationTime = null;
     for (TweetSummary tweet : tweets) {
       if (tweet.getIgnoreInTwittalyzer()) {
         log.log(Level.INFO, "Ignoring tweet: {0}", tweet);
         continue;
       }
-      if (terminationTime == null) {
-        log.log(Level.INFO, "Found tweet {0}", tweet);
-        terminationTime = terminationDetector.detect(tweet);
-        if (terminationTime != null) {
-          log.log(Level.INFO, "Detected termination");
-          continue;
-        }
-      }
-      TruckStopMatch match = matcher.match(truck, tweet, terminationTime);
+      TruckStopMatch match = matcher.match(truck, tweet, null);
       if (match != null) {
         return match;
       }
