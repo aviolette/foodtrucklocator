@@ -138,6 +138,7 @@ public class TruckServlet extends HttpServlet {
         .key(truckId)
         .defaultCity(request.getParameter("defaultCity"))
         .description(request.getParameter("description"))
+        .calendarUrl(request.getParameter("calendarUrl"))
         .facebook(request.getParameter("facebook"))
         .foursquareUrl(request.getParameter("foursquareUrl"))
         .iconUrl(request.getParameter("iconUrl"))
@@ -150,7 +151,8 @@ public class TruckServlet extends HttpServlet {
     builder.useTwittalyzer(options.contains("twittalyzer"));
     String matchRegex = request.getParameter("matchOnlyIf");
     builder.matchOnlyIf(Strings.isNullOrEmpty(matchRegex) ? null : matchRegex);
-    builder.categories(ImmutableSet.copyOf(Splitter.on(",").omitEmptyStrings().split(request.getParameter("categories"))));
+    builder.categories(ImmutableSet
+        .copyOf(Splitter.on(",").omitEmptyStrings().split(request.getParameter("categories"))));
     return builder.build();
   }
 

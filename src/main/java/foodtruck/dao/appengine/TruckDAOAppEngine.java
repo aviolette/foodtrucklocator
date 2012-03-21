@@ -37,6 +37,7 @@ public class TruckDAOAppEngine implements TruckDAO {
   private static final String MATCH_REGEX_FIELD = "matchOnlyIf";
   private static final String INACTIVE_FIELD = "inactive";
   private static final String CATEGORIES_FIELD = "categories";
+  private static final String TRUCK_CALENDAR_URL = "calendarUrl";
 
   @Inject
   public TruckDAOAppEngine(DatastoreServiceProvider provider) {
@@ -56,7 +57,7 @@ public class TruckDAOAppEngine implements TruckDAO {
 
   private Truck fromEntity(Entity entity) {
     Truck.Builder builder = Truck.builder();
-    Collection categoriesList = (Collection)entity.getProperty(CATEGORIES_FIELD);
+    Collection categoriesList = (Collection) entity.getProperty(CATEGORIES_FIELD);
     return builder.id(entity.getKey().getName())
         .key(entity.getKey())
         .inactive((Boolean) entity.getProperty(INACTIVE_FIELD))
@@ -72,6 +73,7 @@ public class TruckDAOAppEngine implements TruckDAO {
         .categories(categoriesList == null ? ImmutableSet.<String>of() :
             ImmutableSet.copyOf(categoriesList))
         .useTwittalyzer((Boolean) entity.getProperty(TRUCK_TWITTALYZER_FIELD))
+        .calendarUrl((String) entity.getProperty(TRUCK_CALENDAR_URL))
         .build();
   }
 
@@ -123,6 +125,7 @@ public class TruckDAOAppEngine implements TruckDAO {
     truckEntity.setProperty(TRUCK_TWITTER_HANDLE, truck.getTwitterHandle());
     truckEntity.setProperty(TRUCK_URL, truck.getUrl());
     truckEntity.setProperty(TRUCK_ICON_URL, truck.getIconUrl());
+    truckEntity.setProperty(TRUCK_CALENDAR_URL, truck.getCalendarUrl());
     truckEntity.setProperty(TRUCK_DESCRIPTION_FIELD, truck.getDescription());
     truckEntity.setProperty(TRUCK_FOURSQUARE_URL_FIELD, truck.getFoursquareUrl());
     truckEntity.setProperty(TRUCK_TWITTALYZER_FIELD, truck.isUsingTwittalyzer());

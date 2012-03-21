@@ -29,6 +29,7 @@ public class Truck extends ModelEntity {
   private final String facebook;
   private final Pattern matchOnlyIf;
   private final boolean inactive;
+  private @Nullable final String calendarUrl;
 
   private Truck(Builder builder) {
     super(builder.key);
@@ -45,6 +46,7 @@ public class Truck extends ModelEntity {
     this.facebook = builder.facebook;
     this.matchOnlyIf = builder.matchOnlyIf;
     this.inactive = builder.inactive;
+    this.calendarUrl = builder.calendarUrl;
   }
 
   public @Nullable String getFoursquareUrl() {
@@ -57,6 +59,10 @@ public class Truck extends ModelEntity {
 
   public String getName() {
     return name;
+  }
+
+  public @Nullable String getCalendarUrl() {
+    return calendarUrl;
   }
 
   public String getCategoryList() {
@@ -159,6 +165,7 @@ public class Truck extends ModelEntity {
     private Pattern matchOnlyIf;
     private boolean inactive;
     private Object key;
+    private @Nullable String calendarUrl;
 
     public Builder() {
     }
@@ -177,6 +184,7 @@ public class Truck extends ModelEntity {
       this.facebook = truck.facebook;
       this.matchOnlyIf = truck.matchOnlyIf;
       this.inactive = truck.inactive;
+      this.calendarUrl = truck.calendarUrl;
       this.key = truck.key;
     }
 
@@ -250,6 +258,11 @@ public class Truck extends ModelEntity {
 
     public Builder facebook(@Nullable String facebook) {
       this.facebook = facebook;
+      return this;
+    }
+
+    public Builder calendarUrl(@Nullable String calendarUrl) {
+      this.calendarUrl = calendarUrl;
       return this;
     }
 

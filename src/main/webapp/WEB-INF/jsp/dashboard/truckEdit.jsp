@@ -51,6 +51,13 @@
     </div>
   </div>
   <div class="clearfix">
+    <label for="calendarUrl">Calendar URL</label>
+
+    <div class="input">
+      <input type="text" id="calendarUrl" name="calendarUrl" value="${truck.calendarUrl}"/>
+    </div>
+  </div>
+  <div class="clearfix">
     <label for="foursquareUrl">Default City</label>
 
     <div class="input">
