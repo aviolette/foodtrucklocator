@@ -187,6 +187,11 @@ public class AddressExtractorTest {
   }
 
   @Test
+  public void testCorrectCase() {
+    assertTweet("Madison and Wacker, Chicago, IL", "Landed! MADISON & WACKER. Show us your love!");
+  }
+
+  @Test
   public void testKeyword() {
     assertTweet("Harpo Studios", "Just landed at harpo.  Come get your yogurt");
     assertTweet("Harpo Studios", "Just landed at Harpo.  Come get your yogurt");
@@ -216,7 +221,7 @@ public class AddressExtractorTest {
         "Hey all! I'm hanging in Erie in between Franklin and Orleans.  Let's party...its monday!");
     assertTweet("Wabash and Van Buren, Chicago, IL",
         "thesouthernmac: Alright folks, sorry, we're on Wabash between Van Buren and Jackson!");
-    assertTweet("ellis and 57th, Chicago, IL",
+    assertTweet("Ellis and 57th, Chicago, IL",
         "We are on ellis between 57th and 58th", new Truck.Builder().id("steakwch").build());
   }
 
@@ -386,7 +391,7 @@ public class AddressExtractorTest {
 
   @Test
   public void testIntersectionWithMixedCaseForCertainVendors() {
-    assertTweet("58th and ellis, Chicago, IL", "We are at 58th and ellis",
+    assertTweet("58th and Ellis, Chicago, IL", "We are at 58th and ellis",
         new Truck.Builder().id("steakwch").build());
   }
 

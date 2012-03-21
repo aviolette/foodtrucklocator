@@ -39,12 +39,37 @@ public class AddressExtractor {
   public AddressExtractor() {
     Function<String, String> cityAppender = new Function<String, String>() {
       public String apply(String input) {
-        return
+        String corrected =
             input.replaceAll("(&|b\\/w|\\/)", " and ").replace(" at ", " and ").replace("  and  ",
                 " and ").replace(" between ", " and ").replace(" in", "").replace(" n ", " and ")
                 .replace(" on ", " and ").replace(" near ", " and ")
                 .trim() +
                 ", Chicago, IL";
+        return capitalize(corrected);
+      }
+
+      private String capitalize(String corrected) {
+        String words[] = corrected.split(" ");
+        StringBuilder builder = new StringBuilder();
+        boolean first = true;
+        for (String word : words) {
+          if (first) {
+            first = false;
+          } else {
+            builder.append(" ");
+          }
+          if(word.equals("IL") || word.equals("and") || word.startsWith("La") || word.startsWith(
+              "Van")) {
+            builder.append(word);
+          } else if (word.length()  > 1) {
+            builder.append(word.substring(0,1).toUpperCase())
+                .append(word.substring(1, word.length()).toLowerCase());
+          } else {
+            builder.append(word.toUpperCase());
+          }
+        }
+        return builder.toString();
+
       }
     };
     Function<String, String> keywordReplace = new Function<String, String>() {
