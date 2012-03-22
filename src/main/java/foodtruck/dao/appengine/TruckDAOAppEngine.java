@@ -2,6 +2,7 @@
 package foodtruck.dao.appengine;
 
 import java.util.Collection;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -11,6 +12,7 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 
@@ -119,13 +121,26 @@ public class TruckDAOAppEngine implements TruckDAO {
     return trucks.build();
   }
 
+  @Override public Set<Truck> findTrucksWithCalendars() {
+    DatastoreService dataStore = provider.get();
+    Query q = new Query(TRUCK_KIND);
+    q.addFilter(TRUCK_CALENDAR_URL, Query.FilterOperator.NOT_EQUAL, null);
+    ImmutableSet.Builder<Truck> trucks = ImmutableSet.builder();
+    for (Entity entity : dataStore.prepare(q).asIterable()) {
+      Truck truck = fromEntity(entity);
+      trucks.add(truck);
+    }
+    return trucks.build();
+  }
+
   private Entity toEntity(Truck truck, Entity entity) {
     Entity truckEntity = entity == null ? new Entity(TRUCK_KIND, truck.getId()) : entity;
     truckEntity.setProperty(TRUCK_NAME_FIELD, truck.getName());
     truckEntity.setProperty(TRUCK_TWITTER_HANDLE, truck.getTwitterHandle());
     truckEntity.setProperty(TRUCK_URL, truck.getUrl());
     truckEntity.setProperty(TRUCK_ICON_URL, truck.getIconUrl());
-    truckEntity.setProperty(TRUCK_CALENDAR_URL, truck.getCalendarUrl());
+    truckEntity.setProperty(TRUCK_CALENDAR_URL,
+        Strings.isNullOrEmpty(truck.getCalendarUrl()) ? null : truck.getCalendarUrl());
     truckEntity.setProperty(TRUCK_DESCRIPTION_FIELD, truck.getDescription());
     truckEntity.setProperty(TRUCK_FOURSQUARE_URL_FIELD, truck.getFoursquareUrl());
     truckEntity.setProperty(TRUCK_TWITTALYZER_FIELD, truck.isUsingTwittalyzer());

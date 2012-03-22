@@ -2,6 +2,7 @@
 package foodtruck.dao;
 
 import java.util.Collection;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -25,4 +26,6 @@ public interface TruckDAO {
   Truck findByTwitterId(String screenName);
 
   Collection<Truck> findAllTwitterTrucks();
+
+  Set<Truck> findTrucksWithCalendars();
 }

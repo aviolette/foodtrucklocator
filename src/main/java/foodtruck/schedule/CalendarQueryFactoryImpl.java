@@ -17,7 +17,12 @@ public class CalendarQueryFactoryImpl implements CalendarQueryFactory {
   public CalendarQueryFactoryImpl(@Named("calendar.feed.url") URL feedUrl) {
     this.feedUrl = feedUrl;
   }
+
   @Override public CalendarQuery create() {
     return new CalendarQuery(feedUrl);
+  }
+
+  @Override public CalendarQuery create(URL url) {
+    return new CalendarQuery(url);
   }
 }

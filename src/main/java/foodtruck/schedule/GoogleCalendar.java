@@ -1,6 +1,8 @@
 package foodtruck.schedule;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -8,7 +10,9 @@ import java.util.logging.Logger;
 import javax.annotation.Nullable;
 
 import com.google.appengine.repackaged.com.google.common.collect.ImmutableList;
+import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.gdata.client.calendar.CalendarQuery;
 import com.google.gdata.client.calendar.CalendarService;
 import com.google.gdata.data.DateTime;
@@ -59,6 +63,34 @@ public class GoogleCalendar implements ScheduleStrategy {
   @Override
   public List<TruckStop> findForTime(TimeRange range, @Nullable Truck searchTruck) {
     CalendarQuery query = queryFactory.create();
+    List<TruckStop> stops = performTruckSearch(range, searchTruck, query);
+    stops = Lists.newLinkedList(stops);
+    if (searchTruck != null && !Strings.isNullOrEmpty(searchTruck.getCalendarUrl())) {
+      saveTruckSearch(range, searchTruck, stops, searchTruck);
+    } else {
+      for (Truck truck : truckDAO.findTrucksWithCalendars()) {
+        saveTruckSearch(range, truck, stops, truck);
+      }
+    }
+    return stops;
+  }
+
+  private void saveTruckSearch(TimeRange range, Truck searchTruck, List<TruckStop> stops,
+      Truck truck) {
+    try {
+      final String calendarUrl = truck.getCalendarUrl();
+      if (calendarUrl == null || !calendarUrl.startsWith("http")) {
+        return;
+      }
+      stops.addAll(performTruckSearch(range, searchTruck,
+          queryFactory.create(new URL(calendarUrl))));
+    } catch (MalformedURLException e) {
+      log.warning(e.getMessage());
+    }
+  }
+
+  private List<TruckStop> performTruckSearch(TimeRange range, Truck searchTruck,
+      CalendarQuery query) {
     query.setMinimumStartTime(new DateTime(range.getStartDateTime().toDate(),
         defaultZone.toTimeZone()));
     query.setMaximumStartTime(new DateTime(range.getEndDateTime().toDate(),
@@ -72,7 +104,8 @@ public class GoogleCalendar implements ScheduleStrategy {
     try {
       CalendarEventFeed resultFeed = calendarQuery(query);
       for (CalendarEventEntry entry : resultFeed.getEntries()) {
-        Truck truck = truckDAO.findById(entry.getTitle().getPlainText());
+        Truck truck = (searchTruck != null) ? searchTruck :
+            truckDAO.findById(entry.getTitle().getPlainText());
         if (truck == null) {
           continue;
         }
