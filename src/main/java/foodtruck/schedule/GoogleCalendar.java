@@ -67,7 +67,7 @@ public class GoogleCalendar implements ScheduleStrategy {
     stops = Lists.newLinkedList(stops);
     if (searchTruck != null && !Strings.isNullOrEmpty(searchTruck.getCalendarUrl())) {
       saveTruckSearch(range, searchTruck, stops, searchTruck);
-    } else {
+    } else if (searchTruck == null) {
       for (Truck truck : truckDAO.findTrucksWithCalendars()) {
         saveTruckSearch(range, truck, stops, truck);
       }
