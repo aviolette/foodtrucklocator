@@ -208,8 +208,11 @@ public class TwitterServiceImpl implements TwitterService {
       if (stop.activeDuring(terminationTime)) {
         found = stop;
         break;
+        // TODO: I think this will produce undesirable results
+/*
       } else if (stop.getStartTime().isAfter(terminationTime)) {
         break;
+      */
       }
       found = stop;
     }

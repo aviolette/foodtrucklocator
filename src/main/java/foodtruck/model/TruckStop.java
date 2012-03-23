@@ -19,7 +19,7 @@ public class TruckStop extends ModelEntity {
   private final Location location;
 
   public TruckStop(Truck truck, DateTime startTime, DateTime endTime, Location location,
-      @Nullable Object key) {
+      @Nullable Long key) {
     super(key);
     this.truck = truck;
     this.startTime = startTime;
@@ -81,17 +81,18 @@ public class TruckStop extends ModelEntity {
    * Returns a new TruckStop with a new startTime
    */
   public TruckStop withStartTime(DateTime startTime) {
-    return new TruckStop(truck, startTime, endTime, location, getKey());
+    return new TruckStop(truck, startTime, endTime, location, (Long) getKey());
   }
 
   /**
    * Returns a new TruckStop with a new endTime
    */
   public TruckStop withEndTime(DateTime endTime) {
-    return new TruckStop(truck, startTime, endTime, location, getKey());
+    return new TruckStop(truck, startTime, endTime, location, (Long) getKey());
   }
 
   public boolean activeDuring(DateTime dateTime) {
-    return startTime.equals(dateTime) || (dateTime.isAfter(startTime) && dateTime.isBefore(endTime));
+    return startTime.equals(dateTime) ||
+        (dateTime.isAfter(startTime) && dateTime.isBefore(endTime));
   }
 }

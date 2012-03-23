@@ -76,9 +76,11 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
       try {
         stops.add(new TruckStop(truckDAO.findById(truckId),
             startTime, endTime,
-            Location.builder().lat((Double) entity.getProperty(LATITUDE_FIELD)).lng((Double) entity.getProperty(
-                LONGITUDE_FIELD)).name((String) entity.getProperty(LOCATION_NAME_FIELD)).build(),
-            entity.getKey()));
+            Location.builder().lat((Double) entity.getProperty(LATITUDE_FIELD))
+                .lng((Double) entity.getProperty(
+                    LONGITUDE_FIELD)).name((String) entity.getProperty(LOCATION_NAME_FIELD))
+                .build(),
+            entity.getKey().getId()));
       } catch (RuntimeException rt) {
         log.log(Level.WARNING, "Error for truckId: " + truckId, rt);
       }
@@ -136,9 +138,10 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
     final DateTime endTime = new DateTime((Date) entity.getProperty(END_TIME_FIELD), zone);
     return new TruckStop(truckDAO.findById((String) entity.getProperty(TRUCK_ID_FIELD)),
         startTime, endTime,
-        Location.builder().lat((Double) entity.getProperty(LATITUDE_FIELD)).lng((Double) entity.getProperty(
+        Location.builder().lat((Double) entity.getProperty(LATITUDE_FIELD))
+            .lng((Double) entity.getProperty(
                 LONGITUDE_FIELD)).name((String) entity.getProperty(LOCATION_NAME_FIELD)).build(),
-        entity.getKey());
+        entity.getKey().getId());
   }
 
   @Override
@@ -171,9 +174,13 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
     DatastoreService dataStore = serviceProvider.get();
     ImmutableList.Builder<Key> keys = ImmutableList.builder();
     for (TruckStop stop : toDelete) {
-      keys.add((Key) stop.getKey());
+      keys.add(findKey(stop));
     }
     dataStore.delete(keys.build());
+  }
+
+  public Key findKey(TruckStop stop) {
+    return KeyFactory.createKey(STOP_KIND, (Long) stop.getKey());
   }
 
   @Override public TruckStop findById(long stopId) {
@@ -198,7 +205,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
     Entity entity = null;
     try {
       if (!truckStop.isNew()) {
-        Key key = KeyFactory.createKey(STOP_KIND, (Long) truckStop.getKey());
+        Key key = findKey(truckStop);
         entity = dataStore.get(key);
       }
       entity = toEntity(truckStop, entity);
