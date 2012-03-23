@@ -193,19 +193,35 @@ public class TwitterServiceImpl implements TwitterService {
         }
         addStops.add(matchedStop);
         truckStopDAO.addStops(addStops);
-      } else if(terminationTime != null) {
-        List<TruckStop> currentStops = truckStopDAO.findDuring(truck.getId(), clock.currentDay());
-        for (TruckStop stop : currentStops) {
-          if (stop.activeDuring(terminationTime)) {
-            stop = stop.withEndTime(terminationTime);
-            truckStopDAO.update(stop);
-            break;
-          }
-        }
+      } else if (terminationTime != null) {
+        capLastMatchingStop(truck, terminationTime);
       } else {
         log.log(Level.INFO, "No matches for {0}", truck.getId());
       }
     }
+  }
+
+  private void capLastMatchingStop(Truck truck, DateTime terminationTime) {
+    List<TruckStop> currentStops = truckStopDAO.findDuring(truck.getId(), clock.currentDay());
+    TruckStop found = null;
+    for (TruckStop stop : currentStops) {
+      if (stop.activeDuring(terminationTime)) {
+        found = stop;
+        break;
+      } else if (stop.getStartTime().isAfter(terminationTime)) {
+        break;
+      }
+      found = stop;
+    }
+    if (found == null) {
+      log.log(Level.INFO, "No Matching stop found to terminate");
+      return;
+    }
+    log.log(Level.INFO, "Capping {0} with new termination time {1}", new Object[] {found,
+        terminationTime});
+    found = found.withEndTime(terminationTime);
+    log.log(Level.INFO, "New stop {0}", found);
+    truckStopDAO.update(found);
   }
 
   /**
@@ -255,6 +271,10 @@ public class TwitterServiceImpl implements TwitterService {
       if (tweet.getIgnoreInTwittalyzer()) {
         log.log(Level.INFO, "Ignoring tweet: {0}", tweet);
         continue;
+      }
+      DateTime terminationTime = terminationDetector.detect(tweet);
+      if (terminationTime != null) {
+        return null;
       }
       TruckStopMatch match = matcher.match(truck, tweet, null);
       if (match != null) {
