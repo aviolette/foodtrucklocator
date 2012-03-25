@@ -108,20 +108,8 @@ document.write("<script src='script/lib/jquery-1.6.2.min.js'>\x3C/script>")</scr
         new Date(${requestTimeInMillis}), ${payload});
   });
 </script>
-<%-- truck dialog // TODO: move to separate JSP --%>
-<div id="truckDialog" title="Food Truck Details" style="display:none">
-  <div id="truckIconDiv" class="truckSection">
-    <div class="iconSection">
-      <img id="truckIcon"/>
-    </div>
-    <div class="menuContent">
-      <div id="truckSocial" class="infoRow"></div>
-    </div>
-  </div>
-  <div id="truckInfo"></div>
-  <h3>Scheduled Stops</h3>
-  <ul id="truckSchedule"></ul>
-</div>
+
+<jsp:include page="include/truckInfoDialog.jsp"/>
 <%-- brighttag script --%>
 <script src="//s.btstatic.com/tag.js">{
   site: "zIOrUTR"
