@@ -135,6 +135,16 @@ public class AddressExtractorTest {
   }
 
   @Test
+  public void testMultipartAddress() {
+    assertTweet("5400 N. Saint Louis, Chicago, IL",
+        "Ok we'll be 5400 N. Saint Louis Avenue for 10 more minutes then heading over to @Grubhub. Who wants some duck gumbo?");
+    assertTweet("320 W. Irving Park, Chicago, IL",
+        "Ok we'll be 320 W. Irving Park for 10 more minutes then heading over to @Grubhub. Who wants some duck gumbo?");
+    assertTweet("320 West Irving Park, Chicago, IL",
+        "Ok we'll be 320 West Irving Park for 10 more minutes then heading over to @Grubhub. Who wants some duck gumbo?");
+  }
+
+  @Test
   public void testParseIntersection5() {
     assertTweet("North and Wells, Chicago, IL",
         "Last call at North and Wells for the #KefirTruck! T-10 minutes!");

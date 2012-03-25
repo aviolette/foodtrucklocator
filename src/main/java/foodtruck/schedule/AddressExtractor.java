@@ -120,7 +120,7 @@ public class AddressExtractor {
         new PatternTransform(Pattern.compile("\\bNEIU\\b", Pattern.CASE_INSENSITIVE),
             keyword("5500 North Saint Louis Avenue, Chicago, IL"), true, 0),
         // address format
-        new PatternTransform(Pattern.compile("(^:)*\\d+\\s*[NnSsEeWw]\\.?\\s+\\w+"), cityAppender,
+        new PatternTransform(Pattern.compile("(^:)*\\d+((\\s*[NnSsEeWw]\\.?\\s+)|(\\s+(West|west|North|north|East|east|South|south)\\s+))\\w+(\\s+(Louis|Park))*"), cityAppender,
             true, 0),
         // Willis Tower
         new PatternTransform(Pattern.compile("sears|willis", Pattern.CASE_INSENSITIVE),
