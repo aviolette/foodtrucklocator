@@ -47,35 +47,37 @@ public class GoogleCalendar implements ScheduleStrategy {
   private final DateTimeZone defaultZone;
   private final GeoLocator geolocator;
   private final TruckDAO truckDAO;
+  private AddressExtractor addressExtractor;
 
   @Inject
   public GoogleCalendar(CalendarService calendarService,
       CalendarQueryFactory queryFactory, DateTimeZone defaultZone, GeoLocator geolocator,
-      TruckDAO truckDAO) {
+      TruckDAO truckDAO, AddressExtractor addressExtractor) {
     this.calendarService = calendarService;
     this.queryFactory = queryFactory;
     this.defaultZone = defaultZone;
     this.geolocator = geolocator;
     this.truckDAO = truckDAO;
+    this.addressExtractor = addressExtractor;
   }
 
   // TODO: rewrite this...its awfully crappy
   @Override
   public List<TruckStop> findForTime(TimeRange range, @Nullable Truck searchTruck) {
     CalendarQuery query = queryFactory.create();
-    List<TruckStop> stops = performTruckSearch(range, searchTruck, query);
+    List<TruckStop> stops = performTruckSearch(range, searchTruck, query, false);
     stops = Lists.newLinkedList(stops);
     if (searchTruck != null && !Strings.isNullOrEmpty(searchTruck.getCalendarUrl())) {
-      saveTruckSearch(range, searchTruck, stops, searchTruck);
+      customCalendarSearch(range, searchTruck, stops, searchTruck);
     } else if (searchTruck == null) {
       for (Truck truck : truckDAO.findTrucksWithCalendars()) {
-        saveTruckSearch(range, truck, stops, truck);
+        customCalendarSearch(range, truck, stops, truck);
       }
     }
     return stops;
   }
 
-  private void saveTruckSearch(TimeRange range, Truck searchTruck, List<TruckStop> stops,
+  private void customCalendarSearch(TimeRange range, Truck searchTruck, List<TruckStop> stops,
       Truck truck) {
     try {
       final String calendarUrl = truck.getCalendarUrl();
@@ -83,14 +85,14 @@ public class GoogleCalendar implements ScheduleStrategy {
         return;
       }
       stops.addAll(performTruckSearch(range, searchTruck,
-          queryFactory.create(new URL(calendarUrl))));
+          queryFactory.create(new URL(calendarUrl)), true));
     } catch (MalformedURLException e) {
       log.warning(e.getMessage());
     }
   }
 
   private List<TruckStop> performTruckSearch(TimeRange range, Truck searchTruck,
-      CalendarQuery query) {
+      CalendarQuery query, boolean customCalendar) {
     query.setMinimumStartTime(new DateTime(range.getStartDateTime().toDate(),
         defaultZone.toTimeZone()));
     query.setMaximumStartTime(new DateTime(range.getEndDateTime().toDate(),
@@ -114,8 +116,16 @@ public class GoogleCalendar implements ScheduleStrategy {
           throw new IllegalStateException("No location specified");
         }
         When time = Iterables.getFirst(entry.getTimes(), null);
-        final Location location = geolocator.locate(where.getValueString(),
+        Location location = geolocator.locate(where.getValueString(),
             GeolocationGranularity.BROAD);
+        if (location == null && customCalendar) {
+          // Sometimes the location is in the title - try that too
+          String locString = Iterables
+              .getFirst(addressExtractor.parse(entry.getTitle().getPlainText(), searchTruck), null);
+          if (locString != null) {
+            location = geolocator.locate(locString, GeolocationGranularity.BROAD);
+          }
+        }
         if (location != null) {
           final TruckStop truckStop = new TruckStop(truck, toJoda(time.getStartTime(), defaultZone),
               toJoda(time.getEndTime(), defaultZone), location, null);
