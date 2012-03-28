@@ -47,7 +47,7 @@ public class GoogleCalendar implements ScheduleStrategy {
   private final DateTimeZone defaultZone;
   private final GeoLocator geolocator;
   private final TruckDAO truckDAO;
-  private AddressExtractor addressExtractor;
+  private final AddressExtractor addressExtractor;
 
   @Inject
   public GoogleCalendar(CalendarService calendarService,
@@ -98,7 +98,7 @@ public class GoogleCalendar implements ScheduleStrategy {
     query.setMaximumStartTime(new DateTime(range.getEndDateTime().toDate(),
         defaultZone.toTimeZone()));
     query.setMaxResults(1000);
-    if (searchTruck != null) {
+    if (searchTruck != null && !customCalendar) {
       query.setFullTextQuery(searchTruck.getId());
     }
     query.setStringCustomParameter("singleevents", "true");
@@ -106,8 +106,9 @@ public class GoogleCalendar implements ScheduleStrategy {
     try {
       CalendarEventFeed resultFeed = calendarQuery(query);
       for (CalendarEventEntry entry : resultFeed.getEntries()) {
+        final String titleText = entry.getTitle().getPlainText();
         Truck truck = (searchTruck != null) ? searchTruck :
-            truckDAO.findById(entry.getTitle().getPlainText());
+            truckDAO.findById(titleText);
         if (truck == null) {
           continue;
         }
@@ -120,8 +121,9 @@ public class GoogleCalendar implements ScheduleStrategy {
             GeolocationGranularity.BROAD);
         if (location == null && customCalendar) {
           // Sometimes the location is in the title - try that too
-          String locString = Iterables
-              .getFirst(addressExtractor.parse(entry.getTitle().getPlainText(), searchTruck), null);
+          final List<String> parsed =
+              addressExtractor.parse(titleText, searchTruck);
+          String locString = Iterables.getFirst(parsed, null);
           if (locString != null) {
             location = geolocator.locate(locString, GeolocationGranularity.BROAD);
           }

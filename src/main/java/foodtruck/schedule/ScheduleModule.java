@@ -39,8 +39,8 @@ public class ScheduleModule extends AbstractModule {
   @Provides
   public GoogleCalendar provideGoogleCalendarStrategy(CalendarService service,
       CalendarQueryFactory queryProvider, DateTimeZone zone, GeoLocator geoLocator,
-      TruckDAO truckDAO) {
-    return new GoogleCalendar(service, queryProvider, zone, geoLocator, truckDAO, null);
+      TruckDAO truckDAO, AddressExtractor extractor) {
+    return new GoogleCalendar(service, queryProvider, zone, geoLocator, truckDAO, extractor);
   }
 }
 
