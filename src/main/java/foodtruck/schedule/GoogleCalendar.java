@@ -65,6 +65,8 @@ public class GoogleCalendar implements ScheduleStrategy {
   @Override
   public List<TruckStop> findForTime(TimeRange range, @Nullable Truck searchTruck) {
     CalendarQuery query = queryFactory.create();
+    String truckId = searchTruck == null ? null : searchTruck.getId();
+    log.info("Initiating calendar search " + truckId);
     List<TruckStop> stops = performTruckSearch(range, searchTruck, query, false);
     stops = Lists.newLinkedList(stops);
     if (searchTruck != null && !Strings.isNullOrEmpty(searchTruck.getCalendarUrl())) {
@@ -84,6 +86,7 @@ public class GoogleCalendar implements ScheduleStrategy {
       if (calendarUrl == null || !calendarUrl.startsWith("http")) {
         return;
       }
+      log.info("Custom calendar search: "+calendarUrl);
       stops.addAll(performTruckSearch(range, searchTruck,
           queryFactory.create(new URL(calendarUrl)), true));
     } catch (MalformedURLException e) {
