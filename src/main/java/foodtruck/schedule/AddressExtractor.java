@@ -58,11 +58,11 @@ public class AddressExtractor {
           } else {
             builder.append(" ");
           }
-          if(word.equals("IL") || word.equals("and") || word.startsWith("La") || word.startsWith(
+          if (word.equals("IL") || word.equals("and") || word.startsWith("La") || word.startsWith(
               "Van")) {
             builder.append(word);
-          } else if (word.length()  > 1) {
-            builder.append(word.substring(0,1).toUpperCase())
+          } else if (word.length() > 1) {
+            builder.append(word.substring(0, 1).toUpperCase())
                 .append(word.substring(1, word.length()).toLowerCase());
           } else {
             builder.append(word.toUpperCase());
@@ -93,7 +93,8 @@ public class AddressExtractor {
     };
     patterns = ImmutableList.of(
 
-        new PatternTransform(Pattern.compile("(600(\\s*w\\S*)\\s+Chicago)", Pattern.CASE_INSENSITIVE),
+        new PatternTransform(
+            Pattern.compile("(600(\\s*w\\S*)\\s+Chicago)", Pattern.CASE_INSENSITIVE),
             keyword("600 West Chicago Avenue, Chicago, IL"), true, 0),
 
         new PatternTransform(Pattern.compile("\\bjeff/jack\\b", Pattern.CASE_INSENSITIVE),
@@ -120,7 +121,9 @@ public class AddressExtractor {
         new PatternTransform(Pattern.compile("\\bNEIU\\b", Pattern.CASE_INSENSITIVE),
             keyword("5500 North Saint Louis Avenue, Chicago, IL"), true, 0),
         // address format
-        new PatternTransform(Pattern.compile("(^:)*\\d+((\\s*[NnSsEeWw]\\.?\\s+)|(\\s+(West|west|North|north|East|east|South|south)\\s+))\\w+(\\s+(Louis|Park))*"), cityAppender,
+        new PatternTransform(Pattern.compile(
+            "(^:)*\\d+((\\s*[NnSsEeWw]\\.?\\s+)|(\\s+(West|west|North|north|East|east|South|south)\\s+))\\w+(\\s+(Louis|Park))*"),
+            cityAppender,
             true, 0),
         // Willis Tower
         new PatternTransform(Pattern.compile("sears|willis", Pattern.CASE_INSENSITIVE),
@@ -173,7 +176,7 @@ public class AddressExtractor {
             cityAppender, false, 1,
             ImmutableSet
                 .of("steakwch", "rzjp6cakes", "flirtycupcakes", "theslideride", "caponiesexp",
-                    "pecanandcharlie")),
+                    "pecanandcharlie", "stemartaen")),
         // special case intersections
         // Merchandise Mart
         new PatternTransform(
