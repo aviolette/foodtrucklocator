@@ -86,9 +86,12 @@ public class AddressExtractorTest {
 
   @Test
   public void test600WestNormalization() {
-    assertTweet("600 West Chicago Avenue, Chicago, IL", "Sold out!!! Thanks folks!! See u friday at 600 w. Chicago!!");
-    assertTweet("600 West Chicago Avenue, Chicago, IL", "We are here 600 w! Come get ur tamale on!!!");
-    assertTweet("600 West Chicago Avenue, Chicago, IL", "Attn mothertruckers! We'll be at 600 w. Chicago/larabee (smokers corner) at 11am today! Serving cheese, chicken and pork Get your tamale on!");
+    assertTweet("600 West Chicago Avenue, Chicago, IL",
+        "Sold out!!! Thanks folks!! See u friday at 600 w. Chicago!!");
+    assertTweet("600 West Chicago Avenue, Chicago, IL",
+        "We are here 600 w! Come get ur tamale on!!!");
+    assertTweet("600 West Chicago Avenue, Chicago, IL",
+        "Attn mothertruckers! We'll be at 600 w. Chicago/larabee (smokers corner) at 11am today! Serving cheese, chicken and pork Get your tamale on!");
   }
 
   @Test
@@ -350,6 +353,7 @@ public class AddressExtractorTest {
   public void testAON() {
     assertTweet("Randolph and Columbus, Chicago, IL",
         "The Tamale Guy is @ #aon center today!! hot, handmade, fresh #tamales.. pork,chicken and veggie!! #chicago #foodtrucks #fb");
+    assertTweet("Randolph and Columbus, Chicago, IL", "AON Center");
   }
 
   @Test

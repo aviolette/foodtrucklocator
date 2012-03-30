@@ -109,7 +109,7 @@ public class AddressExtractor {
         new PatternTransform(Pattern.compile("Trump", Pattern.CASE_INSENSITIVE),
             keyword("400 North Wabash, Chicago, IL"), true, 0),
         // AON
-        new PatternTransform(Pattern.compile("@aon| aon|#aon", Pattern.CASE_INSENSITIVE),
+        new PatternTransform(Pattern.compile("@aon| aon|#aon|^AON", Pattern.CASE_INSENSITIVE),
             keyword("Randolph and Columbus, Chicago, IL"), true, 0),
         // Old Town
         new PatternTransform(Pattern.compile("old town", Pattern.CASE_INSENSITIVE),
