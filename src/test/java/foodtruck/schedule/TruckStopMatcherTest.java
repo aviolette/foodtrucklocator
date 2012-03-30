@@ -43,7 +43,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     clock = createMock(Clock.class);
     expect(clock.dayOfWeek()).andStubReturn(DayOfWeek.sunday);
     topic = new TruckStopMatcher(extractor, geolocator, DateTimeZone.UTC, clock);
-    truck = new Truck.Builder().id("foobar").build();
+    truck = Truck.builder().id("foobar").build();
     tweetTime = new DateTime(2011, 11, 10, 11, 13, 7, 7, DateTimeZone.UTC);
   }
 
@@ -181,7 +181,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   @Test
   public void testMatch_shouldNotDetectFutureLocationIfBreakfastTruck() {
     tweetTime = new DateTime(2011, 11, 12, 7, 0, 0, 0, DateTimeZone.UTC);
-    truck = new Truck.Builder().id("foobar").name("FOO").twitterHandle("bar")
+    truck = Truck.builder().id("foobar").name("FOO").twitterHandle("bar")
         .categories(ImmutableSet.of("Breakfast")).build();
     TruckStopMatch match =
         tweet("BeaversDonuts: Good Morning! The window is open at Erie and Franklin in front " +
