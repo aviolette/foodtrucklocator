@@ -86,7 +86,7 @@ public class GoogleCalendar implements ScheduleStrategy {
       if (calendarUrl == null || !calendarUrl.startsWith("http")) {
         return;
       }
-      log.info("Custom calendar search: "+calendarUrl);
+      log.info("Custom calendar search: " + calendarUrl);
       stops.addAll(performTruckSearch(range, searchTruck,
           queryFactory.create(new URL(calendarUrl)), true));
     } catch (MalformedURLException e) {
@@ -124,6 +124,7 @@ public class GoogleCalendar implements ScheduleStrategy {
             GeolocationGranularity.BROAD);
         if (location == null && customCalendar) {
           // Sometimes the location is in the title - try that too
+          log.info("Trying title text: " + titleText);
           final List<String> parsed =
               addressExtractor.parse(titleText, searchTruck);
           String locString = Iterables.getFirst(parsed, null);
