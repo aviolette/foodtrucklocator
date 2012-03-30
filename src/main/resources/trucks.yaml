@@ -8,6 +8,16 @@ foursquare: 4da48a23b521224b03cd34ee
 twittalyzer: "on"
 facebook: /pages/Tamalespace101/160864303980025
 ---
+id: tamalespaceshuttle
+twitter: tamalespace101
+name:  Tamale Space Shuttle
+categories: Savory
+iconUrl: "http://a3.twimg.com/profile_images/1402134609/be86_1_1__normal.jpg"
+url: http://thetamalespaceship.com/
+foursquare: 4da48a23b521224b03cd34ee
+twittalyzer: "off"
+facebook: /pages/Tamalespace101/160864303980025
+---
 id: fossfoodtrucks
 twitter: fossfoodtrucks
 name: Meatyballs 1
