@@ -1,13 +1,15 @@
 package foodtruck.schedule;
 
+import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import org.easymock.EasyMockSupport;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import foodtruck.geolocation.GeoLocator;
@@ -27,7 +29,6 @@ import static org.junit.Assert.assertNull;
  * @since 9/23/11
  */
 public class TruckStopMatcherTest extends EasyMockSupport {
-
   private AddressExtractor extractor;
   private GeoLocator geolocator;
   private TruckStopMatcher topic;
@@ -46,6 +47,11 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     tweetTime = new DateTime(2011, 11, 10, 11, 13, 7, 7, DateTimeZone.UTC);
   }
 
+  @After
+  public void after() {
+    verifyAll();
+  }
+
   @Test
   public void testMatch_shouldReturnNullWhenNoAddress() {
     final String tweetText = "foobar";
@@ -54,362 +60,272 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
     TruckStopMatch match = topic.match(truck, tweet, null);
     assertNull(match);
-    verifyAll();
   }
 
   @Test
   public void testMatch_shouldReturnNullWhenUnableToGeolocate() {
-    final String tweetText = "Culture: Last call Erie and Kingsbury, outta here in 15 minutes, " +
-        "then off to our next River North location, Hubbard & LaSalle";
-    final String address = "Erie and Kingsbury";
-    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
-    expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(null);
-    replayAll();
-    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
-    TruckStopMatch match = topic.match(truck, tweet, null);
+    TruckStopMatch match =
+        tweet("Culture: Last call Erie and Kingsbury, outta here in 15 minutes, " +
+            "then off to our next River North location, Hubbard & LaSalle")
+            .geolocatorReturns(null)
+            .match();
     assertNull(match);
-    verifyAll();
   }
+
 
   @Test
   public void testMatch_shouldReturnHighConfidenceWhenAtLocationUntil() {
-    final String tweetText = "Gold Coast, we have landed at Rush and Walton...here until 6 pm!";
-    final String address = "Rush and Walton";
-    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
-    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
-    expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
-    replayAll();
-    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
-    TruckStopMatch match = topic.match(truck, tweet, null);
+    TruckStopMatch match =
+        tweet("Gold Coast, we have landed at Rush and Walton...here until 6 pm!")
+            .withTime(tweetTime)
+            .match();
     assertNotNull(match);
     assertEquals(Confidence.HIGH, match.getConfidence());
     assertEquals(tweetTime, match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getStop().getEndTime());
-    verifyAll();
   }
 
   @Test
   public void testMatch_shouldReturnHighConfidenceWhenAtLocationTil() {
-    final String tweetText = "Gold Coast, we have landed at Rush and Walton...here til 6 pm!";
-    final String address = "Rush and Walton";
-    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
-    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
-    expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
-    replayAll();
-    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
-    TruckStopMatch match = topic.match(truck, tweet, null);
+    TruckStopMatch match = tweet("Gold Coast, we have landed at Rush and Walton...here til 6 pm!")
+        .match();
     assertNotNull(match);
     assertEquals(Confidence.HIGH, match.getConfidence());
     assertEquals(tweetTime, match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getStop().getEndTime());
-    verifyAll();
   }
 
   // til autocorrects to till so handle that too
   @Test
   public void testMatch_shouldReturnHighConfidenceWhenAtLocationTill() {
-    final String tweetText = "Gold Coast, we have landed at Rush and Walton...here till 6 pm!";
-    final String address = "Rush and Walton";
-    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
-    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
-    expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
-    replayAll();
-    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
-    TruckStopMatch match = topic.match(truck, tweet, null);
+    TruckStopMatch match = tweet("Gold Coast, we have landed at Rush and Walton...here till 6 pm!")
+        .match();
     assertNotNull(match);
     assertEquals(Confidence.HIGH, match.getConfidence());
     assertEquals(tweetTime, match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getStop().getEndTime());
-    verifyAll();
   }
 
   @Test
   public void testMatch_anotherUntil() {
-    final String tweetText = "At 353 N Desplaines until 8pm with @bigstarchicago & @HomageSF !!";
-    final String address = "Rush and Walton";
-    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
-    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
-    expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
-    replayAll();
-    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
-    TruckStopMatch match = topic.match(truck, tweet, null);
+    TruckStopMatch match = tweet("At 353 N Desplaines until 8pm with @bigstarchicago  !!")
+        .match();
     assertNotNull(match);
     assertEquals(Confidence.HIGH, match.getConfidence());
     assertEquals(tweetTime, match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(20, 0, 0, 0), match.getStop().getEndTime());
-    verifyAll();
   }
 
 
   @Test
   public void testMatch_includesCurrentDayOfTheWeek() {
-    final String tweetText =
-        "SweetSpotMac: Arrived at Michigan and Walton. Come get your Sunday macaron going!";
-    final String address = "Michigan and Walton";
-    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
-    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
-    expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
-    replayAll();
-    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
-    TruckStopMatch match = topic.match(truck, tweet, null);
+    TruckStopMatch match = tweet("SweetSpotMac: Arrived at Michigan and Walton. " +
+        "Come get your Sunday macaron going!")
+        .match();
     assertNotNull(match);
     assertEquals(Confidence.HIGH, match.getConfidence());
     assertEquals(tweetTime, match.getStop().getStartTime());
-    verifyAll();
   }
 
   @Test
   public void testMatch_shouldReturnMatch() {
-    final String tweetText =
-        "Oh yea oh yea beautiful night in the Chi. Come get ur froyo fix we are on the corner of Michigan and Ohio!";
-    final String address = "Michigan and Ohio";
-    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
-    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
-    expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
-    replayAll();
-    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
-    TruckStopMatch match = topic.match(truck, tweet, null);
+    TruckStopMatch match =
+        tweet("Oh yea oh yea beautiful night in the Chi. " +
+            "Come get ur froyo fix we are on the corner of Michigan and Ohio!")
+            .geolocatorReturns(Location.builder().lat(-1).lng(-2).name("Michigan and Ohio").build())
+            .match();
     assertNotNull(match);
     assertEquals(Confidence.HIGH, match.getConfidence());
-    assertEquals(address, match.getStop().getLocation().getName());
+    assertEquals("Michigan and Ohio", match.getStop().getLocation().getName());
     verifyAll();
   }
 
   @Test
   public void testMatch_shouldDetectTimeRange() {
-    final String tweetText =
-        "The tamalespaceship will be landing at our weekly spot <<Dearborn & Monroe>> 11a.m.-1:30p.m. last chance to get your tamale fix before the weekend!!";
-    final String address = "Dearborn and Monroe";
-    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
-    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
-    expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     tweetTime = new DateTime(2011, 11, 12, 9, 0, 0, 0, DateTimeZone.UTC);
-    replayAll();
-    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
-    TruckStopMatch match = topic.match(truck, tweet, null);
+    TruckStopMatch match =
+        tweet("The tamalespaceship will be landing at our weekly spot <<Dearborn & Monroe>> " +
+            "11a.m.-1:30p.m. last chance to get your tamale fix before the weekend!!")
+            .withTime(tweetTime)
+            .match();
     assertNotNull(match);
     assertEquals(Confidence.HIGH, match.getConfidence());
-    assertEquals(address, match.getStop().getLocation().getName());
     assertEquals(match.getStop().getStartTime(), tweetTime.withTime(11, 0, 0, 0));
     assertEquals(match.getStop().getEndTime(), tweetTime.withTime(13, 30, 0, 0));
-    verifyAll();
   }
 
   @Test
   public void testMatch_shouldDetectTimeRangeNoon() {
-    final String tweetText =
-        "The tamalespaceship will be landing at our weekly spot <<Dearborn & Monroe>> 11a.m.-noon. last chance to get your tamale fix before the weekend!!";
-    final String address = "Dearborn and Monroe";
-    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
-    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
-    expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     tweetTime = new DateTime(2011, 11, 12, 9, 0, 0, 0, DateTimeZone.UTC);
-    replayAll();
-    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
-    TruckStopMatch match = topic.match(truck, tweet, null);
+    TruckStopMatch match = tweet("The tamalespaceship will be landing at our weekly spot " +
+        "<<Dearborn & Monroe>> 11a.m.-noon. last chance to get your tamale fix before the weekend!!")
+        .withTime(tweetTime)
+        .match();
     assertNotNull(match);
     assertEquals(Confidence.HIGH, match.getConfidence());
-    assertEquals(address, match.getStop().getLocation().getName());
     assertEquals(match.getStop().getStartTime(), tweetTime.withTime(11, 0, 0, 0));
     assertEquals(match.getStop().getEndTime(), tweetTime.withTime(12, 0, 0, 0));
-    verifyAll();
   }
 
   @Test
   public void testMatch_shouldDetectFutureLocation() {
-    final String tweetText =
-        "Rush & UIC Medical Center DonRafa is gonna be in ur area today! Don't want to come out? call 312-498-9286 we... fb.me/1gKduQrvS";
-    final String address = "UIC";
-    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
-    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
-    expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     tweetTime = new DateTime(2011, 11, 12, 9, 0, 0, 0, DateTimeZone.UTC);
-    replayAll();
-    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
-    TruckStopMatch match = topic.match(truck, tweet, null);
+    TruckStopMatch match = tweet("Rush & UIC Medical Center DonRafa is gonna be in ur area today!" +
+        " Don't want to come out? call 312-498-9286 we... fb.me/1gKduQrvS")
+        .match();
     assertNotNull(match);
     assertEquals(Confidence.HIGH, match.getConfidence());
-    assertEquals(address, match.getStop().getLocation().getName());
     assertEquals(match.getStop().getStartTime(), tweetTime.withTime(11, 30, 0, 0));
-    verifyAll();
   }
 
   @Test
   public void testMatch_shouldNotDetectFutureLocationIfBreakfastTruck() {
-    final String tweetText =
-        "BeaversDonuts: Good Morning! The window is open at Erie and Franklin in front of @FlairTower222, come on over we are here till 9ish.";
+    tweetTime = new DateTime(2011, 11, 12, 7, 0, 0, 0, DateTimeZone.UTC);
     truck = new Truck.Builder().id("foobar").name("FOO").twitterHandle("bar")
         .categories(ImmutableSet.of("Breakfast")).build();
-    final String address = "UIC";
-    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
-    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
-    expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
-    tweetTime = new DateTime(2011, 11, 12, 7, 0, 0, 0, DateTimeZone.UTC);
-    replayAll();
-    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
-    TruckStopMatch match = topic.match(truck, tweet, null);
+    TruckStopMatch match =
+        tweet("BeaversDonuts: Good Morning! The window is open at Erie and Franklin in front " +
+            "of @FlairTower222, come on over we are here till 9ish.")
+            .withTruck(truck)
+            .match();
     assertNotNull(match);
     assertEquals(Confidence.HIGH, match.getConfidence());
-    assertEquals(address, match.getStop().getLocation().getName());
     assertEquals(match.getStop().getStartTime(), tweetTime);
-    verifyAll();
   }
 
   // for now, we can't handle tweets like this.
   @Test
   public void testMatch_shouldntMatchDayOfWeek() {
-    final String tweetText =
-        "5411empanadas: MON: Oak and Michigan / TUE: Univ of Chicago (Hyde Park) / WED: Dearborn & Monroe / THU: Columbus & Randolph / FRI: Wacker & Van Buren";
-    final String address = "Oak and Michigan";
-    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
-    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
-    expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
-    tweetTime = new DateTime(2011, 11, 12, 9, 0, 0, 0, DateTimeZone.UTC);
-    replayAll();
-    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
-    TruckStopMatch match = topic.match(truck, tweet, null);
+    TruckStopMatch match =
+        tweet("5411empanadas: MON: Oak and Michigan / TUE: Univ of Chicago (Hyde Park) " +
+            "/ WED: Dearborn & Monroe / THU: Columbus & Randolph / FRI: Wacker & Van Buren")
+            .match();
     assertNull(match);
-    verifyAll();
   }
 
   @Test
   public void testMatch_shouldMatchTodaysSchedule() {
-    final String tweetText = "SweetRideChi: TUES STOPS:  1130a - Taylor & Wood\n" +
+    TruckStopMatch match = tweet("SweetRideChi: TUES STOPS:  1130a - Taylor & Wood\n" +
         "1245p - UIC Campus Vernon Park Circle by BSB bldg\n" +
         "245p - Wacker & Lasalle\n" +
-        "430p... http://t.co/EDVtU2XM";
-    final String address = "Taylor & Wood";
-    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
-    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
-    expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
-    replayAll();
-    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
-    TruckStopMatch match = topic.match(truck, tweet, null);
+        "430p... http://t.co/EDVtU2XM").match();
     assertNull(match);
-    verifyAll();
   }
 
   // for now, we can't handle tweets like this.
   @Test
   public void testMatch_shouldntMatchDayOfWeek2() {
-    final String tweetText =
-        "We hope you having a great weekend, see you on Monday <<Wells & Monroe>> pic.twitter.com/1ewdrgKF";
-    final String address = "Wells and Monroe";
     expect(clock.dayOfWeek()).andReturn(DayOfWeek.sunday);
-    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
-    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
-    expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     tweetTime = new DateTime(2011, 11, 12, 9, 0, 0, 0, DateTimeZone.UTC);
-    replayAll();
-    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
-    TruckStopMatch match = topic.match(truck, tweet, null);
+    TruckStopMatch match =
+        tweet("We hope you having a great weekend, see you on Monday <<Wells & Monroe>>")
+            .match();
     assertNull(match);
-    verifyAll();
   }
 
   @Test
   public void testMatch_shouldMatchDayOfWeekIfCurrentDay() {
-    final String tweetText =
-        "GiGisBakeShop: Hello SUNDAY!  The PURPLE Bus is headed out...Look for us at 13th / S Michigan 11:15 am, Lincoln Square 1:30 pm";
-    final String address = "Foo and Bar";
-    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
-    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
-    expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     tweetTime = new DateTime(2011, 11, 6, 9, 0, 0, 0, DateTimeZone.UTC);
-    replayAll();
-    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
-    TruckStopMatch match = topic.match(truck, tweet, null);
+    TruckStopMatch match =
+        tweet("GiGisBakeShop: Hello SUNDAY!  The PURPLE Bus is headed out...Look for us at " +
+            "13th / S Michigan 11:15 am, Lincoln Square 1:30 pm")
+            .match();
     assertNotNull(match);
     assertEquals(Confidence.HIGH, match.getConfidence());
-    assertEquals(address, match.getStop().getLocation().getName());
     assertEquals(match.getStop().getStartTime(), tweetTime.withTime(11, 30, 0, 0));
-    verifyAll();
   }
 
   @Test
   public void testMatch_shouldNotMatchDayOfWeekIfTomorrow() {
-    final String tweetText =
-        "CourageousCakes: @5411empanadas ahhh no uofc tues?? I shall starve";
-    final String address = "Foo and Bar";
-    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
-    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
-    expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
     tweetTime = new DateTime(2011, 11, 7, 9, 0, 0, 0, DateTimeZone.UTC);
-    replayAll();
-    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
-    TruckStopMatch match = topic.match(truck, tweet, null);
+    TruckStopMatch match = tweet("@5411empanadas ahhh no uofc tues?? I shall starve").match();
     assertNull(match);
-    verifyAll();
-  }
-
-  @Test @Ignore
-  public void testMatch_shouldStartAtSpecifiedTime() {
-    final String tweetText = "GiGisBakeShop: @GiGisBakeShop NEXT STOP Randolph & Franklin 1:15 pm!";
-    final String address = "Foo and Bar";
-    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
-    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
-    expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
-    tweetTime = new DateTime(2011, 11, 6, 9, 0, 0, 0, DateTimeZone.UTC);
-    replayAll();
-    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
-    TruckStopMatch match = topic.match(truck, tweet, null);
-    assertNotNull(match);
-    assertEquals(Confidence.HIGH, match.getConfidence());
-    assertEquals(address, match.getStop().getLocation().getName());
-    assertEquals(match.getStop().getStartTime(), tweetTime.withTime(13, 15, 0, 0));
-    verifyAll();
   }
 
   @Test
   public void testMatch_shouldNotMatchWhenHashNotPresent() {
-    final String tweetText =
-        "Oooops on the handshake between Chris and Taylor - next time try a fistbump #AMA2011";
     truck = new Truck.Builder(truck).matchOnlyIf("#bunsontherun").build();
-    replayAll();
-    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
-    TruckStopMatch match = topic.match(truck, tweet, null);
+    TruckStopMatch match = tweet(
+        "Oooops on the handshake between Chris and Taylor - next time try a fistbump #AMA2011")
+        .noParse()
+        .withTruck(truck)
+        .match();
     assertNull(match);
     verifyAll();
   }
 
   @Test
   public void testMatch_shouldMatchWhenHasMatchOnlyIfExpression() {
-    final String tweetText =
-        "Oooops on the handshake between Chris and Taylor - next time try a fistbump #BunsOnTheRun";
     truck = new Truck.Builder(truck).matchOnlyIf("#bunsontherun").build();
-    final String address = "Chris and Taylor";
-    Location location = Location.builder().lat(-1).lng(-2).name(address).build();
-    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.of(address));
-    expect(geolocator.locate(address, GeolocationGranularity.NARROW)).andReturn(location);
-    replayAll();
-    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
-    TruckStopMatch match = topic.match(truck, tweet, null);
+    TruckStopMatch match = tweet(
+        "Oooops on the handshake between Chris and Taylor - next time try a fistbump #BunsOnTheRun")
+        .withTruck(truck)
+        .match();
     assertNotNull(match);
     assertEquals(Confidence.HIGH, match.getConfidence());
     assertEquals(tweetTime, match.getStop().getStartTime());
-    verifyAll();
   }
 
   @Test
   public void testMatch_shouldNotMatchWhenRetweet() {
-    final String tweetText =
-        "Mmmm... RT @theslideride we are on Clinton & Lake";
-    final String address = "Clinton and Lake";
-    replayAll();
-    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
-    TruckStopMatch match = topic.match(truck, tweet, null);
-    assertNull(match);
-    verifyAll();
+    assertNull(tweet("Mmmm... RT @theslideride we are on Clinton & Lake").noParse().match());
   }
 
   @Test
   public void testMatch_shouldNotMatchWhenRetweetWithNoPreceedingText() {
-    final String tweetText =
-        "RT @theslideride we are on Clinton & Lake";
-    replayAll();
-    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
-    TruckStopMatch match = topic.match(truck, tweet, null);
-    assertNull(match);
-    verifyAll();
+    assertNull(tweet("RT @theslideride we are on Clinton & Lake").noParse().match());
   }
+
+  public Tweeter tweet(String tweet) {
+    return new Tweeter(tweet);
+  }
+
+  private class Tweeter {
+    private String tweet;
+    private Truck truck;
+    private DateTime time;
+    private String address = "Foo and Bar";
+    private Location geolocatorResult;
+    private boolean expectParse = true;
+
+    public Tweeter(String tweet) {
+      Tweeter.this.tweet = tweet;
+      Tweeter.this.truck = TruckStopMatcherTest.this.truck;
+      Tweeter.this.time = TruckStopMatcherTest.this.tweetTime;
+      this.geolocatorResult = Location.builder().lat(-1).lng(-2).name(address).build();
+    }
+
+    public Tweeter withTruck(Truck truck) {
+      Tweeter.this.truck = truck;
+      return this;
+    }
+
+    public Tweeter withTime(DateTime time) {
+      this.time = time;
+      return this;
+    }
+
+    public Tweeter geolocatorReturns(@Nullable Location location) {
+      this.geolocatorResult = location;
+      return this;
+    }
+
+    public TruckStopMatch match() {
+      if (expectParse) {
+        expect(extractor.parse(tweet, Tweeter.this.truck)).andReturn(ImmutableList.of(address));
+        expect(geolocator.locate(address, GeolocationGranularity.NARROW))
+            .andReturn(geolocatorResult);
+      }
+      replayAll();
+      TweetSummary tweet = new TweetSummary.Builder().text(Tweeter.this.tweet)
+          .time(Tweeter.this.time).build();
+      return topic.match(Tweeter.this.truck, tweet, null);
+    }
+
+    public Tweeter noParse() {
+      expectParse = false;
+      return this;
+    }
+  }
+
 }
