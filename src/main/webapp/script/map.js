@@ -255,13 +255,13 @@ window.FoodTruckLocator = function() {
     },
     buildInfoWindow : function(group) {
       var self = this;
-      var contentString = "<div class='infoWindowContent'><address class='locaitonName'>" +
+      var contentString = "<div class='infoWindowContent'><address class='locationName'>" +
           group.position.name + "</address>";
-      contentString = contentString + "<ul class='iconList'>"
+      contentString = contentString + "<table><tbody>"
       $.each(group.trucks, function(truckIdx, truck) {
-        contentString += self.buildGroupLinkItem(truck);
+        contentString += self.buildGroupTableRow(truck);
       });
-      contentString = contentString + "</ul></div>";
+      contentString = contentString + "</tbody></table></div>";
       var infowindow = new google.maps.InfoWindow({
         content: contentString
       });
@@ -402,6 +402,10 @@ window.FoodTruckLocator = function() {
         });
       })
     },
+    buildGroupTableRow : function(truckTime) {
+      return "<tr><td><img src='" + truckTime.truck.iconUrl + "'/></td><td>" +
+          truckTime.startTime + "</td><td>" + truckTime.truck.name + "</td></tr>";
+    },
     buildGroupLinkItem : function(truckTime) {
       return "<li class='iconListItem' style='background-image: url(" + truckTime.truck.iconUrl +
           ")'>" +
@@ -502,6 +506,7 @@ window.FoodTruckLocator = function() {
           var section = self.buildIconForTruck(truckTime.truck, contentDiv, "timeIdx" + groupIndex + "-" + idx);
           section.prepend(truckTime.startTime + " - ");
         });
+        self.buildInfoWindow(group);
         $("#markerIcon" + groupIndex).click(function() {
           group.marker.setAnimation(google.maps.Animation.BOUNCE);
           setTimeout(function() {
@@ -521,6 +526,10 @@ window.FoodTruckLocator = function() {
       self.currentTime = self.options.initialTime;
       self.setupTimeSelector();
       return this;
+    },
+    buildGroupTableRow : function(truck) {
+      return "<tr><td><img src='" + truck.iconUrl + "'/></td><td>" +
+          truck.name + "</td></tr>";
     },
     buildGroupLinkItem : function(truck) {
       return "<li class='iconListItem' style='background-image: url(" + truck.iconUrl + ")'>" +
@@ -622,10 +631,6 @@ window.FoodTruckLocator = function() {
     },
     setupView : function(trucks, mobile, center, time) {
       var self = this;
-      alert("PORTRAIT" + self.isTouchScreenPortrait());
-      alert("LANDSCAPE" + self.isTouchScreenLandscape());
-      alert("FOOBAR");
-      alert("MOBILE" + mobile);
       if (self.isTouchScreenPortrait() || mobile) {
         this.currentView =
             new ListView({initialTime: time, center : center, model : trucks, el: "foodTruckList"});
