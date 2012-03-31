@@ -304,7 +304,7 @@ window.FoodTruckLocator = function() {
       var div = $('#location' + idx + 'Section');
       div.append("<address class='locationName'>" + removeChicago(group.position.name) +
           "</address>");
-      if (group.distance && self.showDistance) {
+      if (group.distance) {
         div.append("<span>" + group.distance + " miles away</span></br></br>")
       }
       return div;
