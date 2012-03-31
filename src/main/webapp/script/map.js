@@ -490,6 +490,7 @@ window.FoodTruckLocator = function() {
         flash("Wow, there are no trucks out on the road today.  That sucks!");
         return;
       }
+      dismissFlash(self);
       var sorted = groups.sort(function (a, b) {
         if (typeof a.distance == "undefined" || a.distance == null) {
           return 0;
