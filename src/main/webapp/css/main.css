@@ -22,3 +22,24 @@ address.locationName {
     font-weight: bold;
     font-size: 110%;
 }
+
+.iconSection {
+    float: left;
+    padding: 0 10px 0 0;
+}
+
+.truckLeft {
+    margin-left: 50px;
+}
+
+address {
+    margin:  0; padding:  0;
+}
+
+dd {
+    margin-bottom: 5px;
+}
+dt {
+    margin-top: 10px;
+}
+

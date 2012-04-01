@@ -179,9 +179,9 @@ window.FoodTruckLocator = function() {
         menuSection
             .append("<dd><a style='font-size:1.2em;font-weight: bold' href='http://maps.google.com/maps?q=" +
             group.position.latLng.lat() + "," +
-            group.position.latLng.lng() + "'>view map</a></dd>")
+            group.position.latLng.lng() + "'>view map</a></dd>");
         $.each(group.trucks, function(idx, truck) {
-          div.append("<div class='truckSectionTextOnly' id='truck" + truck.id + "'></div>");
+          menuSection.append("<dd class='truckSectionTextOnly' id='truck" + truck.id + "'></dd>");
           var truckDiv = $('#truck' + truck.id);
           truckDiv.append("<div class='iconSection'><img src='" + truck.iconUrl + "'/></div>");
           truckDiv.append("<div id='truckLeft" + truck.id + "' class='truckLeft'></div>");
