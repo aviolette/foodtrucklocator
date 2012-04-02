@@ -153,6 +153,7 @@ window.FoodTruckLocator = function() {
       self.setupTimeSelector();
     },
     showControls : function() {
+      $("#map_wrapper").css("display", "none");
     },
     displayTime : function(time) {
       $("#timeValue").css("display", "inline");
@@ -272,13 +273,8 @@ window.FoodTruckLocator = function() {
       group.infowindow = infowindow;
     },
     fitMapToView :function() {
-      if (Modernizr.touch) {
-        $("#map_wrapper").css("margin-left", "250px");
-        $("#map_canvas").width($(window).width() - 250);
-      } else {
         $("#map_canvas").height($(window).height() - $("#topBar").height());
         $("#foodTruckList").height(window.innerHeight - $("#sidebarHeader").height() - 90 );
-      }
     },
     buildGroupInfo : function(group, idx, letter, menuSection) {
       group.index = idx;
@@ -658,6 +654,10 @@ window.FoodTruckLocator = function() {
       trucks.setCenter(center);
       if (Modernizr.touch || mobile) {
         $("#viewSelect").css("display", "none");
+        $(window).bind("orientationchange", function(e) {
+          // TODO: cheap solution to orientation change...make work w/o reloading
+          location.reload();
+        })
       } else {
         $("ul.pills a").click(function(e) {
           e.preventDefault();
