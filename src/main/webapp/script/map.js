@@ -416,6 +416,11 @@ window.FoodTruckLocator = function() {
       $("hr").css("display", "block");
       $("#locationFilter").css("display", "block");
       var locationSetup = this.getFilterParams();
+      if(Modernizr.touch && window.innerWidth > window.innerHeight) {
+        $(".sidebar").css("display", "none");
+        $(".content").css("margin-left", "0");
+        $("#filterLocations").removeAttr("checked");
+      }
       $("#radius").attr("value", locationSetup.radius);
       $("#filterLocationName").html(locationSetup.locationName);
     },
@@ -619,7 +624,9 @@ window.FoodTruckLocator = function() {
     },
     pickView : function(trucks, mobile, center, time) {
       var self = this;
-      if ($("#timePill").hasClass("active")) {
+      if (self.isTouchScreenLandscape()) {
+        this.currentView = this.locationView;
+      } else if ($("#timePill").hasClass("active")) {
         this.currentView = this.timeView;
       } else {
         this.currentView = this.locationView;
