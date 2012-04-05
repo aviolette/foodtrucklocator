@@ -1,6 +1,16 @@
 window.FoodTruckLocator = function() {
   function buildIconUrl(letter) {
-    return "http://www.google.com/mapfiles/marker" + letter + ".png"
+    if (Modernizr.touch) {
+      return "http://maps.google.com/mapfiles/marker.png";
+    }
+    var code = letter.charCodeAt(0)
+    var color = "";
+    if(code > 90) {
+      code = code - 26;
+      color = "_orange"
+    }
+    letter = String.fromCharCode(code);
+    return "http://www.google.com/mapfiles/marker" + color + letter + ".png"
   }
 
   function setCookie(name, value, days) {
