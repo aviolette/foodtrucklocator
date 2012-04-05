@@ -10,7 +10,7 @@
         content="Find food trucks on the streets of Chicago by time and location.  Results are updated in real-time throughout the day."/>
   <title>Chicago Food Truck Finder</title>
   <link href="/bootstrap/bootstrap.css" rel="stylesheet"/>
-  <link href="/css/main.css?ver=3" rel="stylesheet"/>
+  <link href="/css/main.css?ver=4" rel="stylesheet"/>
   <script src="script/lib/modernizr-1.7.min.js"></script>
 </head>
 <body>
@@ -29,6 +29,9 @@
                                class="twitter-follow-button" data-button="grey"
                                data-text-color="#FFF" data-link-color="#FFF">Follow
         @chifoodtruckz</a></p>
+      <div class="pull-right fb-like"  data-href="http://www.chicagofoodtruckfinder.com"
+           data-send="false" data-layout="button_count" data-width="50" data-show-faces="false"></div>
+
     </div>
   </div>
 </div>
