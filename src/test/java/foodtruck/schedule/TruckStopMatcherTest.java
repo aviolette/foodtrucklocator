@@ -214,6 +214,36 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
   @Test
+  public void testMatch_shouldMatchStartTime1() {
+    TruckStopMatch match =
+        tweet(
+            "Changing things up today! Clinton & Lake be there at 11. Plenty of Spicy and Herb Chicken. See y'all soon!")
+            .withTruck(truck)
+            .match();
+    assertEquals(tweetTime.withTime(11, 0, 0, 0), match.getStop().getStartTime());
+  }
+
+  @Test
+  public void testMatch_shouldMatchStartTime2() {
+    TruckStopMatch match =
+        tweet(
+            "Changing things up today! Clinton & Lake be there at 12:45. Plenty of Spicy and Herb Chicken. See y'all soon!")
+            .withTruck(truck)
+            .match();
+    assertEquals(tweetTime.withTime(12, 45, 0, 0), match.getStop().getStartTime());
+  }
+
+  @Test
+  public void testMatch_shouldMatchStartTime3() {
+    TruckStopMatch match =
+        tweet(
+            "Changing things up today! Clinton & Lake be there at 1. Plenty of Spicy and Herb Chicken. See y'all soon!")
+            .withTruck(truck)
+            .match();
+    assertEquals(tweetTime.withTime(13, 0, 0, 0), match.getStop().getStartTime());
+  }
+
+  @Test
   public void testMatch_shouldMatchTodaysSchedule() {
     TruckStopMatch match = tweet("SweetRideChi: TUES STOPS:  1130a - Taylor & Wood\n" +
         "1245p - UIC Campus Vernon Park Circle by BSB bldg\n" +

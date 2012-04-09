@@ -145,6 +145,9 @@ public class TruckStopMatcher {
         final LocalDate date = tweet.getTime().toLocalDate();
         startTime = parseTime(m.group(1), date, null);
         if (startTime != null) {
+          if (startTime.getHourOfDay() == 0) {
+            startTime = startTime.withHourOfDay(12);
+          }
           endTime = startTime.plusHours(2);
         }
       }
