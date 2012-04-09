@@ -51,6 +51,7 @@ public class TruckStopMatcher {
   private final Pattern friPattern;
   private final Pattern satPattern;
   private final Pattern sunPattern;
+  private final Pattern atTimePattern;
 
   @Inject
   public TruckStopMatcher(AddressExtractor extractor, GeoLocator geoLocator,
@@ -58,6 +59,7 @@ public class TruckStopMatcher {
     this.addressExtractor = extractor;
     this.geoLocator = geoLocator;
     this.timePattern = Pattern.compile(TIME_PATTERN);
+    this.atTimePattern = Pattern.compile("\\bat " + TIME_PATTERN);
     this.endTimePattern = Pattern.compile("\\b(until|til|till) (" + TIME_PATTERN + ")");
     this.timeRangePattern = Pattern.compile(TIME_RANGE_PATTERN);
     this.retweetPattern = Pattern.compile("\\bRT @");
@@ -134,6 +136,17 @@ public class TruckStopMatcher {
       endTime = parseTime(m.group(5), date, endTime);
       if (endTime != null && terminationTime != null && endTime.isAfter(terminationTime)) {
         endTime = terminationTime;
+      }
+    }
+    // This is detecting something in the format: We will be at Merchandise mart at 11:00.
+    if (startTime == null) {
+      m = atTimePattern.matcher(tweetText);
+      if (m.find()) {
+        final LocalDate date = tweet.getTime().toLocalDate();
+        startTime = parseTime(m.group(1), date, null);
+        if (startTime != null) {
+          endTime = startTime.plusHours(2);
+        }
       }
     }
     if (startTime == null) {
