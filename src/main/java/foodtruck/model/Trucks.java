@@ -5,8 +5,8 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
-import com.google.appengine.repackaged.com.google.common.base.Predicate;
-import com.google.appengine.repackaged.com.google.common.collect.Iterables;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Ordering;
 
 /**

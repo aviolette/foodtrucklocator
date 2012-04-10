@@ -9,8 +9,8 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
-import com.google.appengine.repackaged.com.google.common.collect.ImmutableList;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.gdata.client.calendar.CalendarQuery;
