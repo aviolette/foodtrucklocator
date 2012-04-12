@@ -22,6 +22,7 @@ public class ScheduleModule extends AbstractModule {
   protected void configure() {
     // TODO: use assisted inject
     bind(CalendarQueryFactory.class).to(CalendarQueryFactoryImpl.class);
+    bind(AddressExtractor.class).to(ChicagoAddressExtractor.class);
   }
 
   @Provides @Named("calendar.feed.url")
