@@ -15,7 +15,7 @@ public class GeolocationModule extends AbstractModule {
   @Override
   protected void configure() {
     bind(GeoLocator.class).to(CacheAndStoreLocator.class);
-    bind(GeoLocator.class).annotatedWith(SecondaryGeolocator.class).to(RandomGeoLocator.class);
+    bind(GeoLocator.class).annotatedWith(SecondaryGeolocator.class).to(OrderedGeolocator.class);
   }
 
   @Provides @Named("yahoo.app.id") @Singleton

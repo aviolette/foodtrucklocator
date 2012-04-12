@@ -36,6 +36,8 @@
         </li>
         <li<c:if test="${nav == 'locations'}"> class="active"</c:if>><a href="/admin/locations">Locations</a>
         </li>
+        <li<c:if test="${nav == 'settings'}"> class="active"</c:if>><a href="/admin/configuration">Settings</a>
+        </li>
       </ul>
     </div>
   </div>
