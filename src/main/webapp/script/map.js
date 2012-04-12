@@ -5,7 +5,7 @@ window.FoodTruckLocator = function() {
     }
     var code = letter.charCodeAt(0)
     var color = "";
-    if(code > 90) {
+    if (code > 90) {
       code = code - 26;
       color = "_orange"
     }
@@ -119,6 +119,8 @@ window.FoodTruckLocator = function() {
             distance = google.maps.geometry.spherical.computeDistanceBetween(center,
                 truckGroup.position.latLng, 3959);
             truckGroup.distance = Math.round(distance * 100) / 100;
+          } else {
+            truckGroup.distance = null;
           }
           groupMap[stop.location.name] = truckGroup;
           groups.push(truckGroup);
@@ -143,6 +145,8 @@ window.FoodTruckLocator = function() {
               distance = google.maps.geometry.spherical.computeDistanceBetween(center,
                   truckGroup.position.latLng, 3959);
               truckGroup.distance = Math.round(distance * 100) / 100;
+            } else {
+              truckGroup.distance = null;
             }
             groupMap[stop.location.name] = truckGroup;
             groups.push(truckGroup);
@@ -183,8 +187,9 @@ window.FoodTruckLocator = function() {
       $.each(sorted, function(groupIndex, group) {
         menuSection.append("<dt class='truckGroup' id='group" + groupIndex + "'></dt>");
         var section = $("#group" + groupIndex);
-        section.append("<address class='locationName mobile'>" + group.position.name + "</address>");
-        if (group.distance) {
+        section.append("<address class='locationName mobile'>" + group.position.name +
+            "</address>");
+        if (group.distance != null) {
           menuSection.append("<dd>" + group.distance + " miles away</dd>")
         }
         menuSection
@@ -268,6 +273,9 @@ window.FoodTruckLocator = function() {
       var self = this;
       var contentString = "<div class='infoWindowContent'><address class='locationName'>" +
           group.position.name + "</address>";
+      if (group.distance != null) {
+        contentString += "<p>" + group.distance + " miles from your location</p>"
+      }
       contentString = contentString + "<table><tbody>"
       $.each(group.trucks, function(truckIdx, truck) {
         contentString += self.buildGroupTableRow(truck);
@@ -283,8 +291,8 @@ window.FoodTruckLocator = function() {
       group.infowindow = infowindow;
     },
     fitMapToView :function() {
-        $("#map_canvas").height($(window).height() - $("#topBar").height());
-        $("#foodTruckList").height(window.innerHeight - $("#sidebarHeader").height() - 90 );
+      $("#map_canvas").height($(window).height() - $("#topBar").height());
+      $("#foodTruckList").height(window.innerHeight - $("#sidebarHeader").height() - 90);
     },
     buildGroupInfo : function(group, idx, letter, menuSection) {
       group.index = idx;
@@ -426,7 +434,7 @@ window.FoodTruckLocator = function() {
       $("hr").css("display", "block");
       $("#locationFilter").css("display", "block");
       var locationSetup = this.getFilterParams();
-      if(Modernizr.touch && window.innerWidth > window.innerHeight) {
+      if (Modernizr.touch && window.innerWidth > window.innerHeight) {
         $(".sidebar").css("display", "none");
         $(".content").css("margin-left", "0");
         $("#filterLocations").removeAttr("checked");
@@ -515,7 +523,8 @@ window.FoodTruckLocator = function() {
         var lastTime = null;
         $.each(group.trucks, function(idx, truckTime) {
           lastTime = truckTime.startTime;
-          var section = self.buildIconForTruck(truckTime.truck, contentDiv, "timeIdx" + groupIndex + "-" + idx);
+          var section = self.buildIconForTruck(truckTime.truck, contentDiv,
+              "timeIdx" + groupIndex + "-" + idx);
           section.prepend(truckTime.startTime + " - ");
         });
         self.buildInfoWindow(group);

@@ -29,8 +29,10 @@
                                class="twitter-follow-button" data-button="grey"
                                data-text-color="#FFF" data-link-color="#FFF">Follow
         @chifoodtruckz</a></p>
-      <div class="pull-right fb-like"  data-href="http://www.chicagofoodtruckfinder.com"
-           data-send="false" data-layout="button_count" data-width="50" data-show-faces="false"></div>
+
+      <div class="pull-right fb-like" data-href="http://www.chicagofoodtruckfinder.com"
+           data-send="false" data-layout="button_count" data-width="50"
+           data-show-faces="false"></div>
 
     </div>
   </div>
@@ -39,69 +41,69 @@
 <div class="container-fluid">
   <div class="sidebar">
     <div id="sidebarHeader">
-    <div class="well">
-      <c:if test="${not empty requestDate}">
-        <h4>Schedule for ${requestDate}&nbsp;<span id="timeValue">&nbsp;</span></h4>
-      </c:if>
-      <div id="viewSelect">
-        Show results by:
-        <ul class="pills">
-          <li id="timePill" class="active"><a href="#time">Time</a></li>
-          <li><a href="#location">Location</a></li>
-        </ul>
-      </div>
-<%--
-      <div id="locationControls">
-        <div >
-          <label for="radius">Filter trucks w/in &nbsp;</label>
-          <div class="input">
-            <div class="input-prepend">
-              <label class="add-on active"><input id="filterLocations" checked="checked" type="checkbox"/></label>
-              <input class="mini" id="radius" name="prependedInput2" size="3" type="text"> miles of your location
+      <div class="well">
+        <c:if test="${not empty requestDate}">
+          <h4>Schedule for ${requestDate}&nbsp;<span id="timeValue">&nbsp;</span></h4>
+        </c:if>
+        <div id="viewSelect">
+          Show results by:
+          <ul class="pills">
+            <li id="timePill" class="active"><a href="#time">Time</a></li>
+            <li><a href="#location">Location</a></li>
+          </ul>
+        </div>
+        <%--
+        <div id="locationControls">
+          <div >
+            <label for="radius">Filter trucks w/in &nbsp;</label>
+            <div class="input">
+              <div class="input-prepend">
+                <label class="add-on active"><input id="filterLocations" checked="checked" type="checkbox"/></label>
+                <input class="mini" id="radius" name="prependedInput2" size="3" type="text"> miles of your location
+              </div>
+            </div>
+          </div>
+        </div>
+        --%>
+        <div id="locationFilter" style="display:none">
+          <input type="checkbox" id="filterLocations" checked="checked"/> &nbsp;Show results
+          within <input class="mini" type="text" id="radius" size="2"/> miles of <strong
+            id="filterLocationName">Dearborn and Monroe</strong>.</br>
+          <a href="#" id="changeLocationLink">Change my location.</a>
+        </div>
+        <div id="timeControls">
+          <div>Select a time</div>
+          <div class="clearfix">
+            <div class="input">
+              <div class="inline-inputs"><select class="mini" id="hourSelect">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+                <option>7</option>
+                <option>8</option>
+                <option>9</option>
+                <option>10</option>
+                <option>11</option>
+                <option>12</option>
+              </select> <select class="mini" id="minSelect">
+                <option>00</option>
+                <option>15</option>
+                <option>30</option>
+                <option>45</option>
+              </select> <select class="mini" id="ampmSelect">
+                <option>am</option>
+                <option>pm</option>
+              </select> <input type="button" id="timeGoButton" class="btn primary" value="Find"/>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      --%>
-      <div id="locationFilter" style="display:none">
-        <input type="checkbox" id="filterLocations" checked="checked"/> &nbsp;Show results
-        within <input class="mini" type="text" id="radius" size="2"/> miles of <strong
-          id="filterLocationName">Dearborn and Monroe</strong>.</br>
-        <a href="#" id="changeLocationLink">Change my location.</a>
-      </div>
-      <div id="timeControls">
-        <div>Select a time</div>
-        <div class="clearfix">
-          <div class="input">
-            <div class="inline-inputs"><select class="mini" id="hourSelect">
-              <option>1</option>
-              <option>2</option>
-              <option>3</option>
-              <option>4</option>
-              <option>5</option>
-              <option>6</option>
-              <option>7</option>
-              <option>8</option>
-              <option>9</option>
-              <option>10</option>
-              <option>11</option>
-              <option>12</option>
-            </select> <select class="mini" id="minSelect">
-              <option>00</option>
-              <option>15</option>
-              <option>30</option>
-              <option>45</option>
-            </select> <select class="mini" id="ampmSelect">
-              <option>am</option>
-              <option>pm</option>
-            </select> <input type="button" id="timeGoButton" class="btn primary" value="Find"/>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
       <div class="alert-message warning" style="display:none" id="flash"></div>
-      </div>
+    </div>
     <div>
 
       <dl id="foodTruckList">
@@ -123,7 +125,7 @@ document.write("<script src='script/lib/jquery-1.6.2.min.js'>\x3C/script>")</scr
 <script type="text/javascript" src="script/lib/underscore-min.js"></script>
 <script type="text/javascript" src="script/lib/backbone-min.js"></script>
 <script type="text/javascript" src="/bootstrap/js/bootstrap-modal.js"></script>
-<script type="text/javascript" src="script/map.js?ver=34"></script>
+<script type="text/javascript" src="script/map.js?ver=35"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     FoodTruckLocator.run(${mobile}, new google.maps.LatLng(${center.latitude}, ${center.longitude}),
