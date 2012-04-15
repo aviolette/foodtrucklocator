@@ -34,6 +34,13 @@ window.FoodTruckLocator = function() {
     return null;
   }
 
+  function truckNameSort(a, b) {
+    if (typeof a.name == "undefined" || a.name == null) {
+      return 0;
+    }
+    return a.name > b.name ? 1 : (a.name == b.name ) ? 0 : -1;
+  }
+
   function distanceSort(a, b) {
     if (typeof a.distance == "undefined" || a.distance == null) {
       return 0;
@@ -196,7 +203,7 @@ window.FoodTruckLocator = function() {
             .append("<dd><a style='font-size:1.2em;font-weight: bold' href='http://maps.google.com/maps?q=" +
             group.position.latLng.lat() + "," +
             group.position.latLng.lng() + "'>view map</a></dd>");
-        $.each(group.trucks, function(idx, truck) {
+        $.each(group.trucks.sort(truckNameSort), function(idx, truck) {
           menuSection.append("<dd class='truckSectionTextOnly' id='truck" + truck.id + "'></dd>");
           var truckDiv = $('#truck' + truck.id);
           truckDiv.append("<div class='iconSection'><img src='" + truck.iconUrl + "'/></div>");
@@ -495,6 +502,9 @@ window.FoodTruckLocator = function() {
       });
       return filtered;
     },
+    nameSort: function(a, b) {
+      return truckNameSort(a.truck, b.truck);
+    },
     render : function() {
       var self = this;
       self.showControlsForLocation();
@@ -521,7 +531,8 @@ window.FoodTruckLocator = function() {
         buildMarker(group, letter, bounds, self.map);
         var contentDiv = self.buildGroupInfo(group, groupIndex, letter, menuSection);
         var lastTime = null;
-        $.each(group.trucks, function(idx, truckTime) {
+        var sortedByName = group.trucks.sort(self.nameSort);
+        $.each(sortedByName, function(idx, truckTime) {
           lastTime = truckTime.startTime;
           var section = self.buildIconForTruck(truckTime.truck, contentDiv,
               "timeIdx" + groupIndex + "-" + idx);
@@ -621,7 +632,7 @@ window.FoodTruckLocator = function() {
         var letter = String.fromCharCode(65 + groupIndex);
         buildMarker(group, letter, bounds, self.map);
         var contentDT = self.buildGroupInfo(group, groupIndex, letter, menuSection);
-        $.each(group.trucks, function(idx, truck) {
+        $.each(group.trucks.sort(truckNameSort), function(idx, truck) {
           self.buildIconForTruck(truck, menuSection, "");
         });
         self.setupMarkerBounce(groupIndex, group.marker);
