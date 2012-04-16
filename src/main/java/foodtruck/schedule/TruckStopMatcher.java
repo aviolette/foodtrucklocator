@@ -34,8 +34,11 @@ public class TruckStopMatcher {
   private static final Logger log = Logger.getLogger(TruckStopMatcher.class.getName());
   public static final int DEFAULT_STOP_LENGTH_IN_HOURS = 2;
   public static final String TIME_PATTERN = "(\\d+(:\\d+)*\\s*(p|pm|a|am|a\\.m\\.|p\\.m\\.)?)|noon";
+  static final String TIME_PATTERN_STRICT =
+      "(\\d+:\\d+\\s*(p|pm|a|am|a\\.m\\.|p\\.m\\.)?)|noon|(\\d+\\s*(p|pm|a|am|a\\.m\\.|p\\.m\\.)|((11|12|1|2|3|4|5|6)\\b))";
   private static final String TIME_RANGE_PATTERN =
       "(" + TIME_PATTERN + ")\\s*-\\s*(" + TIME_PATTERN + ")[\\s|\\.&&[^\\-]]";
+  private static final String TOMORROW = "2morrow|tmw|tomorrow|ma–ana";
   private final Pattern retweetPattern;
   private final AddressExtractor addressExtractor;
   private final GeoLocator geoLocator;
@@ -59,30 +62,37 @@ public class TruckStopMatcher {
     this.addressExtractor = extractor;
     this.geoLocator = geoLocator;
     this.timePattern = Pattern.compile(TIME_PATTERN);
-    this.atTimePattern = Pattern.compile("\\bat " + TIME_PATTERN);
+    this.atTimePattern = Pattern.compile("\\bat (" + TIME_PATTERN_STRICT + ")");
     this.endTimePattern = Pattern.compile("\\b(until|til|till) (" + TIME_PATTERN + ")");
     this.timeRangePattern = Pattern.compile(TIME_RANGE_PATTERN);
     this.retweetPattern = Pattern.compile("\\bRT @");
     this.monPattern = Pattern.compile(
-        "\\b(TUE|WED|THU|FRI|SAT|SUN|tuesday|wednesday|thursday|friday|saturday|sunday|tues|thurs|2morrow|tomorrow|ma–ana)\\b",
+        "\\b(TUE|WED|THU|FRI|SAT|SUN|tuesday|wednesday|thursday|friday|saturday|sunday|tues|thurs|" +
+            TOMORROW + ")\\b",
         Pattern.CASE_INSENSITIVE);
     this.tuesPattern = Pattern.compile(
-        "\\b(MON|WED|THU|FRI|SAT|SUN|monday|wednesday|thursday|friday|saturday|sunday|thurs|2morrow|tomorrow|ma–ana)\\b",
+        "\\b(MON|WED|THU|FRI|SAT|SUN|monday|wednesday|thursday|friday|saturday|sunday|thurs|" +
+            TOMORROW + ")\\b",
         Pattern.CASE_INSENSITIVE);
     this.wedPattern = Pattern.compile(
-        "\\b(MON|TUE|THU|FRI|SAT|SUN|monday|tuesday|thursday|friday|saturday|sunday|tues|thurs|2morrow|tomorrow|ma–ana)\\b",
+        "\\b(MON|TUE|THU|FRI|SAT|SUN|monday|tuesday|thursday|friday|saturday|sunday|tues|thurs|" +
+            TOMORROW + ")\\b",
         Pattern.CASE_INSENSITIVE);
     this.thursPattern = Pattern.compile(
-        "\\b(MON|TUE|WED|FRI|SAT|SUN|monday|tuesday|wednesday|friday|saturday|sunday|tues|2morrow|tomorrow|ma–ana)\\b",
+        "\\b(MON|TUE|WED|FRI|SAT|SUN|monday|tuesday|wednesday|friday|saturday|sunday|tues|" +
+            TOMORROW + ")\\b",
         Pattern.CASE_INSENSITIVE);
     this.friPattern = Pattern.compile(
-        "\\b(MON|TUE|WED|THU|SAT|SUN|monday|tuesday|wednesday|thursday|saturday|sunday|tues|thurs|2morrow|tomorrow|ma–ana)\\b",
+        "\\b(MON|TUE|WED|THU|SAT|SUN|monday|tuesday|wednesday|thursday|saturday|sunday|tues|thurs|" +
+            TOMORROW + ")\\b",
         Pattern.CASE_INSENSITIVE);
     this.satPattern = Pattern.compile(
-        "\\b(MON|TUE|WED|THU|FRI|SUN|monday|tuesday|wednesday|thursday|friday|sunday|tues|thurs|2morrow|tomorrow|ma–ana)\\b",
+        "\\b(MON|TUE|WED|THU|FRI|SUN|monday|tuesday|wednesday|thursday|friday|sunday|tues|thurs|" +
+            TOMORROW + ")\\b",
         Pattern.CASE_INSENSITIVE);
     this.sunPattern = Pattern.compile(
-        "\\b(MON|TUE|WED|THU|FRI|SAT|monday|tuesday|wednesday|thursday|friday|saturday|tues|thurs|2morrow|tomorrow|ma–ana)\\b",
+        "\\b(MON|TUE|WED|THU|FRI|SAT|monday|tuesday|wednesday|thursday|friday|saturday|tues|thurs|" +
+            TOMORROW + ")\\b",
         Pattern.CASE_INSENSITIVE);
     formatter = DateTimeFormat.forPattern("hhmma").withZone(defaultZone);
     this.clock = clock;
