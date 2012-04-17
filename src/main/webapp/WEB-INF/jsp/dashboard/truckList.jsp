@@ -10,6 +10,7 @@
     <th>Truck</th>
     <th>Current Location</th>
     <th>Next Location</th>
+    <th>Twittalyzer</th>
   </tr>
   </thead>
   <tbody>
@@ -31,6 +32,9 @@
         </c:url><a
             href="${locationUrl}">${truckStops.nextStop.location.name}</a></c:when><c:otherwise>None</c:otherwise></c:choose>
         </td>
+        <td><c:choose><c:when
+            test="${truckStops.truck.usingTwittalyzer}"></c:when><c:otherwise><span
+            class="label warning">off</span></c:otherwise></c:choose></td>
       </tr>
     </c:if>
   </c:forEach>
@@ -41,6 +45,7 @@
   <thead>
   <tr>
     <th>Truck</th>
+    <th>Twittalyzer</th>
   </tr>
   </thead>
   <tbody>
@@ -48,6 +53,9 @@
     <c:if test="${!truckStops.active && !truckStops.truck.inactive}">
       <tr>
         <td><a href="/admin/trucks/${truckStops.truck.id}">${truckStops.truck.name}</a></td>
+        <td><c:choose><c:when
+            test="${truckStops.truck.usingTwittalyzer}"></c:when><c:otherwise><span
+            class="label warning">off</span></c:otherwise></c:choose></td>
       </tr>
     </c:if>
   </c:forEach>
@@ -59,6 +67,7 @@
     <thead>
     <tr>
       <th>Truck</th>
+      <th>Twittalyzer</th>
     </tr>
     </thead>
     <tbody>
@@ -66,6 +75,9 @@
       <c:if test="${!truckStops.active && truckStops.truck.inactive}">
         <tr>
           <td><a href="/admin/trucks/${truckStops.truck.id}">${truckStops.truck.name}</a></td>
+          <td><c:choose><c:when
+              test="${truckStops.truck.usingTwittalyzer}"></c:when><c:otherwise><span
+              class="label warning">off</span></c:otherwise></c:choose></td>
         </tr>
       </c:if>
     </c:forEach>
