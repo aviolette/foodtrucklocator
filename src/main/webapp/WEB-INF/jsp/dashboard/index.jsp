@@ -1,6 +1,5 @@
 <%@include file="dashboardHeader.jsp" %>
 
-<a href="/cron/recache" class="btn primary" id="recacheButton">Recache</a>
 <a href="/cron/tweets" class="btn primary" id="twitterButton">Twittalyze</a>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
@@ -24,7 +23,6 @@
       });
     }
 
-    bindAjaxCallToButton("recacheButton", "/cron/recache");
     bindAjaxCallToButton("twitterButton", "/cron/tweets");
   })();
 </script>

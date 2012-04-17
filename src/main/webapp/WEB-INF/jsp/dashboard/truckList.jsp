@@ -1,7 +1,6 @@
 <%@ include file="dashboardHeader.jsp" %>
 
 
-<a href="/cron/recache" class="btn primary" id="recacheButton">Reload from calendar</a>
 <a href="/cron/tweets" class="btn primary" id="twitterButton">Refresh all tweets</a>
 
 <h3>Active Trucks</h3>
@@ -93,7 +92,6 @@
       });
     }
 
-    bindAjaxCallToButton("recacheButton", "/cron/recache");
     bindAjaxCallToButton("twitterButton", "/cron/tweets");
   })();
 </script>
