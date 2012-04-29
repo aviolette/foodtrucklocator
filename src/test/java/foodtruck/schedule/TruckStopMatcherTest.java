@@ -332,6 +332,11 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
   @Test
+  public void testMatch_shouldNotMatchQuotedRetweet() {
+    assertNull(tweet("Mmmm... RT \"@theslideride we are on Clinton & Lake\"").noParse().match());
+  }
+
+  @Test
   public void testMatch_shouldNotMatchWhenRetweetWithNoPreceedingText() {
     assertNull(tweet("RT @theslideride we are on Clinton & Lake").noParse().match());
   }

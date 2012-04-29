@@ -65,7 +65,7 @@ public class TruckStopMatcher {
     this.atTimePattern = Pattern.compile("\\bat (" + TIME_PATTERN_STRICT + ")");
     this.endTimePattern = Pattern.compile("\\b(until|til|till) (" + TIME_PATTERN + ")");
     this.timeRangePattern = Pattern.compile(TIME_RANGE_PATTERN);
-    this.retweetPattern = Pattern.compile("\\bRT @");
+    this.retweetPattern = Pattern.compile("\\bRT \"?@");
     this.monPattern = Pattern.compile(
         "\\b(TUE|WED|THU|FRI|SAT|SUN|tuesday|wednesday|thursday|friday|saturday|sunday|tues|thurs|" +
             TOMORROW + ")\\b",
