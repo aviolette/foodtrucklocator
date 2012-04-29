@@ -214,7 +214,6 @@ public class TwitterServiceImpl implements TwitterService {
         break;
       */
       }
-      found = stop;
     }
     if (found == null) {
       log.log(Level.INFO, "No Matching stop found to terminate");
