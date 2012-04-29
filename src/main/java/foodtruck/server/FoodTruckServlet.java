@@ -101,6 +101,11 @@ public class FoodTruckServlet extends HttpServlet {
     req.setAttribute("requestTime", timeFormatter.print(dateTime));
     req.setAttribute("requestTimeInMillis", dateTime.getMillis());
     resp.setHeader("Cache-Control", "max-age=900");
+    /* TODO - add this in later after some better testing
+    resp.setHeader("Cache-Control", "no-cache");
+    resp.setHeader("Pragma", "no-cache");
+    resp.setHeader("Expires", "Thu, 01 Jan 1970 00:00:00 GMT");
+    */
     req.setAttribute("payload", payload);
     req.getRequestDispatcher("/WEB-INF/jsp/index.jsp").forward(req, resp);
   }
