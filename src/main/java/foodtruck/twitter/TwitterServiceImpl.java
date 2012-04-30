@@ -164,8 +164,14 @@ public class TwitterServiceImpl implements TwitterService {
         TruckStop matchedStop = match.getStop();
         for (TruckStop stop : currentStops) {
           boolean locationsSame = stop.getLocation().equals(matchedStop.getLocation());
+          // matched start time is contained within stop.  delete stop and make matched stop take
+          // new start time
           if (stop.getEndTime().isAfter(matchedStop.getStartTime()) &&
               stop.getStartTime().isBefore(matchedStop.getStartTime())) {
+            if (stop.isLocked()) {
+              matchedStop = null;
+              break;
+            }
             deleteStops.add(stop);
             if (locationsSame) {
               matchedStop = matchedStop.withStartTime(stop.getStartTime());
@@ -174,6 +180,10 @@ public class TwitterServiceImpl implements TwitterService {
             }
           } else if (stop.getStartTime().isBefore(matchedStop.getEndTime()) &&
               stop.getEndTime().isAfter(matchedStop.getEndTime())) {
+            if (stop.isLocked()) {
+              matchedStop = null;
+              break;
+            }
             if (locationsSame && !match.isTerminated()) {
               deleteStops.add(stop);
               matchedStop = matchedStop.withEndTime(stop.getEndTime());
@@ -184,6 +194,10 @@ public class TwitterServiceImpl implements TwitterService {
               stop.getStartTime().isAfter(matchedStop.getStartTime())) &&
               (stop.getEndTime().equals(matchedStop.getEndTime()) ||
                   stop.getEndTime().isBefore(matchedStop.getEndTime()))) {
+            if (stop.isLocked()) {
+              matchedStop = null;
+              break;
+            }
             deleteStops.add(stop);
             matchedStop = matchedStop.withStartTime(stop.getStartTime());
           }
@@ -191,8 +205,10 @@ public class TwitterServiceImpl implements TwitterService {
         if (!deleteStops.isEmpty()) {
           truckStopDAO.deleteStops(deleteStops);
         }
-        addStops.add(matchedStop);
-        truckStopDAO.addStops(addStops);
+        if (matchedStop != null) {
+          addStops.add(matchedStop);
+          truckStopDAO.addStops(addStops);
+        }
       } else if (terminationTime != null) {
         capLastMatchingStop(truck, terminationTime);
       } else {

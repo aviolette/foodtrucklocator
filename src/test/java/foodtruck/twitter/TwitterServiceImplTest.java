@@ -87,7 +87,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
         .andStubReturn(tweets);
     matchStartTime = now.minusHours(3);
     matchEndTime = now.minusHours(2);
-    matchedStop = new TruckStop(truck2, matchStartTime, matchEndTime, loca, null);
+    matchedStop = new TruckStop(truck2, matchStartTime, matchEndTime, loca, null, false);
     final TruckStopMatch matched =
         new TruckStopMatch(Confidence.HIGH, matchedStop, basicTweet.getText(), false);
     expect(matcher.match(truck2, basicTweet, null)).andStubReturn(matched);
@@ -101,7 +101,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
   @Test
   public void testKeepsOlderEventWhenNoOverlap() {
     TruckStop stopBeforeCurrent = new TruckStop(truck2,
-        matchStartTime.minusHours(2), matchStartTime.minusHours(3), locb, null);
+        matchStartTime.minusHours(2), matchStartTime.minusHours(3), locb, null, false);
     expect(truckStopDAO.findDuring(TRUCK_2_ID, currentDay))
         .andReturn(ImmutableList.<TruckStop>of(stopBeforeCurrent));
     truckStopDAO.addStops(ImmutableList.<TruckStop>of(matchedStop));
@@ -115,7 +115,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
   public void testStopEndsAfterMatchStart_sameLocationShouldMerge() {
     TruckStop currentStop =
         new TruckStop(truck2, matchStartTime.minusMinutes(30),
-            matchEndTime.minusMinutes(30), loca, null);
+            matchEndTime.minusMinutes(30), loca, null, false);
     expect(truckStopDAO.findDuring(TRUCK_2_ID, currentDay))
         .andReturn(ImmutableList.<TruckStop>of(currentStop));
     truckStopDAO.deleteStops(ImmutableList.<TruckStop>of(currentStop));
@@ -131,7 +131,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
   public void testMatchContainsCurrentStop() {
     TruckStop currentStop =
         new TruckStop(truck2, matchStartTime.plusMinutes(3), matchEndTime.minusMinutes(3), loca,
-            null);
+            null, false);
     expect(truckStopDAO.findDuring(TRUCK_2_ID, currentDay))
         .andReturn(ImmutableList.<TruckStop>of(currentStop));
     truckStopDAO.deleteStops(ImmutableList.<TruckStop>of(currentStop));
@@ -148,7 +148,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
   public void testStopStartsBeforeMatchEnds() {
     TruckStop currentStop =
         new TruckStop(truck2, matchStartTime.plusMinutes(30), matchEndTime.plusHours(1), loca,
-            null);
+            null, false);
     expect(truckStopDAO.findDuring(TRUCK_2_ID, currentDay)).andReturn(
         ImmutableList.<TruckStop>of(currentStop));
     truckStopDAO.deleteStops(ImmutableList.of(currentStop));
@@ -164,7 +164,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
   @Test
   public void testKeepsFutureEventWhenNoOverlap() {
     TruckStop stopAfter = new TruckStop(truck2, matchEndTime.plusHours(1).toDateTime(),
-        matchEndTime.plusHours(2).toDateTime(), loca, null);
+        matchEndTime.plusHours(2).toDateTime(), loca, null, false);
     expect(truckStopDAO.findDuring(TRUCK_2_ID, currentDay))
         .andReturn(ImmutableList.<TruckStop>of(stopAfter));
     expectTweetsIgnored(null);

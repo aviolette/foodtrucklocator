@@ -101,6 +101,11 @@
             <input id="locationInput" type="text"/>
           </div>
         </div>
+        <div class="clearfix">
+          <div class="input">
+          <input type="checkbox"  id="lockStop" name="lockStop"/>&nbsp;<label style="float:none" for="lockStop">Prevent twittalyzer from changing location</label>
+            </div>
+        </div>
       </fieldset>
     </form>
   </div>
@@ -116,6 +121,7 @@
     $("#startTimeInput").attr("value", stop.startTime);
     $("#endTimeInput").attr("value", stop.endTime);
     $("#locationInput").attr("value", stop.location.name);
+    $("#lockStop").attr("checked", stop.locked);
     $("#edit-stop").modal({ show: true, keyboard : true, backdrop: true});
     var $saveButton = $("#saveButton");
     $saveButton.unbind('click');
@@ -129,6 +135,7 @@
         delete stop.location;
       }
       stop.truckId = "${truckId}";
+      stop.locked = $("#lockStop").is(":checked");
       $.ajax({
         url: "/admin/service/stop/" + stop.id,
         type: 'PUT',
@@ -156,10 +163,11 @@
       dataType: 'json',
       success : function(schedule) {
         $.each(schedule["stops"], function(truckIndex, stop) {
+          var lockedString = (stop.locked) ? "&nbsp;<span class=\"label important\">locked</span>" : "";
           scheduleTable.append("<tr><td>" + stop.startTime + "</td><td>" + stop.endTime +
               "</td><td><a href='/admin/locations?q=" + encodeURIComponent(stop.location.name) +
               "'>"
-              + stop.location.name + "</a></td><td><button  id='truckEndNow" + truckIndex +
+              + stop.location.name + "</a>" + lockedString + "</td><td><button  id='truckEndNow" + truckIndex +
               "' class='btn danger'>End Now</button>&nbsp;" +
               "<button id='truckDelete" + truckIndex +
               "' class='btn danger'>Delete</button>&nbsp;<button class='btn' id='truckEdit" +

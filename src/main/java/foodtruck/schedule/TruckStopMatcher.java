@@ -178,7 +178,7 @@ public class TruckStopMatcher {
       endTime = startTime.plusHours(DEFAULT_STOP_LENGTH_IN_HOURS);
     }
     return new TruckStopMatch(Confidence.HIGH,
-        new TruckStop(truck, startTime, endTime, location, null),
+        new TruckStop(truck, startTime, endTime, location, null, false),
         tweetText, terminationTime != null);
   }
 

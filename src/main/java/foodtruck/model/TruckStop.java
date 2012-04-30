@@ -17,14 +17,20 @@ public class TruckStop extends ModelEntity {
   private final DateTime startTime;
   private final DateTime endTime;
   private final Location location;
+  private final boolean locked;
 
   public TruckStop(Truck truck, DateTime startTime, DateTime endTime, Location location,
-      @Nullable Long key) {
+      @Nullable Long key, boolean locked) {
     super(key);
     this.truck = truck;
     this.startTime = startTime;
     this.endTime = endTime;
     this.location = location;
+    this.locked = locked;
+  }
+
+  public boolean isLocked() {
+    return locked;
   }
 
   public Truck getTruck() {
@@ -74,21 +80,21 @@ public class TruckStop extends ModelEntity {
   @Override
   public String toString() {
     return Objects.toStringHelper(this).add("truck", truck.getId()).add("startTime", startTime)
-        .add("endTime", endTime).add("location", location).toString();
+        .add("endTime", endTime).add("location", location).add("locked", locked).toString();
   }
 
   /**
    * Returns a new TruckStop with a new startTime
    */
   public TruckStop withStartTime(DateTime startTime) {
-    return new TruckStop(truck, startTime, endTime, location, (Long) getKey());
+    return new TruckStop(truck, startTime, endTime, location, (Long) getKey(), false);
   }
 
   /**
    * Returns a new TruckStop with a new endTime
    */
   public TruckStop withEndTime(DateTime endTime) {
-    return new TruckStop(truck, startTime, endTime, location, (Long) getKey());
+    return new TruckStop(truck, startTime, endTime, location, (Long) getKey(), false);
   }
 
   public boolean activeDuring(DateTime dateTime) {

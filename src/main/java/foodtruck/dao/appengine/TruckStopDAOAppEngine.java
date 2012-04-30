@@ -44,6 +44,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
   private final DatastoreServiceProvider serviceProvider;
   private final DateTimeZone zone;
   private static final String LOCATION_NAME_FIELD = "locationName";
+  private static final String LOCKED_FIELD = "locked";
   private final TruckDAO truckDAO;
 
   @Inject
@@ -73,6 +74,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
         continue;
       }
       final String truckId = (String) entity.getProperty(TRUCK_ID_FIELD);
+      final Boolean locked = (Boolean) entity.getProperty(LOCKED_FIELD);
       try {
         stops.add(new TruckStop(truckDAO.findById(truckId),
             startTime, endTime,
@@ -80,7 +82,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
                 .lng((Double) entity.getProperty(
                     LONGITUDE_FIELD)).name((String) entity.getProperty(LOCATION_NAME_FIELD))
                 .build(),
-            entity.getKey().getId()));
+            entity.getKey().getId(), locked == null ? false : locked));
       } catch (RuntimeException rt) {
         log.log(Level.WARNING, "Error for truckId: " + truckId, rt);
       }
@@ -108,6 +110,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
     truckStop.setProperty(LATITUDE_FIELD, stop.getLocation().getLatitude());
     truckStop.setProperty(LONGITUDE_FIELD, stop.getLocation().getLongitude());
     truckStop.setProperty(LOCATION_NAME_FIELD, stop.getLocation().getName());
+    truckStop.setProperty(LOCKED_FIELD, stop.isLocked());
     return truckStop;
   }
 
@@ -136,12 +139,13 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
   private TruckStop toTruckStop(Entity entity) {
     final DateTime startTime = new DateTime((Date) entity.getProperty(START_TIME_FIELD), zone);
     final DateTime endTime = new DateTime((Date) entity.getProperty(END_TIME_FIELD), zone);
+    Boolean locked = (Boolean) entity.getProperty(LOCKED_FIELD);
     return new TruckStop(truckDAO.findById((String) entity.getProperty(TRUCK_ID_FIELD)),
         startTime, endTime,
         Location.builder().lat((Double) entity.getProperty(LATITUDE_FIELD))
             .lng((Double) entity.getProperty(
                 LONGITUDE_FIELD)).name((String) entity.getProperty(LOCATION_NAME_FIELD)).build(),
-        entity.getKey().getId());
+        entity.getKey().getId(), locked == null ? false : locked);
   }
 
   @Override

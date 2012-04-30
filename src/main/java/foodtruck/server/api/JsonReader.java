@@ -57,7 +57,8 @@ public class JsonReader {
     }
     checkState(location.isResolved(), "Location is not resolved");
     long key = obj.optLong("id", 0);
-    return new TruckStop(truck, startTime, endTime, location, (key > 0) ? key : null);
+    boolean locked = obj.optBoolean("locked", false);
+    return new TruckStop(truck, startTime, endTime, location, (key > 0) ? key : null, locked);
   }
 
   public Location readLocation(JSONObject obj) throws JSONException {

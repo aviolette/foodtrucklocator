@@ -84,12 +84,12 @@ public class JsonWriter {
     JSONObject obj = new JSONObject()
         .put("truck", writeTruck(schedule.getTruck()))
         .put("day", schedule.getDate().toString());
-
     JSONArray arr = new JSONArray();
     for (TruckStop stop : schedule.getStops()) {
       JSONObject truckStop = new JSONObject()
           .put("location", writeLocation(stop.getLocation(), 0, false))
           .put("id", stop.getKey())
+          .put("locked", stop.isLocked())
           .put("startTime", timeFormatter.print(stop.getStartTime()))
           .put("endTime", timeFormatter.print(stop.getEndTime()));
       arr.put(truckStop);
