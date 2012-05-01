@@ -30,7 +30,7 @@
                                data-text-color="#FFF" data-link-color="#FFF">Follow
         @chifoodtruckz</a></p>
 
-      <div class="pull-right fb-like" data-href="http://www.chicagofoodtruckfinder.com"
+      <div style="padding-right: 10px !important" class="pull-right fb-like" data-href="http://www.chicagofoodtruckfinder.com"
            data-send="false" data-layout="button_count" data-width="50"
            data-show-faces="false"></div>
 
