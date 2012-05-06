@@ -204,6 +204,15 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
   @Test
+  public void testMatch_shouldntMatchDayOfWeek3() {
+    TruckStopMatch match =
+        tweet("We are having maintenance done this week. We will be at U of C on Weds, " +
+            "but that is it. See ya then! ")
+            .match();
+    assertNull(match);
+  }
+
+  @Test
   public void testMatch_shouldMatchStartTime() {
     TruckStopMatch match =
         tweet(
