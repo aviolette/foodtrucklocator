@@ -23,7 +23,13 @@ public interface TruckDAO {
 
   public void save(Truck truck);
 
-  Truck findByTwitterId(String screenName);
+  /**
+   * Returns the trucks by their twitter handle.  It is possible for more than one truck to be
+   * associated with a twitter handle
+   * @param screenName screenName
+   * @return the list of trucks associated with the twitter handle (or empty if none found)
+   */
+  Collection<Truck> findByTwitterId(String screenName);
 
   Collection<Truck> findAllTwitterTrucks();
 

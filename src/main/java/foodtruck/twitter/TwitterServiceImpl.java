@@ -1,5 +1,6 @@
 package foodtruck.twitter;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -107,8 +108,8 @@ public class TwitterServiceImpl implements TwitterService {
 
   private @Nullable TweetSummary statusToTweet(Status status) {
     final String screenName = status.getUser().getScreenName().toLowerCase();
-    Truck truck = truckDAO.findByTwitterId(screenName);
-    if (truck == null || status.isRetweet()) {
+    Collection<Truck> trucks = truckDAO.findByTwitterId(screenName);
+    if (trucks.size() == 0 || status.isRetweet()) {
       return null;
     }
     final GeoLocation geoLocation = status.getGeoLocation();
