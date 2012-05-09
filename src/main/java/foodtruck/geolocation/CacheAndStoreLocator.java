@@ -1,5 +1,6 @@
 package foodtruck.geolocation;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
@@ -35,7 +36,12 @@ public class CacheAndStoreLocator implements GeoLocator {
       // so don't try again.
       return loc.isResolved() ? loc : null;
     }
-    loc = secondaryLocator.locate(location, granularity);
+    try {
+      loc = secondaryLocator.locate(location, granularity);
+    } catch (Exception io) {
+      log.log(Level.WARNING, io.getMessage(), io);
+      loc = null;
+    }
     if (loc != null) {
       loc = dao.save(loc);
     } else {

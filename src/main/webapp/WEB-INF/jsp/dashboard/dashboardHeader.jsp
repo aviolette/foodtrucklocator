@@ -13,6 +13,8 @@
   <![endif]-->
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
+  <script>window.jQuery ||
+  document.write('<script src="/script/lib/jquery-1.6.2.min.js"><\/script>')</script>
   <script src="/script/dashboard.js" type="text/javascript"></script>
   <link href="/bootstrap/bootstrap.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/dashboard.css"/>
