@@ -69,6 +69,8 @@ public class JsonWriter {
     JSONObject obj = new JSONObject()
         .put("latitude", location.getLatitude())
         .put("longitude", location.getLongitude())
+        .put("description", location.getDescription())
+        .put("url", location.getUrl())
         .put("name", location.getName());
     if (fullOptions) {
       obj.put("valid", location.isValid());

@@ -68,7 +68,7 @@ public class JsonReader {
     String name = obj.getString("name");
     long key = obj.optLong("key", 0);
     return Location.builder().lat(lat).lng(lng).name(name).key((key > 0) ? key : null)
-        .valid(valid).build();
+        .url(obj.optString("url")).description(obj.optString("description")).valid(valid).build();
   }
 
 

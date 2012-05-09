@@ -2,7 +2,6 @@ package foodtruck.model;
 
 import javax.annotation.Nullable;
 
-import com.google.appengine.api.datastore.Key;
 import com.google.common.base.Objects;
 
 /**
@@ -15,12 +14,19 @@ public class Location extends ModelEntity {
   private final double lat;
   private final String name;
   private final boolean valid;
+  private final @Nullable String description;
+  private final @Nullable String url;
+  private final boolean eventSpecific;
+
   public Location(Builder builder) {
     super(builder.key);
     lng = builder.lng;
     lat = builder.lat;
     name = builder.name;
     valid = builder.valid;
+    description = builder.description;
+    url = builder.url;
+    eventSpecific = builder.eventSpecific;
   }
 
   public double getLatitude() {
@@ -39,7 +45,20 @@ public class Location extends ModelEntity {
     return this.valid;
   }
 
+  public boolean isEvent() {
+    return eventSpecific;
+  }
+
+  public @Nullable String getDescription() {
+    return this.description;
+  }
+
+  public @Nullable String getUrl() {
+    return url;
+  }
+
   // TODO: this probably should be refactored out of here
+
   /**
    * Return true if the location has been properly resolved.
    */
@@ -97,6 +116,9 @@ public class Location extends ModelEntity {
     private double lng;
     private String name;
     private boolean valid = true;
+    private @Nullable String description;
+    private boolean eventSpecific;
+    private @Nullable String url;
 
     public Builder(Location location) {
       key = location.getKey();
@@ -107,6 +129,21 @@ public class Location extends ModelEntity {
     }
 
     public Builder() {
+    }
+
+    public Builder description(@Nullable String description) {
+      this.description = description;
+      return this;
+    }
+
+    public Builder eventSpecific(boolean eventSpecific) {
+      this.eventSpecific = eventSpecific;
+      return this;
+    }
+
+    public Builder url(@Nullable String url) {
+      this.url = url;
+      return this;
     }
 
     public Builder key(Object key) {

@@ -32,6 +32,8 @@ public class LocationDAOAppEngine implements LocationDAO {
   private static final String LNG_FIELD = "lng";
   private static final String TIMESTAMP_FIELD = "createdate";
   private static final String VALID_FIELD = "valid";
+  private static final String DESCRIPTION_FIELD = "description";
+  private static final String URL_FIELD = "url";
 
   private static final Logger log = Logger.getLogger(LocationDAOAppEngine.class.getName());
   private final Clock clock;
@@ -99,6 +101,8 @@ public class LocationDAOAppEngine implements LocationDAO {
     entity.setProperty(LNG_FIELD, location.getLongitude());
     entity.setProperty(TIMESTAMP_FIELD, clock.now().toDate());
     entity.setProperty(VALID_FIELD, location.isValid());
+    entity.setProperty(DESCRIPTION_FIELD, location.getDescription());
+    entity.setProperty(URL_FIELD, location.getUrl());
     Key key = dataStore.put(entity);
     return location.withKey(key.getId());
   }
@@ -130,6 +134,8 @@ public class LocationDAOAppEngine implements LocationDAO {
     Object key = entity.getKey().getId();
     Location.Builder builder =
         Location.builder().name((String) entity.getProperty(NAME_FIELD)).key(key);
+    builder.description((String) entity.getProperty(DESCRIPTION_FIELD));
+    builder.url((String) entity.getProperty(URL_FIELD));
     boolean isValid = valid == null || valid;
     if (lat == null || lng == null) {
       builder.valid(false);

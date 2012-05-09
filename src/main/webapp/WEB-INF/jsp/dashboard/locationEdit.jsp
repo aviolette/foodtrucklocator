@@ -34,6 +34,20 @@
       </div>
     </div>
     <div class="clearfix">
+      <label for="description">Description</label>
+
+      <div class="input">
+        <input id="description" type="text"/>
+      </div>
+    </div>
+    <div class="clearfix">
+      <label for="url">URL</label>
+
+      <div class="input">
+        <input id="url" type="text"/>
+      </div>
+    </div>
+    <div class="clearfix">
       <label>&nbsp;</label>
 
       <div class="input">
@@ -62,6 +76,8 @@
       $("#longitude").attr("value", loc.longitude);
       $("#name").attr("value", loc.name);
       $("#invalidLoc").attr("checked", !loc.valid);
+      $("#description").attr("value", loc.description);
+      $("#url").attr("value", loc.url);
     }
 
     loadLocation(loc);
@@ -71,6 +87,8 @@
       loc.longitude = parseFloat($("#longitude").attr("value"));
       loc.name = $("#name").attr("value");
       loc.valid = !$("#invalidLoc").is(":checked");
+      loc.description = $("#description").attr("value");
+      loc.url = $("#url").attr("value");
       e.preventDefault();
       $submitButton.addClass("disabled");
       $.ajax({
