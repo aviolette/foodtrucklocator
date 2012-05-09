@@ -192,6 +192,11 @@ public class TruckStopMatcher {
       Matcher m = p.matcher(tweetText.toLowerCase());
       return !m.find();
     }
+    p = truck.getDonotMatchIf();
+    if (p != null) {
+      Matcher m = p.matcher(tweetText.toLowerCase());
+      return m.find();
+    }
     return false;
   }
 

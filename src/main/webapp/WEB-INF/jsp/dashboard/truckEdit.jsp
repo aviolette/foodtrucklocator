@@ -72,6 +72,13 @@
     </div>
   </div>
   <div class="clearfix">
+    <label for="donotMatchIf">Donot Match Regex</label>
+
+    <div class="input">
+      <input type="text" id="donotMatchIf" name="donotMatchIf" value="${truck.donotMatchIfString}"/>
+    </div>
+  </div>
+  <div class="clearfix">
     <label for="categories">Categories</label>
 
     <div class="input">

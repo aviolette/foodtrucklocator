@@ -4,8 +4,6 @@ package foodtruck.dao.appengine;
 import java.util.Collection;
 import java.util.Set;
 
-import javax.annotation.Nullable;
-
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
@@ -23,8 +21,7 @@ import foodtruck.model.Truck;
  * @author aviolette@gmail.com
  * @since 2/26/12
  */
-public class TruckDAOAppEngine implements TruckDAO {
-  private final DatastoreServiceProvider provider;
+public class TruckDAOAppEngine extends AppEngineDAO<Truck> implements TruckDAO {
   private static final String TRUCK_KIND = "Store";
   private static final String TRUCK_ID_FIELD = "id";
   private static final String TRUCK_NAME_FIELD = "name";
@@ -37,27 +34,17 @@ public class TruckDAOAppEngine implements TruckDAO {
   private static final String TRUCK_DEFAULT_CITY_FIELD = "defaultCity";
   private static final String TRUCK_FACEBOOK_FIELD = "facebookUrl";
   private static final String MATCH_REGEX_FIELD = "matchOnlyIf";
+  private static final String DONT_MATCH_REGEX_FIELD = "dontMatchIf";
   private static final String INACTIVE_FIELD = "inactive";
   private static final String CATEGORIES_FIELD = "categories";
   private static final String TRUCK_CALENDAR_URL = "calendarUrl";
 
   @Inject
   public TruckDAOAppEngine(DatastoreServiceProvider provider) {
-    this.provider = provider;
+    super(TRUCK_KIND, provider);
   }
 
-  @Override public Collection<Truck> findAll() {
-    DatastoreService dataStore = provider.get();
-    Query q = new Query(TRUCK_KIND);
-    ImmutableSet.Builder<Truck> trucks = ImmutableSet.builder();
-    for (Entity entity : dataStore.prepare(q).asIterable()) {
-      Truck truck = fromEntity(entity);
-      trucks.add(truck);
-    }
-    return trucks.build();
-  }
-
-  private Truck fromEntity(Entity entity) {
+  protected Truck fromEntity(Entity entity) {
     Truck.Builder builder = Truck.builder();
     Collection categoriesList = (Collection) entity.getProperty(CATEGORIES_FIELD);
     return builder.id(entity.getKey().getName())
@@ -71,6 +58,7 @@ public class TruckDAOAppEngine implements TruckDAO {
         .iconUrl((String) entity.getProperty(TRUCK_ICON_URL))
         .name((String) entity.getProperty(TRUCK_NAME_FIELD))
         .matchOnlyIf((String) entity.getProperty(MATCH_REGEX_FIELD))
+        .donotMatchIf((String) entity.getProperty(DONT_MATCH_REGEX_FIELD))
         .url((String) entity.getProperty(TRUCK_URL))
         .categories(categoriesList == null ? ImmutableSet.<String>of() :
             ImmutableSet.copyOf(categoriesList))
@@ -79,14 +67,6 @@ public class TruckDAOAppEngine implements TruckDAO {
         .build();
   }
 
-  @Override public @Nullable Truck findById(String id) {
-    DatastoreService dataStore = provider.get();
-    try {
-      return fromEntity(dataStore.get(KeyFactory.createKey(TRUCK_KIND, id)));
-    } catch (EntityNotFoundException e) {
-      return null;
-    }
-  }
 
   @Override public void save(Truck truck) {
     DatastoreService dataStore = provider.get();
@@ -140,7 +120,7 @@ public class TruckDAOAppEngine implements TruckDAO {
     return trucks.build();
   }
 
-  private Entity toEntity(Truck truck, Entity entity) {
+  protected Entity toEntity(Truck truck, Entity entity) {
     Entity truckEntity = entity == null ? new Entity(TRUCK_KIND, truck.getId()) : entity;
     truckEntity.setProperty(TRUCK_NAME_FIELD, truck.getName());
     truckEntity.setProperty(TRUCK_TWITTER_HANDLE, truck.getTwitterHandle());
@@ -154,6 +134,7 @@ public class TruckDAOAppEngine implements TruckDAO {
     truckEntity.setProperty(TRUCK_DEFAULT_CITY_FIELD, truck.getDefaultCity());
     truckEntity.setProperty(TRUCK_FACEBOOK_FIELD, truck.getFacebook());
     truckEntity.setProperty(MATCH_REGEX_FIELD, truck.getMatchOnlyIfString());
+    truckEntity.setProperty(DONT_MATCH_REGEX_FIELD, truck.getDonotMatchIfString());
     truckEntity.setProperty(INACTIVE_FIELD, truck.isInactive());
     truckEntity.setProperty(CATEGORIES_FIELD, truck.getCategories());
     return truckEntity;

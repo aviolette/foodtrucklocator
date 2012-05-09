@@ -151,6 +151,8 @@ public class TruckServlet extends HttpServlet {
     builder.useTwittalyzer(options.contains("twittalyzer"));
     String matchRegex = request.getParameter("matchOnlyIf");
     builder.matchOnlyIf(Strings.isNullOrEmpty(matchRegex) ? null : matchRegex);
+    String doNotMatchRegex = request.getParameter("donotMatchIf");
+    builder.donotMatchIf(Strings.isNullOrEmpty(doNotMatchRegex) ? null : doNotMatchRegex);
     builder.categories(ImmutableSet
         .copyOf(Splitter.on(",").omitEmptyStrings().split(request.getParameter("categories"))));
     return builder.build();

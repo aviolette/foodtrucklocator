@@ -28,6 +28,7 @@ public class Truck extends ModelEntity {
   private final String defaultCity;
   private final String facebook;
   private final Pattern matchOnlyIf;
+  private final Pattern donotMatchIf;
   private final boolean inactive;
   private @Nullable final String calendarUrl;
 
@@ -47,6 +48,7 @@ public class Truck extends ModelEntity {
     this.matchOnlyIf = builder.matchOnlyIf;
     this.inactive = builder.inactive;
     this.calendarUrl = builder.calendarUrl;
+    this.donotMatchIf = builder.donotMatchIf;
   }
 
   public @Nullable String getFoursquareUrl() {
@@ -146,6 +148,14 @@ public class Truck extends ModelEntity {
     return matchOnlyIf;
   }
 
+  public @Nullable String getDonotMatchIfString() {
+    return donotMatchIf == null ? null : donotMatchIf.toString();
+  }
+
+  public @Nullable Pattern getDonotMatchIf() {
+    return donotMatchIf;
+  }
+
   public static Builder builder() {
     return new Builder();
   }
@@ -166,6 +176,7 @@ public class Truck extends ModelEntity {
     private boolean inactive;
     private Object key;
     private @Nullable String calendarUrl;
+    private Pattern donotMatchIf;
 
     public Builder() {
     }
@@ -268,6 +279,15 @@ public class Truck extends ModelEntity {
 
     public Builder inactive(Boolean inactive) {
       this.inactive = inactive;
+      return this;
+    }
+
+    public Builder donotMatchIf(@Nullable String regex) {
+      if (!Strings.isNullOrEmpty(regex)) {
+        this.donotMatchIf = Pattern.compile(regex);
+      } else {
+        this.donotMatchIf = null;
+      }
       return this;
     }
   }
