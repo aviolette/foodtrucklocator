@@ -86,12 +86,13 @@ public class TruckServlet extends HttpServlet {
   private void loadDashboard(String truckId, HttpServletRequest req, HttpServletResponse resp)
       throws IOException, ServletException {
     log.info("Loading dashboard for " + truckId);
-    final List<TweetSummary> tweetSummaries = twitterService.findForTruck(truckId);
-    req.setAttribute("tweets", tweetSummaries);
     final String jsp = "/WEB-INF/jsp/dashboard/truckDashboard.jsp";
     // hack required when using * patterns in guice
     req = new GuiceHackRequestWrapper(req, jsp);
     final Truck truck = truckDAO.findById(truckId);
+    final List<TweetSummary> tweetSummaries =
+        twitterService.findByTwitterHandle(truck.getTwitterHandle());
+    req.setAttribute("tweets", tweetSummaries);
     final String name = truck.getName();
     req.setAttribute("headerName", name);
     req.setAttribute("truckId", truckId);

@@ -35,7 +35,7 @@ public interface TwitterService {
    * @param truckId the truckId
    * @return a list of tweet summaries
    */
-  List<TweetSummary> findForTruck(String truckId);
+  List<TweetSummary> findByTwitterHandle(String truckId);
 
   /**
    * Finds a summary by its id

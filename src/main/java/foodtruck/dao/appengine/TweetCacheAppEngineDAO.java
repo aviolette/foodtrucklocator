@@ -45,12 +45,13 @@ public class TweetCacheAppEngineDAO implements TweetCacheDAO {
 
 
   @Override
-  public List<TweetSummary> findTweetsAfter(DateTime time, String truckId, boolean includeIgnored) {
+  public List<TweetSummary> findTweetsAfter(DateTime time, String twitterHandle,
+      boolean includeIgnored) {
     DatastoreService dataStore = provider.get();
     Query q = new Query(TWEET_KIND);
     q.addFilter(TWEET_TIME, Query.FilterOperator.GREATER_THAN_OR_EQUAL,
         time.toDate());
-    q.addFilter(TWEET_SCREEN_NAME, Query.FilterOperator.EQUAL, truckId);
+    q.addFilter(TWEET_SCREEN_NAME, Query.FilterOperator.EQUAL, twitterHandle);
     if (!includeIgnored) {
       q.addFilter(TWEET_IGNORE, Query.FilterOperator.EQUAL, false);
     }
@@ -121,7 +122,8 @@ public class TweetCacheAppEngineDAO implements TweetCacheDAO {
   }
 
   private void saveOrUpdate(TweetSummary tweet, DatastoreService dataStore) {
-    final Entity entity = (tweet.getKey() == null) ? new Entity(TWEET_KIND) : new Entity((Key)tweet.getKey());
+    final Entity entity =
+        (tweet.getKey() == null) ? new Entity(TWEET_KIND) : new Entity((Key) tweet.getKey());
     entity.setProperty(TWEET_SCREEN_NAME, tweet.getScreenName());
     final Location location = tweet.getLocation();
     if (location != null) {

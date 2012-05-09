@@ -255,9 +255,9 @@ public class TwitterServiceImpl implements TwitterService {
     tweetDAO.save(l);
   }
 
-  @Override public List<TweetSummary> findForTruck(String truckId) {
+  @Override public List<TweetSummary> findByTwitterHandle(String twitterHandle) {
     return tweetDAO
-        .findTweetsAfter(clock.currentDay().toDateMidnight().toDateTime(), truckId, true);
+        .findTweetsAfter(clock.currentDay().toDateMidnight().toDateTime(), twitterHandle, true);
   }
 
   @Override public @Nullable TweetSummary findByTweetId(long id) {
