@@ -312,6 +312,15 @@ window.FoodTruckLocator = function() {
       if (group.distance) {
         menuSection.append("<dd>" + group.distance + " miles away</dd>")
       }
+
+      if (group.position.description) {
+        menuSection.append("<dd>" + group.position.description + "</dd>");
+      }
+
+      if (group.position.url) {
+        menuSection.append("<dd>" + group.position.url + "</dd>");
+      }
+
       return section;
     },
     buildTruckInfoLink : function(div, truck) {
