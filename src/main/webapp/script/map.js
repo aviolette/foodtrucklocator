@@ -121,7 +121,8 @@ window.FoodTruckLocator = function() {
         if (typeof(truckGroup) == "undefined") {
           var latlng = new google.maps.LatLng(stop.location.latitude,
               stop.location.longitude);
-          truckGroup = new TruckGroup({name: stop.location.name, latLng : latlng });
+          truckGroup = new TruckGroup({name: stop.location.name, latLng : latlng,
+            description : stop.location.description });
           if (center) {
             distance = google.maps.geometry.spherical.computeDistanceBetween(center,
                 truckGroup.position.latLng, 3959);
@@ -147,7 +148,9 @@ window.FoodTruckLocator = function() {
           if (typeof(truckGroup) == "undefined") {
             var latlng = new google.maps.LatLng(stop.location.latitude,
                 stop.location.longitude);
-            truckGroup = new TruckGroup({name: stop.location.name, latLng : latlng });
+            truckGroup =
+                new TruckGroup({name: stop.location.name, latLng : latlng, description: stop
+                    .location.description });
             if (center) {
               distance = google.maps.geometry.spherical.computeDistanceBetween(center,
                   truckGroup.position.latLng, 3959);

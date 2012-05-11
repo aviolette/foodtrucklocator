@@ -46,6 +46,8 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
   private static final String LOCATION_NAME_FIELD = "locationName";
   private static final String LOCKED_FIELD = "locked";
   private final TruckDAO truckDAO;
+  private static final String DESCRIPTION_FIELD = "description";
+  private static final String URL_FIELD = "url";
 
   @Inject
   public TruckStopDAOAppEngine(DatastoreServiceProvider provider,
@@ -81,6 +83,8 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
             Location.builder().lat((Double) entity.getProperty(LATITUDE_FIELD))
                 .lng((Double) entity.getProperty(
                     LONGITUDE_FIELD)).name((String) entity.getProperty(LOCATION_NAME_FIELD))
+                .description((String) entity.getProperty(DESCRIPTION_FIELD))
+                .url((String) entity.getProperty(URL_FIELD))
                 .build(),
             entity.getKey().getId(), locked == null ? false : locked));
       } catch (RuntimeException rt) {
@@ -110,6 +114,8 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
     truckStop.setProperty(LATITUDE_FIELD, stop.getLocation().getLatitude());
     truckStop.setProperty(LONGITUDE_FIELD, stop.getLocation().getLongitude());
     truckStop.setProperty(LOCATION_NAME_FIELD, stop.getLocation().getName());
+    truckStop.setProperty(DESCRIPTION_FIELD, stop.getLocation().getDescription());
+    truckStop.setProperty(URL_FIELD, stop.getLocation().getUrl());
     truckStop.setProperty(LOCKED_FIELD, stop.isLocked());
     return truckStop;
   }
@@ -144,7 +150,10 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
         startTime, endTime,
         Location.builder().lat((Double) entity.getProperty(LATITUDE_FIELD))
             .lng((Double) entity.getProperty(
-                LONGITUDE_FIELD)).name((String) entity.getProperty(LOCATION_NAME_FIELD)).build(),
+                LONGITUDE_FIELD)).name((String) entity.getProperty(LOCATION_NAME_FIELD))
+            .description((String) entity.getProperty(DESCRIPTION_FIELD))
+            .url((String) entity.getProperty(URL_FIELD))
+            .build(),
         entity.getKey().getId(), locked == null ? false : locked);
   }
 
