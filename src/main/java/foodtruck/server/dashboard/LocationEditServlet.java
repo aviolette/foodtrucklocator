@@ -44,7 +44,7 @@ public class LocationEditServlet extends HttpServlet {
     final String path = req.getRequestURI();
     final String keyIndex = path.substring(path.lastIndexOf("/") + 1);
     req = new GuiceHackRequestWrapper(req, jsp);
-    Location location = locationDAO.findByKey(Long.valueOf(keyIndex));
+    Location location = locationDAO.findById(Long.valueOf(keyIndex));
     if (location != null) {
       try {
         req.setAttribute("location", writer.writeLocation(location, 0, true));

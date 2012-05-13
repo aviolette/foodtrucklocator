@@ -44,7 +44,7 @@ public class LocationListServlet extends HttpServlet {
     if (!Strings.isNullOrEmpty(searchField)) {
       Location location = locator.locate(searchField, GeolocationGranularity.NARROW);
       if (location == null) {
-        location = locationDAO.lookup(searchField);
+        location = locationDAO.findByAddress(searchField);
       }
       if (location != null) {
         resp.sendRedirect("/admin/locations/" + location.getKey());

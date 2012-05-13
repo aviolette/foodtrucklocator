@@ -30,7 +30,7 @@ public class CacheAndStoreLocator implements GeoLocator {
 
   @Override
   public @Nullable Location locate(String location, GeolocationGranularity granularity) {
-    Location loc = dao.lookup(location);
+    Location loc = dao.findByAddress(location);
     if (loc != null) {
       // there were previous attempts at using the secondary locator which were unsuccessful
       // so don't try again.
@@ -43,7 +43,7 @@ public class CacheAndStoreLocator implements GeoLocator {
       loc = null;
     }
     if (loc != null) {
-      loc = dao.save(loc);
+      loc = dao.saveAndFetch(loc);
     } else {
       // write that we tried to save this location so that we don't try again.
       log.warning("Failed at attempt to geo locate: " + location);

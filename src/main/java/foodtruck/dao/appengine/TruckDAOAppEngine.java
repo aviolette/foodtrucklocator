@@ -6,9 +6,6 @@ import java.util.Set;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
@@ -21,7 +18,7 @@ import foodtruck.model.Truck;
  * @author aviolette@gmail.com
  * @since 2/26/12
  */
-public class TruckDAOAppEngine extends AppEngineDAO<Truck> implements TruckDAO {
+public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO {
   private static final String TRUCK_KIND = "Store";
   private static final String TRUCK_ID_FIELD = "id";
   private static final String TRUCK_NAME_FIELD = "name";
@@ -65,23 +62,6 @@ public class TruckDAOAppEngine extends AppEngineDAO<Truck> implements TruckDAO {
         .useTwittalyzer((Boolean) entity.getProperty(TRUCK_TWITTALYZER_FIELD))
         .calendarUrl((String) entity.getProperty(TRUCK_CALENDAR_URL))
         .build();
-  }
-
-
-  @Override public void save(Truck truck) {
-    DatastoreService dataStore = provider.get();
-    Entity entity = null;
-    try {
-      if (!truck.isNew()) {
-        Key key = KeyFactory.createKey(TRUCK_KIND, truck.getId());
-        entity = dataStore.get(key);
-      }
-      entity = toEntity(truck, entity);
-      dataStore.put(entity);
-    } catch (EntityNotFoundException e) {
-      throw new RuntimeException(e);
-    }
-
   }
 
   @Override public Collection<Truck> findByTwitterId(String screenName) {

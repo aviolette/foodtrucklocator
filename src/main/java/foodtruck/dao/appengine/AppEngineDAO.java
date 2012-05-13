@@ -13,13 +13,14 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
 import com.google.common.collect.ImmutableSet;
 
+import foodtruck.dao.DAO;
 import foodtruck.model.ModelEntity;
 
 /**
  * @author aviolette@gmail.com
  * @since 4/12/12
  */
-public abstract class AppEngineDAO<T extends ModelEntity> {
+public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T> {
   private final String kind;
   protected final DatastoreServiceProvider provider;
 
@@ -28,6 +29,7 @@ public abstract class AppEngineDAO<T extends ModelEntity> {
     this.provider = provider;
   }
 
+  @Override
   public Set<T> findAll() {
     DatastoreService dataStore = provider.get();
     Query q = new Query(getKind());
@@ -39,16 +41,9 @@ public abstract class AppEngineDAO<T extends ModelEntity> {
     return objs.build();
   }
 
-  public @Nullable T findById(String id) {
-    DatastoreService dataStore = provider.get();
-    try {
-      return fromEntity(dataStore.get(KeyFactory.createKey(kind, id)));
-    } catch (EntityNotFoundException e) {
-      return null;
-    }
-  }
 
-  public void save(T obj) {
+  @Override
+  public long save(T obj) {
     DatastoreService dataStore = provider.get();
     Entity entity = null;
     try {
@@ -63,7 +58,8 @@ public abstract class AppEngineDAO<T extends ModelEntity> {
         entity = dataStore.get(key);
       }
       entity = toEntity(obj, entity);
-      dataStore.put(entity);
+      Key key = dataStore.put(entity);
+      return key.getId();
     } catch (EntityNotFoundException e) {
       throw new RuntimeException(e);
     }
@@ -75,5 +71,27 @@ public abstract class AppEngineDAO<T extends ModelEntity> {
 
   public String getKind() {
     return kind;
+  }
+
+  public @Nullable T findById(Long id) {
+    DatastoreService dataStore = provider.get();
+    Key key = KeyFactory.createKey(getKind(), id);
+    try {
+      Entity entity = dataStore.get(key);
+      return fromEntity(entity);
+    } catch (EntityNotFoundException e) {
+      return null;
+    }
+  }
+
+  public @Nullable T findById(String id) {
+    DatastoreService dataStore = provider.get();
+    Key key = KeyFactory.createKey(getKind(), id);
+    try {
+      Entity entity = dataStore.get(key);
+      return fromEntity(entity);
+    } catch (EntityNotFoundException e) {
+      return null;
+    }
   }
 }
