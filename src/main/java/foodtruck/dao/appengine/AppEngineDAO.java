@@ -56,6 +56,8 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
           key = (Key) theKey;
         }
         entity = dataStore.get(key);
+      } else {
+        entity = new Entity(getKind());
       }
       entity = toEntity(obj, entity);
       Key key = dataStore.put(entity);
