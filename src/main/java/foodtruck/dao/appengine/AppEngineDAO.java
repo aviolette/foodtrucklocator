@@ -45,13 +45,15 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
   @Override
   public long save(T obj) {
     DatastoreService dataStore = provider.get();
-    Entity entity = null;
+    Entity entity;
     try {
       if (!obj.isNew()) {
         Object theKey = obj.getKey();
         Key key;
         if (theKey instanceof Long) {
           key = KeyFactory.createKey(getKind(), (Long) theKey);
+        } else if (theKey instanceof String) {
+          key = KeyFactory.createKey(getKind(), (String) theKey);
         } else {
           key = (Key) theKey;
         }
