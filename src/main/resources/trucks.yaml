@@ -796,3 +796,27 @@ categories: Savory
 iconUrl: http://twimg0-a.akamaihd.net/profile_images/1677356529/SL_Logo-RY_twitter2_6DEC11_normal.jpg
 twittalyzer: "on"
 inactive: true
+---
+id: sweetgingers
+twitter: sweetgingers
+name: Sweet Gingers Gelato
+categories: Sweet
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/1642827383/sweet_ginger_normal.jpg
+twittalyzer: "on"
+inactive: true
+---
+id: dokkaebitacos
+twitter: dokkaebitacos
+name: Dokkaebi Tacos
+categories: Savory
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/2141136426/logo_headonly_crop_normal.jpg
+twittalyzer: "on"
+inactive: true
+---
+id: stopngo
+twitter: stopngo
+name: Stop n Go
+categories: Savory
+iconUrl: http://twimg0-a.akamaihd.net/sticky/default_profile_images/default_profile_1_normal.png
+twittalyzer: "on"
+inactive: true
