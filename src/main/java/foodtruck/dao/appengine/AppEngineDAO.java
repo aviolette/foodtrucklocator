@@ -46,8 +46,8 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
   public long save(T obj) {
     DatastoreService dataStore = provider.get();
     Entity entity;
-    try {
-      if (!obj.isNew()) {
+    if (!obj.isNew()) {
+      try {
         Object theKey = obj.getKey();
         Key key;
         if (theKey instanceof Long) {
@@ -58,15 +58,29 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
           key = (Key) theKey;
         }
         entity = dataStore.get(key);
-      } else {
-        entity = new Entity(getKind());
+      } catch (EntityNotFoundException e) {
+        /* TODO: don't like. Had to do this because there's no way of determining whether a
+       string-keyed object is new or not.
+        */
+        entity = buildEntity(obj);
       }
-      entity = toEntity(obj, entity);
-      Key key = dataStore.put(entity);
-      return key.getId();
-    } catch (EntityNotFoundException e) {
-      throw new RuntimeException(e);
+    } else {
+      entity = buildEntity(obj);
     }
+    entity = toEntity(obj, entity);
+    Key key = dataStore.put(entity);
+    return key.getId();
+  }
+
+  private Entity buildEntity(T obj) {
+    final Entity entity;
+    Object id = obj.getKey();
+    if (id != null && id instanceof String) {
+      entity = new Entity(getKind(), (String) id);
+    } else {
+      entity = new Entity(getKind());
+    }
+    return entity;
   }
 
   protected abstract Entity toEntity(T obj, Entity entity);

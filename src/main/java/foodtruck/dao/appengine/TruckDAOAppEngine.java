@@ -45,7 +45,6 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     Truck.Builder builder = Truck.builder();
     Collection categoriesList = (Collection) entity.getProperty(CATEGORIES_FIELD);
     return builder.id(entity.getKey().getName())
-        .key(entity.getKey())
         .inactive((Boolean) entity.getProperty(INACTIVE_FIELD))
         .twitterHandle((String) entity.getProperty(TRUCK_TWITTER_HANDLE))
         .defaultCity((String) entity.getProperty(TRUCK_DEFAULT_CITY_FIELD))
@@ -101,22 +100,21 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
   }
 
   protected Entity toEntity(Truck truck, Entity entity) {
-    Entity truckEntity = entity == null ? new Entity(TRUCK_KIND, truck.getId()) : entity;
-    truckEntity.setProperty(TRUCK_NAME_FIELD, truck.getName());
-    truckEntity.setProperty(TRUCK_TWITTER_HANDLE, truck.getTwitterHandle());
-    truckEntity.setProperty(TRUCK_URL, truck.getUrl());
-    truckEntity.setProperty(TRUCK_ICON_URL, truck.getIconUrl());
-    truckEntity.setProperty(TRUCK_CALENDAR_URL,
+    entity.setProperty(TRUCK_NAME_FIELD, truck.getName());
+    entity.setProperty(TRUCK_TWITTER_HANDLE, truck.getTwitterHandle());
+    entity.setProperty(TRUCK_URL, truck.getUrl());
+    entity.setProperty(TRUCK_ICON_URL, truck.getIconUrl());
+    entity.setProperty(TRUCK_CALENDAR_URL,
         Strings.isNullOrEmpty(truck.getCalendarUrl()) ? null : truck.getCalendarUrl());
-    truckEntity.setProperty(TRUCK_DESCRIPTION_FIELD, truck.getDescription());
-    truckEntity.setProperty(TRUCK_FOURSQUARE_URL_FIELD, truck.getFoursquareUrl());
-    truckEntity.setProperty(TRUCK_TWITTALYZER_FIELD, truck.isUsingTwittalyzer());
-    truckEntity.setProperty(TRUCK_DEFAULT_CITY_FIELD, truck.getDefaultCity());
-    truckEntity.setProperty(TRUCK_FACEBOOK_FIELD, truck.getFacebook());
-    truckEntity.setProperty(MATCH_REGEX_FIELD, truck.getMatchOnlyIfString());
-    truckEntity.setProperty(DONT_MATCH_REGEX_FIELD, truck.getDonotMatchIfString());
-    truckEntity.setProperty(INACTIVE_FIELD, truck.isInactive());
-    truckEntity.setProperty(CATEGORIES_FIELD, truck.getCategories());
-    return truckEntity;
+    entity.setProperty(TRUCK_DESCRIPTION_FIELD, truck.getDescription());
+    entity.setProperty(TRUCK_FOURSQUARE_URL_FIELD, truck.getFoursquareUrl());
+    entity.setProperty(TRUCK_TWITTALYZER_FIELD, truck.isUsingTwittalyzer());
+    entity.setProperty(TRUCK_DEFAULT_CITY_FIELD, truck.getDefaultCity());
+    entity.setProperty(TRUCK_FACEBOOK_FIELD, truck.getFacebook());
+    entity.setProperty(MATCH_REGEX_FIELD, truck.getMatchOnlyIfString());
+    entity.setProperty(DONT_MATCH_REGEX_FIELD, truck.getDonotMatchIfString());
+    entity.setProperty(INACTIVE_FIELD, truck.isInactive());
+    entity.setProperty(CATEGORIES_FIELD, truck.getCategories());
+    return entity;
   }
 }

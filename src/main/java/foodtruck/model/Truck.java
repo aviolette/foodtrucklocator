@@ -33,7 +33,7 @@ public class Truck extends ModelEntity {
   private @Nullable final String calendarUrl;
 
   private Truck(Builder builder) {
-    super(builder.key);
+    super(builder.id);
     this.id = builder.id;
     this.name = builder.name;
     this.twitterHandle = builder.twitter;
@@ -174,7 +174,6 @@ public class Truck extends ModelEntity {
     private String facebook;
     private Pattern matchOnlyIf;
     private boolean inactive;
-    private Object key;
     private @Nullable String calendarUrl;
     private Pattern donotMatchIf;
 
@@ -196,12 +195,6 @@ public class Truck extends ModelEntity {
       this.matchOnlyIf = truck.matchOnlyIf;
       this.inactive = truck.inactive;
       this.calendarUrl = truck.calendarUrl;
-      this.key = truck.key;
-    }
-
-    public Builder key(Object key) {
-      this.key = key;
-      return this;
     }
 
     public Builder id(String id) {

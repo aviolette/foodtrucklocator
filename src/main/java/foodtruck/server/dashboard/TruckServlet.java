@@ -136,7 +136,6 @@ public class TruckServlet extends HttpServlet {
   private Truck truckFromForm(HttpServletRequest request, String truckId) {
     Truck.Builder builder = Truck.builder();
     builder.id(truckId)
-        .key(truckId)
         .defaultCity(request.getParameter("defaultCity"))
         .description(request.getParameter("description"))
         .calendarUrl(request.getParameter("calendarUrl"))
