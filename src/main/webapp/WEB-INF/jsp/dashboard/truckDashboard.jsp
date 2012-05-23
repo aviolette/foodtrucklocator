@@ -103,8 +103,10 @@
         </div>
         <div class="clearfix">
           <div class="input">
-          <input type="checkbox"  id="lockStop" name="lockStop"/>&nbsp;<label style="float:none" for="lockStop">Prevent twittalyzer from changing location</label>
-            </div>
+            <input type="checkbox" id="lockStop" name="lockStop"/>&nbsp;<label style="float:none"
+                                                                               for="lockStop">Prevent
+            twittalyzer from changing location</label>
+          </div>
         </div>
       </fieldset>
     </form>
@@ -162,38 +164,62 @@
       type: 'GET',
       dataType: 'json',
       success : function(schedule) {
+        var now = new Date().getTime();
+        var numStops = schedule["stops"].length;
+        var prevHadStart = false;
         $.each(schedule["stops"], function(truckIndex, stop) {
-          var lockedString = (stop.locked) ? "&nbsp;<span class=\"label important\">locked</span>" : "";
-          scheduleTable.append("<tr><td>" + stop.startTime + "</td><td>" + stop.endTime +
+          var lockedString = (stop.locked) ? "&nbsp;<span class=\"label important\">locked</span>" :
+              "";
+          var buf = "<tr><td>" + stop.startTime + "</td><td>" + stop.endTime +
               "</td><td><a href='/admin/locations?q=" + encodeURIComponent(stop.location.name) +
               "'>"
-              + stop.location.name + "</a>" + lockedString + "</td><td><button  id='truckEndNow" + truckIndex +
-              "' class='btn danger'>End Now</button>&nbsp;" +
+              + stop.location.name + "</a>" + lockedString + "</td><td>";
+          if (!prevHadStart && now < stop.startTimeMillis) {
+            prevHadStart = true;
+            buf = buf + "<button  id='truckStartNow" + truckIndex +
+                "' class='btn success'>Start Now</button>"
+          } else if (now >= stop.startTimeMillis && now < stop.endTimeMillis) {
+            buf = buf + "<button  id='truckEndNow" + truckIndex +
+                "' class='btn warning'>End Now</button>";
+          }
+          buf += "&nbsp;</td><td>";
+          scheduleTable.append(buf +
               "<button id='truckDelete" + truckIndex +
               "' class='btn danger'>Delete</button>&nbsp;<button class='btn' id='truckEdit" +
               truckIndex + "'>Edit</button></td></tr>");
           $("#truckEdit" + truckIndex).click(function(e) {
             invokeEditDialog(stop, refreshSchedule);
           });
-          $("#truckEndNow" + truckIndex).click(function(e) {
-            e.preventDefault();
-            var now = new Date();
-            var hour = now.getHours();
-            var ampm = "AM";
-            if (hour > 12) {
-              ampm = "PM";
-              hour = hour - 12;
+
+          function timeUpdateMaker(useStart) {
+            return function(e) {
+              e.preventDefault();
+              var now = new Date();
+              var hour = now.getHours();
+              var ampm = "AM";
+              if (hour > 12) {
+                ampm = "PM";
+                hour = hour - 12;
+              }
+              var theTime = hour + ":" + now.getMinutes() + " " + ampm;
+              if (useStart) {
+                stop.startTime = theTime;
+              } else {
+                stop.endTime = theTime;
+              }
+              stop.truckId = "${truckId}";
+              $.ajax({
+                url: "/admin/service/stop/" + stop.id,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(stop),
+                success: refreshSchedule
+              });
             }
-            stop.endTime = hour + ":" + now.getMinutes() + " " + ampm;
-            stop.truckId = "${truckId}";
-            $.ajax({
-              url: "/admin/service/stop/" + stop.id,
-              type: 'PUT',
-              contentType: 'application/json',
-              data: JSON.stringify(stop),
-              success: refreshSchedule
-            });
-          });
+          }
+
+          $("#truckStartNow" + truckIndex).click(timeUpdateMaker(true));
+          $("#truckEndNow" + truckIndex).click(timeUpdateMaker(false));
           $("#truckDelete" + truckIndex).click(function(e) {
             e.preventDefault();
             $.ajax({

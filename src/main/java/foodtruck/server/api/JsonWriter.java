@@ -92,6 +92,8 @@ public class JsonWriter {
           .put("location", writeLocation(stop.getLocation(), 0, false))
           .put("id", stop.getKey())
           .put("locked", stop.isLocked())
+          .put("startTimeMillis", stop.getStartTime().getMillis())
+          .put("endTimeMillis", stop.getEndTime().getMillis())
           .put("startTime", timeFormatter.print(stop.getStartTime()))
           .put("endTime", timeFormatter.print(stop.getEndTime()));
       arr.put(truckStop);
