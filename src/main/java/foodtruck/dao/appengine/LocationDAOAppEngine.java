@@ -81,15 +81,6 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     return location.withKey(id);
   }
 
-  @Override
-  public void saveAttemptFailed(String location) {
-    DatastoreService dataStore = provider.get();
-    final Entity entity = new Entity(LOCATION_KIND);
-    entity.setProperty(NAME_FIELD, location);
-    entity.setProperty(VALID_FIELD, false);
-    dataStore.put(entity);
-  }
-
   @Override protected Entity toEntity(Location location, Entity entity) {
     entity.setProperty(NAME_FIELD, location.getName());
     entity.setProperty(LAT_FIELD, location.getLatitude());

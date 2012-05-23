@@ -122,7 +122,7 @@ public class GoogleCalendar implements ScheduleStrategy {
         When time = Iterables.getFirst(entry.getTimes(), null);
         Location location = geolocator.locate(where.getValueString(),
             GeolocationGranularity.BROAD);
-        if (location == null && customCalendar) {
+        if ((location == null || !location.isResolved()) && customCalendar) {
           // Sometimes the location is in the title - try that too
           log.info("Trying title text: " + titleText);
           final List<String> parsed =
@@ -132,7 +132,7 @@ public class GoogleCalendar implements ScheduleStrategy {
             location = geolocator.locate(locString, GeolocationGranularity.BROAD);
           }
         }
-        if (location != null) {
+        if (location != null && location.isResolved()) {
           final TruckStop truckStop = new TruckStop(truck, toJoda(time.getStartTime(), defaultZone),
               toJoda(time.getEndTime(), defaultZone), location, null, false);
           log.log(Level.INFO, "Loaded truckstop: {0}", truckStop);

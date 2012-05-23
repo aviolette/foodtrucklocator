@@ -8,6 +8,7 @@ import foodtruck.dao.LocationDAO;
 import foodtruck.model.Location;
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 /**
@@ -52,13 +53,14 @@ public class CacheAndStoreLocatorTest extends EasyMockSupport {
   }
 
   @Test
-  public void shouldReturnNullWhenNotFound() {
+  public void shouldReturnNonResolvedWhenNotFound() {
     expect(dao.findByAddress(LOCATION_NAME)).andReturn(null);
     expect(secondary.locate(LOCATION_NAME, GeolocationGranularity.BROAD)).andReturn(null);
-    dao.saveAttemptFailed(LOCATION_NAME);
+    Location targetLoc = Location.builder().name(LOCATION_NAME).valid(false).build();
+    expect(dao.saveAndFetch(targetLoc)).andReturn(targetLoc);
     replayAll();
     Location loc = locator.locate(LOCATION_NAME, GeolocationGranularity.BROAD);
-    assertNull(loc);
+    assertFalse(loc.isResolved());
     verifyAll();
   }
 }

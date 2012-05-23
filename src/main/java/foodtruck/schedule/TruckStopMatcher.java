@@ -223,7 +223,7 @@ public class TruckStopMatcher {
     List<String> addresses = addressExtractor.parse(tweet.getText(), truck);
     for (String address : addresses) {
       Location loc = geoLocator.locate(address, GeolocationGranularity.NARROW);
-      if (loc != null) {
+      if (loc != null && loc.isResolved()) {
         return loc;
       }
     }

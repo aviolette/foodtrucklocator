@@ -63,7 +63,7 @@ public class Location extends ModelEntity {
    * Return true if the location has been properly resolved.
    */
   public boolean isResolved() {
-    return lat != 0 && lng != 0;
+    return valid && lat != 0 && lng != 0;
   }
 
   @Override

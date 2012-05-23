@@ -55,7 +55,7 @@ public class JsonReader {
       location = parseLocation(loc);
       checkNotNull(location, "Location is unparsable");
     }
-    checkState(location.isResolved(), "Location is not resolved");
+    checkState(location != null && location.isResolved(), "Location is not resolved");
     long key = obj.optLong("id", 0);
     boolean locked = obj.optBoolean("locked", false);
     return new TruckStop(truck, startTime, endTime, location, (key > 0) ? key : null, locked);

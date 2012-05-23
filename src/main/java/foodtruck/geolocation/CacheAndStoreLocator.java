@@ -29,12 +29,10 @@ public class CacheAndStoreLocator implements GeoLocator {
   }
 
   @Override
-  public @Nullable Location locate(String location, GeolocationGranularity granularity) {
+  public Location locate(String location, GeolocationGranularity granularity) {
     Location loc = dao.findByAddress(location);
     if (loc != null) {
-      // there were previous attempts at using the secondary locator which were unsuccessful
-      // so don't try again.
-      return loc.isResolved() ? loc : null;
+      return loc;
     }
     try {
       loc = secondaryLocator.locate(location, granularity);
@@ -42,13 +40,10 @@ public class CacheAndStoreLocator implements GeoLocator {
       log.log(Level.WARNING, io.getMessage(), io);
       loc = null;
     }
-    if (loc != null) {
-      loc = dao.saveAndFetch(loc);
-    } else {
-      // write that we tried to save this location so that we don't try again.
+    if (loc == null) {
+      loc = Location.builder().name(location).valid(false).build();
       log.warning("Failed at attempt to geo locate: " + location);
-      dao.saveAttemptFailed(location);
     }
-    return loc;
+    return dao.saveAndFetch(loc);
   }
 }

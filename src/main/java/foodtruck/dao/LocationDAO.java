@@ -17,10 +17,4 @@ public interface LocationDAO extends DAO<Long, Location> {
    * this is a new object.
    */
   Location saveAndFetch(Location location);
-
-  /**
-   * Record that a lookup of this location failed.
-   * @deprecated Just save Location object with invalid key set.
-   */
-  void saveAttemptFailed(String location);
 }
