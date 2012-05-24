@@ -25,6 +25,7 @@ import foodtruck.schedule.Confidence;
 import foodtruck.schedule.TerminationDetector;
 import foodtruck.schedule.TruckStopMatch;
 import foodtruck.schedule.TruckStopMatcher;
+import foodtruck.truckstops.LoggingTruckStopNotifier;
 import foodtruck.util.Clock;
 import static org.easymock.EasyMock.expect;
 
@@ -75,7 +76,8 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     terminationDetector = createMock(TerminationDetector.class);
     service = new TwitterServiceImpl(twitterFactory, tweetDAO, listId, zone, matcher,
         truckStopDAO,
-        clock, terminationDetector, new LocalCacheUpdater(), truckDAO);
+        clock, terminationDetector, new LocalCacheUpdater(), truckDAO,
+        new LoggingTruckStopNotifier());
     loca = Location.builder().lat(1).lng(2).name("a").build();
     locb = Location.builder().lat(3).lng(4).name("b").build();
     final TweetSummary basicTweet = new TweetSummary.Builder().time(now.minusHours(2)).text(

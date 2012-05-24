@@ -26,6 +26,7 @@ import foodtruck.model.TweetSummary;
 import foodtruck.schedule.TerminationDetector;
 import foodtruck.schedule.TruckStopMatch;
 import foodtruck.schedule.TruckStopMatcher;
+import foodtruck.truckstops.TruckStopNotifier;
 import foodtruck.util.Clock;
 import twitter4j.GeoLocation;
 import twitter4j.Paging;
@@ -50,12 +51,14 @@ public class TwitterServiceImpl implements TwitterService {
   private final TerminationDetector terminationDetector;
   private final TweetCacheUpdater remoteUpdater;
   private final TruckDAO truckDAO;
+  private final TruckStopNotifier notifier;
 
   @Inject
   public TwitterServiceImpl(TwitterFactoryWrapper twitter, TweetCacheDAO tweetDAO,
       @Named("foodtruck.twitter.list") int twitterListId, DateTimeZone zone,
       TruckStopMatcher matcher, TruckStopDAO truckStopDAO, Clock clock,
-      TerminationDetector detector, TweetCacheUpdater updater, TruckDAO truckDAO) {
+      TerminationDetector detector, TweetCacheUpdater updater, TruckDAO truckDAO,
+      TruckStopNotifier truckStopNotifier) {
     this.tweetDAO = tweetDAO;
     this.twitterFactory = twitter;
     this.twitterListId = twitterListId;
@@ -66,6 +69,7 @@ public class TwitterServiceImpl implements TwitterService {
     this.terminationDetector = detector;
     this.remoteUpdater = updater;
     this.truckDAO = truckDAO;
+    this.notifier = truckStopNotifier;
   }
 
   @Override
@@ -204,10 +208,16 @@ public class TwitterServiceImpl implements TwitterService {
           }
         }
         if (!deleteStops.isEmpty()) {
+          for (TruckStop stop : deleteStops) {
+            notifier.removed(stop);
+          }
           truckStopDAO.deleteStops(deleteStops);
         }
         if (matchedStop != null) {
           addStops.add(matchedStop);
+          for (TruckStop stop : addStops) {
+            notifier.added(stop);
+          }
           truckStopDAO.addStops(addStops);
         }
       } else if (terminationTime != null) {
@@ -239,6 +249,7 @@ public class TwitterServiceImpl implements TwitterService {
     log.log(Level.INFO, "Capping {0} with new termination time {1}", new Object[] {found,
         terminationTime});
     found = found.withEndTime(terminationTime);
+    notifier.terminated(found);
     log.log(Level.INFO, "New stop {0}", found);
     truckStopDAO.update(found);
   }
