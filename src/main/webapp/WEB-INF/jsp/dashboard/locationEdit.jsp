@@ -4,7 +4,16 @@
         src="http://maps.googleapis.com/maps/api/js?sensor=false">
 </script>
 
-<div id="map_canvas" style="width:500px; height:300px; padding-bottom:20px;"></div>
+<div class="row">
+  <div class="span8">
+    <div id="map_canvas" style="width:450px; height:300px; padding-bottom:20px;"></div>
+  </div>
+  <div class="span6">
+    <ul id="searchLocations">
+
+    </ul>
+  </div>
+</div>
 
 <div>
   <a id="locationSearchButton" href="#">Search for a location</a>
@@ -144,18 +153,37 @@
       if (!addr.match(/,/)) {
         addr = addr + ", Chicago, IL";
       }
+      var $searchLocations = $("#searchLocations");
+      $searchLocations.empty();
       geocoder.geocode({ 'address': addr }, function(results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
           for (var i = 0; i < results.length; i++) {
-            var marker = new google.maps.Marker({
+            var auxMarker = new google.maps.Marker({
               draggable: false,
               icon: 'http://maps.google.com/mapfiles/marker_green.png',
               position: results[i].geometry.location,
               map: map
             });
+            var buf = "<li><a class='address' lat='"
+                + results[i].geometry.location.lat() + "' lng='" +
+                + results[i].geometry.location.lng() + "' "
+                + " href='#'>" + results[i].formatted_address + "</a></li>";
+            $searchLocations.append(buf);
             bounds.extend(results[i].geometry.location);
           }
           map.fitBounds(bounds);
+          $("a.address").click(function(e) {
+            e.preventDefault();
+            var target = e.target;
+            var lat = $(e.target).attr("lat"),
+                lng = $(e.target).attr("lng");
+            var newPos = new google.maps.LatLng(parseFloat(lat),
+                parseFloat(lng));
+            $("#latitude").attr("value", lat);
+            $("#longitude").attr("value", lng);
+            marker.setPosition(newPos);
+
+          });
         } else {
           alert("Unable to geocode your address");
         }
