@@ -6,6 +6,7 @@ import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.ScheduleDAO;
 import foodtruck.dao.TruckDAO;
+import foodtruck.dao.TruckStopChangeDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.dao.TweetCacheDAO;
 
@@ -22,5 +23,6 @@ public class AppEngineDAOModule extends AbstractModule {
     bind(ScheduleDAO.class).to(ScheduleDAOAppEngine.class);
     bind(TruckDAO.class).to(TruckDAOAppEngine.class);
     bind(ConfigurationDAO.class).to(ConfigurationDAOAppEngine.class);
+    bind(TruckStopChangeDAO.class).to(TruckStopChangeDAOAppEngine.class);
   }
 }

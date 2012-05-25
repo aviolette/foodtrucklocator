@@ -14,6 +14,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.PropertyContainer;
 import com.google.appengine.api.datastore.Query;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -106,8 +107,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
     }
   }
 
-  private Entity toEntity(TruckStop stop, Entity entity) {
-    Entity truckStop = entity == null ? new Entity(STOP_KIND) : entity;
+  void putProperties(TruckStop stop, PropertyContainer truckStop) {
     truckStop.setProperty(TRUCK_ID_FIELD, stop.getTruck().getId());
     truckStop.setProperty(START_TIME_FIELD, stop.getStartTime().toDate());
     truckStop.setProperty(END_TIME_FIELD, stop.getEndTime().toDate());
@@ -117,6 +117,11 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
     truckStop.setProperty(DESCRIPTION_FIELD, stop.getLocation().getDescription());
     truckStop.setProperty(URL_FIELD, stop.getLocation().getUrl());
     truckStop.setProperty(LOCKED_FIELD, stop.isLocked());
+  }
+
+  private Entity toEntity(TruckStop stop, Entity entity) {
+    Entity truckStop = entity == null ? new Entity(STOP_KIND) : entity;
+    putProperties(stop, truckStop);
     return truckStop;
   }
 
