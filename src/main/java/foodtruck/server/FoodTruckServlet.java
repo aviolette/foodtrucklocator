@@ -60,7 +60,9 @@ public class FoodTruckServlet extends HttpServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     final String path = req.getRequestURI();
-    if (req.getServerName().contains("chifoodtruckz.com")) {
+    final String serverName = req.getServerName();
+    if (serverName.contains("chifoodtruckz.com") ||
+        serverName.contains("chicagofoodtrucklocator.appspot.com")) {
       resp.setStatus(301);
       resp.setHeader("Location", "http://www.chicagofoodtruckfinder.com" + path);
       return;
