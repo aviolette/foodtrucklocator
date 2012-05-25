@@ -820,3 +820,19 @@ categories: Savory
 iconUrl: http://twimg0-a.akamaihd.net/sticky/default_profile_images/default_profile_1_normal.png
 twittalyzer: "on"
 inactive: true
+---
+id: hummuschicago
+twitter: hummuschicago
+name: I Heart Hummus
+categories: Savory
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/2180504467/TwitterLogo_normal.jpg
+twittalyzer: "on"
+inactive: true
+---
+id: fyitruck
+twitter: fyitruck
+name: FYI Truck
+categories: Savory
+iconUrl: http://twimg0-a.akamaihd.net/profile_images/2171692406/Logo_Final_normal.jpg
+twittalyzer: "on"
+inactive: true
