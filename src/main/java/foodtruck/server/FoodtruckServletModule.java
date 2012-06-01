@@ -19,6 +19,7 @@ import foodtruck.server.dashboard.LocationEditServlet;
 import foodtruck.server.dashboard.LocationListServlet;
 import foodtruck.server.dashboard.TruckListServlet;
 import foodtruck.server.dashboard.TruckServlet;
+import foodtruck.server.job.MailUpdatesServlet;
 import foodtruck.server.job.RecacheServlet;
 import foodtruck.server.job.SyncTrucksServlet;
 import foodtruck.server.job.TweetCacheUpdateServlet;
@@ -40,6 +41,7 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/cron/tweets").with(TweetCacheUpdateServlet.class);
     serve("/cron/synctrucks").with(SyncTrucksServlet.class);
     serve("/cron/tweetPurge").with(TwitterCachePurgeServlet.class);
+    serve("/cron/processChanges").with(MailUpdatesServlet.class);
     serve("/admin").with(AdminDashboardServlet.class);
     serve("/admin/trucks/*").with(TruckServlet.class);
     serve("/admin/trucks").with(TruckListServlet.class);
