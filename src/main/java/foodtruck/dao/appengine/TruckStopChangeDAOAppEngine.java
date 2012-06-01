@@ -1,8 +1,14 @@
 // Copyright 2012 BrightTag, Inc. All rights reserved.
 package foodtruck.dao.appengine;
 
+import java.util.Collection;
+import java.util.List;
+
 import com.google.appengine.api.datastore.EmbeddedEntity;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 import foodtruck.dao.TruckStopChangeDAO;
@@ -41,6 +47,17 @@ public class TruckStopChangeDAOAppEngine extends AppEngineDAO<Long, TruckStopCha
   }
 
   @Override protected TruckStopChange fromEntity(Entity entity) {
-    return null;
+    TruckStopChange.Builder change = TruckStopChange.builder();
+    // TODO: add rest of the magic here
+    change.id(entity.getKey().getId());
+    return change.build();
+  }
+
+  @Override public void deleteAll(Collection<TruckStopChange> changes) {
+    List<Key> keys = Lists.newLinkedList();
+    for (TruckStopChange change : changes) {
+      keys.add(KeyFactory.createKey(getKind(), (Long) change.getKey()));
+    }
+    provider.get().delete(keys);
   }
 }
