@@ -30,19 +30,23 @@ public class TruckStopChangeDAOAppEngine extends AppEngineDAO<Long, TruckStopCha
   }
 
   @Override protected Entity toEntity(TruckStopChange obj, Entity entity) {
+    String truckId = null;
     EmbeddedEntity to = null;
     if (obj.getTo() != null) {
       to = new EmbeddedEntity();
       truckStopDAO.putProperties(obj.getTo(), to);
+      truckId = obj.getTo().getTruck().getId();
     }
     EmbeddedEntity from = new EmbeddedEntity();
     if (obj.getFrom() != null) {
       from = new EmbeddedEntity();
       truckStopDAO.putProperties(obj.getFrom(), from);
+      truckId = obj.getFrom().getTruck().getId();
     }
     entity.setProperty("timeStamp", obj.getTimeStamp().toDate());
     entity.setProperty("to", to);
     entity.setProperty("from", from);
+    entity.setProperty("truck", truckId);
     return entity;
   }
 
