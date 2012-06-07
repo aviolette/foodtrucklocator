@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
+import foodtruck.model.Location;
 import foodtruck.model.TruckStatus;
 import foodtruck.model.DailySchedule;
 import foodtruck.model.Truck;
@@ -68,4 +69,9 @@ public interface FoodTruckStopService {
   void update(TruckStop truckStop);
 
   List<TruckStatus> findCurrentAndPreviousStop(LocalDate day);
+
+  /**
+   * Syncs the location (based on name) to all the truck stops on the current day.
+   */
+  void updateLocationInCurrentSchedule(Location location);
 }

@@ -152,4 +152,15 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     }
     return TruckStatus.BY_NAME.immutableSortedCopy(truckInfo.build());
   }
+
+  @Override
+  public void updateLocationInCurrentSchedule(Location location) {
+    List<TruckStop> stops = truckStopDAO.findDuring(null, clock.currentDay());
+    for (TruckStop stop : stops) {
+      if (stop.getLocation().getName().equals(location.getName())) {
+        stop = stop.withLocation(location);
+        truckStopDAO.update(stop);
+      }
+    }
+  }
 }

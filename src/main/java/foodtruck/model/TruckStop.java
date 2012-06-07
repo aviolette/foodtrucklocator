@@ -87,18 +87,22 @@ public class TruckStop extends ModelEntity {
    * Returns a new TruckStop with a new startTime
    */
   public TruckStop withStartTime(DateTime startTime) {
-    return new TruckStop(truck, startTime, endTime, location, (Long) getKey(), false);
+    return new TruckStop(truck, startTime, endTime, location, (Long) getKey(), locked);
   }
 
   /**
    * Returns a new TruckStop with a new endTime
    */
   public TruckStop withEndTime(DateTime endTime) {
-    return new TruckStop(truck, startTime, endTime, location, (Long) getKey(), false);
+    return new TruckStop(truck, startTime, endTime, location, (Long) getKey(), locked);
   }
 
   public boolean activeDuring(DateTime dateTime) {
     return startTime.equals(dateTime) ||
         (dateTime.isAfter(startTime) && dateTime.isBefore(endTime));
+  }
+
+  public TruckStop withLocation(Location location) {
+    return new TruckStop(truck, startTime, endTime, location, (Long) getKey(), locked);
   }
 }

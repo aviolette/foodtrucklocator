@@ -15,11 +15,13 @@ import com.google.inject.Singleton;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import foodtruck.dao.LocationDAO;
 import foodtruck.model.Location;
 import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.server.api.JsonReader;
 import foodtruck.server.api.JsonWriter;
+import foodtruck.truckstops.FoodTruckStopService;
 
 /**
  * @author aviolette@gmail.com
@@ -30,12 +32,15 @@ public class LocationEditServlet extends HttpServlet {
   private final LocationDAO locationDAO;
   private final JsonWriter writer;
   private final JsonReader reader;
+  private final FoodTruckStopService truckStopService;
 
   @Inject
-  public LocationEditServlet(LocationDAO dao, JsonWriter writer, JsonReader reader) {
+  public LocationEditServlet(LocationDAO dao, JsonWriter writer, JsonReader reader,
+      FoodTruckStopService truckStopService) {
     this.locationDAO = dao;
     this.writer = writer;
     this.reader = reader;
+    this.truckStopService = checkNotNull(truckStopService);
   }
 
   @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -63,6 +68,7 @@ public class LocationEditServlet extends HttpServlet {
       JSONObject jsonPayload = new JSONObject(json);
       Location location = reader.readLocation(jsonPayload);
       locationDAO.save(location);
+      truckStopService.updateLocationInCurrentSchedule(location);
       resp.setStatus(204);
     } catch (JSONException e) {
       throw Throwables.propagate(e);
