@@ -31,7 +31,7 @@
         @chifoodtruckz</a></p>
 
       <div style="padding-right: 10px !important" class="pull-right fb-like"
-           data-href="http://www.chicagofoodtruckfinder.com"
+           data-href="http://www.facebook.com/chicagofoodtruckfinder"
            data-send="false" data-layout="button_count" data-width="50"
            data-show-faces="false"></div>
 
