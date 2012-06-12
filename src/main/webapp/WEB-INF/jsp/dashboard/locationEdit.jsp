@@ -46,7 +46,7 @@
       <label for="description">Description</label>
 
       <div class="input">
-        <input id="description" type="text"/>
+        <textarea id="description" rows="5" cols="80"></textarea>
       </div>
     </div>
     <div class="clearfix">
