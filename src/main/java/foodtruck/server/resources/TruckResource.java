@@ -18,7 +18,6 @@ import foodtruck.model.Truck;
  * @since 6/13/12
  */
 @Path("/trucks")
-@Produces("application/json")
 public class TruckResource {
   private final TruckDAO truckDAO;
 
@@ -28,6 +27,7 @@ public class TruckResource {
   }
 
   @GET
+  @Produces({"application/json", "text/csv"})
   public JResponse<Collection<Truck>> getTrucks() {
     return JResponse.ok(truckDAO.findAll()).build();
   }
