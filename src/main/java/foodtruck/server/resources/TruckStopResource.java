@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
@@ -33,8 +34,8 @@ public class TruckStopResource {
   }
 
   @GET
-  public JResponse<Set<TruckLocationGroup>> getStops() {
-    DateTime requestTime = clock.now();
+  public JResponse<Set<TruckLocationGroup>> getStops(@Context DateTime requestTime) {
+    requestTime = (requestTime == null) ? clock.now() : requestTime;
     Set<TruckLocationGroup> foodTruckGroups = foodTruckService.findFoodTruckGroups(requestTime);
     ImmutableSet.Builder<TruckLocationGroup> builder = ImmutableSet.builder();
     for (TruckLocationGroup group : foodTruckGroups) {
