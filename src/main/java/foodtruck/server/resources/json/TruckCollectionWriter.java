@@ -16,6 +16,6 @@ import foodtruck.model.Truck;
 public class TruckCollectionWriter extends CollectionWriter<Truck, TruckWriter> {
   @Inject
   public TruckCollectionWriter(TruckWriter writer) {
-    super(writer, TruckWriter.class);
+    super(writer, Truck.class);
   }
 }
