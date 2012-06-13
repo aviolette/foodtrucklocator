@@ -1,9 +1,12 @@
 package foodtruck.server;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import com.google.inject.servlet.ServletModule;
+import com.sun.jersey.api.core.PackagesResourceConfig;
+import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 
 import org.joda.time.DateTimeZone;
 
@@ -11,7 +14,6 @@ import foodtruck.model.Location;
 import foodtruck.server.api.AdminTruckStopServlet;
 import foodtruck.server.api.DailyScheduleServlet;
 import foodtruck.server.api.FoodTruckScheduleServlet;
-import foodtruck.server.api.TruckStopServlet;
 import foodtruck.server.api.TweetUpdateServlet;
 import foodtruck.server.dashboard.AdminDashboardServlet;
 import foodtruck.server.dashboard.ConfigurationServlet;
@@ -51,7 +53,8 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/admin/service/stop/*").with(AdminTruckStopServlet.class);
     serve("/service/schedule/*").with(FoodTruckScheduleServlet.class);
     serve("/service/schedule").with(DailyScheduleServlet.class);
-    serve("/service/stops*").with(TruckStopServlet.class);
+    serve("/services/*").with(GuiceContainer.class,
+        ImmutableMap.of(PackagesResourceConfig.PROPERTY_PACKAGES, "foodtruck.server.resources"));
     serve("/service/tweets").with(TweetUpdateServlet.class);
     serve("/heatmap").with(HeatmapServlet.class);
     serveRegex("/[\\w]*").with(FoodTruckServlet.class);

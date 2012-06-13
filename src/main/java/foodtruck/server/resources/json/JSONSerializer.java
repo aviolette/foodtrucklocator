@@ -1,0 +1,49 @@
+package foodtruck.server.resources.json;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+
+/**
+ * @author aviolette@gmail.com
+ * @since 4/19/12
+ */
+public class JSONSerializer {
+  public static boolean isParameterizedCollectionOf(Type type, Class<?> aClass,
+      Class<?> contained) {
+    if (!(type instanceof ParameterizedType)) {
+      return false;
+    }
+    ParameterizedType pt = (ParameterizedType) type;
+    return Iterable.class.isAssignableFrom(aClass) &&
+        pt.getActualTypeArguments().length == 1 &&
+        pt.getActualTypeArguments()[0].equals(contained);
+  }
+
+  public static <E> void writeJSONCollection(Iterable<E> objs, JSONWriter<E> writer,
+      OutputStream os) throws JSONException {
+    JSONArray arr = buildArray(objs, writer);
+    writeJSON(arr, os);
+  }
+
+  public static void writeJSON(Object obj, OutputStream os) {
+    try {
+      os.write(obj.toString().getBytes("UTF-8"));
+    } catch (IOException io) {
+      throw new RuntimeException(io);
+    }
+  }
+
+  public static <E> JSONArray buildArray(Iterable<E> objs, JSONWriter<E> writer)
+      throws JSONException {
+    JSONArray arr = new JSONArray();
+    for (E t : objs) {
+      arr.put(writer.asJSON(t));
+    }
+    return arr;
+  }
+}

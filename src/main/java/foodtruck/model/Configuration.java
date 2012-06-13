@@ -1,4 +1,3 @@
-// Copyright 2012 BrightTag, Inc. All rights reserved.
 package foodtruck.model;
 
 import com.google.appengine.api.datastore.Key;

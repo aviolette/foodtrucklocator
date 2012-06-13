@@ -1,4 +1,3 @@
-// Copyright 2010 BrightTag, Inc. All rights reserved.
 package foodtruck.server;
 
 import javax.servlet.http.HttpServletRequest;

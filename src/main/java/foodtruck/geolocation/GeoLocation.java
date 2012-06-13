@@ -1,4 +1,3 @@
-// Copyright 2010 BrightTag, Inc. All rights reserved.
 package foodtruck.geolocation;
 
 import java.lang.annotation.Retention;
@@ -16,6 +15,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @author aviolette@gmail.com
  * @since 8/30/11
  */
-@BindingAnnotation @Target( {FIELD, PARAMETER, METHOD}) @Retention(RUNTIME)
+@BindingAnnotation @Target({FIELD, PARAMETER, METHOD}) @Retention(RUNTIME)
 public @interface GeoLocation {
 }

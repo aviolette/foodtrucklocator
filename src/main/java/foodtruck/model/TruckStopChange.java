@@ -1,4 +1,3 @@
-// Copyright 2012 BrightTag, Inc. All rights reserved.
 package foodtruck.model;
 
 import javax.annotation.Nullable;
@@ -9,7 +8,7 @@ import org.joda.time.DateTime;
  * @author aviolette@gmail.com
  * @since 5/24/12
  */
-public class TruckStopChange extends ModelEntity{
+public class TruckStopChange extends ModelEntity {
   private @Nullable TruckStop to;
   private @Nullable TruckStop from;
   private DateTime timeStamp;
@@ -44,7 +43,8 @@ public class TruckStopChange extends ModelEntity{
     private DateTime dateTime;
     private long id = -1;
 
-    private Builder() {}
+    private Builder() {
+    }
 
     public Builder id(long id) {
       this.id = id;
@@ -52,7 +52,7 @@ public class TruckStopChange extends ModelEntity{
     }
 
     public Builder to(@Nullable TruckStop to) {
-      this.to  = to;
+      this.to = to;
       return this;
     }
 

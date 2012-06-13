@@ -1,7 +1,4 @@
-// Copyright 2012 BrightTag, Inc. All rights reserved.
 package foodtruck.truckstops;
-
-import java.util.Collection;
 
 import foodtruck.model.TruckStop;
 

@@ -1,4 +1,3 @@
-// Copyright 2010 BrightTag, Inc. All rights reserved.
 package foodtruck.dao.appengine;
 
 import java.util.Collection;
