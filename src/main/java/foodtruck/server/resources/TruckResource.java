@@ -5,7 +5,9 @@ import java.util.Collection;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import com.google.inject.Inject;
 import com.sun.jersey.api.JResponse;
@@ -17,7 +19,7 @@ import foodtruck.model.Truck;
  * @author aviolette@gmail.com
  * @since 6/13/12
  */
-@Path("/trucks")
+@Path("/trucks{view : (\\.[a-z]{3})?}")
 public class TruckResource {
   private final TruckDAO truckDAO;
 
@@ -27,8 +29,12 @@ public class TruckResource {
   }
 
   @GET
-  @Produces({"application/json", "text/csv"})
-  public JResponse<Collection<Truck>> getTrucks() {
-    return JResponse.ok(truckDAO.findAll()).build();
+  @Produces({"application/json", "text/xml"})
+  public JResponse<Collection<Truck>> getTrucks(@PathParam("view") String view) {
+    MediaType mediaType = MediaType.APPLICATION_JSON_TYPE;
+    if (".csv".equals(view)) {
+      mediaType = new MediaType("text", "csv");
+    }
+    return JResponse.ok(truckDAO.findAll(), mediaType).build();
   }
 }
