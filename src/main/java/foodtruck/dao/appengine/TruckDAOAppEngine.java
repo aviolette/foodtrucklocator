@@ -19,7 +19,6 @@ import foodtruck.model.Truck;
  */
 public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO {
   private static final String TRUCK_KIND = "Store";
-  private static final String TRUCK_ID_FIELD = "id";
   private static final String TRUCK_NAME_FIELD = "name";
   private static final String TRUCK_TWITTER_HANDLE = "twitterHandle";
   private static final String TRUCK_URL = "url";
@@ -34,6 +33,8 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
   private static final String INACTIVE_FIELD = "inactive";
   private static final String CATEGORIES_FIELD = "categories";
   private static final String TRUCK_CALENDAR_URL = "calendarUrl";
+  private static final String TRUCK_EMAIL = "email";
+  private static final String TRUCK_PHONE = "phone";
 
   @Inject
   public TruckDAOAppEngine(DatastoreServiceProvider provider) {
@@ -59,6 +60,8 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
             ImmutableSet.copyOf(categoriesList))
         .useTwittalyzer((Boolean) entity.getProperty(TRUCK_TWITTALYZER_FIELD))
         .calendarUrl((String) entity.getProperty(TRUCK_CALENDAR_URL))
+        .phone((String) entity.getProperty(TRUCK_PHONE))
+        .email((String) entity.getProperty(TRUCK_EMAIL))
         .build();
   }
 
@@ -114,6 +117,8 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     entity.setProperty(DONT_MATCH_REGEX_FIELD, truck.getDonotMatchIfString());
     entity.setProperty(INACTIVE_FIELD, truck.isInactive());
     entity.setProperty(CATEGORIES_FIELD, truck.getCategories());
+    entity.setProperty(TRUCK_EMAIL, truck.getEmail());
+    entity.setProperty(TRUCK_PHONE, truck.getPhone());
     return entity;
   }
 }

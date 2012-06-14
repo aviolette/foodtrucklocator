@@ -58,10 +58,24 @@
     </div>
   </div>
   <div class="clearfix">
-    <label for="foursquareUrl">Default City</label>
+    <label for="defaultCity">Default City</label>
 
     <div class="input">
       <input type="text" id="defaultCity" name="defaultCity" value="${truck.defaultCity}"/>
+    </div>
+  </div>
+  <div class="clearfix">
+    <label for="email">Email</label>
+
+    <div class="input">
+      <input type="text" id="email" name="email" value="${truck.email}"/>
+    </div>
+  </div>
+  <div class="clearfix">
+    <label for="phone">Phone</label>
+
+    <div class="input">
+      <input type="text" id="phone" name="phone" value="${truck.phone}"/>
     </div>
   </div>
   <div class="clearfix">

@@ -31,6 +31,8 @@ public class Truck extends ModelEntity {
   private final Pattern donotMatchIf;
   private final boolean inactive;
   private @Nullable final String calendarUrl;
+  private final @Nullable String email;
+  private final @Nullable String phone;
 
   private Truck(Builder builder) {
     super(builder.id);
@@ -49,6 +51,8 @@ public class Truck extends ModelEntity {
     this.inactive = builder.inactive;
     this.calendarUrl = builder.calendarUrl;
     this.donotMatchIf = builder.donotMatchIf;
+    this.email = builder.email;
+    this.phone = builder.phone;
   }
 
   public @Nullable String getFoursquareUrl() {
@@ -105,6 +109,14 @@ public class Truck extends ModelEntity {
 
   public boolean isInactive() {
     return inactive;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public String getPhone() {
+    return phone;
   }
 
   @Override
@@ -176,6 +188,8 @@ public class Truck extends ModelEntity {
     private boolean inactive;
     private @Nullable String calendarUrl;
     private Pattern donotMatchIf;
+    private @Nullable String email;
+    private @Nullable String phone;
 
     public Builder() {
     }
@@ -272,6 +286,16 @@ public class Truck extends ModelEntity {
 
     public Builder inactive(Boolean inactive) {
       this.inactive = inactive;
+      return this;
+    }
+
+    public Builder email(@Nullable String email) {
+      this.email = email;
+      return this;
+    }
+
+    public Builder phone(@Nullable String phone) {
+      this.phone = phone;
       return this;
     }
 
