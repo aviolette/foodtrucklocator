@@ -33,6 +33,17 @@
                                                                                   href="${truck.url}">${truck.url}</a></c:otherwise></c:choose>
     </td>
   </tr>
+  <tr>
+    <td>Email</td>
+    <td><c:choose><c:when test="${empty(truck.email)}">none</c:when><c:otherwise><a target="_blank"
+                                                                                  href="mailto:${truck.email}">${truck.email}</a></c:otherwise></c:choose>
+    </td>
+  </tr>
+  <tr>
+    <td>Phone</td>
+    <td><c:choose><c:when test="${empty(truck.phone)}">none</c:when><c:otherwise>${truck.phone}</c:otherwise></c:choose>
+    </td>
+  </tr>
 </table>
 
 <h2>Schedule</h2>
