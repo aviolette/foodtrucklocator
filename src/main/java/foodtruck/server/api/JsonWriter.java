@@ -19,7 +19,6 @@ import org.joda.time.format.DateTimeFormatter;
 import foodtruck.model.DailySchedule;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
-import foodtruck.model.TruckLocationGroup;
 import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStop;
 
@@ -34,13 +33,6 @@ public class JsonWriter {
   @Inject
   public JsonWriter(DateTimeZone zone) {
     timeFormatter = DateTimeFormat.forPattern("hh:mm a").withZone(zone);
-  }
-
-  public JSONObject writeGroup(TruckLocationGroup group) throws
-      JSONException {
-    return new org.codehaus.jettison.json.JSONObject()
-        .put("location", writeLocation(group.getLocation(), 0, false))
-        .put("trucks", writeTrucks(group.getTrucks()));
   }
 
   public JSONArray writeTrucks(Iterable<Truck> trucks) throws JSONException {
