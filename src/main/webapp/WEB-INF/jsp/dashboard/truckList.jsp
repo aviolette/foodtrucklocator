@@ -3,6 +3,8 @@
 
 <a href="/cron/tweets" class="btn primary" id="twitterButton">Refresh all tweets</a>
 
+<a href="#" class="btn" id="newTruck">New Truck</a>
+
 <h3>Active Trucks</h3>
 <table>
   <thead>
@@ -105,6 +107,25 @@
     }
 
     bindAjaxCallToButton("twitterButton", "/cron/tweets");
+
+    function newTruckDialog() {
+      var truckId = prompt("Enter truck ID:");
+      $.ajax({
+        url : "/services/trucks",
+        type: "POST",
+        contentType: "application/json",
+        data : JSON.stringify({id : truckId, name : "UNNAMED-" + truckId, twitterHandle: truckId}),
+        success : function() {
+          location.href = "/admin/trucks/" + truckId
+        }
+      });
+    }
+
+    $("#newTruck").click(function(e) {
+      e.preventDefault();
+      newTruckDialog();
+    });
+
   })();
 </script>
 

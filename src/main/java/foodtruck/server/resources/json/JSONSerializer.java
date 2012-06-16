@@ -1,12 +1,16 @@
 package foodtruck.server.resources.json;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
+import com.google.common.io.ByteStreams;
+
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 /**
  * @author aviolette@gmail.com
@@ -35,6 +39,15 @@ public class JSONSerializer {
       os.write(obj.toString().getBytes("UTF-8"));
     } catch (IOException io) {
       throw new RuntimeException(io);
+    }
+  }
+
+  public static JSONObject readJSON(InputStream entityStream) throws JSONException {
+    try {
+      String input = new String(ByteStreams.toByteArray(entityStream));
+      return new JSONObject(input);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
   }
 
