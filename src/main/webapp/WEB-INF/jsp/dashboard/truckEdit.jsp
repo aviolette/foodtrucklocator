@@ -1,118 +1,124 @@
 <%@ include file="dashboardHeader.jsp" %>
 
 <form action="" method="POST">
-  <div class="clearfix">
-    <label for="truckName">Name:</label>
+  <fieldset title="Truck Information">
+    <legend>Truck Information</legend>
+    <div class="clearfix">
+      <label for="truckName">Name:</label>
 
-    <div class="input">
-      <input type="text" id="truckName" name="name" value="${truck.name}"/>
+      <div class="input">
+        <input type="text" class="input-xlarge" id="truckName" name="name" value="${truck.name}"/>
+      </div>
     </div>
-  </div>
-  <div class="clearfix">
-    <label for="twitterHandle">Twitter Handle:</label>
+    <div class="clearfix">
+      <label for="twitterHandle">Twitter Handle:</label>
 
-    <div class="input">
-      <input type="text" id="twitterHandle" name="twitterHandle" value="${truck.twitterHandle}"/>
+      <div class="input">
+        <input type="text" class="input-xlarge" id="twitterHandle" name="twitterHandle" value="${truck.twitterHandle}"/>
+      </div>
     </div>
-  </div>
-  <div class="clearfix">
-    <label for="url">Url:</label>
+    <div class="clearfix">
+      <label for="url">Url:</label>
 
-    <div class="input">
-      <input type="text" id="url" name="url" value="${truck.url}"/>
+      <div class="input">
+        <input type="text" class="input-xlarge" id="url" name="url" value="${truck.url}"/>
+      </div>
     </div>
-  </div>
-  <div class="clearfix">
-    <label for="iconUrl">Icon URL:</label>
+    <div class="clearfix">
+      <label for="description">Description</label>
 
-    <div class="input">
-      <input type="text" id="iconUrl" name="iconUrl" value="${truck.iconUrl}"/>
+      <div class="input">
+        <input type="text" class="input-xlarge" id="description" name="description" value="${truck.description}"/>
+      </div>
     </div>
-  </div>
-  <div class="clearfix">
-    <label for="description">Description</label>
+    <div class="clearfix">
+      <label for="foursquareUrl">Foursquare ID</label>
 
-    <div class="input">
-      <input type="text" id="description" name="description" value="${truck.description}"/>
+      <div class="input">
+        <input type="text" class="input-xlarge" id="foursquareUrl" name="foursquareUrl" value="${truck.foursquareUrl}"/>
+      </div>
     </div>
-  </div>
-  <div class="clearfix">
-    <label for="foursquareUrl">Foursquare ID</label>
+    <div class="clearfix">
+      <label for="facebook">Facebook URI</label>
 
-    <div class="input">
-      <input type="text" id="foursquareUrl" name="foursquareUrl" value="${truck.foursquareUrl}"/>
+      <div class="input">
+        <input type="text" class="input-xlarge" id="facebook" name="facebook" value="${truck.facebook}"/>
+      </div>
     </div>
-  </div>
-  <div class="clearfix">
-    <label for="facebook">Facebook URI</label>
+    <div class="clearfix">
+      <label for="email">Email</label>
 
-    <div class="input">
-      <input type="text" id="facebook" name="facebook" value="${truck.facebook}"/>
+      <div class="input">
+        <input type="text" class="input-xlarge" id="email" name="email" value="${truck.email}"/>
+      </div>
     </div>
-  </div>
-  <div class="clearfix">
-    <label for="calendarUrl">Calendar URL</label>
+    <div class="clearfix">
+      <label for="phone">Phone</label>
 
-    <div class="input">
-      <input type="text" id="calendarUrl" name="calendarUrl" value="${truck.calendarUrl}"/>
+      <div class="input">
+        <input type="text" class="input-xlarge" id="phone" name="phone" value="${truck.phone}"/>
+      </div>
     </div>
-  </div>
-  <div class="clearfix">
-    <label for="defaultCity">Default City</label>
+  </fieldset>
+  <fieldset title="Internal Display and Matching Information">
+    <legend>Internal Display and Matching Information</legend>
+    <div class="clearfix">
+      <label for="iconUrl">Icon URL:</label>
 
-    <div class="input">
-      <input type="text" id="defaultCity" name="defaultCity" value="${truck.defaultCity}"/>
+      <div class="input">
+        <input type="text" class="input-xlarge" class="input-xlarge" id="iconUrl" name="iconUrl" value="${truck.iconUrl}"/>
+      </div>
     </div>
-  </div>
-  <div class="clearfix">
-    <label for="email">Email</label>
+    <div class="clearfix">
+      <label for="calendarUrl">Calendar URL</label>
 
-    <div class="input">
-      <input type="text" id="email" name="email" value="${truck.email}"/>
+      <div class="input">
+        <input type="text" class="input-xlarge" id="calendarUrl" name="calendarUrl" value="${truck.calendarUrl}"/>
+      </div>
     </div>
-  </div>
-  <div class="clearfix">
-    <label for="phone">Phone</label>
+    <div class="clearfix">
+      <label for="defaultCity">Default City</label>
 
-    <div class="input">
-      <input type="text" id="phone" name="phone" value="${truck.phone}"/>
+      <div class="input">
+        <input type="text" class="input-xlarge" id="defaultCity" name="defaultCity" value="${truck.defaultCity}"/>
+      </div>
     </div>
-  </div>
-  <div class="clearfix">
-    <label for="matchOnlyIf">Match-only Regex</label>
+    <div class="clearfix">
+      <label for="matchOnlyIf">Match-only Regex</label>
 
-    <div class="input">
-      <input type="text" id="matchOnlyIf" name="matchOnlyIf" value="${truck.matchOnlyIfString}"/>
+      <div class="input">
+        <input type="text" class="input-xlarge" id="matchOnlyIf" name="matchOnlyIf" value="${truck.matchOnlyIfString}"/>
+      </div>
     </div>
-  </div>
-  <div class="clearfix">
-    <label for="donotMatchIf">Donot Match Regex</label>
+    <div class="clearfix">
+      <label for="donotMatchIf">Donot Match Regex</label>
 
-    <div class="input">
-      <input type="text" id="donotMatchIf" name="donotMatchIf" value="${truck.donotMatchIfString}"/>
+      <div class="input">
+        <input type="text" class="input-xlarge" id="donotMatchIf" name="donotMatchIf" value="${truck.donotMatchIfString}"/>
+      </div>
     </div>
-  </div>
-  <div class="clearfix">
-    <label for="categories">Categories</label>
+    <div class="clearfix">
+      <label for="categories">Categories</label>
 
-    <div class="input">
-      <input type="text" id="categories" name="categories" value="${truck.categoryList}"/>
+      <div class="input">
+        <input type="text" class="input-xlarge" id="categories" name="categories" value="${truck.categoryList}"/>
+      </div>
     </div>
-  </div>
-  <div class="clearfix">
-    <label id="options">Options</label>
+    <div class="clearfix">
+      <label id="options">Options</label>
 
-    <div class="input">
-      <ul class="inputs-list">
-        <li><label><input type="checkbox" name="options"
-                          value="twittalyzer" ${truck.usingTwittalyzer ? "checked='checked'" : ""}/>
-          <span>Use twittalyzer</span></label></li>
-        <li><label><input type="checkbox" name="options"
-                          value="inactive" ${truck.inactive ? "checked='checked'" : ""}/> <span>Inactive</span></label>
-        </li>
-      </ul>
+      <div class="input">
+        <ul class="inputs-list">
+          <li><label><input type="checkbox" name="options"
+                            value="twittalyzer" ${truck.usingTwittalyzer ? "checked='checked'" : ""}/>
+            <span>Use twittalyzer</span></label></li>
+          <li><label><input type="checkbox" name="options"
+                            value="inactive" ${truck.inactive ? "checked='checked'" : ""}/> <span>Inactive</span></label>
+          </li>
+        </ul>
+      </div>
     </div>
-  </div>
+  </fieldset>
   <input type="submit" class="btn primary" value="Update"/>
 </form>
 
