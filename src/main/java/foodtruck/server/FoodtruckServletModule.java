@@ -35,6 +35,7 @@ import foodtruck.server.job.TwitterCachePurgeServlet;
 public class FoodtruckServletModule extends ServletModule {
   @Override
   protected void configureServlets() {
+    // This allows for us to backup the app-engine datastore locally
     if ("true".equals(System.getProperty("enable.remote_api"))) {
       bind(com.google.apphosting.utils.remoteapi.RemoteApiServlet.class).in(Singleton.class);
       serve("/remote_api").with(com.google.apphosting.utils.remoteapi.RemoteApiServlet.class);
