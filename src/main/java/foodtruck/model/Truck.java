@@ -10,6 +10,8 @@ import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 
+import static com.google.common.base.Preconditions.checkState;
+
 /**
  * Static information about a food truck.
  * @author aviolette@gmail.com
@@ -170,6 +172,12 @@ public class Truck extends ModelEntity {
 
   public static Builder builder() {
     return new Builder();
+  }
+
+  @Override public void validate() throws IllegalStateException {
+    super.validate();
+    checkState(!Strings.isNullOrEmpty(id), "ID cannot be unspecified");
+    checkState(!Strings.isNullOrEmpty(name), "Name must be specified");
   }
 
   public static class Builder {

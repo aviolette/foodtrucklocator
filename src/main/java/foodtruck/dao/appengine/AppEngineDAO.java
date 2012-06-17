@@ -43,6 +43,7 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
 
   @Override
   public long save(T obj) {
+    obj.validate();
     DatastoreService dataStore = provider.get();
     Entity entity;
     if (!obj.isNew()) {

@@ -19,4 +19,11 @@ public abstract class ModelEntity {
   public boolean isNew() {
     return key == null || (key instanceof Long && ((Long) key) < 1);
   }
+
+  /**
+   * Validates that the model object enough to be persisted.
+   * @throws IllegalStateException if the object is not valid.
+   */
+  public void validate() throws IllegalStateException {
+  }
 }
