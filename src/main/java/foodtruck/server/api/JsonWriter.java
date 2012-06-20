@@ -102,16 +102,11 @@ public class JsonWriter {
           }
         });
     Map<Location, Integer> locations = Maps.newHashMap();
+    JSONArray locationArr = new JSONArray();
     int i = 1;
     for (TruckStop stop : schedule.getStops()) {
-      if (locations.containsKey(stop.getLocation())) {
-        continue;
-      }
       locations.put(stop.getLocation(), i++);
-    }
-    JSONArray locationArr = new JSONArray();
-    for (Map.Entry<Location, Integer> loc : locations.entrySet()) {
-      locationArr.put(writeLocation(loc.getKey(), loc.getValue(), false));
+      locationArr.put(writeLocation(stop.getLocation(), i, false));
     }
     JSONArray schedules = new JSONArray();
     for (TruckStop stop : schedule.getStops()) {
