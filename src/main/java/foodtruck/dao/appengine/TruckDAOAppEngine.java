@@ -89,6 +89,18 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     return trucks.build();
   }
 
+  @Override public Collection<Truck> findActiveTrucks() {
+    DatastoreService dataStore = provider.get();
+    Query q = new Query(getKind());
+    q.addFilter(INACTIVE_FIELD, Query.FilterOperator.NOT_EQUAL, true);
+    ImmutableSet.Builder<Truck> objs = ImmutableSet.builder();
+    for (Entity entity : dataStore.prepare(q).asIterable()) {
+      Truck obj = fromEntity(entity);
+      objs.add(obj);
+    }
+    return objs.build();
+  }
+
   @Override public Set<Truck> findTrucksWithCalendars() {
     DatastoreService dataStore = provider.get();
     Query q = new Query(TRUCK_KIND);

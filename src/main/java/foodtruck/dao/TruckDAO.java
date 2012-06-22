@@ -21,5 +21,7 @@ public interface TruckDAO extends DAO<String, Truck> {
 
   Collection<Truck> findAllTwitterTrucks();
 
+  Collection<Truck> findActiveTrucks();
+
   Set<Truck> findTrucksWithCalendars();
 }

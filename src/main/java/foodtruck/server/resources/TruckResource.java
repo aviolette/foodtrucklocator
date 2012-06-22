@@ -31,13 +31,13 @@ public class TruckResource {
   }
 
   @GET
-  @Produces({"application/json", "text/xml"})
+  @Produces({"application/json", "text/csv"})
   public JResponse<Collection<Truck>> getTrucks(@PathParam("view") String view) {
     MediaType mediaType = MediaType.APPLICATION_JSON_TYPE;
     if (".csv".equals(view)) {
       mediaType = new MediaType("text", "csv");
     }
-    return JResponse.ok(truckDAO.findAll(), mediaType).build();
+    return JResponse.ok(truckDAO.findActiveTrucks(), mediaType).build();
   }
 
   @POST @Consumes(MediaType.APPLICATION_JSON) @Produces(MediaType.APPLICATION_JSON)
