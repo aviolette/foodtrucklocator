@@ -76,7 +76,7 @@
           <div>Select a time</div>
           <div class="clearfix">
             <div class="input">
-              <div class="inline-inputs"><select class="mini" id="hourSelect">
+              <div class="inline-inputs"><select class="mini timechange" id="hourSelect">
                 <option>1</option>
                 <option>2</option>
                 <option>3</option>
@@ -89,15 +89,15 @@
                 <option>10</option>
                 <option>11</option>
                 <option>12</option>
-              </select> <select class="mini" id="minSelect">
+              </select> <select class="mini timechange" id="minSelect">
                 <option>00</option>
                 <option>15</option>
                 <option>30</option>
                 <option>45</option>
-              </select> <select class="mini" id="ampmSelect">
+              </select> <select class="mini timechange" id="ampmSelect">
                 <option>am</option>
                 <option>pm</option>
-              </select> <input type="button" id="timeGoButton" class="btn primary" value="Find"/>
+              </select>
               </div>
             </div>
           </div>
@@ -126,7 +126,7 @@ document.write("<script src='script/lib/jquery-1.6.2.min.js'>\x3C/script>")</scr
 <script type="text/javascript" src="script/lib/underscore-min.js"></script>
 <script type="text/javascript" src="script/lib/backbone-min.js"></script>
 <script type="text/javascript" src="/bootstrap/js/bootstrap-modal.js"></script>
-<script type="text/javascript" src="script/map.js?ver=37"></script>
+<script type="text/javascript" src="script/map.js?ver=38"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     FoodTruckLocator.run(${mobile}, new google.maps.LatLng(${center.latitude}, ${center.longitude}),

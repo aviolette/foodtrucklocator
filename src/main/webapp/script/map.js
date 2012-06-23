@@ -248,7 +248,7 @@ window.FoodTruckLocator = function() {
       $("#hourSelect").val(hours);
       $("#minSelect").val(minutes);
       $("#ampmSelect").val(ampm);
-      $("#timeGoButton").live("click", function() {
+      $(".timechange").change(function() {
         var selectedHour = parseInt($("#hourSelect").val());
         var selectedMin = parseInt($("#minSelect").val());
         var selectedAmPm = $("#ampmSelect").val();
@@ -598,7 +598,7 @@ window.FoodTruckLocator = function() {
       $("#hourSelect").val(hours);
       $("#minSelect").val(minutes);
       $("#ampmSelect").val(ampm);
-      $("#timeGoButton").live("click", function() {
+      $(".timechange").change(function() {
         var selectedHour = parseInt($("#hourSelect").val());
         var selectedMin = parseInt($("#minSelect").val());
         var selectedAmPm = $("#ampmSelect").val();
