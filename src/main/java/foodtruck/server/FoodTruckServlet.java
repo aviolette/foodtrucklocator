@@ -87,9 +87,9 @@ public class FoodTruckServlet extends HttpServlet {
       req.setAttribute("google_analytics_ua", googleAnalytics);
     }
 
-    String payload = scheduleCacher.findSchedule(clock.currentDay());
+    String payload = scheduleCacher.findSchedule(dateTime.toLocalDate());
     if (payload == null) {
-      DailySchedule schedule = stopService.findStopsForDay(clock.currentDay());
+      DailySchedule schedule = stopService.findStopsForDay(dateTime.toLocalDate());
       try {
         payload = writer.writeSchedule(schedule).toString();
       } catch (JSONException e) {
