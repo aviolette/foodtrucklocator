@@ -1,45 +1,4 @@
-<%@ include file="common.jsp" %>
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
-  <meta name="author" content="Andrew Violette, @aviolette/@chifoodtruckz on twitter"/>
-  <meta name="description"
-        content="Find food trucks on the streets of Chicago by time and location.  Results are updated in real-time throughout the day."/>
-  <title>Chicago Food Truck Finder</title>
-  <link href="/bootstrap/bootstrap.css" rel="stylesheet"/>
-  <link href="/css/main.css?ver=4" rel="stylesheet"/>
-  <script src="script/lib/modernizr-1.7.min.js"></script>
-</head>
-<body>
-<div id="topBar" class="topbar">
-  <div class="topbar-inner">
-    <div class="container-fluid">
-      <a class="brand" href="/">Chicago Food Truck Finder</a>
-      <ul class="nav">
-        <%--
-        <li><a href="#settings">Settings</a></li>
-        <li><a href="#about">About</a></li>
-        --%>
-        <li><a target="_blank" href="http://blog.chicagofoodtruckfinder.com">Blog</a></li>
-      </ul>
-      <p class="pull-right"><a href="https://twitter.com/chifoodtruckz"
-                               class="twitter-follow-button" data-button="grey"
-                               data-text-color="#FFF" data-link-color="#FFF">Follow
-        @chifoodtruckz</a></p>
-
-      <div style="padding-right: 10px !important" class="pull-right fb-like"
-           data-href="http://www.facebook.com/chicagofoodtruckfinder"
-           data-send="false" data-layout="button_count" data-width="50"
-           data-show-faces="false"></div>
-
-    </div>
-  </div>
-</div>
-
-<div class="container-fluid">
+<%@ include file="header.jsp" %>
   <div class="sidebar">
     <div id="sidebarHeader">
       <div class="well">
@@ -117,22 +76,6 @@
       <div class="section" id="map_canvas"></div>
     </div>
   </div>
-</div>
-<script type="text/javascript"
-        src="http://maps.google.com/maps/api/js?sensor=false&libraries=geometry"></script>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
-<script>window.jQuery ||
-document.write("<script src='script/lib/jquery-1.6.2.min.js'>\x3C/script>")</script>
-<script type="text/javascript" src="script/lib/underscore-min.js"></script>
-<script type="text/javascript" src="script/lib/backbone-min.js"></script>
-<script type="text/javascript" src="/bootstrap/js/bootstrap-modal.js"></script>
-<script type="text/javascript" src="script/map.js?ver=40"></script>
-<script type="text/javascript">
-  $(document).ready(function() {
-    FoodTruckLocator.run(${mobile}, new google.maps.LatLng(${center.latitude}, ${center.longitude}),
-        new Date(${requestTimeInMillis}), ${payload});
-  });
-</script>
 <%-- truck dialog // TODO: move to separate JSP --%>
 <div id="truckDialog" class="modal hide fade">
   <div class="modal-header">
@@ -154,14 +97,17 @@ document.write("<script src='script/lib/jquery-1.6.2.min.js'>\x3C/script>")</scr
     <ul id="truckSchedule"></ul>
   </div>
 </div>
-<%-- brighttag script --%>
-<script src="//s.btstatic.com/tag.js">{
-  site: "zIOrUTR"
-}</script>
-<noscript>
-  <iframe src="//s.thebrighttag.com/iframe?c=zIOrUTR" width="1" height="1" frameborder="0"
-          scrolling="no" marginheight="0" marginwidth="0"></iframe>
-</noscript>
-</body>
-</html>
 
+<%@include file="include/core_js.jsp"%>
+<script type="text/javascript"
+        src="http://maps.google.com/maps/api/js?sensor=false&libraries=geometry"></script>
+<script type="text/javascript" src="script/lib/underscore-min.js"></script>
+<script type="text/javascript" src="script/lib/backbone-min.js"></script>
+<script type="text/javascript" src="script/map.js?ver=40"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    FoodTruckLocator.run(${mobile}, new google.maps.LatLng(${center.latitude}, ${center.longitude}),
+        new Date(${requestTimeInMillis}), ${payload});
+  });
+</script>
+<%@ include file="footer.jsp" %>
