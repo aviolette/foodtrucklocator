@@ -128,6 +128,10 @@ public class GoogleCalendar implements ScheduleStrategy {
           final List<String> parsed =
               addressExtractor.parse(titleText, searchTruck);
           String locString = Iterables.getFirst(parsed, null);
+          if (locString == null) {
+            log.info("Failed to parse titletext for address, trying whole thing: " + titleText);
+            locString = titleText;
+          }
           if (locString != null) {
             location = geolocator.locate(locString, GeolocationGranularity.BROAD);
           }
