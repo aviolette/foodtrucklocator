@@ -56,8 +56,10 @@ public class TwitterServiceImplTest extends EasyMockSupport {
   public void before() {
     final TwitterFactoryWrapper twitterFactory = createMock(TwitterFactoryWrapper.class);
     tweetDAO = createMock(TweetCacheDAO.class);
-    final Truck truck1 = new Truck.Builder().id(TRUCK_1_ID).useTwittalyzer(false).build();
-    truck2 = new Truck.Builder().id(TRUCK_2_ID).useTwittalyzer(true).build();
+    final Truck truck1 = new Truck.Builder().id(TRUCK_1_ID).twitterHandle(TRUCK_1_ID)
+        .useTwittalyzer(false).build();
+    truck2 = new Truck.Builder().id(TRUCK_2_ID).twitterHandle(TRUCK_2_ID)
+        .useTwittalyzer(true).build();
     final DateTimeZone zone = DateTimeZone.forID("America/Chicago");
     matcher = createMock(TruckStopMatcher.class);
     truckStopDAO = createMock(TruckStopDAO.class);

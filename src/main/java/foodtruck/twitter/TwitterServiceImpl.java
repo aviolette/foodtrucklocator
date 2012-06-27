@@ -156,7 +156,8 @@ public class TwitterServiceImpl implements TwitterService {
     for (Truck truck : truckDAO.findAllTwitterTrucks()) {
       // TODO: this number should probably be configurable
       List<TweetSummary> tweets =
-          tweetDAO.findTweetsAfter(clock.now().minusHours(HOURS_BACK_TO_SEARCH), truck.getId(),
+          tweetDAO.findTweetsAfter(clock.now().minusHours(HOURS_BACK_TO_SEARCH),
+              truck.getTwitterHandle(),
               false);
       TruckStopMatch match = findMatch(tweets, truck);
       DateTime terminationTime = findTermination(tweets, truck);
