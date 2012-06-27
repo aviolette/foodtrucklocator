@@ -83,6 +83,14 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
     return entity;
   }
 
+  protected boolean getBooleanProperty(Entity entity, String propertyName, boolean defaultValue) {
+    if (!entity.hasProperty(propertyName)) {
+      return defaultValue;
+    }
+    return (Boolean) entity.getProperty(propertyName);
+  }
+
+
   protected abstract Entity toEntity(T obj, Entity entity);
 
   protected abstract T fromEntity(Entity entity);

@@ -14,7 +14,8 @@
       <label for="twitterHandle">Twitter Handle:</label>
 
       <div class="input">
-        <input type="text" class="input-xlarge" id="twitterHandle" name="twitterHandle" value="${truck.twitterHandle}"/>
+        <input type="text" class="input-xlarge" id="twitterHandle" name="twitterHandle"
+               value="${truck.twitterHandle}"/>
       </div>
     </div>
     <div class="clearfix">
@@ -28,21 +29,24 @@
       <label for="description">Description</label>
 
       <div class="input">
-        <input type="text" class="input-xlarge" id="description" name="description" value="${truck.description}"/>
+        <input type="text" class="input-xlarge" id="description" name="description"
+               value="${truck.description}"/>
       </div>
     </div>
     <div class="clearfix">
       <label for="foursquareUrl">Foursquare ID</label>
 
       <div class="input">
-        <input type="text" class="input-xlarge" id="foursquareUrl" name="foursquareUrl" value="${truck.foursquareUrl}"/>
+        <input type="text" class="input-xlarge" id="foursquareUrl" name="foursquareUrl"
+               value="${truck.foursquareUrl}"/>
       </div>
     </div>
     <div class="clearfix">
       <label for="facebook">Facebook URI</label>
 
       <div class="input">
-        <input type="text" class="input-xlarge" id="facebook" name="facebook" value="${truck.facebook}"/>
+        <input type="text" class="input-xlarge" id="facebook" name="facebook"
+               value="${truck.facebook}"/>
       </div>
     </div>
     <div class="clearfix">
@@ -66,42 +70,48 @@
       <label for="iconUrl">Icon URL:</label>
 
       <div class="input">
-        <input type="text" class="input-xlarge" class="input-xlarge" id="iconUrl" name="iconUrl" value="${truck.iconUrl}"/>
+        <input type="text" class="input-xlarge" class="input-xlarge" id="iconUrl" name="iconUrl"
+               value="${truck.iconUrl}"/>
       </div>
     </div>
     <div class="clearfix">
       <label for="calendarUrl">Calendar URL</label>
 
       <div class="input">
-        <input type="text" class="input-xlarge" id="calendarUrl" name="calendarUrl" value="${truck.calendarUrl}"/>
+        <input type="text" class="input-xlarge" id="calendarUrl" name="calendarUrl"
+               value="${truck.calendarUrl}"/>
       </div>
     </div>
     <div class="clearfix">
       <label for="defaultCity">Default City</label>
 
       <div class="input">
-        <input type="text" class="input-xlarge" id="defaultCity" name="defaultCity" value="${truck.defaultCity}"/>
+        <input type="text" class="input-xlarge" id="defaultCity" name="defaultCity"
+               value="${truck.defaultCity}"/>
       </div>
     </div>
     <div class="clearfix">
       <label for="matchOnlyIf">Match-only Regex</label>
 
       <div class="input">
-        <input type="text" class="input-xlarge" id="matchOnlyIf" name="matchOnlyIf" value="${truck.matchOnlyIfString}"/>
+        <input type="text" class="input-xlarge" id="matchOnlyIf" name="matchOnlyIf"
+               value="${truck.matchOnlyIfString}"/>
       </div>
     </div>
     <div class="clearfix">
       <label for="donotMatchIf">Donot Match Regex</label>
 
       <div class="input">
-        <input type="text" class="input-xlarge" id="donotMatchIf" name="donotMatchIf" value="${truck.donotMatchIfString}"/>
+        <input type="text" class="input-xlarge" id="donotMatchIf" name="donotMatchIf"
+               value="${truck.donotMatchIfString}"/>
       </div>
     </div>
     <div class="clearfix">
       <label for="categories">Categories</label>
 
       <div class="input">
-        <input type="text" class="input-xlarge" id="categories" name="categories" value="${truck.categoryList}"/>
+        <input type="text" class="input-xlarge" id="categories" name="categories"
+               value="${truck.categoryList}"/>
       </div>
     </div>
     <div class="clearfix">
@@ -112,6 +122,9 @@
           <li><label><input type="checkbox" name="options"
                             value="twittalyzer" ${truck.usingTwittalyzer ? "checked='checked'" : ""}/>
             <span>Use twittalyzer</span></label></li>
+          <li><label><input type="checkbox" name="options"
+                            value="twitterGeolocation" ${truck.twitterGeolocationDataValid ? "checked='checked'" : ""}/>
+            <span>Can Use Twitter Geolocation Data</span></label>
           <li><label><input type="checkbox" name="options"
                             value="inactive" ${truck.inactive ? "checked='checked'" : ""}/> <span>Inactive</span></label>
           </li>

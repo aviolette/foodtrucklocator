@@ -150,6 +150,7 @@ public class TruckServlet extends HttpServlet {
     final String[] optionsArray = request.getParameterValues("options");
     Set<String> options = ImmutableSet.copyOf(optionsArray == null ? new String[0] : optionsArray);
     builder.inactive(options.contains("inactive"));
+    builder.twitterGeolocationDataValid(options.contains("twitterGeolocation"));
     builder.useTwittalyzer(options.contains("twittalyzer"));
     String matchRegex = request.getParameter("matchOnlyIf");
     builder.matchOnlyIf(Strings.isNullOrEmpty(matchRegex) ? null : matchRegex);

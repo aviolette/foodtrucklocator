@@ -35,6 +35,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
   private static final String TRUCK_CALENDAR_URL = "calendarUrl";
   private static final String TRUCK_EMAIL = "email";
   private static final String TRUCK_PHONE = "phone";
+  private static final String TRUCK_TWITTER_GEOLOCATION = "twitterGeolocation";
 
   @Inject
   public TruckDAOAppEngine(DatastoreServiceProvider provider) {
@@ -59,11 +60,13 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
         .categories(categoriesList == null ? ImmutableSet.<String>of() :
             ImmutableSet.copyOf(categoriesList))
         .useTwittalyzer((Boolean) entity.getProperty(TRUCK_TWITTALYZER_FIELD))
+        .twitterGeolocationDataValid(getBooleanProperty(entity, TRUCK_TWITTER_GEOLOCATION, false))
         .calendarUrl((String) entity.getProperty(TRUCK_CALENDAR_URL))
         .phone((String) entity.getProperty(TRUCK_PHONE))
         .email((String) entity.getProperty(TRUCK_EMAIL))
         .build();
   }
+
 
   @Override public Collection<Truck> findByTwitterId(String screenName) {
     DatastoreService dataStore = provider.get();
@@ -131,6 +134,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     entity.setProperty(CATEGORIES_FIELD, truck.getCategories());
     entity.setProperty(TRUCK_EMAIL, truck.getEmail());
     entity.setProperty(TRUCK_PHONE, truck.getPhone());
+    entity.setProperty(TRUCK_TWITTER_GEOLOCATION, truck.isTwitterGeolocationDataValid());
     return entity;
   }
 }

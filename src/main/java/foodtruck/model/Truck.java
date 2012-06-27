@@ -35,6 +35,7 @@ public class Truck extends ModelEntity {
   private @Nullable final String calendarUrl;
   private final @Nullable String email;
   private final @Nullable String phone;
+  private final boolean twitterGeolocationDataValid;
 
   private Truck(Builder builder) {
     super(builder.id);
@@ -55,6 +56,11 @@ public class Truck extends ModelEntity {
     this.donotMatchIf = builder.donotMatchIf;
     this.email = builder.email;
     this.phone = builder.phone;
+    this.twitterGeolocationDataValid = builder.twitterGeolocationDataValid;
+  }
+
+  public boolean isTwitterGeolocationDataValid() {
+    return twitterGeolocationDataValid;
   }
 
   public @Nullable String getFoursquareUrl() {
@@ -198,6 +204,7 @@ public class Truck extends ModelEntity {
     private Pattern donotMatchIf;
     private @Nullable String email;
     private @Nullable String phone;
+    public boolean twitterGeolocationDataValid;
 
     public Builder() {
     }
@@ -217,10 +224,16 @@ public class Truck extends ModelEntity {
       this.matchOnlyIf = truck.matchOnlyIf;
       this.inactive = truck.inactive;
       this.calendarUrl = truck.calendarUrl;
+      this.twitterGeolocationDataValid = truck.twitterGeolocationDataValid;
     }
 
     public Builder id(String id) {
       this.id = id;
+      return this;
+    }
+
+    public Builder twitterGeolocationDataValid(boolean valid) {
+      this.twitterGeolocationDataValid = valid;
       return this;
     }
 
