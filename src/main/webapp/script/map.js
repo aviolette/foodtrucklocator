@@ -587,6 +587,18 @@ window.FoodTruckLocator = function() {
       $("#timeControls").css("display", "block");
       $("#locationFilter").css("display", "none");
     },
+    changeTime: function() {
+      var self = this;
+      var selectedHour = parseInt($("#hourSelect").val());
+      var selectedMin = parseInt($("#minSelect").val());
+      var selectedAmPm = $("#ampmSelect").val();
+      if (selectedAmPm == "pm" && parseInt(selectedHour) != 12) {
+        selectedHour = parseInt(selectedHour) + 12;
+      }
+      self.currentTime.setHours(selectedHour);
+      self.currentTime.setMinutes(selectedMin);
+      self.render();
+    },
     setupTimeSelector : function() {
       var self = this, ampm = "am";
       var hours = self.currentTime.getHours();
@@ -598,17 +610,7 @@ window.FoodTruckLocator = function() {
       $("#hourSelect").val(hours);
       $("#minSelect").val(minutes);
       $("#ampmSelect").val(ampm);
-      $(".timechange").change(function() {
-        var selectedHour = parseInt($("#hourSelect").val());
-        var selectedMin = parseInt($("#minSelect").val());
-        var selectedAmPm = $("#ampmSelect").val();
-        if (selectedAmPm == "pm" && parseInt(selectedHour) != 12) {
-          selectedHour = parseInt(selectedHour) + 12;
-        }
-        self.currentTime.setHours(selectedHour);
-        self.currentTime.setMinutes(selectedMin);
-        self.render();
-      });
+      $(".timechange").change(self.changeTime);
     },
     render: function() {
       var self = this;
@@ -627,7 +629,7 @@ window.FoodTruckLocator = function() {
           $("#hourSelect").val("11");
           $("#minSelect").val("30");
           $("#ampmSelect").val("am");
-          $("#timeGoButton").click();
+          self.changeTime();
         });
         self.fitMapToView();
         return;
