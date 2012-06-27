@@ -108,7 +108,6 @@ public class TruckStopMatcher {
   public @Nullable TruckStopMatch match(Truck truck, TweetSummary tweet,
       @Nullable DateTime terminationTime) {
     final String tweetText = tweet.getText();
-
     if (isRetweet(tweetText)) {
       log.log(Level.INFO, "Didn't match '{0}' because it is a retweet",
           tweetText);
@@ -127,8 +126,9 @@ public class TruckStopMatcher {
     DateTime startTime = null;
     final boolean morning = tweet.getTime().toLocalTime().isBefore(new LocalTime(10, 30));
     // TODO: this signals a schedule being tweeted, for now we can't handle that
-    if (tweetText.toLowerCase().contains("stops") ||
-        (morning && (tweetText.toLowerCase().contains("schedule")))) {
+    final String lowerCaseTweet = tweetText.toLowerCase();
+    if (lowerCaseTweet.contains("stops") ||
+        (morning && (lowerCaseTweet.contains("schedule")))) {
       return null;
     }
 
@@ -171,15 +171,19 @@ public class TruckStopMatcher {
         endTime = null;
       }
     }
+    TruckStopMatch.Builder matchBuilder = TruckStopMatch.builder();
     if (endTime == null) {
       endTime = terminationTime == null ? parseEndTime(tweetText, startTime) : terminationTime;
     }
     if (endTime == null) {
+      matchBuilder.softEnding(true);
       endTime = startTime.plusHours(DEFAULT_STOP_LENGTH_IN_HOURS);
     }
-    return new TruckStopMatch(Confidence.HIGH,
-        new TruckStop(truck, startTime, endTime, location, null, false),
-        tweetText, terminationTime != null);
+    return matchBuilder
+        .stop(new TruckStop(truck, startTime, endTime, location, null, false))
+        .text(tweetText)
+        .terminated(terminationTime != null)
+        .build();
   }
 
   private boolean isRetweet(String tweetText) {

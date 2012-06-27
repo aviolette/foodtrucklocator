@@ -179,7 +179,11 @@ public class TwitterServiceImpl implements TwitterService {
             }
             deleteStops.add(stop);
             if (locationsSame) {
-              matchedStop = matchedStop.withStartTime(stop.getStartTime());
+              if (match.isSoftEnding()) {
+                matchedStop = matchedStop.withEndTime(stop.getEndTime());
+              } else {
+                matchedStop = matchedStop.withStartTime(stop.getStartTime());
+              }
             } else {
               addStops.add(stop.withEndTime(matchedStop.getStartTime()));
             }
@@ -235,11 +239,6 @@ public class TwitterServiceImpl implements TwitterService {
       if (stop.activeDuring(terminationTime)) {
         found = stop;
         break;
-        // TODO: I think this will produce undesirable results
-/*
-      } else if (stop.getStartTime().isAfter(terminationTime)) {
-        break;
-      */
       }
     }
     if (found == null) {
