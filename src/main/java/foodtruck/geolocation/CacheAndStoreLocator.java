@@ -47,8 +47,9 @@ public class CacheAndStoreLocator implements GeoLocator {
 
   @Override
   public String reverseLookup(Location location, String defaultValue) {
-    // TODO: lookup address in cache
+    // TODO: lookup address in cache (can we do a radius search?)
     try {
+      // TODO: in the case where the result does not equal the default value, save location to DB
       return secondaryLocator.reverseLookup(location, defaultValue);
     } catch (UnsupportedOperationException use) {
       return defaultValue;

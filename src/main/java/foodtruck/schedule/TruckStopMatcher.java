@@ -232,6 +232,10 @@ public class TruckStopMatcher {
       }
     }
     Location location = tweet.getLocation();
+    // TODO: remove this eventually...just want to see what trucks are actually using location data
+    if (location != null) {
+      log.info("Location data enabled for truck " + truck.getId());
+    }
     if (truck.isTwitterGeolocationDataValid() && location != null) {
       String name = geoLocator.reverseLookup(location, "Unnamed Location");
       return Location.builder()
