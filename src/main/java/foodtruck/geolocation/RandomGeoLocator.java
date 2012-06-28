@@ -41,4 +41,9 @@ public class RandomGeoLocator implements GeoLocator {
     }
     return loc;
   }
+
+  @Override
+  public String reverseLookup(Location location, String defaultValue) {
+    return googleGeolocator.reverseLookup(location, defaultValue);
+  }
 }

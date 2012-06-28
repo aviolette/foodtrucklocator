@@ -23,7 +23,8 @@ public class OrderedGeolocator implements GeoLocator {
     this.configurationDAO = configurationDAO;
   }
 
-  @Override public Location locate(String location, GeolocationGranularity granularity) {
+  @Override
+  public Location locate(String location, GeolocationGranularity granularity) {
     Configuration config = configurationDAO.findSingleton();
     if (config.isGoogleGeolocationEnabled()) {
       Location loc = googleGeolocator.locate(location, granularity);
@@ -35,5 +36,15 @@ public class OrderedGeolocator implements GeoLocator {
       return yahooGeolocator.locate(location, granularity);
     }
     return null;
+  }
+
+  @Override
+  public String reverseLookup(Location location, String defaultValue) {
+    Configuration config = configurationDAO.findSingleton();
+    if (config.isGoogleGeolocationEnabled()) {
+      return googleGeolocator.reverseLookup(location, defaultValue);
+    } else {
+      return defaultValue;
+    }
   }
 }

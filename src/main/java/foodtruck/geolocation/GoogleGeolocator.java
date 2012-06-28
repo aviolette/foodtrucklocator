@@ -44,7 +44,13 @@ public class GoogleGeolocator implements GeoLocator {
     return lookup(location, granularity);
   }
 
+  @Override
+  public String reverseLookup(Location location, String defaultValue) {
+    return defaultValue;
+  }
+
   private boolean isEnabled() {
+    // TODO: use configuration, not system property
     return "true".equals(System.getProperty("google.geolocator.enabled", "true"));
   }
 
@@ -73,7 +79,8 @@ public class GoogleGeolocator implements GeoLocator {
         }
         JSONObject loc =
             geometry.getJSONObject("location");
-        return Location.builder().lat(loc.getDouble("lat")).lng(loc.getDouble("lng")).name(location).build();
+        return Location.builder().lat(loc.getDouble("lat")).lng(loc.getDouble("lng")).name(location)
+            .build();
       }
     } catch (JSONException e) {
       throw new RuntimeException(e);

@@ -55,4 +55,8 @@ public class YahooGeolocator implements GeoLocator {
     }
     return null;
   }
+
+  @Override public String reverseLookup(Location location, String defaultValue) {
+    throw new UnsupportedOperationException("Unsupported on Yahoo");
+  }
 }

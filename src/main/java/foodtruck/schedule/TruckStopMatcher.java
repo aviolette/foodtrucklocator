@@ -231,6 +231,14 @@ public class TruckStopMatcher {
         return loc;
       }
     }
+    Location location = tweet.getLocation();
+    if (truck.isTwitterGeolocationDataValid() && location != null) {
+      String name = geoLocator.reverseLookup(location, "Unnamed Location");
+      return Location.builder()
+          .lat(location.getLatitude())
+          .lng(location.getLongitude())
+          .name(name).build();
+    }
     return null;
   }
 

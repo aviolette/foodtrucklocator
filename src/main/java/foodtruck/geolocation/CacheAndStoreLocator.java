@@ -3,8 +3,6 @@ package foodtruck.geolocation;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.annotation.Nullable;
-
 import com.google.inject.Inject;
 
 import foodtruck.dao.LocationDAO;
@@ -45,5 +43,15 @@ public class CacheAndStoreLocator implements GeoLocator {
       log.warning("Failed at attempt to geo locate: " + location);
     }
     return dao.saveAndFetch(loc);
+  }
+
+  @Override
+  public String reverseLookup(Location location, String defaultValue) {
+    // TODO: lookup address in cache
+    try {
+      return secondaryLocator.reverseLookup(location, defaultValue);
+    } catch (UnsupportedOperationException use) {
+      return defaultValue;
+    }
   }
 }
