@@ -225,22 +225,22 @@ public class TruckStopMatcher {
 
   private @Nullable Location extractLocation(TweetSummary tweet, Truck truck) {
     List<String> addresses = addressExtractor.parse(tweet.getText(), truck);
+    Location tweetLocation = tweet.getLocation();
+    if (tweetLocation != null) {
+      log.info("Location data enabled for truck " + truck.getId());
+    }
     for (String address : addresses) {
       Location loc = geoLocator.locate(address, GeolocationGranularity.NARROW);
       if (loc != null && loc.isResolved()) {
         return loc;
       }
     }
-    Location location = tweet.getLocation();
-    // TODO: remove this eventually...just want to see what trucks are actually using location data
-    if (location != null) {
-      log.info("Location data enabled for truck " + truck.getId());
-    }
-    if (truck.isTwitterGeolocationDataValid() && location != null) {
-      String name = geoLocator.reverseLookup(location, "Unnamed Location");
+
+    if (truck.isTwitterGeolocationDataValid() && tweetLocation != null) {
+      String name = geoLocator.reverseLookup(tweetLocation, "Unnamed Location");
       return Location.builder()
-          .lat(location.getLatitude())
-          .lng(location.getLongitude())
+          .lat(tweetLocation.getLatitude())
+          .lng(tweetLocation.getLongitude())
           .name(name).build();
     }
     return null;
