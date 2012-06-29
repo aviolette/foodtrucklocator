@@ -616,7 +616,9 @@ window.FoodTruckLocator = function() {
       $("#hourSelect").val(hours);
       $("#minSelect").val(minutes);
       $("#ampmSelect").val(ampm);
-      $(".timechange").change(self.changeTime);
+      $(".timechange").change(function() {
+        self.changeTime();
+      });
     },
     render: function() {
       var self = this;
