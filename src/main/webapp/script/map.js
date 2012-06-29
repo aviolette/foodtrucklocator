@@ -227,8 +227,14 @@ window.FoodTruckLocator = function() {
                 truck.facebook + "' src='/img/facebook32x32.png'/></a> ";
           }
           if (truck.foursquare) {
-            infoRow += "<a href='http://m.foursquare.com/venue/" + truck.foursquare +
-                "'><img alt='Checkin on foursquare' src='/img/foursquare32x32.png'/></a>";
+            if (navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) ||
+                navigator.userAgent.match(/iPod/i)) {
+              infoRow += "<a href='foursquare://venues/" + truck.foursquare + "'>" +
+                  "<img alt='Checkin on foursquare' src='/img/foursquare32x32.png'/></a>";
+            } else {
+              infoRow += "<a href='http://m.foursquare.com/venue/" + truck.foursquare +
+                  "'><img alt='Checkin on foursquare' src='/img/foursquare32x32.png'/></a>";
+            }
           }
           infoRow += '</div>';
           truckLeft.append(infoRow);
