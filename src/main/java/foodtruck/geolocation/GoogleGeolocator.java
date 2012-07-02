@@ -46,6 +46,7 @@ public class GoogleGeolocator implements GeoLocator {
 
   @Override
   public String reverseLookup(Location location, String defaultValue) {
+    log.log(Level.INFO, "Looking up location: {0}", location);
     JSONObject obj = googleResource.reverseLookup(location);
     log.log(Level.INFO, "Reverse lookup results for {0}: \n{1}",
         new Object[] {location, obj});
@@ -55,7 +56,7 @@ public class GoogleGeolocator implements GeoLocator {
         JSONObject firstResult = results.getJSONObject(0);
         return firstResult.getString("formatted_address");
       }
-    } catch(JSONException jsonException) {
+    } catch (JSONException jsonException) {
       log.log(Level.WARNING, jsonException.getMessage(), jsonException);
     }
     return defaultValue;

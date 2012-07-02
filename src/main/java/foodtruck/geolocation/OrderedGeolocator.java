@@ -1,5 +1,8 @@
 package foodtruck.geolocation;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.google.inject.Inject;
 
 import foodtruck.dao.ConfigurationDAO;
@@ -14,6 +17,7 @@ public class OrderedGeolocator implements GeoLocator {
   private GoogleGeolocator googleGeolocator;
   private YahooGeolocator yahooGeolocator;
   private ConfigurationDAO configurationDAO;
+  private static final Logger log = Logger.getLogger(OrderedGeolocator.class.getName());
 
   @Inject
   public OrderedGeolocator(GoogleGeolocator googleGeolocator, YahooGeolocator yahooGeolocator,
@@ -42,6 +46,7 @@ public class OrderedGeolocator implements GeoLocator {
   public String reverseLookup(Location location, String defaultValue) {
     Configuration config = configurationDAO.findSingleton();
     if (config.isGoogleGeolocationEnabled()) {
+      log.log(Level.INFO, "Looking up location: {0}", location);
       return googleGeolocator.reverseLookup(location, defaultValue);
     } else {
       return defaultValue;

@@ -50,6 +50,7 @@ public class CacheAndStoreLocator implements GeoLocator {
     // TODO: lookup address in cache (can we do a radius search?)
     try {
       // TODO: in the case where the result does not equal the default value, save location to DB
+      log.log(Level.INFO, "Looking up location: {0}", location);
       return secondaryLocator.reverseLookup(location, defaultValue);
     } catch (UnsupportedOperationException use) {
       return defaultValue;
