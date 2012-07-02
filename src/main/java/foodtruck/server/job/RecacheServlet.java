@@ -36,6 +36,7 @@ public class RecacheServlet extends HttpServlet {
   private final TruckDAO truckDAO;
   private final DateTimeFormatter timeFormatter;
   private static final Logger log = Logger.getLogger(RecacheServlet.class.getName());
+  private final DateTimeZone zone;
 
   @Inject
   public RecacheServlet(FoodTruckStopService service, Clock clock,
@@ -45,6 +46,7 @@ public class RecacheServlet extends HttpServlet {
     this.clock = clock;
     this.truckDAO = truckDAO;
     this.timeFormatter = DateTimeFormat.forPattern("YYYYMMdd").withZone(zone);
+    this.zone = zone;
 
   }
 
@@ -53,11 +55,12 @@ public class RecacheServlet extends HttpServlet {
       throws ServletException, IOException {
     final String truck = req.getParameter("truck");
     final String date = req.getParameter("date");
+
     LocalDate when = parseDate(date);
     if (!Strings.isNullOrEmpty(truck)) {
-      service.updateStopsForTruck(when, truckDAO.findById(truck));
+      service.updateStopsForTruck(when.toInterval(zone), truckDAO.findById(truck));
     } else {
-      service.updateStopsFor(when);
+      service.updateStopsFor(when.toInterval(zone).withEnd(when.plusDays(7).toDateMidnight()));
     }
     twitterService.twittalyze();
   }

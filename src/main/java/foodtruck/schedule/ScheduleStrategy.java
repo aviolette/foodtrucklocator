@@ -2,7 +2,8 @@ package foodtruck.schedule;
 
 import java.util.List;
 
-import foodtruck.model.TimeRange;
+import org.joda.time.Interval;
+
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 
@@ -16,5 +17,5 @@ public interface ScheduleStrategy {
    * Finds all the truck stops for a truck over a time period on a day.
    * @return the list of stops sorted by time
    */
-  public List<TruckStop> findForTime(TimeRange range, Truck searchTruck);
+  public List<TruckStop> findForTime(Interval range, Truck searchTruck);
 }

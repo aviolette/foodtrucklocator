@@ -17,13 +17,13 @@ import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.DailySchedule;
 import foodtruck.model.Location;
-import foodtruck.model.TimeRange;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckLocationGroup;
 import foodtruck.model.TruckSchedule;
@@ -55,10 +55,9 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   }
 
   @Override
-  public void updateStopsForTruck(LocalDate instant, Truck truck) {
-    TimeRange theDay = new TimeRange(instant, zone);
-    List<TruckStop> stops = googleCalendar.findForTime(theDay, truck);
-    truckStopDAO.deleteAfter(theDay.getStartDateTime(), truck.getId());
+  public void updateStopsForTruck(Interval range, Truck truck) {
+    List<TruckStop> stops = googleCalendar.findForTime(range, truck);
+    truckStopDAO.deleteAfter(range.getStart(), truck.getId());
     truckStopDAO.addStops(stops);
   }
 
@@ -75,15 +74,14 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   }
 
   @Override
-  public void updateStopsFor(LocalDate instant) {
-    TimeRange theDay = new TimeRange(instant, zone);
-    pullTruckSchedule(theDay);
+  public void updateStopsFor(Interval instant) {
+    pullTruckSchedule(instant);
   }
 
-  private void pullTruckSchedule(TimeRange theDay) {
+  private void pullTruckSchedule(Interval theDay) {
     try {
       List<TruckStop> stops = googleCalendar.findForTime(theDay, null);
-      truckStopDAO.deleteAfter(theDay.getStartDateTime());
+      truckStopDAO.deleteAfter(theDay.getStart());
       truckStopDAO.addStops(stops);
     } catch (Exception e) {
       log.log(Level.WARNING, "Exception thrown while refreshing trucks", e);

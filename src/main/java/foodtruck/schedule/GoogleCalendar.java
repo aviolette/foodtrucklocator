@@ -24,12 +24,12 @@ import com.google.gdata.util.ServiceException;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTimeZone;
+import org.joda.time.Interval;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
-import foodtruck.model.TimeRange;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import static foodtruck.schedule.TimeUtils.toJoda;
@@ -63,7 +63,7 @@ public class GoogleCalendar implements ScheduleStrategy {
 
   // TODO: rewrite this...its awfully crappy
   @Override
-  public List<TruckStop> findForTime(TimeRange range, @Nullable Truck searchTruck) {
+  public List<TruckStop> findForTime(Interval range, @Nullable Truck searchTruck) {
     CalendarQuery query = queryFactory.create();
     String truckId = searchTruck == null ? null : searchTruck.getId();
     log.info("Initiating calendar search " + truckId);
@@ -79,7 +79,7 @@ public class GoogleCalendar implements ScheduleStrategy {
     return stops;
   }
 
-  private void customCalendarSearch(TimeRange range, Truck searchTruck, List<TruckStop> stops,
+  private void customCalendarSearch(Interval range, Truck searchTruck, List<TruckStop> stops,
       Truck truck) {
     try {
       final String calendarUrl = truck.getCalendarUrl();
@@ -94,11 +94,11 @@ public class GoogleCalendar implements ScheduleStrategy {
     }
   }
 
-  private List<TruckStop> performTruckSearch(TimeRange range, Truck searchTruck,
+  private List<TruckStop> performTruckSearch(Interval range, Truck searchTruck,
       CalendarQuery query, boolean customCalendar) {
-    query.setMinimumStartTime(new DateTime(range.getStartDateTime().toDate(),
+    query.setMinimumStartTime(new DateTime(range.getStart().toDate(),
         defaultZone.toTimeZone()));
-    query.setMaximumStartTime(new DateTime(range.getEndDateTime().toDate(),
+    query.setMaximumStartTime(new DateTime(range.getEnd().toDate(),
         defaultZone.toTimeZone()));
     query.setMaxResults(1000);
     if (searchTruck != null && !customCalendar) {
@@ -143,8 +143,8 @@ public class GoogleCalendar implements ScheduleStrategy {
           builder.add(truckStop);
         } else {
           log.log(Level.WARNING, "Location could not be resolved for {0}, {1} between {2} and {3}",
-              new Object[] {truck.getId(), where.getValueString(), range.getStartDateTime(),
-                  range.getEndDateTime()});
+              new Object[] {truck.getId(), where.getValueString(), range.getStart(),
+                  range.getEnd()});
         }
       }
     } catch (IOException e) {

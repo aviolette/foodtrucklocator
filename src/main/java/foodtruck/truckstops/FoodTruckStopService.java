@@ -6,14 +6,15 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 import org.joda.time.DateTime;
+import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
-import foodtruck.model.Location;
-import foodtruck.model.TruckStatus;
 import foodtruck.model.DailySchedule;
+import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckLocationGroup;
 import foodtruck.model.TruckSchedule;
+import foodtruck.model.TruckStatus;
 import foodtruck.model.TruckStop;
 
 /**
@@ -24,9 +25,9 @@ import foodtruck.model.TruckStop;
 public interface FoodTruckStopService {
   /**
    * Updates the location data for the current day.
-   * @param day running the process for this day
+   * @param range the time range to update
    */
-  void updateStopsFor(LocalDate day);
+  void updateStopsFor(Interval range);
 
   /**
    * Returns the food trucks, grouped by locations.
@@ -48,7 +49,7 @@ public interface FoodTruckStopService {
    */
   DailySchedule findStopsForDay(LocalDate day);
 
-  void updateStopsForTruck(LocalDate instant, Truck truck);
+  void updateStopsForTruck(Interval instant, Truck truck);
 
   /**
    * Finds a food truck stop by id.
