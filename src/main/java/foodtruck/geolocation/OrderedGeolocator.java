@@ -33,11 +33,19 @@ public class OrderedGeolocator implements GeoLocator {
   @Override
   public Location locate(String location, GeolocationGranularity granularity) {
     Configuration config = configurationDAO.findSingleton();
-    if (config.isGoogleGeolocationEnabled() && !config.isGoogleThrottled(clock.now()) ) {
-      Location loc = googleGeolocator.locate(location, granularity);
-      if (loc != null) {
-        return loc;
+    if (config.isGoogleGeolocationEnabled() && !config.isGoogleThrottled(clock.now())) {
+      try {
+        Location loc = googleGeolocator.locate(location, granularity);
+        if (loc != null) {
+          return loc;
+        }
+      } catch (OverQueryLimitException oqle) {
+        log.warning("Received OVER_QUERY_LIMIT from Google: throttling");
+        throttleGoogle();
       }
+    } else {
+      log.log(Level.INFO, "Skipping google for geolocation. Throttle value: {0}",
+          config.getThrottleGoogleUntil());
     }
     if (config.isYahooGeolocationEnabled()) {
       return yahooGeolocator.locate(location, granularity);
@@ -63,7 +71,7 @@ public class OrderedGeolocator implements GeoLocator {
   private void throttleGoogle() {
     configurationDAO.save(
         Configuration.builder(configurationDAO.findSingleton())
-          .throttleGoogleGeocoding(clock.now().plusDays(1))
-          .build());
+            .throttleGoogleGeocoding(clock.now().plusDays(1))
+            .build());
   }
 }

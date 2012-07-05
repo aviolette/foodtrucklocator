@@ -80,6 +80,7 @@ public class GoogleGeolocator implements GeoLocator {
       log.log(Level.INFO, "Geolocation result for {0}: \n{1}",
           new Object[] {location, obj.toString()});
       JSONArray results = obj.getJSONArray("results");
+      checkStatus(obj);
       if (results.length() > 0) {
         final JSONObject firstResult = results.getJSONObject(0);
         final JSONArray types = firstResult.getJSONArray("types");
