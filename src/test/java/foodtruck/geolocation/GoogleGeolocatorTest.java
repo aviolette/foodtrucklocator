@@ -1000,4 +1000,13 @@ public class GoogleGeolocatorTest extends EasyMockSupport {
     assertEquals(Location.builder().lat(41.8807438).lng(-87.6293867).name("Dearborn and Monroe, Chicago, IL").build(),
         location);
   }
+
+  @Test(expected = OverQueryLimitException.class)
+  public void testReverseLookupOverQueryLimit() throws JSONException {
+    Location location = Location.builder().lat(-123).lng(456).build();
+    JSONObject response = new JSONObject("{\"results\":[],\"status\":\"OVER_QUERY_LIMIT\"}");
+    expect(resource.reverseLookup(location)).andReturn(response);
+    replayAll();
+    geoLocator.reverseLookup(location, "Default Value");
+  }
 }

@@ -8,6 +8,8 @@ import com.google.appengine.api.datastore.Query;
 import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 
+import org.joda.time.DateTimeZone;
+
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.model.Configuration;
 
@@ -17,14 +19,16 @@ import foodtruck.model.Configuration;
  */
 public class ConfigurationDAOAppEngine implements ConfigurationDAO {
   private final static String CONFIGURATION_KIND = "Configuration";
-
   private final DatastoreServiceProvider provider;
   private static final String PROP_GOOGLE_GEOLOCATION_ENABLED = "google_geolcation";
   private static final String PROP_YAHOO_GEOLOCATION_ENABLED = "yahoo_geolocation";
+  private static final String PROP_GOOGLE_THROTTLE = "google_throttle_until";
+  private final DateTimeZone defaultZone;
 
   @Inject
-  public ConfigurationDAOAppEngine(DatastoreServiceProvider provider) {
+  public ConfigurationDAOAppEngine(DatastoreServiceProvider provider, DateTimeZone defaultZone) {
     this.provider = provider;
+    this.defaultZone = defaultZone;
   }
 
   @Override
@@ -46,6 +50,7 @@ public class ConfigurationDAOAppEngine implements ConfigurationDAO {
     }
     entity.setProperty(PROP_GOOGLE_GEOLOCATION_ENABLED, config.isGoogleGeolocationEnabled());
     entity.setProperty(PROP_YAHOO_GEOLOCATION_ENABLED, config.isYahooGeolocationEnabled());
+    Attributes.setDateProperty(PROP_GOOGLE_THROTTLE, entity, config.getThrottleGoogleUntil());
     return entity;
   }
 
@@ -64,6 +69,7 @@ public class ConfigurationDAOAppEngine implements ConfigurationDAO {
     return Configuration.builder()
         .googleGeolocationEnabled((Boolean) entity.getProperty(PROP_GOOGLE_GEOLOCATION_ENABLED))
         .yahooGeolocationEnabled((Boolean) entity.getProperty(PROP_YAHOO_GEOLOCATION_ENABLED))
+        .throttleGoogleGeocoding(Attributes.getDateTime(entity, PROP_GOOGLE_THROTTLE, defaultZone))
         .key(entity.getKey())
         .build();
   }

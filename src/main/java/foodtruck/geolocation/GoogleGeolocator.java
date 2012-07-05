@@ -50,6 +50,7 @@ public class GoogleGeolocator implements GeoLocator {
     JSONObject obj = googleResource.reverseLookup(location);
     log.log(Level.INFO, "Reverse lookup results for {0}: \n{1}",
         new Object[] {location, obj});
+    checkStatus(obj);
     try {
       JSONArray results = obj.getJSONArray("results");
       if (results.length() > 0) {
@@ -60,6 +61,12 @@ public class GoogleGeolocator implements GeoLocator {
       log.log(Level.WARNING, jsonException.getMessage(), jsonException);
     }
     return defaultValue;
+  }
+
+  private void checkStatus(JSONObject result) {
+    if ("OVER_QUERY_LIMIT".equals(result.optString("status"))) {
+      throw new OverQueryLimitException();
+    }
   }
 
   private boolean isEnabled() {

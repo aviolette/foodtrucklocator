@@ -1,6 +1,10 @@
 package foodtruck.model;
 
+import javax.annotation.Nullable;
+
 import com.google.appengine.api.datastore.Key;
+
+import org.joda.time.DateTime;
 
 /**
  * @author aviolette@gmail.com
@@ -9,6 +13,7 @@ import com.google.appengine.api.datastore.Key;
 public class Configuration extends ModelEntity {
   private boolean yahooGeolocationEnabled;
   private boolean googleGeolocationEnabled;
+  private DateTime throttleGoogleUntil;
 
   public Configuration(Object key) {
     super(key);
@@ -18,6 +23,7 @@ public class Configuration extends ModelEntity {
     this(builder.key);
     this.googleGeolocationEnabled = builder.googleGeolocationEnabled;
     this.yahooGeolocationEnabled = builder.yahooGeolocationEnabled;
+    this.throttleGoogleUntil = builder.throttleGoogleUntil;
   }
 
   public boolean isYahooGeolocationEnabled() {
@@ -26,6 +32,14 @@ public class Configuration extends ModelEntity {
 
   public boolean isGoogleGeolocationEnabled() {
     return googleGeolocationEnabled;
+  }
+
+  public boolean isGoogleThrottled(DateTime when) {
+    return (throttleGoogleUntil != null && throttleGoogleUntil.isAfter(when));
+  }
+
+  public @Nullable DateTime getThrottleGoogleUntil() {
+    return throttleGoogleUntil;
   }
 
   public static Builder builder() {
@@ -41,6 +55,7 @@ public class Configuration extends ModelEntity {
     private boolean googleGeolocationEnabled = true;
     private boolean yahooGeolocationEnabled = false;
     private Key key;
+    private @Nullable DateTime throttleGoogleUntil;
 
     public Builder() {
     }
@@ -48,6 +63,7 @@ public class Configuration extends ModelEntity {
     public Builder(Configuration config) {
       this.googleGeolocationEnabled = config.isGoogleGeolocationEnabled();
       this.yahooGeolocationEnabled = config.isYahooGeolocationEnabled();
+      this.throttleGoogleUntil = config.throttleGoogleUntil;
       this.key = (Key) config.getKey();
     }
 
@@ -68,6 +84,11 @@ public class Configuration extends ModelEntity {
 
     public Configuration build() {
       return new Configuration(this);
+    }
+
+    public Builder throttleGoogleGeocoding(DateTime dateTime) {
+      this.throttleGoogleUntil = dateTime;
+      return this;
     }
   }
 }
