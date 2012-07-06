@@ -40,6 +40,9 @@
         </li>
         <li<c:if test="${nav == 'settings'}"> class="active"</c:if>><a href="/admin/configuration">Settings</a>
         </li>
+        <li<c:if test="${nav == 'stats'}"> class="active"</c:if>><a
+            href="/admin/stats">Statistics</a>
+        </li>
       </ul>
     </div>
   </div>
