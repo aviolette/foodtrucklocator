@@ -194,7 +194,8 @@ public class TwitterServiceImpl implements TwitterService {
               matchedStop = null;
               break;
             }
-            if (locationsSame && !match.isTerminated()) {
+            if ((locationsSame && !match.isTerminated()) || (stop.getStartTime().getHourOfDay() == 11
+                && stop.getStartTime().getMinuteOfHour() == 30)) {
               deleteStops.add(stop);
               matchedStop = matchedStop.withEndTime(stop.getEndTime());
             } else {
