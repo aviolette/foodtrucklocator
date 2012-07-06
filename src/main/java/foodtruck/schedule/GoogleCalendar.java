@@ -122,10 +122,12 @@ public class GoogleCalendar implements ScheduleStrategy {
         }
         When time = Iterables.getFirst(entry.getTimes(), null);
         String whereString = where.getValueString();
-        whereString = coalesce(Iterables.getFirst(addressExtractor.parse(whereString, truck), null),
-            whereString);
-        Location location = geolocator.locate(whereString,
-            GeolocationGranularity.BROAD);
+        Location location = null;
+        if (!Strings.isNullOrEmpty(whereString)) {
+          whereString = coalesce(Iterables.getFirst(addressExtractor.parse(whereString, truck), null),
+              whereString);
+          location = geolocator.locate(whereString, GeolocationGranularity.BROAD);
+        }
         if ((location == null || !location.isResolved()) && customCalendar) {
           // Sometimes the location is in the title - try that too
           log.info("Trying title text: " + titleText);
