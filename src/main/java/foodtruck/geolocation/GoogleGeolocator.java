@@ -15,6 +15,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import foodtruck.model.Location;
+import foodtruck.monitoring.Monitored;
 
 /**
  * GeoLocator that uses google geocoding.
@@ -32,7 +33,7 @@ public class GoogleGeolocator implements GeoLocator {
     this.googleResource = googleResource;
   }
 
-  @Override
+  @Override @Monitored
   public Location locate(String location, GeolocationGranularity granularity) {
     Location loc = parseLatLong(location);
     if (loc != null) {
@@ -44,7 +45,7 @@ public class GoogleGeolocator implements GeoLocator {
     return lookup(location, granularity);
   }
 
-  @Override
+  @Override @Monitored
   public String reverseLookup(Location location, String defaultValue) {
     log.log(Level.INFO, "Looking up location: {0}", location);
     JSONObject obj = googleResource.reverseLookup(location);
