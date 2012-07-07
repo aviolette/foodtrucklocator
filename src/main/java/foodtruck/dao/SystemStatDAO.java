@@ -1,6 +1,8 @@
 // Copyright 2012 BrightTag, Inc. All rights reserved.
 package foodtruck.dao;
 
+import java.util.List;
+
 import org.joda.time.DateTime;
 
 import foodtruck.model.SystemStats;
@@ -17,4 +19,6 @@ public interface SystemStatDAO extends DAO<Long, SystemStats> {
    * @return the system stats.
    */
   SystemStats findByTimestamp(DateTime timeStamp);
+
+  List<SystemStats> findWithinRange(long startTime, long endTime);
 }

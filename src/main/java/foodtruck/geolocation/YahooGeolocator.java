@@ -10,6 +10,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import foodtruck.model.Location;
+import foodtruck.monitoring.Monitored;
 import foodtruck.util.ServiceException;
 
 /**
@@ -26,7 +27,7 @@ public class YahooGeolocator implements GeoLocator {
     this.yahooResource = yahooResource;
   }
 
-  @Override
+  @Override @Monitored
   public Location locate(String location, GeolocationGranularity granularity) {
     try {
       JSONObject obj = yahooResource.findLocation(location);

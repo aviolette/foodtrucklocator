@@ -1,11 +1,13 @@
 // Copyright 2012 BrightTag, Inc. All rights reserved.
 package foodtruck.dao.appengine;
 
+import java.util.List;
 import java.util.Map;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 
@@ -39,6 +41,19 @@ public class SystemStatsDAOAppEngine extends AppEngineDAO<Long, SystemStats>
       stats = findById(id);
     }
     return stats;
+  }
+
+  @Override public List<SystemStats> findWithinRange(long startTime, long endTime) {
+    DatastoreService dataStore = provider.get();
+    Query q = new Query(getKind());
+    q.addFilter(PARAM_TIMESTAMP, Query.FilterOperator.GREATER_THAN_OR_EQUAL, startTime);
+    q.addFilter(PARAM_TIMESTAMP, Query.FilterOperator.LESS_THAN, endTime);
+    q.addSort(PARAM_TIMESTAMP, Query.SortDirection.ASCENDING);
+    ImmutableList.Builder<SystemStats> stats = ImmutableList.builder();
+    for (Entity e : dataStore.prepare(q).asIterable()) {
+      stats.add(fromEntity(e));
+    }
+    return stats.build();
   }
 
   private SystemStats findBySlot(long slot) {
