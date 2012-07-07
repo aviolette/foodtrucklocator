@@ -1,12 +1,9 @@
-// Copyright 2012 BrightTag, Inc. All rights reserved.
 package foodtruck.model;
 
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-
-import org.joda.time.DateTime;
 
 /**
  * @author aviolette@gmail.com
@@ -29,13 +26,13 @@ public class SystemStats extends ModelEntity {
   public void incrementCount(String key) {
     if (attributes.containsKey(key)) {
       long value = attributes.get(key);
-      attributes.put(key, value+1);
+      attributes.put(key, value + 1);
     } else {
       attributes.put(key, 1L);
     }
   }
 
-  public Map<String,Long> getAttributes() {
+  public Map<String, Long> getAttributes() {
     return ImmutableMap.copyOf(attributes);
   }
 }

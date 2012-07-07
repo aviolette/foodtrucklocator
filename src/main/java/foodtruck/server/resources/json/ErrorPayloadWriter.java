@@ -1,4 +1,3 @@
-// Copyright 2012 BrightTag, Inc. All rights reserved.
 package foodtruck.server.resources.json;
 
 import java.io.IOException;
@@ -39,7 +38,8 @@ public class ErrorPayloadWriter implements MessageBodyWriter<ErrorPayload> {
       Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
       OutputStream entityStream) throws IOException, WebApplicationException {
     try {
-      JSONSerializer.writeJSON(new JSONObject().put("error", errorPayload.getMessage()), entityStream);
+      JSONSerializer
+          .writeJSON(new JSONObject().put("error", errorPayload.getMessage()), entityStream);
     } catch (JSONException e) {
       throw Throwables.propagate(e);
     }

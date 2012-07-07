@@ -1,4 +1,3 @@
-// Copyright 2012 BrightTag, Inc. All rights reserved.
 package foodtruck.server.resources.json;
 
 import java.io.IOException;

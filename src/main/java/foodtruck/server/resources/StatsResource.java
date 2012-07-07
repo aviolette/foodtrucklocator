@@ -1,4 +1,3 @@
-// Copyright 2012 BrightTag, Inc. All rights reserved.
 package foodtruck.server.resources;
 
 import java.util.List;
@@ -39,7 +38,6 @@ public class StatsResource {
     List<StatVector> results = ImmutableList.of();
 
     List<SystemStats> stats = systemStatDAO.findWithinRange(startTime, endTime);
-
 
 
     return JResponse.ok(results).build();

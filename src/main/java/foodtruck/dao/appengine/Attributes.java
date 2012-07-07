@@ -1,4 +1,3 @@
-// Copyright 2012 BrightTag, Inc. All rights reserved.
 package foodtruck.dao.appengine;
 
 import java.util.Date;
@@ -15,7 +14,8 @@ import org.joda.time.DateTimeZone;
  * @since 7/3/12
  */
 public class Attributes {
-  public static @Nullable DateTime getDateTime(Entity entity, String propertyName, DateTimeZone zone) {
+  public static @Nullable DateTime getDateTime(Entity entity, String propertyName,
+      DateTimeZone zone) {
     Date date = (Date) entity.getProperty(propertyName);
     if (date == null) {
       return null;
