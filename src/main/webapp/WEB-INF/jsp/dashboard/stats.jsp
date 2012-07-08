@@ -4,31 +4,42 @@
 <script src="/script/lib/d3.layout.min.js" type="text/javascript"></script>
 <script src="/script/lib/rickshaw.min.js" type="text/javascript"></script>
 
+<h2>Geolocation</h2>
 
-<div id="chart"></div>
+<div id="geolocation"></div>
 
-<script>
+<script type="text/javascript">
 
-  var graph = new Rickshaw.Graph({
-    element: document.querySelector("#chart"),
-    width: 500,
-    height: 200,
-    series: [
-      {
-        color: 'steelblue',
-        data: [
-          { x: 0, y: 40 },
-          { x: 1, y: 49 },
-          { x: 2, y: 38 },
-          { x: 3, y: 30 },
-          { x: 4, y: 32 }
-        ]
-      }
-    ]
-  });
-
-  graph.render();
-
+  function drawGraph(statName, containerId) {
+    var start = new Date();
+    start.setSeconds(0);
+    start.setMinutes(0);
+    start.setHours(0);
+    var end = new Date();
+    var url = "/services/stats/" + encodeURIComponent(statName) + "?start=" + start.getTime() +
+        "&end=" + end.getTime();
+    new Rickshaw.Graph.Ajax({
+      element: document.getElementById(containerId),
+      width: 235,
+      height: 85,
+      renderer: 'line',
+      dataURL: url,
+      onData: function(d) {
+        return d
+      },
+      onComplete: function(transport) {
+        var graph = transport.graph;
+        var detail = new Rickshaw.Graph.HoverDetail({ graph: graph });
+      },
+      series: [
+        {
+          name: statName,
+          color: '#c05020'
+        }
+      ]
+    });
+  }
+  drawGraph("foodtruck.geolocation.GoogleGeolocator_locate_total", "geolocation")
 </script>
 
 <%@include file="dashboardFooter.jsp" %>

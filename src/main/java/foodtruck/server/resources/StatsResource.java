@@ -16,6 +16,7 @@ import com.sun.jersey.api.JResponse;
 import foodtruck.dao.SystemStatDAO;
 import foodtruck.model.StatVector;
 import foodtruck.model.SystemStats;
+import foodtruck.stats.Slots;
 
 /**
  * @author aviolette@gmail.com
@@ -34,12 +35,10 @@ public class StatsResource {
   @GET @Path("{statList}")
   public JResponse<List<StatVector>> getStatsFor(@PathParam("statList") final String statName,
       @QueryParam("start") final long startTime, @QueryParam("end") final long endTime) {
-    // TODO: assume for now statName only has one value
-    List<StatVector> results = ImmutableList.of();
-
     List<SystemStats> stats = systemStatDAO.findWithinRange(startTime, endTime);
-
-
+    StatVector vector = Slots.fillIn(stats, statName, startTime, endTime);
+    // TODO: assume for now statName only has one value
+    List<StatVector> results = ImmutableList.of(vector);
     return JResponse.ok(results).build();
   }
 }

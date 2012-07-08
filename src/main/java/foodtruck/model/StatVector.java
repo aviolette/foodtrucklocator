@@ -3,17 +3,16 @@ package foodtruck.model;
 import java.util.List;
 
 /**
+ * Represents a series of datapoints defined by a name
  * @author aviolette@gmail.com
  * @since 7/6/12
  */
 public class StatVector {
   private String name;
-  private String color;
   private List<TimeValue> dataPoints;
 
-  public StatVector(String name, String color, List<TimeValue> dataPoints) {
+  public StatVector(String name, List<TimeValue> dataPoints) {
     this.name = name;
-    this.color = color;
     this.dataPoints = dataPoints;
   }
 
@@ -21,12 +20,7 @@ public class StatVector {
     return name;
   }
 
-  public String getColor() {
-    return color;
-  }
-
   public List<TimeValue> getDataPoints() {
     return dataPoints;
   }
-
 }

@@ -35,4 +35,11 @@ public class SystemStats extends ModelEntity {
   public Map<String, Long> getAttributes() {
     return ImmutableMap.copyOf(attributes);
   }
+
+  public long getStat(String statName) {
+    if (attributes.containsKey(statName)) {
+      return attributes.get(statName);
+    }
+    return 0L;
+  }
 }
