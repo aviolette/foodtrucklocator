@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -124,8 +123,13 @@ public class GoogleCalendar implements ScheduleStrategy {
         String whereString = where.getValueString();
         Location location = null;
         if (!Strings.isNullOrEmpty(whereString)) {
-          whereString = coalesce(Iterables.getFirst(addressExtractor.parse(whereString, truck), null),
-              whereString);
+          // HACK Alert, the address extractor doesn't handle non-Chicago addresses well, so
+          // if it is a fully qualified address written by me, it will probably end in City, IL
+          if (!whereString.endsWith(", IL")) {
+            whereString =
+                coalesce(Iterables.getFirst(addressExtractor.parse(whereString, truck), null),
+                    whereString);
+          }
           location = geolocator.locate(whereString, GeolocationGranularity.BROAD);
         }
         if ((location == null || !location.isResolved()) && customCalendar) {
@@ -160,6 +164,7 @@ public class GoogleCalendar implements ScheduleStrategy {
     }
     return builder.build();
   }
+
   // TODO: make this generic and pull it out
   private String coalesce(String st1, String st2) {
     return (Strings.isNullOrEmpty(st1)) ? st2 : st1;
