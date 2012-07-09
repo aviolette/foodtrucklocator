@@ -2,6 +2,7 @@ package foodtruck.model;
 
 import java.util.Map;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
@@ -41,5 +42,12 @@ public class SystemStats extends ModelEntity {
       return attributes.get(statName);
     }
     return 0L;
+  }
+
+  @Override public String toString() {
+    return Objects.toStringHelper(this)
+        .add("timeStamp", timeStamp)
+        .add("attributes", attributes)
+        .toString();
   }
 }
