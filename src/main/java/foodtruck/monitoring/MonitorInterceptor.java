@@ -7,7 +7,6 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.joda.time.DateTime;
 
 import foodtruck.dao.SystemStatDAO;
-import foodtruck.model.SystemStats;
 import foodtruck.util.Clock;
 
 /**
@@ -37,14 +36,10 @@ public class MonitorInterceptor implements MethodInterceptor {
     try {
       return invocation.proceed();
     } catch (Exception e) {
-      SystemStats stats = systemStatDAO.findByTimestamp(now);
-      stats.incrementCount(prefix + "_failed");
-      systemStatDAO.save(stats);
+      systemStatDAO.updateCount(now, prefix + "_failed");
       throw e;
     } finally {
-      SystemStats stats = systemStatDAO.findByTimestamp(now);
-      stats.incrementCount(prefix + "_total");
-      systemStatDAO.save(stats);
+      systemStatDAO.updateCount(now, prefix + "_total");
     }
   }
 }

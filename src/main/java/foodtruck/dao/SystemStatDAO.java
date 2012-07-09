@@ -11,13 +11,12 @@ import foodtruck.model.SystemStats;
  * @since 7/5/12
  */
 public interface SystemStatDAO extends DAO<Long, SystemStats> {
-  /**
-   * Finds an stats object by its time stamp.  If none is found, it is created and the new object
-   * is returned
-   * @param timeStamp a time stamp
-   * @return the system stats.
-   */
-  SystemStats findByTimestamp(DateTime timeStamp);
-
   List<SystemStats> findWithinRange(long startTime, long endTime);
+
+  /**
+   * Updates a count on a stat
+   * @param timestamp the time the count occurred
+   * @param key the property name
+   */
+  void updateCount(DateTime timestamp, String key);
 }

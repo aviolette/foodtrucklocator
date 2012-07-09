@@ -24,15 +24,6 @@ public class SystemStats extends ModelEntity {
     return timeStamp;
   }
 
-  public void incrementCount(String key) {
-    if (attributes.containsKey(key)) {
-      long value = attributes.get(key);
-      attributes.put(key, value + 1);
-    } else {
-      attributes.put(key, 1L);
-    }
-  }
-
   public Map<String, Long> getAttributes() {
     return ImmutableMap.copyOf(attributes);
   }

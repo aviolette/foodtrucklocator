@@ -45,6 +45,10 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
   public long save(T obj) {
     obj.validate();
     DatastoreService dataStore = provider.get();
+    return save(obj, dataStore);
+  }
+
+  protected long save(T obj, DatastoreService dataStore) {
     Entity entity;
     if (!obj.isNew()) {
       try {
@@ -71,6 +75,7 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
     Key key = dataStore.put(entity);
     return key.getId();
   }
+
 
   private Entity buildEntity(T obj) {
     final Entity entity;

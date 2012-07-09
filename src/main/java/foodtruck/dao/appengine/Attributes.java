@@ -31,4 +31,11 @@ public class Attributes {
       entity.setProperty(propertyName, dateTime.toDate());
     }
   }
+
+  public static long getLongProperty(Entity entity, String statName, int defaultValue) {
+    if (entity.hasProperty(statName)) {
+      return (Long) entity.getProperty(statName);
+    }
+    return defaultValue;
+  }
 }
