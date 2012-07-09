@@ -40,8 +40,7 @@ public class OrderedGeolocator implements GeoLocator {
           return loc;
         }
       } catch (OverQueryLimitException oqle) {
-        log.warning("Received OVER_QUERY_LIMIT from Google: throttling");
-        throttleGoogle();
+        log.warning("Received OVER_QUERY_LIMIT from Google");
       }
     } else {
       log.log(Level.INFO, "Skipping google for geolocation. Throttle value: {0}",
@@ -61,17 +60,9 @@ public class OrderedGeolocator implements GeoLocator {
       try {
         return googleGeolocator.reverseLookup(location, defaultValue);
       } catch (OverQueryLimitException e) {
-        log.warning("Received OVER_QUERY_LIMIT from Google: throttling");
-        throttleGoogle();
+        log.warning("Received OVER_QUERY_LIMIT from Google");
       }
     }
     return defaultValue;
-  }
-
-  private void throttleGoogle() {
-    configurationDAO.save(
-        Configuration.builder(configurationDAO.findSingleton())
-            .throttleGoogleGeocoding(clock.now().plusDays(1))
-            .build());
   }
 }
