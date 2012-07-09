@@ -23,6 +23,7 @@ import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TweetSummary;
+import foodtruck.monitoring.Monitored;
 import foodtruck.schedule.TerminationDetector;
 import foodtruck.schedule.TruckStopMatch;
 import foodtruck.schedule.TruckStopMatcher;
@@ -72,7 +73,7 @@ public class TwitterServiceImpl implements TwitterService {
     this.notifier = truckStopNotifier;
   }
 
-  @Override
+  @Override @Monitored
   public void updateTwitterCache() {
     Twitter twitter = twitterFactory.create();
     try {
@@ -194,8 +195,9 @@ public class TwitterServiceImpl implements TwitterService {
               matchedStop = null;
               break;
             }
-            if ((locationsSame && !match.isTerminated()) || (stop.getStartTime().getHourOfDay() == 11
-                && stop.getStartTime().getMinuteOfHour() == 30)) {
+            if ((locationsSame && !match.isTerminated()) ||
+                (stop.getStartTime().getHourOfDay() == 11
+                    && stop.getStartTime().getMinuteOfHour() == 30)) {
               deleteStops.add(stop);
               matchedStop = matchedStop.withEndTime(stop.getEndTime());
             } else {

@@ -6,7 +6,21 @@
 
 <h2>Geolocation</h2>
 
-<div id="geolocation"></div>
+<h3>Google Lookups</h3>
+
+<div id="googlelookups"></div>
+
+<h3>Yahoo Lookups</h3>
+
+<div id="yahoolookups"></div>
+
+<h2>Twitter Connector</h2>
+
+<div id="twitterCache"></div>
+
+<h2>Google Calendar Connector</h2>
+
+<div id="calendarCache"></div>
 
 <script type="text/javascript">
 
@@ -39,7 +53,10 @@
       ]
     });
   }
-  drawGraph("foodtruck.geolocation.GoogleGeolocator_locate_total", "geolocation")
+  drawGraph("foodtruck.geolocation.GoogleGeolocator_locate_total", "googlelookups");
+  drawGraph("foodtruck.geolocation.YahooGeolocator_locate_total", "yahoolookups");
+  drawGraph("foodtruck.twitter.TwitterServiceImpl_updateTwitterCache_total", "twitterCache");
+  drawGraph("foodtruck.schedule.GoogleCalendar_findForTime_total", "calendarCache");
 </script>
 
 <%@include file="dashboardFooter.jsp" %>

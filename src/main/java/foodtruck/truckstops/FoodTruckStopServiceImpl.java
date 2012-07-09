@@ -29,7 +29,7 @@ import foodtruck.model.TruckLocationGroup;
 import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStatus;
 import foodtruck.model.TruckStop;
-import foodtruck.schedule.GoogleCalendar;
+import foodtruck.schedule.ScheduleStrategy;
 import foodtruck.util.Clock;
 
 /**
@@ -39,16 +39,16 @@ import foodtruck.util.Clock;
 public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   private final TruckStopDAO truckStopDAO;
   private final TruckDAO truckDAO;
-  private final GoogleCalendar googleCalendar;
+  private final ScheduleStrategy scheduleStrategy;
   private static final Logger log = Logger.getLogger(FoodTruckStopServiceImpl.class.getName());
   private final DateTimeZone zone;
   private final Clock clock;
 
   @Inject
-  public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, GoogleCalendar googleCalendar,
+  public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, ScheduleStrategy googleCalendar,
       DateTimeZone zone, Clock clock, TruckDAO truckDAO) {
     this.truckStopDAO = truckStopDAO;
-    this.googleCalendar = googleCalendar;
+    this.scheduleStrategy = googleCalendar;
     this.zone = zone;
     this.clock = clock;
     this.truckDAO = truckDAO;
@@ -56,7 +56,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
 
   @Override
   public void updateStopsForTruck(Interval range, Truck truck) {
-    List<TruckStop> stops = googleCalendar.findForTime(range, truck);
+    List<TruckStop> stops = scheduleStrategy.findForTime(range, truck);
     truckStopDAO.deleteAfter(range.getStart(), truck.getId());
     truckStopDAO.addStops(stops);
   }
@@ -80,7 +80,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
 
   private void pullTruckSchedule(Interval theDay) {
     try {
-      List<TruckStop> stops = googleCalendar.findForTime(theDay, null);
+      List<TruckStop> stops = scheduleStrategy.findForTime(theDay, null);
       truckStopDAO.deleteAfter(theDay.getStart());
       truckStopDAO.addStops(stops);
     } catch (Exception e) {

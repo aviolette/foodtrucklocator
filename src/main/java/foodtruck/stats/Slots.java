@@ -29,8 +29,11 @@ public class Slots {
         currentValue = stat.getTimeStamp();
       }
       if (i == currentValue) {
-        // TODO: we need to represent the absence of value vs. 0
         dataPoints.add(new TimeValue(i, stat.getStat(statName)));
+        if (statsIterator.hasNext()) {
+          stat = statsIterator.next();
+          currentValue = stat.getTimeStamp();
+        }
       } else {
         dataPoints.add(new TimeValue(i, 0));
       }
