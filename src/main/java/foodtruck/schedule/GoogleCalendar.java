@@ -32,6 +32,7 @@ import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
+import foodtruck.monitoring.Monitored;
 import static foodtruck.schedule.TimeUtils.toJoda;
 
 /**
@@ -62,7 +63,7 @@ public class GoogleCalendar implements ScheduleStrategy {
   }
 
   // TODO: rewrite this...its awfully crappy
-  @Override
+  @Override @Monitored
   public List<TruckStop> findForTime(Interval range, @Nullable Truck searchTruck) {
     CalendarQuery query = queryFactory.create();
     String truckId = searchTruck == null ? null : searchTruck.getId();
