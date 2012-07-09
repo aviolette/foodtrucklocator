@@ -1,5 +1,12 @@
 <%@include file="../common.jsp" %>
 <%@include file="dashboardHeader.jsp" %>
+<link href="/css/rickshaw/graph.css" rel="stylesheet">
+<style type="text/css">
+  .rickshaw_graph {
+    margin: 10px 0;
+  }
+</style>
+
 <script src="/script/lib/d3.min.js" type="text/javascript"></script>
 <script src="/script/lib/d3.layout.min.js" type="text/javascript"></script>
 <script src="/script/lib/rickshaw.min.js" type="text/javascript"></script>
@@ -25,17 +32,15 @@
 <script type="text/javascript">
 
   function drawGraph(statName, containerId) {
-    var start = new Date();
-    start.setSeconds(0);
-    start.setMinutes(0);
-    start.setHours(0);
+    var DAY_IN_MILLIS = 24 * 60 * 60 * 1000;
     var end = new Date();
+    var start = new Date(end.getTime() - DAY_IN_MILLIS);
     var url = "/services/stats/" + encodeURIComponent(statName) + "?start=" + start.getTime() +
         "&end=" + end.getTime();
     new Rickshaw.Graph.Ajax({
       element: document.getElementById(containerId),
-      width: 235,
-      height: 85,
+      width: 500,
+      height: 100,
       renderer: 'line',
       dataURL: url,
       onData: function(d) {
@@ -44,11 +49,13 @@
       onComplete: function(transport) {
         var graph = transport.graph;
         var detail = new Rickshaw.Graph.HoverDetail({ graph: graph });
+        var xAxis = new Rickshaw.Graph.Axis.Time({ graph: graph });
+        xAxis.render();
       },
       series: [
         {
           name: statName,
-          color: '#c05020'
+          color: 'steelblue'
         }
       ]
     });

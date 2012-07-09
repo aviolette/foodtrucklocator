@@ -54,8 +54,7 @@ public class SystemStatsDAOAppEngine extends AppEngineDAO<Long, SystemStats>
     DatastoreService dataStore = provider.get();
     Transaction txn = dataStore.beginTransaction();
     try {
-      long ts = Slots.getSlot(timestamp.getMillis());
-      long slot = (long) Math.floor((double) ts / (double) FIFTEEN_MIN_IN_MS) * FIFTEEN_MIN_IN_MS;
+      long slot = Slots.getSlot(timestamp.getMillis());
       Entity entity = findBySlot(slot, dataStore);
       if (entity == null) {
         SystemStats stats = new SystemStats(-1, slot, ImmutableMap.<String, Long>of(statName, by));
