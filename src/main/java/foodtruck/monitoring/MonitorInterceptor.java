@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.joda.time.DateTime;
 
 import foodtruck.dao.SystemStatDAO;
 import foodtruck.model.SystemStats;
@@ -31,15 +32,18 @@ public class MonitorInterceptor implements MethodInterceptor {
     String methodName = invocation.getMethod().getName();
     String className = invocation.getMethod().getDeclaringClass().getName();
     // TODO: This is not thread-safe!
-    SystemStats stats = systemStatDAO.findByTimestamp(clock.now());
     String prefix = className + "_" + methodName;
-    stats.incrementCount(prefix + "_total");
+    DateTime now = clock.now();
     try {
       return invocation.proceed();
     } catch (Exception e) {
+      SystemStats stats = systemStatDAO.findByTimestamp(now);
       stats.incrementCount(prefix + "_failed");
+      systemStatDAO.save(stats);
       throw e;
     } finally {
+      SystemStats stats = systemStatDAO.findByTimestamp(now);
+      stats.incrementCount(prefix + "_total");
       systemStatDAO.save(stats);
     }
   }
