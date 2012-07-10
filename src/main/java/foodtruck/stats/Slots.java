@@ -1,9 +1,10 @@
 package foodtruck.stats;
 
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
 
 import foodtruck.model.StatVector;
 import foodtruck.model.SystemStats;
@@ -20,24 +21,17 @@ public class Slots {
       long endTime) {
     ImmutableList.Builder<TimeValue> dataPoints = ImmutableList.builder();
     long startSlot = getSlot(startTime);
-    Iterator<SystemStats> statsIterator = stats.iterator();
-    long currentValue = -1;
-    SystemStats stat = null;
+    Map<Long, TimeValue> timeValues = Maps.newHashMap();
     for (long i = startSlot; i < endTime; i = i + FIFTEEN_MIN_IN_MS) {
-      if (startSlot > currentValue && statsIterator.hasNext()) {
-        stat = statsIterator.next();
-        currentValue = stat.getTimeStamp();
-      }
-      if (i == currentValue) {
-        dataPoints.add(new TimeValue(i, stat.getStat(statName)));
-        if (statsIterator.hasNext()) {
-          stat = statsIterator.next();
-          currentValue = stat.getTimeStamp();
-        }
-      } else {
-        dataPoints.add(new TimeValue(i, 0));
-      }
-
+      final TimeValue timeValue = new TimeValue(i, 0);
+      // TODO: use a map that maintains insertion order
+      dataPoints.add(timeValue);
+      timeValues.put(timeValue.getTimestamp(), timeValue);
+    }
+    for (SystemStats stat : stats) {
+      long slot = getSlot(stat.getTimeStamp());
+      TimeValue value = timeValues.get(slot);
+      value.setCount(stat.getStat(statName));
     }
     return new StatVector(statName, dataPoints.build());
   }
