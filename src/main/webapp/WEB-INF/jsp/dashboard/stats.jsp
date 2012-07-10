@@ -21,6 +21,10 @@
 
 <div id="yahoolookups"></div>
 
+<h3>Database Cache Lookups</h3>
+
+<div id="databaseCache"></div>
+
 <h2>Twitter Connector</h2>
 
 <div id="twitterCache"></div>
@@ -60,10 +64,13 @@
       ]
     });
   }
-  drawGraph("foodtruck.geolocation.GoogleGeolocator_locate_total", "googlelookups");
-  drawGraph("foodtruck.geolocation.YahooGeolocator_locate_total", "yahoolookups");
-  drawGraph("foodtruck.twitter.TwitterServiceImpl_updateTwitterCache_total", "twitterCache");
-  drawGraph("foodtruck.schedule.GoogleCalendar_findForTime_total", "calendarCache");
+  $(document).ready(function() {
+    drawGraph("foodtruck.geolocation.GoogleGeolocator_locate_total", "googlelookups");
+    drawGraph("foodtruck.geolocation.YahooGeolocator_locate_total", "yahoolookups");
+    drawGraph("foodtruck.twitter.TwitterServiceImpl_updateTwitterCache_total", "twitterCache");
+    drawGraph("foodtruck.schedule.GoogleCalendar_findForTime_total", "calendarCache");
+    drawGraph("cacheLookup_total", "databaseCache");
+  });
 </script>
 
 <%@include file="dashboardFooter.jsp" %>

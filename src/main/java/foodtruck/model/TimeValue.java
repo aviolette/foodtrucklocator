@@ -1,12 +1,14 @@
 package foodtruck.model;
 
+import com.google.common.base.Objects;
+
 /**
  * @author aviolette@gmail.com
  * @since 7/6/12
  */
 public class TimeValue {
   private final long timestamp;
-  private final long count;
+  private long count;
 
   public TimeValue(long timestamp, long count) {
     this.timestamp = timestamp;
@@ -19,5 +21,15 @@ public class TimeValue {
 
   public long getCount() {
     return count;
+  }
+
+  public void setCount(long count) {
+    this.count = count;
+  }
+
+  @Override public String toString() {
+    return Objects.toStringHelper(this)
+        .add("timeStamp", timestamp)
+        .add("count", count).toString();
   }
 }

@@ -5,8 +5,12 @@ import java.util.logging.Logger;
 
 import com.google.inject.Inject;
 
+import org.joda.time.DateTime;
+
 import foodtruck.dao.LocationDAO;
+import foodtruck.dao.SystemStatDAO;
 import foodtruck.model.Location;
+import foodtruck.util.Clock;
 
 /**
  * A geo-locator that attempts to find a keyword in the datastore, if not it delegates
@@ -18,19 +22,27 @@ public class CacheAndStoreLocator implements GeoLocator {
   private final LocationDAO dao;
   private final GeoLocator secondaryLocator;
   private static final Logger log = Logger.getLogger(CacheAndStoreLocator.class.getName());
+  private SystemStatDAO monitor;
+  private Clock clock;
 
   @Inject
   public CacheAndStoreLocator(LocationDAO dao,
-      @SecondaryGeolocator GeoLocator secondaryLocator) {
+      @SecondaryGeolocator GeoLocator secondaryLocator, SystemStatDAO monitor, Clock clock) {
     this.secondaryLocator = secondaryLocator;
     this.dao = dao;
+    this.monitor = monitor;
+    this.clock = clock;
   }
 
   @Override
   public Location locate(String location, GeolocationGranularity granularity) {
+    DateTime now = clock.now();
+    monitor.updateCount(now, "cacheLookup_total");
     Location loc = dao.findByAddress(location);
     if (loc != null) {
       return loc;
+    } else {
+      monitor.updateCount(now, "cacheLookup_failed");
     }
     try {
       loc = secondaryLocator.locate(location, granularity);
