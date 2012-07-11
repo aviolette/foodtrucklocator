@@ -33,12 +33,15 @@ public class StatsResource {
   }
 
   @GET @Path("{statList}")
-  public JResponse<List<StatVector>> getStatsFor(@PathParam("statList") final String statName,
+  public JResponse<List<StatVector>> getStatsFor(@PathParam("statList") final String statNames,
       @QueryParam("start") final long startTime, @QueryParam("end") final long endTime) {
+    String[] statList = statNames.split(",");
     List<SystemStats> stats = systemStatDAO.findWithinRange(startTime, endTime);
-    StatVector vector = Slots.fillIn(stats, statName, startTime, endTime);
-    // TODO: assume for now statName only has one value
-    List<StatVector> results = ImmutableList.of(vector);
-    return JResponse.ok(results).build();
+    ImmutableList.Builder<StatVector> builder = ImmutableList.builder();
+    for (String statName : statList) {
+      builder.add(Slots.fillIn(stats, statName, startTime, endTime));
+    }
+    List<StatVector> statVectors = builder.build();
+    return JResponse.ok(statVectors).build();
   }
 }
