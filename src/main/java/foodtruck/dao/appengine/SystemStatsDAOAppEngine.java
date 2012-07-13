@@ -2,6 +2,8 @@ package foodtruck.dao.appengine;
 
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
@@ -27,6 +29,7 @@ public class SystemStatsDAOAppEngine extends AppEngineDAO<Long, SystemStats>
     implements SystemStatDAO {
   private final static long FIFTEEN_MIN_IN_MS = 900000;
   private static final String PARAM_TIMESTAMP = "timestamp";
+  private static final Logger log = Logger.getLogger(SystemStatsDAOAppEngine.class.getName());
 
   @Inject
   public SystemStatsDAOAppEngine(DatastoreServiceProvider provider) {
@@ -53,8 +56,8 @@ public class SystemStatsDAOAppEngine extends AppEngineDAO<Long, SystemStats>
   public void updateCount(DateTime timestamp, String statName, long by) {
     DatastoreService dataStore = provider.get();
     Transaction txn = dataStore.beginTransaction();
+    long slot = Slots.getSlot(timestamp.getMillis());
     try {
-      long slot = Slots.getSlot(timestamp.getMillis());
       Entity entity = findBySlot(slot, dataStore);
       if (entity == null) {
         SystemStats stats = new SystemStats(-1, slot, ImmutableMap.<String, Long>of(statName, by));
@@ -63,6 +66,11 @@ public class SystemStatsDAOAppEngine extends AppEngineDAO<Long, SystemStats>
         long statValue = Attributes.getLongProperty(entity, statName, 0);
         entity.setProperty(statName, statValue + by);
         dataStore.put(entity);
+      }
+    } catch (Exception e) {
+      log.log(Level.WARNING, "Error saving slot: " + slot, e);
+      if (txn.isActive()) {
+        txn.rollback();
       }
     } finally {
       if (txn.isActive()) {
