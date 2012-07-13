@@ -17,6 +17,7 @@ import com.google.inject.Singleton;
 public class StatsServlet extends HttpServlet {
   @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
+    req.setAttribute("nav", "stats");
     req.getRequestDispatcher("/WEB-INF/jsp/dashboard/stats.jsp").forward(req, resp);
   }
 }
