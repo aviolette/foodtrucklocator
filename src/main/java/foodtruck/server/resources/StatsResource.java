@@ -32,7 +32,7 @@ public class StatsResource {
     this.systemStatDAO = systemStatDAO;
   }
 
-  @GET @Path("{statList}")
+  @GET @Path("counts/{statList}")
   public JResponse<List<StatVector>> getStatsFor(@PathParam("statList") final String statNames,
       @QueryParam("start") final long startTime, @QueryParam("end") final long endTime) {
     String[] statList = statNames.split(",");

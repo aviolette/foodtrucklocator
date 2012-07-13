@@ -52,7 +52,7 @@
     var DAY_IN_MILLIS = 24 * 60 * 60 * 1000;
     var end = new Date();
     var start = new Date(end.getTime() - DAY_IN_MILLIS);
-    var url = "/services/stats/" + encodeURIComponent(statNames.join(",")) + "?start=" +
+    var url = "/services/stats/counts/" + encodeURIComponent(statNames.join(",")) + "?start=" +
         start.getTime() +
         "&end=" + end.getTime();
     new Rickshaw.Graph.Ajax({
