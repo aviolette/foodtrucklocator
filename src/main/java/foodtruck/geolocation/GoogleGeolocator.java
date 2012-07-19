@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Inject;
+import com.sun.jersey.api.client.ClientHandlerException;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -16,6 +17,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 import foodtruck.model.Location;
 import foodtruck.monitoring.Monitored;
+import foodtruck.util.ServiceException;
 
 /**
  * GeoLocator that uses google geocoding.
@@ -34,7 +36,8 @@ public class GoogleGeolocator implements GeoLocator {
   }
 
   @Override @Monitored
-  public Location locate(String location, GeolocationGranularity granularity) {
+  public Location locate(String location, GeolocationGranularity granularity)
+      throws ServiceException {
     Location loc = parseLatLong(location);
     if (loc != null) {
       return loc;
@@ -46,25 +49,28 @@ public class GoogleGeolocator implements GeoLocator {
   }
 
   @Override @Monitored
-  public String reverseLookup(Location location, String defaultValue) {
-    log.log(Level.INFO, "Looking up location: {0}", location);
-    JSONObject obj = googleResource.reverseLookup(location);
-    log.log(Level.INFO, "Reverse lookup results for {0}: \n{1}",
-        new Object[] {location, obj});
-    checkStatus(obj);
+  public @Nullable Location reverseLookup(Location location) throws ServiceException {
     try {
+      log.log(Level.INFO, "Looking up location: {0}", location);
+      JSONObject obj = googleResource.reverseLookup(location);
+      log.log(Level.INFO, "Reverse lookup results for {0}: \n{1}",
+          new Object[] {location, obj});
+      checkStatus(obj);
       JSONArray results = obj.getJSONArray("results");
       if (results.length() > 0) {
         JSONObject firstResult = results.getJSONObject(0);
-        return firstResult.getString("formatted_address");
+        return new Location.Builder(location).name(firstResult.getString("formatted_address"))
+            .valid(true).build();
       }
+    } catch (ClientHandlerException timeoutException) {
+      throw new ServiceException(timeoutException);
     } catch (JSONException jsonException) {
-      log.log(Level.WARNING, jsonException.getMessage(), jsonException);
+      throw new ServiceException(jsonException);
     }
-    return defaultValue;
+    return null;
   }
 
-  private void checkStatus(JSONObject result) {
+  private void checkStatus(JSONObject result) throws OverQueryLimitException {
     if ("OVER_QUERY_LIMIT".equals(result.optString("status"))) {
       throw new OverQueryLimitException();
     }
@@ -75,7 +81,8 @@ public class GoogleGeolocator implements GeoLocator {
     return "true".equals(System.getProperty("google.geolocator.enabled", "true"));
   }
 
-  private @Nullable Location lookup(String location, GeolocationGranularity granularity) {
+  private @Nullable Location lookup(String location, GeolocationGranularity granularity)
+      throws ServiceException {
     JSONObject obj = googleResource.findLocation(location);
     try {
       log.log(Level.INFO, "Geolocation result for {0}: \n{1}",

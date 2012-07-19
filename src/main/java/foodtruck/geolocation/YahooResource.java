@@ -29,12 +29,15 @@ public class YahooResource {
    * @return the JSON Object
    * @throws ServiceException if an error occurs calling the service
    */
-  public JSONObject findLocation(String location) throws ServiceException {
+  public JSONObject findLocation(String location, boolean reverse) throws ServiceException {
     try {
-      return resource.queryParam("q", location)
+      WebResource r = resource.queryParam("q", location)
           .queryParam("flags", "j")
-          .queryParam("appid", yahooId)
-          .header("Accept", "text/json; application/json")
+          .queryParam("appid", yahooId);
+      if (reverse) {
+        r = r.queryParam("gflags", "R");
+      }
+      return r.header("Accept", "text/json; application/json")
           .get(JSONObject.class);
     } catch (RuntimeException rte) {
       throw new ServiceException(rte);

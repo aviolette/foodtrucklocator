@@ -3,12 +3,15 @@ package foodtruck.geolocation;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Nullable;
+
 import com.google.inject.Inject;
 
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.model.Configuration;
 import foodtruck.model.Location;
 import foodtruck.util.Clock;
+import foodtruck.util.ServiceException;
 
 /**
  * @author aviolette@gmail.com
@@ -39,8 +42,8 @@ public class OrderedGeolocator implements GeoLocator {
         if (loc != null) {
           return loc;
         }
-      } catch (OverQueryLimitException oqle) {
-        log.warning("Received OVER_QUERY_LIMIT from Google");
+      } catch (ServiceException serviceException) {
+        log.log(Level.WARNING, serviceException.getMessage(), serviceException);
       }
     } else {
       log.log(Level.INFO, "Skipping google for geolocation. Throttle value: {0}",
@@ -52,17 +55,22 @@ public class OrderedGeolocator implements GeoLocator {
     return null;
   }
 
-  @Override
-  public String reverseLookup(Location location, String defaultValue) {
+  @Override public @Nullable Location reverseLookup(Location location) {
     Configuration config = configurationDAO.findSingleton();
     if (config.isGoogleGeolocationEnabled() && !config.isGoogleThrottled(clock.now())) {
       log.log(Level.INFO, "Looking up location: {0}", location);
       try {
-        return googleGeolocator.reverseLookup(location, defaultValue);
-      } catch (OverQueryLimitException e) {
-        log.warning("Received OVER_QUERY_LIMIT from Google");
+        Location loc = googleGeolocator.reverseLookup(location);
+        if (loc != null) {
+          return loc;
+        }
+      } catch (ServiceException e) {
+        log.log(Level.WARNING, e.getMessage(), e);
       }
     }
-    return defaultValue;
+    if (config.isYahooGeolocationEnabled()) {
+      return yahooGeolocator.reverseLookup(location);
+    }
+    return null;
   }
 }

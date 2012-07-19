@@ -50,6 +50,7 @@ public class LocationListServlet extends HttpServlet {
         resp.sendRedirect("/admin/locations/" + location.getKey());
         return;
       }
+      // TODO: add error message if we get here
     }
     req.setAttribute("nav", "locations");
     req.getRequestDispatcher(jsp).forward(req, resp);

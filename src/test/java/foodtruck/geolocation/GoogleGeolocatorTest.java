@@ -742,7 +742,8 @@ public class GoogleGeolocatorTest extends EasyMockSupport {
     Location location = Location.builder().lat(40.714224).lng(-73.961452).build();
     expect(resource.reverseLookup(location)).andReturn(new JSONObject(response));
     replayAll();
-    assertEquals("285 Bedford Ave, Brooklyn, NY 11211, USA", geoLocator.reverseLookup(location, "Unnamed Location"));
+    final Location actual = geoLocator.reverseLookup(location);
+    assertEquals("285 Bedford Ave, Brooklyn, NY 11211, USA", actual.getName());
   }
 
   @Test
@@ -997,7 +998,9 @@ public class GoogleGeolocatorTest extends EasyMockSupport {
     replayAll();
     Location location = geoLocator.locate("Dearborn and Monroe, Chicago, IL",
         GeolocationGranularity.BROAD);
-    assertEquals(Location.builder().lat(41.8807438).lng(-87.6293867).name("Dearborn and Monroe, Chicago, IL").build(),
+    assertEquals(
+        Location.builder().lat(41.8807438).lng(-87.6293867).name("Dearborn and Monroe, Chicago, IL")
+            .build(),
         location);
   }
 
@@ -1007,6 +1010,6 @@ public class GoogleGeolocatorTest extends EasyMockSupport {
     JSONObject response = new JSONObject("{\"results\":[],\"status\":\"OVER_QUERY_LIMIT\"}");
     expect(resource.reverseLookup(location)).andReturn(response);
     replayAll();
-    geoLocator.reverseLookup(location, "Default Value");
+    geoLocator.reverseLookup(location);
   }
 }

@@ -5,7 +5,7 @@ package foodtruck.util;
  * @author aviolette@gmail.com
  * @since 10/22/11
  */
-public class ServiceException extends Exception {
+public class ServiceException extends RuntimeException {
   public ServiceException() {
     super();
   }
