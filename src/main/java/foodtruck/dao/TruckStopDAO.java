@@ -47,5 +47,14 @@ public interface TruckStopDAO {
 
   void delete(long stopId);
 
-  void update(TruckStop truckStop);
+  void save(TruckStop truckStop);
+
+  /**
+   * Returns all the truck stops over a specific time range
+   * @param truckId the truck ID
+   * @param startDate the start time (inclusive)
+   * @param endDate the end time (exclusive)
+   * @return the list of all the truck stops
+   */
+  List<TruckStop> findOverRange(@Nullable String truckId, DateTime startDate, DateTime endDate);
 }

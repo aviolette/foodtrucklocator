@@ -70,7 +70,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   }
 
   @Override public void update(TruckStop truckStop) {
-    truckStopDAO.update(truckStop);
+    truckStopDAO.save(truckStop);
   }
 
   @Override
@@ -157,7 +157,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     for (TruckStop stop : stops) {
       if (stop.getLocation().getName().equals(location.getName())) {
         stop = stop.withLocation(location);
-        truckStopDAO.update(stop);
+        truckStopDAO.save(stop);
       }
     }
   }

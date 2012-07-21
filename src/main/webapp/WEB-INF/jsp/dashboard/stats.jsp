@@ -12,6 +12,10 @@
 <script src="/script/lib/d3.layout.min.js" type="text/javascript"></script>
 <script src="/script/lib/rickshaw.min.js" type="text/javascript"></script>
 
+<h2>Trucks</h2>
+
+<div id="trucksOnRoad"></div>
+
 <h2>Geolocation</h2>
 
 <h3>Database Cache Lookups</h3>
@@ -25,7 +29,6 @@
 <h3>Yahoo Lookups</h3>
 
 <div id="yahoolookups"></div>
-
 
 <h2>Twitter Connector</h2>
 
@@ -86,6 +89,7 @@
     drawGraphs("foodtruck.twitter.TwitterServiceImpl_updateTwitterCache_total", "twitterCache");
     drawGraphs("foodtruck.schedule.GoogleCalendar_findForTime_total", "calendarCache");
     drawGraphs(["cacheLookup_total","cacheLookup_failed"], "databaseCache");
+    drawGraphs("trucksOnRoad", "trucksOnRoad");
   });
 </script>
 

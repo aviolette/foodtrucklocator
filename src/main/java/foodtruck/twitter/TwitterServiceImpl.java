@@ -254,7 +254,7 @@ public class TwitterServiceImpl implements TwitterService {
     found = found.withEndTime(terminationTime);
     notifier.terminated(found);
     log.log(Level.INFO, "New stop {0}", found);
-    truckStopDAO.update(found);
+    truckStopDAO.save(found);
   }
 
   /**

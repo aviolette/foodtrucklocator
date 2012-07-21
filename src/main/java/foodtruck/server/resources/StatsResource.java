@@ -13,9 +13,14 @@ import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.sun.jersey.api.JResponse;
 
+import org.joda.time.DateTime;
+
 import foodtruck.dao.SystemStatDAO;
+import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.StatVector;
 import foodtruck.model.SystemStats;
+import foodtruck.model.TimeValue;
+import foodtruck.model.TruckStop;
 import foodtruck.stats.Slots;
 
 /**
@@ -26,16 +31,21 @@ import foodtruck.stats.Slots;
 @Produces(MediaType.APPLICATION_JSON)
 public class StatsResource {
   private final SystemStatDAO systemStatDAO;
+  private final TruckStopDAO truckStopDAO;
 
   @Inject
-  public StatsResource(SystemStatDAO systemStatDAO) {
+  public StatsResource(SystemStatDAO systemStatDAO, TruckStopDAO truckStopDAO) {
     this.systemStatDAO = systemStatDAO;
+    this.truckStopDAO = truckStopDAO;
   }
 
   @GET @Path("counts/{statList}")
   public JResponse<List<StatVector>> getStatsFor(@PathParam("statList") final String statNames,
       @QueryParam("start") final long startTime, @QueryParam("end") final long endTime) {
     String[] statList = statNames.split(",");
+    if (statList.length > 0 && statList[0].equals("trucksOnRoad")) {
+      return trucksOnRoad(startTime, endTime);
+    }
     List<SystemStats> stats = systemStatDAO.findWithinRange(startTime, endTime);
     ImmutableList.Builder<StatVector> builder = ImmutableList.builder();
     for (String statName : statList) {
@@ -43,5 +53,31 @@ public class StatsResource {
     }
     List<StatVector> statVectors = builder.build();
     return JResponse.ok(statVectors).build();
+  }
+
+  private JResponse<List<StatVector>> trucksOnRoad(long startTime, long endTime) {
+    StatVector vector = Slots.fillIn(ImmutableList.<SystemStats>of(), "trucksOnRoad",
+        startTime, endTime);
+    List<TruckStop> truckStops =
+        truckStopDAO.findOverRange(null, new DateTime(startTime), new DateTime(endTime));
+    for (TimeValue timeValue : vector.getDataPoints()) {
+      // inefficient!!!!
+      timeValue.setCount(countWithinRange(truckStops, new DateTime(timeValue.getTimestamp())));
+    }
+    List<StatVector> statVectors = ImmutableList.of(vector);
+    return JResponse.ok(statVectors).build();
+
+  }
+
+  private long countWithinRange(List<TruckStop> truckStops, DateTime dateTime) {
+    long count = 0;
+    for (TruckStop stop : truckStops) {
+      if (stop.activeDuring(dateTime)) {
+        count++;
+      } else if (dateTime.isAfter(stop.getEndTime())) {
+        return count;
+      }
+    }
+    return count;
   }
 }

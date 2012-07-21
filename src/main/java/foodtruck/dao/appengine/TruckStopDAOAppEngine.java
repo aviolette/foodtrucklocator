@@ -49,6 +49,8 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
   private final TruckDAO truckDAO;
   private static final String DESCRIPTION_FIELD = "description";
   private static final String URL_FIELD = "url";
+  private static final String END_TIMESTAMP = "endTimeStamp";
+  private static final String START_TIMESTAMP = "startTimeStamp";
 
   @Inject
   public TruckStopDAOAppEngine(DatastoreServiceProvider provider,
@@ -117,6 +119,8 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
     truckStop.setProperty(DESCRIPTION_FIELD, stop.getLocation().getDescription());
     truckStop.setProperty(URL_FIELD, stop.getLocation().getUrl());
     truckStop.setProperty(LOCKED_FIELD, stop.isLocked());
+    truckStop.setProperty(END_TIMESTAMP, stop.getEndTime().getMillis());
+    truckStop.setProperty(START_TIMESTAMP, stop.getStartTime().getMillis());
   }
 
   private Entity toEntity(TruckStop stop, Entity entity) {
@@ -218,7 +222,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
     dataStore.delete(key);
   }
 
-  @Override public void update(TruckStop truckStop) {
+  @Override public void save(TruckStop truckStop) {
     DatastoreService dataStore = serviceProvider.get();
     Entity entity = null;
     try {
@@ -231,5 +235,29 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
     } catch (EntityNotFoundException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  @Override
+  public List<TruckStop> findOverRange(@Nullable String truckId, DateTime startDate,
+      DateTime endDate) {
+    DatastoreService dataStore = serviceProvider.get();
+    Query q = new Query(STOP_KIND);
+    // TODO: google's filters can't do range comparisons...ugh...here I search the lower bound
+    q.addFilter(START_TIME_FIELD, Query.FilterOperator.GREATER_THAN_OR_EQUAL,
+        startDate.toDate());
+    if (truckId != null) {
+      q.addFilter(TRUCK_ID_FIELD, Query.FilterOperator.EQUAL, truckId);
+    }
+    q.addSort(START_TIME_FIELD, Query.SortDirection.ASCENDING);
+    ImmutableList.Builder<TruckStop> stops = ImmutableList.builder();
+    for (Entity entity : dataStore.prepare(q).asIterable()) {
+      final DateTime startTime = new DateTime(Date.class.cast(entity.getProperty(START_TIME_FIELD)),
+          zone);
+      if (startTime.isAfter(endDate)) {
+        continue;
+      }
+      stops.add(toTruckStop(entity));
+    }
+    return stops.build();
   }
 }
