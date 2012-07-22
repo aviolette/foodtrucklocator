@@ -74,8 +74,6 @@ public class StatsResource {
     for (TruckStop stop : truckStops) {
       if (stop.activeDuring(dateTime)) {
         count++;
-      } else if (dateTime.isAfter(stop.getEndTime())) {
-        return count;
       }
     }
     return count;
