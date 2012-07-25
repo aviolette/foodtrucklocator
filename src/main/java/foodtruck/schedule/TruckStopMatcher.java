@@ -62,7 +62,7 @@ public class TruckStopMatcher {
     this.addressExtractor = extractor;
     this.geoLocator = geoLocator;
     this.timePattern = Pattern.compile(TIME_PATTERN);
-    this.atTimePattern = Pattern.compile("\\bat (" + TIME_PATTERN_STRICT + ")");
+    this.atTimePattern = Pattern.compile("\\b(at|ETA) (" + TIME_PATTERN_STRICT + ")");
     this.endTimePattern = Pattern.compile("\\b(until|til|till) (" + TIME_PATTERN + ")");
     this.timeRangePattern = Pattern.compile(TIME_RANGE_PATTERN);
     this.retweetPattern = Pattern.compile("\\bRT \"?@");
@@ -153,7 +153,7 @@ public class TruckStopMatcher {
       m = atTimePattern.matcher(tweetText);
       if (m.find()) {
         final LocalDate date = tweet.getTime().toLocalDate();
-        startTime = parseTime(m.group(1), date, null);
+        startTime = parseTime(m.group(2), date, null);
         if (startTime != null) {
           if (startTime.getHourOfDay() == 0) {
             startTime = startTime.withHourOfDay(12);

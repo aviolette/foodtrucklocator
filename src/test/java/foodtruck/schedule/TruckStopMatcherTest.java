@@ -223,6 +223,16 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
   @Test
+  public void testMatch_shouldMatchStartTimeETA() {
+    TruckStopMatch match =
+        tweet(
+            "We are enroute to the Univ of Chicago with bacon filled chocolate covered waffle sticks and 6 pancake flavors! ETA 8:00 am")
+            .withTruck(truck)
+            .match();
+    assertEquals(tweetTime.withTime(8, 0, 0, 0), match.getStop().getStartTime());
+  }
+
+  @Test
   public void testMatch_shouldMatchStartTime1() {
     TruckStopMatch match =
         tweet(
