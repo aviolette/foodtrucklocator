@@ -19,12 +19,12 @@
     <div class="container-fluid">
       <a class="brand" href="/">Chicago Food Truck Finder</a>
       <ul class="nav">
+        <li><a id="aboutLink" href="#about">About</a></li>
         <%--
         <li><a href="#settings">Settings</a></li>
-        <li><a href="#about">About</a></li>
         <li><a href="/trucks">Trucks</a></li>
-        --%>
         <li><a target="_blank" href="http://blog.chicagofoodtruckfinder.com">Blog</a></li>
+        --%>
       </ul>
       <p class="pull-right"><a href="https://twitter.com/chifoodtruckz"
                                class="twitter-follow-button" data-button="grey"
