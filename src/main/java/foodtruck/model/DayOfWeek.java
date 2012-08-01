@@ -1,5 +1,7 @@
 package foodtruck.model;
 
+import javax.annotation.Nullable;
+
 import org.joda.time.DateTimeConstants;
 
 /**
@@ -22,5 +24,13 @@ public enum DayOfWeek {
 
   public int getConstant() {
     return isoConstant;
+  }
+
+  public static @Nullable DayOfWeek fromConstant(int dayOfWeek) {
+    DayOfWeek[] values = values();
+    if (dayOfWeek >= values.length) {
+      return null;
+    }
+    return values[dayOfWeek];
   }
 }

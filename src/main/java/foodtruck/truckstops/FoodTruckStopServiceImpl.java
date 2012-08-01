@@ -123,7 +123,28 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   @Override
   public DailySchedule findStopsForDay(LocalDate day) {
     List<TruckStop> stops = truckStopDAO.findDuring(null, day);
-    return new DailySchedule(stops);
+    return new DailySchedule(day, stops);
+  }
+
+  @Override public List<DailySchedule> findSchedules(String truckId, DateTime start, DateTime end) {
+    List<TruckStop> stopList = truckStopDAO.findOverRange(truckId, start, end);
+    ImmutableList.Builder<DailySchedule> stops = ImmutableList.builder();
+    LocalDate date = start.toLocalDate();
+    ImmutableList.Builder<TruckStop> currentStops = ImmutableList.builder();
+    for (TruckStop truckStop : stopList) {
+      final LocalDate localDate = truckStop.getStartTime().toLocalDate();
+      if (!date.equals(localDate)) {
+        ImmutableList<TruckStop> cs = currentStops.build();
+        if (!cs.isEmpty()) {
+          stops.add(new DailySchedule(date, cs));
+        }
+        currentStops = ImmutableList.builder();
+        date = localDate;
+      }
+      currentStops.add(truckStop);
+    }
+    stops.add(new DailySchedule(date, currentStops.build()));
+    return stops.build();
   }
 
   @Override public List<TruckStatus> findCurrentAndPreviousStop(LocalDate day) {

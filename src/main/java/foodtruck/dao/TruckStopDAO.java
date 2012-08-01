@@ -57,4 +57,5 @@ public interface TruckStopDAO {
    * @return the list of all the truck stops
    */
   List<TruckStop> findOverRange(@Nullable String truckId, DateTime startDate, DateTime endDate);
+
 }

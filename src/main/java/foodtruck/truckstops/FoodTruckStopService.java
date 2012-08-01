@@ -75,4 +75,6 @@ public interface FoodTruckStopService {
    * Syncs the location (based on name) to all the truck stops on the current day.
    */
   void updateLocationInCurrentSchedule(Location location);
+
+  List<DailySchedule> findSchedules(String truckId, DateTime start, DateTime end);
 }
