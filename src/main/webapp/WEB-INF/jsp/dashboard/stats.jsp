@@ -38,6 +38,13 @@
 
 <div id="calendarCache"></div>
 
+<h2>End Point Requests</h2>
+
+<h3>Schedule Service - /service/schedule/<code>truckId</code></h3>
+
+<div id="scheduleService"></div>
+
+
 <script type="text/javascript">
   function drawGraphs(statNames, containerId) {
     if (typeof(statNames) == "string") {
@@ -90,6 +97,7 @@
       "foodtruck.twitter.TwitterServiceImpl_updateTwitterCache_failed"], "twitterCache");
     drawGraphs("foodtruck.schedule.GoogleCalendar_findForTime_total", "calendarCache");
     drawGraphs(["cacheLookup_total","cacheLookup_failed"], "databaseCache");
+    drawGraphs(["foodtruck.server.api.FoodTruckScheduleServlet_doGet_total"], "scheduleService");
     drawGraphs("trucksOnRoad", "trucksOnRoad");
   });
 </script>

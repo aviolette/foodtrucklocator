@@ -15,6 +15,7 @@ import com.google.inject.Singleton;
 import org.joda.time.LocalDate;
 
 import foodtruck.model.TruckSchedule;
+import foodtruck.monitoring.Monitored;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 
@@ -36,7 +37,7 @@ public class FoodTruckScheduleServlet extends HttpServlet {
     this.clock = clock;
   }
 
-  @Override
+  @Override @Monitored
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     String truckId = req.getPathInfo().substring(1);
