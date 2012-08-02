@@ -720,10 +720,6 @@ window.FoodTruckLocator = function() {
       trucks.setCenter(center);
       if (Modernizr.touch || mobile) {
         $("#viewSelect").css("display", "none");
-        $(window).bind("orientationchange", function(e) {
-          // TODO: cheap solution to orientation change...make work w/o reloading
-          location.reload();
-        })
       } else {
         $("ul.pills a").click(function(e) {
           e.preventDefault();
