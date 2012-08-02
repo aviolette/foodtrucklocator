@@ -86,7 +86,8 @@
       "foodtruck.geolocation.GoogleGeolocator_locate_failed"], "googlelookups");
     drawGraphs(["foodtruck.geolocation.YahooGeolocator_locate_total",
       "foodtruck.geolocation.YahooGeolocator_locate_failed"], "yahoolookups");
-    drawGraphs("foodtruck.twitter.TwitterServiceImpl_updateTwitterCache_total", "twitterCache");
+    drawGraphs(["foodtruck.twitter.TwitterServiceImpl_updateTwitterCache_total",
+      "foodtruck.twitter.TwitterServiceImpl_updateTwitterCache_failed"], "twitterCache");
     drawGraphs("foodtruck.schedule.GoogleCalendar_findForTime_total", "calendarCache");
     drawGraphs(["cacheLookup_total","cacheLookup_failed"], "databaseCache");
     drawGraphs("trucksOnRoad", "trucksOnRoad");
