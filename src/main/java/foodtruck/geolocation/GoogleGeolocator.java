@@ -42,9 +42,6 @@ public class GoogleGeolocator implements GeoLocator {
     if (loc != null) {
       return loc;
     }
-    if (!isEnabled()) {
-      return null;
-    }
     return lookup(location, granularity);
   }
 
@@ -74,11 +71,6 @@ public class GoogleGeolocator implements GeoLocator {
     if ("OVER_QUERY_LIMIT".equals(result.optString("status"))) {
       throw new OverQueryLimitException();
     }
-  }
-
-  private boolean isEnabled() {
-    // TODO: use configuration, not system property
-    return "true".equals(System.getProperty("google.geolocator.enabled", "true"));
   }
 
   private @Nullable Location lookup(String location, GeolocationGranularity granularity)
