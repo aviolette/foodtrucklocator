@@ -127,8 +127,6 @@
     <a id="cancelButton" href="#" class="btn secondary">Cancel</a>
   </div>
 </div>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
-<script type="text/javascript" src="/bootstrap/js/bootstrap-modal.js"></script>
 <script type="text/javascript">
   function invokeEditDialog(stop, afterwards) {
     $("#startTimeInput").attr("value", stop.startTime);
