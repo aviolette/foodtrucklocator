@@ -1,5 +1,6 @@
 <%@ include file="header.jsp" %>
-<div class="sidebar">
+<div class="row-fluid">
+<div class="span3 sidebar">
   <div id="sidebarHeader">
     <div class="well">
       <c:if test="${not empty requestDate}">
@@ -7,27 +8,14 @@
       </c:if>
       <div id="viewSelect">
         Show results by:
-        <ul class="pills">
+        <ul class="nav nav-pills">
           <li id="timePill" class="active"><a href="#time">Time</a></li>
           <li><a href="#location">Location</a></li>
         </ul>
       </div>
-      <%--
-      <div id="locationControls">
-        <div >
-          <label for="radius">Filter trucks w/in &nbsp;</label>
-          <div class="input">
-            <div class="input-prepend">
-              <label class="add-on active"><input id="filterLocations" checked="checked" type="checkbox"/></label>
-              <input class="mini" id="radius" name="prependedInput2" size="3" type="text"> miles of your location
-            </div>
-          </div>
-        </div>
-      </div>
-      --%>
       <div id="locationFilter" style="display:none">
         <input type="checkbox" id="filterLocations" checked="checked"/> &nbsp;Show results
-        within <input class="mini" type="text" id="radius" size="2"/> miles of <strong
+        within <input class="input-mini" type="text" id="radius" size="2"/> miles of <strong
           id="filterLocationName">Dearborn and Monroe</strong>.</br>
         <a href="#" id="changeLocationLink">Change my location.</a>
       </div>
@@ -35,7 +23,7 @@
         <div>Select a time</div>
         <div class="clearfix">
           <div class="input">
-            <div class="inline-inputs"><select class="mini timechange" id="hourSelect">
+            <div class="inline-inputs"><select class="input-mini timechange" id="hourSelect">
               <option>1</option>
               <option>2</option>
               <option>3</option>
@@ -48,12 +36,12 @@
               <option>10</option>
               <option>11</option>
               <option>12</option>
-            </select> <select class="mini timechange" id="minSelect">
+            </select> <select class="input-mini timechange" id="minSelect">
               <option>00</option>
               <option>15</option>
               <option>30</option>
               <option>45</option>
-            </select> <select class="mini timechange" id="ampmSelect">
+            </select> <select class="input-mini timechange" id="ampmSelect">
               <option>am</option>
               <option>pm</option>
             </select>
@@ -80,7 +68,7 @@
 <%-- truck dialog // TODO: move to separate JSP --%>
 <div id="truckDialog" class="modal hide fade">
   <div class="modal-header">
-    <a href="#" class="close">&times;</a>
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
 
     <h3 id="truckTitle"></h3>
   </div>
@@ -98,13 +86,13 @@
     <ul id="truckSchedule"></ul>
   </div>
 </div>
-
+</div>
 <%@include file="include/core_js.jsp" %>
 <script type="text/javascript"
         src="http://maps.google.com/maps/api/js?sensor=false&libraries=geometry"></script>
 <script type="text/javascript" src="script/lib/underscore-min.js"></script>
 <script type="text/javascript" src="script/lib/backbone-min.js"></script>
-<script type="text/javascript" src="script/map.js?ver=41"></script>
+<script type="text/javascript" src="script/map.js?ver=42"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     FoodTruckLocator.run(${mobile}, new google.maps.LatLng(${center.latitude}, ${center.longitude}),

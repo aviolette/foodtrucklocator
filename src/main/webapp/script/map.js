@@ -694,7 +694,7 @@ window.FoodTruckLocator = function() {
     },
     setupView : function(trucks, mobile, center, time) {
       var self = this;
-      if (self.isTouchScreenPortrait() || mobile) {
+      if (Modernizr.touch || mobile) {
         this.currentView =
             new ListView({initialTime: time, center : center, model : trucks, el: "foodTruckList"});
       } else {
@@ -721,9 +721,9 @@ window.FoodTruckLocator = function() {
       if (Modernizr.touch || mobile) {
         $("#viewSelect").css("display", "none");
       } else {
-        $("ul.pills a").click(function(e) {
+        $("ul.nav-pills a").click(function(e) {
           e.preventDefault();
-          $("ul.pills li").removeClass("active");
+          $("ul.nav-pills li").removeClass("active");
           $(this.parentElement).addClass("active");
           self.currentView.removeAllMarkers();
           self.pickView(trucks, mobile, center, time).render();

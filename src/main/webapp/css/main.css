@@ -1,13 +1,8 @@
-body {
-    padding-top: 40px;
+.navbar {
+    margin-bottom: 0;
 }
-
-.container-fluid > .sidebar {
-    width: 300px;
-}
-
-.container-fluid > .content {
-    margin-left: 320px;
+.sidebar {
+    padding-right : 10px;
 }
 
 .well {
@@ -33,12 +28,13 @@ address.locationName {
 }
 
 address {
-    margin:  0; padding:  0;
+    margin: 0; padding:  0;
 }
 
 dd {
     margin-bottom: 5px;
 }
+
 dt {
     margin-top: 10px;
 }
