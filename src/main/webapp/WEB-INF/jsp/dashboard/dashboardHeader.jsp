@@ -6,17 +6,13 @@
   <title>Administrative Dashboard</title>
   <meta name="description" content="Administrative Dashboard">
   <meta name="author" content="Andrew Violette">
-
-  <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
-  <!--[if lt IE 9]>
-  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-  <![endif]-->
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
   <script>window.jQuery ||
   document.write('<script src="/script/lib/jquery-1.6.2.min.js"><\/script>')</script>
   <script src="/script/dashboard.js" type="text/javascript"></script>
-  <link href="/bootstrap/bootstrap.css" rel="stylesheet">
+  <link href="/bootstrap2.04/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="/bootstrap2.04/css/bootstrap-responsive.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/dashboard.css"/>
 
   <style type="text/css">
@@ -29,8 +25,8 @@
 
 <body>
 
-<div class="topbar">
-  <div class="fill">
+<div class="navbar">
+  <div class="navbar-inner">
     <div class="container">
       <a class="brand" href="#">CFTF - Admin Dashboard</a>
       <ul class="nav">

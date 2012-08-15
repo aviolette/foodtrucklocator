@@ -6,7 +6,7 @@
   <small>(<a href="/admin/trucks/${truckId}/configuration">edit</a>)</small>
 </h2>
 
-<table>
+<table class="table">
   <tr>
     <td>Facebook</td>
     <td><c:choose><c:when test="${empty(truck.facebook)}">none</c:when><c:otherwise><a
@@ -47,7 +47,7 @@
 </table>
 
 <h2>Schedule</h2>
-<table>
+<table class="table table-striped">
   <thead>
   <tr>
     <td>Start Time</td>
@@ -63,7 +63,7 @@
 &nbsp;
 <button class="btn" id="recacheButton">Reload from calendar</button>
 <h2>Tweets</h2>
-<table>
+<table class="table table-striped">
   <thead>
   <tr>
     <td style="width: 100px">Time</td>

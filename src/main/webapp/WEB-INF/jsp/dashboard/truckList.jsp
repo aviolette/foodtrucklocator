@@ -6,7 +6,7 @@
 <a href="#" class="btn" id="newTruck">New Truck</a>
 
 <h3>Active Trucks</h3>
-<table>
+<table class="table table-striped">
   <thead>
   <tr>
     <th>Truck</th>
@@ -43,7 +43,7 @@
   </tbody>
 </table>
 <h3>Trucks That Are Inactive Today</h3>
-<table>
+<table class="table table-striped">
   <thead>
   <tr>
     <th>Truck</th>
@@ -65,7 +65,7 @@
 </table>
 <div id="inactiveTrucks">
   <h3>Inactive Trucks</h3>
-  <table>
+  <table class="table table-striped">
     <thead>
     <tr>
       <th>Truck</th>
