@@ -206,6 +206,9 @@ window.FoodTruckLocator = function() {
             .append("<dd><a style='font-size:1.2em;font-weight: bold' href='http://maps.google.com/maps?q=" +
             group.position.latLng.lat() + "," +
             group.position.latLng.lng() + "'>view map</a></dd>");
+        if (group.position.description) {
+          menuSection.append("<dd>" + group.position.description + "</dd>");
+        }
         $.each(group.trucks.sort(truckNameSort), function(idx, truck) {
           menuSection.append("<dd class='truckSectionTextOnly' id='truck" + truck.id + "'></dd>");
           var truckDiv = $('#truck' + truck.id);
