@@ -13,6 +13,10 @@
           <li><label><input name="yahooGeolocationEnabled"
                             <c:if test="${config.yahooGeolocationEnabled}">checked="checked"</c:if>
                             type="checkbox"/> <span>Enable Yahoo Placefinder</span></label></li>
+          <li><label><input name="tweetUpdateServletEnabled"
+                            <c:if
+                                test="${config.tweetUpdateServletEnabled}">checked="checked"</c:if>
+                            type="checkbox"/> <span>Enable Remote Tweet Updating</span></label></li>
         </ul>
       </div>
     </div>

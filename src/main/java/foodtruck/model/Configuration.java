@@ -14,6 +14,7 @@ public class Configuration extends ModelEntity {
   private boolean yahooGeolocationEnabled;
   private boolean googleGeolocationEnabled;
   private DateTime throttleGoogleUntil;
+  private boolean tweetUpdateServletEnabled;
 
   public Configuration(Object key) {
     super(key);
@@ -24,6 +25,7 @@ public class Configuration extends ModelEntity {
     this.googleGeolocationEnabled = builder.googleGeolocationEnabled;
     this.yahooGeolocationEnabled = builder.yahooGeolocationEnabled;
     this.throttleGoogleUntil = builder.throttleGoogleUntil;
+    this.tweetUpdateServletEnabled = builder.tweetUpdateServletEnabled;
   }
 
   public boolean isYahooGeolocationEnabled() {
@@ -32,6 +34,10 @@ public class Configuration extends ModelEntity {
 
   public boolean isGoogleGeolocationEnabled() {
     return googleGeolocationEnabled;
+  }
+
+  public boolean isTweetUpdateServletEnabled() {
+    return tweetUpdateServletEnabled;
   }
 
   public boolean isGoogleThrottled(DateTime when) {
@@ -56,6 +62,7 @@ public class Configuration extends ModelEntity {
     private boolean yahooGeolocationEnabled = false;
     private Key key;
     private @Nullable DateTime throttleGoogleUntil;
+    private boolean tweetUpdateServletEnabled;
 
     public Builder() {
     }
@@ -65,6 +72,7 @@ public class Configuration extends ModelEntity {
       this.yahooGeolocationEnabled = config.isYahooGeolocationEnabled();
       this.throttleGoogleUntil = config.throttleGoogleUntil;
       this.key = (Key) config.getKey();
+      this.tweetUpdateServletEnabled = config.tweetUpdateServletEnabled;
     }
 
     public Builder googleGeolocationEnabled(boolean enabled) {
@@ -74,6 +82,11 @@ public class Configuration extends ModelEntity {
 
     public Builder yahooGeolocationEnabled(boolean enabled) {
       this.yahooGeolocationEnabled = enabled;
+      return this;
+    }
+
+    public Builder tweetUpdateServletEnabled(boolean enabled) {
+      this.tweetUpdateServletEnabled = enabled;
       return this;
     }
 

@@ -38,4 +38,11 @@ public class Attributes {
     }
     return defaultValue;
   }
+
+  public static boolean getBooleanProperty(Entity entity, String statName) {
+    if (entity.hasProperty(statName)) {
+      return (Boolean) entity.getProperty(statName);
+    }
+    return false;
+  }
 }

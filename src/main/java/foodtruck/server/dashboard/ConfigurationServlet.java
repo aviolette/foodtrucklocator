@@ -42,6 +42,7 @@ public class ConfigurationServlet extends HttpServlet {
     config = Configuration.builder(config)
         .yahooGeolocationEnabled("on".equals(req.getParameter("yahooGeolocationEnabled")))
         .googleGeolocationEnabled("on".equals(req.getParameter("googleGeolocationEnabled")))
+        .tweetUpdateServletEnabled("on".equals(req.getParameter("tweetUpdateServletEnabled")))
         .build();
     configDAO.save(config);
     resp.sendRedirect("/admin/configuration");

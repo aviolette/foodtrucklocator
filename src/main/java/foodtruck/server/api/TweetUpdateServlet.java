@@ -13,7 +13,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -21,6 +20,7 @@ import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.TweetCacheDAO;
 import foodtruck.model.Location;
 import foodtruck.model.TweetSummary;
@@ -36,20 +36,20 @@ public class TweetUpdateServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(TweetUpdateServlet.class.getName());
   private final DateTimeZone zone;
   private final TweetCacheDAO tweetCacheDAO;
-  private final boolean tweetUpdaterEnabled;
+  private final ConfigurationDAO configDAO;
 
   @Inject
   public TweetUpdateServlet(DateTimeZone zone, TweetCacheDAO dao,
-      @Named("remote.tweet.update") boolean tweetUpdaterEnabled) {
+      ConfigurationDAO configDAO) {
     this.zone = zone;
     this.tweetCacheDAO = dao;
-    this.tweetUpdaterEnabled = tweetUpdaterEnabled;
+    this.configDAO = configDAO;
   }
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-    if (!tweetUpdaterEnabled) {
+    if (!configDAO.findSingleton().isTweetUpdateServletEnabled()) {
       log.log(Level.WARNING, "Attempt to call tweet updater when it is disabled");
       resp.setStatus(404);
       return;
