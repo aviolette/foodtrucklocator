@@ -27,7 +27,7 @@
         <li><a target="_blank" href="http://blog.chicagofoodtruckfinder.com">Blog</a></li>
         --%>
       </ul>
-      <p class="navbar-form pull-right"><a href="https://twitter.com/chifoodtruckz"
+      <p style="padding-top: 4px" class="navbar-form pull-right"><a href="https://twitter.com/chifoodtruckz"
                                class="twitter-follow-button" data-button="grey"
                                data-text-color="#FFF" data-link-color="#FFF">Follow
         @chifoodtruckz</a></p>
