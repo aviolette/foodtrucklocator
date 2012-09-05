@@ -1,6 +1,7 @@
 package foodtruck.server.resources;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -37,7 +38,8 @@ public class AddressRuleTestResource {
 
   @GET
   public JResponse<Collection<AddressRuleTest>> findAll() {
-    return JResponse.ok(addressRuleDAO.findAll()).build();
+    final Collection<AddressRuleTest> allByName = addressRuleDAO.findAllByName();
+    return JResponse.ok(allByName).build();
   }
 
   @POST @Consumes(MediaType.APPLICATION_JSON)

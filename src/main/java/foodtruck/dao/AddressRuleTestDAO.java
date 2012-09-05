@@ -1,5 +1,7 @@
 package foodtruck.dao;
 
+import java.util.List;
+
 import foodtruck.model.AddressRuleTest;
 
 /**
@@ -8,4 +10,6 @@ import foodtruck.model.AddressRuleTest;
  */
 public interface AddressRuleTestDAO extends DAO<Long, AddressRuleTest> {
   void delete(long id);
+
+  List<AddressRuleTest> findAllByName();
 }

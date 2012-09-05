@@ -234,6 +234,7 @@
           $('#testDialog').modal('hide');
         },
         success: function(e) {
+          refreshTestList();
         }
       });
     });

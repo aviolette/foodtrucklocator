@@ -1,6 +1,12 @@
 package foodtruck.dao.appengine;
 
+import java.util.List;
+
+import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Query;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 
 import foodtruck.dao.AddressRuleTestDAO;
@@ -21,6 +27,18 @@ public class AddressRuleTestDAOAppEngine extends AppEngineDAO<Long, AddressRuleT
   @Inject
   public AddressRuleTestDAOAppEngine(DatastoreServiceProvider provider) {
     super("address_rule_test", provider);
+  }
+
+  @Override public List<AddressRuleTest> findAllByName() {
+    DatastoreService dataStore = provider.get();
+    Query q = new Query(getKind());
+    q.addSort(PROP_NAME, Query.SortDirection.ASCENDING);
+    ImmutableList.Builder<AddressRuleTest> objs = ImmutableList.builder();
+    for (Entity entity : dataStore.prepare(q).asIterable()) {
+      AddressRuleTest obj = fromEntity(entity);
+      objs.add(obj);
+    }
+    return objs.build();
   }
 
   @Override protected Entity toEntity(AddressRuleTest obj, Entity entity) {
