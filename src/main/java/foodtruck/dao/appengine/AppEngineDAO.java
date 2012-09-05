@@ -40,6 +40,11 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
     return objs.build();
   }
 
+  public void delete(long id) {
+    DatastoreService dataStore = provider.get();
+    Key key = KeyFactory.createKey(getKind(), id);
+    dataStore.delete(key);
+  }
 
   @Override
   public long save(T obj) {

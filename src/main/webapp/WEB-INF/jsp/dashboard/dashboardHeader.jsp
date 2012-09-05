@@ -10,11 +10,11 @@
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
   <script>window.jQuery ||
   document.write("<script src='script/lib/jquery-1.7.min.js'>\x3C/script>")</script>
-  <script type="text/javascript" src="/bootstrap2.04/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/bootstrap2.1.1/js/bootstrap.min.js"></script>
 
   <script src="/script/dashboard.js" type="text/javascript"></script>
-  <link href="/bootstrap2.04/css/bootstrap.min.css" rel="stylesheet"/>
-  <link href="/bootstrap2.04/css/bootstrap-responsive.css" rel="stylesheet">
+  <link href="/bootstrap2.1.1/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="/bootstrap2.1.1/css/bootstrap-responsive.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/dashboard.css"/>
 
   <style type="text/css">
