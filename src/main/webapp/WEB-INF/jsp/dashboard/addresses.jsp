@@ -130,7 +130,8 @@
       url : '/services/addressTest',
       success: function(data) {
         $.each(data, function(idx, test) {
-          $testSuite.append("<tr class='testRow' id='test" + test.id + "'><td>" + test.name + "</td><td class='inputValue'>" +
+          $testSuite.append("<tr class='testRow' id='test" + test.id + "'><td>" + test.name +
+              "</td><td class='inputValue'>" +
               test.input + "</td><td class='expectedValue'>" +
               test.expected + "</td><td class='truckId'>" + test.truck +
               "</td><td class='actualValue'>&nbsp;</td><td><button class='runTest btn'>Run</button>&nbsp;<button class='btn btn-danger deleteTest'>Delete</button></div></td></tr>");
@@ -139,11 +140,11 @@
           var $tr = $(e.target.parentNode.parentNode);
           var id = $tr.attr("id").substring(4);
           $.ajax({
-              url: "/services/addressTest/"+id,
-              type: 'DELETE',
-              complete: function() {
-                refreshTestList();
-              }
+            url: "/services/addressTest/" + id,
+            type: 'DELETE',
+            complete: function() {
+              refreshTestList();
+            }
           });
         });
         $(".testRow .runTest").click(function(e) {
@@ -162,16 +163,18 @@
     var expected = $("td.expectedValue", $row).html();
     var truck = $("td.truckId").html();
     var url = "/services/addressCheck?q=" + encodeURIComponent(input) + "&truck=" +
-          encodeURIComponent(truck);
+        encodeURIComponent(truck);
     $.ajax({
       url : url,
       success : function(data) {
         var results = data["results"];
         if (results.length == 0) {
           $row.addClass(expected.length == 0 ? "success" : "error");
+          $("td.actualValue", $row).append("<strong>No Results</strong>");
         } else {
           var firstResult = results[0];
           $row.addClass(firstResult == expected ? "success" : "error");
+          $("td.actualValue", $row).append(results[0]);
         }
       }
     });
@@ -189,7 +192,7 @@
     });
     $("#runTestsButton").click(function(e) {
       $(".testRow").each(function(idx, item) {
-         runTest($(item));
+        runTest($(item));
       });
     });
     $("#saveButton").click(function(e) {
