@@ -105,6 +105,13 @@
               <input id="name" type="text"/>
             </div>
           </div>
+          <div class="clearfix">
+            <label for="replaceWith">Replace With</label>
+
+            <div class="input">
+              <input id="replaceWith" type="text"/>
+            </div>
+          </div>
         </fieldset>
       </form>
     </div>

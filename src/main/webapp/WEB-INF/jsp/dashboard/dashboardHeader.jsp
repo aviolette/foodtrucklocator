@@ -7,9 +7,9 @@
   <meta name="description" content="Administrative Dashboard">
   <meta name="author" content="Andrew Violette">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
+<%--  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script> --%>
   <script>window.jQuery ||
-  document.write("<script src='script/lib/jquery-1.7.min.js'>\x3C/script>")</script>
+  document.write("<script src='/script/lib/jquery-1.7.1.min.js'>\x3C/script>")</script>
   <script type="text/javascript" src="/bootstrap2.1.1/js/bootstrap.min.js"></script>
 
   <script src="/script/dashboard.js" type="text/javascript"></script>
@@ -51,9 +51,6 @@
 
   <div class="content">
     <div class="page-header">
-      <h1><c:choose><c:when
-          test="${empty(headerName)}">Dashboard</c:when><c:otherwise>${headerName}</c:otherwise></c:choose>
-      </h1>
       <c:if test="${!empty(breadcrumbs)}">
         <ul class="breadcrumb">
           <c:forEach items="${breadcrumbs}" var="breadcrumb" varStatus="breadcrumbStatus">
