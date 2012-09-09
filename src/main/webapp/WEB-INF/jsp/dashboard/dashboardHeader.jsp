@@ -7,7 +7,7 @@
   <meta name="description" content="Administrative Dashboard">
   <meta name="author" content="Andrew Violette">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<%--  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script> --%>
+  <%--  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script> --%>
   <script>window.jQuery ||
   document.write("<script src='/script/lib/jquery-1.7.1.min.js'>\x3C/script>")</script>
   <script type="text/javascript" src="/bootstrap2.1.1/js/bootstrap.min.js"></script>
@@ -34,7 +34,7 @@
       <ul class="nav">
         <li<c:if test="${nav == 'trucks'}"> class="active"</c:if>><a href="/admin/trucks">Trucks</a>
         </li>
-        <li<c:if test="${nav == 'addresses'}"> class="active"</c:if>><a href="/admin/addresses">Addresses</a></li>
+        <%--        <li<c:if test="${nav == 'addresses'}"> class="active"</c:if>><a href="/admin/addresses">Addresses</a></li> --%>
         <li<c:if test="${nav == 'locations'}"> class="active"</c:if>><a href="/admin/locations">Locations</a>
         </li>
         <li<c:if test="${nav == 'settings'}"> class="active"</c:if>><a href="/admin/configuration">Settings</a>

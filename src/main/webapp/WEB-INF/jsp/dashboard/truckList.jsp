@@ -1,10 +1,15 @@
 <%@ include file="dashboardHeader.jsp" %>
 
-
-<a href="/cron/tweets" class="btn primary" id="twitterButton">Refresh all tweets</a>
-
-<a href="#" class="btn" id="newTruck">New Truck</a>
-
+<div class="btn-toolbar">
+  <div class="btn-group">
+    <a href="/cron/tweets" class="btn primary" id="twitterButton">Refresh all tweets</a>
+    <a href="#" class="btn" id="newTruck">New Truck</a>&nbsp;
+  </div>
+  <div class="btn-group toggle-visibility" data-toggle="buttons-checkbox">
+    <button id="inactiveButton" type="button" class="btn active">Inactive</button>
+    <button type="button" class="btn">Muted</button>
+  </div>
+</div>
 <h3>Active Trucks</h3>
 <table class="table table-striped">
   <thead>
@@ -63,7 +68,7 @@
   </c:forEach>
   </tbody>
 </table>
-<div id="inactiveTrucks">
+<div id="inactiveTrucks" style="display:none">
   <h3>Inactive Trucks</h3>
   <table class="table table-striped">
     <thead>
@@ -88,6 +93,13 @@
 </div>
 <script type="text/javascript">
   (function() {
+    $('.toggle-visibility button').click(function(e) {
+      var $target = $(e.target);
+      if ($target.attr("id") == 'inactiveButton') {
+        var displayValue = $target.hasClass("active") ? "block" : "none";
+        $("#inactiveTrucks").css("display", displayValue);
+      }
+    });
     function bindAjaxCallToButton(button, url) {
       var link = $("#" + button);
       link.click(function(evt) {
