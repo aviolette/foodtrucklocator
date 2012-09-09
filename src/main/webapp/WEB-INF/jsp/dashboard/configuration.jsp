@@ -6,7 +6,7 @@
       <label>&nbsp;</label>
 
       <div class="input">
-        <ul class="inputs-list">
+        <ul class="unstyled">
           <li><label><input name="googleGeolocationEnabled"
                             <c:if test="${config.googleGeolocationEnabled}">checked="checked"</c:if>
                             type="checkbox"/> <span>Enable Google Geolocation</span></label></li>

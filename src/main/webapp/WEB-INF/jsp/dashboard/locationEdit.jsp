@@ -60,7 +60,7 @@
       <label>&nbsp;</label>
 
       <div class="input">
-        <ul class="inputs-list">
+        <ul class="unstyled">
           <li><label><input id="invalidLoc" type="checkbox">&nbsp;Ignore in geolocation
             lookups</label></li>
         </ul>

@@ -50,8 +50,8 @@
 <div class="container">
 
   <div class="content">
+    <c:if test="${!empty(breadcrumbs)}">
     <div class="page-header">
-      <c:if test="${!empty(breadcrumbs)}">
         <ul class="breadcrumb">
           <c:forEach items="${breadcrumbs}" var="breadcrumb" varStatus="breadcrumbStatus">
             <c:choose>
@@ -65,8 +65,8 @@
             </c:choose>
           </c:forEach>
         </ul>
-      </c:if>
     </div>
+      </c:if>
     <div class="row">
       <div class="span14">
         <div class="alert-message" style="display:none" id="flash">&nbsp;</div>

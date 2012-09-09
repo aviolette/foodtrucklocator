@@ -118,7 +118,7 @@
       <label id="options">Options</label>
 
       <div class="input">
-        <ul class="inputs-list">
+        <ul class="unstyled">
           <li><label><input type="checkbox" name="options"
                             value="twittalyzer" ${truck.usingTwittalyzer ? "checked='checked'" : ""}/>
             <span>Use twittalyzer</span></label></li>
