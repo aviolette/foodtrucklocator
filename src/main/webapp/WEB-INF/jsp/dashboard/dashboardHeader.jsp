@@ -18,7 +18,9 @@
   <link rel="stylesheet" href="/css/dashboard.css"/>
 
   <style type="text/css">
-
+    .container {
+      padding-top: 50px
+    }
   </style>
 
   <!-- Le fav and touch icons -->
@@ -27,23 +29,21 @@
 
 <body>
 
-<div class="navbar">
+<div class="navbar navbar-fixed-top">
   <div class="navbar-inner">
-    <div class="container">
-      <a class="brand" href="#">CFTF - Admin Dashboard</a>
-      <ul class="nav">
-        <li<c:if test="${nav == 'trucks'}"> class="active"</c:if>><a href="/admin/trucks">Trucks</a>
-        </li>
-        <%--        <li<c:if test="${nav == 'addresses'}"> class="active"</c:if>><a href="/admin/addresses">Addresses</a></li> --%>
-        <li<c:if test="${nav == 'locations'}"> class="active"</c:if>><a href="/admin/locations">Locations</a>
-        </li>
-        <li<c:if test="${nav == 'settings'}"> class="active"</c:if>><a href="/admin/configuration">Settings</a>
-        </li>
-        <li<c:if test="${nav == 'stats'}"> class="active"</c:if>><a
-            href="/admin/stats">Statistics</a>
-        </li>
-      </ul>
-    </div>
+    <a class="brand" href="#">CFTF - Admin Dashboard</a>
+    <ul class="nav">
+      <li<c:if test="${nav == 'trucks'}"> class="active"</c:if>><a href="/admin/trucks">Trucks</a>
+      </li>
+      <%--        <li<c:if test="${nav == 'addresses'}"> class="active"</c:if>><a href="/admin/addresses">Addresses</a></li> --%>
+      <li<c:if test="${nav == 'locations'}"> class="active"</c:if>><a href="/admin/locations">Locations</a>
+      </li>
+      <li<c:if test="${nav == 'settings'}"> class="active"</c:if>><a href="/admin/configuration">Settings</a>
+      </li>
+      <li<c:if test="${nav == 'stats'}"> class="active"</c:if>><a
+          href="/admin/stats">Statistics</a>
+      </li>
+    </ul>
   </div>
 </div>
 
@@ -52,21 +52,21 @@
   <div class="content">
     <c:if test="${!empty(breadcrumbs)}">
     <div class="page-header">
-        <ul class="breadcrumb">
-          <c:forEach items="${breadcrumbs}" var="breadcrumb" varStatus="breadcrumbStatus">
-            <c:choose>
-              <c:when test="${breadcrumbStatus.last}">
-                <li class="active">${breadcrumb.name}</li>
-              </c:when>
-              <c:otherwise>
-                <li><a href="${breadcrumb.url}">${breadcrumb.name}</a> <span
-                    class="divider">/</span></li>
-              </c:otherwise>
-            </c:choose>
-          </c:forEach>
-        </ul>
+      <ul class="breadcrumb">
+        <c:forEach items="${breadcrumbs}" var="breadcrumb" varStatus="breadcrumbStatus">
+          <c:choose>
+            <c:when test="${breadcrumbStatus.last}">
+              <li class="active">${breadcrumb.name}</li>
+            </c:when>
+            <c:otherwise>
+              <li><a href="${breadcrumb.url}">${breadcrumb.name}</a> <span
+                  class="divider">/</span></li>
+            </c:otherwise>
+          </c:choose>
+        </c:forEach>
+      </ul>
     </div>
-      </c:if>
+    </c:if>
     <div class="row">
       <div class="span14">
         <div class="alert-message" style="display:none" id="flash">&nbsp;</div>
