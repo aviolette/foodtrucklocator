@@ -7,7 +7,7 @@
   </div>
   <div class="btn-group toggle-visibility" data-toggle="buttons-checkbox">
     <button id="inactiveButton" type="button" class="btn active">Inactive</button>
-    <button id="muteButton" type="button" class="btn">Muted</button>
+    <button id="muteButton" type="button" class="btn active">Muted</button>
   </div>
 </div>
 <h3>Active Trucks</h3>
@@ -103,6 +103,7 @@
       $(".muted").css("display", displayValue);
     }
 
+    toggleMuted($("#muteButton"));
     $('.toggle-visibility button').click(function(e) {
       var $target = $(e.target);
       if ($target.attr("id") == 'inactiveButton') {

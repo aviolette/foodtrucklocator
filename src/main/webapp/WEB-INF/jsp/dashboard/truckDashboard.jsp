@@ -36,12 +36,13 @@
   <tr>
     <td>Email</td>
     <td><c:choose><c:when test="${empty(truck.email)}">none</c:when><c:otherwise><a target="_blank"
-                                                                                  href="mailto:${truck.email}">${truck.email}</a></c:otherwise></c:choose>
+                                                                                    href="mailto:${truck.email}">${truck.email}</a></c:otherwise></c:choose>
     </td>
   </tr>
   <tr>
     <td>Phone</td>
-    <td><c:choose><c:when test="${empty(truck.phone)}">none</c:when><c:otherwise>${truck.phone}</c:otherwise></c:choose>
+    <td><c:choose><c:when
+        test="${empty(truck.phone)}">none</c:when><c:otherwise>${truck.phone}</c:otherwise></c:choose>
     </td>
   </tr>
 </table>
@@ -62,6 +63,37 @@
 <button class="btn primary" id="addButton">New Event</button>
 &nbsp;
 <button class="btn" id="recacheButton">Reload from calendar</button>
+
+<h2>Weekly Overview</h2>
+
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th>Day</th>
+    <th>This Week</th>
+    <th>Last Week</th>
+  </tr>
+  </thead>
+  <tbody>
+  <c:forEach items="${schedule}" var="day">
+    <tr>
+      <td>${day.name}</td>
+      <td><c:if test="${!empty(day.current)}">
+        <c:forEach items="${day.current.stops}" var="stop" varStatus="stopStatus">
+          ${stop.location.name}&nbsp;<c:if test="${!stopStatus.last}"><br/></c:if>
+        </c:forEach>
+      </c:if>&nbsp;</td>
+      <td><c:if test="${!empty(day.prior)}">
+        <c:forEach items="${day.prior.stops}" var="stop" varStatus="stopStatus">
+          ${stop.location.name}&nbsp;<c:if test="${!stopStatus.last}"><br/></c:if>
+        </c:forEach>
+      </c:if>&nbsp;</td>
+    </tr>
+  </c:forEach>
+
+
+  </tbody>
+</table>
 <h2>Tweets</h2>
 <table class="table table-striped">
   <thead>

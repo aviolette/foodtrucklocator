@@ -2,6 +2,7 @@ package foodtruck.server.dashboard;
 
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -21,8 +22,12 @@ import com.google.inject.Singleton;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 import foodtruck.dao.TruckDAO;
+import foodtruck.model.DailySchedule;
+import foodtruck.model.DayOfWeek;
 import foodtruck.model.Truck;
 import foodtruck.model.TweetSummary;
 import foodtruck.server.GuiceHackRequestWrapper;
@@ -31,6 +36,7 @@ import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.twitter.TwitterService;
 import foodtruck.util.Clock;
 import foodtruck.util.Link;
+import foodtruck.util.MoreStrings;
 
 /**
  * @author aviolette@gmail.com
@@ -99,12 +105,20 @@ public class TruckServlet extends HttpServlet {
     req.setAttribute("truck", truck);
     req.setAttribute("breadcrumbs", ImmutableList.of(new Link("Trucks", "/admin/trucks"),
         new Link(name, "/admin/trucks" + truckId)));
-    try {
-      req.setAttribute("schedule",
-          writer.writeSchedule(truckService.findStopsForDay(truckId, clock.currentDay())));
-    } catch (JSONException e) {
-      throw new RuntimeException(e);
+
+    DateTime current = clock.now();
+    int dayOfWeek = current.getDayOfWeek();
+    final DateTime mondayPrior = current.minusDays(6 + dayOfWeek);
+    final DateTime nextSunday = current.plusDays(7 - dayOfWeek + 1);
+    List<DailySchedule> schedules = truckService.findSchedules(truck.getId(),
+        mondayPrior, nextSunday);
+    PriorAndCurrentSchedule schedule[] = new PriorAndCurrentSchedule[7];
+    final DateTime mondayCurrent = current.minusDays(dayOfWeek - 1);
+    for (int day = 0; day < 7; day++) {
+      schedule[day] = findBoth(mondayCurrent.plusDays(day).toLocalDate(),
+          mondayPrior.plusDays(day).toLocalDate(), schedules, day);
     }
+    req.setAttribute("schedule", Arrays.asList(schedule));
     req.getRequestDispatcher(jsp).forward(req, resp);
 
   }
@@ -183,4 +197,43 @@ public class TruckServlet extends HttpServlet {
     resp.setStatus(204);
 
   }
+
+  private PriorAndCurrentSchedule findBoth(LocalDate current, LocalDate prior,
+      List<DailySchedule> schedules, int day) {
+    DailySchedule currentSchedule = null, priorSchedule = null;
+    for (DailySchedule schedule : schedules) {
+      if (current.equals(schedule.getDay())) {
+        currentSchedule = schedule;
+      } else if (prior.equals(schedule.getDay())) {
+        priorSchedule = schedule;
+      }
+    }
+    return new PriorAndCurrentSchedule(currentSchedule, priorSchedule, DayOfWeek.fromConstant(day));
+  }
+
+  public static class PriorAndCurrentSchedule {
+    private final DailySchedule currentSchedule;
+    private final DailySchedule priorSchedule;
+    private final DayOfWeek dayOfWeek;
+
+    public PriorAndCurrentSchedule(DailySchedule currentSchedule, DailySchedule priorSchedule,
+        DayOfWeek dayOfWeek) {
+      this.currentSchedule = currentSchedule;
+      this.priorSchedule = priorSchedule;
+      this.dayOfWeek = dayOfWeek;
+    }
+
+    public DailySchedule getCurrent() {
+      return currentSchedule;
+    }
+
+    public DailySchedule getPrior() {
+      return priorSchedule;
+    }
+
+    public String getName() {
+      return MoreStrings.capitalize(dayOfWeek.toString());
+    }
+  }
+
 }
