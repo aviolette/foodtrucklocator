@@ -31,7 +31,7 @@
 
 <div class="navbar navbar-fixed-top">
   <div class="navbar-inner">
-    <a class="brand" href="#">CFTF - Admin Dashboard</a>
+    <a class="brand" href="#">Chicago Food Truck Finder - Dashboard</a>
     <ul class="nav">
       <li<c:if test="${nav == 'trucks'}"> class="active"</c:if>><a href="/admin/trucks">Trucks</a>
       </li>
