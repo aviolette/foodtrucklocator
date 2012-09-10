@@ -21,6 +21,10 @@
     .container {
       padding-top: 50px
     }
+
+    tr.muted {
+      display: none;
+    }
   </style>
 
   <!-- Le fav and touch icons -->

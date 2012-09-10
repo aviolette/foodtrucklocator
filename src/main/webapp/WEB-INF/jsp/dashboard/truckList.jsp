@@ -103,7 +103,6 @@
       $(".muted").css("display", displayValue);
     }
 
-    toggleMuted($("#muteButton"));
     $('.toggle-visibility button').click(function(e) {
       var $target = $(e.target);
       if ($target.attr("id") == 'inactiveButton') {
