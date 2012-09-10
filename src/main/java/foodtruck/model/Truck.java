@@ -10,6 +10,8 @@ import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 
+import org.joda.time.DateTime;
+
 import static com.google.common.base.Preconditions.checkState;
 
 /**
@@ -36,6 +38,7 @@ public class Truck extends ModelEntity {
   private final @Nullable String email;
   private final @Nullable String phone;
   private final boolean twitterGeolocationDataValid;
+  private final @Nullable DateTime muteUntil;
 
   private Truck(Builder builder) {
     super(builder.id);
@@ -57,6 +60,7 @@ public class Truck extends ModelEntity {
     this.email = builder.email;
     this.phone = builder.phone;
     this.twitterGeolocationDataValid = builder.twitterGeolocationDataValid;
+    this.muteUntil = builder.muteUntil;
   }
 
   public boolean isTwitterGeolocationDataValid() {
@@ -157,6 +161,7 @@ public class Truck extends ModelEntity {
         .add("uses twittalyzer", twittalyzer)
         .add("facebook URI", facebook)
         .add("inactive", inactive)
+        .add("muteUntil", muteUntil)
         .toString();
   }
 
@@ -180,10 +185,22 @@ public class Truck extends ModelEntity {
     return new Builder();
   }
 
+  public static Builder builder(Truck t) {
+    return new Builder(t);
+  }
+
   @Override public void validate() throws IllegalStateException {
     super.validate();
     checkState(!Strings.isNullOrEmpty(id), "ID cannot be unspecified");
     checkState(!Strings.isNullOrEmpty(name), "Name must be specified");
+  }
+
+  public @Nullable DateTime getMuteUntil() {
+    return muteUntil;
+  }
+
+  public boolean isMuted() {
+    return muteUntil != null && muteUntil.isAfter(new DateTime());
   }
 
   public static class Builder {
@@ -205,6 +222,7 @@ public class Truck extends ModelEntity {
     private @Nullable String email;
     private @Nullable String phone;
     public boolean twitterGeolocationDataValid;
+    private @Nullable DateTime muteUntil;
 
     public Builder() {
     }
@@ -225,6 +243,7 @@ public class Truck extends ModelEntity {
       this.inactive = truck.inactive;
       this.calendarUrl = truck.calendarUrl;
       this.twitterGeolocationDataValid = truck.twitterGeolocationDataValid;
+      this.muteUntil = truck.muteUntil;
     }
 
     public Builder id(String id) {
@@ -244,6 +263,11 @@ public class Truck extends ModelEntity {
 
     public Builder url(@Nullable String url) {
       this.url = url;
+      return this;
+    }
+
+    public Builder muteUntil(@Nullable DateTime muteUntil) {
+      this.muteUntil = muteUntil;
       return this;
     }
 

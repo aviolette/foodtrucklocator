@@ -7,7 +7,7 @@
   </div>
   <div class="btn-group toggle-visibility" data-toggle="buttons-checkbox">
     <button id="inactiveButton" type="button" class="btn active">Inactive</button>
-    <button type="button" class="btn">Muted</button>
+    <button id="muteButton" type="button" class="btn">Muted</button>
   </div>
 </div>
 <h3>Active Trucks</h3>
@@ -53,16 +53,21 @@
   <tr>
     <th>Truck</th>
     <th>Twittalyzer</th>
+    <th>&nbsp;</th>
   </tr>
   </thead>
   <tbody>
   <c:forEach var="truckStops" items="${trucks}">
     <c:if test="${!truckStops.active && !truckStops.truck.inactive}">
-      <tr>
+      <tr <c:if test="${truckStops.truck.muted}">class="muted"</c:if>>
         <td><a href="/admin/trucks/${truckStops.truck.id}">${truckStops.truck.name}</a></td>
         <td><c:choose><c:when
             test="${truckStops.truck.usingTwittalyzer}"></c:when><c:otherwise><span
             class="label warning">off</span></c:otherwise></c:choose></td>
+        <td>
+          <button class="btn mute-button" for-truck="${truckStops.truck.id}"><c:choose><c:when
+              test="${truckStops.truck.muted}">Unmute</c:when><c:otherwise>Mute</c:otherwise></c:choose></button>
+        </td>
       </tr>
     </c:if>
   </c:forEach>
@@ -93,12 +98,39 @@
 </div>
 <script type="text/javascript">
   (function() {
+    function toggleMuted($muteButton) {
+      var displayValue = $muteButton.hasClass("active") ? "table-row" : "none";
+      $(".muted").css("display", displayValue);
+    }
+
     $('.toggle-visibility button').click(function(e) {
       var $target = $(e.target);
       if ($target.attr("id") == 'inactiveButton') {
         var displayValue = $target.hasClass("active") ? "block" : "none";
         $("#inactiveTrucks").css("display", displayValue);
+      } else {
+        var displayValue = $target.hasClass("active") ? "table-row" : "none";
+        $(".muted").css("display", displayValue);
       }
+    });
+    $(".mute-button").click(function(e) {
+      var truckId = $(e.target).attr("for-truck");
+      var inner = $(e.target).html();
+      var verb = inner == "Mute" ? "mute" : "unmute";
+      $.ajax({
+        url : "/services/trucks/" + truckId + "/" + verb,
+        type: "POST",
+        success : function() {
+          $(e.target).html(verb == "mute" ? "Unmute" : "Mute");
+          if (verb == "mute") {
+            $(e.target.parentNode.parentNode).addClass("muted");
+          } else {
+            $(e.target.parentNode.parentNode).removeClass("muted");
+          }
+          var displayValue = $("#muteButton").hasClass("active") ? "none" : "table-row";
+          $(".muted").css("display", displayValue);
+        }
+      })
     });
     function bindAjaxCallToButton(button, url) {
       var link = $("#" + button);

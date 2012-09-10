@@ -13,8 +13,12 @@ import javax.ws.rs.core.MediaType;
 import com.google.inject.Inject;
 import com.sun.jersey.api.JResponse;
 
+import org.joda.time.DateTimeZone;
+
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
+import static foodtruck.server.resources.Resources.requiresAdmin;
+import foodtruck.util.Clock;
 
 /**
  * @author aviolette@gmail.com
@@ -23,10 +27,14 @@ import foodtruck.model.Truck;
 @Path("/trucks{view : (\\.[a-z]{3})?}")
 public class TruckResource {
   private final TruckDAO truckDAO;
+  private final Clock clock;
+  private final DateTimeZone zone;
 
   @Inject
-  public TruckResource(TruckDAO truckDAO) {
+  public TruckResource(TruckDAO truckDAO, Clock clock, DateTimeZone zone) {
     this.truckDAO = truckDAO;
+    this.clock = clock;
+    this.zone = zone;
   }
 
   @GET
@@ -38,6 +46,25 @@ public class TruckResource {
     }
     return JResponse.ok(truckDAO.findActiveTrucks(), mediaType).build();
   }
+
+  @POST @Path("{truckId}/mute")
+  public void muteTruck(@PathParam("truckId") String truckId) {
+    requiresAdmin();
+    Truck t = truckDAO.findById(truckId);
+    t = Truck.builder(t).muteUntil(clock.currentDay().toDateMidnight(zone).toDateTime().plusDays(1))
+        .build();
+    truckDAO.save(t);
+  }
+
+  @POST @Path("{truckId}/unmute")
+  public void unmuteTruck(@PathParam("truckId") String truckId) {
+    requiresAdmin();
+    Truck t = truckDAO.findById(truckId);
+    t = Truck.builder(t).muteUntil(null)
+        .build();
+    truckDAO.save(t);
+  }
+
 
   @POST @Consumes(MediaType.APPLICATION_JSON) @Produces(MediaType.APPLICATION_JSON)
   public JResponse<Truck> createTruck(Truck truck) {

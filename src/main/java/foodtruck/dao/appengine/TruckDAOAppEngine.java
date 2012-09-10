@@ -10,6 +10,8 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 
+import org.joda.time.DateTimeZone;
+
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
 
@@ -36,10 +38,13 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
   private static final String TRUCK_EMAIL = "email";
   private static final String TRUCK_PHONE = "phone";
   private static final String TRUCK_TWITTER_GEOLOCATION = "twitterGeolocation";
+  private static final String TRUCK_MUTE_UNTIL = "muteUntil";
+  private DateTimeZone zone;
 
   @Inject
-  public TruckDAOAppEngine(DatastoreServiceProvider provider) {
+  public TruckDAOAppEngine(DatastoreServiceProvider provider, DateTimeZone zone) {
     super(TRUCK_KIND, provider);
+    this.zone = zone;
   }
 
   protected Truck fromEntity(Entity entity) {
@@ -53,6 +58,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
         .facebook((String) entity.getProperty(TRUCK_FACEBOOK_FIELD))
         .foursquareUrl((String) entity.getProperty(TRUCK_FOURSQUARE_URL_FIELD))
         .iconUrl((String) entity.getProperty(TRUCK_ICON_URL))
+        .muteUntil(Attributes.getDateTime(entity, TRUCK_MUTE_UNTIL, zone))
         .name((String) entity.getProperty(TRUCK_NAME_FIELD))
         .matchOnlyIf((String) entity.getProperty(MATCH_REGEX_FIELD))
         .donotMatchIf((String) entity.getProperty(DONT_MATCH_REGEX_FIELD))
@@ -135,6 +141,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     entity.setProperty(TRUCK_EMAIL, truck.getEmail());
     entity.setProperty(TRUCK_PHONE, truck.getPhone());
     entity.setProperty(TRUCK_TWITTER_GEOLOCATION, truck.isTwitterGeolocationDataValid());
+    Attributes.setDateProperty(TRUCK_MUTE_UNTIL, entity, truck.getMuteUntil());
     return entity;
   }
 }
