@@ -83,50 +83,25 @@
 
 </div>
 <div class="tabSection" id="addressSection">
-  <button class="btn btn-primary" id="addressRuleModalButton">New Address Rule</button>
+    <textarea id="addressRules" style="width:900px" rows="20" cols="80">
 
-  <table>
-    <tbody id="addressRules">
-    </tbody>
-  </table>
+    </textarea>
+    <br/>
+    <button id="scriptSaveButton">Save</button>
 
-  <div class="modal hide" id="addressRuleModal">
-    <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal">X</button>
-      <h3>Adress Rule</h3>
-    </div>
-    <div class="modal-body">
-      <form>
-        <fieldset>
-          <div class="clearfix">
-            <label>Pattern</label>
-
-            <div class="input">
-              <input id="name" type="text"/>
-            </div>
-          </div>
-          <div class="clearfix">
-            <label for="replaceWith">Replace With</label>
-
-            <div class="input">
-              <input id="replaceWith" type="text"/>
-            </div>
-          </div>
-        </fieldset>
-      </form>
-    </div>
-    <div class="modal-footer">
-      <a href="#" class="btn" data-dismiss="modal">Close</a>
-      <a href="#" id="saveButton" class="btn btn-primary">Save</a>
-    </div>
-  </div>
 </div>
 
 
 <script type="text/javascript">
-  function refreshList() {
-    $addressRules = $("#addressRules");
-    $addressRules.empty();
+
+  function refreshAddressRules() {
+    var $addressRules = $("#addressRules");
+    $.ajax({
+      url : '/services/addressRules',
+      success : function(data) {
+        $addressRules.val(data["script"]);
+      }
+    });
   }
 
   function refreshTestList() {
@@ -202,9 +177,9 @@
         runTest($(item));
       });
     });
-    $("#saveButton").click(function(e) {
-      var stop = {pattern : $("#name").attr("value")}
+    $("#scriptSaveButton").click(function(e) {
       e.preventDefault();
+      var stop = {script : $("#addressRules").val()}
       $.ajax({
         url: "/services/addressRules",
         type: 'POST',
@@ -214,7 +189,6 @@
           $('#addressRuleModal').modal('hide');
         },
         success: function(e) {
-          refreshList();
         }
       });
     });
@@ -263,6 +237,7 @@
       });
     });
     refreshTestList();
+    refreshAddressRules();
   });
 </script>
 

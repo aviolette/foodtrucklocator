@@ -15,7 +15,7 @@ import javax.ws.rs.ext.Provider;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import foodtruck.model.AddressRule;
+import foodtruck.model.AddressRuleScript;
 import foodtruck.server.resources.BadRequestException;
 import static foodtruck.server.resources.json.JSONSerializer.readJSON;
 
@@ -24,20 +24,20 @@ import static foodtruck.server.resources.json.JSONSerializer.readJSON;
  * @since 8/20/12
  */
 @Provider @Consumes(MediaType.APPLICATION_JSON)
-public class AddressRuleReader implements MessageBodyReader<AddressRule> {
+public class AddressRuleReader implements MessageBodyReader<AddressRuleScript> {
   @Override public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations,
       MediaType mediaType) {
-    return type.equals(AddressRule.class);
+    return type.equals(AddressRuleScript.class);
   }
 
   @Override
-  public AddressRule readFrom(Class<AddressRule> type, Type genericType, Annotation[] annotations,
+  public AddressRuleScript readFrom(Class<AddressRuleScript> type, Type genericType, Annotation[] annotations,
       MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
       throws IOException, WebApplicationException {
     try {
       JSONObject json = readJSON(entityStream);
-      return AddressRule.builder()
-          .pattern(json.getString("pattern"))
+      return AddressRuleScript.builder()
+          .script(json.getString("script"))
           .build();
     } catch (JSONException e) {
       throw new BadRequestException(e, MediaType.APPLICATION_JSON_TYPE);

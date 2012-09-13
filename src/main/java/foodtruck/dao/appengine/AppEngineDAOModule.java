@@ -28,7 +28,7 @@ public class AppEngineDAOModule extends AbstractModule {
     bind(ConfigurationDAO.class).to(ConfigurationDAOAppEngine.class);
     bind(TruckStopChangeDAO.class).to(TruckStopChangeDAOAppEngine.class);
     bind(SystemStatDAO.class).to(SystemStatsDAOAppEngine.class);
-    bind(AddressRuleDAO.class).to(AddressRuleDAOAppEngine.class);
+    bind(AddressRuleDAO.class).to(AddressRuleScriptDAOAppEngine.class);
     bind(AddressRuleTestDAO.class).to(AddressRuleTestDAOAppEngine.class);
   }
 }

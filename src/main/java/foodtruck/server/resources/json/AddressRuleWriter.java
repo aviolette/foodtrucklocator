@@ -17,35 +17,35 @@ import com.google.common.base.Throwables;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import foodtruck.model.AddressRule;
+import foodtruck.model.AddressRuleScript;
 
 /**
  * @author aviolette@gmail.com
  * @since 8/20/12
  */
 @Provider @Produces(MediaType.APPLICATION_JSON)
-public class AddressRuleWriter implements JSONWriter<AddressRule>, MessageBodyWriter<AddressRule> {
-  @Override public JSONObject asJSON(AddressRule addressRule) throws JSONException {
+public class AddressRuleWriter implements JSONWriter<AddressRuleScript>, MessageBodyWriter<AddressRuleScript> {
+  @Override public JSONObject asJSON(AddressRuleScript AddressRuleScript) throws JSONException {
     JSONObject jsonObject = new JSONObject();
-    jsonObject.put("pattern", addressRule.getPattern());
+    jsonObject.put("script", AddressRuleScript.getScript());
     return jsonObject;
   }
 
   @Override public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations,
       MediaType mediaType) {
-    return type.equals(AddressRule.class);
+    return type.equals(AddressRuleScript.class);
   }
 
-  @Override public long getSize(AddressRule addressRule, Class<?> type, Type genericType,
+  @Override public long getSize(AddressRuleScript AddressRuleScript, Class<?> type, Type genericType,
       Annotation[] annotations, MediaType mediaType) {
     return -1;
   }
 
-  @Override public void writeTo(AddressRule addressRule, Class<?> type, Type genericType,
+  @Override public void writeTo(AddressRuleScript AddressRuleScript, Class<?> type, Type genericType,
       Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
       OutputStream entityStream) throws IOException, WebApplicationException {
     try {
-      JSONSerializer.writeJSON(asJSON(addressRule), entityStream);
+      JSONSerializer.writeJSON(asJSON(AddressRuleScript), entityStream);
     } catch (JSONException e) {
       throw Throwables.propagate(e);
     }

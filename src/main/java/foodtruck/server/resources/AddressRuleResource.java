@@ -1,7 +1,5 @@
 package foodtruck.server.resources;
 
-import java.util.Collection;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -10,10 +8,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import com.google.inject.Inject;
-import com.sun.jersey.api.JResponse;
 
 import foodtruck.dao.AddressRuleDAO;
-import foodtruck.model.AddressRule;
+import foodtruck.model.AddressRuleScript;
 
 /**
  * @author aviolette@gmail.com
@@ -29,12 +26,12 @@ public class AddressRuleResource {
   }
 
   @GET
-  public JResponse<Collection<AddressRule>> findAll() {
-    return JResponse.ok(addressRuleDAO.findAll()).build();
+  public AddressRuleScript findSingleton() {
+    return addressRuleDAO.findSingleton();
   }
 
   @POST @Consumes(MediaType.APPLICATION_JSON)
-  public void create(AddressRule addressRule) {
-    addressRuleDAO.save(addressRule);
+  public void update(AddressRuleScript script) {
+    addressRuleDAO.save(script);
   }
 }
