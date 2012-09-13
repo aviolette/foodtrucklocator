@@ -1,57 +1,35 @@
 package foodtruck.dao.appengine;
 
-import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Query;
 import com.google.inject.Inject;
 
-import foodtruck.dao.AddressRuleDAO;
+import foodtruck.dao.AddressRuleScriptDAO;
 import foodtruck.model.AddressRuleScript;
 
 /**
  * @author aviolette@gmail.com
  * @since 8/19/12
  */
-public class AddressRuleScriptDAOAppEngine extends AppEngineDAO<Long, AddressRuleScript> implements
-    AddressRuleDAO {
+public class AddressRuleScriptDAOAppEngine extends AppEngineSingletonDAO<AddressRuleScript>
+    implements AddressRuleScriptDAO {
 
   @Inject
   public AddressRuleScriptDAOAppEngine(DatastoreServiceProvider provider) {
-    super("address_rule_script", provider);
-  }
-
-  @Override protected Entity toEntity(AddressRuleScript addressRule, Entity entity) {
-    entity.setProperty("script", addressRule.getScript());
-    return entity;
+    super(provider, "address_rule_script");
   }
 
   @Override protected AddressRuleScript fromEntity(Entity entity) {
     return AddressRuleScript.builder()
-        .script((String)entity.getProperty("script"))
+        .script((String) entity.getProperty("script"))
         .build();
   }
 
-  @Override public long save(AddressRuleScript obj) {
-    DatastoreService service = provider.get();
-    Query q = new Query(getKind());
-    Entity entity = service.prepare(q).asSingleEntity();
-    obj.validate();
-    if (entity != null) {
-    } else {
-      entity = new Entity(getKind());
-    }
+  @Override protected Entity toEntity(Entity entity, AddressRuleScript obj) {
     entity.setProperty("script", obj.getScript());
-    service.put(entity);
-    return entity.getKey().getId();
+    return entity;
   }
 
-  @Override public AddressRuleScript findSingleton() {
-    DatastoreService service = provider.get();
-    Query q = new Query(getKind());
-    Entity entity = service.prepare(q).asSingleEntity();
-    if (entity == null) {
-      return AddressRuleScript.builder().build();
-    }
-    return fromEntity(entity);
+  @Override protected AddressRuleScript buildObject() {
+    return AddressRuleScript.builder().build();
   }
 }

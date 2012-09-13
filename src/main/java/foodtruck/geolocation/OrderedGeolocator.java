@@ -35,7 +35,7 @@ public class OrderedGeolocator implements GeoLocator {
 
   @Override
   public Location locate(String location, GeolocationGranularity granularity) {
-    Configuration config = configurationDAO.findSingleton();
+    Configuration config = configurationDAO.find();
     if (config.isGoogleGeolocationEnabled() && !config.isGoogleThrottled(clock.now())) {
       try {
         Location loc = googleGeolocator.locate(location, granularity);
@@ -56,7 +56,7 @@ public class OrderedGeolocator implements GeoLocator {
   }
 
   @Override public @Nullable Location reverseLookup(Location location) {
-    Configuration config = configurationDAO.findSingleton();
+    Configuration config = configurationDAO.find();
     if (config.isGoogleGeolocationEnabled() && !config.isGoogleThrottled(clock.now())) {
       log.log(Level.INFO, "Looking up location: {0}", location);
       try {

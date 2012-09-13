@@ -6,14 +6,5 @@ import foodtruck.model.Configuration;
  * @author aviolette@gmail.com
  * @since 4/10/12
  */
-public interface ConfigurationDAO {
-  /**
-   * Returns the configuration object
-   */
-  Configuration findSingleton();
-
-  /**
-   * Saves the configuration
-   */
-  void save(Configuration config);
+public interface ConfigurationDAO extends SingletonDAO<Configuration> {
 }

@@ -49,7 +49,7 @@ public class TweetUpdateServlet extends HttpServlet {
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-    if (!configDAO.findSingleton().isTweetUpdateServletEnabled()) {
+    if (!configDAO.find().isTweetUpdateServletEnabled()) {
       log.log(Level.WARNING, "Attempt to call tweet updater when it is disabled");
       resp.setStatus(404);
       return;

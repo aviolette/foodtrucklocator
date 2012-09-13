@@ -30,7 +30,7 @@ public class ConfigurationServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-    Configuration config = configDAO.findSingleton();
+    Configuration config = configDAO.find();
     req.setAttribute("config", config);
     req.setAttribute("nav", "settings");
     req.getRequestDispatcher(JSP_PATH).forward(req, resp);
@@ -38,7 +38,7 @@ public class ConfigurationServlet extends HttpServlet {
 
   @Override protected void doPost(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-    Configuration config = configDAO.findSingleton();
+    Configuration config = configDAO.find();
     config = Configuration.builder(config)
         .yahooGeolocationEnabled("on".equals(req.getParameter("yahooGeolocationEnabled")))
         .googleGeolocationEnabled("on".equals(req.getParameter("googleGeolocationEnabled")))

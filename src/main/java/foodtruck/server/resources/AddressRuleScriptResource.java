@@ -9,7 +9,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.google.inject.Inject;
 
-import foodtruck.dao.AddressRuleDAO;
+import foodtruck.dao.AddressRuleScriptDAO;
 import foodtruck.model.AddressRuleScript;
 
 /**
@@ -17,17 +17,17 @@ import foodtruck.model.AddressRuleScript;
  * @since 8/20/12
  */
 @Produces(MediaType.APPLICATION_JSON) @Path("/addressRules")
-public class AddressRuleResource {
-  private final AddressRuleDAO addressRuleDAO;
+public class AddressRuleScriptResource {
+  private final AddressRuleScriptDAO addressRuleDAO;
 
   @Inject
-  public AddressRuleResource(AddressRuleDAO addressRuleDAO) {
+  public AddressRuleScriptResource(AddressRuleScriptDAO addressRuleDAO) {
     this.addressRuleDAO = addressRuleDAO;
   }
 
   @GET
   public AddressRuleScript findSingleton() {
-    return addressRuleDAO.findSingleton();
+    return addressRuleDAO.find();
   }
 
   @POST @Consumes(MediaType.APPLICATION_JSON)
