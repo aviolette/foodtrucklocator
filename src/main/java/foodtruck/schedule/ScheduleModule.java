@@ -17,7 +17,7 @@ public class ScheduleModule extends AbstractModule {
   protected void configure() {
     // TODO: use assisted inject
     bind(CalendarQueryFactory.class).to(CalendarQueryFactoryImpl.class);
-    bind(AddressExtractor.class).to(ChicagoAddressExtractor.class);
+    bind(AddressExtractor.class).to(JavascriptAddressExtractor.class);
     bind(ScheduleStrategy.class).to(GoogleCalendar.class);
   }
 
