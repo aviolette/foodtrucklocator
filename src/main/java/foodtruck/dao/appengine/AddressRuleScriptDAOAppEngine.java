@@ -1,6 +1,7 @@
 package foodtruck.dao.appengine;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Text;
 import com.google.inject.Inject;
 
 import foodtruck.dao.AddressRuleScriptDAO;
@@ -19,13 +20,14 @@ public class AddressRuleScriptDAOAppEngine extends AppEngineSingletonDAO<Address
   }
 
   @Override protected AddressRuleScript fromEntity(Entity entity) {
+    Text t = (Text) entity.getProperty("script");
     return AddressRuleScript.builder()
-        .script((String) entity.getProperty("script"))
+        .script(t.getValue())
         .build();
   }
 
   @Override protected Entity toEntity(Entity entity, AddressRuleScript obj) {
-    entity.setProperty("script", obj.getScript());
+    entity.setProperty("script", new Text(obj.getScript()));
     return entity;
   }
 
