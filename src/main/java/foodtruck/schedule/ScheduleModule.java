@@ -3,6 +3,8 @@ package foodtruck.schedule;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import javax.script.ScriptEngineManager;
+
 import com.google.gdata.client.calendar.CalendarService;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -31,6 +33,11 @@ public class ScheduleModule extends AbstractModule {
     CalendarService service = new CalendarService("foodtruck-app");
     service.setConnectTimeout(6000);
     return service;
+  }
+
+  @Provides
+  public ScriptEngineManager provideScriptEngineManager() {
+    return new ScriptEngineManager();
   }
 }
 

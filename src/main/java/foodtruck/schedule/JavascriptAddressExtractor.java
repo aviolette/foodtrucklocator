@@ -19,24 +19,25 @@ import foodtruck.model.Truck;
  * @since 9/13/12
  */
 public class JavascriptAddressExtractor implements AddressExtractor {
-  private AddressRuleScriptDAO dao;
+  private final AddressRuleScriptDAO dao;
+  private final ScriptEngineManager scriptEngineManager;
 
   @Inject
-  public JavascriptAddressExtractor(AddressRuleScriptDAO addressRuleScriptDAO) {
+  public JavascriptAddressExtractor(AddressRuleScriptDAO addressRuleScriptDAO,
+      ScriptEngineManager scriptEngineManager) {
     this.dao = addressRuleScriptDAO;
+    this.scriptEngineManager = scriptEngineManager;
   }
 
   @Override public List<String> parse(String tweet, Truck truck) {
-    // TODO: Provide the script engine and the manager via Guice
-    ScriptEngineManager mgr = new ScriptEngineManager();
-    ScriptEngine jsEngine = mgr.getEngineByName("JavaScript");
+    ScriptEngine jsEngine = scriptEngineManager.getEngineByName("JavaScript");
     String script = dao.find().getScript();
     try {
       //TODO: sandbox
       ImmutableList.Builder<String> items = ImmutableList.builder();
       jsEngine.put("matchedItems", items);
       jsEngine.put("tweet", tweet);
-      jsEngine.put("truckId", truck.getId());
+      jsEngine.put("truck", truck);
       jsEngine.eval(script);
       return items.build();
     } catch (ScriptException ex) {
