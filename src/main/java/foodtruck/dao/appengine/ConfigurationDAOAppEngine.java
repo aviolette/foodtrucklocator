@@ -14,7 +14,7 @@ import foodtruck.model.Configuration;
  * @since 4/11/12
  */
 public class ConfigurationDAOAppEngine extends
-    AppEngineSingletonDAO<Configuration> implements ConfigurationDAO {
+    SingletonDAOAppEngine<Configuration> implements ConfigurationDAO {
   private final static String CONFIGURATION_KIND = "Configuration";
   private static final String PROP_GOOGLE_GEOLOCATION_ENABLED = "google_geolcation";
   private static final String PROP_YAHOO_GEOLOCATION_ENABLED = "yahoo_geolocation";

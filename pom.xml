@@ -38,12 +38,20 @@
     </repository>
   </repositories>
   <dependencies>
-<dependency>
-<groupId>org.apache.bsf</groupId>
-<artifactId>bsf-all</artifactId>
-<version>3.0-beta3</version>
-  <scope>runtime</scope>
-</dependency>
+    <!-- Seemingly required to make the Javascript runtime available to AppEngine -->
+    <dependency>
+      <groupId>org.apache.bsf</groupId>
+      <artifactId>bsf-all</artifactId>
+      <version>3.0-beta3</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>rhino</groupId>
+      <artifactId>js</artifactId>
+      <version>1.7R1</version>
+      <scope>runtime</scope>
+    </dependency>
+
     <!-- older version required by appengine -->
     <dependency>
       <groupId>com.sun.xml.bind</groupId>

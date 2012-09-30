@@ -11,7 +11,7 @@ import foodtruck.model.AddressRuleScript;
  * @author aviolette@gmail.com
  * @since 8/19/12
  */
-public class AddressRuleScriptDAOAppEngine extends AppEngineSingletonDAO<AddressRuleScript>
+public class AddressRuleScriptDAOAppEngine extends SingletonDAOAppEngine<AddressRuleScript>
     implements AddressRuleScriptDAO {
 
   @Inject
