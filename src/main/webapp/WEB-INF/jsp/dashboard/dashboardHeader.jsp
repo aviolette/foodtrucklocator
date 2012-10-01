@@ -11,6 +11,7 @@
   <script>window.jQuery ||
   document.write("<script src='/script/lib/jquery-1.7.1.min.js'>\x3C/script>")</script>
   <script type="text/javascript" src="/bootstrap2.1.1/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/bootstrap2.1.1/js/bootstrap.min.js"></script>
 
   <script src="/script/dashboard.js" type="text/javascript"></script>
   <link href="/bootstrap2.1.1/css/bootstrap.min.css" rel="stylesheet"/>
@@ -84,6 +85,6 @@
     </c:if>
     <div class="row">
       <div class="span14">
-        <div class="alert-message" style="display:none" id="flash">&nbsp;</div>
+        <div class="alert" style="display:none" id="flash">&nbsp;</div>
 
 

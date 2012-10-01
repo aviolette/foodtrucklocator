@@ -83,14 +83,8 @@
 
 </div>
 <div class="tabSection" id="addressSection">
-  <button class="btn btn-primary" id="scriptSaveButton">Save</button>
-  <div id="editor">function foo(items) {
-    var i;
-    for (i = 0; i &lt; items.length; i++) {
-    alert("Ace Rocks " + items[i]);
-    }
-    }
-  </div>
+  <button class="btn btn-primary" data-loading-text="Saving..." id="scriptSaveButton">Save</button>
+  <div id="editor"></div>
   <script src="/ace/ace.js" type="text/javascript" charset="utf-8"></script>
   <br/>
 
@@ -187,6 +181,7 @@
     });
     $("#scriptSaveButton").click(function(e) {
       e.preventDefault();
+      $("#scriptSaveButton").button("loading");
       var stop = {script : editor.getValue()}
       $.ajax({
         url: "/services/addressRules",
@@ -194,6 +189,9 @@
         contentType: 'application/json',
         data: JSON.stringify(stop),
         complete: function(e) {
+          flash("Successfully saved script");
+          dissolveFlash();
+          $("#scriptSaveButton").button("reset");
           $('#addressRuleModal').modal('hide');
         },
         success: function(e) {
