@@ -83,23 +83,30 @@
 
 </div>
 <div class="tabSection" id="addressSection">
-    <textarea id="addressRules" style="width:900px" rows="20" cols="80">
-
-    </textarea>
+  <button id="scriptSaveButton">Save</button>
+      <div id="editor">function foo(items) {
+      var i;
+      for (i = 0; i &lt; items.length; i++) {
+          alert("Ace Rocks " + items[i]);
+      }
+  }</div>
+  <script src="/ace/ace.js" type="text/javascript" charset="utf-8"></script>
     <br/>
-    <button id="scriptSaveButton">Save</button>
 
 </div>
 
 
 <script type="text/javascript">
 
+  var editor = ace.edit("editor");
+  editor.setTheme("ace/theme/twilight");
+  editor.getSession().setMode("ace/mode/javascript");
+
   function refreshAddressRules() {
-    var $addressRules = $("#addressRules");
     $.ajax({
       url : '/services/addressRules',
       success : function(data) {
-        $addressRules.val(data["script"]);
+        editor.setValue(data["script"])
       }
     });
   }
@@ -179,7 +186,7 @@
     });
     $("#scriptSaveButton").click(function(e) {
       e.preventDefault();
-      var stop = {script : $("#addressRules").val()}
+      var stop = {script : editor.getValue()}
       $.ajax({
         url: "/services/addressRules",
         type: 'POST',

@@ -27,6 +27,15 @@
     }
   </style>
 
+  <style type="text/css" media="screen">
+
+    #editor {
+      width: 900px;
+      height: 600px;
+    }
+  </style>
+
+
   <!-- Le fav and touch icons -->
   <link rel="shortcut icon" href="/favicon.ico">
 </head>
