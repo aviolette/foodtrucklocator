@@ -32,6 +32,7 @@
     #editor {
       width: 900px;
       height: 600px;
+      margin-top: 10px;
     }
   </style>
 
@@ -48,7 +49,8 @@
     <ul class="nav">
       <li<c:if test="${nav == 'trucks'}"> class="active"</c:if>><a href="/admin/trucks">Trucks</a>
       </li>
-      <li<c:if test="${nav == 'addresses'}"> class="active"</c:if>><a href="/admin/addresses">Addresses</a></li>
+      <li<c:if test="${nav == 'addresses'}"> class="active"</c:if>><a href="/admin/addresses">Addresses</a>
+      </li>
       <li<c:if test="${nav == 'locations'}"> class="active"</c:if>><a href="/admin/locations">Locations</a>
       </li>
       <li<c:if test="${nav == 'settings'}"> class="active"</c:if>><a href="/admin/configuration">Settings</a>

@@ -83,15 +83,16 @@
 
 </div>
 <div class="tabSection" id="addressSection">
-  <button id="scriptSaveButton">Save</button>
-      <div id="editor">function foo(items) {
-      var i;
-      for (i = 0; i &lt; items.length; i++) {
-          alert("Ace Rocks " + items[i]);
-      }
-  }</div>
+  <button class="btn btn-primary" id="scriptSaveButton">Save</button>
+  <div id="editor">function foo(items) {
+    var i;
+    for (i = 0; i &lt; items.length; i++) {
+    alert("Ace Rocks " + items[i]);
+    }
+    }
+  </div>
   <script src="/ace/ace.js" type="text/javascript" charset="utf-8"></script>
-    <br/>
+  <br/>
 
 </div>
 
