@@ -1,12 +1,13 @@
 package foodtruck.schedule;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 
@@ -21,6 +22,7 @@ import foodtruck.model.Truck;
 public class JavascriptAddressExtractor implements AddressExtractor {
   private final AddressRuleScriptDAO dao;
   private final ScriptEngineManager scriptEngineManager;
+  private static final Logger log = Logger.getLogger(JavascriptAddressExtractor.class.getName());
 
   @Inject
   public JavascriptAddressExtractor(AddressRuleScriptDAO addressRuleScriptDAO,
@@ -41,7 +43,8 @@ public class JavascriptAddressExtractor implements AddressExtractor {
       jsEngine.eval(script);
       return items.build();
     } catch (ScriptException ex) {
-      throw Throwables.propagate(ex);
+      log.log(Level.SEVERE, ex.getMessage(), ex);
+      return ImmutableList.of();
     }
   }
 }
