@@ -1,5 +1,7 @@
 package foodtruck.model;
 
+import java.util.regex.Pattern;
+
 import javax.annotation.Nullable;
 
 import com.google.common.base.Objects;
@@ -18,6 +20,7 @@ public class TweetSummary extends ModelEntity {
   private final DateTime time;
   private final long id;
   private final boolean ignoreInTwittalyzer;
+  private static final Pattern retweetPattern = Pattern.compile("(\\bRT \"?)|(\")@");
 
   public TweetSummary(Builder builder) {
     super(builder.key);
@@ -47,6 +50,14 @@ public class TweetSummary extends ModelEntity {
 
   public long getId() {
     return id;
+  }
+
+  public boolean isManualRetweet() {
+    return retweetPattern.matcher(text).find();
+  }
+
+  public boolean isReply() {
+    return text.length() > 0 && text.charAt(0) == '@';
   }
 
   @Override public int hashCode() {

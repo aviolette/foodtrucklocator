@@ -12,6 +12,9 @@ import foodtruck.model.TweetSummary;
 public class TerminationDetector {
   // TODO: probably need an abstraction like TruckStopMatch to handle terminations
   public DateTime detect(TweetSummary tweet) {
+    if (tweet.isManualRetweet() || tweet.isReply()) {
+      return null;
+    }
     String tweetText = tweet.getText().toLowerCase();
     // TODO: use regex
     if (tweetText.contains("last call") || tweetText.contains("almost sold out!")) {

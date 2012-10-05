@@ -27,6 +27,21 @@ public class TerminationDetectorTest {
   }
 
   @Test
+  public void testFalseIfReply() {
+    assertEquals(null, detector.detect(tweetBuilder.text("@GettaPolpetta thanks for the heads up!").build()));
+  }
+
+  @Test
+  public void testFalseIfRT() {
+    assertEquals(null, detector.detect(tweetBuilder.text("RT @Catchameddler: Just made two new friends @TheJibaritoStop that made my day. Thx ladies.--> Thank u Jordan. Nice chatting with you.").build()));
+  }
+
+  @Test
+  public void testFalseIfQuoted() {
+    assertEquals(null, detector.detect(tweetBuilder.text("\"@Catchameddler: Just made two new friends @TheJibaritoStop that made my day. Thx ladies.\"--> Thank u Jordan. Nice chatting with you.").build()));
+  }
+
+  @Test
   public void testSellOut() {
     assertEquals(tweetTime,
         detector.detect(tweetBuilder.text("Sold out! thanks 600 w. Chicago").build()));
