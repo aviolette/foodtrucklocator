@@ -83,6 +83,7 @@ public class TruckServlet extends HttpServlet {
     req.setAttribute("headerName", "Edit");
     final Truck truck = truckDAO.findById(truckId);
     req.setAttribute("truck", truck);
+    req.setAttribute("nav", "trucks");
     req.setAttribute("breadcrumbs", ImmutableList.of(new Link("Trucks", "/admin/trucks"),
         new Link(truck.getName(), "/admin/trucks/" + truckId),
         new Link("Edit", "/admin/trucks/" + truckId + "/configuration")));
@@ -103,6 +104,7 @@ public class TruckServlet extends HttpServlet {
     req.setAttribute("headerName", name);
     req.setAttribute("truckId", truckId);
     req.setAttribute("truck", truck);
+    req.setAttribute("nav", "trucks");
     req.setAttribute("breadcrumbs", ImmutableList.of(new Link("Trucks", "/admin/trucks"),
         new Link(name, "/admin/trucks" + truckId)));
 

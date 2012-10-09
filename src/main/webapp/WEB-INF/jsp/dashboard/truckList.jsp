@@ -119,7 +119,6 @@
       var displayValue = $muteButton.hasClass("active") ? "table-row" : "none";
       $(".muted").css("display", displayValue);
     }
-
     $('.toggle-visibility button').click(function(e) {
       var $target = $(e.target);
       if ($target.attr("id") == 'inactiveButton') {
