@@ -80,12 +80,22 @@
       <td>${day.name}</td>
       <td><c:if test="${!empty(day.current)}">
         <c:forEach items="${day.current.stops}" var="stop" varStatus="stopStatus">
-          ${stop.location.name}&nbsp;<c:if test="${!stopStatus.last}"><br/></c:if>
+          <c:url value="/admin/locations"
+                 var="locationUrl">
+          <c:param name="q" value="${stop.location.name}"/>
+          </c:url> <a
+            href="${locationUrl}">${stop.location.name}</a>&nbsp;<c:if test="${!stopStatus.last}"><br/></c:if>
         </c:forEach>
       </c:if>&nbsp;</td>
       <td><c:if test="${!empty(day.prior)}">
         <c:forEach items="${day.prior.stops}" var="stop" varStatus="stopStatus">
-          ${stop.location.name}&nbsp;<c:if test="${!stopStatus.last}"><br/></c:if>
+          <joda:format value="${stop.startTime}" style="-S"/> -
+          <joda:format value="${stop.endTime}" style="-S"/>
+          <c:url value="/admin/locations"
+                 var="locationUrl">
+          <c:param name="q" value="${stop.location.name}"/>
+          </c:url> <a
+            href="${locationUrl}">${stop.location.name}</a>&nbsp;<c:if test="${!stopStatus.last}"><br/></c:if>
         </c:forEach>
       </c:if>&nbsp;</td>
     </tr>
