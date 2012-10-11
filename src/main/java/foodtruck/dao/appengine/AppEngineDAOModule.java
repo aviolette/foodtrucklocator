@@ -3,7 +3,6 @@ package foodtruck.dao.appengine;
 import com.google.inject.AbstractModule;
 
 import foodtruck.dao.AddressRuleScriptDAO;
-import foodtruck.dao.AddressRuleTestDAO;
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.ScheduleDAO;
@@ -29,6 +28,5 @@ public class AppEngineDAOModule extends AbstractModule {
     bind(TruckStopChangeDAO.class).to(TruckStopChangeDAOAppEngine.class);
     bind(SystemStatDAO.class).to(SystemStatsDAOAppEngine.class);
     bind(AddressRuleScriptDAO.class).to(AddressRuleScriptDAOAppEngine.class);
-    bind(AddressRuleTestDAO.class).to(AddressRuleTestDAOAppEngine.class);
   }
 }
