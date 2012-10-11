@@ -34,14 +34,14 @@
               test="${!empty(truckStops.currentStop)}">
           <c:url value="/admin/locations"
                  var="locationUrl">
-          <c:param name="q" value="${truckStops.currentStop.location.name}"/>
+            <c:param name="q" value="${truckStops.currentStop.location.name}"/>
           </c:url> <a
             href="${locationUrl}">${truckStops.currentStop.location.name}</a></td>
         <td><joda:format value="${truckStops.currentStop.endTime}" style="-S"/></c:when><c:otherwise>
           Not Active
         </td>
         <td>&nbsp;</c:otherwise>
-        </c:choose>
+          </c:choose>
 
         </td>
         <td>
@@ -49,12 +49,12 @@
           <c:when
               test="${!empty(truckStops.nextStop)}">
           <c:url value="/admin/locations" var="locationUrl">
-          <c:param name="q" value="${truckStops.nextStop.location.name}"/>
+            <c:param name="q" value="${truckStops.nextStop.location.name}"/>
           </c:url> <joda:format value="${truckStops.nextStop.startTime}" style="-S"/></td>
         <td><a
             href="${locationUrl}">${truckStops.nextStop.location.name}</a></c:when>
           <c:otherwise>None</c:otherwise>
-        </c:choose>
+          </c:choose>
         </td>
         <td><c:choose><c:when
             test="${truckStops.truck.usingTwittalyzer}"></c:when><c:otherwise><span
@@ -119,6 +119,7 @@
       var displayValue = $muteButton.hasClass("active") ? "table-row" : "none";
       $(".muted").css("display", displayValue);
     }
+
     $('.toggle-visibility button').click(function(e) {
       var $target = $(e.target);
       if ($target.attr("id") == 'inactiveButton') {
@@ -127,6 +128,11 @@
       } else {
         var displayValue = $target.hasClass("active") ? "table-row" : "none";
         $(".muted").css("display", displayValue);
+      }
+      if ($target.hasClass("active")) {
+        $target.removeClass("active");
+      } else {
+        $target.addClass("active");
       }
     });
     $(".mute-button").click(function(e) {
