@@ -11,7 +11,6 @@ import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import org.joda.time.DateTimeZone;
 
 import foodtruck.model.Location;
-import foodtruck.server.api.AdminTruckStopServlet;
 import foodtruck.server.api.DailyScheduleServlet;
 import foodtruck.server.api.FoodTruckScheduleServlet;
 import foodtruck.server.api.TweetUpdateServlet;
@@ -55,7 +54,6 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/admin/locations").with(LocationListServlet.class);
     serve("/admin/stats").with(StatsServlet.class);
     serve("/admin/configuration").with(ConfigurationServlet.class);
-    serve("/admin/service/stop/*").with(AdminTruckStopServlet.class);
     serve("/service/schedule/*").with(FoodTruckScheduleServlet.class);
     serve("/service/schedule").with(DailyScheduleServlet.class);
     serve("/services/*").with(GuiceContainer.class,

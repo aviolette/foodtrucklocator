@@ -203,7 +203,7 @@
       stop.truckId = "${truckId}";
       stop.locked = $("#lockStop").is(":checked");
       $.ajax({
-        url: "/admin/service/stop/" + stop.id,
+        url: "/services/stops",
         type: 'PUT',
         contentType: 'application/json',
         data: JSON.stringify(stop),
@@ -273,7 +273,7 @@
               }
               stop.truckId = "${truckId}";
               $.ajax({
-                url: "/admin/service/stop/" + stop.id,
+                url: "/services/stops",
                 type: 'PUT',
                 contentType: 'application/json',
                 data: JSON.stringify(stop),
@@ -287,7 +287,7 @@
           $("#truckDelete" + truckIndex).click(function(e) {
             e.preventDefault();
             $.ajax({
-              url: "/admin/service/stop/" + stop.id,
+              url: "/services/stops/" + stop.id,
               type: 'DELETE',
               complete: function() {
                 refreshSchedule();
