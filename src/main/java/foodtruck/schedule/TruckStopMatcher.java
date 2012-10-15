@@ -229,7 +229,7 @@ public class TruckStopMatcher {
         return loc;
       }
     }
-    if (truck.isTwitterGeolocationDataValid() && tweetLocation != null) {
+    if (truck.isTwitterGeolocationDataValid() && tweetLocation != null && !tweet.isReply()) {
       Location lookup = geoLocator.reverseLookup(tweetLocation);
       String name = lookup != null ? lookup.getName() : "Unnamed Location";
       return Location.builder()
