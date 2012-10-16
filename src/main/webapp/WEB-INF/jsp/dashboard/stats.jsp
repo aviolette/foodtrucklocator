@@ -40,7 +40,7 @@
 
 <h2>End Point Requests</h2>
 
-<h3>Schedule Service - /service/schedule/<code>truckId</code></h3>
+<h3>Schedule Service - /services/schedule/<code>truckId</code></h3>
 
 <div id="scheduleService"></div>
 

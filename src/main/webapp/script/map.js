@@ -396,7 +396,7 @@ window.FoodTruckLocator = function() {
             truck.url + "</a>");
       }
       $.ajax({
-        url: "/service/schedule/" + truck.id,
+        url: "/services/schedule/" + truck.id,
         context: document.body,
         dataType: 'json',
         success: function(data) {

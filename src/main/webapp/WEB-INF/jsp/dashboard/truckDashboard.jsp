@@ -224,7 +224,7 @@
     var scheduleTable = $("#scheduleTable");
     scheduleTable.empty();
     $.ajax({
-      url: '/service/schedule/${truckId}',
+      url: '/services/schedule/${truckId}',
       type: 'GET',
       dataType: 'json',
       success : function(schedule) {

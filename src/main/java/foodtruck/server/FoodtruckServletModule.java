@@ -12,7 +12,6 @@ import org.joda.time.DateTimeZone;
 
 import foodtruck.model.Location;
 import foodtruck.server.api.DailyScheduleServlet;
-import foodtruck.server.api.FoodTruckScheduleServlet;
 import foodtruck.server.api.TweetUpdateServlet;
 import foodtruck.server.dashboard.AddressRuleServlet;
 import foodtruck.server.dashboard.AdminDashboardServlet;
@@ -54,7 +53,6 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/admin/locations").with(LocationListServlet.class);
     serve("/admin/stats").with(StatsServlet.class);
     serve("/admin/configuration").with(ConfigurationServlet.class);
-    serve("/service/schedule/*").with(FoodTruckScheduleServlet.class);
     serve("/service/schedule").with(DailyScheduleServlet.class);
     serve("/services/*").with(GuiceContainer.class,
         ImmutableMap.of(PackagesResourceConfig.PROPERTY_PACKAGES, "foodtruck.server.resources"));
