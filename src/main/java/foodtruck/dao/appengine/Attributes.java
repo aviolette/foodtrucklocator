@@ -39,6 +39,13 @@ public class Attributes {
     return defaultValue;
   }
 
+  public static double getDoubleProperty(Entity entity, String statName, double defaultValue) {
+    if (entity.hasProperty(statName)) {
+      return (Double) entity.getProperty(statName);
+    }
+    return defaultValue;
+  }
+
   public static boolean getBooleanProperty(Entity entity, String statName) {
     if (entity.hasProperty(statName)) {
       return (Boolean) entity.getProperty(statName);

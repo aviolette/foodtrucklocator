@@ -19,7 +19,6 @@ import org.joda.time.format.DateTimeFormatter;
 import foodtruck.model.DailySchedule;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
-import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStop;
 
 /**
@@ -72,25 +71,6 @@ public class JsonWriter {
       obj.put("id", id);
     }
     return obj;
-  }
-
-  public JSONObject writeSchedule(TruckSchedule schedule) throws JSONException {
-    JSONObject obj = new JSONObject()
-        .put("truck", writeTruck(schedule.getTruck()))
-        .put("day", schedule.getDate().toString());
-    JSONArray arr = new JSONArray();
-    for (TruckStop stop : schedule.getStops()) {
-      JSONObject truckStop = new JSONObject()
-          .put("location", writeLocation(stop.getLocation(), 0, false))
-          .put("id", stop.getKey())
-          .put("locked", stop.isLocked())
-          .put("startTimeMillis", stop.getStartTime().getMillis())
-          .put("endTimeMillis", stop.getEndTime().getMillis())
-          .put("startTime", timeFormatter.print(stop.getStartTime()))
-          .put("endTime", timeFormatter.print(stop.getEndTime()));
-      arr.put(truckStop);
-    }
-    return obj.put("stops", arr);
   }
 
   public JSONObject writeSchedule(DailySchedule schedule) throws JSONException {

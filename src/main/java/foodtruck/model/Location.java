@@ -17,6 +17,7 @@ public class Location extends ModelEntity {
   private final @Nullable String description;
   private final @Nullable String url;
   private final boolean eventSpecific;
+  private final double radius;
 
   public Location(Builder builder) {
     super(builder.key);
@@ -27,6 +28,7 @@ public class Location extends ModelEntity {
     description = builder.description;
     url = builder.url;
     eventSpecific = builder.eventSpecific;
+    radius = builder.radius;
   }
 
   public double getLatitude() {
@@ -99,15 +101,12 @@ public class Location extends ModelEntity {
     return new Builder(loc);
   }
 
-  /**
-   * Returns a new Location with an updated name
-   */
-  public Location withName(String name) {
-    return builder(this).name(name).build();
-  }
-
   public Location withKey(Object key) {
     return builder(this).key(key).build();
+  }
+
+  public double getRadius() {
+    return radius;
   }
 
   public static class Builder {
@@ -119,6 +118,7 @@ public class Location extends ModelEntity {
     private @Nullable String description;
     private boolean eventSpecific;
     private @Nullable String url;
+    public double radius = 0d;
 
     public Builder(Location location) {
       key = location.getKey();
@@ -129,6 +129,11 @@ public class Location extends ModelEntity {
     }
 
     public Builder() {
+    }
+
+    public Builder radius(double radius) {
+      this.radius = radius;
+      return this;
     }
 
     public Builder description(@Nullable String description) {

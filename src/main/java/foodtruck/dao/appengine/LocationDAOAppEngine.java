@@ -3,6 +3,8 @@ package foodtruck.dao.appengine;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Nullable;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
@@ -28,6 +30,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
   private static final String VALID_FIELD = "valid";
   private static final String DESCRIPTION_FIELD = "description";
   private static final String URL_FIELD = "url";
+  private static final String RADIAL_FIELD = "radial_boundary";
 
   private static final Logger log = Logger.getLogger(LocationDAOAppEngine.class.getName());
   private final Clock clock;
@@ -39,7 +42,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
   }
 
   @Override
-  public Location findByAddress(String keyword) {
+  public @Nullable Location findByAddress(String keyword) {
     DatastoreService dataStore = provider.get();
     Query q = new Query(LOCATION_KIND);
     // TODO: fix so it searches in a case insensitive manner
@@ -89,6 +92,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     entity.setProperty(VALID_FIELD, location.isValid());
     entity.setProperty(DESCRIPTION_FIELD, location.getDescription());
     entity.setProperty(URL_FIELD, location.getUrl());
+    entity.setProperty(RADIAL_FIELD, location.getRadius());
     return entity;
   }
 
@@ -101,6 +105,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
         Location.builder().name((String) entity.getProperty(NAME_FIELD)).key(key);
     builder.description((String) entity.getProperty(DESCRIPTION_FIELD));
     builder.url((String) entity.getProperty(URL_FIELD));
+    builder.radius(Attributes.getDoubleProperty(entity, RADIAL_FIELD, 0.0));
     boolean isValid = valid == null || valid;
     if (lat == null || lng == null) {
       builder.valid(false);

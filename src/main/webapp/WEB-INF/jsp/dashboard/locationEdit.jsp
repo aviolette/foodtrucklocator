@@ -43,6 +43,13 @@
       </div>
     </div>
     <div class="clearfix">
+      <label>Radius</label>
+
+      <div class="input">
+        <input id="radius" type="text"/>
+      </div>
+    </div>
+    <div class="clearfix">
       <label for="description">Description</label>
 
       <div class="input">
@@ -83,6 +90,7 @@
       }
       $("#latitude").attr("value", loc.latitude);
       $("#longitude").attr("value", loc.longitude);
+      $("#radius").attr("value", loc.radius);
       $("#name").attr("value", loc.name);
       $("#invalidLoc").attr("checked", !loc.valid);
       $("#description").attr("value", loc.description);
@@ -95,6 +103,7 @@
       loc.latitude = parseFloat($("#latitude").attr("value"));
       loc.longitude = parseFloat($("#longitude").attr("value"));
       loc.name = $("#name").attr("value");
+      loc.radius = parseFloat($("#radius").attr("value"));
       loc.valid = !$("#invalidLoc").is(":checked");
       loc.description = $("#description").attr("value");
       loc.url = $("#url").attr("value");

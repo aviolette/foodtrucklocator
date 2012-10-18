@@ -19,8 +19,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import foodtruck.dao.LocationDAO;
 import foodtruck.model.Location;
 import foodtruck.server.GuiceHackRequestWrapper;
-import foodtruck.server.api.JsonReader;
-import foodtruck.server.api.JsonWriter;
+import foodtruck.server.resources.json.LocationReader;
+import foodtruck.server.resources.json.LocationWriter;
 import foodtruck.truckstops.FoodTruckStopService;
 
 /**
@@ -30,12 +30,12 @@ import foodtruck.truckstops.FoodTruckStopService;
 @Singleton
 public class LocationEditServlet extends HttpServlet {
   private final LocationDAO locationDAO;
-  private final JsonWriter writer;
-  private final JsonReader reader;
+  private final LocationWriter writer;
+  private final LocationReader reader;
   private final FoodTruckStopService truckStopService;
 
   @Inject
-  public LocationEditServlet(LocationDAO dao, JsonWriter writer, JsonReader reader,
+  public LocationEditServlet(LocationDAO dao, LocationWriter writer, LocationReader reader,
       FoodTruckStopService truckStopService) {
     this.locationDAO = dao;
     this.writer = writer;
@@ -66,7 +66,7 @@ public class LocationEditServlet extends HttpServlet {
     final String json = new String(ByteStreams.toByteArray(req.getInputStream()));
     try {
       JSONObject jsonPayload = new JSONObject(json);
-      Location location = reader.readLocation(jsonPayload);
+      Location location = reader.toLocation(jsonPayload);
       locationDAO.save(location);
       truckStopService.updateLocationInCurrentSchedule(location);
       resp.setStatus(204);

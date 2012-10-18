@@ -19,6 +19,7 @@ public class LocationWriter implements JSONWriter<Location> {
     JSONObject obj = new JSONObject()
         .put("latitude", location.getLatitude())
         .put("longitude", location.getLongitude())
+        .put("radius", location.getRadius())
         .put("name", location.getName());
     if (fullOptions) {
       obj.put("valid", location.isValid());
