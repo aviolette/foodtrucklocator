@@ -3,6 +3,10 @@ package foodtruck.model;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Objects;
+import com.javadocmd.simplelatlng.LatLng;
+import com.javadocmd.simplelatlng.LatLngTool;
+import com.javadocmd.simplelatlng.util.LengthUnit;
+
 
 /**
  * Latitude and Longitude.
@@ -10,8 +14,7 @@ import com.google.common.base.Objects;
  * @since Jul 12, 2011
  */
 public class Location extends ModelEntity {
-  private final double lng;
-  private final double lat;
+  private LatLng latLng;
   private final String name;
   private final boolean valid;
   private final @Nullable String description;
@@ -21,8 +24,7 @@ public class Location extends ModelEntity {
 
   public Location(Builder builder) {
     super(builder.key);
-    lng = builder.lng;
-    lat = builder.lat;
+    latLng = new LatLng(builder.lat, builder.lng);
     name = builder.name;
     valid = builder.valid;
     description = builder.description;
@@ -32,11 +34,11 @@ public class Location extends ModelEntity {
   }
 
   public double getLatitude() {
-    return lat;
+    return latLng.getLatitude();
   }
 
   public double getLongitude() {
-    return lng;
+    return latLng.getLongitude();
   }
 
   public String getName() {
@@ -65,21 +67,20 @@ public class Location extends ModelEntity {
    * Return true if the location has been properly resolved.
    */
   public boolean isResolved() {
-    return valid && lat != 0 && lng != 0;
+    return valid && latLng.getLatitude() != 0 && latLng.getLongitude() != 0;
   }
 
   @Override
   public String toString() {
     return Objects.toStringHelper(this)
-        .add("Latitude", lat)
-        .add("Longitude", lng)
+        .add("Lat/Lng", latLng)
         .add("Name", name)
         .toString();
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(lng, lat);
+    return latLng.hashCode();
   }
 
   @Override
@@ -90,7 +91,7 @@ public class Location extends ModelEntity {
       return false;
     }
     Location obj = (Location) o;
-    return lat == obj.lat && lng == obj.lng;
+    return obj.latLng.equals(latLng);
   }
 
   public static Builder builder() {
@@ -107,6 +108,10 @@ public class Location extends ModelEntity {
 
   public double getRadius() {
     return radius;
+  }
+
+  public double distanceFrom(Location mapCenter) {
+    return LatLngTool.distance(latLng, mapCenter.latLng, LengthUnit.MILE);
   }
 
   public static class Builder {

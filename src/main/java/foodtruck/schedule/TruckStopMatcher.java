@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -54,10 +55,11 @@ public class TruckStopMatcher {
   private final Pattern satPattern;
   private final Pattern sunPattern;
   private final Pattern atTimePattern;
+  private final Location centerLocation;
 
   @Inject
   public TruckStopMatcher(AddressExtractor extractor, GeoLocator geoLocator,
-      DateTimeZone defaultZone, Clock clock) {
+      DateTimeZone defaultZone, Clock clock, @Named("center") Location centerLocation) {
     this.addressExtractor = extractor;
     this.geoLocator = geoLocator;
     this.timePattern = Pattern.compile(TIME_PATTERN);
@@ -94,6 +96,11 @@ public class TruckStopMatcher {
         Pattern.CASE_INSENSITIVE);
     formatter = DateTimeFormat.forPattern("hhmma").withZone(defaultZone);
     this.clock = clock;
+    this.centerLocation = centerLocation;
+  }
+
+  public Location getMapCenter() {
+    return centerLocation;
   }
 
   /**
@@ -118,7 +125,7 @@ public class TruckStopMatcher {
       return null;
     }
     Location location = extractLocation(tweet, truck);
-    if (location == null) {
+    if (location == null || location.distanceFrom(getMapCenter()) > 50.0d) {
       return null;
     }
     DateTime startTime = null;

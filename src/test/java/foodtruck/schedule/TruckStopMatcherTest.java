@@ -35,14 +35,16 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   private Truck truck;
   private DateTime tweetTime;
   private Clock clock;
+  private Location mapCenter;
 
   @Before
   public void before() {
     extractor = createMock(AddressExtractor.class);
     geolocator = createMock(GeoLocator.class);
     clock = createMock(Clock.class);
+    mapCenter = Location.builder().lat(41.8807438).lng(-87.6293867).build();
     expect(clock.dayOfWeek()).andStubReturn(DayOfWeek.sunday);
-    topic = new TruckStopMatcher(extractor, geolocator, DateTimeZone.UTC, clock);
+    topic = new TruckStopMatcher(extractor, geolocator, DateTimeZone.UTC, clock, mapCenter);
     truck = Truck.builder().id("foobar").build();
     tweetTime = new DateTime(2011, 11, 10, 11, 13, 7, 7, DateTimeZone.UTC);
   }
@@ -132,11 +134,22 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     TruckStopMatch match =
         tweet("Oh yea oh yea beautiful night in the Chi. " +
             "Come get ur froyo fix we are on the corner of Michigan and Ohio!")
-            .geolocatorReturns(Location.builder().lat(-1).lng(-2).name("Michigan and Ohio").build())
+            .geolocatorReturns(Location.builder().lat(41.889973).lng(-87.634024).name("Michigan and Ohio").build())
             .match();
     assertNotNull(match);
     assertEquals(Confidence.HIGH, match.getConfidence());
     assertEquals("Michigan and Ohio", match.getStop().getLocation().getName());
+    verifyAll();
+  }
+
+  @Test
+  public void testMatchThatIsGreaterThan50MilesAway_shouldFail() {
+    TruckStopMatch match =
+        tweet("Oh yea oh yea beautiful night in the Chi. " +
+            "Come get ur froyo fix we are on the corner of Michigan and Ohio!")
+            .geolocatorReturns(Location.builder().lat(41.889973).lng(80.634024).name("Michigan and Ohio").build())
+            .match();
+    assertNull(match);
     verifyAll();
   }
 
@@ -376,7 +389,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
       Tweeter.this.tweet = tweet;
       Tweeter.this.truck = TruckStopMatcherTest.this.truck;
       Tweeter.this.time = TruckStopMatcherTest.this.tweetTime;
-      this.geolocatorResult = Location.builder().lat(-1).lng(-2).name(address).build();
+      this.geolocatorResult = Location.builder().lat(41.889973).lng(-87.634024).name(address).build();
     }
 
     public Tweeter withTruck(Truck truck) {

@@ -36,30 +36,30 @@ public class GoogleGeolocatorTest extends EasyMockSupport {
   @Test
   public void testLocate_ParseLatLong() {
     replayAll();
-    Location location = geoLocator.locate("-3.4343,343444", GeolocationGranularity.BROAD);
+    Location location = geoLocator.locate("-3.4343,87.634024", GeolocationGranularity.BROAD);
     assertNotNull(location);
     assertEquals(-3.4343, location.getLatitude(), 0);
-    assertEquals(343444.0, location.getLongitude(), 0);
+    assertEquals(87.634024, location.getLongitude(), 0);
     assertNull(location.getName());
   }
 
   @Test
   public void testLocate_ParseLatLong2() {
     replayAll();
-    Location location = geoLocator.locate("-3.4343,343444,Blah Blah", GeolocationGranularity.BROAD);
+    Location location = geoLocator.locate("-3.4343,87.634024,Blah Blah", GeolocationGranularity.BROAD);
     assertNotNull(location);
     assertEquals(-3.4343, location.getLatitude(), 0);
-    assertEquals(343444.0, location.getLongitude(), 0);
+    assertEquals(87.634024, location.getLongitude(), 0);
     assertEquals("Blah Blah", location.getName());
   }
 
   @Test
   public void testLocate_ParseLatLong3() {
     replayAll();
-    Location location = geoLocator.locate("  -3, 343444, Blah Blah", GeolocationGranularity.BROAD);
+    Location location = geoLocator.locate("  -3, 87.634024, Blah Blah", GeolocationGranularity.BROAD);
     assertNotNull(location);
     assertEquals(-3, location.getLatitude(), 0);
-    assertEquals(343444.0, location.getLongitude(), 0);
+    assertEquals(87.634024, location.getLongitude(), 0);
     assertEquals("Blah Blah", location.getName());
   }
 
