@@ -1,9 +1,9 @@
 # Configuration
 
-1. Create a trucks.yaml file. The primary configuration for the food truck locator is the
-trucks.yaml file in src/main/resources. Create one from the trucks.sample.yaml provided.
-2. Create a cron.xml file.  If running on App Engine, this file can be used to resync the cache
-periodically.
-3. Create an appengine-web.xml file.  This file will have your appengine id and system property
-configuration.
+Download the Appengine SDK for Java, version 1.7.3: http://googleappengine.googlecode.com/files/appengine-java-sdk-1.7.3.zip
+
+Define APPENGINE_HOME in your bashrc.  This should point to the directory where you unpacked the appengine SDK
+
+Run ./setup.sh
+
 
