@@ -1,10 +1,12 @@
 package foodtruck.schedule;
 
-import javax.annotation.Nullable;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-
+import foodtruck.dao.ConfigurationDAO;
+import foodtruck.geolocation.GeoLocator;
+import foodtruck.geolocation.GeolocationGranularity;
+import foodtruck.model.*;
+import foodtruck.util.Clock;
 import org.easymock.EasyMockSupport;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -12,17 +14,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import foodtruck.geolocation.GeoLocator;
-import foodtruck.geolocation.GeolocationGranularity;
-import foodtruck.model.DayOfWeek;
-import foodtruck.model.Location;
-import foodtruck.model.Truck;
-import foodtruck.model.TweetSummary;
-import foodtruck.util.Clock;
+import javax.annotation.Nullable;
+
 import static org.easymock.EasyMock.expect;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 /**
  * @author aviolette@gmail.com
@@ -36,6 +31,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   private DateTime tweetTime;
   private Clock clock;
   private Location mapCenter;
+  private ConfigurationDAO configDAO;
 
   @Before
   public void before() {
@@ -44,7 +40,10 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     clock = createMock(Clock.class);
     mapCenter = Location.builder().lat(41.8807438).lng(-87.6293867).build();
     expect(clock.dayOfWeek()).andStubReturn(DayOfWeek.sunday);
-    topic = new TruckStopMatcher(extractor, geolocator, DateTimeZone.UTC, clock, mapCenter);
+    Configuration config = Configuration.builder().center(mapCenter).build();
+    configDAO = createMock(ConfigurationDAO.class);
+    expect(configDAO.find()).andStubReturn(config);
+    topic = new TruckStopMatcher(extractor, geolocator, DateTimeZone.UTC, clock, configDAO);
     truck = Truck.builder().id("foobar").build();
     tweetTime = new DateTime(2011, 11, 10, 11, 13, 7, 7, DateTimeZone.UTC);
   }

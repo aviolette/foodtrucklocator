@@ -1,10 +1,9 @@
 package foodtruck.model;
 
-import javax.annotation.Nullable;
-
 import com.google.appengine.api.datastore.Key;
-
 import org.joda.time.DateTime;
+
+import javax.annotation.Nullable;
 
 /**
  * @author aviolette@gmail.com
@@ -15,6 +14,7 @@ public class Configuration extends ModelEntity {
   private boolean googleGeolocationEnabled;
   private DateTime throttleGoogleUntil;
   private boolean tweetUpdateServletEnabled;
+  private Location center;
 
   public Configuration(Object key) {
     super(key);
@@ -26,6 +26,7 @@ public class Configuration extends ModelEntity {
     this.yahooGeolocationEnabled = builder.yahooGeolocationEnabled;
     this.throttleGoogleUntil = builder.throttleGoogleUntil;
     this.tweetUpdateServletEnabled = builder.tweetUpdateServletEnabled;
+    this.center = builder.center;
   }
 
   public boolean isYahooGeolocationEnabled() {
@@ -42,6 +43,10 @@ public class Configuration extends ModelEntity {
 
   public boolean isGoogleThrottled(DateTime when) {
     return (throttleGoogleUntil != null && throttleGoogleUntil.isAfter(when));
+  }
+
+  public Location getCenter() {
+    return center;
   }
 
   public @Nullable DateTime getThrottleGoogleUntil() {
@@ -63,6 +68,7 @@ public class Configuration extends ModelEntity {
     private Key key;
     private @Nullable DateTime throttleGoogleUntil;
     private boolean tweetUpdateServletEnabled;
+    private Location center;
 
     public Builder() {
     }
@@ -87,6 +93,11 @@ public class Configuration extends ModelEntity {
 
     public Builder tweetUpdateServletEnabled(boolean enabled) {
       this.tweetUpdateServletEnabled = enabled;
+      return this;
+    }
+
+    public Builder center(Location location) {
+      this.center = location;
       return this;
     }
 

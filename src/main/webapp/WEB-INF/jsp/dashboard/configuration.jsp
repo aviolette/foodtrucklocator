@@ -3,6 +3,10 @@
 <form method="post">
   <fieldset>
     <div class="clearfix">
+      <label for="mapCenter">Map Center</label>
+      <input type="text" value="${config.center.name}" name="mapCenter" id="mapCenter"/>
+    </div>
+    <div class="clearfix">
       <label>&nbsp;</label>
 
       <div class="input">

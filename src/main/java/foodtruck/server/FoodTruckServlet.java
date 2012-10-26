@@ -1,7 +1,20 @@
 package foodtruck.server;
 
-import java.io.IOException;
-import java.util.logging.Logger;
+import com.google.common.base.Strings;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import foodtruck.dao.ConfigurationDAO;
+import foodtruck.dao.ScheduleDAO;
+import foodtruck.model.DailySchedule;
+import foodtruck.model.Location;
+import foodtruck.server.api.JsonWriter;
+import foodtruck.truckstops.FoodTruckStopService;
+import foodtruck.util.Clock;
+import org.codehaus.jettison.json.JSONException;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import javax.annotation.Nullable;
 import javax.servlet.ServletException;
@@ -9,24 +22,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.google.common.base.Strings;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.google.inject.name.Named;
-
-import org.codehaus.jettison.json.JSONException;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
-import foodtruck.dao.ScheduleDAO;
-import foodtruck.model.DailySchedule;
-import foodtruck.model.Location;
-import foodtruck.server.api.JsonWriter;
-import foodtruck.truckstops.FoodTruckStopService;
-import foodtruck.util.Clock;
+import java.io.IOException;
+import java.util.logging.Logger;
 
 /**
  * Servlet that serves up the main food truck page.
@@ -35,7 +32,6 @@ import foodtruck.util.Clock;
  */
 @Singleton
 public class FoodTruckServlet extends HttpServlet {
-  private final Location mapCenter;
   private final DateTimeFormatter timeFormatter;
   private final Clock clock;
   private final DateTimeFormatter dateFormatter;
@@ -43,12 +39,13 @@ public class FoodTruckServlet extends HttpServlet {
   private final FoodTruckStopService stopService;
   private ScheduleDAO scheduleCacher;
   private JsonWriter writer;
+  private ConfigurationDAO configDAO;
 
   @Inject
-  public FoodTruckServlet(DateTimeZone zone, @Named("center") Location centerLocation,
+  public FoodTruckServlet(DateTimeZone zone, ConfigurationDAO configDAO,
       Clock clock, FoodTruckStopService service, JsonWriter writer, ScheduleDAO scheduleCacher) {
     this.clock = clock;
-    this.mapCenter = centerLocation;
+    this.configDAO = configDAO;
     this.timeFormatter = DateTimeFormat.forPattern("YYYYMMdd-HHmm").withZone(zone);
     this.dateFormatter = DateTimeFormat.forPattern("EEE MMM dd, YYYY");
     this.stopService = service;
@@ -81,7 +78,7 @@ public class FoodTruckServlet extends HttpServlet {
     if (dateTime == null) {
       dateTime = clock.now();
     }
-    req.setAttribute("center", getCenter(req.getCookies(), mapCenter));
+    req.setAttribute("center", getCenter(req.getCookies(), configDAO.find().getCenter()));
     String googleAnalytics = System.getProperty("foodtruck.google.analytics", null);
     if (googleAnalytics != null) {
       req.setAttribute("google_analytics_ua", googleAnalytics);
@@ -103,11 +100,9 @@ public class FoodTruckServlet extends HttpServlet {
     req.setAttribute("requestTime", timeFormatter.print(dateTime));
     req.setAttribute("requestTimeInMillis", dateTime.getMillis());
     resp.setHeader("Cache-Control", "max-age=900");
-    /* TODO - add this in later after some better testing
     resp.setHeader("Cache-Control", "no-cache");
     resp.setHeader("Pragma", "no-cache");
     resp.setHeader("Expires", "Thu, 01 Jan 1970 00:00:00 GMT");
-    */
     req.setAttribute("payload", payload);
     req.getRequestDispatcher("/WEB-INF/jsp/index.jsp").forward(req, resp);
   }

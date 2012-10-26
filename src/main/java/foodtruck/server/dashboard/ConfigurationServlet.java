@@ -1,17 +1,18 @@
 package foodtruck.server.dashboard;
 
-import java.io.IOException;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import foodtruck.dao.ConfigurationDAO;
+import foodtruck.geolocation.GeoLocator;
+import foodtruck.geolocation.GeolocationGranularity;
+import foodtruck.model.Configuration;
+import foodtruck.model.Location;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-import foodtruck.dao.ConfigurationDAO;
-import foodtruck.model.Configuration;
+import java.io.IOException;
 
 /**
  * @author aviolette@gmail.com
@@ -20,11 +21,13 @@ import foodtruck.model.Configuration;
 @Singleton
 public class ConfigurationServlet extends HttpServlet {
   private static final String JSP_PATH = "/WEB-INF/jsp/dashboard/configuration.jsp";
-  private ConfigurationDAO configDAO;
+  private final ConfigurationDAO configDAO;
+  private final GeoLocator geoLocator;
 
   @Inject
-  public ConfigurationServlet(ConfigurationDAO configDAO) {
+  public ConfigurationServlet(ConfigurationDAO configDAO, GeoLocator geoLocator) {
     this.configDAO = configDAO;
+    this.geoLocator = geoLocator;
   }
 
   @Override
@@ -39,10 +42,13 @@ public class ConfigurationServlet extends HttpServlet {
   @Override protected void doPost(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     Configuration config = configDAO.find();
+    Location mapCenter = geoLocator.locate(req.getParameter("mapCenter"), GeolocationGranularity.NARROW);
+    // TODO: handle null map center
     config = Configuration.builder(config)
         .yahooGeolocationEnabled("on".equals(req.getParameter("yahooGeolocationEnabled")))
         .googleGeolocationEnabled("on".equals(req.getParameter("googleGeolocationEnabled")))
         .tweetUpdateServletEnabled("on".equals(req.getParameter("tweetUpdateServletEnabled")))
+        .center(mapCenter)
         .build();
     configDAO.save(config);
     resp.sendRedirect("/admin/configuration");

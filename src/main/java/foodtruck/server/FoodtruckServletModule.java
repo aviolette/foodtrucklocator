@@ -7,25 +7,11 @@ import com.google.inject.name.Named;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
-
-import org.joda.time.DateTimeZone;
-
-import foodtruck.model.Location;
 import foodtruck.server.api.DailyScheduleServlet;
 import foodtruck.server.api.TweetUpdateServlet;
-import foodtruck.server.dashboard.AddressRuleServlet;
-import foodtruck.server.dashboard.AdminDashboardServlet;
-import foodtruck.server.dashboard.ConfigurationServlet;
-import foodtruck.server.dashboard.LocationEditServlet;
-import foodtruck.server.dashboard.LocationListServlet;
-import foodtruck.server.dashboard.StatsServlet;
-import foodtruck.server.dashboard.TruckListServlet;
-import foodtruck.server.dashboard.TruckServlet;
-import foodtruck.server.job.MailUpdatesServlet;
-import foodtruck.server.job.RecacheServlet;
-import foodtruck.server.job.SyncTrucksServlet;
-import foodtruck.server.job.TweetCacheUpdateServlet;
-import foodtruck.server.job.TwitterCachePurgeServlet;
+import foodtruck.server.dashboard.*;
+import foodtruck.server.job.*;
+import org.joda.time.DateTimeZone;
 
 /**
  * Wires all the endpoints for the application.
@@ -65,11 +51,6 @@ public class FoodtruckServletModule extends ServletModule {
   @Provides
   public DateTimeZone provideDefaultZone() {
     return DateTimeZone.forID("America/Chicago");
-  }
-
-  @Provides @Named("center")
-  public Location provideMapCenter() {
-    return Location.builder().lat(41.8807438).lng(-87.6293867).build();
   }
 
   @Provides @Named("remote.tweet.update")
