@@ -39,7 +39,7 @@ public class TruckStopMatcher {
       "(\\d+:\\d+\\s*(p|pm|a|am|a\\.m\\.|p\\.m\\.)?)|noon|(\\d+\\s*(p|pm|a|am|a\\.m\\.|p\\.m\\.)|((11|12|1|2|3|4|5|6)\\b))";
   private static final String TIME_RANGE_PATTERN =
       "(" + TIME_PATTERN + ")\\s*-\\s*(" + TIME_PATTERN + ")[\\s|\\.&&[^\\-]]";
-  private static final String TOMORROW = "2morrow|tmw|tomorrow|ma–ana";
+  private static final String TOMORROW = "2morrow|tmw|tomorrow|maana";
   private final AddressExtractor addressExtractor;
   private final GeoLocator geoLocator;
   private final Pattern endTimePattern;
