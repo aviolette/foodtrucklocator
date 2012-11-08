@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.logging.Logger;
 
 /**
  * Servlet that serves up the main food truck page.
@@ -35,7 +34,6 @@ public class FoodTruckServlet extends HttpServlet {
   private final DateTimeFormatter timeFormatter;
   private final Clock clock;
   private final DateTimeFormatter dateFormatter;
-  private static final Logger log = Logger.getLogger(FoodTruckServlet.class.getName());
   private final FoodTruckStopService stopService;
   private ScheduleDAO scheduleCacher;
   private JsonWriter writer;
