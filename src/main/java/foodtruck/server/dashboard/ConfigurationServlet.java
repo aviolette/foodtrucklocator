@@ -48,6 +48,9 @@ public class ConfigurationServlet extends HttpServlet {
         .yahooGeolocationEnabled("on".equals(req.getParameter("yahooGeolocationEnabled")))
         .googleGeolocationEnabled("on".equals(req.getParameter("googleGeolocationEnabled")))
         .tweetUpdateServletEnabled("on".equals(req.getParameter("tweetUpdateServletEnabled")))
+        .localTwitterCachingEnabled("on".equals(req.getParameter("localTwitterCachingEnabled")))
+        .remoteTwitterCachingEnabled("on".equals(req.getParameter("remoteTwitterCachingEnabled")))
+        .remoteTwitterCacheAddress(req.getParameter("remoteTwitterCacheAddress"))
         .center(mapCenter)
         .build();
     configDAO.save(config);

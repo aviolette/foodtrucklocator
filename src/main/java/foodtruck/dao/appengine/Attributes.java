@@ -1,13 +1,11 @@
 package foodtruck.dao.appengine;
 
-import java.util.Date;
-
-import javax.annotation.Nullable;
-
 import com.google.appengine.api.datastore.Entity;
-
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+
+import javax.annotation.Nullable;
+import java.util.Date;
 
 /**
  * @author aviolette@gmail.com
@@ -47,9 +45,13 @@ public class Attributes {
   }
 
   public static boolean getBooleanProperty(Entity entity, String statName) {
+    return getBooleanProperty(entity, statName, false);
+  }
+
+  public static boolean getBooleanProperty(Entity entity, String statName, boolean defaultValue) {
     if (entity.hasProperty(statName)) {
       return (Boolean) entity.getProperty(statName);
     }
-    return false;
+    return defaultValue;
   }
 }

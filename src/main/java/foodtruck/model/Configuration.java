@@ -15,6 +15,9 @@ public class Configuration extends ModelEntity {
   private DateTime throttleGoogleUntil;
   private boolean tweetUpdateServletEnabled;
   private Location center;
+  private boolean localTwitterCachingEnabled;
+  private boolean remoteTwitterCachingEnabled;
+  private @Nullable String remoteTwitterCacheAddress;
 
   public Configuration(Object key) {
     super(key);
@@ -27,6 +30,21 @@ public class Configuration extends ModelEntity {
     this.throttleGoogleUntil = builder.throttleGoogleUntil;
     this.tweetUpdateServletEnabled = builder.tweetUpdateServletEnabled;
     this.center = builder.center;
+    this.localTwitterCachingEnabled = builder.localTwitterCachingEnabled;
+    this.remoteTwitterCacheAddress = builder.remoteTwitterCacheAddress;
+    this.remoteTwitterCachingEnabled = builder.remoteTwitterCachingEnabled;
+  }
+
+  public boolean isLocalTwitterCachingEnabled() {
+    return localTwitterCachingEnabled;
+  }
+
+  public boolean isRemoteTwitterCachingEnabled() {
+    return remoteTwitterCachingEnabled;
+  }
+
+  public @Nullable String getRemoteTwitterCacheAddress() {
+    return remoteTwitterCacheAddress;
   }
 
   public boolean isYahooGeolocationEnabled() {
@@ -69,6 +87,9 @@ public class Configuration extends ModelEntity {
     private @Nullable DateTime throttleGoogleUntil;
     private boolean tweetUpdateServletEnabled;
     private Location center;
+    private boolean localTwitterCachingEnabled;
+    private @Nullable String remoteTwitterCacheAddress;
+    private boolean remoteTwitterCachingEnabled;
 
     public Builder() {
     }
@@ -79,6 +100,24 @@ public class Configuration extends ModelEntity {
       this.throttleGoogleUntil = config.throttleGoogleUntil;
       this.key = (Key) config.getKey();
       this.tweetUpdateServletEnabled = config.tweetUpdateServletEnabled;
+      this.localTwitterCachingEnabled = config.localTwitterCachingEnabled;
+      this.remoteTwitterCacheAddress = config.remoteTwitterCacheAddress;
+      this.remoteTwitterCachingEnabled = config.remoteTwitterCachingEnabled;
+    }
+
+    public Builder localTwitterCachingEnabled(boolean enabled) {
+      this.localTwitterCachingEnabled = enabled;
+      return this;
+    }
+
+    public Builder remoteTwitterCachingEnabled(boolean enabled) {
+      this.remoteTwitterCachingEnabled = enabled;
+      return this;
+    }
+
+    public Builder remoteTwitterCacheAddress(@Nullable String twitterCacheAddress) {
+      this.remoteTwitterCacheAddress = twitterCacheAddress;
+      return this;
     }
 
     public Builder googleGeolocationEnabled(boolean enabled) {
