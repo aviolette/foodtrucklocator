@@ -7,11 +7,23 @@ import com.google.inject.name.Named;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
+
+import org.joda.time.DateTimeZone;
+
 import foodtruck.server.api.DailyScheduleServlet;
 import foodtruck.server.api.TweetUpdateServlet;
-import foodtruck.server.dashboard.*;
-import foodtruck.server.job.*;
-import org.joda.time.DateTimeZone;
+import foodtruck.server.dashboard.AddressRuleServlet;
+import foodtruck.server.dashboard.AdminDashboardServlet;
+import foodtruck.server.dashboard.ConfigurationServlet;
+import foodtruck.server.dashboard.LocationEditServlet;
+import foodtruck.server.dashboard.LocationListServlet;
+import foodtruck.server.dashboard.StatsServlet;
+import foodtruck.server.dashboard.TruckListServlet;
+import foodtruck.server.dashboard.TruckServlet;
+import foodtruck.server.job.MailUpdatesServlet;
+import foodtruck.server.job.RecacheServlet;
+import foodtruck.server.job.TweetCacheUpdateServlet;
+import foodtruck.server.job.TwitterCachePurgeServlet;
 
 /**
  * Wires all the endpoints for the application.
@@ -22,13 +34,10 @@ public class FoodtruckServletModule extends ServletModule {
   @Override
   protected void configureServlets() {
     // This allows for us to backup the app-engine datastore locally
-    if ("true".equals(System.getProperty("enable.remote_api"))) {
-      bind(com.google.apphosting.utils.remoteapi.RemoteApiServlet.class).in(Singleton.class);
-      serve("/remote_api").with(com.google.apphosting.utils.remoteapi.RemoteApiServlet.class);
-    }
+    bind(com.google.apphosting.utils.remoteapi.RemoteApiServlet.class).in(Singleton.class);
+    serve("/remote_api").with(com.google.apphosting.utils.remoteapi.RemoteApiServlet.class);
     serve("/cron/recache").with(RecacheServlet.class);
     serve("/cron/tweets").with(TweetCacheUpdateServlet.class);
-    serve("/cron/synctrucks").with(SyncTrucksServlet.class);
     serve("/cron/tweetPurge").with(TwitterCachePurgeServlet.class);
     serve("/cron/processChanges").with(MailUpdatesServlet.class);
     serve("/admin").with(AdminDashboardServlet.class);

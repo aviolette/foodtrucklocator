@@ -5,7 +5,6 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.servlet.GuiceServletContextListener;
 
-import foodtruck.config.ConfigModule;
 import foodtruck.dao.appengine.AppEngineDAOModule;
 import foodtruck.geolocation.GeolocationModule;
 import foodtruck.monitoring.MonitoringModule;
@@ -26,7 +25,6 @@ public class FoodtruckConfig extends GuiceServletContextListener {
 
   private Module[] modules() {
     return new Module[] {
-        new ConfigModule(),
         new AppEngineDAOModule(),
         new GeolocationModule(),
         new ServiceModule(),
