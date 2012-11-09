@@ -2,13 +2,15 @@
 
 <form method="post">
   <fieldset>
+    <legend>General</legend>
     <div class="clearfix">
       <label for="mapCenter">Map Center</label>
-      <input type="text" value="${config.center.name}" name="mapCenter" id="mapCenter"/>
+      <input class="span6" type="text" value="${config.center.name}" name="mapCenter" id="mapCenter"/>
     </div>
-    <div class="clearfix">
-      <label>&nbsp;</label>
-
+  </fieldset>
+  <fieldset>
+    <legend>Geolocation</legend>
+    <div>
       <div class="input">
         <ul class="unstyled">
           <li><label><input name="googleGeolocationEnabled"
@@ -17,6 +19,15 @@
           <li><label><input name="yahooGeolocationEnabled"
                             <c:if test="${config.yahooGeolocationEnabled}">checked="checked"</c:if>
                             type="checkbox"/> <span>Enable Yahoo Placefinder</span></label></li>
+        </ul>
+      </div>
+    </div>
+  </fieldset>
+  <fieldset>
+    <legend>Twitter</legend>
+    <div>
+      <div class="input">
+        <ul class="unstyled">
           <li><label><input name="tweetUpdateServletEnabled"
                             <c:if
                                 test="${config.tweetUpdateServletEnabled}">checked="checked"</c:if>
@@ -27,9 +38,14 @@
           <li><label><input name="remoteTwitterCachingEnabled"
                             <c:if test="${config.remoteTwitterCachingEnabled}">checked="checked"</c:if>
                             type="checkbox"/> <span>Enable Remote Twitter Caching</span></label></li>
-          <li><label><span>Remote Cache Address</span> <input name="remoteTwitterCacheAddress"
-                                                              type="text" value="${config.remoteTwitterCacheAddress}"/>
+
         </ul>
+        <div class="clearfix">
+          <label for="remoteCache">Remote Cache Address</label>
+          <input name="remoteTwitterCacheAddress" id="remoteCache" class="span6"
+                 type="text" value="${config.remoteTwitterCacheAddress}"/>
+        </div>
+
       </div>
     </div>
   </fieldset>
