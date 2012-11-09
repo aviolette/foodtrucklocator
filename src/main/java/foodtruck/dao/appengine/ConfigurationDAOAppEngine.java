@@ -61,7 +61,7 @@ public class ConfigurationDAOAppEngine extends
         .tweetUpdateServletEnabled(getBooleanProperty(entity, PROP_GOOGLE_TWEET_UPLOADING_ENABLED))
         .throttleGoogleGeocoding(Attributes.getDateTime(entity, PROP_GOOGLE_THROTTLE, defaultZone))
         .localTwitterCachingEnabled(getBooleanProperty(entity, PROP_LOCAL_CACHE_ENABLED, true))
-        .remoteTwitterCachingEnabled(getBooleanProperty(entity, PROP_LOCAL_CACHE_ENABLED, false))
+        .remoteTwitterCachingEnabled(getBooleanProperty(entity, PROP_REMOTE_CACHE_ENABLED, false))
         .remoteTwitterCacheAddress((String)entity.getProperty(PROP_REMOTE_CACHE_ADDRESS))
         .center(center)
         .key(entity.getKey())

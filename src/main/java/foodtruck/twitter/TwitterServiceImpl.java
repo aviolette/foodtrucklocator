@@ -1,21 +1,14 @@
 package foodtruck.twitter;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.annotation.Nullable;
-
+import com.google.appengine.repackaged.com.google.common.collect.ImmutableList;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDate;
-
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
+import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.dao.TweetCacheDAO;
@@ -29,11 +22,23 @@ import foodtruck.schedule.TruckStopMatch;
 import foodtruck.schedule.TruckStopMatcher;
 import foodtruck.truckstops.TruckStopNotifier;
 import foodtruck.util.Clock;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
 import twitter4j.GeoLocation;
 import twitter4j.Paging;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+
+import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author aviolette@gmail.com
@@ -53,13 +58,14 @@ public class TwitterServiceImpl implements TwitterService {
   private final TweetCacheUpdater remoteUpdater;
   private final TruckDAO truckDAO;
   private final TruckStopNotifier notifier;
+  private final ConfigurationDAO configDAO;
 
   @Inject
   public TwitterServiceImpl(TwitterFactoryWrapper twitter, TweetCacheDAO tweetDAO,
       @Named("foodtruck.twitter.list") int twitterListId, DateTimeZone zone,
       TruckStopMatcher matcher, TruckStopDAO truckStopDAO, Clock clock,
       TerminationDetector detector, TweetCacheUpdater updater, TruckDAO truckDAO,
-      TruckStopNotifier truckStopNotifier) {
+      TruckStopNotifier truckStopNotifier, ConfigurationDAO configDAO) {
     this.tweetDAO = tweetDAO;
     this.twitterFactory = twitter;
     this.twitterListId = twitterListId;
@@ -71,7 +77,43 @@ public class TwitterServiceImpl implements TwitterService {
     this.remoteUpdater = updater;
     this.truckDAO = truckDAO;
     this.notifier = truckStopNotifier;
+    this.configDAO = configDAO;
   }
+
+  @Override @Monitored
+  public void updateFromRemoteCache() {
+    // This is expensive
+    Client client = Client.create();
+    WebResource resource = client.resource(configDAO.find().getRemoteTwitterCacheAddress() + "/services/tweets/" +
+        tweetDAO.getLastTweetId());
+    JSONArray arr = resource.get(JSONArray.class);
+    boolean first = true;
+    ImmutableList.Builder<TweetSummary> summaries = ImmutableList.builder();
+    for (int i =0; i < arr.length(); i++) {
+      try {
+        JSONObject tweetObj = arr.getJSONObject(i);
+        TweetSummary.Builder builder = new TweetSummary.Builder()
+            .id(tweetObj.getLong("id"))
+            .text(tweetObj.getString("text"))
+            .userId(tweetObj.getString("user"))
+            .time(new DateTime(tweetObj.getLong("time"), defaultZone));
+        JSONObject locationObj = tweetObj.optJSONObject("location");
+        if (locationObj != null) {
+          builder.location(Location.builder().lat(tweetObj.getDouble("lat")).lng(tweetObj.getDouble("lng")).build());
+        }
+        TweetSummary tweetSummary = builder.build();
+        if (first) {
+          tweetDAO.setLastTweetId(tweetSummary.getId());
+          first = false;
+        }
+        summaries.add(tweetSummary);
+      } catch (JSONException e) {
+        throw Throwables.propagate(e);
+      }
+    }
+    tweetDAO.save(summaries.build());
+  }
+
 
   @Override @Monitored
   public void updateTwitterCache() {
