@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import foodtruck.dao.ConfigurationDAO;
 import org.easymock.EasyMock;
 import org.easymock.EasyMockSupport;
 import org.joda.time.DateTime;
@@ -76,10 +77,11 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     expect(truckDAO.findAllTwitterTrucks()).andReturn(ImmutableSet.of(truck2));
     final int listId = 123;
     terminationDetector = createMock(TerminationDetector.class);
+    ConfigurationDAO configDAO = createMock(ConfigurationDAO.class);
     service = new TwitterServiceImpl(twitterFactory, tweetDAO, listId, zone, matcher,
         truckStopDAO,
         clock, terminationDetector, new LocalCacheUpdater(), truckDAO,
-        new LoggingTruckStopNotifier());
+        new LoggingTruckStopNotifier(), configDAO);
     loca = Location.builder().lat(1).lng(2).name("a").build();
     locb = Location.builder().lat(3).lng(4).name("b").build();
     basicTweet = new TweetSummary.Builder().time(now.minusHours(2)).text(

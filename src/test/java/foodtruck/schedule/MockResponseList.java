@@ -27,10 +27,6 @@ public class MockResponseList<T> implements ResponseList<T> {
     return 0;
   }
 
-  @Override public RateLimitStatus getFeatureSpecificRateLimitStatus() {
-    return null;
-  }
-
   @Override public int size() {
     return statuses.size();
   }
