@@ -2,11 +2,12 @@ package foodtruck.dao.appengine;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.inject.Inject;
+
+import org.joda.time.DateTimeZone;
+
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.model.Configuration;
 import foodtruck.model.Location;
-import org.joda.time.DateTimeZone;
-
 import static foodtruck.dao.appengine.Attributes.getBooleanProperty;
 
 /**
@@ -27,6 +28,9 @@ public class ConfigurationDAOAppEngine extends
   private static final String PROP_LOCAL_CACHE_ENABLED = "local_twitter_cache_enabled";
   private static final String PROP_REMOTE_CACHE_ENABLED = "remote_twitter_cache_enabled";
   private static final String PROP_REMOTE_CACHE_ADDRESS = "remote_twitter_cache_address";
+  private static final String PROP_PRIMARY_TWITTER_LIST = "primary_twitter_list";
+  private static final String PROP_GOOGLE_CALENDAR_ADDRESS = "google_calendar_address";
+  private static final String PROP_YAHOO_APP_ID = "yahoo_app_id";
 
   @Inject
   public ConfigurationDAOAppEngine(DatastoreServiceProvider provider, DateTimeZone defaultZone) {
@@ -45,6 +49,9 @@ public class ConfigurationDAOAppEngine extends
     entity.setProperty(PROP_LOCAL_CACHE_ENABLED, config.isLocalTwitterCachingEnabled());
     entity.setProperty(PROP_REMOTE_CACHE_ENABLED, config.isRemoteTwitterCachingEnabled());
     entity.setProperty(PROP_REMOTE_CACHE_ADDRESS, config.getRemoteTwitterCacheAddress());
+    entity.setProperty(PROP_GOOGLE_CALENDAR_ADDRESS, config.getGoogleCalendarAddress());
+    entity.setProperty(PROP_PRIMARY_TWITTER_LIST, config.getPrimaryTwitterList());
+    entity.setProperty(PROP_YAHOO_APP_ID, config.getYahooAppId());
     return entity;
   }
 
@@ -63,6 +70,9 @@ public class ConfigurationDAOAppEngine extends
         .localTwitterCachingEnabled(getBooleanProperty(entity, PROP_LOCAL_CACHE_ENABLED, true))
         .remoteTwitterCachingEnabled(getBooleanProperty(entity, PROP_REMOTE_CACHE_ENABLED, false))
         .remoteTwitterCacheAddress((String)entity.getProperty(PROP_REMOTE_CACHE_ADDRESS))
+        .googleCalendarAddress((String)entity.getProperty(PROP_GOOGLE_CALENDAR_ADDRESS))
+        .primaryTwitterList((String)entity.getProperty(PROP_PRIMARY_TWITTER_LIST))
+        .yahooAppId((String)entity.getProperty(PROP_YAHOO_APP_ID))
         .center(center)
         .key(entity.getKey())
         .build();

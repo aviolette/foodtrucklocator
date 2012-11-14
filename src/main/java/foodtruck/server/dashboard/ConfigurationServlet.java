@@ -1,18 +1,20 @@
 package foodtruck.server.dashboard;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import foodtruck.dao.ConfigurationDAO;
-import foodtruck.geolocation.GeoLocator;
-import foodtruck.geolocation.GeolocationGranularity;
-import foodtruck.model.Configuration;
-import foodtruck.model.Location;
+import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
+import foodtruck.dao.ConfigurationDAO;
+import foodtruck.geolocation.GeoLocator;
+import foodtruck.geolocation.GeolocationGranularity;
+import foodtruck.model.Configuration;
+import foodtruck.model.Location;
 
 /**
  * @author aviolette@gmail.com
@@ -51,6 +53,9 @@ public class ConfigurationServlet extends HttpServlet {
         .localTwitterCachingEnabled("on".equals(req.getParameter("localTwitterCachingEnabled")))
         .remoteTwitterCachingEnabled("on".equals(req.getParameter("remoteTwitterCachingEnabled")))
         .remoteTwitterCacheAddress(req.getParameter("remoteTwitterCacheAddress"))
+        .googleCalendarAddress(req.getParameter("googleCalendarAddress"))
+        .yahooAppId(req.getParameter("yahooAppId"))
+        .primaryTwitterList(req.getParameter("primaryTwitterList"))
         .center(mapCenter)
         .build();
     configDAO.save(config);

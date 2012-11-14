@@ -1,9 +1,10 @@
 package foodtruck.model;
 
-import com.google.appengine.api.datastore.Key;
-import org.joda.time.DateTime;
-
 import javax.annotation.Nullable;
+
+import com.google.appengine.api.datastore.Key;
+
+import org.joda.time.DateTime;
 
 /**
  * @author aviolette@gmail.com
@@ -18,6 +19,9 @@ public class Configuration extends ModelEntity {
   private boolean localTwitterCachingEnabled;
   private boolean remoteTwitterCachingEnabled;
   private @Nullable String remoteTwitterCacheAddress;
+  private @Nullable String yahooAppId;
+  private @Nullable String primaryTwitterList;
+  private @Nullable String googleCalendarAddress;
 
   public Configuration(Object key) {
     super(key);
@@ -33,6 +37,21 @@ public class Configuration extends ModelEntity {
     this.localTwitterCachingEnabled = builder.localTwitterCachingEnabled;
     this.remoteTwitterCacheAddress = builder.remoteTwitterCacheAddress;
     this.remoteTwitterCachingEnabled = builder.remoteTwitterCachingEnabled;
+    this.yahooAppId = builder.yahooAppId;
+    this.googleCalendarAddress = builder.googleCalendarAddress;
+    this.primaryTwitterList = builder.primaryTwitterList;
+  }
+
+  public @Nullable String getPrimaryTwitterList() {
+    return primaryTwitterList;
+  }
+
+  public @Nullable String getGoogleCalendarAddress() {
+    return this.googleCalendarAddress;
+  }
+
+  public @Nullable String getYahooAppId() {
+    return this.yahooAppId;
   }
 
   public boolean isLocalTwitterCachingEnabled() {
@@ -90,6 +109,9 @@ public class Configuration extends ModelEntity {
     private boolean localTwitterCachingEnabled;
     private @Nullable String remoteTwitterCacheAddress;
     private boolean remoteTwitterCachingEnabled;
+    private @Nullable String yahooAppId;
+    private @Nullable String primaryTwitterList;
+    private @Nullable String googleCalendarAddress;
 
     public Builder() {
     }
@@ -103,6 +125,24 @@ public class Configuration extends ModelEntity {
       this.localTwitterCachingEnabled = config.localTwitterCachingEnabled;
       this.remoteTwitterCacheAddress = config.remoteTwitterCacheAddress;
       this.remoteTwitterCachingEnabled = config.remoteTwitterCachingEnabled;
+      this.yahooAppId = config.yahooAppId;
+      this.primaryTwitterList = config.primaryTwitterList;
+      this.googleCalendarAddress = config.googleCalendarAddress;
+    }
+
+    public Builder googleCalendarAddress(String address) {
+      this.googleCalendarAddress = address;
+      return this;
+    }
+
+    public Builder primaryTwitterList(String list) {
+      this.primaryTwitterList = list;
+      return this;
+    }
+
+    public Builder yahooAppId(String yahooAppId) {
+      this.yahooAppId = yahooAppId;
+      return this;
     }
 
     public Builder localTwitterCachingEnabled(boolean enabled) {

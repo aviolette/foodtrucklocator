@@ -9,7 +9,18 @@
     </div>
   </fieldset>
   <fieldset>
+    <legend>Google Calendar</legend>
+    <div class="clearfix">
+      <label for="calendarUrl">Google Calendar URL</label>
+      <input class="span6" type="text" value="${config.googleCalendarAddress}" name="googleCalendarAddress" id="calendarUrl"/>
+    </div>
+  </fieldset>
+  <fieldset>
     <legend>Geolocation</legend>
+    <div class="clearfix">
+      <label for="calendarUrl">Yahoo App Key</label>
+      <input class="span6" type="text" value="${config.yahooAppId}" name="yahooAppId" id="yahooAppId"/>
+    </div>
     <div>
       <div class="input">
         <ul class="unstyled">
@@ -25,6 +36,11 @@
   </fieldset>
   <fieldset>
     <legend>Twitter</legend>
+    <div class="clearfix">
+      <label for="twitterList">Primary Twitter List Id</label>
+      <input class="span4" type="text" value="${config.primaryTwitterList}" name="primaryTwitterList" id="twitterList"/>
+    </div>
+
     <div>
       <div class="input">
         <ul class="unstyled">
