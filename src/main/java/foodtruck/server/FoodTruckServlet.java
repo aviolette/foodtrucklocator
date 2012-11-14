@@ -1,20 +1,6 @@
 package foodtruck.server;
 
-import com.google.common.base.Strings;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import foodtruck.dao.ConfigurationDAO;
-import foodtruck.dao.ScheduleDAO;
-import foodtruck.model.DailySchedule;
-import foodtruck.model.Location;
-import foodtruck.server.api.JsonWriter;
-import foodtruck.truckstops.FoodTruckStopService;
-import foodtruck.util.Clock;
-import org.codehaus.jettison.json.JSONException;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import java.io.IOException;
 
 import javax.annotation.Nullable;
 import javax.servlet.ServletException;
@@ -22,7 +8,24 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+
+import com.google.common.base.Strings;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
+import org.codehaus.jettison.json.JSONException;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import foodtruck.dao.ConfigurationDAO;
+import foodtruck.dao.ScheduleDAO;
+import foodtruck.model.DailySchedule;
+import foodtruck.model.Location;
+import foodtruck.server.api.JsonWriter;
+import foodtruck.truckstops.FoodTruckStopService;
+import foodtruck.util.Clock;
 
 /**
  * Servlet that serves up the main food truck page.
@@ -97,7 +100,6 @@ public class FoodTruckServlet extends HttpServlet {
     req.setAttribute("requestDate", dateFormatter.print(dateTime));
     req.setAttribute("requestTime", timeFormatter.print(dateTime));
     req.setAttribute("requestTimeInMillis", dateTime.getMillis());
-    resp.setHeader("Cache-Control", "max-age=900");
     resp.setHeader("Cache-Control", "no-cache");
     resp.setHeader("Pragma", "no-cache");
     resp.setHeader("Expires", "Thu, 01 Jan 1970 00:00:00 GMT");
