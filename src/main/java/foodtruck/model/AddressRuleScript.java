@@ -2,8 +2,6 @@ package foodtruck.model;
 
 import javax.annotation.Nullable;
 
-import twitter4j.internal.org.json.JSONWriter;
-
 /**
  * A script that is used to parse addresses.
  * @author aviolette@gmail.com
