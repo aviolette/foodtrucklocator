@@ -1,13 +1,27 @@
 package foodtruck.twitter;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.annotation.Nullable;
+
 import com.google.appengine.repackaged.com.google.common.collect.ImmutableList;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
+
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
+
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
@@ -22,23 +36,11 @@ import foodtruck.schedule.TruckStopMatch;
 import foodtruck.schedule.TruckStopMatcher;
 import foodtruck.truckstops.TruckStopNotifier;
 import foodtruck.util.Clock;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDate;
 import twitter4j.GeoLocation;
 import twitter4j.Paging;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-
-import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author aviolette@gmail.com
@@ -49,7 +51,6 @@ public class TwitterServiceImpl implements TwitterService {
   @VisibleForTesting static final int HOURS_BACK_TO_SEARCH = 6;
   private final TweetCacheDAO tweetDAO;
   private final TwitterFactoryWrapper twitterFactory;
-  private final int twitterListId;
   private final DateTimeZone defaultZone;
   private final TruckStopMatcher matcher;
   private final TruckStopDAO truckStopDAO;
@@ -62,13 +63,12 @@ public class TwitterServiceImpl implements TwitterService {
 
   @Inject
   public TwitterServiceImpl(TwitterFactoryWrapper twitter, TweetCacheDAO tweetDAO,
-      @Named("foodtruck.twitter.list") int twitterListId, DateTimeZone zone,
-      TruckStopMatcher matcher, TruckStopDAO truckStopDAO, Clock clock,
-      TerminationDetector detector, TweetCacheUpdater updater, TruckDAO truckDAO,
-      TruckStopNotifier truckStopNotifier, ConfigurationDAO configDAO) {
+                            DateTimeZone zone,
+                            TruckStopMatcher matcher, TruckStopDAO truckStopDAO, Clock clock,
+                            TerminationDetector detector, TweetCacheUpdater updater, TruckDAO truckDAO,
+                            TruckStopNotifier truckStopNotifier, ConfigurationDAO configDAO) {
     this.tweetDAO = tweetDAO;
     this.twitterFactory = twitter;
-    this.twitterListId = twitterListId;
     this.defaultZone = zone;
     this.matcher = matcher;
     this.truckStopDAO = truckStopDAO;
@@ -120,6 +120,7 @@ public class TwitterServiceImpl implements TwitterService {
     Twitter twitter = twitterFactory.create();
     try {
       Paging paging = determinePaging();
+      int twitterListId = Integer.parseInt(configDAO.find().getPrimaryTwitterList());
       List<Status> statuses = twitter.getUserListStatuses(twitterListId, paging);
       boolean first = true;
       List<TweetSummary> summaries = Lists.newLinkedList();

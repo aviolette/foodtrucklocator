@@ -6,7 +6,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-import foodtruck.dao.ConfigurationDAO;
 import org.easymock.EasyMock;
 import org.easymock.EasyMockSupport;
 import org.joda.time.DateTime;
@@ -15,6 +14,7 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 
+import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.dao.TweetCacheDAO;
@@ -78,7 +78,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     final int listId = 123;
     terminationDetector = createMock(TerminationDetector.class);
     ConfigurationDAO configDAO = createMock(ConfigurationDAO.class);
-    service = new TwitterServiceImpl(twitterFactory, tweetDAO, listId, zone, matcher,
+    service = new TwitterServiceImpl(twitterFactory, tweetDAO, zone, matcher,
         truckStopDAO,
         clock, terminationDetector, new LocalCacheUpdater(), truckDAO,
         new LoggingTruckStopNotifier(), configDAO);
