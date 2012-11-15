@@ -1,25 +1,32 @@
 package foodtruck.schedule;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
+import com.google.common.base.Throwables;
 import com.google.gdata.client.calendar.CalendarQuery;
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
+
+import foodtruck.dao.ConfigurationDAO;
 
 /**
  * @author aviolette@gmail.com
  * @since 8/28/11
  */
 public class CalendarQueryFactoryImpl implements CalendarQueryFactory {
-  private final URL feedUrl;
+  private final ConfigurationDAO configDAO;
 
   @Inject
-  public CalendarQueryFactoryImpl(@Named("calendar.feed.url") URL feedUrl) {
-    this.feedUrl = feedUrl;
+  public CalendarQueryFactoryImpl(ConfigurationDAO configDAO) {
+    this.configDAO = configDAO;
   }
 
   @Override public CalendarQuery create() {
-    return new CalendarQuery(feedUrl);
+    try {
+      return new CalendarQuery(new URL(configDAO.find().getGoogleCalendarAddress()));
+    } catch (MalformedURLException e) {
+      throw Throwables.propagate(e);
+    }
   }
 
   @Override public CalendarQuery create(URL url) {
