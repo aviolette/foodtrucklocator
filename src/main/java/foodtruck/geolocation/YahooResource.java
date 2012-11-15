@@ -1,11 +1,11 @@
 package foodtruck.geolocation;
 
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 import com.sun.jersey.api.client.WebResource;
 
 import org.codehaus.jettison.json.JSONObject;
 
+import foodtruck.dao.ConfigurationDAO;
 import foodtruck.util.ServiceException;
 
 /**
@@ -15,11 +15,11 @@ import foodtruck.util.ServiceException;
  */
 public class YahooResource {
   private final WebResource resource;
-  private String yahooId;
+  private final ConfigurationDAO configDAO;
 
   @Inject
-  public YahooResource(@YahooEndPoint WebResource resource, @Named("yahoo.app.id") String yahooId) {
-    this.yahooId = yahooId;
+  public YahooResource(@YahooEndPoint WebResource resource, ConfigurationDAO configDAO) {
+    this.configDAO = configDAO;
     this.resource = resource;
   }
 
@@ -33,7 +33,7 @@ public class YahooResource {
     try {
       WebResource r = resource.queryParam("q", location)
           .queryParam("flags", "j")
-          .queryParam("appid", yahooId);
+          .queryParam("appid", configDAO.find().getYahooAppId());
       if (reverse) {
         r = r.queryParam("gflags", "R");
       }
