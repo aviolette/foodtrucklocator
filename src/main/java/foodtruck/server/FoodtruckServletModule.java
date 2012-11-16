@@ -52,7 +52,6 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/services/*").with(GuiceContainer.class,
         ImmutableMap.of(PackagesResourceConfig.PROPERTY_PACKAGES, "foodtruck.server.resources"));
     serve("/service/tweets").with(TweetUpdateServlet.class);
-    serve("/trucks*").with(TruckInfoServlet.class);
     serveRegex("/[\\w]*").with(FoodTruckServlet.class);
   }
 
