@@ -55,11 +55,6 @@ public class FoodtruckServletModule extends ServletModule {
     serveRegex("/[\\w]*").with(FoodTruckServlet.class);
   }
 
-  @Provides
-  public DateTimeZone provideDefaultZone() {
-    return DateTimeZone.forID("America/Chicago");
-  }
-
   @Provides @Named("remote.tweet.update")
   public boolean provideIsTweetUpdateEnabled() {
     return "true".equals(System.getProperty("remote.tweet.update"));

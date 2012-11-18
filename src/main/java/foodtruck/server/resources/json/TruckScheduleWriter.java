@@ -24,6 +24,7 @@ import org.joda.time.format.DateTimeFormatter;
 import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStop;
 import foodtruck.server.resources.BadRequestException;
+import foodtruck.util.TimeOnlyFormatter;
 
 /**
  * @author aviolette@gmail.com
@@ -37,10 +38,10 @@ public class TruckScheduleWriter implements MessageBodyWriter<TruckSchedule> {
 
   @Inject
   public TruckScheduleWriter(TruckWriter truckWriter, LocationWriter locationWriter,
-      DateTimeZone zone) {
+      @TimeOnlyFormatter DateTimeFormatter formatter) {
     this.truckWriter = truckWriter;
     this.locationWriter = locationWriter;
-    timeFormatter = DateTimeFormat.forPattern("hh:mm a").withZone(zone);
+    this.timeFormatter = formatter;
 
   }
 

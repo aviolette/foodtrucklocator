@@ -17,11 +17,12 @@ import com.sun.jersey.spi.inject.Injectable;
 import com.sun.jersey.spi.inject.InjectableProvider;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import foodtruck.util.TimeFormatter;
+
 /**
+ * Provides a DateTime object when a time parameter is passed into to a query string
  * @author aviolette@gmail.com
  * @since 4/18/12
  */
@@ -31,8 +32,8 @@ public class DateTimeProvider extends AbstractHttpContextInjectable<DateTime>
   private DateTimeFormatter timeFormatter;
 
   @Inject
-  public DateTimeProvider(DateTimeZone zone) {
-    this.timeFormatter = DateTimeFormat.forPattern("YYYYMMdd-HHmm").withZone(zone);
+  public DateTimeProvider(@TimeFormatter DateTimeFormatter formatter) {
+    this.timeFormatter = formatter;
   }
 
   @Override public @Nullable DateTime getValue(HttpContext httpContext) {

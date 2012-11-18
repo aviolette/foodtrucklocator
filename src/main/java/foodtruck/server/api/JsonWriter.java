@@ -20,6 +20,7 @@ import foodtruck.model.DailySchedule;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
+import foodtruck.util.TimeOnlyFormatter;
 
 /**
  * Writes model objects out to JSON objects.
@@ -30,8 +31,8 @@ public class JsonWriter {
   private final DateTimeFormatter timeFormatter;
 
   @Inject
-  public JsonWriter(DateTimeZone zone) {
-    timeFormatter = DateTimeFormat.forPattern("hh:mm a").withZone(zone);
+  public JsonWriter(@TimeOnlyFormatter DateTimeFormatter formatter) {
+    timeFormatter = formatter;
   }
 
   public JSONArray writeTrucks(Iterable<Truck> trucks) throws JSONException {

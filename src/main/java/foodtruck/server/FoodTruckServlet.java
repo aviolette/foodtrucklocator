@@ -15,7 +15,6 @@ import com.google.inject.Singleton;
 
 import org.codehaus.jettison.json.JSONException;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -26,6 +25,7 @@ import foodtruck.model.Location;
 import foodtruck.server.api.JsonWriter;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
+import foodtruck.util.TimeFormatter;
 
 /**
  * Servlet that serves up the main food truck page.
@@ -43,11 +43,12 @@ public class FoodTruckServlet extends HttpServlet {
   private ConfigurationDAO configDAO;
 
   @Inject
-  public FoodTruckServlet(DateTimeZone zone, ConfigurationDAO configDAO,
-      Clock clock, FoodTruckStopService service, JsonWriter writer, ScheduleDAO scheduleCacher) {
+  public FoodTruckServlet(ConfigurationDAO configDAO,
+      Clock clock, FoodTruckStopService service, JsonWriter writer, ScheduleDAO scheduleCacher,
+      @TimeFormatter DateTimeFormatter timeFormatter) {
     this.clock = clock;
     this.configDAO = configDAO;
-    this.timeFormatter = DateTimeFormat.forPattern("YYYYMMdd-HHmm").withZone(zone);
+    this.timeFormatter = timeFormatter;
     this.dateFormatter = DateTimeFormat.forPattern("EEE MMM dd, YYYY");
     this.stopService = service;
     this.writer = writer;

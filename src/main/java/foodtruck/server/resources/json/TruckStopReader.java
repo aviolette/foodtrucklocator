@@ -33,6 +33,7 @@ import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.util.Clock;
+import foodtruck.util.TimeOnlyFormatter;
 
 /**
  * @author aviolette@gmail.com
@@ -47,11 +48,11 @@ public class TruckStopReader implements MessageBodyReader<TruckStop> {
   private final LocationReader locationReader;
 
   @Inject
-  public TruckStopReader(Clock clock, TruckDAO trucks, DateTimeZone zone, GeoLocator geolocator,
-      LocationReader locationReader) {
+  public TruckStopReader(Clock clock, TruckDAO trucks, GeoLocator geolocator,
+      LocationReader locationReader, @TimeOnlyFormatter DateTimeFormatter formatter) {
     this.truckDAO = trucks;
     this.clock = clock;
-    this.format = DateTimeFormat.forPattern("hh:mm a").withZone(zone);
+    this.format = formatter;
     this.geolocator = geolocator;
     this.locationReader = locationReader;
   }
