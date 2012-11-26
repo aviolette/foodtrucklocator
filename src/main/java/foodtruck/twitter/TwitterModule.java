@@ -3,7 +3,6 @@ package foodtruck.twitter;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 
@@ -26,16 +25,10 @@ public class TwitterModule extends AbstractModule {
     }
   }
 
-  @Provides @Named("foodtruck.twitter.list")
-  public int provideTwitterListId() {
-    return Integer.parseInt(System.getProperty("foodtruck.twitter.list"));
-  }
-
   @Provides @Singleton
   public TwitterFactoryWrapper provideTwitterFactory() {
     return new TwitterFactoryWrapper(new TwitterFactory());
   }
-
 
   @FoodtruckLocatorEndpoint @Provides @Singleton
   public WebResource provideWebResource() {
