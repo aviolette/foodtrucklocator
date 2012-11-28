@@ -8,8 +8,6 @@ import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 
-import org.joda.time.DateTimeZone;
-
 import foodtruck.server.api.DailyScheduleServlet;
 import foodtruck.server.api.TweetUpdateServlet;
 import foodtruck.server.dashboard.AddressRuleServlet;
@@ -20,6 +18,7 @@ import foodtruck.server.dashboard.LocationListServlet;
 import foodtruck.server.dashboard.StatsServlet;
 import foodtruck.server.dashboard.TruckListServlet;
 import foodtruck.server.dashboard.TruckServlet;
+import foodtruck.server.dashboard.TruckStopServlet;
 import foodtruck.server.job.MailUpdatesServlet;
 import foodtruck.server.job.RecacheServlet;
 import foodtruck.server.job.TweetCacheUpdateServlet;
@@ -42,6 +41,7 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/cron/processChanges").with(MailUpdatesServlet.class);
     serve("/admin").with(AdminDashboardServlet.class);
     serve("/admin/addresses").with(AddressRuleServlet.class);
+    serveRegex("/admin/trucks/[\\S]*/events/[\\w]*").with(TruckStopServlet.class);
     serve("/admin/trucks/*").with(TruckServlet.class);
     serve("/admin/trucks").with(TruckListServlet.class);
     serve("/admin/locations/*").with(LocationEditServlet.class);

@@ -6,6 +6,7 @@ package foodtruck.model;
  * @since 10/16/11
  */
 public abstract class ModelEntity {
+  public static final long UNINITIALIZED = -1;
   protected final Object key;
 
   public ModelEntity(Object key) {

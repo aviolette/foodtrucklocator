@@ -26,7 +26,7 @@ Because throttled Google geolocation services are not reliable on AppEngine beca
 
 ## Google Calendar
 
-The foodtrucklocator uses a PUBLIC google calendar to keep the food truck schedules in.  You will need to create a public google calendar (If you are using a Google apps account make sure that make sure that your calendar settings allow calendar events to be exposed to the public).  Go into the calendar settings, click the orange XML button, a URL will popup, grab that link.  The last part of the url will end in 'basic'.  Copy down that URL, and change the 'basic' to 'full'.  This will be used below.
+The foodtrucklocator uses a PUBLIC google calendar to keep the food truck schedules in.  You will need to create a public google calendar (If you are using a Google apps account make sure that your calendar settings allow calendar events to be exposed to the public).  Go into the calendar settings, click the orange XML button, a URL will popup, grab that link.  The last part of the url will end in 'basic'.  Copy down that URL, and change the 'basic' to 'full'.  This will be used below.
 
 ## Google AppEngine (for deployment)
 
@@ -45,11 +45,22 @@ To run your app on port 8080, run this command in the root directory of your cod
 # Configuring the web application
 
 1. Add all the trucks
-2. Configure the address location <<add more information about this>>
+
+Go to http://localhost:8080/admin/trucks
+
+
+
+2. Configure the address location *add more information about this>>
 3. Setup the geolocation
 4. Set the map center
 
 # Deploying to App Engine
 
-<< put some stuff here >>
+Put Some Stuff Here
+
+* Setting up cron jobs
+* Setting up security
+* Deployment
+
+
 

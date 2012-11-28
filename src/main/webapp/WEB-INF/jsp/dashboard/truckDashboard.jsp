@@ -299,8 +299,12 @@
     })
   }
   $("#addButton").click(function(e) {
-    invokeEditDialog({truckId : "${truckId}", locationName : "", location : { name : ""}, startTime : "", endTime : ""},
-        refreshSchedule);
+    if (Modernizr.touch) {
+      location.href = "/admin/trucks/${truckId}/events/new";
+    } else {
+      invokeEditDialog({truckId : "${truckId}", locationName : "", location : { name : ""}, startTime : "", endTime : ""},
+          refreshSchedule);
+    }
   });
   refreshSchedule();
   var $recacheButton = $("#recacheButton");
