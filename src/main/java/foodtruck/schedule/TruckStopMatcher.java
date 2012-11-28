@@ -1,6 +1,22 @@
 package foodtruck.schedule;
 
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.annotation.Nullable;
+
 import com.google.inject.Inject;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
@@ -9,19 +25,6 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TweetSummary;
 import foodtruck.util.Clock;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Matches a tweet to a location, truck and time.
@@ -40,7 +43,6 @@ public class TruckStopMatcher {
   private final AddressExtractor addressExtractor;
   private final GeoLocator geoLocator;
   private final Pattern endTimePattern;
-  private final Pattern timePattern;
   private final DateTimeFormatter formatter;
   private final Clock clock;
   private final Pattern timeRangePattern;
@@ -59,9 +61,8 @@ public class TruckStopMatcher {
       DateTimeZone defaultZone, Clock clock, ConfigurationDAO configDAO) {
     this.addressExtractor = extractor;
     this.geoLocator = geoLocator;
-    this.timePattern = Pattern.compile(TIME_PATTERN);
-    this.atTimePattern = Pattern.compile("\\b(at|ETA) (" + TIME_PATTERN_STRICT + ")");
-    this.endTimePattern = Pattern.compile("\\b(until|til|till) (" + TIME_PATTERN + ")");
+    this.atTimePattern = Pattern.compile("\\b(be at|ETA|arrive at|there at) (" + TIME_PATTERN_STRICT + ")");
+    this.endTimePattern = Pattern.compile("\\b(close at|until|til|till) (" + TIME_PATTERN + ")");
     this.timeRangePattern = Pattern.compile(TIME_RANGE_PATTERN);
     this.configDAO = configDAO;
     this.monPattern = Pattern.compile(

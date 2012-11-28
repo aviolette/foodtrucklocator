@@ -1,12 +1,10 @@
 package foodtruck.schedule;
 
+import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import foodtruck.dao.ConfigurationDAO;
-import foodtruck.geolocation.GeoLocator;
-import foodtruck.geolocation.GeolocationGranularity;
-import foodtruck.model.*;
-import foodtruck.util.Clock;
+
 import org.easymock.EasyMockSupport;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -14,8 +12,15 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.annotation.Nullable;
-
+import foodtruck.dao.ConfigurationDAO;
+import foodtruck.geolocation.GeoLocator;
+import foodtruck.geolocation.GeolocationGranularity;
+import foodtruck.model.Configuration;
+import foodtruck.model.DayOfWeek;
+import foodtruck.model.Location;
+import foodtruck.model.Truck;
+import foodtruck.model.TweetSummary;
+import foodtruck.util.Clock;
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.*;
 
@@ -370,6 +375,16 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   @Test
   public void testMatch_shouldNotMatchWhenRetweetWithNoPreceedingText() {
     assertNull(tweet("RT @theslideride we are on Clinton & Lake").noParse().match());
+  }
+
+  @Test
+  public void testMatch_shouldMatchCloseAt() {
+    tweetTime = new DateTime(2011, 11, 7, 9, 0, 0, 0, DateTimeZone.UTC);
+    truck = Truck.builder(truck).categories(ImmutableSet.of("Breakfast")).build();
+    TruckStopMatch match = tweet("We are open at 58th and Ellis, we close at 1:30 PM")
+        .match();
+    assertEquals(match.getStop().getStartTime(), tweetTime.withTime(9, 0, 0, 0));
+    assertEquals(match.getStop().getEndTime(), tweetTime.withTime(13, 30, 0, 0));
   }
 
   public Tweeter tweet(String tweet) {
