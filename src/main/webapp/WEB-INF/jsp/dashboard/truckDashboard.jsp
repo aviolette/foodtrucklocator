@@ -122,6 +122,7 @@
   <thead>
   <tr>
     <td style="width: 100px">Time</td>
+    <td>Location</td>
     <td>Text</td>
   </tr>
   </thead>
@@ -129,7 +130,7 @@
   <c:forEach var="tweet" items="${tweets}">
     <tr>
       <td style="width:100px !important"><joda:format value="${tweet.time}" style="-S"/></td>
-      <td>${tweet.text}</td>
+      <td><ftl:tweetformat>${tweet.text}</ftl:tweetformat></td>
     </tr>
   </c:forEach>
   </tbody>
@@ -252,6 +253,7 @@
               "' class='btn danger'>Delete</button>&nbsp;<button class='btn' id='truckEdit" +
               truckIndex + "'>Edit</button></td></tr>");
           $("#truckEdit" + truckIndex).click(function(e) {
+            alert(stop);
             invokeEditDialog(stop, refreshSchedule);
           });
 
