@@ -253,7 +253,6 @@
               "' class='btn danger'>Delete</button>&nbsp;<button class='btn' id='truckEdit" +
               truckIndex + "'>Edit</button></td></tr>");
           $("#truckEdit" + truckIndex).click(function(e) {
-            alert(stop);
             invokeEditDialog(stop, refreshSchedule);
           });
 
