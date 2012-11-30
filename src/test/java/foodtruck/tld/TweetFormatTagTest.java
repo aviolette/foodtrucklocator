@@ -10,6 +10,13 @@ import static org.junit.Assert.assertEquals;
  * @since 11/29/12
  */
 public class TweetFormatTagTest {
+
+  @Test
+  public void testFormat_parseUrl() {
+    assertEquals("Thank you chi for a bright & sweet day! Rolling tomorrow with more of your favorites...STOPS: 11AM Madison/Wacker... <a target=\"_blank\" href=\"http://t.co/XrcyI1ri\">http://t.co/XrcyI1ri</a>",
+        formatBody("Thank you chi for a bright & sweet day! Rolling tomorrow with more of your favorites...STOPS: 11AM Madison/Wacker... http://t.co/XrcyI1ri"));
+  }
+
   @Test
   public void testFormat_noTweets() {
     assertEquals("There are no tweets here.", formatBody("There are no tweets here."));

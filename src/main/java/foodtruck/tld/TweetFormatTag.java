@@ -17,6 +17,7 @@ import com.google.common.base.Throwables;
  * @since 11/29/12
  */
 public class TweetFormatTag extends BodyTagSupport {
+  private static final Pattern URL_PATTERN = Pattern.compile("https?:\\/\\/([-\\w\\.]+)+(:\\d+)?(\\/([\\w/_\\.]*(\\?\\S+)?)?)?");
   private static final Pattern TWITTER_PATTERN = Pattern.compile("@([\\w|\\d|_]+)");
 
   @Override
@@ -36,6 +37,27 @@ public class TweetFormatTag extends BodyTagSupport {
 
   @VisibleForTesting
   static String formatBody(String body) {
+    body = formatUrls(body);
+    return formatTwitterHandles(body);
+  }
+
+  private static String formatUrls(String body) {
+    Matcher matcher = URL_PATTERN.matcher(body);
+    StringBuilder builder = new StringBuilder();
+    int pos = 0;
+    while (matcher.find()) {
+      builder.append(body.substring(pos, matcher.start()));
+      String url = matcher.group(0);
+      builder.append("<a target=\"_blank\" href=\"");
+      builder.append(url);
+      builder.append("\">").append(url).append("</a>");
+      pos = matcher.end();
+    }
+    builder.append(body.substring(pos));
+    return builder.toString();
+  }
+
+  private static String formatTwitterHandles(String body) {
     Matcher matcher = TWITTER_PATTERN.matcher(body);
     StringBuilder builder = new StringBuilder();
     int pos = 0;
