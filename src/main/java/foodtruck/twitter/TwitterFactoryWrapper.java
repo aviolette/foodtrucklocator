@@ -15,6 +15,11 @@ public class TwitterFactoryWrapper {
   public TwitterFactoryWrapper(TwitterFactory factory) {
     this.factory = factory;
   }
+
+  /**
+   * Creates a <code>Twitter</code> instance with the stored credentials
+   * @return a twitter instance
+   */
   public Twitter create() {
     return factory.getInstance();
   }

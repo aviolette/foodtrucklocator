@@ -11,6 +11,7 @@ import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopChangeDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.dao.TweetCacheDAO;
+import foodtruck.dao.TwitterNotificationAccountDAO;
 
 /**
  * @author aviolette@gmail.com
@@ -28,5 +29,6 @@ public class AppEngineDAOModule extends AbstractModule {
     bind(TruckStopChangeDAO.class).to(TruckStopChangeDAOAppEngine.class);
     bind(SystemStatDAO.class).to(SystemStatsDAOAppEngine.class);
     bind(AddressRuleScriptDAO.class).to(AddressRuleScriptDAOAppEngine.class);
+    bind(TwitterNotificationAccountDAO.class).to(TwitterNotificationAccountDAOAppEngine.class);
   }
 }

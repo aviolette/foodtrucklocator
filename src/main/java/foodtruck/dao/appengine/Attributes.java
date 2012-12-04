@@ -1,11 +1,13 @@
 package foodtruck.dao.appengine;
 
-import com.google.appengine.api.datastore.Entity;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
+import java.util.Date;
 
 import javax.annotation.Nullable;
-import java.util.Date;
+
+import com.google.appengine.api.datastore.Entity;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 /**
  * @author aviolette@gmail.com
@@ -19,6 +21,10 @@ public class Attributes {
       return null;
     }
     return new DateTime(date, zone);
+  }
+
+  public static String getStringProperty(Entity entity, String propertyName) {
+    return (String)entity.getProperty(propertyName);
   }
 
   public static void setDateProperty(String propertyName, Entity entity,

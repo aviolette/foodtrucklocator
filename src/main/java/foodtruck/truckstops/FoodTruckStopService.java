@@ -77,4 +77,12 @@ public interface FoodTruckStopService {
   void updateLocationInCurrentSchedule(Location location);
 
   List<DailySchedule> findSchedules(String truckId, DateTime start, DateTime end);
+
+  /**
+   * Finds the set of trucks that will be at a location on a particular date
+   * @param localDate the date
+   * @param location the location
+   * @return the set of trucks that will be there at that date
+   */
+  Set<Truck> findTrucksAtLocation(LocalDate localDate, Location location);
 }

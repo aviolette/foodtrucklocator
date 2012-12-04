@@ -1,10 +1,12 @@
 package foodtruck.twitter;
 
-import foodtruck.model.TweetSummary;
-import org.joda.time.LocalDate;
+import java.util.List;
 
 import javax.annotation.Nullable;
-import java.util.List;
+
+import org.joda.time.LocalDate;
+
+import foodtruck.model.TweetSummary;
 
 /**
  * Service for retrieving and caching tweets.
@@ -42,6 +44,10 @@ public interface TwitterService {
    */
   @Nullable TweetSummary findByTweetId(long id);
 
+  /**
+   * Saves the tweet to persistent storage
+   * @param summary the tweet summary
+   */
   void save(TweetSummary summary);
 
   /**
