@@ -49,7 +49,7 @@ public class NotificationServiceImpl implements NotificationService {
               return "@" + input.getTwitterHandle();
             }
           });
-          updateStatus(account, String.format("Trucks for lunch today: %s ", joiner.join(twitterHandles)));
+          updateStatus(account, String.format("Trucks at %s today: %s ", account.getName(), joiner.join(twitterHandles)));
         }
       } catch (Exception e) {
         log.log(Level.WARNING, "An exception occurred", e);
