@@ -5,7 +5,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.common.base.Function;
-import com.google.common.base.Throwables;
 import com.google.common.collect.Iterables;
 import com.google.gdata.util.common.base.Joiner;
 import com.google.inject.Inject;
@@ -16,6 +15,7 @@ import foodtruck.model.TwitterNotificationAccount;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 import twitter4j.Twitter;
+import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 
 /**
@@ -39,10 +39,9 @@ public class NotificationServiceImpl implements NotificationService {
   @Override public void sendNotifications() {
     for (TwitterNotificationAccount account : findTwitterNotificationAccounts()) {
       try {
-        Twitter twitter = new TwitterFactory(account.twitterCredentials()).getInstance();
         Set<Truck> trucks = truckService.findTrucksAtLocation(clock.currentDay(), account.getLocation());
         if (trucks.isEmpty()) {
-          twitter.updateStatus(String.format("No trucks at %s today", account.getLocation().getName()));
+          updateStatus(account, String.format("No trucks at %s today", account.getLocation().getName()));
         } else {
           Joiner joiner = Joiner.on(" ");
           Iterable<String> twitterHandles = Iterables.transform(trucks, new Function<Truck, String>(){
@@ -50,16 +49,21 @@ public class NotificationServiceImpl implements NotificationService {
               return "@" + input.getTwitterHandle();
             }
           });
-          twitter.updateStatus(String.format("Trucks for lunch today: %s ", joiner.join(twitterHandles)));
+          updateStatus(account, String.format("Trucks for lunch today: %s ", joiner.join(twitterHandles)));
         }
       } catch (Exception e) {
         log.log(Level.WARNING, "An exception occurred", e);
-        throw Throwables.propagate(e);
       }
     }
   }
 
-  private Iterable<? extends TwitterNotificationAccount> findTwitterNotificationAccounts() {
+  private void updateStatus(TwitterNotificationAccount account, String status) throws TwitterException {
+    log.info("Sending status: " + status);
+    Twitter twitter = new TwitterFactory(account.twitterCredentials()).getInstance();
+    twitter.updateStatus(status);
+  }
+
+  private Iterable<TwitterNotificationAccount> findTwitterNotificationAccounts() {
     return notificationAccountDAO.findAll();
   }
 }

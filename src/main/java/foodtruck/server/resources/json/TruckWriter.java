@@ -24,7 +24,7 @@ import foodtruck.server.resources.BadRequestException;
 @Provider
 public class TruckWriter implements JSONWriter<Truck>, MessageBodyWriter<Truck> {
   @Override public JSONObject asJSON(Truck truck) throws JSONException {
-    return new org.codehaus.jettison.json.JSONObject()
+    return new JSONObject()
         .put("id", truck.getId())
         .put("description", truck.getDescription())
         .put("iconUrl", truck.getIconUrl())

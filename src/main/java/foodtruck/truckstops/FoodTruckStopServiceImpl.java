@@ -148,7 +148,13 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   }
 
   @Override public Set<Truck> findTrucksAtLocation(LocalDate localDate, Location location) {
-    return null;
+    ImmutableSet.Builder<Truck> builder = ImmutableSet.builder();
+    for (TruckStop stop : truckStopDAO.findDuring(null, localDate)) {
+      if (location.getName().equals(stop.getLocation().getName())) {
+        builder.add(stop.getTruck());
+      }
+    }
+    return builder.build();
   }
 
   @Override public List<TruckStatus> findCurrentAndPreviousStop(LocalDate day) {
@@ -168,7 +174,6 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
               (nextStop == null || truckStop.getStartTime().isBefore(nextStop.getStartTime()))) {
             nextStop = truckStop;
           }
-
         }
       }
       truckInfo.add(new TruckStatus(truck, activeToday, currentStop, nextStop));

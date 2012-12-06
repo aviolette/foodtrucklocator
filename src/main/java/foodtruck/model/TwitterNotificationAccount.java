@@ -16,12 +16,20 @@ public class TwitterNotificationAccount extends ModelEntity {
   private final Location location;
   private final String oauthToken;
   private final String oauthTokenSecret;
+  private final String name;
+  private final String twitterHandle;
 
   private TwitterNotificationAccount(Builder builder) {
     super(builder.key);
     this.location = builder.location;
     this.oauthToken = builder.oauthToken;
     this.oauthTokenSecret = builder.oauthTokenSecret;
+    this.name = builder.name;
+    this.twitterHandle = builder.twitterHandle;
+  }
+
+  public String getTwitterHandle() {
+    return twitterHandle;
   }
 
   public Location getLocation() {
@@ -32,13 +40,17 @@ public class TwitterNotificationAccount extends ModelEntity {
     return oauthToken;
   }
 
+  public String getName() {
+    return name;
+  }
+
   public String getOauthTokenSecret() {
     return oauthTokenSecret;
   }
 
   public PropertyConfiguration twitterCredentials() {
     Properties properties = new Properties();
-    InputStream in = getClass().getResourceAsStream("twitter4j.properties");
+    InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("twitter4j.properties");
     try {
       properties.load(in);
       in.close();
@@ -59,6 +71,8 @@ public class TwitterNotificationAccount extends ModelEntity {
     private String oauthToken;
     private String oauthTokenSecret;
     private long key;
+    private String name;
+    private String twitterHandle;
 
     public Builder() {}
 
@@ -84,6 +98,16 @@ public class TwitterNotificationAccount extends ModelEntity {
 
     public TwitterNotificationAccount build() {
       return new TwitterNotificationAccount(this);
+    }
+
+    public Builder name(String name) {
+      this.name = name;
+      return this;
+    }
+
+    public Builder twitterHandle(String twitterHandle) {
+      this.twitterHandle = twitterHandle;
+      return this;
     }
   }
 }

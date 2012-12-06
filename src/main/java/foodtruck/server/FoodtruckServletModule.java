@@ -15,6 +15,7 @@ import foodtruck.server.dashboard.AdminDashboardServlet;
 import foodtruck.server.dashboard.ConfigurationServlet;
 import foodtruck.server.dashboard.LocationEditServlet;
 import foodtruck.server.dashboard.LocationListServlet;
+import foodtruck.server.dashboard.NotificationServlet;
 import foodtruck.server.dashboard.StatsServlet;
 import foodtruck.server.dashboard.TruckListServlet;
 import foodtruck.server.dashboard.TruckServlet;
@@ -49,6 +50,7 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/admin/locations/*").with(LocationEditServlet.class);
     serve("/admin/locations").with(LocationListServlet.class);
     serve("/admin/stats").with(StatsServlet.class);
+    serve("/admin/notifications").with(NotificationServlet.class);
     serve("/admin/configuration").with(ConfigurationServlet.class);
     serve("/service/schedule").with(DailyScheduleServlet.class);
     serve("/services/*").with(GuiceContainer.class,
