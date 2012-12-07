@@ -1,10 +1,13 @@
 package foodtruck.notifications;
 
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.gdata.util.common.base.Joiner;
 import com.google.inject.Inject;
@@ -55,6 +58,30 @@ public class NotificationServiceImpl implements NotificationService {
         log.log(Level.WARNING, "An exception occurred", e);
       }
     }
+  }
+
+  @VisibleForTesting
+  List<String> twitterSplitter(String name, String status) {
+    ImmutableList.Builder<String> statuses = ImmutableList.builder();
+    int start = 0, end = 140, cutoff = 140;
+    // TODO: This doesn't work when greater than 280
+    while (true) {
+      int min = Math.min(status.substring(start).length(), end);
+      String chunk = status.substring(start, start+min);
+      if (start != 0) {
+        chunk = "Additional trucks at " + name + ":" + chunk;
+      }
+      if (min < cutoff) {
+        statuses.add(chunk);
+        break;
+      } else {
+        end = status.substring(0, end).lastIndexOf(' ');
+        statuses.add(status.substring(start, end));
+        start = end;
+        end = end + 140;
+      }
+    }
+    return statuses.build().reverse();
   }
 
   private void updateStatus(TwitterNotificationAccount account, String status) throws TwitterException {
