@@ -85,9 +85,12 @@ public class NotificationServiceImpl implements NotificationService {
   }
 
   private void updateStatus(TwitterNotificationAccount account, String status) throws TwitterException {
-    log.info("Sending status: " + status);
+    log.log(Level.INFO, "Initial status: {0}", new Object[] { status});
     Twitter twitter = new TwitterFactory(account.twitterCredentials()).getInstance();
-    twitter.updateStatus(status);
+    for (String theStatus : twitterSplitter(account.getName(), status )) {
+      log.log(Level.INFO, "Sending status update for account {0}: {1}", new Object[] { account.getName(), theStatus } );
+      twitter.updateStatus(theStatus);
+    }
   }
 
   private Iterable<TwitterNotificationAccount> findTwitterNotificationAccounts() {
