@@ -10,8 +10,9 @@
 <table class="table table-striped">
   <thead>
   <tr>
-    <th>Location</th>
-    <th>Screen Name</th>
+    <th style="min-width:100px">Name</th>
+    <th style="min-width:150px">Twitter Handle</th>
+    <th style="min-width:300px">Location</th>
     <th>Token</th>
     <th>Secret</th>
   </tr>
