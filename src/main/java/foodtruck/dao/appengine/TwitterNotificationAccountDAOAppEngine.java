@@ -1,6 +1,7 @@
 package foodtruck.dao.appengine;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Query;
 import com.google.inject.Inject;
 
 import foodtruck.dao.TwitterNotificationAccountDAO;
@@ -38,6 +39,10 @@ public class TwitterNotificationAccountDAOAppEngine extends AppEngineDAO<Long, T
     entity.setProperty(PROP_TWITTER_HANDLE, obj.getTwitterHandle());
     entity.setProperty(PROP_NAME, obj.getName());
     return entity;
+  }
+
+  @Override protected void modifyFindAllQuery(Query q) {
+    q.addSort(PROP_NAME, Query.SortDirection.ASCENDING);
   }
 
   @Override protected TwitterNotificationAccount fromEntity(Entity entity) {

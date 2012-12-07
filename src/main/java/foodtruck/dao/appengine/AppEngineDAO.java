@@ -32,12 +32,16 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
   public Set<T> findAll() {
     DatastoreService dataStore = provider.get();
     Query q = new Query(getKind());
+    modifyFindAllQuery(q);
     ImmutableSet.Builder<T> objs = ImmutableSet.builder();
     for (Entity entity : dataStore.prepare(q).asIterable()) {
       T obj = fromEntity(entity);
       objs.add(obj);
     }
     return objs.build();
+  }
+
+  protected void modifyFindAllQuery(Query q) {
   }
 
   public void delete(long id) {
