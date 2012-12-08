@@ -10,6 +10,7 @@
 <table class="table table-striped">
   <thead>
   <tr>
+    <th style="min-width:100px">&nbsp;</th>
     <th style="min-width:100px">Name</th>
     <th style="min-width:150px">Twitter Handle</th>
     <th style="min-width:300px">Location</th>
@@ -75,6 +76,19 @@
 </div>
 
 <script type="text/javascript">
+  function saveItem(item) {
+    $.ajax({
+      url: "/services/notifications/" + item.id,
+      type: 'PUT',
+      contentType: 'application/json',
+      data: JSON.stringify(item),
+      complete : function() {
+      },
+      success: function(e) {
+        refreshList();
+      }
+    });
+  }
   function refreshList() {
     $("#notificationGroups").empty();
     $.ajax({
@@ -84,10 +98,22 @@
       },
       success: function(data) {
         $.each(data, function(i, datum) {
-          $("#notificationGroups").append("<tr><td>" + datum["name"] + "</td><td>" + datum["twitterHandle"] + "</td><td>" + datum["location"]+"</td><td>" + datum["token"] + "</td><td>" + datum["tokenSecret"] + "</td></tr>");
+          var btnClass = datum["active"] ? "btn-success" : "btn-danger";
+          var btnLabel = datum["active"] ? "Active" : "Inactive";
+          var buttons = "<td><button id='activeBtn-" + i +"' class='btn " + btnClass + "' data-toggle='button' type='button'>" + btnLabel + "</button></td>";
+          $("#notificationGroups").append("<tr>" + buttons + "<td>" + datum["name"] + "</td><td>" + datum["twitterHandle"] + "</td><td>" + datum["location"]+"</td><td>" + datum["token"] + "</td><td>" + datum["tokenSecret"] + "</td></tr>");
+          var $activeBtn = $("#activeBtn-" + i);
+          if (datum["active"]) {
+            $activeBtn.addClass("active").addClass("btn-success");
+          }
+          $activeBtn.click(function(e) {
+            $activeBtn.button("toggle");
+            datum["active"] = $activeBtn.hasClass("active");
+            saveItem(datum);
+          });
+
         });
       }
-
     });
   }
 

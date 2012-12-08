@@ -18,6 +18,7 @@ public class TwitterNotificationAccount extends ModelEntity {
   private final String oauthTokenSecret;
   private final String name;
   private final String twitterHandle;
+  private final boolean active;
 
   private TwitterNotificationAccount(Builder builder) {
     super(builder.key);
@@ -25,6 +26,7 @@ public class TwitterNotificationAccount extends ModelEntity {
     this.oauthToken = builder.oauthToken;
     this.oauthTokenSecret = builder.oauthTokenSecret;
     this.name = builder.name;
+    this.active = builder.active;
     this.twitterHandle = builder.twitterHandle;
   }
 
@@ -66,6 +68,10 @@ public class TwitterNotificationAccount extends ModelEntity {
     return new Builder();
   }
 
+  public boolean isActive() {
+    return active;
+  }
+
   public static class Builder {
     private Location location;
     private String oauthToken;
@@ -73,6 +79,7 @@ public class TwitterNotificationAccount extends ModelEntity {
     private long key;
     private String name;
     private String twitterHandle;
+    private boolean active = true;
 
     public Builder() {}
 
@@ -98,6 +105,11 @@ public class TwitterNotificationAccount extends ModelEntity {
 
     public TwitterNotificationAccount build() {
       return new TwitterNotificationAccount(this);
+    }
+
+    public Builder active(boolean active) {
+      this.active = active;
+      return this;
     }
 
     public Builder name(String name) {

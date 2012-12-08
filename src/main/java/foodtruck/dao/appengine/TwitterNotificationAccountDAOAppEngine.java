@@ -24,6 +24,7 @@ public class TwitterNotificationAccountDAOAppEngine extends AppEngineDAO<Long, T
   private static final String PROP_ACCESS_TOKEN_SECRET = "access_token_secret";
   private static final String PROP_TWITTER_HANDLE = "twitter_handle";
   private static final String PROP_NAME = "name";
+  private static final String PROP_ACTIVE = "active";
 
   @Inject
   public TwitterNotificationAccountDAOAppEngine(DatastoreServiceProvider provider) {
@@ -37,6 +38,7 @@ public class TwitterNotificationAccountDAOAppEngine extends AppEngineDAO<Long, T
     entity.setProperty(PROP_ACCESS_TOKEN, obj.getOauthToken());
     entity.setProperty(PROP_ACCESS_TOKEN_SECRET, obj.getOauthTokenSecret());
     entity.setProperty(PROP_TWITTER_HANDLE, obj.getTwitterHandle());
+    entity.setProperty(PROP_ACTIVE, obj.isActive());
     entity.setProperty(PROP_NAME, obj.getName());
     return entity;
   }
@@ -53,6 +55,8 @@ public class TwitterNotificationAccountDAOAppEngine extends AppEngineDAO<Long, T
         .build();
     return TwitterNotificationAccount.builder()
         .location(location)
+        .key(entity.getKey().getId())
+        .active(getBooleanProperty(entity, PROP_ACTIVE, true))
         .oauthToken(getStringProperty(entity, PROP_ACCESS_TOKEN))
         .name(getStringProperty(entity, PROP_NAME))
         .twitterHandle(getStringProperty(entity, PROP_TWITTER_HANDLE))

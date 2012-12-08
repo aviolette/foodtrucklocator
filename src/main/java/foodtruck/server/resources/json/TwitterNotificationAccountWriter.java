@@ -42,15 +42,16 @@ public class TwitterNotificationAccountWriter implements MessageBodyWriter<Twitt
     } catch (JSONException e) {
       throw new BadRequestException(e, MediaType.APPLICATION_JSON_TYPE);
     }
-
   }
 
   public JSONObject asJSON(TwitterNotificationAccount notificationAccount) throws JSONException {
     return new JSONObject()
         .put("name", notificationAccount.getName())
+        .put("id", notificationAccount.getKey())
         .put("location", notificationAccount.getLocation().getName())
         .put("token", notificationAccount.getOauthToken())
         .put("tokenSecret", notificationAccount.getOauthTokenSecret())
+        .put("active", notificationAccount.isActive())
         .put("twitterHandle", notificationAccount.getTwitterHandle());
   }
 }

@@ -51,7 +51,9 @@ public class TwitterNotificationAccountReader implements MessageBodyReader<Twitt
       return builder.oauthToken(obj.getString("token"))
           .oauthTokenSecret(obj.getString("tokenSecret"))
           .twitterHandle(obj.getString("twitterHandle"))
+          .active(obj.optBoolean("active", true))
           .name(obj.getString("name"))
+          .key(obj.optLong("id", 0))
           .build();
     } catch (JSONException e) {
       throw Throwables.propagate(e);
