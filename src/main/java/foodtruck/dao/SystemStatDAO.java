@@ -3,6 +3,7 @@ package foodtruck.dao;
 import java.util.List;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 import foodtruck.model.SystemStats;
 
@@ -19,4 +20,11 @@ public interface SystemStatDAO extends DAO<Long, SystemStats> {
    * @param key the property name
    */
   void updateCount(DateTime timestamp, String key);
+
+
+  /**
+   * Deletes all stats before the current day
+   * @param localDate
+   */
+  void deleteBefore(LocalDate localDate);
 }

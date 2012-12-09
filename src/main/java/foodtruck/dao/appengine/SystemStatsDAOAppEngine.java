@@ -9,13 +9,16 @@ import javax.annotation.Nullable;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Transaction;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 import foodtruck.dao.SystemStatDAO;
 import foodtruck.model.SystemStats;
@@ -51,6 +54,17 @@ public class SystemStatsDAOAppEngine extends AppEngineDAO<Long, SystemStats>
 
   @Override public void updateCount(DateTime timestamp, String key) {
     updateCount(timestamp, key, 1L);
+  }
+
+  @Override public void deleteBefore(LocalDate localDate) {
+    DatastoreService dataStore = provider.get();
+    Query q = new Query(getKind());
+    q.addFilter(PARAM_TIMESTAMP, Query.FilterOperator.LESS_THAN, localDate.toDateMidnight().getMillis());
+    List<Key> entities = Lists.newLinkedList();
+    for (Entity e : dataStore.prepare(q).asIterable()) {
+      entities.add(e.getKey());
+    }
+    dataStore.delete(entities);
   }
 
   public void updateCount(DateTime timestamp, String statName, long by) {
