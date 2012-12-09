@@ -59,7 +59,9 @@ public class SystemStatsDAOAppEngine extends AppEngineDAO<Long, SystemStats>
   @Override public void deleteBefore(LocalDate localDate) {
     DatastoreService dataStore = provider.get();
     Query q = new Query(getKind());
-    q.addFilter(PARAM_TIMESTAMP, Query.FilterOperator.LESS_THAN, localDate.toDateMidnight().getMillis());
+    long ts = localDate.toDateMidnight().getMillis();
+    log.log(Level.INFO, "Purgin stats before {0}", ts);
+    q.addFilter(PARAM_TIMESTAMP, Query.FilterOperator.LESS_THAN, ts);
     List<Key> entities = Lists.newLinkedList();
     for (Entity e : dataStore.prepare(q).asIterable()) {
       entities.add(e.getKey());
