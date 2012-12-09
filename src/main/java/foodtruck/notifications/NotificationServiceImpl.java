@@ -48,7 +48,7 @@ public class NotificationServiceImpl implements NotificationService {
       try {
         Set<Truck> trucks = truckService.findTrucksAtLocation(clock.currentDay(), account.getLocation());
         if (trucks.isEmpty()) {
-          updateStatus(account, String.format("No trucks at %s today", account.getLocation().getName()));
+          updateStatus(account, String.format("No trucks at %s today", account.getName()));
         } else {
           Joiner joiner = Joiner.on(" ");
           Iterable<String> twitterHandles = Iterables.transform(trucks, new Function<Truck, String>(){
