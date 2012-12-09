@@ -29,4 +29,10 @@ public interface DAO<K, T extends ModelEntity> {
    * @return the entity or {@code null} if it is not found
    */
   @Nullable T findById(K id);
+
+  /**
+   * Deletes the item in the data store.
+   * @param id the ID
+   */
+  void delete(K id);
 }

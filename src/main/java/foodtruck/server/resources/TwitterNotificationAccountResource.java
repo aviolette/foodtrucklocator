@@ -2,6 +2,7 @@ package foodtruck.server.resources;
 
 import java.util.Collection;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -27,6 +28,12 @@ public class TwitterNotificationAccountResource {
   @Inject
   public TwitterNotificationAccountResource(TwitterNotificationAccountDAO dao) {
     this.dao = dao;
+  }
+
+  @DELETE @Path("{id}")
+  public void delete(@PathParam("id") long id) {
+    requiresAdmin();
+    dao.delete(id);
   }
 
   @PUT @Path("{id}")

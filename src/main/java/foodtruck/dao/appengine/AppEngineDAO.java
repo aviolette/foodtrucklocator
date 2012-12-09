@@ -44,10 +44,10 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
   protected void modifyFindAllQuery(Query q) {
   }
 
-  public void delete(long id) {
+  @Override
+  public void delete(K id) {
     DatastoreService dataStore = provider.get();
-    Key key = KeyFactory.createKey(getKind(), id);
-    dataStore.delete(key);
+    dataStore.delete(getKey(id));
   }
 
   @Override
@@ -61,16 +61,7 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
     Entity entity;
     if (!obj.isNew()) {
       try {
-        Object theKey = obj.getKey();
-        Key key;
-        if (theKey instanceof Long) {
-          key = KeyFactory.createKey(getKind(), (Long) theKey);
-        } else if (theKey instanceof String) {
-          key = KeyFactory.createKey(getKind(), (String) theKey);
-        } else {
-          key = (Key) theKey;
-        }
-        entity = dataStore.get(key);
+        entity = dataStore.get(getKey(obj.getKey()));
       } catch (EntityNotFoundException e) {
         /* TODO: don't like. Had to do this because there's no way of determining whether a
        string-keyed object is new or not.
@@ -83,6 +74,18 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
     entity = toEntity(obj, entity);
     Key key = dataStore.put(entity);
     return key.getId();
+  }
+
+  private Key getKey(Object theKey) {
+    Key key;
+    if (theKey instanceof Long) {
+      key = KeyFactory.createKey(getKind(), (Long) theKey);
+    } else if (theKey instanceof String) {
+      key = KeyFactory.createKey(getKind(), (String) theKey);
+    } else {
+      key = (Key) theKey;
+    }
+    return key;
   }
 
 
