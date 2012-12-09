@@ -41,6 +41,10 @@ public class NotificationServiceImpl implements NotificationService {
 
   @Override public void sendNotifications() {
     for (TwitterNotificationAccount account : findTwitterNotificationAccounts()) {
+      if (!account.isActive()) {
+        log.log(Level.INFO, "Skipping notifications for {0} because it is not active", account.getName());
+        continue;
+      }
       try {
         Set<Truck> trucks = truckService.findTrucksAtLocation(clock.currentDay(), account.getLocation());
         if (trucks.isEmpty()) {
