@@ -103,7 +103,8 @@
           var buttons = "<td><button id='deleteBtn-" + i +
               "' class='btn'>Delete</button>&nbsp;<button id='activeBtn-" + i +"' class='btn " + btnClass +
               "' data-toggle='button' type='button'>" + btnLabel + "</button></td>";
-          $("#notificationGroups").append("<tr>" + buttons + "<td>" + datum["name"] + "</td><td>" + datum["twitterHandle"] + "</td><td>" + datum["location"]+"</td><td>" + datum["token"] + "</td><td>" + datum["tokenSecret"] + "</td></tr>");
+          $("#notificationGroups").append("<tr>" + buttons + "<td>" + datum["name"] + "</td><td><a target='_blank' href='http://twitter.com/" + datum['twitterHandle']
+              +"'>@" + datum["twitterHandle"] + "</a></td><td>" + datum["location"]+"</td><td>" + datum["token"] + "</td><td>" + datum["tokenSecret"] + "</td></tr>");
           var $activeBtn = $("#activeBtn-" + i);
           if (datum["active"]) {
             $activeBtn.addClass("active").addClass("btn-success");
