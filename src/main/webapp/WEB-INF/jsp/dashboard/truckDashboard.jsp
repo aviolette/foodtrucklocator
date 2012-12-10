@@ -165,7 +165,7 @@
           <label for="locationInput">Location</label>
 
           <div class="input">
-            <input id="locationInput" type="text"/>
+            <input class="span5" id="locationInput" type="text"/>
           </div>
         </div>
         <div class="clearfix">
