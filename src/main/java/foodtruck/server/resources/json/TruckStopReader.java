@@ -19,13 +19,9 @@ import com.google.inject.Inject;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 import foodtruck.dao.TruckDAO;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
@@ -34,6 +30,8 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.util.Clock;
 import foodtruck.util.TimeOnlyFormatter;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * @author aviolette@gmail.com
@@ -73,9 +71,9 @@ public class TruckStopReader implements MessageBodyReader<TruckStop> {
       Truck truck = truckDAO.findById(obj.getString("truckId"));
       checkNotNull(truck);
       LocalDate today = clock.currentDay();
-      DateTime startTime = format.parseDateTime(obj.getString("startTime"))
+      DateTime startTime = format.parseDateTime(obj.getString("startTime").toUpperCase())
           .withDate(today.getYear(), today.getMonthOfYear(), today.getDayOfMonth());
-      DateTime endTime = format.parseDateTime(obj.getString("endTime"))
+      DateTime endTime = format.parseDateTime(obj.getString("endTime").toUpperCase())
           .withDate(today.getYear(), today.getMonthOfYear(), today.getDayOfMonth());
       final JSONObject loc = obj.optJSONObject("location");
       Location location;
