@@ -8,7 +8,6 @@ import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 
-import foodtruck.server.api.DailyScheduleServlet;
 import foodtruck.server.api.TweetUpdateServlet;
 import foodtruck.server.dashboard.AddressRuleServlet;
 import foodtruck.server.dashboard.AdminDashboardServlet;
@@ -54,7 +53,6 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/admin/stats").with(StatsServlet.class);
     serve("/admin/notifications").with(NotificationServlet.class);
     serve("/admin/configuration").with(ConfigurationServlet.class);
-    serve("/service/schedule").with(DailyScheduleServlet.class);
     serve("/services/*").with(GuiceContainer.class,
         ImmutableMap.of(PackagesResourceConfig.PROPERTY_PACKAGES, "foodtruck.server.resources"));
     serve("/service/tweets").with(TweetUpdateServlet.class);

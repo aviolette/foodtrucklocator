@@ -31,7 +31,6 @@ import foodtruck.model.DayOfWeek;
 import foodtruck.model.Truck;
 import foodtruck.model.TweetSummary;
 import foodtruck.server.GuiceHackRequestWrapper;
-import foodtruck.server.api.JsonWriter;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.twitter.TwitterService;
 import foodtruck.util.Clock;
@@ -48,16 +47,14 @@ public class TruckServlet extends HttpServlet {
   private final TwitterService twitterService;
   private final FoodTruckStopService truckService;
   private final Clock clock;
-  private final JsonWriter writer;
   private final TruckDAO truckDAO;
 
   @Inject
   public TruckServlet(TwitterService twitterService,
-      FoodTruckStopService truckService, Clock clock, JsonWriter writer, TruckDAO truckDAO) {
+      FoodTruckStopService truckService, Clock clock, TruckDAO truckDAO) {
     this.twitterService = twitterService;
     this.truckService = truckService;
     this.clock = clock;
-    this.writer = writer;
     this.truckDAO = truckDAO;
   }
 

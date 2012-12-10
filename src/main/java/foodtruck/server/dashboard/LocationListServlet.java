@@ -16,7 +16,6 @@ import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
 import foodtruck.server.GuiceHackRequestWrapper;
-import foodtruck.server.api.JsonWriter;
 
 /**
  * @author aviolette@gmail.com
@@ -25,13 +24,11 @@ import foodtruck.server.api.JsonWriter;
 @Singleton
 public class LocationListServlet extends HttpServlet {
   private final GeoLocator locator;
-  private final JsonWriter writer;
   private final LocationDAO locationDAO;
 
   @Inject
-  public LocationListServlet(GeoLocator locator, JsonWriter writer, LocationDAO locationDAO) {
+  public LocationListServlet(GeoLocator locator, LocationDAO locationDAO) {
     this.locator = locator;
-    this.writer = writer;
     this.locationDAO = locationDAO;
   }
 
