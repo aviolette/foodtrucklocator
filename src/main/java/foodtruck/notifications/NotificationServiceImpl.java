@@ -46,7 +46,7 @@ public class NotificationServiceImpl implements NotificationService {
         continue;
       }
       try {
-        Set<Truck> trucks = truckService.findTrucksAtLocation(clock.currentDay(), account.getLocation());
+        Set<Truck> trucks = truckService.findTrucksNearLocation(clock.currentDay(), account.getLocation());
         if (trucks.isEmpty()) {
           updateStatus(account, String.format("No trucks at %s today", account.getName()));
         } else {

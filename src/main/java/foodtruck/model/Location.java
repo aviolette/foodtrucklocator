@@ -114,6 +114,10 @@ public class Location extends ModelEntity {
     return LatLngTool.distance(latLng, mapCenter.latLng, LengthUnit.MILE);
   }
 
+  public ScalarDistanceRequest within(double distance) {
+    return new ScalarDistanceRequest(distance);
+  }
+
   public static class Builder {
     private Object key;
     private double lat;
@@ -183,6 +187,18 @@ public class Location extends ModelEntity {
 
     public Location build() {
       return new Location(this);
+    }
+  }
+
+  public class ScalarDistanceRequest {
+    private final double distance;
+    public ScalarDistanceRequest(double distance) {
+      this.distance = distance;
+    }
+
+    public boolean milesOf(Location other) {
+      double actual = LatLngTool.distance(latLng, other.latLng, LengthUnit.MILE);
+      return actual < distance;
     }
   }
 }
