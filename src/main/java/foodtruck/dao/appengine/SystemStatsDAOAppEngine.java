@@ -66,6 +66,7 @@ public class SystemStatsDAOAppEngine extends AppEngineDAO<Long, SystemStats>
     for (Entity e : dataStore.prepare(q).asIterable()) {
       entities.add(e.getKey());
     }
+    log.log(Level.INFO, "Deleted {0} entities", entities.size());
     dataStore.delete(entities);
   }
 
