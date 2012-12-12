@@ -121,8 +121,9 @@
       map: map
     });
 
+    const MILES_TO_METERS = 1609.34;
     var circle = new google.maps.Circle({
-      radius: loc.radius * 1609.34,
+      radius: loc.radius * MILES_TO_METERS,
       center: markerLat,
       map: map
     });
@@ -146,7 +147,7 @@
           $submitButton.removeClass("disabled");
         },
         success: function() {
-          circle.setRadius(loc.radius);
+          circle.setRadius(loc.radius * MILES_TO_METERS);
           flash("Successfully saved", "success");
         }
       });
@@ -155,6 +156,7 @@
     google.maps.event.addListener(marker, 'dragend', function(evt) {
       $("#latitude").attr("value", marker.position.lat());
       $("#longitude").attr("value", marker.position.lng());
+      circle.setCenter(marker.position);
     });
 
     var geocoder = new google.maps.Geocoder();
