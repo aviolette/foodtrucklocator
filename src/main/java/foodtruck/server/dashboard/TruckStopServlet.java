@@ -13,6 +13,7 @@ import com.google.inject.Singleton;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.ConfigurationDAO;
@@ -63,6 +64,9 @@ public class TruckStopServlet extends HttpServlet {
       // TODO: 404 if null
     } else {
       DateTime start = clock.now();
+      if (start.toLocalTime().isBefore(new LocalTime(11, 30))) {
+        start = start.withTime(11, 30, 0, 0);
+      }
       DateTime end = start.plusHours(2);
       truckStop = new TruckStop(truck, start, end, configDAO.find().getCenter(),  null, false);
     }
