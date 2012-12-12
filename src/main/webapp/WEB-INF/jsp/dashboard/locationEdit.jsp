@@ -99,30 +99,6 @@
 
     loadLocation(loc);
     var $submitButton = $("#submitButton");
-    $submitButton.click(function(e) {
-      loc.latitude = parseFloat($("#latitude").attr("value"));
-      loc.longitude = parseFloat($("#longitude").attr("value"));
-      loc.name = $("#name").attr("value");
-      loc.radius = parseFloat($("#radius").attr("value"));
-      loc.valid = !$("#invalidLoc").is(":checked");
-      loc.description = $("#description").attr("value");
-      loc.url = $("#url").attr("value");
-      e.preventDefault();
-      $submitButton.addClass("disabled");
-      $.ajax({
-        context: document.body,
-        type: 'PUT',
-        contentType: 'application/json',
-        data: JSON.stringify(loc),
-        url: "/admin/locations/" + loc.key,
-        complete : function() {
-          $submitButton.removeClass("disabled");
-        },
-        success: function() {
-          flash("Successfully saved", "success");
-        }
-      });
-    });
 
     var lat = loc.latitude, lng = loc.longitude;
     if (!loc.valid) {
@@ -144,6 +120,38 @@
       position: markerLat,
       map: map
     });
+
+    var circle = new google.maps.Circle({
+      radius: loc.radius * 1609.34,
+      center: markerLat,
+      map: map
+    });
+    $submitButton.click(function(e) {
+      loc.latitude = parseFloat($("#latitude").attr("value"));
+      loc.longitude = parseFloat($("#longitude").attr("value"));
+      loc.name = $("#name").attr("value");
+      loc.radius = parseFloat($("#radius").attr("value"));
+      loc.valid = !$("#invalidLoc").is(":checked");
+      loc.description = $("#description").attr("value");
+      loc.url = $("#url").attr("value");
+      e.preventDefault();
+      $submitButton.addClass("disabled");
+      $.ajax({
+        context: document.body,
+        type: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify(loc),
+        url: "/admin/locations/" + loc.key,
+        complete : function() {
+          $submitButton.removeClass("disabled");
+        },
+        success: function() {
+          circle.setRadius(loc.radius);
+          flash("Successfully saved", "success");
+        }
+      });
+    });
+
     google.maps.event.addListener(marker, 'dragend', function(evt) {
       $("#latitude").attr("value", marker.position.lat());
       $("#longitude").attr("value", marker.position.lng());
