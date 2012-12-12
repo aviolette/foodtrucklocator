@@ -20,6 +20,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
+import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.DailySchedule;
@@ -43,15 +44,17 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   private static final Logger log = Logger.getLogger(FoodTruckStopServiceImpl.class.getName());
   private final DateTimeZone zone;
   private final Clock clock;
+  private final LocationDAO locationDAO;
 
   @Inject
   public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, ScheduleStrategy googleCalendar,
-      DateTimeZone zone, Clock clock, TruckDAO truckDAO) {
+      DateTimeZone zone, Clock clock, TruckDAO truckDAO, LocationDAO locationDAO) {
     this.truckStopDAO = truckStopDAO;
     this.scheduleStrategy = googleCalendar;
     this.zone = zone;
     this.clock = clock;
     this.truckDAO = truckDAO;
+    this.locationDAO = locationDAO;
   }
 
   @Override
@@ -159,8 +162,10 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
 
   @Override public Set<Truck> findTrucksNearLocation(LocalDate localDate, Location location) {
     ImmutableSet.Builder<Truck> builder = ImmutableSet.builder();
+    Location existing = locationDAO.findByAddress(location.getName());
+    location = existing == null ? location : existing;
     for (TruckStop stop : truckStopDAO.findDuring(null, localDate)) {
-      if (location.within(0.2d).milesOf(stop.getLocation())) {
+      if (location.within(location.getRadius()).milesOf(stop.getLocation())) {
         builder.add(stop.getTruck());
       }
     }
