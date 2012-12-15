@@ -165,7 +165,8 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     Location existing = locationDAO.findByAddress(location.getName());
     location = existing == null ? location : existing;
     for (TruckStop stop : truckStopDAO.findDuring(null, localDate)) {
-      if (location.within(location.getRadius()).milesOf(stop.getLocation())) {
+      if (location.getName().equals(stop.getLocation().getName()) ||
+          location.within(location.getRadius()).milesOf(stop.getLocation())) {
         builder.add(stop.getTruck());
       }
     }
