@@ -24,11 +24,12 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.Location;
 import foodtruck.model.TruckStop;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static foodtruck.dao.appengine.Attributes.*;
 
 /**
  * @author aviolette@gmail.com
@@ -42,15 +43,15 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
   private static final String LATITUDE_FIELD = "latitude";
   private static final String LONGITUDE_FIELD = "longitude";
   private static final String TRUCK_ID_FIELD = "truckId";
-  private final DatastoreServiceProvider serviceProvider;
-  private final DateTimeZone zone;
   private static final String LOCATION_NAME_FIELD = "locationName";
   private static final String LOCKED_FIELD = "locked";
-  private final TruckDAO truckDAO;
   private static final String DESCRIPTION_FIELD = "description";
   private static final String URL_FIELD = "url";
   private static final String END_TIMESTAMP = "endTimeStamp";
   private static final String START_TIMESTAMP = "startTimeStamp";
+  private final DatastoreServiceProvider serviceProvider;
+  private final DateTimeZone zone;
+  private final TruckDAO truckDAO;
 
   @Inject
   public TruckStopDAOAppEngine(DatastoreServiceProvider provider,
@@ -61,33 +62,42 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
   }
 
   /**
-   * Finds all the trucks after the specified date.
+   * Finds all the trucks after the specified date, where the specified date time is between start and end
+   * times of the truck stop.
    */
   @Override
   public Set<TruckStop> findAt(DateTime instant) {
     DatastoreService dataStore = serviceProvider.get();
     Query q = new Query(STOP_KIND);
-    // TODO: google's filters can't do range comparisons...ugh...here I search the lower bound
-    q.addFilter(START_TIME_FIELD, Query.FilterOperator.GREATER_THAN_OR_EQUAL,
-        instant.toDateMidnight().toDate());
+    // AppEngine can't do range queries on multiple columns.  Here we set an upper bound on start time a day
+    // after the current day.  So this should return all the stops with a start date within a particular day.
+    // We then further filter below based on end date.
+    Query.CompositeFilter rangeFilter =
+        Query.CompositeFilterOperator.and(
+            new Query.FilterPredicate(START_TIME_FIELD, Query.FilterOperator.GREATER_THAN_OR_EQUAL,
+                instant.minusHours(24).toDate()),
+            new Query.FilterPredicate(START_TIME_FIELD, Query.FilterOperator.LESS_THAN_OR_EQUAL,
+                instant.plusDays(1).toDateMidnight().toDate()));
+    q.setFilter(rangeFilter);
     ImmutableSet.Builder<TruckStop> stops = ImmutableSet.builder();
     for (Entity entity : dataStore.prepare(q).asIterable()) {
-      final DateTime startTime = new DateTime((Date) entity.getProperty(START_TIME_FIELD), zone);
-      final DateTime endTime = new DateTime((Date) entity.getProperty(END_TIME_FIELD), zone);
-      final DateTime upperBound = endTime.minusMinutes(1);
+      final DateTime startTime = getDateTime(entity, START_TIME_FIELD, zone),
+          endTime = getDateTime(entity, END_TIME_FIELD, zone),
+          upperBound = endTime.minusMinutes(1);
       if (instant.isBefore(startTime) || instant.isAfter(upperBound)) {
         continue;
       }
-      final String truckId = (String) entity.getProperty(TRUCK_ID_FIELD);
+      final String truckId = getStringProperty(entity, TRUCK_ID_FIELD);
       final Boolean locked = (Boolean) entity.getProperty(LOCKED_FIELD);
       try {
         stops.add(new TruckStop(truckDAO.findById(truckId),
             startTime, endTime,
-            Location.builder().lat((Double) entity.getProperty(LATITUDE_FIELD))
-                .lng((Double) entity.getProperty(
-                    LONGITUDE_FIELD)).name((String) entity.getProperty(LOCATION_NAME_FIELD))
-                .description((String) entity.getProperty(DESCRIPTION_FIELD))
-                .url((String) entity.getProperty(URL_FIELD))
+            Location.builder()
+                .lat(getDoubleProperty(entity, LATITUDE_FIELD, 0d))
+                .lng(getDoubleProperty(entity, LONGITUDE_FIELD, 0d))
+                .name(getStringProperty(entity, LOCATION_NAME_FIELD))
+                .description(getStringProperty(entity, DESCRIPTION_FIELD))
+                .url(getStringProperty(entity, URL_FIELD))
                 .build(),
             entity.getKey().getId(), locked == null ? false : locked));
       } catch (RuntimeException rt) {
