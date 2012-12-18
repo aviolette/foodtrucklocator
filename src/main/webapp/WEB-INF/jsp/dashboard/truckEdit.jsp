@@ -1,5 +1,6 @@
 <%@ include file="dashboardHeader.jsp" %>
 
+
 <form action="" method="POST">
   <fieldset title="Truck Information">
     <legend>Truck Information</legend>
@@ -132,7 +133,23 @@
       </div>
     </div>
   </fieldset>
-  <input type="submit" class="btn primary" value="Update"/>
+  <input type="submit" class="btn btn-primary" value="Update"/> &nbsp;
 </form>
+
+<button id="deleteTruck" class="btn btn-danger">DELETE THIS TRUCK</button>
+
+<script>
+  $("#deleteTruck").click(function() {
+    if(confirm("ARE YOU SURE?")) {
+      $.ajax({
+        url: "/services/trucks/${truck.id}",
+        type: "DELETE",
+        success: function() {
+          location.href = '/admin/trucks';
+        }
+      });
+    }
+  });
+</script>
 
 <%@ include file="dashboardFooter.jsp" %>

@@ -3,6 +3,7 @@ package foodtruck.server.resources;
 import java.util.Collection;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -17,8 +18,8 @@ import org.joda.time.DateTimeZone;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
-import static foodtruck.server.resources.Resources.requiresAdmin;
 import foodtruck.util.Clock;
+import static foodtruck.server.resources.Resources.requiresAdmin;
 
 /**
  * @author aviolette@gmail.com
@@ -65,6 +66,10 @@ public class TruckResource {
     truckDAO.save(t);
   }
 
+  @DELETE @Path("{truckId}")
+  public void delete(@PathParam("truckId") String truckId) {
+    truckDAO.delete(truckId);
+  }
 
   @POST @Consumes(MediaType.APPLICATION_JSON) @Produces(MediaType.APPLICATION_JSON)
   public JResponse<Truck> createTruck(Truck truck) {
