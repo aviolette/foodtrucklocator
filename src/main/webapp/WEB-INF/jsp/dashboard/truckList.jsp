@@ -176,6 +176,9 @@
 
     function newTruckDialog() {
       var truckId = prompt("Enter truck ID:");
+      if (!truckId) {
+        return;
+      }
       $.ajax({
         url : "/services/trucks",
         type: "POST",
