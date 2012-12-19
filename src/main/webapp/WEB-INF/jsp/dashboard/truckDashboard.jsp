@@ -130,6 +130,7 @@
   <c:forEach var="tweet" items="${tweets}">
     <tr>
       <td style="width:100px !important"><joda:format value="${tweet.time}" style="-S"/></td>
+      <td><ftl:location location="${tweet.location}"/>&nbsp;</td>
       <td><ftl:tweetformat>${tweet.text}</ftl:tweetformat></td>
     </tr>
   </c:forEach>
