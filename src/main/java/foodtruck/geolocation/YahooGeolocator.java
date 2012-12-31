@@ -50,7 +50,8 @@ public class YahooGeolocator implements GeoLocator {
     if (resultSet.getInt("Found") == 0) {
       return null;
     }
-    if (resultSet.getInt("Quality") < 40) {
+    // YAHOO ADRESS QUALITY: http://developer.yahoo.com/geo/placefinder/guide/responses.html#address-quality
+    if (resultSet.getInt("Quality") < 50) {
       log.log(Level.INFO, "Result Set was too broad");
       return null;
     }

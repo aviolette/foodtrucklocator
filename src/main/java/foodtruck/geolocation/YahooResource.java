@@ -31,8 +31,12 @@ public class YahooResource {
    */
   public JSONObject findLocation(String location, boolean reverse) throws ServiceException {
     try {
+      // TODO: Make locale a configurable parameter
       WebResource r = resource.queryParam("q", location)
           .queryParam("flags", "j")
+          // limit results to the specified locale
+          .queryParam("gflags", "L")
+          .queryParam("locale", "en_US")
           .queryParam("appid", configDAO.find().getYahooAppId());
       if (reverse) {
         r = r.queryParam("gflags", "R");
