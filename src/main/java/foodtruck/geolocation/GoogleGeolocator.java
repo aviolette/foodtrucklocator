@@ -84,7 +84,7 @@ public class GoogleGeolocator implements GeoLocator {
       if (results.length() > 0) {
         final JSONObject firstResult = results.getJSONObject(0);
         final JSONArray types = firstResult.getJSONArray("types");
-        if (arrayContains(types, "locality")) {
+        if (arrayContains(types, "locality") || arrayContains(types, "administrative_area_level_1")) {
           log.log(Level.INFO, "Result was too granular");
           return null;
         }
