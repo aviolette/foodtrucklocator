@@ -747,114 +747,6 @@ public class GoogleGeolocatorTest extends EasyMockSupport {
   }
 
   @Test
-  public void testLocate_LocationTypeIsGEOMETRIC_CENTER() throws JSONException {
-    String result = " {   \"results\": [\n" +
-        "        {\n" +
-        "            \"address_components\": [\n" +
-        "                {\n" +
-        "                    \"long_name\": \"Martin D'Arcy Museum of Art\", \n" +
-        "                    \"short_name\": \"Martin D'Arcy Museum of Art\", \n" +
-        "                    \"types\": [\n" +
-        "                        \"point_of_interest\", \n" +
-        "                        \"establishment\"\n" +
-        "                    ]\n" +
-        "                }, \n" +
-        "                {\n" +
-        "                    \"long_name\": \"820\", \n" +
-        "                    \"short_name\": \"820\", \n" +
-        "                    \"types\": [\n" +
-        "                        \"street_number\"\n" +
-        "                    ]\n" +
-        "                }, \n" +
-        "                {\n" +
-        "                    \"long_name\": \"N Michigan Ave\", \n" +
-        "                    \"short_name\": \"N Michigan Ave\", \n" +
-        "                    \"types\": [\n" +
-        "                        \"route\"\n" +
-        "                    ]\n" +
-        "                }, \n" +
-        "                {\n" +
-        "                    \"long_name\": \"Central Chicago\", \n" +
-        "                    \"short_name\": \"Central Chicago\", \n" +
-        "                    \"types\": [\n" +
-        "                        \"neighborhood\", \n" +
-        "                        \"political\"\n" +
-        "                    ]\n" +
-        "                }, \n" +
-        "                {\n" +
-        "                    \"long_name\": \"Chicago\", \n" +
-        "                    \"short_name\": \"Chicago\", \n" +
-        "                    \"types\": [\n" +
-        "                        \"locality\", \n" +
-        "                        \"political\"\n" +
-        "                    ]\n" +
-        "                }, \n" +
-        "                {\n" +
-        "                    \"long_name\": \"Cook\", \n" +
-        "                    \"short_name\": \"Cook\", \n" +
-        "                    \"types\": [\n" +
-        "                        \"administrative_area_level_2\", \n" +
-        "                        \"political\"\n" +
-        "                    ]\n" +
-        "                }, \n" +
-        "                {\n" +
-        "                    \"long_name\": \"Illinois\", \n" +
-        "                    \"short_name\": \"IL\", \n" +
-        "                    \"types\": [\n" +
-        "                        \"administrative_area_level_1\", \n" +
-        "                        \"political\"\n" +
-        "                    ]\n" +
-        "                }, \n" +
-        "                {\n" +
-        "                    \"long_name\": \"United States\", \n" +
-        "                    \"short_name\": \"US\", \n" +
-        "                    \"types\": [\n" +
-        "                        \"country\", \n" +
-        "                        \"political\"\n" +
-        "                    ]\n" +
-        "                }, \n" +
-        "                {\n" +
-        "                    \"long_name\": \"60611-2196\", \n" +
-        "                    \"short_name\": \"60611-2196\", \n" +
-        "                    \"types\": [\n" +
-        "                        \"postal_code\"\n" +
-        "                    ]\n" +
-        "                }\n" +
-        "            ], \n" +
-        "            \"formatted_address\": \"Martin D'Arcy Museum of Art, 820 N Michigan Ave, Chicago, IL 60611-2196, USA\", \n" +
-        "            \"geometry\": {\n" +
-        "                \"location\": {\n" +
-        "                    \"lat\": 41.897476500000003, \n" +
-        "                    \"lng\": -87.625549699999993\n" +
-        "                }, \n" +
-        "                \"location_type\": \"GEOMETRIC_CENTER\", \n" +
-        "                \"viewport\": {\n" +
-        "                    \"northeast\": {\n" +
-        "                        \"lat\": 41.905781300000001, \n" +
-        "                        \"lng\": -87.609542300000001\n" +
-        "                    }, \n" +
-        "                    \"southwest\": {\n" +
-        "                        \"lat\": 41.8891706, \n" +
-        "                        \"lng\": -87.6415571\n" +
-        "                    }\n" +
-        "                }\n" +
-        "            }, \n" +
-        "            \"partial_match\": true, \n" +
-        "            \"types\": [\n" +
-        "                \"point_of_interest\", \n" +
-        "                \"museum\", \n" +
-        "                \"establishment\"\n" +
-        "            ]\n" +
-        "        }]}";
-    JSONObject response = new JSONObject(result);
-    final String thelocation = "Beer and Wine, Chicago, IL";
-    expect(resource.findLocation(thelocation)).andReturn(response);
-    replayAll();
-    Location location = geoLocator.locate(thelocation, GeolocationGranularity.NARROW);
-    assertNull(location);
-  }
-
-  @Test
   public void testLocate_City() throws JSONException {
     String city = "{\n" +
         "   \"results\" : [\n" +
@@ -1008,12 +900,12 @@ public class GoogleGeolocatorTest extends EasyMockSupport {
   public void testPointOfInterest() throws JSONException {
     String jsonString = "{\"results\":[{\"address_components\":[{\"long_name\":\"Skydeck Chicago\",\"short_name\":\"Skydeck Chicago\",\"types\":[\"point_of_interest\",\"establishment\"]},{\"long_name\":\"233\",\"short_name\":\"233\",\"types\":[\"street_number\"]},{\"long_name\":\"South Wacker Drive\",\"short_name\":\"S Wacker Dr\",\"types\":[\"route\"]},{\"long_name\":\"Loop\",\"short_name\":\"Loop\",\"types\":[\"neighborhood\",\"political\"]},{\"long_name\":\"Chicago\",\"short_name\":\"Chicago\",\"types\":[\"locality\",\"political\"]},{\"long_name\":\"Cook\",\"short_name\":\"Cook\",\"types\":[\"administrative_area_level_2\",\"political\"]},{\"long_name\":\"Illinois\",\"short_name\":\"IL\",\"types\":[\"administrative_area_level_1\",\"political\"]},{\"long_name\":\"United States\",\"short_name\":\"US\",\"types\":[\"country\",\"political\"]},{\"long_name\":\"60606\",\"short_name\":\"60606\",\"types\":[\"postal_code\"]},{\"long_name\":\"6437\",\"short_name\":\"6437\",\"types\":[]}],\"formatted_address\":\"Skydeck Chicago, 233 South Wacker Drive, Chicago, IL 60606, USA\",\"geometry\":{\"location\":{\"lat\":41.8788918,\"lng\":-87.6358151},\"location_type\":\"APPROXIMATE\",\"viewport\":{\"northeast\":{\"lat\":41.887199,\"lng\":-87.6198077},\"southwest\":{\"lat\":41.8705835,\"lng\":-87.6518225}}},\"partial_match\":true,\"types\":[\"point_of_interest\",\"museum\",\"establishment\"]}],\"status\":\"OK\"}\n";
     JSONObject response = new JSONObject(jsonString);
-    expect(resource.findLocation("Dearborn and Monroe, Chicago, IL")).andReturn(response);
+    expect(resource.findLocation("Willis Tower")).andReturn(response);
     replayAll();
-    Location location = geoLocator.locate("Dearborn and Monroe, Chicago, IL",
+    Location location = geoLocator.locate("Willis Tower",
         GeolocationGranularity.BROAD);
     assertEquals(
-        Location.builder().lat(41.8807438).lng(-87.6293867).name("Dearborn and Monroe, Chicago, IL")
+        Location.builder().lat(41.878891).lng(-87.635815).name("Willis Tower")
             .build(), location);
   }
 
