@@ -1004,6 +1004,19 @@ public class GoogleGeolocatorTest extends EasyMockSupport {
         location);
   }
 
+  @Test
+  public void testPointOfInterest() throws JSONException {
+    String jsonString = "{\"results\":[{\"address_components\":[{\"long_name\":\"Skydeck Chicago\",\"short_name\":\"Skydeck Chicago\",\"types\":[\"point_of_interest\",\"establishment\"]},{\"long_name\":\"233\",\"short_name\":\"233\",\"types\":[\"street_number\"]},{\"long_name\":\"South Wacker Drive\",\"short_name\":\"S Wacker Dr\",\"types\":[\"route\"]},{\"long_name\":\"Loop\",\"short_name\":\"Loop\",\"types\":[\"neighborhood\",\"political\"]},{\"long_name\":\"Chicago\",\"short_name\":\"Chicago\",\"types\":[\"locality\",\"political\"]},{\"long_name\":\"Cook\",\"short_name\":\"Cook\",\"types\":[\"administrative_area_level_2\",\"political\"]},{\"long_name\":\"Illinois\",\"short_name\":\"IL\",\"types\":[\"administrative_area_level_1\",\"political\"]},{\"long_name\":\"United States\",\"short_name\":\"US\",\"types\":[\"country\",\"political\"]},{\"long_name\":\"60606\",\"short_name\":\"60606\",\"types\":[\"postal_code\"]},{\"long_name\":\"6437\",\"short_name\":\"6437\",\"types\":[]}],\"formatted_address\":\"Skydeck Chicago, 233 South Wacker Drive, Chicago, IL 60606, USA\",\"geometry\":{\"location\":{\"lat\":41.8788918,\"lng\":-87.6358151},\"location_type\":\"APPROXIMATE\",\"viewport\":{\"northeast\":{\"lat\":41.887199,\"lng\":-87.6198077},\"southwest\":{\"lat\":41.8705835,\"lng\":-87.6518225}}},\"partial_match\":true,\"types\":[\"point_of_interest\",\"museum\",\"establishment\"]}],\"status\":\"OK\"}\n";
+    JSONObject response = new JSONObject(jsonString);
+    expect(resource.findLocation("Dearborn and Monroe, Chicago, IL")).andReturn(response);
+    replayAll();
+    Location location = geoLocator.locate("Dearborn and Monroe, Chicago, IL",
+        GeolocationGranularity.BROAD);
+    assertEquals(
+        Location.builder().lat(41.8807438).lng(-87.6293867).name("Dearborn and Monroe, Chicago, IL")
+            .build(), location);
+  }
+
   @Test(expected = OverQueryLimitException.class)
   public void testReverseLookupOverQueryLimit() throws JSONException {
     Location location = Location.builder().lat(-123).lng(456).build();

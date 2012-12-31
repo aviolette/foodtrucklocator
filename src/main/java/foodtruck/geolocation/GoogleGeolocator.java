@@ -84,23 +84,16 @@ public class GoogleGeolocator implements GeoLocator {
       if (results.length() > 0) {
         final JSONObject firstResult = results.getJSONObject(0);
         final JSONArray types = firstResult.getJSONArray("types");
-        if (arrayContains(types, "locality") || arrayContains(types, "administrative_area_level_1")) {
+        if (!arrayContains(types, "intersection", "street_address", "airport", "park", "point_of_interest")) {
           log.log(Level.INFO, "Result was too granular");
           return null;
         }
         final JSONObject geometry = firstResult.getJSONObject("geometry");
-        String locationType = geometry.optString("location_type", null);
-        if (granularity == GeolocationGranularity.NARROW && ("GEOMETRIC_CENTER".equals(locationType)
-            || "APPROXIMATE".equals(locationType))) {
-          // TODO: inefficient
-          if (arrayContains(types, "point_of_interest") || arrayContains(types, "establishment")) {
-            log.log(Level.INFO, "Location type was: " + locationType);
-            return null;
-          }
-        }
-        JSONObject loc =
-            geometry.getJSONObject("location");
-        return Location.builder().lat(loc.getDouble("lat")).lng(loc.getDouble("lng")).name(location)
+        JSONObject loc = geometry.getJSONObject("location");
+        return Location.builder()
+            .lat(loc.getDouble("lat"))
+            .lng(loc.getDouble("lng"))
+            .name(location)
             .build();
       }
     } catch (JSONException e) {
@@ -109,13 +102,16 @@ public class GoogleGeolocator implements GeoLocator {
     return null;
   }
 
-  private boolean arrayContains(@Nullable JSONArray arr, String searchWord) throws JSONException {
+  private boolean arrayContains(@Nullable JSONArray arr, String ...searchWords) throws JSONException {
     if (arr == null) {
       return false;
     }
     for (int i = 0; i < arr.length(); i++) {
-      if (searchWord.equals(arr.getString(i))) {
-        return true;
+      String str = arr.getString(i);
+      for (String searchWord : searchWords) {
+        if (searchWord.equals(str)) {
+          return true;
+        }
       }
     }
     return false;
