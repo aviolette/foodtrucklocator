@@ -37,8 +37,15 @@ public class TweetFormatTag extends BodyTagSupport {
 
   @VisibleForTesting
   static String formatBody(String body) {
+    body = sanitizeHtml(body);
     body = formatUrls(body);
     return formatTwitterHandles(body);
+  }
+
+  private static String sanitizeHtml(String body) {
+    body = body.replaceAll(" &", " &amp;");
+    body = body.replaceAll("<", "&lt;");
+    return body.replaceAll(">", "&gt;");
   }
 
   private static String formatUrls(String body) {

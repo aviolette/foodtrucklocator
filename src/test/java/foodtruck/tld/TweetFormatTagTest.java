@@ -18,6 +18,11 @@ public class TweetFormatTagTest {
   }
 
   @Test
+  public void testFormat_sanitizeHtml() {
+    assertEquals("Going strong Ship @&lt;&lt;Clark &amp; Washington&gt;&gt; Shuttle heading to &lt;&lt;600 W Chicago&gt;&gt; see you soon!!", formatBody("Going strong Ship @<<Clark & Washington>> Shuttle heading to <<600 W Chicago>> see you soon!!"));
+  }
+
+  @Test
   public void testFormat_noTweets() {
     assertEquals("There are no tweets here.", formatBody("There are no tweets here."));
   }
