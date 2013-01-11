@@ -1,7 +1,7 @@
 <%@include file="../common.jsp" %>
 <div id="aboutDialog" class="modal hide fade">
   <div class="modal-header">
-    <a href="#" class="close">&times;</a>
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
 
     <h3>About the Chicago Food Truck Finder</h3>
   </div>
