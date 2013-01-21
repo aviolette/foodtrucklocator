@@ -15,6 +15,13 @@
     </td>
   </tr>
   <tr>
+    <td>Yelp</td>
+    <td><c:choose><c:when test="${empty(truck.yelpSlug)}">none</c:when><c:otherwise><a
+        target="_blank"
+        href="http://yelp.com/biz/${truck.yelpSlug}">http://yelp.com/biz/${truck.yelpSlug}</a></c:otherwise></c:choose>
+    </td>
+  </tr>
+  <tr>
     <td>Foursquare</td>
     <td><c:choose><c:when test="${empty(truck.foursquareUrl)}">none</c:when><c:otherwise><a
         target="_blank" href="http://foursquare.com/v/${truck.foursquareUrl}">http://foursquare.com/v/${truck.foursquareUrl}</a></c:otherwise></c:choose>

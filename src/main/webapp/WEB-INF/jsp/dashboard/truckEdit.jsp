@@ -43,6 +43,14 @@
       </div>
     </div>
     <div class="clearfix">
+      <label for="yelp">Yelp Slug</label>
+
+      <div class="input">
+        <input type="text" class="input-xlarge" id="yelp" name="yelp"
+               value="${truck.yelpSlug}"/>
+      </div>
+    </div>
+    <div class="clearfix">
       <label for="facebook">Facebook URI</label>
 
       <div class="input">

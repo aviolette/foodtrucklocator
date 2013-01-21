@@ -39,6 +39,7 @@ public class Truck extends ModelEntity {
   private final @Nullable String phone;
   private final boolean twitterGeolocationDataValid;
   private final @Nullable DateTime muteUntil;
+  private final String yelpSlug;
 
   private Truck(Builder builder) {
     super(builder.id);
@@ -61,6 +62,7 @@ public class Truck extends ModelEntity {
     this.phone = builder.phone;
     this.twitterGeolocationDataValid = builder.twitterGeolocationDataValid;
     this.muteUntil = builder.muteUntil;
+    this.yelpSlug = builder.yelpSlug;
   }
 
   public boolean isTwitterGeolocationDataValid() {
@@ -77,6 +79,10 @@ public class Truck extends ModelEntity {
 
   public String getName() {
     return name;
+  }
+
+  public String getYelpSlug() {
+    return yelpSlug;
   }
 
   public @Nullable String getCalendarUrl() {
@@ -160,6 +166,7 @@ public class Truck extends ModelEntity {
         .add("foursquareUrl", foursquareUrl)
         .add("uses twittalyzer", twittalyzer)
         .add("facebook URI", facebook)
+        .add("Yelp Slug", yelpSlug)
         .add("inactive", inactive)
         .add("muteUntil", muteUntil)
         .toString();
@@ -223,6 +230,7 @@ public class Truck extends ModelEntity {
     private @Nullable String phone;
     public boolean twitterGeolocationDataValid;
     private @Nullable DateTime muteUntil;
+    private @Nullable String yelpSlug;
 
     public Builder() {
     }
@@ -244,6 +252,7 @@ public class Truck extends ModelEntity {
       this.calendarUrl = truck.calendarUrl;
       this.twitterGeolocationDataValid = truck.twitterGeolocationDataValid;
       this.muteUntil = truck.muteUntil;
+      this.yelpSlug = truck.yelpSlug;
     }
 
     public Builder id(String id) {
@@ -341,6 +350,11 @@ public class Truck extends ModelEntity {
 
     public Builder phone(@Nullable String phone) {
       this.phone = phone;
+      return this;
+    }
+
+    public Builder yelpSlug(@Nullable String yelpSlug) {
+      this.yelpSlug = yelpSlug;
       return this;
     }
 

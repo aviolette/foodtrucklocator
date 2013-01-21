@@ -12,8 +12,6 @@ import com.google.inject.Inject;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.model.DailySchedule;
@@ -52,6 +50,7 @@ public class JsonWriter {
         .put("facebook", truck.getFacebook())
         .put("foursquare", truck.getFoursquareUrl())
         .put("name", truck.getName())
+        .put("yelp", truck.getYelpSlug())
         .put("inactive", truck.isInactive())
         .put("url", truck.getUrl());
   }

@@ -14,6 +14,7 @@ import org.joda.time.DateTimeZone;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
+import static foodtruck.dao.appengine.Attributes.getStringProperty;
 
 /**
  * @author aviolette@gmail.com
@@ -39,6 +40,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
   private static final String TRUCK_PHONE = "phone";
   private static final String TRUCK_TWITTER_GEOLOCATION = "twitterGeolocation";
   private static final String TRUCK_MUTE_UNTIL = "muteUntil";
+  private static final String TRUCK_YELP_SLUG = "yelp";
   private DateTimeZone zone;
 
   @Inject
@@ -60,6 +62,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
         .iconUrl((String) entity.getProperty(TRUCK_ICON_URL))
         .muteUntil(Attributes.getDateTime(entity, TRUCK_MUTE_UNTIL, zone))
         .name((String) entity.getProperty(TRUCK_NAME_FIELD))
+        .yelpSlug(getStringProperty(entity, TRUCK_YELP_SLUG))
         .matchOnlyIf((String) entity.getProperty(MATCH_REGEX_FIELD))
         .donotMatchIf((String) entity.getProperty(DONT_MATCH_REGEX_FIELD))
         .url((String) entity.getProperty(TRUCK_URL))
@@ -139,6 +142,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     entity.setProperty(INACTIVE_FIELD, truck.isInactive());
     entity.setProperty(CATEGORIES_FIELD, truck.getCategories());
     entity.setProperty(TRUCK_EMAIL, truck.getEmail());
+    entity.setProperty(TRUCK_YELP_SLUG, truck.getYelpSlug());
     entity.setProperty(TRUCK_PHONE, truck.getPhone());
     entity.setProperty(TRUCK_TWITTER_GEOLOCATION, truck.isTwitterGeolocationDataValid());
     Attributes.setDateProperty(TRUCK_MUTE_UNTIL, entity, truck.getMuteUntil());

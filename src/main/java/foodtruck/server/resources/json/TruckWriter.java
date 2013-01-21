@@ -33,6 +33,7 @@ public class TruckWriter implements JSONWriter<Truck>, MessageBodyWriter<Truck> 
         .put("foursquare", truck.getFoursquareUrl())
         .put("name", truck.getName())
         .put("inactive", truck.isInactive())
+        .put("yelp", truck.getYelpSlug())
         .put("url", truck.getUrl());
   }
 

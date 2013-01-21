@@ -156,6 +156,7 @@ public class TruckServlet extends HttpServlet {
         .foursquareUrl(request.getParameter("foursquareUrl"))
         .iconUrl(request.getParameter("iconUrl"))
         .name(request.getParameter("name"))
+        .yelpSlug(request.getParameter("yelp"))
         .phone(request.getParameter("phone"))
         .email(request.getParameter("email"))
         .twitterHandle(request.getParameter("twitterHandle"))
