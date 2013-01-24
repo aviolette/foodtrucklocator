@@ -48,6 +48,12 @@ public class TruckResource {
     return JResponse.ok(truckDAO.findActiveTrucks(), mediaType).build();
   }
 
+  @GET @Produces("application/json") @Path("{truckId}")
+  public JResponse<Truck> getTruck(@PathParam("truckId") String truckId) {
+    Truck t = truckDAO  .findById(truckId);
+    return JResponse.ok(t).build();
+  }
+
   @POST @Path("{truckId}/mute")
   public void muteTruck(@PathParam("truckId") String truckId) {
     requiresAdmin();
