@@ -80,8 +80,7 @@
               "' data-toggle='button' type='button'>" + btnLabel + "</button></td>";
           console.log(buttons);
           $("#applications").append("<tr>" + buttons + "<td>" + datum["name"] + "</td><td>" + datum['appKey']
-              + "</td><td><a href='/admin/locations?q=" +
-              encodeURIComponent(datum["description"]) +"'>" + datum["description"]+"</a></td></tr>");
+              + "</td><td>" + datum["description"]+"</td></tr>");
           var $activeBtn = $("#activeBtn-" + i);
           if (!datum["enabled"]) {
             $activeBtn.addClass("active").addClass("btn-success");
