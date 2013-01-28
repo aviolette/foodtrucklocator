@@ -22,7 +22,7 @@ import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.ScheduleDAO;
 import foodtruck.model.DailySchedule;
 import foodtruck.model.Location;
-import foodtruck.server.api.JsonWriter;
+import foodtruck.server.resources.json.DailyScheduleWriter;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 import foodtruck.util.TimeFormatter;
@@ -38,13 +38,13 @@ public class FoodTruckServlet extends HttpServlet {
   private final Clock clock;
   private final DateTimeFormatter dateFormatter;
   private final FoodTruckStopService stopService;
-  private ScheduleDAO scheduleCacher;
-  private JsonWriter writer;
-  private ConfigurationDAO configDAO;
+  private final ScheduleDAO scheduleCacher;
+  private final DailyScheduleWriter writer;
+  private final ConfigurationDAO configDAO;
 
   @Inject
   public FoodTruckServlet(ConfigurationDAO configDAO,
-      Clock clock, FoodTruckStopService service, JsonWriter writer, ScheduleDAO scheduleCacher,
+      Clock clock, FoodTruckStopService service, DailyScheduleWriter writer, ScheduleDAO scheduleCacher,
       @TimeFormatter DateTimeFormatter timeFormatter) {
     this.clock = clock;
     this.configDAO = configDAO;
@@ -90,7 +90,7 @@ public class FoodTruckServlet extends HttpServlet {
     if (payload == null) {
       DailySchedule schedule = stopService.findStopsForDay(dateTime.toLocalDate());
       try {
-        payload = writer.writeSchedule(schedule).toString();
+        payload = writer.asJSON(schedule).toString();
       } catch (JSONException e) {
         // TODO: fix this
         throw new RuntimeException(e);

@@ -12,7 +12,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import foodtruck.model.TweetSummary;
-import foodtruck.server.api.JsonWriter;
+import foodtruck.server.resources.json.LocationWriter;
 
 /**
  * @author aviolette@gmail.com
@@ -21,11 +21,11 @@ import foodtruck.server.api.JsonWriter;
 public class RemoteCacheUpdater implements TweetCacheUpdater {
   private static final Logger log = Logger.getLogger(RemoteCacheUpdater.class.getName());
   private final WebResource foodtruckLocator;
-  private final JsonWriter jsonWriter;
+  private final LocationWriter jsonWriter;
 
   @Inject
   public RemoteCacheUpdater(@FoodtruckLocatorEndpoint WebResource foodtruckLocator,
-      JsonWriter writer) {
+      LocationWriter writer) {
     this.foodtruckLocator = foodtruckLocator;
     this.jsonWriter = writer;
   }
