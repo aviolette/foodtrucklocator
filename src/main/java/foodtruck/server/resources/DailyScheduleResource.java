@@ -12,6 +12,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 import foodtruck.dao.ApplicationDAO;
+import foodtruck.model.Application;
 import foodtruck.model.DailySchedule;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
@@ -40,8 +41,12 @@ public class DailyScheduleResource {
   }
 
   private void requireAppKey(String appKey) {
-    if (Strings.isNullOrEmpty(appKey) || appDAO.findById(appKey) == null) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    if (!Strings.isNullOrEmpty(appKey)) {
+      Application app = appDAO.findById(appKey);
+      if (app != null && app.isEnabled()) {
+        return;
+      }
     }
+    throw new WebApplicationException(Response.Status.UNAUTHORIZED);
   }
 }
