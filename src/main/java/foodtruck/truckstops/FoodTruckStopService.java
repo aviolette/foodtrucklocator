@@ -88,9 +88,9 @@ public interface FoodTruckStopService {
 
   /**
    * Finds trucks within 1/5 of a mile of the specified location
-   * @param localDate the date to search on
    * @param location the location to search on
+   * @param currentTime the time of day that the
    * @return The set of trucks that fit the search criteria
    */
-  Set<Truck> findTrucksNearLocation(LocalDate localDate, Location location);
+  Set<Truck> findTrucksNearLocation(Location location, DateTime currentTime);
 }

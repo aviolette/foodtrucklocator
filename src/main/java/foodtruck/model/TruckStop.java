@@ -105,4 +105,11 @@ public class TruckStop extends ModelEntity {
   public TruckStop withLocation(Location location) {
     return new TruckStop(truck, startTime, endTime, location, (Long) getKey(), locked);
   }
+
+  /**
+   * Returns true if the stop has expired by the specified time.
+   */
+  public boolean hasExpiredBy(DateTime currentTime) {
+    return endTime.isBefore(currentTime);
+  }
 }
