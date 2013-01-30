@@ -78,8 +78,8 @@
     <div class="clearfix">
       <label for="iconUrl">Icon URL:</label>
 
-      <div class="input">
-        <input type="text" class="input-xlarge" class="input-xlarge" id="iconUrl" name="iconUrl"
+      <div class="input" >
+        <input type="text" class="input-xlarge span8" class="input-xlarge" id="iconUrl" name="iconUrl"
                value="${truck.iconUrl}"/>
       </div>
     </div>
@@ -87,7 +87,7 @@
       <label for="calendarUrl">Calendar URL</label>
 
       <div class="input">
-        <input type="text" class="input-xlarge" id="calendarUrl" name="calendarUrl"
+        <input type="text" class="input-xlarge span8" id="calendarUrl" name="calendarUrl"
                value="${truck.calendarUrl}"/>
       </div>
     </div>
