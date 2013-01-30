@@ -24,7 +24,7 @@
 
 <div id="edit-notification" class="modal hide fade">
   <div class="modal-header">
-    <a href="#" class="close">&times;</a>
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 
     <h3>Edit Notification Group</h3>
   </div>
@@ -49,7 +49,7 @@
           <label for="location">Location</label>
 
           <div class="input">
-            <input id="location" type="text"/>
+            <input id="location" class="span5" type="text"/>
           </div>
         </div>
         <div class="clearfix">
@@ -70,8 +70,8 @@
     </form>
   </div>
   <div class="modal-footer">
-    <a id="saveButton" href="#" class="btn primary">Save</a>
-    <a id="cancelButton" href="#" class="btn secondary">Cancel</a>
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    <button id="saveButton" class="btn primary">Save</button>
   </div>
 </div>
 

@@ -22,8 +22,7 @@
 
 <div id="edit-application" class="modal hide fade">
   <div class="modal-header">
-    <a href="#" class="close">&times;</a>
-
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
     <h3>Edit Application</h3>
   </div>
   <div class="modal-body">
@@ -45,8 +44,8 @@
     </form>
   </div>
   <div class="modal-footer">
-    <a id="saveButton" href="#" class="btn primary">Save</a>
-    <a id="cancelButton" href="#" class="btn secondary">Cancel</a>
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    <button id="saveButton" class="btn primary">Save</button>
   </div>
 </div>
 
