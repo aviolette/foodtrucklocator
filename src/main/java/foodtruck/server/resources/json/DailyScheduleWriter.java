@@ -29,6 +29,7 @@ import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.server.resources.BadRequestException;
+import foodtruck.util.DateOnlyFormatter;
 import foodtruck.util.TimeOnlyFormatter;
 
 /**
@@ -40,13 +41,15 @@ public class DailyScheduleWriter implements MessageBodyWriter<DailySchedule>, JS
   private final LocationWriter locationWriter;
   private final DateTimeFormatter formatter;
   private final TruckWriter truckWriter;
+  private final DateTimeFormatter dateOnlyFormatter;
 
   @Inject
   public DailyScheduleWriter(LocationWriter locationWriter,@TimeOnlyFormatter DateTimeFormatter formatter,
-      TruckWriter truckWriter) {
+      TruckWriter truckWriter, @DateOnlyFormatter DateTimeFormatter dateOnlyFormatter) {
     this.locationWriter = locationWriter;
     this.formatter = formatter;
     this.truckWriter = truckWriter;
+    this.dateOnlyFormatter = dateOnlyFormatter;
   }
 
   @Override public JSONObject asJSON(DailySchedule schedule) throws JSONException {
@@ -78,6 +81,7 @@ public class DailyScheduleWriter implements MessageBodyWriter<DailySchedule>, JS
     payload.put("trucks", JSONSerializer.buildArray(ImmutableSet.copyOf(trucks), truckWriter));
     payload.put("locations", locationArr);
     payload.put("stops", schedules);
+    payload.put("date", dateOnlyFormatter.print(schedule.getDay()));
     return payload;
   }
 
