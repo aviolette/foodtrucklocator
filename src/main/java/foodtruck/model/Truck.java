@@ -40,6 +40,7 @@ public class Truck extends ModelEntity {
   private final boolean twitterGeolocationDataValid;
   private final @Nullable DateTime muteUntil;
   private final String yelpSlug;
+  private final @Nullable String facebookPageId;
 
   private Truck(Builder builder) {
     super(builder.id);
@@ -54,6 +55,7 @@ public class Truck extends ModelEntity {
     this.twittalyzer = builder.twittalyzer;
     this.defaultCity = builder.defaultCity;
     this.facebook = builder.facebook;
+    this.facebookPageId = builder.facebookPageId;
     this.matchOnlyIf = builder.matchOnlyIf;
     this.inactive = builder.inactive;
     this.calendarUrl = builder.calendarUrl;
@@ -89,6 +91,7 @@ public class Truck extends ModelEntity {
     return calendarUrl;
   }
 
+  @SuppressWarnings("UnusedDeclaration")
   public String getCategoryList() {
     return Joiner.on(",").join(categories);
   }
@@ -125,15 +128,19 @@ public class Truck extends ModelEntity {
     return facebook;
   }
 
+  public @Nullable String getFacebookPageId() {
+    return facebookPageId;
+  }
+
   public boolean isInactive() {
     return inactive;
   }
 
-  public String getEmail() {
+  public @Nullable String getEmail() {
     return email;
   }
 
-  public String getPhone() {
+  public @Nullable String getPhone() {
     return phone;
   }
 
@@ -206,6 +213,7 @@ public class Truck extends ModelEntity {
     return muteUntil;
   }
 
+  @SuppressWarnings("UnusedDeclaration")
   public boolean isMuted() {
     return muteUntil != null && muteUntil.isAfter(new DateTime());
   }
@@ -231,6 +239,7 @@ public class Truck extends ModelEntity {
     public boolean twitterGeolocationDataValid;
     private @Nullable DateTime muteUntil;
     private @Nullable String yelpSlug;
+    private @Nullable String facebookPageId;
 
     public Builder() {
     }
@@ -253,6 +262,7 @@ public class Truck extends ModelEntity {
       this.twitterGeolocationDataValid = truck.twitterGeolocationDataValid;
       this.muteUntil = truck.muteUntil;
       this.yelpSlug = truck.yelpSlug;
+      this.facebookPageId = truck.facebookPageId;
     }
 
     public Builder id(String id) {
@@ -330,6 +340,11 @@ public class Truck extends ModelEntity {
 
     public Builder facebook(@Nullable String facebook) {
       this.facebook = facebook;
+      return this;
+    }
+
+    public Builder facebookPageId(@Nullable String facebookPageId) {
+      this.facebookPageId = facebookPageId;
       return this;
     }
 

@@ -59,6 +59,14 @@
       </div>
     </div>
     <div class="clearfix">
+      <label for="facebookPageId">Facebook PageId</label>
+
+      <div class="input">
+        <input type="text" class="input-xlarge" id="facebookPageId" name="facebookPageId"
+               value="${truck.facebookPageId}"/>
+      </div>
+    </div>
+    <div class="clearfix">
       <label for="email">Email</label>
 
       <div class="input">

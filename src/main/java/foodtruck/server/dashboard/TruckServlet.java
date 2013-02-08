@@ -153,6 +153,7 @@ public class TruckServlet extends HttpServlet {
         .description(request.getParameter("description"))
         .calendarUrl(request.getParameter("calendarUrl"))
         .facebook(request.getParameter("facebook"))
+        .facebookPageId(request.getParameter("facebookPageId"))
         .foursquareUrl(request.getParameter("foursquareUrl"))
         .iconUrl(request.getParameter("iconUrl"))
         .name(request.getParameter("name"))

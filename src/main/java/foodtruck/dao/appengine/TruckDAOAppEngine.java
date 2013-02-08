@@ -41,6 +41,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
   private static final String TRUCK_TWITTER_GEOLOCATION = "twitterGeolocation";
   private static final String TRUCK_MUTE_UNTIL = "muteUntil";
   private static final String TRUCK_YELP_SLUG = "yelp";
+  private static final String TRUCK_FACEBOOK_PAGE_ID = "facebookPageId";
   private DateTimeZone zone;
 
   @Inject
@@ -63,6 +64,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
         .muteUntil(Attributes.getDateTime(entity, TRUCK_MUTE_UNTIL, zone))
         .name((String) entity.getProperty(TRUCK_NAME_FIELD))
         .yelpSlug(getStringProperty(entity, TRUCK_YELP_SLUG))
+        .facebookPageId(getStringProperty(entity, TRUCK_FACEBOOK_PAGE_ID))
         .matchOnlyIf((String) entity.getProperty(MATCH_REGEX_FIELD))
         .donotMatchIf((String) entity.getProperty(DONT_MATCH_REGEX_FIELD))
         .url((String) entity.getProperty(TRUCK_URL))
@@ -144,6 +146,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     entity.setProperty(TRUCK_EMAIL, truck.getEmail());
     entity.setProperty(TRUCK_YELP_SLUG, truck.getYelpSlug());
     entity.setProperty(TRUCK_PHONE, truck.getPhone());
+    entity.setProperty(TRUCK_FACEBOOK_PAGE_ID, truck.getFacebookPageId());
     entity.setProperty(TRUCK_TWITTER_GEOLOCATION, truck.isTwitterGeolocationDataValid());
     Attributes.setDateProperty(TRUCK_MUTE_UNTIL, entity, truck.getMuteUntil());
     return entity;
