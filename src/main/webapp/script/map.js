@@ -621,6 +621,9 @@ window.FoodTruckLocator = function() {
       if (hours > 12) {
         hours = hours - 12;
         ampm = "pm";
+      } else if (hours == 0) {
+        hours = 12;
+        ampm = "am"
       }
       var minutes = Math.floor(self.currentTime.getMinutes() / 15) * 15;
       $("#hourSelect").val(hours);
