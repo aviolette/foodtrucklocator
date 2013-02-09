@@ -20,6 +20,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 
+import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -29,7 +30,9 @@ import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.Location;
 import foodtruck.model.TruckStop;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static foodtruck.dao.appengine.Attributes.*;
+import static foodtruck.dao.appengine.Attributes.getDateTime;
+import static foodtruck.dao.appengine.Attributes.getDoubleProperty;
+import static foodtruck.dao.appengine.Attributes.getStringProperty;
 
 /**
  * @author aviolette@gmail.com
@@ -144,8 +147,11 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
     DatastoreService dataStore = serviceProvider.get();
     Query q = new Query(STOP_KIND);
     // TODO: google's filters can't do range comparisons...ugh...here I search the lower bound
+    final DateMidnight midnight = day.toDateMidnight(zone);
+    // This opens up a 6 hour window before the specified day to get any stops that start on the prior day
+    // This is not the best way to do this.  This code needs to be refactored
     q.addFilter(START_TIME_FIELD, Query.FilterOperator.GREATER_THAN_OR_EQUAL,
-        day.toDateMidnight(zone).toDate());
+        midnight.toDateTime().minusHours(6).toDate());
     if (truckId != null) {
       q.addFilter(TRUCK_ID_FIELD, Query.FilterOperator.EQUAL, truckId);
     }
@@ -156,7 +162,11 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
       if (startTime.isAfter(day.plusDays(1).toDateMidnight(zone))) {
         continue;
       }
-      stops.add(toTruckStop(entity));
+      final DateTime endTime = getDateTime(entity, END_TIME_FIELD, zone);
+      // make sure that this stop at least ends or starts on the current day
+      if (midnight.isBefore(endTime) || midnight.isBefore(startTime)) {
+        stops.add(toTruckStop(entity));
+      }
     }
     return stops.build();
   }
