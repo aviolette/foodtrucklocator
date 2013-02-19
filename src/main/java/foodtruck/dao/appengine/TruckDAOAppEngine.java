@@ -6,6 +6,7 @@ import java.util.Set;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Text;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
@@ -26,7 +27,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
   private static final String TRUCK_TWITTER_HANDLE = "twitterHandle";
   private static final String TRUCK_URL = "url";
   private static final String TRUCK_ICON_URL = "iconUrl";
-  private static final String TRUCK_DESCRIPTION_FIELD = "description";
+  private static final String TRUCK_DESCRIPTION_FIELD = "descriptionText";
   private static final String TRUCK_FOURSQUARE_URL_FIELD = "foursquareUrl";
   private static final String TRUCK_TWITTALYZER_FIELD = "useTwittalyzer";
   private static final String TRUCK_DEFAULT_CITY_FIELD = "defaultCity";
@@ -53,11 +54,12 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
   protected Truck fromEntity(Entity entity) {
     Truck.Builder builder = Truck.builder();
     Collection categoriesList = (Collection) entity.getProperty(CATEGORIES_FIELD);
+    Text t = (Text) entity.getProperty(TRUCK_DESCRIPTION_FIELD);
     return builder.id(entity.getKey().getName())
         .inactive((Boolean) entity.getProperty(INACTIVE_FIELD))
         .twitterHandle((String) entity.getProperty(TRUCK_TWITTER_HANDLE))
         .defaultCity((String) entity.getProperty(TRUCK_DEFAULT_CITY_FIELD))
-        .description((String) entity.getProperty(TRUCK_DESCRIPTION_FIELD))
+        .description(t == null ? null : t.getValue())
         .facebook((String) entity.getProperty(TRUCK_FACEBOOK_FIELD))
         .foursquareUrl((String) entity.getProperty(TRUCK_FOURSQUARE_URL_FIELD))
         .iconUrl((String) entity.getProperty(TRUCK_ICON_URL))
@@ -134,7 +136,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     entity.setProperty(TRUCK_ICON_URL, truck.getIconUrl());
     entity.setProperty(TRUCK_CALENDAR_URL,
         Strings.isNullOrEmpty(truck.getCalendarUrl()) ? null : truck.getCalendarUrl());
-    entity.setProperty(TRUCK_DESCRIPTION_FIELD, truck.getDescription());
+    entity.setProperty(TRUCK_DESCRIPTION_FIELD, new Text(truck.getDescription()));
     entity.setProperty(TRUCK_FOURSQUARE_URL_FIELD, truck.getFoursquareUrl());
     entity.setProperty(TRUCK_TWITTALYZER_FIELD, truck.isUsingTwittalyzer());
     entity.setProperty(TRUCK_DEFAULT_CITY_FIELD, truck.getDefaultCity());

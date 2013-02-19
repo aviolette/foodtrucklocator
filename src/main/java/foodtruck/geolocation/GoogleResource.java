@@ -21,7 +21,8 @@ public class GoogleResource {
 
   public JSONObject findLocation(String location) {
     // TODO: make country and state configurable
-    return geolocationResource.queryParam("address", location)
+    return geolocationResource
+        .queryParam("address", location)
         .queryParam("sensor", "false")
         .queryParam("components", "country:US|administrative_area:IL")
         .get(JSONObject.class);

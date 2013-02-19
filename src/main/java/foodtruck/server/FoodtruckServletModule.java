@@ -24,6 +24,7 @@ import foodtruck.server.job.MailUpdatesServlet;
 import foodtruck.server.job.PurgeStatsServlet;
 import foodtruck.server.job.RecacheServlet;
 import foodtruck.server.job.SendLunchNotificationsServlet;
+import foodtruck.server.job.SyncFacebookProfiles;
 import foodtruck.server.job.TweetCacheUpdateServlet;
 import foodtruck.server.job.TwitterCachePurgeServlet;
 
@@ -44,6 +45,7 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/cron/processChanges").with(MailUpdatesServlet.class);
     serve("/cron/statPurge").with(PurgeStatsServlet.class);
     serve("/cron/notifications").with(SendLunchNotificationsServlet.class);
+    serve("/cron/facebookSync").with(SyncFacebookProfiles.class);
     serve("/admin").with(AdminDashboardServlet.class);
     serve("/admin/addresses").with(AddressRuleServlet.class);
     serveRegex("/admin/trucks/[\\S]*/events/[\\w]*").with(TruckStopServlet.class);
