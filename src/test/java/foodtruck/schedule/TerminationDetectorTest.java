@@ -47,6 +47,14 @@ public class TerminationDetectorTest {
         detector.detect(tweetBuilder.text("Sold out! thanks 600 w. Chicago").build()));
   }
 
+
+  @Test
+  public void testThanx() {
+    assertEquals(tweetTime,
+        detector.detect(tweetBuilder.text("Thanx u of c love ya").build()));
+  }
+
+
   @Test
   public void testApologies() {
     assertEquals(tweetTime,
