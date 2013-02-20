@@ -1,6 +1,7 @@
 package foodtruck.schedule;
 
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -167,7 +168,7 @@ public class TruckStopMatcher {
     }
     if (startTime == null) {
       // Cupcake trucks and such should not be matched at all by this rule since they make many frequent stops
-      if (!morning || truck.getCategories().contains("Breakfast")) {
+      if (canStartNow(truck, morning, tweetText)) {
         startTime = tweet.getTime();
       } else {
         startTime = tweet.getTime().withTime(11, 30, 0, 0);
@@ -187,6 +188,20 @@ public class TruckStopMatcher {
         .text(tweetText)
         .terminated(terminationTime != null)
         .build();
+  }
+
+  private boolean canStartNow(Truck truck, boolean morning, String tweetText) {
+    if (!morning) {
+      return true;
+    }
+    Set<String> categories = truck.getCategories();
+    boolean breakfast = categories.contains("Breakfast");
+    if (breakfast && categories.contains("Lunch")) {
+      return tweetText.toLowerCase().matches(".*b\\w*fast.*");
+    } else if (breakfast) {
+      return true;
+    }
+    return false;
   }
 
   private boolean verifyMatchOnlyExpression(Truck truck, String tweetText) {
