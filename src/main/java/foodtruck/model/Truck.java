@@ -93,7 +93,7 @@ public class Truck extends ModelEntity {
 
   @SuppressWarnings("UnusedDeclaration")
   public String getCategoryList() {
-    return Joiner.on(",").join(categories);
+    return Joiner.on(", ").join(categories);
   }
 
   public Set<String> getCategories() {

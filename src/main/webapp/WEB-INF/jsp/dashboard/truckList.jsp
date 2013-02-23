@@ -19,6 +19,7 @@
     <th>Ends At</th>
     <th>Starts At</th>
     <th>Next Location</th>
+    <th>Categories</th>
     <th>Twittalyzer</th>
   </tr>
   </thead>
@@ -53,9 +54,10 @@
           </c:url> <joda:format value="${truckStops.nextStop.startTime}" style="-S"/></td>
         <td><a
             href="${locationUrl}">${truckStops.nextStop.location.name}</a></c:when>
-          <c:otherwise>None</c:otherwise>
+          <c:otherwise></td><td>None</c:otherwise>
           </c:choose>
         </td>
+        <td>${truckStops.truck.categoryList}</td>
         <td><c:choose><c:when
             test="${truckStops.truck.usingTwittalyzer}"></c:when><c:otherwise><span
             class="label warning">off</span></c:otherwise></c:choose></td>
@@ -69,6 +71,7 @@
   <thead>
   <tr>
     <th>Truck</th>
+    <th>Categories</th>
     <th>Twittalyzer</th>
     <th>&nbsp;</th>
   </tr>
@@ -78,6 +81,7 @@
     <c:if test="${!truckStops.active && !truckStops.truck.inactive}">
       <tr <c:if test="${truckStops.truck.muted}">class="muted"</c:if>>
         <td><a href="/admin/trucks/${truckStops.truck.id}">${truckStops.truck.name}</a></td>
+        <td>${truckStops.truck.categoryList}</td>
         <td><c:choose><c:when
             test="${truckStops.truck.usingTwittalyzer}"></c:when><c:otherwise><span
             class="label warning">off</span></c:otherwise></c:choose></td>
@@ -104,6 +108,7 @@
       <c:if test="${!truckStops.active && truckStops.truck.inactive}">
         <tr>
           <td><a href="/admin/trucks/${truckStops.truck.id}">${truckStops.truck.name}</a></td>
+          <td>${truckStops.truck.categoryList}</td>
           <td><c:choose><c:when
               test="${truckStops.truck.usingTwittalyzer}"></c:when><c:otherwise><span
               class="label warning">off</span></c:otherwise></c:choose></td>
