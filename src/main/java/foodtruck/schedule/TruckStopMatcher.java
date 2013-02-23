@@ -162,7 +162,7 @@ public class TruckStopMatcher {
           if (startTime.getHourOfDay() == 0) {
             startTime = startTime.withHourOfDay(12);
           }
-          endTime = startTime.plusHours(2);
+          endTime = startTime.plusHours(stopTime(truck));
         }
       }
     }
@@ -181,13 +181,17 @@ public class TruckStopMatcher {
     }
     if (endTime == null) {
       matchBuilder.softEnding(true);
-      endTime = startTime.plusHours(DEFAULT_STOP_LENGTH_IN_HOURS);
+      endTime = startTime.plusHours(stopTime(truck));
     }
     return matchBuilder
         .stop(new TruckStop(truck, startTime, endTime, location, null, false))
         .text(tweetText)
         .terminated(terminationTime != null)
         .build();
+  }
+
+  private int stopTime(Truck truck) {
+    return truck.getCategories().contains("Dessert") ? 1 : DEFAULT_STOP_LENGTH_IN_HOURS;
   }
 
   private boolean canStartNow(Truck truck, boolean morning, String tweetText) {
