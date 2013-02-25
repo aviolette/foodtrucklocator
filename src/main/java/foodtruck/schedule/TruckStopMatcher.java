@@ -55,6 +55,7 @@ public class TruckStopMatcher {
   private final Pattern satPattern;
   private final Pattern sunPattern;
   private final Pattern atTimePattern;
+  private final Pattern schedulePattern = Pattern.compile(".*M:.+(\\b|\\n)T:.+(\\b|\\n)W:.+");
   private final ConfigurationDAO configDAO;
 
   @Inject
@@ -132,7 +133,7 @@ public class TruckStopMatcher {
     // TODO: this signals a schedule being tweeted, for now we can't handle that
     final String lowerCaseTweet = tweetText.toLowerCase();
     if (lowerCaseTweet.contains("stops") ||
-        (morning && (lowerCaseTweet.contains("schedule")))) {
+        (morning && (lowerCaseTweet.contains("schedule"))) || containsAbbreviatedSchedule(tweetText)) {
       return null;
     }
 
@@ -188,6 +189,17 @@ public class TruckStopMatcher {
         .text(tweetText)
         .terminated(terminationTime != null)
         .build();
+  }
+
+  /**
+   * Tests for tweets like this: <code></code>THE TRUCK: M: 600 W Chicago T: NBC Tower W: Clark & Monroe
+   TH: Madison & Wacker + Montrose & Ravenswood (5pm) F: Lake & Wabash</code>
+   * @param lowerCaseTweet
+   * @return
+   */
+  private boolean containsAbbreviatedSchedule(String tweetText) {
+    boolean f = schedulePattern.matcher(tweetText).find();
+    return f;
   }
 
   private int stopTime(Truck truck) {

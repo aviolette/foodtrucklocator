@@ -22,7 +22,9 @@ import foodtruck.model.Truck;
 import foodtruck.model.TweetSummary;
 import foodtruck.util.Clock;
 import static org.easymock.EasyMock.expect;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author aviolette@gmail.com
@@ -305,7 +307,19 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
   @Test
-  public void testMatch_shouldMatchTodaysSchedule() {
+  public void testMatch_shouldntMatchAbbreviatedSchedule() {
+    TruckStopMatch match =
+        tweet("THE TRUCK:\n" +
+            "M: 600 W Chicago " +
+            "T: NBC Tower\n" +
+            "W: Clark & Monroe\n" +
+            "TH: Madison & Wacker + Montrose & Ravenswood (5pm)\n" +
+            "F: Lake & Wabash").match();
+    assertNull(match);
+  }
+
+  @Test
+  public void testMatch_shouldntMatchTodaysSchedule() {
     TruckStopMatch match = tweet("SweetRideChi: TUES STOPS:  1130a - Taylor & Wood\n" +
         "1245p - UIC Campus Vernon Park Circle by BSB bldg\n" +
         "245p - Wacker & Lasalle\n" +
