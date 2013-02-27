@@ -452,7 +452,7 @@ window.FoodTruckLocator = function() {
       })
     },
     buildGroupTableRow : function(truckTime) {
-      return "<tr><td><img src='" + truckTime.truck.iconUrl + "'/></td><td>" +
+      return "<tr><td><img src='" + truckTime.truck.iconUrl + "'/></td><td style='padding-left:10px'>" +
           truckTime.startTime + "</td><td>" + truckTime.truck.name + "</td></tr>";
     },
     buildGroupLinkItem : function(truckTime) {
@@ -588,7 +588,7 @@ window.FoodTruckLocator = function() {
       return this;
     },
     buildGroupTableRow : function(truck) {
-      return "<tr><td><img src='" + truck.iconUrl + "'/></td><td>" +
+      return "<tr><td><img src='" + truck.iconUrl + "'/></td><td style='padding-left:10px'>" +
           truck.name + "</td></tr>";
     },
     buildGroupLinkItem : function(truck) {

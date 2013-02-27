@@ -10,7 +10,7 @@
         content="Find food trucks on the streets of Chicago by time and location.  Results are updated in real-time throughout the day."/>
   <title>Chicago Food Truck Finder</title>
   <link href="/bootstrap2.2.2-custom/css/bootstrap.min.css" rel="stylesheet"/>
-  <link href="/css/main.css?ver=4" rel="stylesheet"/>
+  <link href="/css/main.css?ver=5" rel="stylesheet"/>
   <script src="script/lib/modernizr-1.7.min.js"></script>
 </head>
 <body>
