@@ -326,7 +326,7 @@ window.FoodTruckLocator = function() {
       var section = $('#group' + idx);
       section.append(
           "<img class='markerIcon' id='markerIcon" + idx + "' src='" + buildIconUrl(letter) +
-              "'/>");
+              "'/>&nbsp;");
       section.append(removeChicago(group.position.name));
       if (group.distance) {
         menuSection.append("<dd>" + group.distance + " miles away</dd>")
@@ -344,7 +344,7 @@ window.FoodTruckLocator = function() {
     },
     buildTruckInfoLink : function(div, truck) {
       var self = this;
-      div.append("<a class='truckLink truckLink" + truck.id + "' href='#'>" + truck.name +
+      div.append("<img src='" + truck.iconUrl + "'/>&nbsp;<a class='truckLink truckLink" + truck.id + "' href='#'>" + truck.name +
           "</a><br/>");
 
       $(".truckLink" + truck.id).click(function(evt) {
