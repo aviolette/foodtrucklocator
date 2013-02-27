@@ -20,6 +20,7 @@
       <a class="brand" href="/">Chicago Food Truck Finder</a>
       <ul class="nav">
         <li><a id="aboutLink" href="#about">About</a></li>
+        <li><a target="_blank" href="https://play.google.com/store/apps/details?id=net.andrewviolette.truckz">Get the Android App!</a></li>
         <%--
         <li><a href="#settings">Settings</a></li>
         <li><a href="/trucks">Trucks</a></li>

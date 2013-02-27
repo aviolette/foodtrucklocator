@@ -1,11 +1,6 @@
 <%@ include file="header.jsp" %>
 <div class="row-fluid">
 <div class="span3 sidebar">
-  <a href="https://play.google.com/store/apps/details?id=net.andrewviolette.truckz">
-    <img alt="Get it on Google Play"
-         src="https://developer.android.com/images/brand/en_generic_rgb_wo_45.png" />
-  </a>
-
   <div id="sidebarHeader">
     <div class="well">
       <c:if test="${not empty requestDate}">
