@@ -1,6 +1,12 @@
 <%@ include file="header.jsp" %>
+<a class="hidden-desktop" href="https://play.google.com/store/apps/details?id=net.andrewviolette.truckz">
+  <img alt="Get it on Google Play"
+       src="https://developer.android.com/images/brand/en_generic_rgb_wo_45.png" />
+</a>
+
 <div class="row-fluid">
 <div class="span3 sidebar">
+
   <div id="sidebarHeader">
     <div class="well">
       <c:if test="${not empty requestDate}">
@@ -65,6 +71,7 @@
   </div>
 </div>
 <%@include file="include/about_dialog.jsp" %>
+<%@include file="include/mobile_dialog.jsp" %>
 <%-- truck dialog // TODO: move to separate JSP --%>
 <div id="truckDialog" class="modal hide fade">
   <div class="modal-header">

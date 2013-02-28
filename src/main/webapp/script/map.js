@@ -275,6 +275,7 @@ window.FoodTruckLocator = function() {
     initializeMap : function(map) {
       var self = this;
       self.aboutDialog();
+      self.mobileDialog();
       self.fitMapToView();
       self.map = map;
       return this;
@@ -293,6 +294,12 @@ window.FoodTruckLocator = function() {
       $("#aboutLink").click(function(e) {
         e.preventDefault();
         $("#aboutDialog").modal({ show: true, keyboard : true, backdrop: true});
+      });
+    },
+    mobileDialog : function() {
+      $("#mobileLink").click(function(e) {
+        e.preventDefault();
+        $("#mobileDialog").modal({ show: true, keyboard : true, backdrop: true});
       });
     },
     buildInfoWindow : function(group) {
@@ -741,6 +748,9 @@ window.FoodTruckLocator = function() {
       this.currentView.render();
       if (document.location.href.match(/#about/)) {
         $("#aboutDialog").modal({ show: true, keyboard : true, backdrop: true});
+      }
+      if (document.location.href.match(/#about/)) {
+        $("#mobileDialog").modal({ show: true, keyboard : true, backdrop: true});
       }
     },
     run : function(mobile, center, time, modelPayload) {
