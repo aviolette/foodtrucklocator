@@ -46,19 +46,19 @@
   <div class="navbar-inner">
     <a class="brand" href="#">Chicago Food Truck Finder - Dashboard</a>
     <ul class="nav">
-      <li<c:if test="${nav == 'trucks'}"> class="active"</c:if>><a href="/admin/trucks">Trucks</a>
+      <li class="<c:if test="${nav == 'trucks'}">active</c:if>"><a href="/admin/trucks">Trucks</a>
       </li>
-      <li<c:if test="${nav == 'addresses'}"> class="active"</c:if>><a href="/admin/addresses">Addresses</a>
+      <li class="visible-desktop<c:if test="${nav == 'addresses'}"> active</c:if>"><a href="/admin/addresses">Addresses</a>
       </li>
       <li<c:if test="${nav == 'locations'}"> class="active"</c:if>><a href="/admin/locations">Locations</a>
       </li>
-      <li<c:if test="${nav == 'notifications'}"> class="active"</c:if>><a href="/admin/notifications">Notifications</a>
+      <li class="visible-desktop<c:if test="${nav == 'notifications'}"> active</c:if>"><a href="/admin/notifications">Notifications</a>
       </li>
       <li<c:if test="${nav == 'settings'}"> class="active"</c:if>><a href="/admin/configuration">Settings</a>
       </li>
-      <li<c:if test="${nav == 'applications'}"> class="active"</c:if>><a href="/admin/applications">Applications</a>
+      <li class="hidden-phone<c:if test="${nav == 'applications'}"> active</c:if>"><a href="/admin/applications">Applications</a>
       </li>
-      <li<c:if test="${nav == 'stats'}"> class="active"</c:if>><a
+      <li class="hidden-phone <c:if test="${nav == 'stats'}"> active</c:if>"><a
           href="/admin/stats">Statistics</a>
       </li>
     </ul>
