@@ -99,7 +99,7 @@
         src="http://maps.google.com/maps/api/js?sensor=false&libraries=geometry"></script>
 <script type="text/javascript" src="script/lib/underscore-min.js"></script>
 <script type="text/javascript" src="script/lib/backbone-min.js"></script>
-<script type="text/javascript" src="script/map.js?ver=45"></script>
+<script type="text/javascript" src="script/map.js?ver=46"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     FoodTruckLocator.run(${mobile}, new google.maps.LatLng(${center.latitude}, ${center.longitude}),

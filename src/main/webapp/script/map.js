@@ -749,7 +749,7 @@ window.FoodTruckLocator = function() {
       if (document.location.href.match(/#about/)) {
         $("#aboutDialog").modal({ show: true, keyboard : true, backdrop: true});
       }
-      if (document.location.href.match(/#about/)) {
+      if (document.location.href.match(/#mobile/)) {
         $("#mobileDialog").modal({ show: true, keyboard : true, backdrop: true});
       }
     },
