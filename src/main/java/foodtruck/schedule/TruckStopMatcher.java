@@ -194,12 +194,10 @@ public class TruckStopMatcher {
   /**
    * Tests for tweets like this: <code></code>THE TRUCK: M: 600 W Chicago T: NBC Tower W: Clark & Monroe
    TH: Madison & Wacker + Montrose & Ravenswood (5pm) F: Lake & Wabash</code>
-   * @param lowerCaseTweet
    * @return
    */
   private boolean containsAbbreviatedSchedule(String tweetText) {
-    boolean f = schedulePattern.matcher(tweetText).find();
-    return f;
+    return schedulePattern.matcher(tweetText).find();
   }
 
   private int stopTime(Truck truck) {
@@ -332,7 +330,7 @@ public class TruckStopMatcher {
   private @Nullable DateTime parseEndTime(String tweetText, DateTime startTime) {
     Matcher matcher = endTimePattern.matcher(tweetText);
     if (matcher.find()) {
-      return parseTime(matcher.group(2), startTime.toLocalDate(), null);
+      return parseTime(matcher.group(2), startTime.toLocalDate(), startTime);
     }
     return null;
   }
