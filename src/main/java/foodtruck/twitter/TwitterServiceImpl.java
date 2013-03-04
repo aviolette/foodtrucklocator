@@ -274,7 +274,7 @@ public class TwitterServiceImpl implements TwitterService {
       } else if (terminationTime != null) {
         capLastMatchingStop(truck, terminationTime);
       } else {
-        log.log(Level.INFO, "No matches for {0}", truck.getId());
+        log.log(Level.FINE, "No matches for {0}", truck.getId());
       }
     }
   }
