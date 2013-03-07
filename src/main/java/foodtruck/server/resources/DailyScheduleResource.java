@@ -4,15 +4,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
-import foodtruck.dao.ApplicationDAO;
-import foodtruck.model.Application;
 import foodtruck.model.DailySchedule;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
@@ -25,28 +20,18 @@ import foodtruck.util.Clock;
 public class DailyScheduleResource {
   private final FoodTruckStopService truckService;
   private final Clock clock;
-  private final ApplicationDAO appDAO;
+  private final AuthorizationChecker checker;
 
   @Inject
-  public DailyScheduleResource(FoodTruckStopService foodTruckService, Clock clock, ApplicationDAO appDAO) {
+  public DailyScheduleResource(FoodTruckStopService foodTruckService, Clock clock, AuthorizationChecker checker) {
     this.truckService = foodTruckService;
     this.clock = clock;
-    this.appDAO = appDAO;
+    this.checker = checker;
   }
 
   @GET @Produces("application/json")
   public DailySchedule findForDay(@QueryParam("appKey") final String appKey) {
-    requireAppKey(appKey);
+    checker.requireAppKey(appKey);
     return truckService.findStopsForDay(clock.currentDay());
-  }
-
-  private void requireAppKey(String appKey) {
-    if (!Strings.isNullOrEmpty(appKey)) {
-      Application app = appDAO.findById(appKey);
-      if (app != null && app.isEnabled()) {
-        return;
-      }
-    }
-    throw new WebApplicationException(Response.Status.UNAUTHORIZED);
   }
 }
