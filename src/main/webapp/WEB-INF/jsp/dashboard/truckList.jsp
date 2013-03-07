@@ -3,11 +3,13 @@
 <div class="btn-toolbar">
   <div class="btn-group">
     <a href="/cron/tweets" class="btn primary" id="twitterButton">Refresh all tweets</a>
-    <a href="#" class="btn" id="newTruck">New Truck</a>&nbsp;
   </div>
-  <div class="btn-group toggle-visibility" data-toggle="buttons-checkbox">
+  <div class="btn-group toggle-visibility" >
     <button id="inactiveButton" type="button" class="btn active">Inactive</button>
     <button id="muteButton" type="button" class="btn active">Muted</button>
+  </div>
+  <div class="btn-group">
+    <a href="#" class="btn" id="newTruck">New Truck</a>&nbsp;
   </div>
 </div>
 <h3>Active Trucks</h3>
