@@ -20,7 +20,7 @@ public class TerminationDetector {
     if (tweetText.contains("last call") || tweetText.contains("almost sold out!")) {
       return tweet.getTime().plusMinutes(15);
     }
-    if (tweetText.contains("sold out of")) {
+    if (tweetText.contains("sold out of") || tweetText.contains("sold outta")) {
       return null;
     }
     if (tweetText.contains("sold out") || tweetText.contains("good-bye") ||

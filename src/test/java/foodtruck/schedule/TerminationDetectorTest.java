@@ -94,6 +94,11 @@ public class TerminationDetectorTest {
   }
 
   @Test
+  public void testPartialSellOut2() {
+    assertTweet(null, "Sold outta gyro but still rockin and rollin at madison/wacker w/ all others....come get ur bacon baby!");
+  }
+
+  @Test
   public void testThankYou() {
     assertEquals(tweetTime, detector.detect(tweetBuilder.text(
         "Thank you U of Chicago for braving the weather today and South Loop for closing out our day!  Enjoy the rest of your night!")
