@@ -1,5 +1,6 @@
 package foodtruck.dao.appengine;
 
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,6 +33,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
   private static final String URL_FIELD = "url";
   private static final String RADIAL_FIELD = "radial_boundary";
   private static final String LOCATION_LOOKUP_FIELD = "location_lookup";
+  private static final String LOCATION_MIGRATEDD = "location_lookup_migrated";
 
   private static final Logger log = Logger.getLogger(LocationDAOAppEngine.class.getName());
   private final Clock clock;
@@ -45,9 +47,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
   @Override
   public @Nullable Location findByAddress(String keyword) {
     DatastoreService dataStore = provider.get();
-    Query q = new Query(LOCATION_KIND);
-    keyword = keyword.toLowerCase();
-    q.addFilter(LOCATION_LOOKUP_FIELD, Query.FilterOperator.EQUAL, keyword);
+    Query q = locationQuery(keyword);
     Entity entity = null;
     try {
       entity = dataStore.prepare(q).asSingleEntity();
@@ -65,12 +65,26 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     return null;
   }
 
-  private Entity deleteDuplicates(String keyword, DatastoreService dataStore) {
+  @Override public Collection<Location> findAllNonMigrated() {
+    DatastoreService dataStore = provider.get();
     Query q = new Query(LOCATION_KIND);
-    q.addFilter(LOCATION_LOOKUP_FIELD, Query.FilterOperator.EQUAL, keyword);
+    q.setFilter(new Query.FilterPredicate(LOCATION_MIGRATEDD, Query.FilterOperator.NOT_EQUAL, true));
+    return executeQuery(dataStore,  q);
+  }
+
+  private Query locationQuery(String keyword) {
+    Query q = new Query(LOCATION_KIND);
+    Query.Filter nameFilter = new Query.FilterPredicate(NAME_FIELD, Query.FilterOperator.EQUAL, keyword);
+    Query.Filter locationLookupFilter = new Query.FilterPredicate(LOCATION_LOOKUP_FIELD, Query.FilterOperator.EQUAL, keyword.toLowerCase());
+//    q.setFilter(Query.CompositeFilterOperator.or(locationLookupFilter, nameFilter));
+    q.setFilter(locationLookupFilter);
+    return q;
+  }
+
+  private Entity deleteDuplicates(String keyword, DatastoreService dataStore) {
     ImmutableList.Builder<Key> keys = ImmutableList.builder();
     Entity firstEntity = null;
-    for (Entity entity : dataStore.prepare(q).asIterable()) {
+    for (Entity entity : dataStore.prepare(locationQuery(keyword)).asIterable()) {
       if (firstEntity != null) {
         keys.add(entity.getKey());
       } else {
@@ -97,6 +111,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     entity.setProperty(URL_FIELD, location.getUrl());
     entity.setProperty(RADIAL_FIELD, location.getRadius());
     entity.setProperty(LOCATION_LOOKUP_FIELD, location.getName().toLowerCase());
+    entity.setProperty(LOCATION_MIGRATEDD, true);
     return entity;
   }
 

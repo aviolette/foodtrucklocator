@@ -1,7 +1,6 @@
 package foodtruck.server.job;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -33,8 +32,7 @@ public class UpdateLocationLookupServlet extends HttpServlet {
   @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     log.info("Starting location migration");
-    Collection<Location> locations = dao.findAll();
-    for (Location loc : dao.findAll()) {
+    for (Location loc : dao.findAllNonMigrated()) {
       dao.findByAddress(loc.getName());
       dao.save(loc);
     }

@@ -33,6 +33,10 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
     DatastoreService dataStore = provider.get();
     Query q = new Query(getKind());
     modifyFindAllQuery(q);
+    return executeQuery(dataStore, q);
+  }
+
+  protected Set<T> executeQuery(DatastoreService dataStore, Query q) {
     ImmutableSet.Builder<T> objs = ImmutableSet.builder();
     for (Entity entity : dataStore.prepare(q).asIterable()) {
       T obj = fromEntity(entity);

@@ -1,5 +1,7 @@
 package foodtruck.dao;
 
+import java.util.Collection;
+
 import javax.annotation.Nullable;
 
 import foodtruck.model.Location;
@@ -23,4 +25,9 @@ public interface LocationDAO extends DAO<Long, Location> {
    * @return the location object with a new key
    */
   Location saveAndFetch(Location location);
+
+  /**
+   * Returns all the Locations that have not been migrated to use the case-insensitive format
+   */
+  Collection<Location> findAllNonMigrated();
 }
