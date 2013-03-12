@@ -31,6 +31,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
   private static final String DESCRIPTION_FIELD = "description";
   private static final String URL_FIELD = "url";
   private static final String RADIAL_FIELD = "radial_boundary";
+  private static final String LOCATION_LOOKUP_FIELD = "location_lookup";
 
   private static final Logger log = Logger.getLogger(LocationDAOAppEngine.class.getName());
   private final Clock clock;
@@ -45,15 +46,15 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
   public @Nullable Location findByAddress(String keyword) {
     DatastoreService dataStore = provider.get();
     Query q = new Query(LOCATION_KIND);
-    // TODO: fix so it searches in a case insensitive manner
-    q.addFilter(NAME_FIELD, Query.FilterOperator.EQUAL, keyword);
+    keyword = keyword.toLowerCase();
+    q.addFilter(LOCATION_LOOKUP_FIELD, Query.FilterOperator.EQUAL, keyword);
     Entity entity = null;
     try {
       entity = dataStore.prepare(q).asSingleEntity();
     } catch (PreparedQuery.TooManyResultsException tmr) {
       log.log(Level.WARNING, "Got too many results exception for: {0}", keyword);
       try {
-        deleteDuplicates(keyword, dataStore);
+        entity = deleteDuplicates(keyword, dataStore);
       } catch (Exception e) {
         log.log(Level.WARNING, "Error deleting duplicates", e);
       }
@@ -64,18 +65,20 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     return null;
   }
 
-  private void deleteDuplicates(String keyword, DatastoreService dataStore) {
+  private Entity deleteDuplicates(String keyword, DatastoreService dataStore) {
     Query q = new Query(LOCATION_KIND);
-    q.addFilter(NAME_FIELD, Query.FilterOperator.EQUAL, keyword);
+    q.addFilter(LOCATION_LOOKUP_FIELD, Query.FilterOperator.EQUAL, keyword);
     ImmutableList.Builder<Key> keys = ImmutableList.builder();
-    boolean first = true;
+    Entity firstEntity = null;
     for (Entity entity : dataStore.prepare(q).asIterable()) {
-      if (!first) {
+      if (firstEntity != null) {
         keys.add(entity.getKey());
+      } else {
+        firstEntity = entity;
       }
-      first = false;
     }
     dataStore.delete(keys.build());
+    return firstEntity;
   }
 
   @Override
@@ -93,6 +96,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     entity.setProperty(DESCRIPTION_FIELD, location.getDescription());
     entity.setProperty(URL_FIELD, location.getUrl());
     entity.setProperty(RADIAL_FIELD, location.getRadius());
+    entity.setProperty(LOCATION_LOOKUP_FIELD, location.getName().toLowerCase());
     return entity;
   }
 
