@@ -33,7 +33,6 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
   private static final String URL_FIELD = "url";
   private static final String RADIAL_FIELD = "radial_boundary";
   private static final String LOCATION_LOOKUP_FIELD = "location_lookup";
-  private static final String LOCATION_MIGRATEDD = "location_lookup_migrated";
 
   private static final Logger log = Logger.getLogger(LocationDAOAppEngine.class.getName());
   private final Clock clock;
@@ -68,16 +67,13 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
   @Override public Collection<Location> findAllNonMigrated() {
     DatastoreService dataStore = provider.get();
     Query q = new Query(LOCATION_KIND);
-    q.setFilter(new Query.FilterPredicate(LOCATION_MIGRATEDD, Query.FilterOperator.NOT_EQUAL, true));
     return executeQuery(dataStore,  q);
   }
 
   private Query locationQuery(String keyword) {
     Query q = new Query(LOCATION_KIND);
     Query.Filter nameFilter = new Query.FilterPredicate(NAME_FIELD, Query.FilterOperator.EQUAL, keyword);
-    Query.Filter locationLookupFilter = new Query.FilterPredicate(LOCATION_LOOKUP_FIELD, Query.FilterOperator.EQUAL, keyword.toLowerCase());
-//    q.setFilter(Query.CompositeFilterOperator.or(locationLookupFilter, nameFilter));
-    q.setFilter(locationLookupFilter);
+    q.setFilter(nameFilter);
     return q;
   }
 
@@ -111,7 +107,6 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     entity.setProperty(URL_FIELD, location.getUrl());
     entity.setProperty(RADIAL_FIELD, location.getRadius());
     entity.setProperty(LOCATION_LOOKUP_FIELD, location.getName().toLowerCase());
-    entity.setProperty(LOCATION_MIGRATEDD, true);
     return entity;
   }
 

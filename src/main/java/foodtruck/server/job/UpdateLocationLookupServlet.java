@@ -32,7 +32,7 @@ public class UpdateLocationLookupServlet extends HttpServlet {
   @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     log.info("Starting location migration");
-    for (Location loc : dao.findAllNonMigrated()) {
+    for (Location loc : dao.findAll()) {
       dao.findByAddress(loc.getName());
       dao.save(loc);
     }
