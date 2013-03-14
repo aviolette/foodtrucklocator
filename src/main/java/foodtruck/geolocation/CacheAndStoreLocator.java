@@ -39,6 +39,7 @@ public class CacheAndStoreLocator implements GeoLocator {
 
   @Override
   public @Nullable Location locate(String location, GeolocationGranularity granularity) {
+    location = location.trim();
     if (location.matches(LAT_LNG)) {
       String[] latLng = location.split(",");
       final double latitude = Double.parseDouble(latLng[0]);
