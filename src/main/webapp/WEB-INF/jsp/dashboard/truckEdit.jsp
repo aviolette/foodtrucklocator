@@ -4,6 +4,8 @@
 <form action="" method="POST">
   <fieldset title="Truck Information">
     <legend>Truck Information</legend>
+<div class="row">
+  <div class="span6">
     <div class="clearfix">
       <label for="truckName">Name:</label>
 
@@ -81,13 +83,15 @@
       </div>
     </div>
   </fieldset>
+  </div>
+  <div class="span6">
   <fieldset title="Internal Display and Matching Information">
     <legend>Internal Display and Matching Information</legend>
     <div class="clearfix">
       <label for="iconUrl">Icon URL:</label>
 
       <div class="input" >
-        <input type="text" class="input-xlarge span8" class="input-xlarge" id="iconUrl" name="iconUrl"
+        <input type="text" class="input-xlarge span5" class="input-xlarge" id="iconUrl" name="iconUrl"
                value="${truck.iconUrl}"/>
       </div>
     </div>
@@ -95,7 +99,7 @@
       <label for="calendarUrl">Calendar URL</label>
 
       <div class="input">
-        <input type="text" class="input-xlarge span8" id="calendarUrl" name="calendarUrl"
+        <input type="text" class="input-xlarge span5" id="calendarUrl" name="calendarUrl"
                value="${truck.calendarUrl}"/>
       </div>
     </div>
@@ -149,6 +153,9 @@
       </div>
     </div>
   </fieldset>
+  </div>
+</div>
+
   <input type="submit" class="btn btn-primary" value="Update"/> &nbsp;
 </form>
 
