@@ -11,10 +11,15 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import foodtruck.dao.TruckDAO;
+import foodtruck.model.Location;
 import foodtruck.model.Truck;
+import static foodtruck.dao.appengine.Attributes.getDateTime;
+import static foodtruck.dao.appengine.Attributes.getDoubleProperty;
+import static foodtruck.dao.appengine.Attributes.getLongProperty;
 import static foodtruck.dao.appengine.Attributes.getStringProperty;
 
 /**
@@ -43,6 +48,13 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
   private static final String TRUCK_MUTE_UNTIL = "muteUntil";
   private static final String TRUCK_YELP_SLUG = "yelp";
   private static final String TRUCK_FACEBOOK_PAGE_ID = "facebookPageId";
+  private static final String TRUCK_STATS_LAST_SEEN_WHEN = "last_seen_when";
+  private static final String TRUCK_STATS_LAST_SEEN_WHERE = "last_seen_where";
+  private static final String TRUCK_STATS_LAST_UPDATED = "last_updated";
+  private static final String TRUCK_STATS_TOTAL_STOPS = "total_stops";
+  private static final String TRUCK_STATS_LAST_SEEN_WHERE_LAT = "last_seen_lat";
+  private static final String TRUCK_STATS_LAST_SEEN_WHERE_LNG = "last_seen_lng";
+
   private DateTimeZone zone;
 
   @Inject
@@ -55,7 +67,27 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     Truck.Builder builder = Truck.builder();
     Collection categoriesList = (Collection) entity.getProperty(CATEGORIES_FIELD);
     Text t = (Text) entity.getProperty(TRUCK_DESCRIPTION_FIELD);
+    Truck.Stats stats = null;
+    if (entity.hasProperty(TRUCK_STATS_TOTAL_STOPS)) {
+      Location loc = null;
+      if (entity.hasProperty(TRUCK_STATS_LAST_SEEN_WHERE)) {
+        loc = Location.builder()
+            .lat(getDoubleProperty(entity, TRUCK_STATS_LAST_SEEN_WHERE_LAT, 0))
+            .lng(getDoubleProperty(entity, TRUCK_STATS_LAST_SEEN_WHERE_LNG, 0))
+            .name(getStringProperty(entity, TRUCK_STATS_LAST_SEEN_WHERE))
+            .build();
+      }
+      stats = Truck.Stats.builder()
+          .lastSeen(getDateTime(entity, TRUCK_STATS_LAST_SEEN_WHEN, zone))
+          .lastUpdate(getDateTime(entity, TRUCK_STATS_LAST_UPDATED, zone))
+          .stopsThisYear(getLongProperty(entity, TRUCK_STATS_TOTAL_STOPS, 0))
+          .totalStops(getLongProperty(entity, TRUCK_STATS_TOTAL_STOPS, 0))
+          .whereLastSeen(loc)
+          .build();
+    }
+
     return builder.id(entity.getKey().getName())
+        .stats(stats)
         .inactive((Boolean) entity.getProperty(INACTIVE_FIELD))
         .twitterHandle((String) entity.getProperty(TRUCK_TWITTER_HANDLE))
         .defaultCity((String) entity.getProperty(TRUCK_DEFAULT_CITY_FIELD))
@@ -151,6 +183,24 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     entity.setProperty(TRUCK_FACEBOOK_PAGE_ID, truck.getFacebookPageId());
     entity.setProperty(TRUCK_TWITTER_GEOLOCATION, truck.isTwitterGeolocationDataValid());
     Attributes.setDateProperty(TRUCK_MUTE_UNTIL, entity, truck.getMuteUntil());
+    Truck.Stats stats = truck.getStats();
+    if (stats == null) {
+      stats = Truck.Stats.builder().build();
+    }
+    final DateTime lastSeen = stats.getLastSeen();
+    if (lastSeen == null) {
+      entity.setProperty(TRUCK_STATS_LAST_SEEN_WHEN, null);
+    } else {
+      entity.setProperty(TRUCK_STATS_LAST_SEEN_WHEN, lastSeen.toDate());
+    }
+    Location loc = stats.getWhereLastSeen();
+    if (loc != null) {
+      entity.setProperty(TRUCK_STATS_LAST_SEEN_WHERE, loc.getName());
+      entity.setProperty(TRUCK_STATS_LAST_SEEN_WHERE_LAT, loc.getLatitude());
+      entity.setProperty(TRUCK_STATS_LAST_SEEN_WHERE_LNG, loc.getLongitude());
+    }
+    entity.setProperty(TRUCK_STATS_LAST_UPDATED, stats.getLastUpdated().toDate());
+    entity.setProperty(TRUCK_STATS_TOTAL_STOPS, stats.getTotalStops());
     return entity;
   }
 }

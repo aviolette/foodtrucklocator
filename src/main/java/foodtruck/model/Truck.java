@@ -41,6 +41,7 @@ public class Truck extends ModelEntity {
   private final @Nullable DateTime muteUntil;
   private final String yelpSlug;
   private final @Nullable String facebookPageId;
+  private final @Nullable Stats stats;
 
   private Truck(Builder builder) {
     super(builder.id);
@@ -65,6 +66,7 @@ public class Truck extends ModelEntity {
     this.twitterGeolocationDataValid = builder.twitterGeolocationDataValid;
     this.muteUntil = builder.muteUntil;
     this.yelpSlug = builder.yelpSlug;
+    this.stats = builder.stats;
   }
 
   public boolean isTwitterGeolocationDataValid() {
@@ -218,6 +220,88 @@ public class Truck extends ModelEntity {
     return muteUntil != null && muteUntil.isAfter(new DateTime());
   }
 
+  public @Nullable Stats getStats() {
+    return stats;
+  }
+
+  public static class Stats {
+    private DateTime lastUpdated;
+    private DateTime lastSeen;
+    private long totalStops;
+    private long stopsThisYear;
+    private Location whereLastSeen;
+
+    public Stats(Builder builder) {
+      this.lastUpdated = builder.lastUpdated;
+      this.lastSeen = builder.lastSeen;
+      this.totalStops = builder.totalStops;
+      this.stopsThisYear = builder.stopsThisYear;
+      this.whereLastSeen = builder.whereLastSeen;
+    }
+
+    public long getStopsThisYear() {
+      return stopsThisYear;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
+    public DateTime getLastUpdated() {
+      return lastUpdated;
+    }
+
+    public long getTotalStops() {
+      return totalStops;
+    }
+
+    public @Nullable DateTime getLastSeen() {
+      return lastSeen;
+    }
+
+    public @Nullable Location getWhereLastSeen() {
+      return whereLastSeen;
+    }
+
+    public static class Builder {
+
+      private DateTime lastUpdated = new DateTime(2009, 1, 1, 1, 1, 1, 1);
+      private @Nullable DateTime lastSeen;
+      private long totalStops;
+      private long stopsThisYear;
+      private @Nullable Location whereLastSeen;
+
+      public Builder lastUpdate(DateTime lastUpdated) {
+        this.lastUpdated = lastUpdated;
+        return this;
+      }
+
+      public Builder totalStops(long totalStops) {
+        this.totalStops = totalStops;
+        return this;
+      }
+
+      public Builder lastSeen(@Nullable DateTime lastSeen) {
+        this.lastSeen = lastSeen;
+        return this;
+      }
+
+      public Builder stopsThisYear(long stopsThisYear) {
+        this.stopsThisYear = stopsThisYear;
+        return this;
+      }
+
+      public Builder whereLastSeen(@Nullable Location whereLastSeen) {
+        this.whereLastSeen = whereLastSeen;
+        return this;
+      }
+
+      public Stats build() {
+        return new Stats(this);
+      }
+    }
+  }
+
   public static class Builder {
     private String id;
     private String name;
@@ -240,7 +324,7 @@ public class Truck extends ModelEntity {
     private @Nullable DateTime muteUntil;
     private @Nullable String yelpSlug;
     private @Nullable String facebookPageId;
-
+    private @Nullable Stats stats;
     public Builder() {
     }
 
@@ -263,6 +347,7 @@ public class Truck extends ModelEntity {
       this.muteUntil = truck.muteUntil;
       this.yelpSlug = truck.yelpSlug;
       this.facebookPageId = truck.facebookPageId;
+      this.stats = truck.stats;
     }
 
     public Builder id(String id) {
@@ -379,6 +464,11 @@ public class Truck extends ModelEntity {
       } else {
         this.donotMatchIf = null;
       }
+      return this;
+    }
+
+    public Builder stats(Stats stats) {
+      this.stats = stats;
       return this;
     }
   }

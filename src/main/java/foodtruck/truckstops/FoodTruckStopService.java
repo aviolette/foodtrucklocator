@@ -93,4 +93,12 @@ public interface FoodTruckStopService {
    * @return The set of trucks that fit the search criteria
    */
   Set<Truck> findTrucksNearLocation(Location location, DateTime currentTime);
+
+  /**
+   * Find all the truck stops since the specified date for the specified truck
+   * @param since the lower bound date
+   * @param truckId the truck ID
+   * @return the list of all truck stops
+   */
+  List<TruckStop> findStopsForTruckSince(DateTime since, String truckId);
 }

@@ -2,57 +2,79 @@
 
 <img src="${truck.iconUrl}"/>
 
-<h2>Configuration
-  <small>(<a href="/admin/trucks/${truckId}/configuration">edit</a>)</small>
-</h2>
+<div class="row">
+  <div class="span6">
+    <h2>Configuration
+      <small>(<a href="/admin/trucks/${truckId}/configuration">edit</a>)</small>
+    </h2>
 
-<table class="table">
-  <tr>
-    <td>Facebook</td>
-    <td><c:choose><c:when test="${empty(truck.facebook)}">none</c:when><c:otherwise><a
-        target="_blank"
-        href="http://facebook.com${truck.facebook}">http://facebook.com${truck.facebook}</a></c:otherwise></c:choose>
-    </td>
-  </tr>
-  <tr>
-    <td>Yelp</td>
-    <td><c:choose><c:when test="${empty(truck.yelpSlug)}">none</c:when><c:otherwise><a
-        target="_blank"
-        href="http://yelp.com/biz/${truck.yelpSlug}">http://yelp.com/biz/${truck.yelpSlug}</a></c:otherwise></c:choose>
-    </td>
-  </tr>
-  <tr>
-    <td>Foursquare</td>
-    <td><c:choose><c:when test="${empty(truck.foursquareUrl)}">none</c:when><c:otherwise><a
-        target="_blank" href="http://foursquare.com/v/${truck.foursquareUrl}">http://foursquare.com/v/${truck.foursquareUrl}</a></c:otherwise></c:choose>
-    </td>
-  </tr>
-  <tr>
-    <td>Twitter</td>
-    <td><c:choose><c:when test="${empty(truck.twitterHandle)}">none</c:when><c:otherwise><a
-        target="_blank"
-        href="http://twitter.com/${truck.twitterHandle}">${truck.twitterHandle}</a></c:otherwise></c:choose>
-    </td>
-  </tr>
-  <tr>
-    <td>Website</td>
-    <td><c:choose><c:when test="${empty(truck.url)}">none</c:when><c:otherwise><a target="_blank"
-                                                                                  href="${truck.url}">${truck.url}</a></c:otherwise></c:choose>
-    </td>
-  </tr>
-  <tr>
-    <td>Email</td>
-    <td><c:choose><c:when test="${empty(truck.email)}">none</c:when><c:otherwise><a target="_blank"
-                                                                                    href="mailto:${truck.email}">${truck.email}</a></c:otherwise></c:choose>
-    </td>
-  </tr>
-  <tr>
-    <td>Phone</td>
-    <td><c:choose><c:when
-        test="${empty(truck.phone)}">none</c:when><c:otherwise>${truck.phone}</c:otherwise></c:choose>
-    </td>
-  </tr>
-</table>
+    <table class="table">
+      <tr>
+        <td>Facebook</td>
+        <td><c:choose><c:when test="${empty(truck.facebook)}">none</c:when><c:otherwise><a
+            target="_blank"
+            href="http://facebook.com${truck.facebook}">http://facebook.com${truck.facebook}</a></c:otherwise></c:choose>
+        </td>
+      </tr>
+      <tr>
+        <td>Yelp</td>
+        <td><c:choose><c:when test="${empty(truck.yelpSlug)}">none</c:when><c:otherwise><a
+            target="_blank"
+            href="http://yelp.com/biz/${truck.yelpSlug}">http://yelp.com/biz/${truck.yelpSlug}</a></c:otherwise></c:choose>
+        </td>
+      </tr>
+      <tr>
+        <td>Foursquare</td>
+        <td><c:choose><c:when test="${empty(truck.foursquareUrl)}">none</c:when><c:otherwise><a
+            target="_blank" href="http://foursquare.com/v/${truck.foursquareUrl}">http://foursquare.com/v/${truck.foursquareUrl}</a></c:otherwise></c:choose>
+        </td>
+      </tr>
+      <tr>
+        <td>Twitter</td>
+        <td><c:choose><c:when test="${empty(truck.twitterHandle)}">none</c:when><c:otherwise><a
+            target="_blank"
+            href="http://twitter.com/${truck.twitterHandle}">${truck.twitterHandle}</a></c:otherwise></c:choose>
+        </td>
+      </tr>
+      <tr>
+        <td>Website</td>
+        <td><c:choose><c:when test="${empty(truck.url)}">none</c:when><c:otherwise><a target="_blank"
+                                                                                      href="${truck.url}">${truck.url}</a></c:otherwise></c:choose>
+        </td>
+      </tr>
+      <tr>
+        <td>Email</td>
+        <td><c:choose><c:when test="${empty(truck.email)}">none</c:when><c:otherwise><a target="_blank"
+                                                                                        href="mailto:${truck.email}">${truck.email}</a></c:otherwise></c:choose>
+        </td>
+      </tr>
+      <tr>
+        <td>Phone</td>
+        <td><c:choose><c:when
+            test="${empty(truck.phone)}">none</c:when><c:otherwise>${truck.phone}</c:otherwise></c:choose>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div class="span6">
+    <h2>Statistics</h2>
+    <table class="table">
+      <tr>
+        <td>Last active</td>
+        <td><joda:format value="${truck.stats.lastSeen}" style="MS"/> @ <ftl:location location="${truck.stats.whereLastSeen}"/></td>
+      </tr>
+      <tr>
+        <td>Stops this year</td>
+        <td>${truck.stats.stopsThisYear}</td>
+      </tr>
+      <tr>
+        <td>Total stops</td>
+        <td>${truck.stats.totalStops}</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
 
 <h2>Schedule</h2>
 <table class="table table-striped">

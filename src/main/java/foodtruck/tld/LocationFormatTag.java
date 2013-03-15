@@ -7,6 +7,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 
 import foodtruck.model.Location;
@@ -30,8 +31,10 @@ public class LocationFormatTag extends TagSupport {
     JspWriter out = pageContext.getOut();
     try {
       if (location != null) {
+        String name = (Strings.isNullOrEmpty(location.getName())) ?
+            location.getLatitude() + "," + location.getLongitude() : location.getName();
         out.println("<a href='https://maps.google.com/maps?q=" + location.getLatitude() + ",+"
-            + location.getLongitude()+"&iwloc=A&hl=en'>" + location.getLatitude() + "," + location.getLongitude() + "</a>");
+            + location.getLongitude()+"&iwloc=A&hl=en'>" + name + "</a>");
       }
     } catch (IOException e) {
       throw Throwables.propagate(e);

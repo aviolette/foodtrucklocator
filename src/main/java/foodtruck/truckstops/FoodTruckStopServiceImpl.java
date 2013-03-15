@@ -176,6 +176,10 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     return builder.build();
   }
 
+  @Override public List<TruckStop> findStopsForTruckSince(DateTime since, String truckId) {
+      return truckStopDAO.findOverRange(truckId, since, clock.now());
+  }
+
   @Override public List<TruckStatus> findCurrentAndPreviousStop(LocalDate day) {
     List<TruckStop> stops = truckStopDAO.findDuring(null, day);
     ImmutableList.Builder<TruckStatus> truckInfo = ImmutableList.builder();
