@@ -47,7 +47,18 @@ public class UpdateTruckStats extends HttpServlet {
       Truck truck = truckDAO.findById(truckId);
       updateTruck(truck, forceUpdate);
     } else {
+      String range = req.getParameter("range");
+      String[] flRange = null;
+      if (Strings.isNullOrEmpty(range)) {
+        flRange = range.split(",");
+      }
       for (Truck truck : truckDAO.findAll()) {
+        if (flRange != null) {
+          truckId = truck.getId();
+          if (truckId.charAt(0) < flRange[0].charAt(0) || truckId.charAt(0) > flRange[1].charAt(0)) {
+            continue;
+          }
+        }
         updateTruck(truck, forceUpdate);
       }
     }
