@@ -49,7 +49,7 @@ public class UpdateTruckStats extends HttpServlet {
     } else {
       String range = req.getParameter("range");
       String[] flRange = null;
-      if (Strings.isNullOrEmpty(range)) {
+      if (!Strings.isNullOrEmpty(range)) {
         flRange = range.split(",");
       }
       for (Truck truck : truckDAO.findAll()) {
