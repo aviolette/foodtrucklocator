@@ -42,20 +42,20 @@ public class UpdateTruckStats extends HttpServlet {
       throws ServletException, IOException {
 
     String truckId = req.getParameter("truckId");
+    boolean forceUpdate = "true".equals(req.getParameter("force"));
     if (!Strings.isNullOrEmpty(truckId)) {
       Truck truck = truckDAO.findById(truckId);
-      updateTruck(truck);
+      updateTruck(truck, forceUpdate);
     } else {
       for (Truck truck : truckDAO.findAll()) {
-        updateTruck(truck);
+        updateTruck(truck, forceUpdate);
       }
     }
     log.info("Update of truck stats complete");
   }
 
-  private void updateTruck(Truck truck) {
+  private void updateTruck(Truck truck, boolean forceUpdate) {
     log.info("Updating truck stats for " + truck.getId());
-    Truck.Stats stats = truck.getStats();
     // a date before this project started
     DateTime lastUpdate = new DateTime(2010, 1, 1, 0, 0, 0, 0);
     DateTime now = clock.now();
@@ -63,7 +63,8 @@ public class UpdateTruckStats extends HttpServlet {
     int year = now.getYear();
     DateTime lastSeen = null;
     Location whereLastSeen = null;
-    if (stats != null) {
+    Truck.Stats stats = truck.getStats();
+    if (stats != null && !forceUpdate) {
       lastUpdate = stats.getLastUpdated();
       totalStops = stats.getTotalStops();
       lastSeen = stats.getLastSeen();

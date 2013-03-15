@@ -52,6 +52,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
   private static final String TRUCK_STATS_LAST_SEEN_WHERE = "last_seen_where";
   private static final String TRUCK_STATS_LAST_UPDATED = "last_updated";
   private static final String TRUCK_STATS_TOTAL_STOPS = "total_stops";
+  private static final String TRUCK_STATS_STOPS_THIS_YEAR = "stops_this_year";
   private static final String TRUCK_STATS_LAST_SEEN_WHERE_LAT = "last_seen_lat";
   private static final String TRUCK_STATS_LAST_SEEN_WHERE_LNG = "last_seen_lng";
 
@@ -80,7 +81,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
       stats = Truck.Stats.builder()
           .lastSeen(getDateTime(entity, TRUCK_STATS_LAST_SEEN_WHEN, zone))
           .lastUpdate(getDateTime(entity, TRUCK_STATS_LAST_UPDATED, zone))
-          .stopsThisYear(getLongProperty(entity, TRUCK_STATS_TOTAL_STOPS, 0))
+          .stopsThisYear(getLongProperty(entity, TRUCK_STATS_STOPS_THIS_YEAR, 0))
           .totalStops(getLongProperty(entity, TRUCK_STATS_TOTAL_STOPS, 0))
           .whereLastSeen(loc)
           .build();
@@ -201,6 +202,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     }
     entity.setProperty(TRUCK_STATS_LAST_UPDATED, stats.getLastUpdated().toDate());
     entity.setProperty(TRUCK_STATS_TOTAL_STOPS, stats.getTotalStops());
+    entity.setProperty(TRUCK_STATS_STOPS_THIS_YEAR, stats.getStopsThisYear());
     return entity;
   }
 }
