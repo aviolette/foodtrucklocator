@@ -50,13 +50,19 @@ public class UpdateTruckStats extends HttpServlet {
       String range = req.getParameter("range");
       String[] flRange = null;
       if (!Strings.isNullOrEmpty(range)) {
+        log.info("Using range: " + range);
         flRange = range.split(",");
+      } else {
+        log.info("Range not specified");
       }
       for (Truck truck : truckDAO.findAll()) {
         if (flRange != null) {
           truckId = truck.getId();
           if (truckId.charAt(0) < flRange[0].charAt(0) || truckId.charAt(0) > flRange[1].charAt(0)) {
+            log.fine("CONTINUING FOR " + truckId);
             continue;
+          } else {
+            log.fine("TRUCK MATCHES RANGE " + truckId);
           }
         }
         updateTruck(truck, forceUpdate);
