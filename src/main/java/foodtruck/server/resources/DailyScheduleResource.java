@@ -9,6 +9,7 @@ import javax.ws.rs.core.MediaType;
 import com.google.inject.Inject;
 
 import foodtruck.model.DailySchedule;
+import foodtruck.monitoring.Monitored;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 
@@ -29,7 +30,7 @@ public class DailyScheduleResource {
     this.checker = checker;
   }
 
-  @GET @Produces("application/json")
+  @GET @Produces("application/json") @Monitored
   public DailySchedule findForDay(@QueryParam("appKey") final String appKey) {
     checker.requireAppKey(appKey);
     return truckService.findStopsForDay(clock.currentDay());
