@@ -12,37 +12,52 @@
 <script src="/script/lib/d3.layout.min.js" type="text/javascript"></script>
 <script src="/script/lib/rickshaw.min.js" type="text/javascript"></script>
 
-<h2>Trucks</h2>
+<div class="row">
+  <div class="span6">
+    <h2>Trucks</h2>
+    <div id="trucksOnRoad"></div>
+  </div>
+  <div class="span6">
+    <h2>Database Cache Lookups</h2>
+    <div id="databaseCache"></div>
+  </div>
+</div>
+<div class="row">
+  <div class="span6">
+    <h2>Google Geolocation Lookups</h2>
+    <div id="googlelookups"></div>
+  </div>
+  <div class="span6">
+    <h2>Yahoo Geolocation Lookups</h2>
+    <div id="yahoolookups"></div>
+  </div>
+</div>
+<div class="row">
+  <div class="span6">
+    <h2>Twitter Connector</h2>
+    <div id="twitterCache"></div>
+  </div>
+  <div class="span6">
+    <h2>Google Calendar Connector</h2>
+    <div id="calendarCache"></div>
+  </div>
+</div>
 
-<div id="trucksOnRoad"></div>
 
-<h2>Geolocation</h2>
 
-<h3>Database Cache Lookups</h3>
 
-<div id="databaseCache"></div>
-
-<h3>Google Lookups</h3>
-
-<div id="googlelookups"></div>
-
-<h3>Yahoo Lookups</h3>
-
-<div id="yahoolookups"></div>
-
-<h2>Twitter Connector</h2>
-
-<div id="twitterCache"></div>
-
-<h2>Google Calendar Connector</h2>
-
-<div id="calendarCache"></div>
 
 <h2>End Point Requests</h2>
-
-<h3>Schedule Service - /services/schedule/<code>truckId</code></h3>
-
-<div id="scheduleService"></div>
+<div class="row">
+  <div class="span6">
+    <h3>Schedule Service - /services/schedule/<code>truckId</code></h3>
+    <div id="scheduleService"></div>
+  </div>
+  <div class="span6">
+    <h3>Schedule Service - /services/daily_schedule</h3>
+    <div id="dailySchedule"></div>
+  </div>
+</div>
 
 
 <script type="text/javascript">
@@ -98,6 +113,8 @@
     drawGraphs("foodtruck.schedule.GoogleCalendar_findForTime_total", "calendarCache");
     drawGraphs(["cacheLookup_total","cacheLookup_failed"], "databaseCache");
     drawGraphs(["foodtruck.server.api.FoodTruckScheduleServlet_doGet_total"], "scheduleService");
+    drawGraphs(["foodtruck.server.resources.DailyScheduleResource_findForDay_total",
+      "foodtruck.server.resources.DailyScheduleResource_findForDay_failed"], "dailySchedule");
     drawGraphs("trucksOnRoad", "trucksOnRoad");
   });
 </script>
