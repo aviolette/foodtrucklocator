@@ -1,10 +1,9 @@
 <%@include file="../common.jsp" %>
 <%@include file="dashboardHeader.jsp" %>
-<link href="/css/rickshaw/graph.css" rel="stylesheet">
-<link href="/css/rickshaw/detail.css" rel="stylesheet">
+<link href="/css/rickshaw/rickshaw.min.css" rel="stylesheet">
 <style type="text/css">
   .rickshaw_graph {
-    margin: 10px 0;
+    margin: 20px 0;
   }
 </style>
 
