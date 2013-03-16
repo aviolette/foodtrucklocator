@@ -14,6 +14,7 @@ import com.sun.jersey.api.JResponse;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
+import foodtruck.monitoring.Monitored;
 import foodtruck.util.ServiceException;
 
 /**
@@ -31,7 +32,7 @@ public class LocationResource {
     this.authorizationChecker = checker;
   }
 
-  @GET @Path("{location}")
+  @GET @Path("{location}") @Monitored
   public JResponse<Location> findLocation(@PathParam("location") String locationName,
       @QueryParam("appKey") String appKey) {
     authorizationChecker.requireAppKey(appKey);

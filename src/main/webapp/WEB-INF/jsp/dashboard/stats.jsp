@@ -3,7 +3,6 @@
 <link href="/css/rickshaw/rickshaw.min.css" rel="stylesheet">
 <style type="text/css">
   .rickshaw_graph {
-    margin: 20px 0;
   }
 </style>
 
@@ -11,6 +10,7 @@
 <script src="/script/lib/d3.layout.min.js" type="text/javascript"></script>
 <script src="/script/lib/rickshaw.min.js" type="text/javascript"></script>
 
+<h2>System Stats</h2>
 <div class="row">
   <div class="span6">
     <h2>Trucks</h2>
@@ -42,22 +42,23 @@
   </div>
 </div>
 
-
-
-
-
 <h2>End Point Requests</h2>
 <div class="row">
   <div class="span6">
-    <h3>Schedule Service - /services/schedule/<code>truckId</code></h3>
-    <div id="scheduleService"></div>
+    <h3>Location Lookup - /services/locations/<code>location</code></h3>
+    <div id="locationLookup"></div>
   </div>
   <div class="span6">
     <h3>Schedule Service - /services/daily_schedule</h3>
     <div id="dailySchedule"></div>
   </div>
 </div>
-
+<div class="row">
+  <div class="span6">
+    <h3>Schedule Service - /services/schedule/<code>truckId</code></h3>
+    <div id="scheduleService"></div>
+  </div>
+</div>
 
 <script type="text/javascript">
   function drawGraphs(statNames, containerId) {
@@ -114,6 +115,8 @@
     drawGraphs(["foodtruck.server.api.FoodTruckScheduleServlet_doGet_total"], "scheduleService");
     drawGraphs(["foodtruck.server.resources.DailyScheduleResource_findForDay_total",
       "foodtruck.server.resources.DailyScheduleResource_findForDay_failed"], "dailySchedule");
+    drawGraphs(["foodtruck.server.resources.LocationResource_findLocation_total",
+      "foodtruck.server.resources.LocationResource_findLocation_failed"], "locationLookup");
     drawGraphs("trucksOnRoad", "trucksOnRoad");
   });
 </script>
