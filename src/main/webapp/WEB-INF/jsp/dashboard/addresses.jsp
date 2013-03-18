@@ -18,7 +18,8 @@
     $.ajax({
       url : '/services/addressRules',
       success : function(data) {
-        editor.setValue(data["script"])
+        editor.setValue(data["script"]);
+        editor.gotoLine(0);
       }
     });
   }
