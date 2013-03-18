@@ -4,77 +4,60 @@
         src="http://maps.googleapis.com/maps/api/js?sensor=false">
 </script>
 
-<div class="row">
+<div class="row" style="margin-bottom:20px">
   <div class="span8">
-    <div id="map_canvas" style="width:450px; height:300px; padding-bottom:20px;"></div>
+    <div id="map_canvas" style="width:100%; height:300px; padding-bottom:20px;"></div>
   </div>
-  <div class="span6">
+  <div class="span4">
+    <div>
+      <a id="locationSearchButton" href="#" class="btn">Search for a location</a>
+    </div>
     <ul id="searchLocations">
 
     </ul>
   </div>
 </div>
 
-<div>
-  <a id="locationSearchButton" href="#">Search for a location</a>
-</div>
 
-<form>
+<form class="form-horizontal">
   <fieldset>
-    <div class="clearfix">
-      <label>Name</label>
-
-      <div class="input">
-        <input id="name" type="text"/>
+    <div class="control-group">
+      <label class="control-label" for="name">Name</label>
+      <div class="controls">
+        <input id="name" class="span6" type="text"/>
       </div>
     </div>
-    <div class="clearfix">
-      <label>Latitude</label>
-
-      <div class="input">
-        <input id="latitude" type="text"/>
-      </div>
-    </div>
-    <div class="clearfix">
-      <label>Longitude</label>
-
-      <div class="input">
+    <div class="control-group">
+      <label class="control-label" for="latitude">Lat / Long</label>
+      <div class="controls">
+        <input id="latitude" class="span2" type="text"/>
         <input id="longitude" type="text"/>
       </div>
     </div>
-    <div class="clearfix">
-      <label>Radius</label>
-
-      <div class="input">
+    <div class="control-group">
+      <label class="control-label" for="radius">Radius</label>
+      <div class="controls">
         <input id="radius" type="text"/>
       </div>
     </div>
-    <div class="clearfix">
-      <label for="description">Description</label>
-
-      <div class="input">
-        <textarea id="description" rows="5" cols="80"></textarea>
+    <div class="control-group">
+      <label for="description" class="control-label">Description</label>
+      <div class="controls">
+        <textarea class="span6" id="description" rows="5" cols="80"></textarea>
       </div>
     </div>
-    <div class="clearfix">
-      <label for="url">URL</label>
-
-      <div class="input">
-        <input id="url" type="text"/>
+    <div class="control-group">
+      <label for="url" class="control-label">URL</label>
+      <div class="controls">
+        <input id="url" class="span6" type="text"/>
       </div>
     </div>
-    <div class="clearfix">
-      <label>&nbsp;</label>
+    <div class="control-group">
+      <div class="controls">
+        <label><input id="invalidLoc" type="checkbox">&nbsp;Ignore in geolocation lookups</label>
+        <input id="submitButton" type="submit" class="btn primary" value="Save"/>&nbsp;
 
-      <div class="input">
-        <ul class="unstyled">
-          <li><label><input id="invalidLoc" type="checkbox">&nbsp;Ignore in geolocation
-            lookups</label></li>
-        </ul>
       </div>
-    </div>
-    <div class="actions">
-      <input id="submitButton" type="submit" class="btn primary" value="Save"/>&nbsp;
     </div>
   </fieldset>
 </form>
