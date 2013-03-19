@@ -147,7 +147,7 @@ public class TruckServlet extends HttpServlet {
   }
 
   private Truck truckFromForm(HttpServletRequest request, String truckId) {
-    Truck.Builder builder = Truck.builder();
+    Truck.Builder builder = Truck.builder(truckDAO.findById(truckId));
     builder.id(truckId)
         .defaultCity(request.getParameter("defaultCity"))
         .description(request.getParameter("description"))
