@@ -85,7 +85,7 @@ public class UpdateTruckStats extends HttpServlet {
       lastUpdate = stats.getLastUpdated();
       totalStops = stats.getTotalStops();
       lastSeen = stats.getLastSeen();
-      stopsThisYear = (lastUpdate.getYear() == year) ? stopsThisYear : 0;
+      stopsThisYear = (lastUpdate.getYear() == year) ? stats.getStopsThisYear() : 0;
     }
     for (TruckStop stop : stopService.findStopsForTruckSince(lastUpdate, truck.getId())) {
       final DateTime endTime = stop.getEndTime();
