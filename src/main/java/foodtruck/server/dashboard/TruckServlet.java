@@ -172,7 +172,7 @@ public class TruckServlet extends HttpServlet {
     String doNotMatchRegex = request.getParameter("donotMatchIf");
     builder.donotMatchIf(Strings.isNullOrEmpty(doNotMatchRegex) ? null : doNotMatchRegex);
     builder.categories(ImmutableSet
-        .copyOf(Splitter.on(",").omitEmptyStrings().split(request.getParameter("categories"))));
+        .copyOf(Splitter.on(",").omitEmptyStrings().trimResults().split(request.getParameter("categories"))));
     return builder.build();
   }
 

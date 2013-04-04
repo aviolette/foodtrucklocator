@@ -54,6 +54,10 @@
             test="${empty(truck.phone)}">none</c:when><c:otherwise>${truck.phone}</c:otherwise></c:choose>
         </td>
       </tr>
+      <tr>
+        <td>Categories</td>
+        <td><c:forEach items="${truck.categories}" var="category"><span class="label label-info">${category}</span>&nbsp;</c:forEach></td>
+      </tr>
     </table>
   </div>
   <div class="span6">
