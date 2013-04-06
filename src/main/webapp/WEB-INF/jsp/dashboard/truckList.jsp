@@ -2,7 +2,7 @@
 
 <div class="btn-toolbar">
   <div class="btn-group">
-    <a href="/cron/tweets" class="btn primary" id="twitterButton">Refresh all tweets</a>
+    <a href="/cron/tweets" class="btn primary" id="twitterButton"><i class="icon-refresh"></i>&nbsp;Refresh all tweets</a>
   </div>
   <div class="btn-group toggle-visibility" >
     <button id="inactiveButton" type="button" class="btn active">Inactive</button>

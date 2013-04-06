@@ -93,10 +93,10 @@
   <tbody id="scheduleTable">
   </tbody>
 </table>
-<button class="btn primary" id="addButton">New Event</button>
-&nbsp;
-<button class="btn" id="recacheButton">Reload from calendar</button>
-
+<div class="btn-group">
+<button class="btn primary" id="addButton"><i class="icon-calendar"></i>&nbsp;New Event</button>
+<button class="btn" id="recacheButton"><i class="icon-refresh"></i>&nbsp;Reload from calendar</button>
+</div>
 <h2>Weekly Overview</h2>
 
 <table class="table table-striped">
@@ -283,9 +283,9 @@
           }
           buf += "&nbsp;</td><td>";
           scheduleTable.append(buf +
-              "<button id='truckDelete" + truckIndex +
-              "' class='btn danger'>Delete</button>&nbsp;<button class='btn' id='truckEdit" +
-              truckIndex + "'>Edit</button></td></tr>");
+              "<div class='btn-group'><button id='truckDelete" + truckIndex +
+              "' class='btn '><i class='icon-trash'></i> Delete</button>&nbsp;<button class='btn' id='truckEdit" +
+              truckIndex + "'><i class='icon-edit'></i> Edit</button></div></td></tr>");
           $("#truckEdit" + truckIndex).click(function(e) {
             invokeEditDialog(stop, refreshSchedule);
           });
