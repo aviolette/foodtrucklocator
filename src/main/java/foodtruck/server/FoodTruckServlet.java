@@ -66,7 +66,10 @@ public class FoodTruckServlet extends HttpServlet {
       resp.setHeader("Location", "http://www.chicagofoodtruckfinder.com" + path);
       return;
     }
-    if (!Strings.isNullOrEmpty(path)) {
+    boolean showNextGen = false;
+    if ("/nextgen".equals(path)) {
+      showNextGen = true;
+    } else if (!Strings.isNullOrEmpty(path)) {
       req.setAttribute("showScheduleFor", path.substring(1));
     }
     final String timeRequest = req.getParameter("time");
@@ -105,7 +108,8 @@ public class FoodTruckServlet extends HttpServlet {
     resp.setHeader("Pragma", "no-cache");
     resp.setHeader("Expires", "Thu, 01 Jan 1970 00:00:00 GMT");
     req.setAttribute("payload", payload);
-    req.getRequestDispatcher("/WEB-INF/jsp/index.jsp").forward(req, resp);
+    String jsp = "/WEB-INF/jsp/" + (showNextGen ? "nextgen.jsp" : "index.jsp");
+    req.getRequestDispatcher(jsp).forward(req, resp);
   }
 
   private Location getCenter(@Nullable Cookie[] cookies, Location defaultValue) {
