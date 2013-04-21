@@ -91,13 +91,6 @@ var FoodTruckLocator = function() {
       self.stops.push(buildStop(item));
     });
 
-    function formatLocation(location) {
-      if (/, Chicago, IL$/i.test(location)) {
-        location = location.substring(0, location.length - 13);
-      }
-      return location;
-    }
-
     function buildStop(stop) {
       return {
         stop : stop,
@@ -147,6 +140,13 @@ var FoodTruckLocator = function() {
       return items;
     }
   };
+
+  function formatLocation(location) {
+    if (/, Chicago, IL$/i.test(location)) {
+      location = location.substring(0, location.length - 13);
+    }
+    return location;
+  }
 
   function buildTruckList($truckList, stops) {
     $truckList.empty();
