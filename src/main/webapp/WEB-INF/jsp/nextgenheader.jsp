@@ -26,7 +26,7 @@
       <ul class="nav">
         <li><a id="aboutLink" href="/about">About</a></li>
         <li class="visible-desktop"><a id="mobileLink" href="#mobile">Mobile</a></li>
-        <li><a href="#settings">Settings</a></li>
+        <li><a href="#settings" id="settingsLink">Settings</a></li>
         <%--
         <li><a href="/trucks">Trucks</a></li>
         <li><a target="_blank" href="http://blog.chicagofoodtruckfinder.com">Blog</a></li>

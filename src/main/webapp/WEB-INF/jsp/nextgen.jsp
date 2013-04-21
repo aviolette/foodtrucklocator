@@ -1,7 +1,7 @@
 <%@ include file="nextgenheader.jsp" %>
 
 <div class="row-fluid" id="sidebar">
-  <div class="span3" id="listContainer">
+  <div class="span4" id="listContainer">
     <h3>Trucks Open Now</h3>
     <dl id="nowTrucks">
     </dl>
@@ -9,13 +9,14 @@
     <dl id="laterTrucks">
     </dl>
   </div>
-  <div id="content" class="span9">
+  <div id="content" class="span8">
     <div id="map_wrapper">
       <div class="section" id="map_canvas"></div>
     </div>
    </div>
 </div>
-
+<%@include file="include/mobile_dialog.jsp" %>
+<%@include file="include/settings_dialog.jsp" %>
 <%@include file="include/core_js.jsp" %>
 <script type="text/javascript"
         src="http://maps.google.com/maps/api/js?sensor=false&libraries=geometry"></script>
