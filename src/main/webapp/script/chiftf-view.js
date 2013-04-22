@@ -42,14 +42,13 @@ var FoodTruckLocator = function() {
   }
 
   var Markers = function(map) {
-    var markers = {}, lastLetter = 0;
+    var markers = {}, lastLetter = 0, color = "";
 
     function buildIconURL(letter) {
       if (Modernizr.touch) {
         return "http://maps.google.com/mapfiles/marker.png";
       }
       var code = letter.charCodeAt(0)
-      var color = "";
       if (code > 90) {
         code = code - 26;
         color = "_orange"
@@ -59,6 +58,7 @@ var FoodTruckLocator = function() {
     }
 
     this.clear = function() {
+      color = "", lastLetter = 0;
       $.each(markers, function(key, marker) {
         marker.setMap(null);
       });
@@ -67,24 +67,26 @@ var FoodTruckLocator = function() {
 
     this.add = function(stop, bounds) {
       if (markers[stop.location.name] == undefined) {
+        var letterId = String.fromCharCode(65 + lastLetter);
         stop.marker = new google.maps.Marker({
           map: map,
-          icon: buildIconURL(String.fromCharCode(65 + lastLetter)),
+          icon: buildIconURL(letterId),
           position: stop.position
         });
+        stop.markerId = "marker" + color + letterId;
         markers[stop.location.name] = stop.marker;
         lastLetter++;
         bounds.extend(stop.position);
       } else {
         stop.marker = markers[stop.location.name];
       }
-    }
+    };
   };
 
   var Clock = {
     now : function() {
       return new Date().getTime();
-      //return 1366544517358;
+      //return 1366625176648;
     }
   };
 
@@ -159,12 +161,14 @@ var FoodTruckLocator = function() {
 
   function buildTruckList($truckList, stops) {
     $truckList.empty();
+    var markerIds = [];
     var items = "<ul class='unstyled'>", lastIcon = null;
     $.each(stops, function(idx, stop){
       var distance = stop.distance ? (" (" + stop.distance + " miles away) ") : "";
       var iconColumn = "";
       if (lastIcon != stop.marker.icon) {
-        iconColumn = "<img src='" + stop.marker.icon + "'/>";
+        iconColumn = "<img id='" + stop.markerId + "'  src='" + stop.marker.icon + "'/>";
+        markerIds.push({marker : stop.marker, id: stop.markerId});
       } else {
         iconColumn = "<img style='visibility:hidden' src='" + stop.marker.icon + "'/>";
       }
@@ -179,6 +183,18 @@ var FoodTruckLocator = function() {
           "</li>";
     });
     $truckList.append(items + "</ul>");
+    $.each(markerIds, function(idx, markerAndId) {
+      if (markerAndId.marker.getAnimation() != null) {
+        return;
+      }
+      $("#" + markerAndId.id).click(function() {
+        markerAndId.marker.setAnimation(google.maps.Animation.BOUNCE);
+        setTimeout(function() {
+          markerAndId.marker.setAnimation(null);
+        }, 3000);
+      });
+
+    });
   }
 
   function updateTruckLists() {
@@ -209,11 +225,9 @@ var FoodTruckLocator = function() {
     // TODO: we're sorting in two locations...probably shouldn't do that.
     $.each(sortByDistanceFromLocation(_trucks.openNow(), currentLocation), function(idx, stop) {
       _markers.add(stop, bounds);
-//      bounds.extend(objectOnMap.position.latLng);
     });
     $.each(sortByDistanceFromLocation(_trucks.openLater(), currentLocation), function(idx, stop) {
       _markers.add(stop, bounds);
-//      bounds.extend(objectOnMap.position.latLng);
     });
     _map.fitBounds(bounds);
   }
