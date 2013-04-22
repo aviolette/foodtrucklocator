@@ -83,8 +83,8 @@ var FoodTruckLocator = function() {
 
   var Clock = {
     now : function() {
-      //return new Date().getTime();
-      return 1366544517358;
+      return new Date().getTime();
+      //return 1366544517358;
     }
   };
 
