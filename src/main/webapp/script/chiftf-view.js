@@ -2,7 +2,14 @@ var FoodTruckLocator = function() {
   var _map = null,
       _trucks = null,
       _markers = null,
-      _center = null;
+      _center = null,
+      _geocoder = new google.maps.Geocoder();
+
+  function refreshViewData() {
+    updateDistanceFromCurrentLocation();
+    updateMap();
+    updateTruckLists();
+  }
 
   function setCookie(name, value, days) {
     if (days) {
@@ -58,7 +65,7 @@ var FoodTruckLocator = function() {
       markers = {};
     };
 
-    this.add = function(stop) {
+    this.add = function(stop, bounds) {
       if (markers[stop.location.name] == undefined) {
         stop.marker = new google.maps.Marker({
           map: map,
@@ -67,6 +74,7 @@ var FoodTruckLocator = function() {
         });
         markers[stop.location.name] = stop.marker;
         lastLetter++;
+        bounds.extend(stop.position);
       } else {
         stop.marker = markers[stop.location.name];
       }
@@ -75,7 +83,8 @@ var FoodTruckLocator = function() {
 
   var Clock = {
     now : function() {
-      return new Date().getTime();
+      //return new Date().getTime();
+      return 1366544517358;
     }
   };
 
@@ -161,7 +170,7 @@ var FoodTruckLocator = function() {
       }
       lastIcon = stop.marker.icon;
       items +=   "<li style='padding-bottom:20px'>" +
-          "<table><tr><td>" + iconColumn + "</td><td style='vertical-align:top;padding-right:5px'>" +
+          "<table><tr><td style=\"vertical-align: top;width:20px !important\">" + iconColumn + "</td><td style='width: 48px; vertical-align:top;padding-right:5px'>" +
           "<img src='" + stop.truck.iconUrl + "'/></td><td style='vertical-align:top'>" +
           stop.truck.name + "<br/>" +
           formatLocation(stop.location.name) + distance + "<br/>" +
@@ -193,15 +202,20 @@ var FoodTruckLocator = function() {
 
   function updateMap() {
     _markers.clear();
+    var bounds = new google.maps.LatLngBounds(),
+        currentLocation = findLocation();
+
+    bounds.extend(currentLocation);
     // TODO: we're sorting in two locations...probably shouldn't do that.
-    $.each(sortByDistanceFromLocation(_trucks.openNow(), findLocation()), function(idx, stop) {
-      _markers.add(stop);
+    $.each(sortByDistanceFromLocation(_trucks.openNow(), currentLocation), function(idx, stop) {
+      _markers.add(stop, bounds);
 //      bounds.extend(objectOnMap.position.latLng);
     });
-    $.each(sortByDistanceFromLocation(_trucks.openLater(), findLocation()), function(idx, stop) {
-      _markers.add(stop);
+    $.each(sortByDistanceFromLocation(_trucks.openLater(), currentLocation), function(idx, stop) {
+      _markers.add(stop, bounds);
 //      bounds.extend(objectOnMap.position.latLng);
     });
+    _map.fitBounds(bounds);
   }
 
   function resize() {
@@ -238,18 +252,33 @@ var FoodTruckLocator = function() {
       var existingGPS = getCookie("useGPS"),
           existingLocationName = getCookie("locationName"),
           locationName = $("#locationName").attr("value"),
-          useGPS = $("#useGPS").checked;
+          useGPS = ($("#useGPS").attr("checked") == "checked");
 
-      if (existingGPS != useGPS && useGPS) {
+      if (useGPS) {
         navigator.geolocation.getCurrentPosition(function(position) {
           setCookie("latitude", position.coords.latitude)
           setCookie("longitude", position.coords.longitude);
+          setCookie("useGPS", "true");
+          refreshViewData();
           $("#settingsDialog").modal("hide");
         });
-      } else if (existingLocationName != locationName && !useGPS) {
-
       } else {
-        $("#settingsDialog").modal("hide");
+        setCookie("useGPS", "false");
+        if (existingLocationName != locationName || existingGPS) {
+          _geocoder.geocode({ 'address': locationName }, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+              setCookie("latitude", results[0].geometry.location.lat());
+              setCookie("longitude", results[0].geometry.location.lng())
+              setCookie("locationName", locationName);
+              refreshViewData();
+              $("#settingsDialog").modal("hide");
+            } else {
+              alert("Could not resolve that address");
+            }
+          });
+        } else {
+          $("#settingsDialog").modal("hide");
+        }
       }
     });
   }
@@ -257,9 +286,7 @@ var FoodTruckLocator = function() {
   return {
     setModel : function(model) {
       _trucks = new Trucks(model);
-      updateDistanceFromCurrentLocation();
-      updateMap();
-      updateTruckLists();
+      refreshViewData();
     },
     reload : function() {
       // TODO: implement logic to reload model
