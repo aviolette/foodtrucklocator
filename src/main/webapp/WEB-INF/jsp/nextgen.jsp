@@ -2,6 +2,11 @@
 
 <div class="row-fluid" id="sidebar">
   <div class="span4" id="listContainer">
+    <div class="alert alert-block" id="filteredWarning" style="display:none">
+      <h4>Warning!</h4>
+      You are looking at a filtered view.<br/>
+      <button id="resetButton" class="btn btn-warning">Reset</button>
+    </div>
     <h3>Trucks Open Now</h3>
     <dl id="nowTrucks">
     </dl>

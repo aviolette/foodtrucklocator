@@ -57,15 +57,20 @@ var FoodTruckLocator = function() {
       return "http://www.google.com/mapfiles/marker" + color + letter + ".png"
     }
 
+    this.allVisible = function() {
+      return true;
+    }
+
     this.clear = function() {
       color = "", lastLetter = 0;
+      this.bounds = new google.maps.LatLngBounds();
       $.each(markers, function(key, marker) {
         marker.setMap(null);
       });
       markers = {};
     };
 
-    this.add = function(stop, bounds) {
+    this.add = function(stop) {
       if (markers[stop.location.name] == undefined) {
         var letterId = String.fromCharCode(65 + lastLetter);
         stop.marker = new google.maps.Marker({
@@ -76,7 +81,7 @@ var FoodTruckLocator = function() {
         stop.markerId = "marker" + color + letterId;
         markers[stop.location.name] = stop.marker;
         lastLetter++;
-        bounds.extend(stop.position);
+        this.bounds.extend(stop.position);
       } else {
         stop.marker = markers[stop.location.name];
       }
@@ -218,18 +223,16 @@ var FoodTruckLocator = function() {
 
   function updateMap() {
     _markers.clear();
-    var bounds = new google.maps.LatLngBounds(),
-        currentLocation = findLocation();
-
-    bounds.extend(currentLocation);
+    var currentLocation = findLocation();
+    _markers.bounds.extend(currentLocation);
     // TODO: we're sorting in two locations...probably shouldn't do that.
     $.each(sortByDistanceFromLocation(_trucks.openNow(), currentLocation), function(idx, stop) {
-      _markers.add(stop, bounds);
+      _markers.add(stop);
     });
     $.each(sortByDistanceFromLocation(_trucks.openLater(), currentLocation), function(idx, stop) {
-      _markers.add(stop, bounds);
+      _markers.add(stop);
     });
-    _map.fitBounds(bounds);
+//    _map.fitBounds(bounds);
   }
 
   function resize() {
@@ -297,6 +300,44 @@ var FoodTruckLocator = function() {
     });
   }
 
+  function displayWarningIfMarkersNotVisible() {
+    if (_markers.allVisible()) {
+      $("#filteredWarning").css("display", "none");
+    } else {
+      $("#filteredWarning").css("display", "block");
+    }
+  }
+
+  function findCenter(defaultCenter) {
+    var lat = getCookie("map_center_lat"), lng = getCookie("map_center_lng");
+    console.log("lat: " + lat + ", lng: " + lng);
+    if (lat && lng) {
+      console.log("HERE");
+      var ll= new google.maps.LatLng(lat, lng);
+      console.log(ll);
+      return ll;
+    }
+    return defaultCenter;
+  }
+
+  function saveCenter(center) {
+    setCookie("map_center_lat", center.lat());
+    setCookie("map_center_lng", center.lng());
+    _center = center;
+  }
+
+  function findZoom(defaultZoom) {
+    var zoom = getCookie("zoom");
+    if (zoom) {
+      return parseInt(zoom);
+    }
+    return defaultZoom;
+  }
+
+  function saveZoom(zoom) {
+    setCookie("zoom", zoom);
+  }
+
   return {
     setModel : function(model) {
       _trucks = new Trucks(model);
@@ -305,17 +346,29 @@ var FoodTruckLocator = function() {
     reload : function() {
       // TODO: implement logic to reload model
     },
+    extend : function() {
+      _map.fitBounds(_markers.bounds);
+    },
     run : function(mobile, center, time, modelPayload) {
       var self = this;
-      _center = center;
+      _center = findCenter(center);
       resize();
       _map = new google.maps.Map(document.getElementById("map_canvas"), {
-        zoom: 13,
-        center: center,
+        zoom: findZoom(13),
+        center: _center,
         maxZoom : 18,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       });
       _markers = new Markers(_map);
+      google.maps.event.addListener(_map, 'center_changed', function() {
+        saveCenter(_map.getCenter());
+        displayWarningIfMarkersNotVisible();
+      });
+      google.maps.event.addListener(_map, 'zoom_changed', function() {
+        saveZoom(_map.getZoom());
+        displayWarningIfMarkersNotVisible();
+      });
+
       setupGlobalEventHandlers();
       self.setModel(modelPayload);
     }
