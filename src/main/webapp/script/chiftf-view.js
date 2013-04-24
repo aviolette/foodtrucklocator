@@ -23,12 +23,7 @@ var FoodTruckLocator = function() {
   }
 
   function findLocation() {
-    var lat = getCookie("latitude"), lng = getCookie("longitude");
-    if (lat && lng) {
-      return new google.maps.LatLng(lat, lng);
-    } else {
-      return _center;
-    }
+    return _center;
   }
 
   function getCookie(name) {
@@ -244,55 +239,6 @@ var FoodTruckLocator = function() {
     $(window).resize(function() {
       resize();
     });
-    $("#settingsLink").click(function(e) {
-      e.preventDefault();
-      var locationName = getCookie("locationName");
-      if (Modernizr.geolocation) {
-        $("#useGPS").prop("checked", "true" == getCookie("useGPS"));
-      } else {
-        $("#useGPSLabel").css("display:none");
-        $("#useGPS").prop("checked", false);
-      }
-      $("#locationName").attr("value", locationName);
-      $("#settingsDialog").modal({show: true, keyboard : true, backdrop: true});
-    });
-    $("#useGPS").click(function(e) {
-
-    });
-    $("#saveSettingsButton").click(function(e) {
-      e.preventDefault();
-      var existingGPS = getCookie("useGPS"),
-          existingLocationName = getCookie("locationName"),
-          locationName = $("#locationName").attr("value"),
-          useGPS = ($("#useGPS").attr("checked") == "checked");
-
-      if (useGPS) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-          setCookie("latitude", position.coords.latitude)
-          setCookie("longitude", position.coords.longitude);
-          setCookie("useGPS", "true");
-          refreshViewData();
-          $("#settingsDialog").modal("hide");
-        });
-      } else {
-        setCookie("useGPS", "false");
-        if (existingLocationName != locationName || existingGPS) {
-          _geocoder.geocode({ 'address': locationName }, function(results, status) {
-            if (status == google.maps.GeocoderStatus.OK) {
-              setCookie("latitude", results[0].geometry.location.lat());
-              setCookie("longitude", results[0].geometry.location.lng())
-              setCookie("locationName", locationName);
-              refreshViewData();
-              $("#settingsDialog").modal("hide");
-            } else {
-              alert("Could not resolve that address");
-            }
-          });
-        } else {
-          $("#settingsDialog").modal("hide");
-        }
-      }
-    });
   }
 
   function displayWarningIfMarkersNotVisible() {
@@ -355,6 +301,21 @@ var FoodTruckLocator = function() {
         saveCenter(_map.getCenter());
         displayWarningIfMarkersNotVisible();
       });
+      var centerMarker = new google.maps.Marker({
+        icon: "http://maps.google.com/mapfiles/arrow.png",
+      });
+
+      google.maps.event.addListener(_map, 'drag', function() {
+        centerMarker.setMap(_map);
+        centerMarker.setPosition(_map.getCenter());
+      });
+
+      google.maps.event.addListener(_map, 'dragend', function() {
+        setTimeout(function() {
+          centerMarker.setMap(null);
+        }, 3000);
+      });
+
       google.maps.event.addListener(_map, 'zoom_changed', function() {
         saveZoom(_map.getZoom());
         displayWarningIfMarkersNotVisible();
