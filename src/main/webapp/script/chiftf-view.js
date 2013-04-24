@@ -87,8 +87,8 @@ var FoodTruckLocator = function() {
 
   var Clock = {
     now : function() {
-      //return new Date().getTime();
-      return 1366625176648;
+      return new Date().getTime();
+      //return 1366625176648;
     }
   };
 
@@ -311,9 +311,7 @@ var FoodTruckLocator = function() {
       });
 
       google.maps.event.addListener(_map, 'dragend', function() {
-        setTimeout(function() {
-          centerMarker.setMap(null);
-        }, 3000);
+        centerMarker.setMap(null);
       });
 
       google.maps.event.addListener(_map, 'zoom_changed', function() {
