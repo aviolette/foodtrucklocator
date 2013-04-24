@@ -53,12 +53,7 @@ var FoodTruckLocator = function() {
       return "http://www.google.com/mapfiles/marker" + color + letter + ".png"
     }
 
-    this.allVisible = function() {
-
-      return false;
-    }
-
-    this.clear = function() {
+     this.clear = function() {
       color = "", lastLetter = 0;
       this.bounds = new google.maps.LatLngBounds();
       $.each(markers, function(key, marker) {
@@ -124,6 +119,16 @@ var FoodTruckLocator = function() {
             stop.position , 3959);
         stop.distance = Math.round(distance * 100) / 100;
       });
+    }
+
+    this.allVisible = function() {
+      var bounds = _map.getBounds(), visible = true;
+      $.each(this.stops, function(idx, stop) {
+        if (!bounds.contains(stop.position)) {
+          visible = false;
+        }
+      });
+      return visible;
     }
 
     this.openNow = function() {
@@ -242,7 +247,7 @@ var FoodTruckLocator = function() {
   }
 
   function displayWarningIfMarkersNotVisible() {
-    if (_markers.allVisible()) {
+    if (_trucks.allVisible()) {
       $("#filteredWarning").css("display", "none");
     } else {
       $("#filteredWarning").css("display", "block");

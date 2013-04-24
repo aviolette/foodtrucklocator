@@ -2,10 +2,8 @@
 
 <div class="row-fluid" id="sidebar">
   <div class="span4" id="listContainer">
-    <div class="alert alert-block" id="filteredWarning" style="display:none">
-      <h4>Warning!</h4>
-      You are looking at a filtered view.<br/>
-      <button id="resetButton" class="btn btn-warning">Reset</button>
+    <div style="padding-top:10px;" class="alert alert-block" id="filteredWarning" style="display:none">
+      The result list is currently being filtered based on the zoom-level of the map.  To see all trucks, zoom out.
     </div>
     <h3>Trucks Open Now</h3>
     <dl id="nowTrucks">
