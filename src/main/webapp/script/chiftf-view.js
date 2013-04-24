@@ -9,6 +9,7 @@ var FoodTruckLocator = function() {
     updateDistanceFromCurrentLocation();
     updateMap();
     updateTruckLists();
+    displayWarningIfMarkersNotVisible();
   }
 
   function setCookie(name, value, days) {
@@ -58,7 +59,8 @@ var FoodTruckLocator = function() {
     }
 
     this.allVisible = function() {
-      return true;
+
+      return false;
     }
 
     this.clear = function() {
@@ -90,8 +92,8 @@ var FoodTruckLocator = function() {
 
   var Clock = {
     now : function() {
-      return new Date().getTime();
-      //return 1366625176648;
+      //return new Date().getTime();
+      return 1366625176648;
     }
   };
 
@@ -121,13 +123,6 @@ var FoodTruckLocator = function() {
       return this.stops;
     }
 
-    this.nowOrLater = function() {
-      var now = Clock.now();
-      return $.grep(this.stops, function(item) {
-        return item.stop["endMillis"] > now;
-      });
-    }
-
     this.updateDistanceFrom = function(location) {
       $.each(this.stops, function(idx, stop) {
         var distance = google.maps.geometry.spherical.computeDistanceBetween(location,
@@ -139,7 +134,7 @@ var FoodTruckLocator = function() {
     this.openNow = function() {
       var now = Clock.now(), items = [];
       $.each(self.stops, function(idx, item) {
-        if (item.stop["startMillis"] <= now && item.stop["endMillis"] > now) {
+        if (item.stop["startMillis"] <= now && item.stop["endMillis"] > now && _map.getBounds().contains(item.position)) {
           items.push(item);
         }
       });
@@ -149,7 +144,7 @@ var FoodTruckLocator = function() {
     this.openLater = function() {
       var now = Clock.now(), items = [];
       $.each(self.stops, function(idx, item) {
-        if (item.stop["startMillis"] > now) {
+        if (item.stop["startMillis"] > now && _map.getBounds().contains(item.position)) {
           items.push(item);
         }
       });
@@ -310,12 +305,8 @@ var FoodTruckLocator = function() {
 
   function findCenter(defaultCenter) {
     var lat = getCookie("map_center_lat"), lng = getCookie("map_center_lng");
-    console.log("lat: " + lat + ", lng: " + lng);
     if (lat && lng) {
-      console.log("HERE");
-      var ll= new google.maps.LatLng(lat, lng);
-      console.log(ll);
-      return ll;
+      return new google.maps.LatLng(lat, lng);
     }
     return defaultCenter;
   }
@@ -368,9 +359,11 @@ var FoodTruckLocator = function() {
         saveZoom(_map.getZoom());
         displayWarningIfMarkersNotVisible();
       });
+      google.maps.event.addListener(_map, 'bounds_changed', function() {
+        self.setModel(modelPayload);
+      });
 
       setupGlobalEventHandlers();
-      self.setModel(modelPayload);
     }
   };
 }();
