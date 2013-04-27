@@ -2,8 +2,7 @@ var FoodTruckLocator = function() {
   var _map = null,
       _trucks = null,
       _markers = null,
-      _center = null,
-      _geocoder = new google.maps.Geocoder();
+      _center = null;
 
   function refreshViewData() {
     updateDistanceFromCurrentLocation();
@@ -13,12 +12,13 @@ var FoodTruckLocator = function() {
   }
 
   function setCookie(name, value, days) {
+    var expires;
     if (days) {
       var date = new Date();
       date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-      var expires = "; expires=" + date.toGMTString();
+      expires = "; expires=" + date.toGMTString();
     }
-    else var expires = "";
+    else expires = "";
     document.cookie = name + "=" + value + expires + "; path=/";
   }
 
@@ -44,7 +44,7 @@ var FoodTruckLocator = function() {
       if (Modernizr.touch) {
         return "http://maps.google.com/mapfiles/marker.png";
       }
-      var code = letter.charCodeAt(0)
+      var code = letter.charCodeAt(0);
       if (code > 90) {
         code = code - 26;
         color = "_orange"
@@ -159,18 +159,48 @@ var FoodTruckLocator = function() {
     return location;
   }
 
+  function buildGroupTableRow(stop) {
+    return "<tr><td><img src='" + stop.truck.iconUrl + "'/></td><td style='padding-left:10px'>" +
+        stop.stop.startTime + " - <br/>" + stop.stop.endTime + "</td><td style='padding-left:10px'>" +
+        "<strong>" + stop.truck.name + "</strong></td></tr>";
+  }
+
+  function buildInfoWindow(marker, stops) {
+    var contentString = "<div class='infoWindowContent'><address class='locationName'>" +
+        stops[0].location.name + "</address>";
+    if (stops.distance != null) {
+      contentString += "<p>" + stops[0].distance + " miles from your location</p>"
+    }
+    contentString = contentString + "<table><tbody>"
+    $.each(stops, function(idx, stop) {
+      contentString += buildGroupTableRow(stop);
+    });
+    contentString = contentString + "</tbody></table></div>";
+    var infowindow = new google.maps.InfoWindow({
+      content: contentString
+    });
+
+    google.maps.event.addListener(marker, 'click', function() {
+      infowindow.open(_map, marker);
+    });
+  }
+
+
   function buildTruckList($truckList, stops) {
     $truckList.empty();
     var markerIds = [];
     var items = "<ul class='unstyled'>", lastIcon = null;
+    var lastMarkerGroup;
     $.each(stops, function(idx, stop){
       var distance = stop.distance ? (" (" + stop.distance + " miles away) ") : "";
       var iconColumn = "";
       if (lastIcon != stop.marker.icon) {
         iconColumn = "<img id='" + stop.markerId + "'  src='" + stop.marker.icon + "'/>";
-        markerIds.push({marker : stop.marker, id: stop.markerId});
+        lastMarkerGroup = {marker : stop.marker, id: stop.markerId, stops: [stop]};
+        markerIds.push(lastMarkerGroup);
       } else {
         iconColumn = "<img style='visibility:hidden' src='" + stop.marker.icon + "'/>";
+        lastMarkerGroup["stops"].push(stop);
       }
       lastIcon = stop.marker.icon;
       items +=   "<li style='padding-bottom:20px'>" +
@@ -187,6 +217,7 @@ var FoodTruckLocator = function() {
       if (markerAndId.marker.getAnimation() != null) {
         return;
       }
+      buildInfoWindow(markerAndId.marker, markerAndId.stops);
       $("#" + markerAndId.id).click(function() {
         markerAndId.marker.setAnimation(google.maps.Animation.BOUNCE);
         setTimeout(function() {
@@ -317,14 +348,21 @@ var FoodTruckLocator = function() {
 
       google.maps.event.addListener(_map, 'dragend', function() {
         centerMarker.setMap(null);
+        self.setModel(modelPayload);
       });
 
       google.maps.event.addListener(_map, 'zoom_changed', function() {
         saveZoom(_map.getZoom());
-        displayWarningIfMarkersNotVisible();
-      });
-      google.maps.event.addListener(_map, 'bounds_changed', function() {
         self.setModel(modelPayload);
+      });
+
+      var listener = null;
+      // just want to invoke this once, for when the map first loads
+      listener = google.maps.event.addListener(_map, 'bounds_changed', function() {
+        self.setModel(modelPayload);
+        if (listener) {
+          google.maps.event.removeListener(listener);
+        }
       });
 
       setupGlobalEventHandlers();
