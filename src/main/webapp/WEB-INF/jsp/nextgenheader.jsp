@@ -24,7 +24,8 @@
     <div class="container-fluid">
       <a class="brand" href="/">Chicago Food Truck Finder</a>
       <ul class="nav">
-        <li><a id="aboutLink" href="/about">About</a></li>
+        <li><a href="http://blog.chicagofoodtruckfinder.com/p/about.html">About</a></li>
+        <li><a href="http://blog.chicagofoodtruckfinder.com/">Blog</a></li>
         <li class="visible-desktop"><a id="mobileLink" href="#mobile">Mobile</a></li>
         <%--
         <li><a href="/trucks">Trucks</a></li>
