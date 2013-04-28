@@ -66,9 +66,9 @@ public class FoodTruckServlet extends HttpServlet {
       resp.setHeader("Location", "http://www.chicagofoodtruckfinder.com" + path);
       return;
     }
-    boolean showNextGen = false;
-    if ("/nextgen".equals(path)) {
-      showNextGen = true;
+    boolean showNextGen = true;
+    if ("/classic".equals(path)) {
+      showNextGen = false;
     } else if (!Strings.isNullOrEmpty(path)) {
       req.setAttribute("showScheduleFor", path.substring(1));
     }
