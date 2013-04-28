@@ -338,7 +338,7 @@ var FoodTruckLocator = function() {
         displayWarningIfMarkersNotVisible();
       });
       var centerMarker = new google.maps.Marker({
-        icon: "http://maps.google.com/mapfiles/arrow.png",
+        icon: "http://maps.google.com/mapfiles/arrow.png"
       });
 
       google.maps.event.addListener(_map, 'drag', function() {
