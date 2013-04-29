@@ -9,6 +9,7 @@ import foodtruck.dao.ConfigurationDAO;
 import foodtruck.model.Configuration;
 import foodtruck.model.Location;
 import static foodtruck.dao.appengine.Attributes.getBooleanProperty;
+import static foodtruck.dao.appengine.Attributes.getStringProperty;
 
 /**
  * @author aviolette@gmail.com
@@ -31,6 +32,8 @@ public class ConfigurationDAOAppEngine extends
   private static final String PROP_PRIMARY_TWITTER_LIST = "primary_twitter_list";
   private static final String PROP_GOOGLE_CALENDAR_ADDRESS = "google_calendar_address";
   private static final String PROP_YAHOO_APP_ID = "yahoo_app_id";
+  private static final String PROP_YAHOO_CONSUMER_KEY = "yahoo_consumer_key";
+  private static final String PROP_YAHOO_CONSUMER_SECRET = "yahoo_consumer_secret";
 
   @Inject
   public ConfigurationDAOAppEngine(DatastoreServiceProvider provider, DateTimeZone defaultZone) {
@@ -51,6 +54,8 @@ public class ConfigurationDAOAppEngine extends
     entity.setProperty(PROP_REMOTE_CACHE_ADDRESS, config.getRemoteTwitterCacheAddress());
     entity.setProperty(PROP_GOOGLE_CALENDAR_ADDRESS, config.getGoogleCalendarAddress());
     entity.setProperty(PROP_PRIMARY_TWITTER_LIST, config.getPrimaryTwitterList());
+    entity.setProperty(PROP_YAHOO_CONSUMER_KEY, config.getYahooConsumerKey());
+    entity.setProperty(PROP_YAHOO_CONSUMER_SECRET, config.getYahooConsumerSecret());
     entity.setProperty(PROP_YAHOO_APP_ID, config.getYahooAppId());
     return entity;
   }
@@ -69,10 +74,12 @@ public class ConfigurationDAOAppEngine extends
         .throttleGoogleGeocoding(Attributes.getDateTime(entity, PROP_GOOGLE_THROTTLE, defaultZone))
         .localTwitterCachingEnabled(getBooleanProperty(entity, PROP_LOCAL_CACHE_ENABLED, true))
         .remoteTwitterCachingEnabled(getBooleanProperty(entity, PROP_REMOTE_CACHE_ENABLED, false))
-        .remoteTwitterCacheAddress((String)entity.getProperty(PROP_REMOTE_CACHE_ADDRESS))
-        .googleCalendarAddress((String)entity.getProperty(PROP_GOOGLE_CALENDAR_ADDRESS))
-        .primaryTwitterList((String)entity.getProperty(PROP_PRIMARY_TWITTER_LIST))
-        .yahooAppId((String)entity.getProperty(PROP_YAHOO_APP_ID))
+        .remoteTwitterCacheAddress((String) entity.getProperty(PROP_REMOTE_CACHE_ADDRESS))
+        .googleCalendarAddress((String) entity.getProperty(PROP_GOOGLE_CALENDAR_ADDRESS))
+        .primaryTwitterList((String) entity.getProperty(PROP_PRIMARY_TWITTER_LIST))
+        .yahooAppId((String) entity.getProperty(PROP_YAHOO_APP_ID))
+        .yahooConsumerKey(getStringProperty(entity, PROP_YAHOO_CONSUMER_KEY))
+        .yahooConsumerSecret(getStringProperty(entity, PROP_YAHOO_CONSUMER_SECRET))
         .center(center)
         .key(entity.getKey())
         .build();

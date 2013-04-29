@@ -22,6 +22,9 @@ public class Configuration extends ModelEntity {
   private @Nullable String yahooAppId;
   private @Nullable String primaryTwitterList;
   private @Nullable String googleCalendarAddress;
+  private @Nullable String yahooConsumerKey;
+  private @Nullable String yahooConsumerSecret;
+
 
   public Configuration(Object key) {
     super(key);
@@ -40,6 +43,16 @@ public class Configuration extends ModelEntity {
     this.yahooAppId = builder.yahooAppId;
     this.googleCalendarAddress = builder.googleCalendarAddress;
     this.primaryTwitterList = builder.primaryTwitterList;
+    this.yahooConsumerKey = builder.yahooConsumerKey;
+    this.yahooConsumerSecret = builder.yahooConsumerSecret;
+  }
+
+  @Nullable public String getYahooConsumerKey() {
+    return yahooConsumerKey;
+  }
+
+  @Nullable public String getYahooConsumerSecret() {
+    return yahooConsumerSecret;
   }
 
   public @Nullable String getPrimaryTwitterList() {
@@ -112,6 +125,8 @@ public class Configuration extends ModelEntity {
     private @Nullable String yahooAppId;
     private @Nullable String primaryTwitterList;
     private @Nullable String googleCalendarAddress;
+    private @Nullable String yahooConsumerKey;
+    private @Nullable String yahooConsumerSecret;
 
     public Builder() {
     }
@@ -128,6 +143,8 @@ public class Configuration extends ModelEntity {
       this.yahooAppId = config.yahooAppId;
       this.primaryTwitterList = config.primaryTwitterList;
       this.googleCalendarAddress = config.googleCalendarAddress;
+      this.yahooConsumerKey = config.yahooConsumerKey;
+      this.yahooConsumerSecret = config.yahooConsumerSecret;
     }
 
     public Builder googleCalendarAddress(String address) {
@@ -162,6 +179,16 @@ public class Configuration extends ModelEntity {
 
     public Builder googleGeolocationEnabled(boolean enabled) {
       this.googleGeolocationEnabled = enabled;
+      return this;
+    }
+
+    public Builder yahooConsumerKey(String key) {
+      this.yahooConsumerKey = key;
+      return this;
+    }
+
+    public Builder yahooConsumerSecret(String secret) {
+      this.yahooConsumerSecret = secret;
       return this;
     }
 

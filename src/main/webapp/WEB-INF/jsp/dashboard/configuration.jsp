@@ -21,6 +21,14 @@
       <label for="calendarUrl">Yahoo App Key</label>
       <input class="span6" type="text" value="${config.yahooAppId}" name="yahooAppId" id="yahooAppId"/>
     </div>
+    <div class="clearfix">
+      <label for="yahooConsumerKey">Yahoo Oauth Consumer Key</label>
+      <input class="span6" type="text" value="${config.yahooConsumerKey}" name="yahooConsumerKey" id="yahooConsumerKey"/>
+    </div>
+    <div class="clearfix">
+      <label for="yahooConsumerSecret">Yahoo OAuth Consumer Secret</label>
+      <input class="span6" type="text" value="${config.yahooConsumerSecret}" name="yahooConsumerSecret" id="yahooConsumerSecret"/>
+    </div>
     <div>
       <div class="input">
         <ul class="unstyled">
