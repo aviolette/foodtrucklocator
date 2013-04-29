@@ -19,13 +19,13 @@ import foodtruck.util.ServiceException;
  */
 public class OrderedGeolocator implements GeoLocator {
   private GoogleGeolocator googleGeolocator;
-  private YahooGeolocator yahooGeolocator;
+  private YQLGeolocator yahooGeolocator;
   private ConfigurationDAO configurationDAO;
   private static final Logger log = Logger.getLogger(OrderedGeolocator.class.getName());
   private final Clock clock;
 
   @Inject
-  public OrderedGeolocator(GoogleGeolocator googleGeolocator, YahooGeolocator yahooGeolocator,
+  public OrderedGeolocator(GoogleGeolocator googleGeolocator, YQLGeolocator yahooGeolocator,
       ConfigurationDAO configurationDAO, Clock clock) {
     this.googleGeolocator = googleGeolocator;
     this.yahooGeolocator = yahooGeolocator;

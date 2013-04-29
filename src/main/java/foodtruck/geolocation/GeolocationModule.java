@@ -34,4 +34,11 @@ public class GeolocationModule extends AbstractModule {
     Client c = Client.create();
     return c.resource("http://where.yahooapis.com/geocode");
   }
+
+  @YQLEndPoint @Provides @Singleton
+  public WebResource provideYQLWebResource() {
+    Client c = Client.create();
+    return c.resource("http://query.yahooapis.com/v1/public/yql");
+  }
+
 }
