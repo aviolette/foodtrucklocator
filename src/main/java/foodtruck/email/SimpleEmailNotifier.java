@@ -50,10 +50,11 @@ public class SimpleEmailNotifier implements EmailNotifier {
             new InternetAddress(receiver));
       }
       msg.setSubject(truck.getName() + " might be off the road");
-      String msgBody = MessageFormat.format("This tweet might indicate that {0} is off the road\n\n: \"{1}\"\n\n" +
+      String msgBody = MessageFormat.format("This tweet might indicate that {0} is off the road:\n" +
+          "\n \"{1}\"\n\n" +
           "Click here to take the truck off the road: " +
           "http://www.chicagofoodtruckfinder.com/admin/trucks/{2}/offtheroad", truck.getName(), tweet.getText(),
-          tweet.getId());
+          truck.getId());
       msg.setText(msgBody);
       Transport.send(msg);
     } catch (MessagingException e) {
