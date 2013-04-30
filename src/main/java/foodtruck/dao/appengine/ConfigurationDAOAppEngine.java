@@ -9,6 +9,7 @@ import foodtruck.dao.ConfigurationDAO;
 import foodtruck.model.Configuration;
 import foodtruck.model.Location;
 import static foodtruck.dao.appengine.Attributes.getBooleanProperty;
+import static foodtruck.dao.appengine.Attributes.getListProperty;
 import static foodtruck.dao.appengine.Attributes.getStringProperty;
 
 /**
@@ -34,6 +35,8 @@ public class ConfigurationDAOAppEngine extends
   private static final String PROP_YAHOO_APP_ID = "yahoo_app_id";
   private static final String PROP_YAHOO_CONSUMER_KEY = "yahoo_consumer_key";
   private static final String PROP_YAHOO_CONSUMER_SECRET = "yahoo_consumer_secret";
+  private static final String PROP_SYSTEM_NOTIFICATION_EMAILS = "system_notification_receivers";
+  private static final String PROP_SYSTEM_NOTIFICATION_SENDER = "system_notification_sender";
 
   @Inject
   public ConfigurationDAOAppEngine(DatastoreServiceProvider provider, DateTimeZone defaultZone) {
@@ -57,6 +60,8 @@ public class ConfigurationDAOAppEngine extends
     entity.setProperty(PROP_YAHOO_CONSUMER_KEY, config.getYahooConsumerKey());
     entity.setProperty(PROP_YAHOO_CONSUMER_SECRET, config.getYahooConsumerSecret());
     entity.setProperty(PROP_YAHOO_APP_ID, config.getYahooAppId());
+    entity.setProperty(PROP_SYSTEM_NOTIFICATION_SENDER, config.getNotificationSender());
+    entity.setProperty(PROP_SYSTEM_NOTIFICATION_EMAILS, config.getSystemNotificationList());
     return entity;
   }
 
@@ -80,6 +85,8 @@ public class ConfigurationDAOAppEngine extends
         .yahooAppId((String) entity.getProperty(PROP_YAHOO_APP_ID))
         .yahooConsumerKey(getStringProperty(entity, PROP_YAHOO_CONSUMER_KEY))
         .yahooConsumerSecret(getStringProperty(entity, PROP_YAHOO_CONSUMER_SECRET))
+        .systemNotificationList(getListProperty(entity, PROP_SYSTEM_NOTIFICATION_EMAILS))
+        .notificationSender(getStringProperty(entity, PROP_SYSTEM_NOTIFICATION_SENDER))
         .center(center)
         .key(entity.getKey())
         .build();

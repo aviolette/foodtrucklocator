@@ -1,8 +1,12 @@
 package foodtruck.model;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import com.google.appengine.api.datastore.Key;
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 
 import org.joda.time.DateTime;
 
@@ -24,6 +28,8 @@ public class Configuration extends ModelEntity {
   private @Nullable String googleCalendarAddress;
   private @Nullable String yahooConsumerKey;
   private @Nullable String yahooConsumerSecret;
+  private List<String> systemNotificationList;
+  private @Nullable String notificationSender;
 
 
   public Configuration(Object key) {
@@ -45,6 +51,16 @@ public class Configuration extends ModelEntity {
     this.primaryTwitterList = builder.primaryTwitterList;
     this.yahooConsumerKey = builder.yahooConsumerKey;
     this.yahooConsumerSecret = builder.yahooConsumerSecret;
+    this.systemNotificationList = builder.systemNotificationList;
+    this.notificationSender = builder.notificationSender;
+  }
+
+  public List<String> getSystemNotificationList() {
+    return systemNotificationList;
+  }
+
+  public String getNotificationReceivers() {
+    return Joiner.on(",").join(systemNotificationList).toString();
   }
 
   @Nullable public String getYahooConsumerKey() {
@@ -107,10 +123,13 @@ public class Configuration extends ModelEntity {
     return new Builder();
   }
 
+  public String getNotificationSender() {
+    return notificationSender;
+  }
+
   public static Builder builder(Configuration config) {
     return new Builder(config);
   }
-
 
   public static class Builder {
     private boolean googleGeolocationEnabled = true;
@@ -127,6 +146,8 @@ public class Configuration extends ModelEntity {
     private @Nullable String googleCalendarAddress;
     private @Nullable String yahooConsumerKey;
     private @Nullable String yahooConsumerSecret;
+    private List<String> systemNotificationList = ImmutableList.of();
+    private @Nullable String notificationSender;
 
     public Builder() {
     }
@@ -145,6 +166,13 @@ public class Configuration extends ModelEntity {
       this.googleCalendarAddress = config.googleCalendarAddress;
       this.yahooConsumerKey = config.yahooConsumerKey;
       this.yahooConsumerSecret = config.yahooConsumerSecret;
+      this.systemNotificationList = config.systemNotificationList;
+      this.notificationSender = config.notificationSender;
+    }
+
+    public Builder notificationSender(String notificationSender) {
+      this.notificationSender = notificationSender;
+      return this;
     }
 
     public Builder googleCalendarAddress(String address) {
@@ -199,6 +227,11 @@ public class Configuration extends ModelEntity {
 
     public Builder tweetUpdateServletEnabled(boolean enabled) {
       this.tweetUpdateServletEnabled = enabled;
+      return this;
+    }
+
+    public Builder systemNotificationList(List<String> systemNotificationList) {
+      this.systemNotificationList = ImmutableList.copyOf(systemNotificationList);
       return this;
     }
 

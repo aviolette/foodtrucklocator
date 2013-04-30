@@ -1,10 +1,12 @@
 package foodtruck.dao.appengine;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.common.collect.ImmutableList;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -52,6 +54,13 @@ public class Attributes {
 
   public static boolean getBooleanProperty(Entity entity, String statName) {
     return getBooleanProperty(entity, statName, false);
+  }
+
+  public static List<String> getListProperty(Entity entity, String name) {
+    if (entity.hasProperty(name)) {
+      return (List<String>)entity.getProperty(name);
+    }
+    return ImmutableList.of();
   }
 
   public static boolean getBooleanProperty(Entity entity, String statName, boolean defaultValue) {

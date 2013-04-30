@@ -18,6 +18,7 @@ import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.dao.TweetCacheDAO;
+import foodtruck.email.EmailNotifier;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
@@ -27,6 +28,7 @@ import foodtruck.schedule.TruckStopMatch;
 import foodtruck.schedule.TruckStopMatcher;
 import foodtruck.truckstops.LoggingTruckStopNotifier;
 import foodtruck.util.Clock;
+import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 
 /**
@@ -52,6 +54,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
   private DateTime matchEndTime;
   private TruckDAO truckDAO;
   private TweetSummary basicTweet;
+  private EmailNotifier emailNotifier;
 
   @Before
   public void before() {
@@ -62,6 +65,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     truck2 = new Truck.Builder().id(TRUCK_2_ID).twitterHandle(TRUCK_2_ID)
         .useTwittalyzer(true).build();
     final DateTimeZone zone = DateTimeZone.forID("America/Chicago");
+    emailNotifier = createMock(EmailNotifier.class);
     matcher = createMock(TruckStopMatcher.class);
     truckStopDAO = createMock(TruckStopDAO.class);
     final Clock clock = createMock(Clock.class);
@@ -81,7 +85,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     service = new TwitterServiceImpl(twitterFactory, tweetDAO, zone, matcher,
         truckStopDAO,
         clock, terminationDetector, new LocalCacheUpdater(), truckDAO,
-        new LoggingTruckStopNotifier(), configDAO);
+        new LoggingTruckStopNotifier(), configDAO, emailNotifier);
     loca = Location.builder().lat(1).lng(2).name("a").build();
     locb = Location.builder().lat(3).lng(4).name("b").build();
     basicTweet = new TweetSummary.Builder().time(now.minusHours(2)).text(

@@ -9,6 +9,17 @@
     </div>
   </fieldset>
   <fieldset>
+    <legend>Notifications</legend>
+    <div class="clearfix">
+      <label for="notificationSender">Email of sender</label>
+      <input class="span6" type="text" value="${config.notificationSender}" name="notificationSender" id="notificationSender"/>
+    </div>
+    <div class="clearfix">
+      <label for="notificationReceivers">List of notification receivers</label>
+      <input class="span6" type="text" value="${config.notificationReceivers}" name="notificationReceivers" id="notificationReceivers"/>
+    </div>
+  </fieldset>
+  <fieldset>
     <legend>Google Calendar</legend>
     <div class="clearfix">
       <label for="calendarUrl">Google Calendar URL</label>

@@ -26,6 +26,7 @@ import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.dao.TweetCacheDAO;
+import foodtruck.email.EmailNotifier;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
@@ -60,13 +61,15 @@ public class TwitterServiceImpl implements TwitterService {
   private final TruckDAO truckDAO;
   private final TruckStopNotifier notifier;
   private final ConfigurationDAO configDAO;
+  private final EmailNotifier emailNotifier;
 
   @Inject
   public TwitterServiceImpl(TwitterFactoryWrapper twitter, TweetCacheDAO tweetDAO,
                             DateTimeZone zone,
                             TruckStopMatcher matcher, TruckStopDAO truckStopDAO, Clock clock,
                             TerminationDetector detector, TweetCacheUpdater updater, TruckDAO truckDAO,
-                            TruckStopNotifier truckStopNotifier, ConfigurationDAO configDAO) {
+                            TruckStopNotifier truckStopNotifier, ConfigurationDAO configDAO,
+      EmailNotifier notifier) {
     this.tweetDAO = tweetDAO;
     this.twitterFactory = twitter;
     this.defaultZone = zone;
@@ -78,6 +81,7 @@ public class TwitterServiceImpl implements TwitterService {
     this.truckDAO = truckDAO;
     this.notifier = truckStopNotifier;
     this.configDAO = configDAO;
+    this.emailNotifier = notifier;
   }
 
   @Override @Monitored
@@ -205,6 +209,7 @@ public class TwitterServiceImpl implements TwitterService {
               false);
       TruckStopMatch match = findMatch(tweets, truck);
       DateTime terminationTime = findTermination(tweets, truck);
+      notifyIfOffTheRoad(tweets, truck);
       ignoreTweets(tweets);
       if (match != null) {
         log.log(Level.INFO, "Found match {0}", match);
@@ -325,6 +330,21 @@ public class TwitterServiceImpl implements TwitterService {
   @Override public void save(TweetSummary summary) {
     tweetDAO.saveOrUpdate(summary);
 
+  }
+
+  private void notifyIfOffTheRoad(List<TweetSummary> tweets, Truck truck) {
+    for (TweetSummary tweet : tweets) {
+      if (tweet.getIgnoreInTwittalyzer()) {
+        continue;
+      }
+      if (tweet.getText().contains("off the road")) {
+        try {
+          emailNotifier.systemNotifyOffTheRoad(truck, tweet);
+        } catch (Exception e) {
+          log.log(Level.WARNING, e.getMessage(), e);
+        }
+      }
+    }
   }
 
   private @Nullable DateTime findTermination(List<TweetSummary> tweets, Truck truck) {

@@ -1,12 +1,15 @@
 package foodtruck.server.dashboard;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -44,6 +47,8 @@ public class ConfigurationServlet extends HttpServlet {
   @Override protected void doPost(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     Configuration config = configDAO.find();
+    List<String> notificationReceivers = ImmutableList.copyOf(
+        Splitter.on(",").trimResults().omitEmptyStrings().split(req.getParameter("notificationReceivers")).iterator());
     Location mapCenter = geoLocator.locate(req.getParameter("mapCenter"), GeolocationGranularity.NARROW);
     // TODO: handle null map center
     config = Configuration.builder(config)
@@ -58,6 +63,8 @@ public class ConfigurationServlet extends HttpServlet {
         .yahooConsumerKey(req.getParameter("yahooConsumerKey"))
         .yahooConsumerSecret(req.getParameter("yahooConsumerSecret"))
         .primaryTwitterList(req.getParameter("primaryTwitterList"))
+        .notificationSender(req.getParameter("notificationSender"))
+        .systemNotificationList(notificationReceivers)
         .center(mapCenter)
         .build();
     configDAO.save(config);

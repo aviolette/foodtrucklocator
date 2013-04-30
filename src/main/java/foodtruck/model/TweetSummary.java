@@ -89,6 +89,10 @@ public class TweetSummary extends ModelEntity {
     return ignoreInTwittalyzer;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   public static class Builder {
     private String screenName;
     private Location location;
