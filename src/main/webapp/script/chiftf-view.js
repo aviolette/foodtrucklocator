@@ -2,14 +2,23 @@ var FoodTruckLocator = function() {
   var _map = null,
       _appKey = null,
       _trucks = null,
+      _mobile = false,
       _markers = null,
       _center = null;
 
+  function isMobile() {
+    return _map == null || _mobile;
+  }
+
   function refreshViewData() {
     updateDistanceFromCurrentLocation();
-    updateMap();
+    if (!isMobile()) {
+      updateMap();
+    }
     updateTruckLists();
-    displayWarningIfMarkersNotVisible();
+    if (!isMobile()) {
+      displayWarningIfMarkersNotVisible();
+    }
   }
 
   function setCookie(name, value, days) {
@@ -38,7 +47,7 @@ var FoodTruckLocator = function() {
     return null;
   }
 
-  var Markers = function(map) {
+  var Markers = function() {
     var markers = {}, lastLetter = 0, color = "";
 
     function buildIconURL(letter) {
@@ -67,7 +76,7 @@ var FoodTruckLocator = function() {
       if (markers[stop.location.name] == undefined) {
         var letterId = String.fromCharCode(65 + lastLetter);
         stop.marker = new google.maps.Marker({
-          map: map,
+          map: _map,
           icon: buildIconURL(letterId),
           position: stop.position
         });
@@ -123,6 +132,9 @@ var FoodTruckLocator = function() {
     }
 
     this.allVisible = function() {
+      if (isMobile()) {
+        return true;
+      }
       var bounds = _map.getBounds(), visible = true;
       $.each(this.stops, function(idx, stop) {
         if (!bounds.contains(stop.position)) {
@@ -135,7 +147,7 @@ var FoodTruckLocator = function() {
     this.openNow = function() {
       var now = Clock.now(), items = [];
       $.each(self.stops, function(idx, item) {
-        if (item.stop["startMillis"] <= now && item.stop["endMillis"] > now && _map.getBounds().contains(item.position)) {
+        if (item.stop["startMillis"] <= now && item.stop["endMillis"] > now && (isMobile() || _map.getBounds().contains(item.position))) {
           items.push(item);
         }
       });
@@ -145,7 +157,7 @@ var FoodTruckLocator = function() {
     this.openLater = function() {
       var now = Clock.now(), items = [];
       $.each(self.stops, function(idx, item) {
-        if (item.stop["startMillis"] > now && _map.getBounds().contains(item.position)) {
+        if (item.stop["startMillis"] > now && (isMobile() || _map.getBounds().contains(item.position))) {
           items.push(item);
         }
       });
@@ -195,15 +207,17 @@ var FoodTruckLocator = function() {
     $.each(stops, function(idx, stop){
       var distance = stop.distance ? (" (" + stop.distance + " miles away) ") : "";
       var iconColumn = "";
-      if (lastIcon != stop.marker.icon) {
-        iconColumn = "<img id='" + stop.markerId + "'  src='" + stop.marker.icon + "'/>";
-        lastMarkerGroup = {marker : stop.marker, id: stop.markerId, stops: [stop]};
-        markerIds.push(lastMarkerGroup);
-      } else {
-        iconColumn = "<img style='visibility:hidden' src='" + stop.marker.icon + "'/>";
-        lastMarkerGroup["stops"].push(stop);
+      if (!isMobile()) {
+        if (lastIcon != stop.marker.icon) {
+          iconColumn = "<img id='" + stop.markerId + "'  src='" + stop.marker.icon + "'/>";
+          lastMarkerGroup = {marker : stop.marker, id: stop.markerId, stops: [stop]};
+          markerIds.push(lastMarkerGroup);
+        } else {
+          iconColumn = "<img style='visibility:hidden' src='" + stop.marker.icon + "'/>";
+          lastMarkerGroup["stops"].push(stop);
+        }
+        lastIcon = stop.marker.icon;
       }
-      lastIcon = stop.marker.icon;
       items +=   "<li style='padding-bottom:20px'>" +
           "<table><tr><td style=\"vertical-align: top;width:20px !important\">" + iconColumn + "</td><td style='width: 48px; vertical-align:top;padding-right:5px'>" +
           "<img src='" + stop.truck.iconUrl + "'/></td><td style='vertical-align:top'>" +
@@ -214,19 +228,21 @@ var FoodTruckLocator = function() {
           "</li>";
     });
     $truckList.append(items + "</ul>");
-    $.each(markerIds, function(idx, markerAndId) {
-      if (markerAndId.marker.getAnimation() != null) {
-        return;
-      }
-      buildInfoWindow(markerAndId.marker, markerAndId.stops);
-      $("#" + markerAndId.id).click(function() {
-        markerAndId.marker.setAnimation(google.maps.Animation.BOUNCE);
-        setTimeout(function() {
-          markerAndId.marker.setAnimation(null);
-        }, 3000);
-      });
+    if (!isMobile()) {
+      $.each(markerIds, function(idx, markerAndId) {
+        if (markerAndId.marker.getAnimation() != null) {
+          return;
+        }
+        buildInfoWindow(markerAndId.marker, markerAndId.stops);
+        $("#" + markerAndId.id).click(function() {
+          markerAndId.marker.setAnimation(google.maps.Animation.BOUNCE);
+          setTimeout(function() {
+            markerAndId.marker.setAnimation(null);
+          }, 3000);
+        });
 
-    });
+      });
+    }
   }
 
   function updateTruckLists() {
@@ -341,45 +357,50 @@ var FoodTruckLocator = function() {
       _appKey = appKey;
       _center = findCenter(center);
       resize();
-      _map = new google.maps.Map(document.getElementById("map_canvas"), {
-        zoom: findZoom(13),
-        center: _center,
-        maxZoom : 18,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-      });
-      _markers = new Markers(_map);
-      google.maps.event.addListener(_map, 'center_changed', function() {
-        saveCenter(_map.getCenter());
-        displayWarningIfMarkersNotVisible();
-      });
-      var centerMarker = new google.maps.Marker({
-        icon: "http://maps.google.com/mapfiles/arrow.png"
-      });
-
-      google.maps.event.addListener(_map, 'drag', function() {
-        centerMarker.setMap(_map);
-        centerMarker.setPosition(_map.getCenter());
-      });
-
-      google.maps.event.addListener(_map, 'dragend', function() {
-        centerMarker.setMap(null);
+      if (Modernizr.touch || mobile) {
+        $("#map_wrapper").css("display", "none");
+        _mobile = true;
         self.setModel(modelPayload);
-      });
+      } else {
+        _markers = new Markers();
+        _map = new google.maps.Map(document.getElementById("map_canvas"), {
+          zoom: findZoom(13),
+          center: _center,
+          maxZoom : 18,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+        google.maps.event.addListener(_map, 'center_changed', function() {
+          saveCenter(_map.getCenter());
+          displayWarningIfMarkersNotVisible();
+        });
+        var centerMarker = new google.maps.Marker({
+          icon: "http://maps.google.com/mapfiles/arrow.png"
+        });
 
-      google.maps.event.addListener(_map, 'zoom_changed', function() {
-        saveZoom(_map.getZoom());
-        self.setModel(modelPayload);
-      });
+        google.maps.event.addListener(_map, 'drag', function() {
+          centerMarker.setMap(_map);
+          centerMarker.setPosition(_map.getCenter());
+        });
 
-      var listener = null;
-      // just want to invoke this once, for when the map first loads
-      listener = google.maps.event.addListener(_map, 'bounds_changed', function() {
-        self.setModel(modelPayload);
-        if (listener) {
-          google.maps.event.removeListener(listener);
-        }
-      });
-      setupGlobalEventHandlers();
+        google.maps.event.addListener(_map, 'dragend', function() {
+          centerMarker.setMap(null);
+          self.setModel(modelPayload);
+        });
+
+        google.maps.event.addListener(_map, 'zoom_changed', function() {
+          saveZoom(_map.getZoom());
+          self.setModel(modelPayload);
+        });
+        var listener = null;
+        // just want to invoke this once, for when the map first loads
+        listener = google.maps.event.addListener(_map, 'bounds_changed', function() {
+          self.setModel(modelPayload);
+          if (listener) {
+            google.maps.event.removeListener(listener);
+          }
+        });
+        setupGlobalEventHandlers();
+      }
       // reload the model every 5 minutes
       setInterval(function() {
         self.reload();
