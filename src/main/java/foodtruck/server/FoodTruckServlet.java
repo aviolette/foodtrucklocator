@@ -20,6 +20,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.ScheduleDAO;
+import foodtruck.model.Configuration;
 import foodtruck.model.DailySchedule;
 import foodtruck.model.Location;
 import foodtruck.server.resources.json.DailyScheduleWriter;
@@ -83,7 +84,8 @@ public class FoodTruckServlet extends HttpServlet {
     if (dateTime == null) {
       dateTime = clock.now();
     }
-    req.setAttribute("center", getCenter(req.getCookies(), configDAO.find().getCenter()));
+    final Configuration configuration = configDAO.find();
+    req.setAttribute("center", getCenter(req.getCookies(), configuration.getCenter()));
     String googleAnalytics = System.getProperty("foodtruck.google.analytics", null);
     if (googleAnalytics != null) {
       req.setAttribute("google_analytics_ua", googleAnalytics);
@@ -104,6 +106,7 @@ public class FoodTruckServlet extends HttpServlet {
     req.setAttribute("requestDate", dateFormatter.print(dateTime));
     req.setAttribute("requestTime", timeFormatter.print(dateTime));
     req.setAttribute("requestTimeInMillis", dateTime.getMillis());
+    req.setAttribute("appKey", configuration.getFrontDoorAppKey());
     resp.setHeader("Cache-Control", "no-cache");
     resp.setHeader("Pragma", "no-cache");
     resp.setHeader("Expires", "Thu, 01 Jan 1970 00:00:00 GMT");

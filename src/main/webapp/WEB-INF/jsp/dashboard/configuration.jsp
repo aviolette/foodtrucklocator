@@ -7,6 +7,11 @@
       <label for="mapCenter">Map Center</label>
       <input class="span6" type="text" value="${config.center.name}" name="mapCenter" id="mapCenter"/>
     </div>
+    <legend>Front Door App Key</legend>
+    <div class="clearfix">
+      <label for="frontDoorAppKey">Front Door App Key</label>
+      <input class="span6" type="text" value="${config.frontDoorAppKey}" name="frontDoorAppKey" id="frontDoorAppKey"/>
+    </div>
   </fieldset>
   <fieldset>
     <legend>Notifications</legend>

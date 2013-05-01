@@ -30,6 +30,7 @@ public class Configuration extends ModelEntity {
   private @Nullable String yahooConsumerSecret;
   private List<String> systemNotificationList;
   private @Nullable String notificationSender;
+  private @Nullable String frontDoorAppKey;
 
 
   public Configuration(Object key) {
@@ -53,6 +54,11 @@ public class Configuration extends ModelEntity {
     this.yahooConsumerSecret = builder.yahooConsumerSecret;
     this.systemNotificationList = builder.systemNotificationList;
     this.notificationSender = builder.notificationSender;
+    this.frontDoorAppKey = builder.frontDoorAppKey;
+  }
+
+  @Nullable public String getFrontDoorAppKey() {
+    return frontDoorAppKey;
   }
 
   public List<String> getSystemNotificationList() {
@@ -148,6 +154,7 @@ public class Configuration extends ModelEntity {
     private @Nullable String yahooConsumerSecret;
     private List<String> systemNotificationList = ImmutableList.of();
     private @Nullable String notificationSender;
+    private @Nullable String frontDoorAppKey;
 
     public Builder() {
     }
@@ -168,6 +175,12 @@ public class Configuration extends ModelEntity {
       this.yahooConsumerSecret = config.yahooConsumerSecret;
       this.systemNotificationList = config.systemNotificationList;
       this.notificationSender = config.notificationSender;
+      this.frontDoorAppKey = config.frontDoorAppKey;
+    }
+
+    public Builder frontDoorAppKey(String frontDoorAppKey) {
+      this.frontDoorAppKey = frontDoorAppKey;
+      return this;
     }
 
     public Builder notificationSender(String notificationSender) {

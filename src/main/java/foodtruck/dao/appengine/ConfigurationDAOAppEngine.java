@@ -37,6 +37,7 @@ public class ConfigurationDAOAppEngine extends
   private static final String PROP_YAHOO_CONSUMER_SECRET = "yahoo_consumer_secret";
   private static final String PROP_SYSTEM_NOTIFICATION_EMAILS = "system_notification_receivers";
   private static final String PROP_SYSTEM_NOTIFICATION_SENDER = "system_notification_sender";
+  private static final String PROP_FRONT_DOOR_APP_KEY = "front_door_app_key";
 
   @Inject
   public ConfigurationDAOAppEngine(DatastoreServiceProvider provider, DateTimeZone defaultZone) {
@@ -62,6 +63,7 @@ public class ConfigurationDAOAppEngine extends
     entity.setProperty(PROP_YAHOO_APP_ID, config.getYahooAppId());
     entity.setProperty(PROP_SYSTEM_NOTIFICATION_SENDER, config.getNotificationSender());
     entity.setProperty(PROP_SYSTEM_NOTIFICATION_EMAILS, config.getSystemNotificationList());
+    entity.setProperty(PROP_FRONT_DOOR_APP_KEY, config.getFrontDoorAppKey());
     return entity;
   }
 
@@ -87,6 +89,7 @@ public class ConfigurationDAOAppEngine extends
         .yahooConsumerSecret(getStringProperty(entity, PROP_YAHOO_CONSUMER_SECRET))
         .systemNotificationList(getListProperty(entity, PROP_SYSTEM_NOTIFICATION_EMAILS))
         .notificationSender(getStringProperty(entity, PROP_SYSTEM_NOTIFICATION_SENDER))
+        .frontDoorAppKey(getStringProperty(entity, PROP_FRONT_DOOR_APP_KEY))
         .center(center)
         .key(entity.getKey())
         .build();

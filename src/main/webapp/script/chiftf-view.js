@@ -1,5 +1,6 @@
 var FoodTruckLocator = function() {
   var _map = null,
+      _appKey = null,
       _trucks = null,
       _markers = null,
       _center = null;
@@ -317,13 +318,27 @@ var FoodTruckLocator = function() {
       refreshViewData();
     },
     reload : function() {
-      // TODO: implement logic to reload model
+      console.log("Reloading model...")
+      var self = this;
+      $.ajax({
+        url : '/services/daily_schedule?appKey=' + _appKey,
+        dataType: 'json',
+        cache: false,
+        error : function() {
+          console.log("Failed to reload model");
+        },
+        success : function(data) {
+          console.log("Successfully loaded model")
+          self.setModel(data);
+        }
+      });
     },
     extend : function() {
       _map.fitBounds(_markers.bounds);
     },
-    run : function(mobile, center, time, modelPayload) {
+    run : function(mobile, center, time, modelPayload, appKey) {
       var self = this;
+      _appKey = appKey;
       _center = findCenter(center);
       resize();
       _map = new google.maps.Map(document.getElementById("map_canvas"), {
@@ -364,8 +379,11 @@ var FoodTruckLocator = function() {
           google.maps.event.removeListener(listener);
         }
       });
-
       setupGlobalEventHandlers();
+      // reload the model every 5 minutes
+      setInterval(function() {
+        self.reload();
+      }, 300000)
     }
   };
 }();

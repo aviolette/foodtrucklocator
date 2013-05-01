@@ -64,6 +64,7 @@ public class ConfigurationServlet extends HttpServlet {
         .yahooConsumerSecret(req.getParameter("yahooConsumerSecret"))
         .primaryTwitterList(req.getParameter("primaryTwitterList"))
         .notificationSender(req.getParameter("notificationSender"))
+        .frontDoorAppKey(req.getParameter("frontDoorAppKey"))
         .systemNotificationList(notificationReceivers)
         .center(mapCenter)
         .build();
