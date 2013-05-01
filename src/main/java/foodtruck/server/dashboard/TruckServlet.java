@@ -23,12 +23,15 @@ import com.google.inject.Singleton;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.DailySchedule;
 import foodtruck.model.DayOfWeek;
 import foodtruck.model.Truck;
+import foodtruck.model.TruckSchedule;
+import foodtruck.model.TruckStop;
 import foodtruck.model.TweetSummary;
 import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.truckstops.FoodTruckStopService;
@@ -48,14 +51,16 @@ public class TruckServlet extends HttpServlet {
   private final FoodTruckStopService truckService;
   private final Clock clock;
   private final TruckDAO truckDAO;
+  private final DateTimeZone zone;
 
   @Inject
-  public TruckServlet(TwitterService twitterService,
+  public TruckServlet(TwitterService twitterService, DateTimeZone zone,
       FoodTruckStopService truckService, Clock clock, TruckDAO truckDAO) {
     this.twitterService = twitterService;
     this.truckService = truckService;
     this.clock = clock;
     this.truckDAO = truckDAO;
+    this.zone = zone;
   }
 
   @Override
@@ -66,9 +71,22 @@ public class TruckServlet extends HttpServlet {
     if (truckId.endsWith("/configuration")) {
       truckId = truckId.substring(0, truckId.length() - 14);
       editConfiguration(truckId, req, resp);
+    } else if (truckId.endsWith("/offtheroad")) {
+      truckId = truckId.substring(0, truckId.length() - 11);
+      offTheRoad(truckId, req, resp);
     } else {
       loadDashboard(truckId, req, resp);
     }
+  }
+
+  private void offTheRoad(String truckId, HttpServletRequest req, HttpServletResponse resp)
+      throws ServletException, IOException {
+    final String jsp = "/WEB-INF/jsp/dashboard/offTheRoad.jsp";
+    req = new GuiceHackRequestWrapper(req, jsp);
+    final Truck truck = truckDAO.findById(truckId);
+    req.setAttribute("truck", truck);
+    req.setAttribute("nav", "trucks");
+    req.getRequestDispatcher(jsp).forward(req, resp);
   }
 
   private void editConfiguration(String truckId, HttpServletRequest req, HttpServletResponse resp)
@@ -127,9 +145,25 @@ public class TruckServlet extends HttpServlet {
       throws ServletException, IOException {
     if (req.getRequestURI().endsWith("/configuration")) {
       handleConfigurationPost(req, resp);
+    } else if(req.getRequestURI().endsWith("/offtheroad")) {
+      handleOffTheRoadPost(req, resp);
     } else {
       handleTweetUpdate(req, resp);
     }
+  }
+
+  private void handleOffTheRoadPost(HttpServletRequest req, HttpServletResponse resp) {
+    String truckId = req.getRequestURI();
+    truckId = truckId.substring(14, truckId.lastIndexOf('/'));
+    TruckSchedule stops = truckService.findStopsForDay(truckId, clock.currentDay());
+    for (TruckStop stop : stops.getStops()) {
+      truckService.delete((Long) stop.getKey());
+    }
+    Truck t = truckDAO.findById(truckId);
+    t = Truck.builder(t).muteUntil(clock.currentDay().toDateMidnight(zone).toDateTime().plusDays(1))
+        .build();
+    truckDAO.save(t);
+
   }
 
   private void handleConfigurationPost(HttpServletRequest req, HttpServletResponse resp)
