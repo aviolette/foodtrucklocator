@@ -16,9 +16,7 @@ var FoodTruckLocator = function() {
       updateMap();
     }
     updateTruckLists();
-    if (!isMobile()) {
-      displayWarningIfMarkersNotVisible();
-    }
+    displayWarningIfMarkersNotVisible();
   }
 
   function setCookie(name, value, days) {
@@ -92,8 +90,8 @@ var FoodTruckLocator = function() {
 
   var Clock = {
     now : function() {
-      return new Date().getTime();
-      //return 1366625176648;
+      //return new Date().getTime();
+      return 1367424441640;
     }
   };
 
@@ -209,17 +207,17 @@ var FoodTruckLocator = function() {
       var iconColumn = "";
       if (!isMobile()) {
         if (lastIcon != stop.marker.icon) {
-          iconColumn = "<img id='" + stop.markerId + "'  src='" + stop.marker.icon + "'/>";
+          iconColumn = "<td style=\"vertical-align: top;width:20px !important\"><img id='" + stop.markerId + "'  src='" + stop.marker.icon + "'/></td>";
           lastMarkerGroup = {marker : stop.marker, id: stop.markerId, stops: [stop]};
           markerIds.push(lastMarkerGroup);
         } else {
-          iconColumn = "<img style='visibility:hidden' src='" + stop.marker.icon + "'/>";
+          iconColumn = "<td style=\"vertical-align: top;width:20px !important\"><img style='visibility:hidden' src='" + stop.marker.icon + "'/></td>";
           lastMarkerGroup["stops"].push(stop);
         }
         lastIcon = stop.marker.icon;
       }
       items +=   "<li style='padding-bottom:20px'>" +
-          "<table><tr><td style=\"vertical-align: top;width:20px !important\">" + iconColumn + "</td><td style='width: 48px; vertical-align:top;padding-right:5px'>" +
+          "<table><tr>" + iconColumn + "<td style='width: 48px; vertical-align:top;padding-right:5px'>" +
           "<img src='" + stop.truck.iconUrl + "'/></td><td style='vertical-align:top'>" +
           stop.truck.name + "<br/>" +
           formatLocation(stop.location.name) + distance + "<br/>" +
@@ -358,9 +356,19 @@ var FoodTruckLocator = function() {
       _center = findCenter(center);
       resize();
       if (Modernizr.touch || mobile) {
-        $("#map_wrapper").css("display", "none");
         _mobile = true;
-        self.setModel(modelPayload);
+        $("#map_wrapper").css("display", "none");
+        if (Modernizr.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            _center = new google.maps.LatLng(position.coords.latitude,
+                position.coords.longitude);
+            self.setModel(modelPayload);
+          }, function() {
+            self.setModel(modelPayload);
+          });
+        } else {
+          self.setModel(modelPayload);
+        }
       } else {
         _markers = new Markers();
         _map = new google.maps.Map(document.getElementById("map_canvas"), {
