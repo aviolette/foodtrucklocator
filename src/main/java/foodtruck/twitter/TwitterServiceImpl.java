@@ -337,7 +337,7 @@ public class TwitterServiceImpl implements TwitterService {
       if (tweet.getIgnoreInTwittalyzer()) {
         continue;
       }
-      if (tweet.getText().contains("off the road")) {
+      if (tweet.getText().toLowerCase().contains("off the road")) {
         try {
           emailNotifier.systemNotifyOffTheRoad(truck, tweet);
         } catch (Exception e) {
