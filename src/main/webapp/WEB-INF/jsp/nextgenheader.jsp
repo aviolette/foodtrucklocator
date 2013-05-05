@@ -24,13 +24,8 @@
     <div class="container-fluid">
       <a class="brand" href="/">Chicago Food Truck Finder</a>
       <ul class="nav">
-        <li><a href="http://blog.chicagofoodtruckfinder.com/p/about.html">About</a></li>
         <li><a href="http://blog.chicagofoodtruckfinder.com/">Blog</a></li>
         <li class="visible-desktop"><a id="mobileLink" href="#mobile">Mobile</a></li>
-        <%--
-        <li><a href="/trucks">Trucks</a></li>
-        <li><a target="_blank" href="http://blog.chicagofoodtruckfinder.com">Blog</a></li>
-        --%>
       </ul>
       <p style="padding-top: 4px" class="navbar-form pull-right"><a href="https://twitter.com/chifoodtruckz"
                                                                     class="twitter-follow-button" data-button="grey"
