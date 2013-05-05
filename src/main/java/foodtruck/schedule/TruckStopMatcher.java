@@ -201,7 +201,7 @@ public class TruckStopMatcher {
   }
 
   private int stopTime(Truck truck) {
-    return truck.getCategories().contains("Dessert") ? 1 : DEFAULT_STOP_LENGTH_IN_HOURS;
+    return truck.getCategories().contains("1HRStops") ? 1 : DEFAULT_STOP_LENGTH_IN_HOURS;
   }
 
   private boolean canStartNow(Truck truck, boolean morning, String tweetText) {
