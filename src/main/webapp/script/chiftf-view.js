@@ -123,7 +123,7 @@ var FoodTruckLocator = function() {
     this.findStopsForTruck = function(truckId) {
       var items = [];
       $.each(self.stops, function(idx, item) {
-        if (item.stop["truckId"] = truckId) {
+        if (item.stop["truckId"] == truckId) {
           items.push(item);
         }
       });
