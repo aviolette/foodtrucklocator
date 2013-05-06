@@ -21,6 +21,7 @@ public class Location extends ModelEntity {
   private final @Nullable String url;
   private final boolean eventSpecific;
   private final double radius;
+  private final boolean popular;
 
   public Location(Builder builder) {
     super(builder.key);
@@ -31,6 +32,11 @@ public class Location extends ModelEntity {
     url = builder.url;
     eventSpecific = builder.eventSpecific;
     radius = builder.radius;
+    popular = builder.popular;
+  }
+
+  public boolean isPopular() {
+    return popular;
   }
 
   public double getLatitude() {
@@ -128,6 +134,7 @@ public class Location extends ModelEntity {
     private boolean eventSpecific;
     private @Nullable String url;
     public double radius = 0d;
+    private boolean popular;
 
     public Builder(Location location) {
       key = location.getKey();
@@ -135,6 +142,7 @@ public class Location extends ModelEntity {
       lng = location.getLongitude();
       name = location.getName();
       valid = location.isValid();
+      popular = location.isPopular();
     }
 
     public Builder() {
@@ -142,6 +150,11 @@ public class Location extends ModelEntity {
 
     public Builder radius(double radius) {
       this.radius = radius;
+      return this;
+    }
+
+    public Builder popular(boolean popular) {
+      this.popular = popular;
       return this;
     }
 

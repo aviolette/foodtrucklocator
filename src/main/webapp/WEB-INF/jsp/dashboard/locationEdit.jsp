@@ -55,8 +55,8 @@
     <div class="control-group">
       <div class="controls">
         <label><input id="invalidLoc" type="checkbox">&nbsp;Ignore in geolocation lookups</label>
+        <label><input id="popular" type="checkbox">&nbsp;Popular?</label>
         <input id="submitButton" type="submit" class="btn primary" value="Save"/>&nbsp;
-
       </div>
     </div>
   </fieldset>
@@ -77,6 +77,7 @@
       $("#name").attr("value", loc.name);
       $("#invalidLoc").attr("checked", !loc.valid);
       $("#description").attr("value", loc.description);
+      $("#popular").attr("checked", loc.popular);
       $("#url").attr("value", loc.url);
     }
 
@@ -118,6 +119,7 @@
       loc.valid = !$("#invalidLoc").is(":checked");
       loc.description = $("#description").attr("value");
       loc.url = $("#url").attr("value");
+      loc.popular = $("#popular").is(":checked");
       e.preventDefault();
       $submitButton.addClass("disabled");
       $.ajax({

@@ -33,6 +33,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
   private static final String URL_FIELD = "url";
   private static final String RADIAL_FIELD = "radial_boundary";
   private static final String LOCATION_LOOKUP_FIELD = "location_lookup";
+  private static final String POPULAR_FIELD = "popular";
 
   private static final Logger log = Logger.getLogger(LocationDAOAppEngine.class.getName());
   private final Clock clock;
@@ -107,6 +108,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     entity.setProperty(URL_FIELD, location.getUrl());
     entity.setProperty(RADIAL_FIELD, location.getRadius());
     entity.setProperty(LOCATION_LOOKUP_FIELD, location.getName().toLowerCase());
+    entity.setProperty(POPULAR_FIELD, location.isPopular());
     return entity;
   }
 
@@ -119,6 +121,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
         Location.builder().name((String) entity.getProperty(NAME_FIELD)).key(key);
     builder.description((String) entity.getProperty(DESCRIPTION_FIELD));
     builder.url((String) entity.getProperty(URL_FIELD));
+    builder.popular(getBooleanProperty(entity, POPULAR_FIELD, false));
     builder.radius(Attributes.getDoubleProperty(entity, RADIAL_FIELD, 0.0));
     boolean isValid = valid == null || valid;
     if (lat == null || lng == null) {
