@@ -438,7 +438,7 @@ var FoodTruckLocator = function() {
       } else {
         _markers = new Markers();
         _map = new google.maps.Map(document.getElementById("map_canvas"), {
-          zoom: findZoom(13),
+          zoom: findZoom(11),
           center: _center,
           maxZoom : 18,
           mapTypeId: google.maps.MapTypeId.ROADMAP
