@@ -16,6 +16,7 @@ import com.google.common.collect.Lists;
 import com.google.gdata.client.calendar.CalendarQuery;
 import com.google.gdata.client.calendar.CalendarService;
 import com.google.gdata.data.DateTime;
+import com.google.gdata.data.Link;
 import com.google.gdata.data.calendar.CalendarEventEntry;
 import com.google.gdata.data.calendar.CalendarEventFeed;
 import com.google.gdata.data.extensions.When;
@@ -111,7 +112,12 @@ public class GoogleCalendar implements ScheduleStrategy {
       CalendarEventFeed resultFeed = calendarQuery(query);
       for (CalendarEventEntry entry : resultFeed.getEntries()) {
         final String titleText = entry.getTitle().getPlainText();
-        Truck truck = (searchTruck != null) ? searchTruck :
+        if (Strings.isNullOrEmpty(titleText) && searchTruck == null) {
+          Link htmlLink = entry.getHtmlLink();
+          String entryString = (htmlLink == null) ? entry.getId() : htmlLink.getHref();
+          log.log(Level.WARNING, "Could not find title text for {0}", new Object[] { entryString });
+        }
+        Truck truck = (searchTruck != null || Strings.isNullOrEmpty(titleText)) ? searchTruck :
             truckDAO.findById(titleText);
         if (truck == null) {
           continue;
