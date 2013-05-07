@@ -1,6 +1,7 @@
 package foodtruck.dao;
 
 import java.util.Collection;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -30,4 +31,9 @@ public interface LocationDAO extends DAO<Long, Location> {
    * Returns all the Locations that have not been migrated to use the case-insensitive format
    */
   Collection<Location> findAllNonMigrated();
+
+  /**
+   * Finds all the popular locations
+   */
+  Set<Location> findPopularLocations();
 }

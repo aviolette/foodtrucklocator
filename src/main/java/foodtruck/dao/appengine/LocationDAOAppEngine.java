@@ -1,6 +1,7 @@
 package foodtruck.dao.appengine;
 
 import java.util.Collection;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -69,6 +70,14 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     DatastoreService dataStore = provider.get();
     Query q = new Query(LOCATION_KIND);
     return executeQuery(dataStore,  q);
+  }
+
+  @Override public Set<Location> findPopularLocations() {
+    DatastoreService dataStore = provider.get();
+    Query q = new Query(LOCATION_KIND);
+    Query.Filter popularFilter = new Query.FilterPredicate(POPULAR_FIELD, Query.FilterOperator.EQUAL, true);
+    q.setFilter(popularFilter);
+    return executeQuery(dataStore, q);
   }
 
   private Query locationQuery(String keyword) {

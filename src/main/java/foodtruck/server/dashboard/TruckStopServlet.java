@@ -1,6 +1,7 @@
 package foodtruck.server.dashboard;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -8,15 +9,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.repackaged.com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import org.codehaus.jettison.json.JSONArray;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.ConfigurationDAO;
+import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.geolocation.GeoLocator;
@@ -40,9 +45,11 @@ public class TruckStopServlet extends HttpServlet {
   private final ConfigurationDAO configDAO;
   private final DateTimeFormatter timeFormatter;
   private final GeoLocator geolocator;
+  private final LocationDAO locationDAO;
 
   @Inject
-  public TruckStopServlet(TruckDAO truckDAO, TruckStopDAO truckStopDAO, Clock clock, ConfigurationDAO configDAO,
+  public TruckStopServlet(TruckDAO truckDAO, TruckStopDAO truckStopDAO, Clock clock,
+      ConfigurationDAO configDAO, LocationDAO locationDAO,
       @TimeOnlyFormatter DateTimeFormatter timeFormatter, GeoLocator geolocator) {
     this.truckDAO = truckDAO;
     this.truckStopDAO = truckStopDAO;
@@ -50,6 +57,7 @@ public class TruckStopServlet extends HttpServlet {
     this.configDAO = configDAO;
     this.timeFormatter = timeFormatter;
     this.geolocator = geolocator;
+    this.locationDAO = locationDAO;
   }
 
   @Override
@@ -72,6 +80,9 @@ public class TruckStopServlet extends HttpServlet {
     }
     req.setAttribute("nav", "trucks");
     req.setAttribute("truckStop", truckStop);
+    List<String> locationNames = ImmutableList.copyOf(
+        Iterables.transform(locationDAO.findPopularLocations(), Location.TO_NAME));
+    req.setAttribute("locations", new JSONArray(locationNames).toString());
     req.getRequestDispatcher("/WEB-INF/jsp/dashboard/event.jsp").forward(req, resp);
   }
 

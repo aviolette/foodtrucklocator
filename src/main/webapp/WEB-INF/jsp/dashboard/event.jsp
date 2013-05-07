@@ -3,6 +3,12 @@
 <form action="/admin/trucks/${truckStop.truck.id}/events/edit" method="POST">
   <fieldset>
     <div class="clearfix">
+      <label for="locationInput">Location</label>
+      <div class="input">
+        <input id="locationInput" name="location" type="text" value="" data-provide="typeahead" data-items="4"/>
+      </div>
+    </div>
+    <div class="clearfix">
       <label for="startTimeInput">Start time</label>
 
       <div class="input">
@@ -17,13 +23,6 @@
       </div>
     </div>
     <div class="clearfix">
-      <label for="locationInput">Location</label>
-
-      <div class="input">
-        <input id="locationInput" name="location" type="text" value="${truckStop.location.name}"/>
-      </div>
-    </div>
-    <div class="clearfix">
       <div class="input">
         <input type="checkbox" id="lockStop" name="lockStop"/>&nbsp;<label style="float:none"
                                                                            for="lockStop">Prevent
@@ -34,6 +33,10 @@
 
   <input type="submit" class="btn primary" value="Save"/>
 
+  <script type="text/javascript">
+    var datasource = ${locations};
+    $("#locationInput").typeahead({source:datasource})
+  </script>
 
 </form>
 

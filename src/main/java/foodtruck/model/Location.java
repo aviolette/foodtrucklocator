@@ -2,6 +2,7 @@ package foodtruck.model;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.javadocmd.simplelatlng.LatLng;
 import com.javadocmd.simplelatlng.LatLngTool;
@@ -14,6 +15,11 @@ import com.javadocmd.simplelatlng.util.LengthUnit;
  * @since Jul 12, 2011
  */
 public class Location extends ModelEntity {
+  public static final Function<Location, String> TO_NAME = new Function<Location, String> () {
+    @Override public String apply(@Nullable Location input) {
+      return input.getName();
+    }
+  };
   private LatLng latLng;
   private final String name;
   private final boolean valid;
