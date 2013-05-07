@@ -16,19 +16,23 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 
+import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.DailySchedule;
 import foodtruck.model.DayOfWeek;
+import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStop;
@@ -52,12 +56,14 @@ public class TruckServlet extends HttpServlet {
   private final Clock clock;
   private final TruckDAO truckDAO;
   private final DateTimeZone zone;
+  private final LocationDAO locationDAO;
 
   @Inject
   public TruckServlet(TwitterService twitterService, DateTimeZone zone,
-      FoodTruckStopService truckService, Clock clock, TruckDAO truckDAO) {
+      FoodTruckStopService truckService, Clock clock, TruckDAO truckDAO, LocationDAO locationDAO) {
     this.twitterService = twitterService;
     this.truckService = truckService;
+    this.locationDAO = locationDAO;
     this.clock = clock;
     this.truckDAO = truckDAO;
     this.zone = zone;
@@ -136,6 +142,9 @@ public class TruckServlet extends HttpServlet {
           mondayPrior.plusDays(day).toLocalDate(), schedules, day);
     }
     req.setAttribute("schedule", Arrays.asList(schedule));
+    List<String> locationNames = ImmutableList.copyOf(
+        Iterables.transform(locationDAO.findPopularLocations(), Location.TO_NAME));
+    req.setAttribute("locations", new JSONArray(locationNames).toString());
     req.getRequestDispatcher(jsp).forward(req, resp);
 
   }

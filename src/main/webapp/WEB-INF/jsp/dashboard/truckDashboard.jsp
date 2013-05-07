@@ -199,7 +199,7 @@
           <label for="locationInput">Location</label>
 
           <div class="input">
-            <input class="span5" id="locationInput" type="text"/>
+            <input class="span5" id="locationInput" type="text" data-provide="typeahead" data-items="4"/>
           </div>
         </div>
         <div class="clearfix">
@@ -218,6 +218,8 @@
   </div>
 </div>
 <script type="text/javascript">
+  var locations = ${locations};
+  $("#locationInput").typeahead({source: locations});
   function invokeEditDialog(stop, afterwards) {
     $("#startTimeInput").attr("value", stop.startTime);
     $("#endTimeInput").attr("value", stop.endTime);
