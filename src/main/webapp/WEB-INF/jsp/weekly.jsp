@@ -10,7 +10,7 @@
     <tr>
       <td>${row.location.name}</td>
       <c:forEach var="dayOfWeek" items="${row.stopsForWeek}">
-        <td><c:forEach var="stop" items="${dayOfWeek}">
+        <td>&nbsp;<c:forEach var="stop" items="${dayOfWeek}">
             <img src="${stop.truck.iconUrl}" alt="" title="<joda:format pattern="hh:mm a" value="${stop.startTime}"/> - <joda:format pattern="hh:mm a" value="${stop.endTime}"/> ${stop.truck.name}"/>
         </c:forEach></td>
       </c:forEach>

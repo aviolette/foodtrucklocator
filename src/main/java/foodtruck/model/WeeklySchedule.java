@@ -85,7 +85,7 @@ public class WeeklySchedule {
 
     private void addStop(TruckStop stop) {
       DateTime time = stop.getStartTime().isBefore(start) ? stop.getEndTime() : stop.getStartTime();
-      int dayOfWeek = (time.getDayOfWeek() == DateTimeConstants.SUNDAY) ? 0 : time.getDayOfWeek() - 1;
+      int dayOfWeek = (time.getDayOfWeek() == DateTimeConstants.SUNDAY) ? 0 : time.getDayOfWeek();
       Set<TruckStop> stops = stopsForWeek.get(dayOfWeek);
       stops.add(stop);
     }
