@@ -48,4 +48,12 @@ public class ClockImpl implements Clock {
     }
     return DayOfWeek.sunday;
   }
+
+  @Override public LocalDate firstDayOfWeek() {
+    DateTime now = now();
+    if (now.getDayOfWeek() == DateTimeConstants.SUNDAY) {
+      return now().toLocalDate();
+    }
+    return now.minusDays(now().getDayOfWeek()).toLocalDate();
+  }
 }

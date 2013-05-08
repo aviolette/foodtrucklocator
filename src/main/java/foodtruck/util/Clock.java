@@ -25,4 +25,10 @@ public interface Clock {
    * Returns the current day of the week
    */
   DayOfWeek dayOfWeek();
+
+  /**
+   * Returns the first day of this week.
+   * @return
+   */
+  LocalDate firstDayOfWeek();
 }

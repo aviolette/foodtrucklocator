@@ -2,6 +2,7 @@ package foodtruck.truckstops;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,6 +12,7 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
@@ -30,6 +32,7 @@ import foodtruck.model.TruckLocationGroup;
 import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStatus;
 import foodtruck.model.TruckStop;
+import foodtruck.model.WeeklySchedule;
 import foodtruck.schedule.ScheduleStrategy;
 import foodtruck.util.Clock;
 
@@ -178,6 +181,25 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
 
   @Override public List<TruckStop> findStopsForTruckSince(DateTime since, String truckId) {
       return truckStopDAO.findOverRange(truckId, since, clock.now());
+  }
+
+  @Override public WeeklySchedule findPopularStopsForWeek(LocalDate startDate) {
+    List<TruckStop> stops = truckStopDAO.findOverRange(null, startDate.toDateMidnight(zone).toDateTime(),
+        startDate.plusDays(7).toDateMidnight(zone).toDateTime());
+    Set<Location> locationSet = locationDAO.findPopularLocations();
+    Map<String, Location> locationMap = Maps.newHashMap();
+    for (Location loc : locationSet) {
+      locationMap.put(loc.getName(), loc);
+    }
+    WeeklySchedule.Builder scheduleBuilder = new WeeklySchedule.Builder();
+    scheduleBuilder.start(startDate);
+    for (TruckStop stop : stops) {
+      // TODO: need to perform radius-search instead of name comparison
+      if (locationMap.containsKey(stop.getLocation().getName())) {
+        scheduleBuilder.addStop(stop);
+      }
+    }
+    return scheduleBuilder.build();
   }
 
   @Override public List<TruckStatus> findCurrentAndPreviousStop(LocalDate day) {
