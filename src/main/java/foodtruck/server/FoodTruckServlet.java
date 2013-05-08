@@ -2,10 +2,7 @@ package foodtruck.server;
 
 import java.io.IOException;
 
-import javax.annotation.Nullable;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -22,7 +19,6 @@ import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.ScheduleDAO;
 import foodtruck.model.Configuration;
 import foodtruck.model.DailySchedule;
-import foodtruck.model.Location;
 import foodtruck.server.resources.json.DailyScheduleWriter;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
@@ -34,21 +30,20 @@ import foodtruck.util.TimeFormatter;
  * @since Jul 12, 2011
  */
 @Singleton
-public class FoodTruckServlet extends HttpServlet {
+public class FoodTruckServlet extends FrontPageServlet {
   private final DateTimeFormatter timeFormatter;
   private final Clock clock;
   private final DateTimeFormatter dateFormatter;
   private final FoodTruckStopService stopService;
   private final ScheduleDAO scheduleCacher;
   private final DailyScheduleWriter writer;
-  private final ConfigurationDAO configDAO;
 
   @Inject
   public FoodTruckServlet(ConfigurationDAO configDAO,
       Clock clock, FoodTruckStopService service, DailyScheduleWriter writer, ScheduleDAO scheduleCacher,
       @TimeFormatter DateTimeFormatter timeFormatter) {
+    super(configDAO);
     this.clock = clock;
-    this.configDAO = configDAO;
     this.timeFormatter = timeFormatter;
     this.dateFormatter = DateTimeFormat.forPattern("EEE MMM dd, YYYY");
     this.stopService = service;
@@ -84,8 +79,8 @@ public class FoodTruckServlet extends HttpServlet {
     if (dateTime == null) {
       dateTime = clock.now();
     }
-    final Configuration configuration = configDAO.find();
-    req.setAttribute("center", getCenter(req.getCookies(), configuration.getCenter()));
+    final Configuration configuration = configurationDAO.find();
+    req.setAttribute("center", getCenter(req.getCookies()));
     String googleAnalytics = System.getProperty("foodtruck.google.analytics", null);
     if (googleAnalytics != null) {
       req.setAttribute("google_analytics_ua", googleAnalytics);
@@ -113,23 +108,5 @@ public class FoodTruckServlet extends HttpServlet {
     req.setAttribute("payload", payload);
     String jsp = "/WEB-INF/jsp/" + (showNextGen ? "nextgen.jsp" : "index.jsp");
     req.getRequestDispatcher(jsp).forward(req, resp);
-  }
-
-  private Location getCenter(@Nullable Cookie[] cookies, Location defaultValue) {
-    double lat = 0, lng = 0;
-    if (cookies == null) {
-      return defaultValue;
-    }
-    for (int i = 0; i < cookies.length; i++) {
-      if ("latitude".equals(cookies[i].getName())) {
-        lat = Double.valueOf(cookies[i].getValue());
-      } else if ("longitude".equals(cookies[i].getName())) {
-        lng = Double.valueOf(cookies[i].getValue());
-      }
-    }
-    if (lat != 0 && lng != 0) {
-      return Location.builder().lat(lat).lng(lng).build();
-    }
-    return defaultValue;
   }
 }

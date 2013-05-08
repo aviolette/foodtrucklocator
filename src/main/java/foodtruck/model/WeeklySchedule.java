@@ -5,8 +5,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 
 import org.joda.time.DateTime;
@@ -18,8 +21,9 @@ import org.joda.time.LocalDate;
  * @since 5/7/13
  */
 public class WeeklySchedule {
-  private LocalDate start;
-  private Collection<LocationAndStops> stops;
+  private final LocalDate start;
+  private final Collection<LocationAndStops> stops;
+
 
   private WeeklySchedule(LocalDate start, Collection<LocationAndStops> stops) {
     this.start = start;
@@ -32,6 +36,10 @@ public class WeeklySchedule {
 
   public Collection<LocationAndStops> getStops() {
     return stops;
+  }
+
+  public WeeklySchedule sortFrom(Location center) {
+    return new WeeklySchedule(start, new ByDistanceOrdering(center).immutableSortedCopy(stops));
   }
 
   public static class Builder {
@@ -59,7 +67,30 @@ public class WeeklySchedule {
     public WeeklySchedule build() {
       return new WeeklySchedule(start, map.values());
     }
-  };
+  }
+
+  ;
+
+  private static class ByDistanceOrdering extends Ordering<LocationAndStops> {
+    private Location center;
+
+    public ByDistanceOrdering(Location center) {
+      this.center = center;
+    }
+
+    @Override
+    public int compare(@Nullable LocationAndStops left, @Nullable LocationAndStops right) {
+      double ld = left.getLocation().distanceFrom(center),
+          rd = right.getLocation().distanceFrom(center);
+      if (ld > rd) {
+        return 1;
+      } else if (ld == rd) {
+        return 0;
+      } else {
+        return -1;
+      }
+    }
+  }
 
   public static class LocationAndStops {
     private final DateTime start;
@@ -70,7 +101,7 @@ public class WeeklySchedule {
       stopsForWeek = Lists.newLinkedList();
       this.start = start;
       this.location = location;
-      for (int i=0; i < 7; i++) {
+      for (int i = 0; i < 7; i++) {
         stopsForWeek.add(Sets.<TruckStop>newHashSet());
       }
     }
