@@ -31,4 +31,11 @@ public interface Clock {
    * @return
    */
   LocalDate firstDayOfWeek();
+
+  /**
+   * Returns the first day of the week that the specified time falls within.
+   * @param dt a time within a week.
+   * @return the first day of the week.
+   */
+  LocalDate firstDayOfWeekFrom(DateTime dt);
 }

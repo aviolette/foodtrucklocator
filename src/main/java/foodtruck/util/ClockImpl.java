@@ -50,10 +50,14 @@ public class ClockImpl implements Clock {
   }
 
   @Override public LocalDate firstDayOfWeek() {
-    DateTime now = now();
-    if (now.getDayOfWeek() == DateTimeConstants.SUNDAY) {
+    return firstDayOfWeekFrom(now());
+  }
+
+  public LocalDate firstDayOfWeekFrom(DateTime dt) {
+    if (dt.getDayOfWeek() == DateTimeConstants.SUNDAY) {
       return now().toLocalDate();
     }
-    return now.minusDays(now().getDayOfWeek()).toLocalDate();
+    return dt.minusDays(now().getDayOfWeek()).toLocalDate();
   }
+
 }
