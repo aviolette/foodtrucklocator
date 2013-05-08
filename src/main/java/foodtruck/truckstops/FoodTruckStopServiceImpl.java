@@ -197,6 +197,13 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
       // TODO: need to perform radius-search instead of name comparison
       if (locationMap.containsKey(stop.getLocation().getName())) {
         scheduleBuilder.addStop(stop);
+      } else {
+        for (Location loc : locationSet) {
+          if (loc.within(loc.getRadius()).milesOf(stop.getLocation())) {
+            scheduleBuilder.addStop(stop.withLocation(loc));
+            break;
+          }
+        }
       }
     }
     return scheduleBuilder.build();
