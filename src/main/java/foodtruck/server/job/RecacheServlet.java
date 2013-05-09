@@ -15,6 +15,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import org.joda.time.DateTimeZone;
+import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -57,10 +58,11 @@ public class RecacheServlet extends HttpServlet {
     final String date = req.getParameter("date");
 
     LocalDate when = parseDate(date);
+    final Interval instant = when.toInterval(zone).withEnd(when.plusDays(7).toDateMidnight());
     if (!Strings.isNullOrEmpty(truck)) {
-      service.updateStopsForTruck(when.toInterval(zone), truckDAO.findById(truck));
+      service.updateStopsForTruck(instant, truckDAO.findById(truck));
     } else {
-      service.updateStopsFor(when.toInterval(zone).withEnd(when.plusDays(7).toDateMidnight()));
+      service.updateStopsFor(instant);
     }
     twitterService.twittalyze();
   }
