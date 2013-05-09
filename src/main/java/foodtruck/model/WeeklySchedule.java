@@ -69,8 +69,6 @@ public class WeeklySchedule {
     }
   }
 
-  ;
-
   private static class ByDistanceOrdering extends Ordering<LocationAndStops> {
     private Location center;
 

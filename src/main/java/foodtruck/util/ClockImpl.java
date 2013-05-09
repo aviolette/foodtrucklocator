@@ -55,7 +55,7 @@ public class ClockImpl implements Clock {
 
   public LocalDate firstDayOfWeekFrom(DateTime dt) {
     if (dt.getDayOfWeek() == DateTimeConstants.SUNDAY) {
-      return now().toLocalDate();
+      return dt.toLocalDate();
     }
     return dt.minusDays(now().getDayOfWeek()).toLocalDate();
   }

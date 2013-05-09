@@ -24,6 +24,7 @@
     <div class="container-fluid">
       <a class="brand" href="/">Chicago Food Truck Finder</a>
       <ul class="nav">
+        <li><a href="/weekly-schedule">Weekly</a></li>
         <li><a href="http://blog.chicagofoodtruckfinder.com/">Blog</a></li>
         <li class="visible-desktop"><a id="mobileLink" href="#mobile">Mobile</a></li>
       </ul>
@@ -42,3 +43,8 @@
 </div>
 
 <div class="container-fluid">
+  <noscript>
+    <div class="alert alert-error">
+      Javascript is required for this site to function properly.
+    </div>
+  </noscript>

@@ -11,6 +11,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.ConfigurationDAO;
@@ -47,9 +48,16 @@ public class WeeklyScheduleServlet extends FrontPageServlet {
     } else {
       theDate = clock.now();
     }
-    WeeklySchedule schedule = stopService.findPopularStopsForWeek(clock.firstDayOfWeekFrom(theDate));
+    final LocalDate startDate = clock.firstDayOfWeekFrom(theDate), currentFirstDay = clock.firstDayOfWeek();
+    LocalDate prev = theDate.toLocalDate().minusDays(7);
+    LocalDate next = theDate.toLocalDate().plusDays(7);
+    req.setAttribute("next", formatter.print(next.toDateTimeAtStartOfDay()));
+    req.setAttribute("prev", formatter.print(prev.toDateTimeAtStartOfDay()));
+    WeeklySchedule schedule = stopService.findPopularStopsForWeek(startDate);
     String jsp = "/WEB-INF/jsp/weekly.jsp";
     req.setAttribute("weeklySchedule", schedule.sortFrom(getCenter(req.getCookies())));
+    req.setAttribute("theDate", theDate);
+    req.setAttribute("weekOf", startDate);
     req.getRequestDispatcher(jsp).forward(req, resp);
   }
 }
