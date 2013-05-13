@@ -1,6 +1,5 @@
 package foodtruck.dao.appengine;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -18,11 +17,13 @@ import com.google.appengine.api.datastore.PropertyContainer;
 import com.google.appengine.api.datastore.Query;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
 import foodtruck.dao.TruckDAO;
@@ -146,22 +147,16 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
   public List<TruckStop> findDuring(@Nullable String truckId, LocalDate day) {
     DatastoreService dataStore = serviceProvider.get();
     Query q = new Query(STOP_KIND);
-    // TODO: google's filters can't do range comparisons...ugh...here I search the lower bound
     final DateMidnight midnight = day.toDateMidnight(zone);
     // This opens up a 6 hour window before the specified day to get any stops that start on the prior day
     // This is not the best way to do this.  This code needs to be refactored
-    q.addFilter(START_TIME_FIELD, Query.FilterOperator.GREATER_THAN_OR_EQUAL,
-        midnight.toDateTime().minusHours(6).toDate());
-    if (truckId != null) {
-      q.addFilter(TRUCK_ID_FIELD, Query.FilterOperator.EQUAL, truckId);
-    }
+    List<Query.Filter> filters = trucksOverRange(truckId, new Interval(midnight.toDateTime().minusHours(6),
+        day.plusDays(1).toDateTimeAtStartOfDay()));
+    q.setFilter(Query.CompositeFilterOperator.and(filters));
     q.addSort(START_TIME_FIELD, Query.SortDirection.ASCENDING);
     ImmutableList.Builder<TruckStop> stops = ImmutableList.builder();
     for (Entity entity : dataStore.prepare(q).asIterable()) {
-      final DateTime startTime = new DateTime((Date) entity.getProperty(START_TIME_FIELD), zone);
-      if (startTime.isAfter(day.plusDays(1).toDateMidnight(zone))) {
-        continue;
-      }
+      final DateTime startTime = new DateTime(entity.getProperty(START_TIME_FIELD), zone);
       final DateTime endTime = getDateTime(entity, END_TIME_FIELD, zone);
       // make sure that this stop at least ends or starts on the current day
       if (midnight.isBefore(endTime) || midnight.isBefore(startTime)) {
@@ -172,8 +167,8 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
   }
 
   private TruckStop toTruckStop(Entity entity) {
-    final DateTime startTime = new DateTime((Date) entity.getProperty(START_TIME_FIELD), zone);
-    final DateTime endTime = new DateTime((Date) entity.getProperty(END_TIME_FIELD), zone);
+    final DateTime startTime = new DateTime(entity.getProperty(START_TIME_FIELD), zone);
+    final DateTime endTime = new DateTime(entity.getProperty(END_TIME_FIELD), zone);
     Boolean locked = (Boolean) entity.getProperty(LOCKED_FIELD);
     return new TruckStop(truckDAO.findById((String) entity.getProperty(TRUCK_ID_FIELD)),
         startTime, endTime,
@@ -190,7 +185,12 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
   public void deleteAfter(DateTime startTime) {
     DatastoreService dataStore = serviceProvider.get();
     Query q = new Query(STOP_KIND);
-    q.addFilter(START_TIME_FIELD, Query.FilterOperator.GREATER_THAN_OR_EQUAL, startTime.toDate());
+    q.setFilter(new Query.FilterPredicate(START_TIME_FIELD,
+        Query.FilterOperator.GREATER_THAN_OR_EQUAL, startTime.toDate()));
+    deleteFromQuery(dataStore, q);
+  }
+
+  protected void deleteFromQuery(DatastoreService dataStore, Query q) {
     ImmutableList.Builder<Key> keys = ImmutableList.builder();
     for (Entity entity : dataStore.prepare(q).asIterable()) {
       keys.add(entity.getKey());
@@ -202,13 +202,12 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
   public void deleteAfter(DateTime startTime, String truckId) {
     DatastoreService dataStore = serviceProvider.get();
     Query q = new Query(STOP_KIND);
-    q.addFilter(START_TIME_FIELD, Query.FilterOperator.GREATER_THAN_OR_EQUAL, startTime.toDate());
-    q.addFilter(TRUCK_ID_FIELD, Query.FilterOperator.EQUAL, truckId);
-    ImmutableList.Builder<Key> keys = ImmutableList.builder();
-    for (Entity entity : dataStore.prepare(q).asIterable()) {
-      keys.add(entity.getKey());
-    }
-    dataStore.delete(keys.build());
+    List filters = Lists.newLinkedList();
+    filters.add(new Query.FilterPredicate(START_TIME_FIELD,
+        Query.FilterOperator.GREATER_THAN_OR_EQUAL, startTime.toDate()));
+    filters.add(new Query.FilterPredicate(TRUCK_ID_FIELD, Query.FilterOperator.EQUAL, truckId));
+    q.setFilter(Query.CompositeFilterOperator.and(filters));
+    deleteFromQuery(dataStore, q);
   }
 
   @Override
@@ -258,26 +257,28 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
   }
 
   @Override
-  public List<TruckStop> findOverRange(@Nullable String truckId, DateTime startDate,
-      DateTime endDate) {
+  public List<TruckStop> findOverRange(@Nullable String truckId, Interval range) {
     DatastoreService dataStore = serviceProvider.get();
     Query q = new Query(STOP_KIND);
-    // TODO: google's filters can't do range comparisons...ugh...here I search the lower bound
-    q.addFilter(START_TIME_FIELD, Query.FilterOperator.GREATER_THAN_OR_EQUAL,
-        startDate.toDate());
-    if (truckId != null) {
-      q.addFilter(TRUCK_ID_FIELD, Query.FilterOperator.EQUAL, truckId);
-    }
+    List<Query.Filter> filters = trucksOverRange(truckId, range);
+    q.setFilter(Query.CompositeFilterOperator.and(filters));
     q.addSort(START_TIME_FIELD, Query.SortDirection.ASCENDING);
     ImmutableList.Builder<TruckStop> stops = ImmutableList.builder();
     for (Entity entity : dataStore.prepare(q).asIterable()) {
-      final DateTime startTime = new DateTime(Date.class.cast(entity.getProperty(START_TIME_FIELD)),
-          zone);
-      if (startTime.isAfter(endDate)) {
-        continue;
-      }
       stops.add(toTruckStop(entity));
     }
     return stops.build();
+  }
+
+  private List<Query.Filter> trucksOverRange(@Nullable String truckId, Interval range) {
+    List<Query.Filter> filters = Lists.newLinkedList();
+    filters.add(new Query.FilterPredicate(START_TIME_FIELD,
+        Query.FilterOperator.GREATER_THAN_OR_EQUAL, range.getStart().toDate()));
+    filters.add(new Query.FilterPredicate(START_TIME_FIELD,
+        Query.FilterOperator.LESS_THAN, range.getEnd().toDate()));
+    if (truckId != null) {
+      filters.add(new Query.FilterPredicate(TRUCK_ID_FIELD, Query.FilterOperator.EQUAL, truckId));
+    }
+    return filters;
   }
 }

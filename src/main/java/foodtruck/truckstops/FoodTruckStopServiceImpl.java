@@ -18,7 +18,6 @@ import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
@@ -45,16 +44,14 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   private final TruckDAO truckDAO;
   private final ScheduleStrategy scheduleStrategy;
   private static final Logger log = Logger.getLogger(FoodTruckStopServiceImpl.class.getName());
-  private final DateTimeZone zone;
   private final Clock clock;
   private final LocationDAO locationDAO;
 
   @Inject
   public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, ScheduleStrategy googleCalendar,
-      DateTimeZone zone, Clock clock, TruckDAO truckDAO, LocationDAO locationDAO) {
+      Clock clock, TruckDAO truckDAO, LocationDAO locationDAO) {
     this.truckStopDAO = truckStopDAO;
     this.scheduleStrategy = googleCalendar;
-    this.zone = zone;
     this.clock = clock;
     this.truckDAO = truckDAO;
     this.locationDAO = locationDAO;
@@ -132,10 +129,10 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     return new DailySchedule(day, stops);
   }
 
-  @Override public List<DailySchedule> findSchedules(String truckId, DateTime start, DateTime end) {
-    List<TruckStop> stopList = truckStopDAO.findOverRange(truckId, start, end);
+  @Override public List<DailySchedule> findSchedules(String truckId, Interval range) {
+    List<TruckStop> stopList = truckStopDAO.findOverRange(truckId, range);
     ImmutableList.Builder<DailySchedule> stops = ImmutableList.builder();
-    LocalDate date = start.toLocalDate();
+    LocalDate date = range.getStart().toLocalDate();
     ImmutableList.Builder<TruckStop> currentStops = ImmutableList.builder();
     for (TruckStop truckStop : stopList) {
       final LocalDate localDate = truckStop.getStartTime().toLocalDate();
@@ -180,12 +177,12 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   }
 
   @Override public List<TruckStop> findStopsForTruckSince(DateTime since, String truckId) {
-      return truckStopDAO.findOverRange(truckId, since, clock.now());
+      return truckStopDAO.findOverRange(truckId, new Interval(since, clock.now()));
   }
 
   @Override public WeeklySchedule findPopularStopsForWeek(LocalDate startDate) {
-    List<TruckStop> stops = truckStopDAO.findOverRange(null, startDate.toDateMidnight(zone).toDateTime(),
-        startDate.plusDays(7).toDateMidnight(zone).toDateTime());
+    List<TruckStop> stops = truckStopDAO.findOverRange(null, new Interval(startDate.toDateTimeAtStartOfDay(),
+        startDate.plusDays(7).toDateTimeAtStartOfDay()));
     Set<Location> locationSet = locationDAO.findPopularLocations();
     Map<String, Location> locationMap = Maps.newHashMap();
     for (Location loc : locationSet) {
@@ -194,7 +191,6 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     WeeklySchedule.Builder scheduleBuilder = new WeeklySchedule.Builder();
     scheduleBuilder.start(startDate);
     for (TruckStop stop : stops) {
-      // TODO: need to perform radius-search instead of name comparison
       if (locationMap.containsKey(stop.getLocation().getName())) {
         scheduleBuilder.addStop(stop);
       } else {

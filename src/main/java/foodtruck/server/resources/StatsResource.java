@@ -14,6 +14,7 @@ import com.google.inject.Inject;
 import com.sun.jersey.api.JResponse;
 
 import org.joda.time.DateTime;
+import org.joda.time.Interval;
 
 import foodtruck.dao.SystemStatDAO;
 import foodtruck.dao.TruckStopDAO;
@@ -59,7 +60,7 @@ public class StatsResource {
     StatVector vector = Slots.fillIn(ImmutableList.<SystemStats>of(), "trucksOnRoad",
         startTime, endTime);
     List<TruckStop> truckStops =
-        truckStopDAO.findOverRange(null, new DateTime(startTime), new DateTime(endTime));
+        truckStopDAO.findOverRange(null, new Interval(startTime, endTime));
     for (TimeValue timeValue : vector.getDataPoints()) {
       // inefficient!!!!
       timeValue.setCount(countWithinRange(truckStops, new DateTime(timeValue.getTimestamp())));

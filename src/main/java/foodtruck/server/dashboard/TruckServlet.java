@@ -26,6 +26,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
 import foodtruck.dao.LocationDAO;
@@ -134,7 +135,7 @@ public class TruckServlet extends HttpServlet {
     final DateTime mondayPrior = current.minusDays(6 + dayOfWeek);
     final DateTime nextSunday = current.plusDays(7 - dayOfWeek + 1);
     List<DailySchedule> schedules = truckService.findSchedules(truck.getId(),
-        mondayPrior, nextSunday);
+        new Interval(mondayPrior, nextSunday));
     PriorAndCurrentSchedule schedule[] = new PriorAndCurrentSchedule[7];
     final DateTime mondayCurrent = current.minusDays(dayOfWeek - 1);
     for (int day = 0; day < 7; day++) {
@@ -279,5 +280,4 @@ public class TruckServlet extends HttpServlet {
       return MoreStrings.capitalize(dayOfWeek.toString());
     }
   }
-
 }

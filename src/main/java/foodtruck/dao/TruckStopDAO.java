@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 import org.joda.time.DateTime;
+import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
 import foodtruck.model.TruckStop;
@@ -34,8 +35,17 @@ public interface TruckStopDAO {
    */
   List<TruckStop> findDuring(@Nullable String truckId, LocalDate day);
 
+  /**
+   * Deletes all the stops after the specified time
+   * @param startDateTime the start time
+   */
   void deleteAfter(DateTime startDateTime);
 
+  /**
+   * Deletes all the stops after the specified time for the specified truck.
+   * @param dateTime the time to start
+   * @param truckId for the specified truck
+   */
   void deleteAfter(DateTime dateTime, String truckId);
 
   /**
@@ -43,8 +53,12 @@ public interface TruckStopDAO {
    */
   void deleteStops(List<TruckStop> toDelete);
 
-  TruckStop findById(long stopId);
+  @Nullable TruckStop findById(long stopId);
 
+  /**
+   * Deletes the truck stop specified by the ID
+   * @param stopId
+   */
   void delete(long stopId);
 
   void save(TruckStop truckStop);
@@ -52,10 +66,9 @@ public interface TruckStopDAO {
   /**
    * Returns all the truck stops over a specific time range
    * @param truckId the truck ID
-   * @param startDate the start time (inclusive)
-   * @param endDate the end time (exclusive)
+   * @param range the range to search over
    * @return the list of all the truck stops
    */
-  List<TruckStop> findOverRange(@Nullable String truckId, DateTime startDate, DateTime endDate);
+  List<TruckStop> findOverRange(@Nullable String truckId, Interval range);
 
 }
