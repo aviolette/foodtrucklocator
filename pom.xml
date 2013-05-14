@@ -117,7 +117,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>r08</version>
+      <version>14.0.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.code.guice</groupId>
@@ -159,7 +159,7 @@
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
-      <version>1.6</version>
+      <version>2.1</version>
     </dependency>
     <dependency>
       <groupId>joda-time</groupId>
