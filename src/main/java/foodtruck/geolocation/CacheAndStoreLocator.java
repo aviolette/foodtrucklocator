@@ -67,7 +67,7 @@ public class CacheAndStoreLocator implements GeoLocator {
       loc = Location.builder().name(location).valid(false).build();
       log.warning("Failed at attempt to geo locate: " + location);
     }
-    return dao.saveAndFetch(loc);
+    return dao.saveAndFetch(loc).wasJustResolved();
   }
 
   @Override

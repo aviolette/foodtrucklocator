@@ -19,6 +19,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.ConfigurationDAO;
+import foodtruck.email.EmailNotifier;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
@@ -57,10 +58,11 @@ public class TruckStopMatcher {
   private final Pattern atTimePattern;
   private final Pattern schedulePattern = Pattern.compile(".*M:.+(\\b|\\n)T:.+(\\b|\\n)W:.+");
   private final ConfigurationDAO configDAO;
+  private final EmailNotifier notifier;
 
   @Inject
   public TruckStopMatcher(AddressExtractor extractor, GeoLocator geoLocator,
-      DateTimeZone defaultZone, Clock clock, ConfigurationDAO configDAO) {
+      DateTimeZone defaultZone, Clock clock, ConfigurationDAO configDAO, EmailNotifier notifier) {
     this.addressExtractor = extractor;
     this.geoLocator = geoLocator;
     this.atTimePattern = Pattern.compile("\\b(be at|ETA|arrive at|there at) (" + TIME_PATTERN_STRICT + ")");
@@ -97,6 +99,7 @@ public class TruckStopMatcher {
         Pattern.CASE_INSENSITIVE);
     formatter = DateTimeFormat.forPattern("hhmma").withZone(defaultZone);
     this.clock = clock;
+    this.notifier = notifier;
   }
 
   public Location getMapCenter() {
@@ -260,6 +263,9 @@ public class TruckStopMatcher {
     for (String address : addresses) {
       Location loc = geoLocator.locate(address, GeolocationGranularity.NARROW);
       if (loc != null && loc.isResolved()) {
+        if (loc.isJustResolved()) {
+          this.notifier.systemNotifyLocationAdded(loc, tweet, truck);
+        }
         return loc;
       }
     }

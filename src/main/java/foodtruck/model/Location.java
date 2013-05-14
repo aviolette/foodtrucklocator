@@ -28,6 +28,7 @@ public class Location extends ModelEntity {
   private final boolean eventSpecific;
   private final double radius;
   private final boolean popular;
+  private final boolean justResolved;
 
   public Location(Builder builder) {
     super(builder.key);
@@ -39,6 +40,7 @@ public class Location extends ModelEntity {
     eventSpecific = builder.eventSpecific;
     radius = builder.radius;
     popular = builder.popular;
+    justResolved = builder.justResolved;
   }
 
   public boolean isPopular() {
@@ -57,8 +59,16 @@ public class Location extends ModelEntity {
     return this.name;
   }
 
+  public Location wasJustResolved() {
+    return Location.builder(this).wasJustResolved(true).build();
+  }
+
   public boolean isValid() {
     return this.valid;
+  }
+
+  public boolean isJustResolved() {
+    return justResolved;
   }
 
   public boolean isEvent() {
@@ -141,6 +151,7 @@ public class Location extends ModelEntity {
     private @Nullable String url;
     public double radius = 0d;
     private boolean popular;
+    private boolean justResolved;
 
     public Builder(Location location) {
       key = location.getKey();
@@ -148,7 +159,12 @@ public class Location extends ModelEntity {
       lng = location.getLongitude();
       name = location.getName();
       valid = location.isValid();
+      description = location.getDescription();
+      eventSpecific = location.isEvent();
+      url = location.getUrl();
+      radius = location.getRadius();
       popular = location.isPopular();
+      justResolved = location.justResolved;
     }
 
     public Builder() {
@@ -166,6 +182,11 @@ public class Location extends ModelEntity {
 
     public Builder description(@Nullable String description) {
       this.description = description;
+      return this;
+    }
+
+    public Builder wasJustResolved(boolean resolved) {
+      this.justResolved = resolved;
       return this;
     }
 

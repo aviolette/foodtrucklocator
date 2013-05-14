@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import foodtruck.dao.ConfigurationDAO;
+import foodtruck.email.EmailNotifier;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Configuration;
@@ -39,18 +40,20 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   private Clock clock;
   private Location mapCenter;
   private ConfigurationDAO configDAO;
+  private EmailNotifier notifier;
 
   @Before
   public void before() {
     extractor = createMock(AddressExtractor.class);
     geolocator = createMock(GeoLocator.class);
     clock = createMock(Clock.class);
+    notifier = createMock(EmailNotifier.class);
     mapCenter = Location.builder().lat(41.8807438).lng(-87.6293867).build();
     expect(clock.dayOfWeek()).andStubReturn(DayOfWeek.sunday);
     Configuration config = Configuration.builder().center(mapCenter).build();
     configDAO = createMock(ConfigurationDAO.class);
     expect(configDAO.find()).andStubReturn(config);
-    topic = new TruckStopMatcher(extractor, geolocator, DateTimeZone.UTC, clock, configDAO);
+    topic = new TruckStopMatcher(extractor, geolocator, DateTimeZone.UTC, clock, configDAO, notifier);
     truck = Truck.builder().id("foobar").build();
     tweetTime = new DateTime(2011, 11, 10, 11, 13, 7, 7, DateTimeZone.UTC);
   }
@@ -80,6 +83,21 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     assertNull(match);
   }
 
+
+  @Test
+  public void testMatch_shouldNotifyByEmailWhenNewLocation() {
+    String tweet = "Last call Erie and Kingsbury, outta here in 15 minutes," +
+        " then off to our next River North location, Hubbard & LaSalle";
+    Location location =Location.builder().lat(41.889973).lng(-87.634024).name("foobar")
+        .wasJustResolved(true).build();
+    notifier.systemNotifyLocationAdded(location,
+        new TweetSummary.Builder().userId("foobar").text(tweet).time(tweetTime).build(), truck);
+    TruckStopMatch match =
+        tweet(tweet)
+            .geolocatorReturns(location)
+            .match();
+    assertNotNull(match);
+  }
 
   @Test
   public void testMatch_shouldReturnHighConfidenceWhenAtLocationUntil() {
@@ -474,6 +492,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
       }
       replayAll();
       TweetSummary tweet = new TweetSummary.Builder().text(Tweeter.this.tweet)
+          .userId("foobar")
           .time(Tweeter.this.time).build();
       return topic.match(Tweeter.this.truck, tweet, null);
     }

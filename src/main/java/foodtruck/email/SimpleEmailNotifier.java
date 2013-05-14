@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.mail.Message;
@@ -13,11 +14,11 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.model.Configuration;
+import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TweetSummary;
 
@@ -35,11 +36,30 @@ public class SimpleEmailNotifier implements EmailNotifier {
   }
 
   @Override public void systemNotifyOffTheRoad(Truck truck, TweetSummary tweet) {
-    Configuration config = configDAO.find();
+    String msgBody = MessageFormat.format("This tweet might indicate that {0} is off the road:\n" +
+        "\n \"{1}\"\n\n" +
+        "Click here to take the truck off the road: " +
+        "http://www.chicagofoodtruckfinder.com/admin/trucks/{2}/offtheroad", truck.getName(), tweet.getText(),
+        truck.getId());
+    sendSystemMessage(truck.getName() + " might be off the road", msgBody);
+  }
 
+  @Override public void systemNotifyLocationAdded(Location location, TweetSummary tweet, Truck truck) {
+    try {
+      sendSystemMessage("New Location Added: " + location.getName(),
+          MessageFormat.format("This tweet \"{0}\" triggered the following location to be added {1}.  Click here to " +
+          "view the location http://www.chicagofoodtruckfinder.com/admin/locations/{2} .  " +
+              "Also, view the truck here: http://www.chicagofoodtruckfinder.com/admin/trucks/{3}", tweet.getText(),
+              location.getName(), location.getKey(), truck.getId()));
+    } catch (Exception e) {
+      log.log(Level.WARNING, e.getMessage(), e);
+    }
+  }
+
+  private void sendSystemMessage(String subject, String msgBody) {
+    Configuration config = configDAO.find();
     List<String> receivers = config.getSystemNotificationList();
     String sender = config.getNotificationSender();
-
     Properties props = new Properties();
     Session session = Session.getDefaultInstance(props, null);
     Message msg = new MimeMessage(session);
@@ -49,18 +69,13 @@ public class SimpleEmailNotifier implements EmailNotifier {
         msg.addRecipient(Message.RecipientType.TO,
             new InternetAddress(receiver));
       }
-      msg.setSubject(truck.getName() + " might be off the road");
-      String msgBody = MessageFormat.format("This tweet might indicate that {0} is off the road:\n" +
-          "\n \"{1}\"\n\n" +
-          "Click here to take the truck off the road: " +
-          "http://www.chicagofoodtruckfinder.com/admin/trucks/{2}/offtheroad", truck.getName(), tweet.getText(),
-          truck.getId());
+      msg.setSubject(subject);
       msg.setText(msgBody);
       Transport.send(msg);
     } catch (MessagingException e) {
-      throw Throwables.propagate(e);
+      log.log(Level.WARNING,  e.getMessage(), e);
     } catch (UnsupportedEncodingException e) {
-      throw Throwables.propagate(e);
+      log.log(Level.WARNING,  e.getMessage(), e);
     }
   }
 }
