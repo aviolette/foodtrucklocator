@@ -23,12 +23,12 @@ import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TweetSummary;
+import foodtruck.schedule.OffTheRoadDetector;
 import foodtruck.schedule.TerminationDetector;
 import foodtruck.schedule.TruckStopMatch;
 import foodtruck.schedule.TruckStopMatcher;
 import foodtruck.truckstops.LoggingTruckStopNotifier;
 import foodtruck.util.Clock;
-import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 
 /**
@@ -55,6 +55,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
   private TruckDAO truckDAO;
   private TweetSummary basicTweet;
   private EmailNotifier emailNotifier;
+  private OffTheRoadDetector offTheRoadDetector;
 
   @Before
   public void before() {
@@ -82,10 +83,11 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     final int listId = 123;
     terminationDetector = createMock(TerminationDetector.class);
     ConfigurationDAO configDAO = createMock(ConfigurationDAO.class);
+    offTheRoadDetector = createMock(OffTheRoadDetector.class);
     service = new TwitterServiceImpl(twitterFactory, tweetDAO, zone, matcher,
         truckStopDAO,
         clock, terminationDetector, new LocalCacheUpdater(), truckDAO,
-        new LoggingTruckStopNotifier(), configDAO, emailNotifier);
+        new LoggingTruckStopNotifier(), configDAO, emailNotifier, offTheRoadDetector);
     loca = Location.builder().lat(1).lng(2).name("a").build();
     locb = Location.builder().lat(3).lng(4).name("b").build();
     basicTweet = new TweetSummary.Builder().time(now.minusHours(2)).text(
@@ -117,6 +119,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
   @Test
   public void testKeepsOlderEventWhenNoOverlap() {
     expectMatched(false);
+    expectOffTheRoad(false);
     TruckStop stopBeforeCurrent = new TruckStop(truck2,
         matchStartTime.minusHours(2), matchStartTime.minusHours(3), locb, null, false);
     expect(truckStopDAO.findDuring(TRUCK_2_ID, currentDay))
@@ -128,9 +131,14 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     verifyAll();
   }
 
+  private void expectOffTheRoad(boolean offTheRoad) {
+    expect(offTheRoadDetector.offTheRoad(basicTweet.getText())).andReturn(offTheRoad);
+  }
+
   @Test
   public void testStopEndsAfterMatchStart_sameLocationShouldMerge() {
     expectMatched(false);
+    expectOffTheRoad(false);
     TruckStop currentStop =
         new TruckStop(truck2, matchStartTime.minusMinutes(30),
             matchEndTime.minusMinutes(30), loca, null, false);
@@ -148,6 +156,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
   @Test
   public void testStopContainsMatch_sameLocation() {
     expectMatched(false);
+    expectOffTheRoad(false);
     TruckStop currentStop =
         new TruckStop(truck2, matchStartTime.minusMinutes(30),
             matchEndTime.plusMinutes(30), loca, null, false);
@@ -165,6 +174,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
   @Test
   public void testStopContainsMatch_sameLocationSoftEnding() {
     expectMatched(true);
+    expectOffTheRoad(false);
     TruckStop currentStop =
         new TruckStop(truck2, matchStartTime.minusMinutes(30),
             matchEndTime.plusMinutes(30), loca, null, false);
@@ -182,6 +192,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
   @Test
   public void testMatchContainsCurrentStop() {
     expectMatched(false);
+    expectOffTheRoad(false);
     TruckStop currentStop =
         new TruckStop(truck2, matchStartTime.plusMinutes(3), matchEndTime.minusMinutes(3), loca,
             null, false);
@@ -197,8 +208,20 @@ public class TwitterServiceImplTest extends EasyMockSupport {
   }
 
   @Test
+  public void whenOffTheRoadTriggerNotification() {
+    expectOffTheRoad(true);
+    emailNotifier.systemNotifyOffTheRoad(truck2, basicTweet);
+    expect(matcher.match(truck2, basicTweet, null)).andStubReturn(null);
+    expectTweetsIgnored();
+    replayAll();
+    service.twittalyze();
+    verifyAll();
+  }
+
+  @Test
   public void testStopStartsBeforeMatchEnds() {
     expectMatched(false);
+    expectOffTheRoad(false);
     TruckStop currentStop =
         new TruckStop(truck2, matchStartTime.plusMinutes(30), matchEndTime.plusHours(1), loca,
             null, false);
@@ -216,6 +239,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
   @Test
   public void testKeepsFutureEventWhenNoOverlap() {
     expectMatched(false);
+    expectOffTheRoad(false);
     TruckStop stopAfter = new TruckStop(truck2, matchEndTime.plusHours(1).toDateTime(),
         matchEndTime.plusHours(2).toDateTime(), loca, null, false);
     expect(truckStopDAO.findDuring(TRUCK_2_ID, currentDay))

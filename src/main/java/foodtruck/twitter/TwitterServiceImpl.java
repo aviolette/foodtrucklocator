@@ -32,6 +32,7 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TweetSummary;
 import foodtruck.monitoring.Monitored;
+import foodtruck.schedule.OffTheRoadDetector;
 import foodtruck.schedule.TerminationDetector;
 import foodtruck.schedule.TruckStopMatch;
 import foodtruck.schedule.TruckStopMatcher;
@@ -62,14 +63,15 @@ public class TwitterServiceImpl implements TwitterService {
   private final TruckStopNotifier notifier;
   private final ConfigurationDAO configDAO;
   private final EmailNotifier emailNotifier;
+  private final OffTheRoadDetector offTheRoadDetector;
 
   @Inject
   public TwitterServiceImpl(TwitterFactoryWrapper twitter, TweetCacheDAO tweetDAO,
-                            DateTimeZone zone,
-                            TruckStopMatcher matcher, TruckStopDAO truckStopDAO, Clock clock,
-                            TerminationDetector detector, TweetCacheUpdater updater, TruckDAO truckDAO,
-                            TruckStopNotifier truckStopNotifier, ConfigurationDAO configDAO,
-      EmailNotifier notifier) {
+      DateTimeZone zone,
+      TruckStopMatcher matcher, TruckStopDAO truckStopDAO, Clock clock,
+      TerminationDetector detector, TweetCacheUpdater updater, TruckDAO truckDAO,
+      TruckStopNotifier truckStopNotifier, ConfigurationDAO configDAO,
+      EmailNotifier notifier, OffTheRoadDetector offTheRoadDetector) {
     this.tweetDAO = tweetDAO;
     this.twitterFactory = twitter;
     this.defaultZone = zone;
@@ -82,6 +84,7 @@ public class TwitterServiceImpl implements TwitterService {
     this.notifier = truckStopNotifier;
     this.configDAO = configDAO;
     this.emailNotifier = notifier;
+    this.offTheRoadDetector = offTheRoadDetector;
   }
 
   @Override @Monitored
@@ -337,9 +340,10 @@ public class TwitterServiceImpl implements TwitterService {
       if (tweet.getIgnoreInTwittalyzer()) {
         continue;
       }
-      if (tweet.getText().toLowerCase().contains("off the road")) {
+      if (offTheRoadDetector.offTheRoad(tweet.getText())) {
         try {
           emailNotifier.systemNotifyOffTheRoad(truck, tweet);
+          return;
         } catch (Exception e) {
           log.log(Level.WARNING, e.getMessage(), e);
         }

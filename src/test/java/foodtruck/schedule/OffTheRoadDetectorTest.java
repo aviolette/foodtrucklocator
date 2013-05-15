@@ -1,0 +1,41 @@
+package foodtruck.schedule;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+/**
+ * @author aviolette
+ * @since 5/15/13
+ */
+public class OffTheRoadDetectorTest {
+  private OffTheRoadDetector topic;
+
+  @Before
+  public void before() {
+    topic = new OffTheRoadDetector();
+  }
+  @Test
+  public void testOffTheRoad_withOffTheRoad() throws Exception {
+    assertTrue(topic.offTheRoad("The @theslideride will be off the road today"));
+  }
+
+  @Test
+  public void testOffTheRoad_noMarkerText() throws Exception {
+    assertFalse(topic.offTheRoad("Heading to Madison and Wacker today. Get out from behind that desk and come see us."));
+  }
+
+  @Test
+  public void testOffTheRoad_withInTheShop() throws Exception {
+    assertTrue(topic.offTheRoad(
+        "#cupcake #gangsters os in the shop! Getting our a/c fixed! Give us a call today for #delivery… instagram.com/p/ZS8MbvlUKg/"));
+  }
+
+  @Test
+  public void testOffTheRoad_maintenance() throws Exception {
+    assertTrue(topic.offTheRoad(
+        "No stops today because the truck needs maintenance"));
+  }
+}
