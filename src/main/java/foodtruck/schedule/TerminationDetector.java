@@ -30,6 +30,7 @@ public class TerminationDetector {
         || tweetText.contains("see u next week")
         || tweetText.contains("apologies")
         || tweetText.contains("thx")
+        || tweetText.contains("muchas gracias")
         || tweetText.contains("thanx")
         || tweetText.contains("adios")
         || tweetText.contains("that's a wrap")
