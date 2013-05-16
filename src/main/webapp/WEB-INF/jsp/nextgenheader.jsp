@@ -24,7 +24,7 @@
     <div class="container-fluid">
       <a class="brand" href="/">Chicago Food Truck Finder</a>
       <ul class="nav">
-        <li><a href="/weekly-schedule">Weekly</a></li>
+        <li <c:if test="${tab == 'weekly'}"> class="active"</c:if>><a href="/weekly-schedule">Weekly</a></li>
         <li><a href="http://blog.chicagofoodtruckfinder.com/">Blog</a></li>
         <li class="visible-desktop"><a id="mobileLink" href="#mobile">Mobile</a></li>
       </ul>

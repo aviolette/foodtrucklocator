@@ -58,6 +58,7 @@ public class WeeklyScheduleServlet extends FrontPageServlet {
     req.setAttribute("weeklySchedule", schedule.sortFrom(getCenter(req.getCookies())));
     req.setAttribute("theDate", theDate);
     req.setAttribute("weekOf", startDate);
+    req.setAttribute("tab", "weekly");
     req.getRequestDispatcher(jsp).forward(req, resp);
   }
 }
