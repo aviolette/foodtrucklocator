@@ -19,9 +19,18 @@ public interface TruckDAO extends DAO<String, Truck> {
    */
   Collection<Truck> findByTwitterId(String screenName);
 
+  /**
+   * Find all trucks that have the 'twittalyzer' field enabled.
+   */
   Collection<Truck> findAllTwitterTrucks();
 
+  /**
+   * Find all trucks that have not been marked inactive.
+   */
   Collection<Truck> findActiveTrucks();
 
+  /**
+   * Find trucks with associated google calendars.
+   */
   Set<Truck> findTrucksWithCalendars();
 }
