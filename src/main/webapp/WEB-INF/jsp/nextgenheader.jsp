@@ -28,11 +28,11 @@
         <li><a href="http://blog.chicagofoodtruckfinder.com/">Blog</a></li>
         <li class="visible-desktop"><a id="mobileLink" href="#mobile">Mobile</a></li>
       </ul>
+      <div style="padding: 4px 0 0 0 !important; margin:0;" class="navbar-form pull-right"><div  class="g-plusone"></div></div>
       <p style="padding-top: 4px" class="navbar-form pull-right"><a href="https://twitter.com/chifoodtruckz"
                                                                     class="twitter-follow-button" data-button="grey"
                                                                     data-text-color="#FFF" data-link-color="#FFF">Follow
         @chifoodtruckz</a></p>
-
       <div style="padding-right: 10px !important" class="navbar-form pull-right fb-like"
            data-href="http://www.facebook.com/chicagofoodtruckfinder"
            data-send="false" data-layout="button_count" data-width="50"
