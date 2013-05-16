@@ -49,9 +49,6 @@ var FoodTruckLocator = function() {
     var markers = {}, lastLetter = 0, color = "";
 
     function buildIconURL(letter) {
-      if (Modernizr.touch) {
-        return "http://maps.google.com/mapfiles/marker.png";
-      }
       var code = letter.charCodeAt(0);
       if (code > 90) {
         code = code - 26;
@@ -388,6 +385,9 @@ var FoodTruckLocator = function() {
     $truckDialog.modal({ show: true, keyboard : true, backdrop: true});
   }
 
+  function displayListOnly() {
+    return (Modernizr.touch && window.screen.width < 1024);
+  }
 
   return {
     setModel : function(model) {
@@ -421,7 +421,7 @@ var FoodTruckLocator = function() {
       _appKey = appKey;
       _center = findCenter(center);
       resize();
-      if (Modernizr.touch || mobile) {
+      if (displayListOnly() || mobile) {
         _mobile = true;
         $("#map_wrapper").css("display", "none");
         if (Modernizr.geolocation) {
