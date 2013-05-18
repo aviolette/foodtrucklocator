@@ -56,6 +56,7 @@
       <div class="controls">
         <label><input id="invalidLoc" type="checkbox">&nbsp;Ignore in geolocation lookups</label>
         <label><input id="popular" type="checkbox">&nbsp;Popular?</label>
+        <label><input id="autocomplete" type="checkbox">&nbsp;Autocomplete?</label>
         <input id="submitButton" type="submit" class="btn primary" value="Save"/>&nbsp;
       </div>
     </div>
@@ -78,6 +79,7 @@
       $("#invalidLoc").attr("checked", !loc.valid);
       $("#description").attr("value", loc.description);
       $("#popular").attr("checked", loc.popular);
+      $("#autocomplete").attr("checked", loc.autocomplete);
       $("#url").attr("value", loc.url);
     }
 
@@ -89,28 +91,87 @@
       lat = 41.8807438;
       lng = -87.6293867;
     }
+    var circle = null;
+    if (!(typeof google == "undefined")) {
+      var markerLat = new google.maps.LatLng(lat, lng);
+      var myOptions = {
+        center: markerLat,
+        zoom: 14,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      };
+      var map = new google.maps.Map(document.getElementById("map_canvas"),
+          myOptions);
 
-    var markerLat = new google.maps.LatLng(lat, lng);
-    var myOptions = {
-      center: markerLat,
-      zoom: 14,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
-    var map = new google.maps.Map(document.getElementById("map_canvas"),
-        myOptions);
+      var marker = new google.maps.Marker({
+        draggable: true,
+        position: markerLat,
+        map: map
+      });
 
-    var marker = new google.maps.Marker({
-      draggable: true,
-      position: markerLat,
-      map: map
-    });
+      const MILES_TO_METERS = 1609.34;
+      circle = new google.maps.Circle({
+        radius: loc.radius * MILES_TO_METERS,
+        center: markerLat,
+        map: map
+      });
 
-    const MILES_TO_METERS = 1609.34;
-    var circle = new google.maps.Circle({
-      radius: loc.radius * MILES_TO_METERS,
-      center: markerLat,
-      map: map
-    });
+      google.maps.event.addListener(marker, 'dragend', function(evt) {
+        $("#latitude").attr("value", marker.position.lat());
+        $("#longitude").attr("value", marker.position.lng());
+        circle.setCenter(marker.position);
+      });
+
+      var geocoder = new google.maps.Geocoder();
+      var bounds = new google.maps.LatLngBounds();
+      bounds.extend(markerLat);
+      var $locationSearchButton = $("#locationSearchButton");
+      $locationSearchButton.click(function() {
+
+        var addr = prompt("Please enter an address or intersection", null);
+        if (!addr) {
+          return;
+        }
+        if (!addr.match(/,/)) {
+          addr = addr + ", Chicago, IL";
+        }
+        var $searchLocations = $("#searchLocations");
+        $searchLocations.empty();
+        geocoder.geocode({ 'address': addr }, function(results, status) {
+          if (status == google.maps.GeocoderStatus.OK) {
+            for (var i = 0; i < results.length; i++) {
+              var auxMarker = new google.maps.Marker({
+                draggable: false,
+                icon: 'http://maps.google.com/mapfiles/marker_green.png',
+                position: results[i].geometry.location,
+                map: map
+              });
+              var buf = "<li><a class='address' lat='"
+                  + results[i].geometry.location.lat() + "' lng='" +
+                  + results[i].geometry.location.lng() + "' "
+                  + " href='#'>" + results[i].formatted_address + "</a></li>";
+              $searchLocations.append(buf);
+              bounds.extend(results[i].geometry.location);
+            }
+            map.fitBounds(bounds);
+            $("a.address").click(function(e) {
+              e.preventDefault();
+              var target = e.target;
+              var lat = $(e.target).attr("lat"),
+                  lng = $(e.target).attr("lng");
+              var newPos = new google.maps.LatLng(parseFloat(lat),
+                  parseFloat(lng));
+              $("#latitude").attr("value", lat);
+              $("#longitude").attr("value", lng);
+              marker.setPosition(newPos);
+
+            });
+          } else {
+            alert("Unable to geocode your address");
+          }
+        });
+
+      });
+    }
     $submitButton.click(function(e) {
       loc.latitude = parseFloat($("#latitude").attr("value"));
       loc.longitude = parseFloat($("#longitude").attr("value"));
@@ -120,6 +181,7 @@
       loc.description = $("#description").attr("value");
       loc.url = $("#url").attr("value");
       loc.popular = $("#popular").is(":checked");
+      loc.autocomplete = $("#autocomplete").is(":checked");
       e.preventDefault();
       $submitButton.addClass("disabled");
       $.ajax({
@@ -132,67 +194,12 @@
           $submitButton.removeClass("disabled");
         },
         success: function() {
-          circle.setRadius(loc.radius * MILES_TO_METERS);
+          if (circle) {
+            circle.setRadius(loc.radius * MILES_TO_METERS);
+          }
           flash("Successfully saved", "success");
         }
       });
-    });
-
-    google.maps.event.addListener(marker, 'dragend', function(evt) {
-      $("#latitude").attr("value", marker.position.lat());
-      $("#longitude").attr("value", marker.position.lng());
-      circle.setCenter(marker.position);
-    });
-
-    var geocoder = new google.maps.Geocoder();
-    var bounds = new google.maps.LatLngBounds();
-    bounds.extend(markerLat);
-    var $locationSearchButton = $("#locationSearchButton");
-    $locationSearchButton.click(function() {
-
-      var addr = prompt("Please enter an address or intersection", null);
-      if (!addr) {
-        return;
-      }
-      if (!addr.match(/,/)) {
-        addr = addr + ", Chicago, IL";
-      }
-      var $searchLocations = $("#searchLocations");
-      $searchLocations.empty();
-      geocoder.geocode({ 'address': addr }, function(results, status) {
-        if (status == google.maps.GeocoderStatus.OK) {
-          for (var i = 0; i < results.length; i++) {
-            var auxMarker = new google.maps.Marker({
-              draggable: false,
-              icon: 'http://maps.google.com/mapfiles/marker_green.png',
-              position: results[i].geometry.location,
-              map: map
-            });
-            var buf = "<li><a class='address' lat='"
-                + results[i].geometry.location.lat() + "' lng='" +
-                + results[i].geometry.location.lng() + "' "
-                + " href='#'>" + results[i].formatted_address + "</a></li>";
-            $searchLocations.append(buf);
-            bounds.extend(results[i].geometry.location);
-          }
-          map.fitBounds(bounds);
-          $("a.address").click(function(e) {
-            e.preventDefault();
-            var target = e.target;
-            var lat = $(e.target).attr("lat"),
-                lng = $(e.target).attr("lng");
-            var newPos = new google.maps.LatLng(parseFloat(lat),
-                parseFloat(lng));
-            $("#latitude").attr("value", lat);
-            $("#longitude").attr("value", lng);
-            marker.setPosition(newPos);
-
-          });
-        } else {
-          alert("Unable to geocode your address");
-        }
-      });
-
     });
   });
 </script>

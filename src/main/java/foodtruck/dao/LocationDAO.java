@@ -1,6 +1,6 @@
 package foodtruck.dao;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -28,12 +28,12 @@ public interface LocationDAO extends DAO<Long, Location> {
   Location saveAndFetch(Location location);
 
   /**
-   * Returns all the Locations that have not been migrated to use the case-insensitive format
-   */
-  Collection<Location> findAllNonMigrated();
-
-  /**
    * Finds all the popular locations
    */
   Set<Location> findPopularLocations();
+
+  /**
+   * Finds all the locations that should be in the autocomplete list, sorted by name
+   */
+  List<Location> findAutocompleteLocations();
 }

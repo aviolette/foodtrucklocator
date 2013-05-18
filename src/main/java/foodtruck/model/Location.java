@@ -29,6 +29,7 @@ public class Location extends ModelEntity {
   private final double radius;
   private final boolean popular;
   private final boolean justResolved;
+  private final boolean autocomplete;
 
   public Location(Builder builder) {
     super(builder.key);
@@ -41,6 +42,7 @@ public class Location extends ModelEntity {
     radius = builder.radius;
     popular = builder.popular;
     justResolved = builder.justResolved;
+    autocomplete = builder.autocomplete;
   }
 
   public boolean isPopular() {
@@ -69,6 +71,10 @@ public class Location extends ModelEntity {
 
   public boolean isJustResolved() {
     return justResolved;
+  }
+
+  public boolean isAutocomplete() {
+    return autocomplete;
   }
 
   public boolean isEvent() {
@@ -152,6 +158,7 @@ public class Location extends ModelEntity {
     public double radius = 0d;
     private boolean popular;
     private boolean justResolved;
+    private boolean autocomplete;
 
     public Builder(Location location) {
       key = location.getKey();
@@ -165,6 +172,7 @@ public class Location extends ModelEntity {
       radius = location.getRadius();
       popular = location.isPopular();
       justResolved = location.justResolved;
+      autocomplete = location.autocomplete;
     }
 
     public Builder() {
@@ -187,6 +195,11 @@ public class Location extends ModelEntity {
 
     public Builder wasJustResolved(boolean resolved) {
       this.justResolved = resolved;
+      return this;
+    }
+
+    public Builder autocomplete(boolean autocomplete) {
+      this.autocomplete = autocomplete;
       return this;
     }
 

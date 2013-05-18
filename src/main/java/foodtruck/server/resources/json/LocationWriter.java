@@ -37,6 +37,7 @@ public class LocationWriter implements JSONWriter<Location>, MessageBodyWriter<L
         .put("name", location.getName());
     if (fullOptions) {
       obj.put("popular", location.isPopular());
+      obj.put("autocomplete", location.isAutocomplete());
       obj.put("valid", location.isValid());
       obj.put("key", location.getKey());
     }

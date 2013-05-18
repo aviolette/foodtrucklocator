@@ -16,6 +16,7 @@ public class LocationReader {
         .lat(obj.getDouble("latitude"))
         .lng(obj.getDouble("longitude"))
         .popular(obj.optBoolean("popular", false))
+        .autocomplete(obj.optBoolean("autocomplete", false))
         .radius(obj.getDouble("radius"))
         .name(obj.getString("name")).key((key > 0) ? key : null)
         .url(obj.optString("url")).description(obj.optString("description"))

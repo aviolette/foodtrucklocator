@@ -144,7 +144,7 @@ public class TruckServlet extends HttpServlet {
     }
     req.setAttribute("schedule", Arrays.asList(schedule));
     List<String> locationNames = ImmutableList.copyOf(
-        Iterables.transform(locationDAO.findPopularLocations(), Location.TO_NAME));
+        Iterables.transform(locationDAO.findAutocompleteLocations(), Location.TO_NAME));
     req.setAttribute("locations", new JSONArray(locationNames).toString());
     req.getRequestDispatcher(jsp).forward(req, resp);
 

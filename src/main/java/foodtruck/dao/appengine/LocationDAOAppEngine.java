@@ -1,6 +1,6 @@
 package foodtruck.dao.appengine;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,6 +13,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 
 import foodtruck.dao.LocationDAO;
@@ -35,6 +36,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
   private static final String RADIAL_FIELD = "radial_boundary";
   private static final String LOCATION_LOOKUP_FIELD = "location_lookup";
   private static final String POPULAR_FIELD = "popular";
+  private static final String AUTOCOMPLETE = "autocomplete";
 
   private static final Logger log = Logger.getLogger(LocationDAOAppEngine.class.getName());
   private final Clock clock;
@@ -66,17 +68,20 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     return null;
   }
 
-  @Override public Collection<Location> findAllNonMigrated() {
-    DatastoreService dataStore = provider.get();
-    Query q = new Query(LOCATION_KIND);
-    return executeQuery(dataStore,  q);
-  }
-
   @Override public Set<Location> findPopularLocations() {
     DatastoreService dataStore = provider.get();
     Query q = new Query(LOCATION_KIND);
     Query.Filter popularFilter = new Query.FilterPredicate(POPULAR_FIELD, Query.FilterOperator.EQUAL, true);
     q.setFilter(popularFilter);
+    return ImmutableSet.copyOf(executeQuery(dataStore, q));
+  }
+
+  @Override public List<Location> findAutocompleteLocations() {
+    DatastoreService dataStore = provider.get();
+    Query q = new Query(LOCATION_KIND);
+    Query.Filter popularFilter = new Query.FilterPredicate(POPULAR_FIELD, Query.FilterOperator.EQUAL, true);
+    Query.Filter autoCompleteFilter = new Query.FilterPredicate(AUTOCOMPLETE, Query.FilterOperator.EQUAL, true);
+    q.setFilter(Query.CompositeFilterOperator.or(popularFilter, autoCompleteFilter));
     return executeQuery(dataStore, q);
   }
 
@@ -118,6 +123,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     entity.setProperty(RADIAL_FIELD, location.getRadius());
     entity.setProperty(LOCATION_LOOKUP_FIELD, location.getName().toLowerCase());
     entity.setProperty(POPULAR_FIELD, location.isPopular());
+    entity.setProperty(AUTOCOMPLETE, location.isAutocomplete());
     return entity;
   }
 
@@ -131,6 +137,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     builder.description((String) entity.getProperty(DESCRIPTION_FIELD));
     builder.url((String) entity.getProperty(URL_FIELD));
     builder.popular(getBooleanProperty(entity, POPULAR_FIELD, false));
+    builder.autocomplete(getBooleanProperty(entity, AUTOCOMPLETE, false));
     builder.radius(Attributes.getDoubleProperty(entity, RADIAL_FIELD, 0.0));
     boolean isValid = valid == null || valid;
     if (lat == null || lng == null) {

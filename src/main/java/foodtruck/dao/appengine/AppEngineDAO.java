@@ -1,6 +1,6 @@
 package foodtruck.dao.appengine;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -10,7 +10,7 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableList;
 
 import foodtruck.dao.DAO;
 import foodtruck.model.ModelEntity;
@@ -29,15 +29,16 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
   }
 
   @Override
-  public Set<T> findAll() {
+  public List<T> findAll() {
     DatastoreService dataStore = provider.get();
     Query q = new Query(getKind());
     modifyFindAllQuery(q);
     return executeQuery(dataStore, q);
   }
 
-  protected Set<T> executeQuery(DatastoreService dataStore, Query q) {
-    ImmutableSet.Builder<T> objs = ImmutableSet.builder();
+
+  protected List<T> executeQuery(DatastoreService dataStore, Query q) {
+    ImmutableList.Builder<T> objs = ImmutableList.builder();
     for (Entity entity : dataStore.prepare(q).asIterable()) {
       T obj = fromEntity(entity);
       objs.add(obj);

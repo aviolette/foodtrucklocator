@@ -81,7 +81,7 @@ public class TruckStopServlet extends HttpServlet {
     req.setAttribute("nav", "trucks");
     req.setAttribute("truckStop", truckStop);
     List<String> locationNames = ImmutableList.copyOf(
-        Iterables.transform(locationDAO.findPopularLocations(), Location.TO_NAME));
+        Iterables.transform(locationDAO.findAutocompleteLocations(), Location.TO_NAME));
     req.setAttribute("locations", new JSONArray(locationNames).toString());
     req.getRequestDispatcher("/WEB-INF/jsp/dashboard/event.jsp").forward(req, resp);
   }
