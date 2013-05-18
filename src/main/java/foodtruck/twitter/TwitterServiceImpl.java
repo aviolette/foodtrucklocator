@@ -2,15 +2,22 @@ package foodtruck.twitter;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
 import com.google.appengine.repackaged.com.google.common.collect.ImmutableList;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
@@ -27,8 +34,11 @@ import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.dao.TweetCacheDAO;
 import foodtruck.email.EmailNotifier;
+import foodtruck.geolocation.GeoLocator;
+import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
+import foodtruck.model.TruckObserver;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TweetSummary;
 import foodtruck.monitoring.Monitored;
@@ -50,7 +60,10 @@ import twitter4j.TwitterException;
  */
 public class TwitterServiceImpl implements TwitterService {
   private static final Logger log = Logger.getLogger(TwitterServiceImpl.class.getName());
-  @VisibleForTesting static final int HOURS_BACK_TO_SEARCH = 6;
+  private static final Pattern TWITTER_PATTERN = Pattern.compile("@([\\w|\\d|_]+)");
+
+  @VisibleForTesting
+  static final int HOURS_BACK_TO_SEARCH = 6;
   private final TweetCacheDAO tweetDAO;
   private final TwitterFactoryWrapper twitterFactory;
   private final DateTimeZone defaultZone;
@@ -64,6 +77,7 @@ public class TwitterServiceImpl implements TwitterService {
   private final ConfigurationDAO configDAO;
   private final EmailNotifier emailNotifier;
   private final OffTheRoadDetector offTheRoadDetector;
+  private final GeoLocator locator;
 
   @Inject
   public TwitterServiceImpl(TwitterFactoryWrapper twitter, TweetCacheDAO tweetDAO,
@@ -71,7 +85,7 @@ public class TwitterServiceImpl implements TwitterService {
       TruckStopMatcher matcher, TruckStopDAO truckStopDAO, Clock clock,
       TerminationDetector detector, TweetCacheUpdater updater, TruckDAO truckDAO,
       TruckStopNotifier truckStopNotifier, ConfigurationDAO configDAO,
-      EmailNotifier notifier, OffTheRoadDetector offTheRoadDetector) {
+      EmailNotifier notifier, OffTheRoadDetector offTheRoadDetector, GeoLocator locator) {
     this.tweetDAO = tweetDAO;
     this.twitterFactory = twitter;
     this.defaultZone = zone;
@@ -85,6 +99,7 @@ public class TwitterServiceImpl implements TwitterService {
     this.configDAO = configDAO;
     this.emailNotifier = notifier;
     this.offTheRoadDetector = offTheRoadDetector;
+    this.locator = locator;
   }
 
   @Override @Monitored
@@ -96,7 +111,7 @@ public class TwitterServiceImpl implements TwitterService {
     JSONArray arr = resource.get(JSONArray.class);
     boolean first = true;
     ImmutableList.Builder<TweetSummary> summaries = ImmutableList.builder();
-    for (int i =0; i < arr.length(); i++) {
+    for (int i = 0; i < arr.length(); i++) {
       try {
         JSONObject tweetObj = arr.getJSONObject(i);
         TweetSummary.Builder builder = new TweetSummary.Builder()
@@ -204,6 +219,61 @@ public class TwitterServiceImpl implements TwitterService {
   @Override
   public void twittalyze() {
     log.log(Level.INFO, "Updating twitter trucks");
+    handleTruckTweets();
+  }
+
+  public void observerTwittalyze() {
+    //TODO: This should all be configurable
+    LocalDate today = clock.currentDay();
+    DateTime now = clock.now();
+    Location uofc = locator.locate("58th and Ellis, Chicago, IL", GeolocationGranularity.NARROW);
+    Map<Truck, TweetSummary> trucksAdded = Maps.newHashMap();
+    List<TruckStop> truckStops = Lists.newLinkedList();
+    for (TruckObserver observer : ImmutableList.of(new TruckObserver("uchinomgo", uofc),
+        new TruckObserver("mdw2mnl", uofc))) {
+      final List<TweetSummary> tweets = tweetDAO.findTweetsAfter(clock.now().minusHours(HOURS_BACK_TO_SEARCH),
+          observer.getTwitterHandle(), false);
+      for (TweetSummary tweet : tweets) {
+        if (tweet.getIgnoreInTwittalyzer()) {
+          continue;
+        }
+        if (tweet.getText().contains("#foodtrucks") && !tweet.isReply()) {
+          for (String twitterHandle : parseHandles(tweet.getText())) {
+            Truck truck = Iterables.getFirst(truckDAO.findByTwitterId(twitterHandle), null);
+            if (truck == null || trucksAdded.containsKey(truck)) {
+              continue;
+            }
+            List<TruckStop> trucks = truckStopDAO.findDuring(truck.getId(), today);
+            if (trucks.isEmpty()) {
+              truckStops.add(new TruckStop(truck, now, now.plusHours(2), uofc, null, false));
+              trucksAdded.put(truck, tweet);
+            }
+          }
+        }
+      }
+      if (!tweets.isEmpty()) {
+        ignoreTweets(tweets);
+      }
+    }
+    if (!truckStops.isEmpty()) {
+      truckStopDAO.addStops(truckStops);
+      emailNotifier.systemNotifyTrucksAddedByObserver(trucksAdded);
+    }
+  }
+
+  private Set<String> parseHandles(String text) {
+    ImmutableSet.Builder<String> builder = ImmutableSet.builder();
+    Matcher matcher = TWITTER_PATTERN.matcher(text);
+    int pos = 0;
+    while (matcher.find()) {
+      String twitterId = matcher.group(0).substring(1);
+      builder.add(twitterId.toLowerCase());
+    }
+    return builder.build();
+  }
+
+
+  private void handleTruckTweets() {
     for (Truck truck : truckDAO.findAllTwitterTrucks()) {
       // TODO: this number should probably be configurable
       List<TweetSummary> tweets =
@@ -300,7 +370,7 @@ public class TwitterServiceImpl implements TwitterService {
       log.log(Level.INFO, "No Matching stop found to terminate");
       return;
     }
-    log.log(Level.INFO, "Capping {0} with new termination time {1}", new Object[] {found,
+    log.log(Level.INFO, "Capping {0} with new termination time {1}", new Object[]{found,
         terminationTime});
     found = found.withEndTime(terminationTime);
     notifier.terminated(found);
@@ -359,7 +429,7 @@ public class TwitterServiceImpl implements TwitterService {
       DateTime terminationTime = terminationDetector.detect(tweet);
       if (terminationTime != null) {
         log.log(Level.INFO, "Detected termination for truck: {0} with tweet: {1}",
-            new Object[] {truck.getId(), tweet.getText()});
+            new Object[]{truck.getId(), tweet.getText()});
         return terminationTime;
       }
     }

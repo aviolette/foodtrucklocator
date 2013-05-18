@@ -19,6 +19,8 @@ import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.dao.TweetCacheDAO;
 import foodtruck.email.EmailNotifier;
+import foodtruck.geolocation.GeoLocator;
+import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
@@ -56,12 +58,15 @@ public class TwitterServiceImplTest extends EasyMockSupport {
   private TweetSummary basicTweet;
   private EmailNotifier emailNotifier;
   private OffTheRoadDetector offTheRoadDetector;
+  private GeoLocator locator;
+  private Location uofc;
+  private Truck truck1;
 
   @Before
   public void before() {
     final TwitterFactoryWrapper twitterFactory = createMock(TwitterFactoryWrapper.class);
     tweetDAO = createMock(TweetCacheDAO.class);
-    final Truck truck1 = new Truck.Builder().id(TRUCK_1_ID).twitterHandle(TRUCK_1_ID)
+    truck1 = new Truck.Builder().id(TRUCK_1_ID).twitterHandle(TRUCK_1_ID)
         .useTwittalyzer(false).build();
     truck2 = new Truck.Builder().id(TRUCK_2_ID).twitterHandle(TRUCK_2_ID)
         .useTwittalyzer(true).build();
@@ -69,6 +74,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     emailNotifier = createMock(EmailNotifier.class);
     matcher = createMock(TruckStopMatcher.class);
     truckStopDAO = createMock(TruckStopDAO.class);
+    locator = createMock(GeoLocator.class);
     final Clock clock = createMock(Clock.class);
     now = new DateTime(2011, 10, 9, 8, 0, 0, 0, zone);
     currentDay = now.toLocalDate();
@@ -79,7 +85,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     truckDAO = createMock(TruckDAO.class);
     expect(truckDAO.findById(TRUCK_1_ID)).andStubReturn(truck1);
     expect(truckDAO.findById(TRUCK_1_ID)).andStubReturn(truck2);
-    expect(truckDAO.findAllTwitterTrucks()).andReturn(ImmutableSet.of(truck2));
+    expect(truckDAO.findAllTwitterTrucks()).andStubReturn(ImmutableSet.of(truck2));
     final int listId = 123;
     terminationDetector = createMock(TerminationDetector.class);
     ConfigurationDAO configDAO = createMock(ConfigurationDAO.class);
@@ -87,7 +93,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     service = new TwitterServiceImpl(twitterFactory, tweetDAO, zone, matcher,
         truckStopDAO,
         clock, terminationDetector, new LocalCacheUpdater(), truckDAO,
-        new LoggingTruckStopNotifier(), configDAO, emailNotifier, offTheRoadDetector);
+        new LoggingTruckStopNotifier(), configDAO, emailNotifier, offTheRoadDetector, locator);
     loca = Location.builder().lat(1).lng(2).name("a").build();
     locb = Location.builder().lat(3).lng(4).name("b").build();
     basicTweet = new TweetSummary.Builder().time(now.minusHours(2)).text(
@@ -101,6 +107,8 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     matchStartTime = now.minusHours(3);
     matchEndTime = now.minusHours(2);
     matchedStop = new TruckStop(truck2, matchStartTime, matchEndTime, loca, null, false);
+    uofc = Location.builder().lat(-3).lng(-43).name("58th and Ellis, Chicago, IL").build();
+    expect(locator.locate("58th and Ellis, Chicago, IL", GeolocationGranularity.NARROW)).andStubReturn(uofc);
   }
 
   private void expectMatched(boolean softEnding) {
@@ -248,6 +256,76 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     truckStopDAO.addStops(ImmutableList.<TruckStop>of(matchedStop));
     replayAll();
     service.twittalyze();
+    verifyAll();
+  }
+
+  @Test
+  public void testObserverTwittalyzerNoTweets() {
+    expect(tweetDAO.findTweetsAfter(now.minusHours(6), "uchinomgo", false)).andReturn(ImmutableList.<TweetSummary>of());
+    expect(tweetDAO.findTweetsAfter(now.minusHours(6), "mdw2mnl", false)).andReturn(ImmutableList.<TweetSummary>of());
+    replayAll();
+    service.observerTwittalyze();
+    verifyAll();
+  }
+
+  @Test
+  public void testObserverTwittalyzerTweetsWithNoHashTag() {
+    TweetSummary tweet1 = new TweetSummary.Builder().userId("uchinomgo").ignoreInTwittalyzer(false)
+        .text("For lunch we have these food trucks: @CaponiesExp @threejsbbq").build();
+    expect(tweetDAO.findTweetsAfter(now.minusHours(6), "uchinomgo", false))
+        .andReturn(ImmutableList.<TweetSummary>of(tweet1));
+    expect(tweetDAO.findTweetsAfter(now.minusHours(6), "mdw2mnl", false)).andReturn(ImmutableList.<TweetSummary>of());
+    tweetDAO.save(ImmutableList.of(tweet1));
+    replayAll();
+    service.observerTwittalyze();
+    verifyAll();
+  }
+
+  @Test
+  public void testObserverTwittalyzerTweetsNoExistingStops() {
+    TweetSummary tweet1 = new TweetSummary.Builder().userId("uchinomgo").ignoreInTwittalyzer(false)
+        .text("For lunch we have these #foodtrucks: @CaponiesExp @threejsbbq @somethingelse").build();
+    truck1 = Truck.builder(truck1).twitterHandle("caponiesexp").id("caponiesexp").build();
+    truck2 = Truck.builder(truck1).twitterHandle("threejsbbq").id("threejsbbq").build();
+    expect(tweetDAO.findTweetsAfter(now.minusHours(6), "uchinomgo", false))
+        .andReturn(ImmutableList.<TweetSummary>of(tweet1));
+    expect(tweetDAO.findTweetsAfter(now.minusHours(6), "mdw2mnl", false)).andReturn(ImmutableList.<TweetSummary>of());
+    expect(truckDAO.findByTwitterId("caponiesexp")).andReturn(ImmutableList.of(truck1));
+    expect(truckStopDAO.findDuring("caponiesexp", currentDay)).andReturn(ImmutableList.<TruckStop>of());
+    expect(truckDAO.findByTwitterId("threejsbbq")).andReturn(ImmutableList.of(truck2));
+    expect(truckStopDAO.findDuring("threejsbbq", currentDay)).andReturn(ImmutableList.<TruckStop>of(matchedStop));
+    expect(truckDAO.findByTwitterId("somethingelse")).andReturn(ImmutableList.<Truck>of());
+    truckStopDAO.addStops(ImmutableList.of(new TruckStop(truck1, now, now.plusHours(2), uofc, null, false)));
+    emailNotifier.systemNotifyTrucksAddedByObserver(ImmutableMap.of(truck1, tweet1));
+    tweetDAO.save(ImmutableList.of(tweet1));
+    replayAll();
+    service.observerTwittalyze();
+    verifyAll();
+  }
+
+  @Test
+  public void testMultiple() {
+    TweetSummary tweet1 = new TweetSummary.Builder().userId("uchinomgo").ignoreInTwittalyzer(false)
+        .text("For lunch we have these #foodtrucks: @CaponiesExp @threejsbbq @somethingelse").build();
+    TweetSummary tweet2 = new TweetSummary.Builder().userId("mdw2mnl").ignoreInTwittalyzer(false)
+        .text("For lunch we have these #foodtrucks: @CaponiesExp").build();
+    truck1 = Truck.builder(truck1).twitterHandle("caponiesexp").id("caponiesexp").build();
+    truck2 = Truck.builder(truck1).twitterHandle("threejsbbq").id("threejsbbq").build();
+    expect(tweetDAO.findTweetsAfter(now.minusHours(6), "uchinomgo", false))
+        .andReturn(ImmutableList.<TweetSummary>of(tweet1));
+    expect(tweetDAO.findTweetsAfter(now.minusHours(6), "mdw2mnl", false))
+        .andReturn(ImmutableList.<TweetSummary>of(tweet2));
+    expect(truckDAO.findByTwitterId("caponiesexp")).andReturn(ImmutableList.of(truck1)).times(2);
+    expect(truckStopDAO.findDuring("caponiesexp", currentDay)).andReturn(ImmutableList.<TruckStop>of());
+    expect(truckDAO.findByTwitterId("threejsbbq")).andReturn(ImmutableList.of(truck2));
+    expect(truckStopDAO.findDuring("threejsbbq", currentDay)).andReturn(ImmutableList.<TruckStop>of(matchedStop));
+    expect(truckDAO.findByTwitterId("somethingelse")).andReturn(ImmutableList.<Truck>of());
+    truckStopDAO.addStops(ImmutableList.of(new TruckStop(truck1, now, now.plusHours(2), uofc, null, false)));
+    emailNotifier.systemNotifyTrucksAddedByObserver(ImmutableMap.of(truck1, tweet1));
+    tweetDAO.save(ImmutableList.of(tweet1));
+    tweetDAO.save(ImmutableList.of(tweet2));
+    replayAll();
+    service.observerTwittalyze();
     verifyAll();
   }
 }

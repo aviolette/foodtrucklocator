@@ -65,6 +65,7 @@ public class RecacheServlet extends HttpServlet {
       service.updateStopsFor(instant);
     }
     twitterService.twittalyze();
+    twitterService.observerTwittalyze();
   }
 
   private LocalDate parseDate(String date) {

@@ -1,5 +1,7 @@
 package foodtruck.email;
 
+import java.util.Map;
+
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TweetSummary;
@@ -17,10 +19,16 @@ public interface EmailNotifier {
   public void systemNotifyOffTheRoad(Truck truck, TweetSummary tweet);
 
   /**
-   * Send system notificaiton when a new address is added to the system by way of a parsed tweet.
+   * Send system notification when a new address is added to the system by way of a parsed tweet.
    * @param location the location
    * @param tweet the tweet that triggered the lookup
    * @param truck the truck that owns the tweet
    */
   public void systemNotifyLocationAdded(Location location, TweetSummary tweet, Truck truck);
+
+  /**
+   * Sends system notification when new stops are added by regional observers.
+   * @param trucksAdded the map of truckIds
+   */
+  void systemNotifyTrucksAddedByObserver(Map<Truck, TweetSummary> trucksAdded);
 }

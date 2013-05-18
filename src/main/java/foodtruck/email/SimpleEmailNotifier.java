@@ -3,6 +3,7 @@ package foodtruck.email;
 import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,9 +49,23 @@ public class SimpleEmailNotifier implements EmailNotifier {
     try {
       sendSystemMessage("New Location Added: " + location.getName(),
           MessageFormat.format("This tweet \"{0}\" triggered the following location to be added {1}.  Click here to " +
-          "view the location http://www.chicagofoodtruckfinder.com/admin/locations/{2} .  " +
+              "view the location http://www.chicagofoodtruckfinder.com/admin/locations/{2} .  " +
               "Also, view the truck here: http://www.chicagofoodtruckfinder.com/admin/trucks/{3}", tweet.getText(),
               location.getName(), location.getKey(), truck.getId()));
+    } catch (Exception e) {
+      log.log(Level.WARNING, e.getMessage(), e);
+    }
+  }
+
+  @Override public void systemNotifyTrucksAddedByObserver(Map<Truck, TweetSummary> trucksAdded) {
+    StringBuilder builder = new StringBuilder("The following trucks were added: \n\n");
+    for (Map.Entry<Truck, TweetSummary> entry : trucksAdded.entrySet()) {
+      builder.append(entry.getKey().getName()).append(" http://www.chicagofoodtruckfinder.com/admin/trucks/")
+          .append(entry.getKey().getId()).append(" => @").append(entry.getValue().getScreenName())
+          .append(" '").append(entry.getValue().getText()).append("'\n\n");
+    }
+    try {
+      sendSystemMessage("New stops added by observers", builder.toString());
     } catch (Exception e) {
       log.log(Level.WARNING, e.getMessage(), e);
     }
@@ -73,9 +88,9 @@ public class SimpleEmailNotifier implements EmailNotifier {
       msg.setText(msgBody);
       Transport.send(msg);
     } catch (MessagingException e) {
-      log.log(Level.WARNING,  e.getMessage(), e);
+      log.log(Level.WARNING, e.getMessage(), e);
     } catch (UnsupportedEncodingException e) {
-      log.log(Level.WARNING,  e.getMessage(), e);
+      log.log(Level.WARNING, e.getMessage(), e);
     }
   }
 }

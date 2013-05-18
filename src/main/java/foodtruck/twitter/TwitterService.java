@@ -25,9 +25,14 @@ public interface TwitterService {
   void purgeTweetsBefore(LocalDate localDate);
 
   /**
-   * Analyzes recent tweets and updates twitter-located-only trucks in the datastore
+   * Analyzes recent tweets from trucks and updates twitter-located-only trucks in the datastore
    */
   void twittalyze();
+
+  /**
+   * Analyzes recent tweets from observers
+   */
+  void observerTwittalyze();
 
   /**
    * Finds all the tweets for a truck (NOT VERY PRACTICAL WHEN WE STORE MORE THAN A DAY, BUT NOW WE"RE
