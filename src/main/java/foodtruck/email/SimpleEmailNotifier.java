@@ -24,16 +24,19 @@ import foodtruck.model.Truck;
 import foodtruck.model.TweetSummary;
 
 /**
+ * An email notifier that sends the email immediately.
  * @author aviolette
  * @since 4/29/13
  */
 public class SimpleEmailNotifier implements EmailNotifier {
   public static Logger log = Logger.getLogger(SimpleEmailNotifier.class.getName());
   private final ConfigurationDAO configDAO;
+  private final MessageBuilder messageBuilder;
 
   @Inject
-  public SimpleEmailNotifier(ConfigurationDAO configurationDAO) {
+  public SimpleEmailNotifier(ConfigurationDAO configurationDAO, MessageBuilder messageBuilder) {
     this.configDAO = configurationDAO;
+    this.messageBuilder = messageBuilder;
   }
 
   @Override public void systemNotifyOffTheRoad(Truck truck, TweetSummary tweet) {
@@ -48,10 +51,7 @@ public class SimpleEmailNotifier implements EmailNotifier {
   @Override public void systemNotifyLocationAdded(Location location, TweetSummary tweet, Truck truck) {
     try {
       sendSystemMessage("New Location Added: " + location.getName(),
-          MessageFormat.format("This tweet \"{0}\" triggered the following location to be added {1}.  Click here to " +
-              "view the location http://www.chicagofoodtruckfinder.com/admin/locations/{2} .  " +
-              "Also, view the truck here: http://www.chicagofoodtruckfinder.com/admin/trucks/{3}", tweet.getText(),
-              location.getName(), location.getKey(), truck.getId()));
+          messageBuilder.locationAddedMessage(location, tweet, truck));
     } catch (Exception e) {
       log.log(Level.WARNING, e.getMessage(), e);
     }
