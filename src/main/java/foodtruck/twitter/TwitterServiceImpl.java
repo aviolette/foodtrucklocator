@@ -237,7 +237,9 @@ public class TwitterServiceImpl implements TwitterService {
         if (tweet.getIgnoreInTwittalyzer()) {
           continue;
         }
-        if (tweet.getText().contains("#foodtrucks") && !tweet.isReply()) {
+        String lowerText = tweet.getText().toLowerCase();
+        if ((lowerText.contains("#foodtrucks") || lowerText.contains("breakfast") || lowerText.contains("lunch"))
+            && !tweet.isReply()) {
           for (String twitterHandle : parseHandles(tweet.getText())) {
             Truck truck = Iterables.getFirst(truckDAO.findByTwitterId(twitterHandle), null);
             if (truck == null || trucksAdded.containsKey(truck)) {
