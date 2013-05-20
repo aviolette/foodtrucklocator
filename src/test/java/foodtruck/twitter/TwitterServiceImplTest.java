@@ -271,7 +271,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
   @Test
   public void testObserverTwittalyzerTweetsWithNoHashTag() {
     TweetSummary tweet1 = new TweetSummary.Builder().userId("uchinomgo").ignoreInTwittalyzer(false)
-        .text("For lunch we have these food trucks: @CaponiesExp @threejsbbq").build();
+        .text("Today we have these food trucks: @CaponiesExp @threejsbbq").build();
     expect(tweetDAO.findTweetsAfter(now.minusHours(6), "uchinomgo", false))
         .andReturn(ImmutableList.<TweetSummary>of(tweet1));
     expect(tweetDAO.findTweetsAfter(now.minusHours(6), "mdw2mnl", false)).andReturn(ImmutableList.<TweetSummary>of());
