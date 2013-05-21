@@ -151,7 +151,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
     // This opens up a 6 hour window before the specified day to get any stops that start on the prior day
     // This is not the best way to do this.  This code needs to be refactored
     List<Query.Filter> filters = trucksOverRange(truckId, new Interval(midnight.toDateTime().minusHours(6),
-        day.plusDays(1).toDateTimeAtStartOfDay()));
+        day.plusDays(1).toDateTimeAtStartOfDay(zone)));
     q.setFilter(Query.CompositeFilterOperator.and(filters));
     q.addSort(START_TIME_FIELD, Query.SortDirection.ASCENDING);
     ImmutableList.Builder<TruckStop> stops = ImmutableList.builder();

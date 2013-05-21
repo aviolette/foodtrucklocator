@@ -42,7 +42,7 @@
   </div>
 </div>
 
-<div class="container-fluid">
+<div class="<c:choose><c:when test="${containerType == 'fixed'}">container</c:when><c:otherwise>container-fluid</c:otherwise></c:choose>">
   <noscript>
     <div class="alert alert-error">
       Javascript is required for this site to function properly.

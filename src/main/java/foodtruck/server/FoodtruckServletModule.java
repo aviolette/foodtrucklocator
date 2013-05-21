@@ -28,6 +28,7 @@ import foodtruck.server.job.SyncFacebookProfiles;
 import foodtruck.server.job.TweetCacheUpdateServlet;
 import foodtruck.server.job.TwitterCachePurgeServlet;
 import foodtruck.server.job.UpdateTruckStats;
+import foodtruck.server.migrations.ForceSaveTruck;
 
 /**
  * Wires all the endpoints for the application.
@@ -47,6 +48,7 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/cron/notifications").with(SendLunchNotificationsServlet.class);
     serve("/cron/facebookSync").with(SyncFacebookProfiles.class);
     serve("/cron/updateTruckStats").with(UpdateTruckStats.class);
+    serve("/cron/forcesavetruck").with(ForceSaveTruck.class);
     serve("/admin").with(AdminDashboardServlet.class);
     serve("/admin/addresses").with(AddressRuleServlet.class);
     serveRegex("/admin/trucks/[\\S]*/events/[\\w]*").with(TruckStopServlet.class);
@@ -63,6 +65,7 @@ public class FoodtruckServletModule extends ServletModule {
         ImmutableMap.of(PackagesResourceConfig.PROPERTY_PACKAGES, "foodtruck.server.resources"));
     serve("/service/tweets").with(TweetUpdateServlet.class);
     serve("/weekly-schedule").with(WeeklyScheduleServlet.class);
+    serve("/trucks").with(TrucksServlet.class);
     serveRegex("/[\\w]*").with(FoodTruckServlet.class);
   }
 

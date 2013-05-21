@@ -1,6 +1,7 @@
 package foodtruck.dao.appengine;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -55,6 +56,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
   private static final String TRUCK_STATS_STOPS_THIS_YEAR = "stops_this_year";
   private static final String TRUCK_STATS_LAST_SEEN_WHERE_LAT = "last_seen_lat";
   private static final String TRUCK_STATS_LAST_SEEN_WHERE_LNG = "last_seen_lng";
+  private static final String TRUCK_HIDDEN = "hidden";
 
   private DateTimeZone zone;
 
@@ -93,6 +95,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
         .twitterHandle((String) entity.getProperty(TRUCK_TWITTER_HANDLE))
         .defaultCity((String) entity.getProperty(TRUCK_DEFAULT_CITY_FIELD))
         .description(t == null ? null : t.getValue())
+        .hidden(getBooleanProperty(entity, TRUCK_HIDDEN, false))
         .facebook((String) entity.getProperty(TRUCK_FACEBOOK_FIELD))
         .foursquareUrl((String) entity.getProperty(TRUCK_FOURSQUARE_URL_FIELD))
         .iconUrl((String) entity.getProperty(TRUCK_ICON_URL))
@@ -150,6 +153,14 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     return objs.build();
   }
 
+  public List<Truck> findVisibleTrucks() {
+    DatastoreService dataStore = provider.get();
+    return executeQuery(dataStore,
+        new Query(TRUCK_KIND)
+            .setFilter(new Query.FilterPredicate(TRUCK_HIDDEN, Query.FilterOperator.EQUAL, false))
+            .addSort(TRUCK_NAME_FIELD));
+  }
+
   @Override public Set<Truck> findTrucksWithCalendars() {
     DatastoreService dataStore = provider.get();
     Query q = new Query(TRUCK_KIND);
@@ -181,6 +192,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     entity.setProperty(TRUCK_EMAIL, truck.getEmail());
     entity.setProperty(TRUCK_YELP_SLUG, truck.getYelpSlug());
     entity.setProperty(TRUCK_PHONE, truck.getPhone());
+    entity.setProperty(TRUCK_HIDDEN, truck.isHidden());
     entity.setProperty(TRUCK_FACEBOOK_PAGE_ID, truck.getFacebookPageId());
     entity.setProperty(TRUCK_TWITTER_GEOLOCATION, truck.isTwitterGeolocationDataValid());
     Attributes.setDateProperty(TRUCK_MUTE_UNTIL, entity, truck.getMuteUntil());

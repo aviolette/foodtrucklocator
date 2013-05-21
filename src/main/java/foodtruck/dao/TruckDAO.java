@@ -1,6 +1,7 @@
 package foodtruck.dao;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import foodtruck.model.Truck;
@@ -33,4 +34,9 @@ public interface TruckDAO extends DAO<String, Truck> {
    * Find trucks with associated google calendars.
    */
   Set<Truck> findTrucksWithCalendars();
+
+  /**
+   * Find all the visible trucks, ordered by name
+   */
+  List<Truck> findVisibleTrucks();
 }

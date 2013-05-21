@@ -149,6 +149,9 @@
           <li><label><input type="checkbox" name="options"
                             value="inactive" ${truck.inactive ? "checked='checked'" : ""}/> <span>Inactive</span></label>
           </li>
+          <li><label><input type="checkbox" name="options"
+                            value="hidden" ${truck.hidden ? "checked='checked'" : ""}/>
+            <span>Truck is hidden from public listings</span></label>
         </ul>
       </div>
     </div>

@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
@@ -42,6 +43,13 @@ public class Truck extends ModelEntity {
   private final String yelpSlug;
   private final @Nullable String facebookPageId;
   private final @Nullable Stats stats;
+  private final boolean hidden;
+
+  public static final Function<Truck, String> TO_ID = new Function<Truck, String> () {
+    @Nullable @Override public String apply(@Nullable Truck truck) {
+      return truck.getId();
+    }
+  };
 
   private Truck(Builder builder) {
     super(builder.id);
@@ -67,6 +75,11 @@ public class Truck extends ModelEntity {
     this.muteUntil = builder.muteUntil;
     this.yelpSlug = builder.yelpSlug;
     this.stats = builder.stats;
+    this.hidden = builder.hidden;
+  }
+
+  public boolean isHidden() {
+    return hidden;
   }
 
   public boolean isTwitterGeolocationDataValid() {
@@ -325,6 +338,8 @@ public class Truck extends ModelEntity {
     private @Nullable String yelpSlug;
     private @Nullable String facebookPageId;
     private @Nullable Stats stats;
+    private boolean hidden;
+
     public Builder() {
     }
 
@@ -348,10 +363,16 @@ public class Truck extends ModelEntity {
       this.yelpSlug = truck.yelpSlug;
       this.facebookPageId = truck.facebookPageId;
       this.stats = truck.stats;
+      this.hidden = truck.hidden;
     }
 
     public Builder id(String id) {
       this.id = id;
+      return this;
+    }
+
+    public Builder hidden(boolean hidden) {
+      this.hidden = hidden;
       return this;
     }
 
