@@ -180,7 +180,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     entity.setProperty(TRUCK_ICON_URL, truck.getIconUrl());
     entity.setProperty(TRUCK_CALENDAR_URL,
         Strings.isNullOrEmpty(truck.getCalendarUrl()) ? null : truck.getCalendarUrl());
-    entity.setProperty(TRUCK_DESCRIPTION_FIELD, new Text(truck.getDescription() == null ? "" : truck.getDefaultCity()));
+    entity.setProperty(TRUCK_DESCRIPTION_FIELD, new Text(Strings.nullToEmpty(truck.getDescription())));
     entity.setProperty(TRUCK_FOURSQUARE_URL_FIELD, truck.getFoursquareUrl());
     entity.setProperty(TRUCK_TWITTALYZER_FIELD, truck.isUsingTwittalyzer());
     entity.setProperty(TRUCK_DEFAULT_CITY_FIELD, truck.getDefaultCity());

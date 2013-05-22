@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import com.google.inject.Inject;
-import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 
 import org.codehaus.jettison.json.JSONException;
@@ -42,8 +41,8 @@ public class FacebookServiceImpl implements FacebookService {
         truck = syncTruck(truck);
       } catch (JSONException e) {
         throw Throwables.propagate(e);
-      } catch (UniformInterfaceException uie) {
-        log.warning(uie.getMessage());
+      } catch (Exception e) {
+        log.warning(e.getMessage());
         continue;
       }
       truckDAO.save(truck);
@@ -56,13 +55,14 @@ public class FacebookServiceImpl implements FacebookService {
     if (m.find()) {
       uri = "/" + m.group(2);
     }
-    String response= facebookResource.uri(URI.create(uri))
+    String response = facebookResource.uri(URI.create(uri))
         .get(String.class);
     JSONObject responseObj = new JSONObject(response);
     String about = responseObj.optString("about");
     if (Strings.isNullOrEmpty(about)) {
       about = responseObj.optString("description");
     }
+    about = "<blockquote>" + about + "</blockquote>";
     String facebookId = responseObj.getString("id");
     truck = Truck.builder(truck).facebookPageId(facebookId).description(about).build();
     return truck;

@@ -11,7 +11,7 @@
   <title>Chicago Food Truck Finder</title>
   <link href="/bootstrap2.2.2-custom/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="/css/main.css?ver=5" rel="stylesheet"/>
-  <script src="script/lib/modernizr-1.7.min.js"></script>
+  <script src="/script/lib/modernizr-1.7.min.js"></script>
   <style type="text/css">
     #listContainer {
       overflow-y: auto !important;
@@ -28,11 +28,14 @@
         <li><a href="http://blog.chicagofoodtruckfinder.com/">Blog</a></li>
         <li class="visible-desktop"><a id="mobileLink" href="#mobile">Mobile</a></li>
       </ul>
-      <div style="padding: 4px 0 0 0 !important; margin:0;" class="navbar-form pull-right"><div  class="g-plusone"></div></div>
+      <div style="padding: 4px 0 0 0 !important; margin:0;" class="navbar-form pull-right">
+        <div class="g-plusone"></div>
+      </div>
       <p style="padding-top: 4px" class="navbar-form pull-right"><a href="https://twitter.com/chifoodtruckz"
                                                                     class="twitter-follow-button" data-button="grey"
                                                                     data-text-color="#FFF" data-link-color="#FFF">Follow
         @chifoodtruckz</a></p>
+
       <div style="padding-right: 10px !important" class="navbar-form pull-right fb-like"
            data-href="http://www.facebook.com/chicagofoodtruckfinder"
            data-send="false" data-layout="button_count" data-width="50"
@@ -42,7 +45,8 @@
   </div>
 </div>
 
-<div class="<c:choose><c:when test="${containerType == 'fixed'}">container</c:when><c:otherwise>container-fluid</c:otherwise></c:choose>">
+<div
+    class="<c:choose><c:when test="${containerType == 'fixed'}">container</c:when><c:otherwise>container-fluid</c:otherwise></c:choose>">
   <noscript>
     <div class="alert alert-error">
       Javascript is required for this site to function properly.
