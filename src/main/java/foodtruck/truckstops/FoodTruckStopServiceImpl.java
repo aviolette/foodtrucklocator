@@ -9,6 +9,8 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.LinkedListMultimap;
@@ -129,6 +131,18 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     return new DailySchedule(day, stops);
   }
 
+  @Override public DailySchedule findStopsForDayAfter(final DateTime dateTime) {
+    LocalDate day = dateTime.toLocalDate();
+    List<TruckStop> stops = truckStopDAO.findDuring(null, day);
+    return new DailySchedule(day, FluentIterable.from(stops)
+        .filter(new Predicate<TruckStop>() {
+          @Override public boolean apply(TruckStop truckStop) {
+            return truckStop.getEndTime().isAfter(dateTime);
+          }
+        })
+        .toList());
+  }
+
   @Override public List<DailySchedule> findSchedules(String truckId, Interval range) {
     List<TruckStop> stopList = truckStopDAO.findOverRange(truckId, range);
     ImmutableList.Builder<DailySchedule> stops = ImmutableList.builder();
@@ -177,7 +191,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   }
 
   @Override public List<TruckStop> findStopsForTruckSince(DateTime since, String truckId) {
-      return truckStopDAO.findOverRange(truckId, new Interval(since, clock.now()));
+    return truckStopDAO.findOverRange(truckId, new Interval(since, clock.now()));
   }
 
   @Override public WeeklySchedule findPopularStopsForWeek(LocalDate startDate) {
@@ -204,6 +218,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     }
     return scheduleBuilder.build();
   }
+
 
   @Override public List<TruckStatus> findCurrentAndPreviousStop(LocalDate day) {
     List<TruckStop> stops = truckStopDAO.findDuring(null, day);

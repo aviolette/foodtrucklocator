@@ -114,4 +114,11 @@ public interface FoodTruckStopService {
    * @return the weekly schedule for the current week
    */
   WeeklySchedule findPopularStopsForWeek(LocalDate startDate);
+
+  /**
+   * Returns the daily schedule with only the stops that end after the specified time
+   * @param dateTime all stops that end before this time will be filtered out
+   * @return the filtered dailyschedule
+   */
+  DailySchedule findStopsForDayAfter(DateTime dateTime);
 }

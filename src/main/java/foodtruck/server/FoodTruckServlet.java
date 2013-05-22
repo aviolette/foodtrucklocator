@@ -88,7 +88,7 @@ public class FoodTruckServlet extends FrontPageServlet {
 
     String payload = scheduleCacher.findSchedule(dateTime.toLocalDate());
     if (payload == null) {
-      DailySchedule schedule = stopService.findStopsForDay(dateTime.toLocalDate());
+      DailySchedule schedule = stopService.findStopsForDayAfter(dateTime);
       try {
         payload = writer.asJSON(schedule).toString();
       } catch (JSONException e) {

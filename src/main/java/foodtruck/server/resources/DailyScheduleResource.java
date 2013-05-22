@@ -8,6 +8,8 @@ import javax.ws.rs.core.MediaType;
 
 import com.google.inject.Inject;
 
+import org.joda.time.DateTime;
+
 import foodtruck.model.DailySchedule;
 import foodtruck.monitoring.Monitored;
 import foodtruck.truckstops.FoodTruckStopService;
@@ -31,8 +33,11 @@ public class DailyScheduleResource {
   }
 
   @GET @Produces("application/json") @Monitored
-  public DailySchedule findForDay(@QueryParam("appKey") final String appKey) {
+  public DailySchedule findForDay(@QueryParam("appKey") final String appKey, @QueryParam("from") final long from) {
     checker.requireAppKey(appKey);
+    if (from > 0) {
+      return truckService.findStopsForDayAfter(new DateTime(from));
+    }
     return truckService.findStopsForDay(clock.currentDay());
   }
 }
