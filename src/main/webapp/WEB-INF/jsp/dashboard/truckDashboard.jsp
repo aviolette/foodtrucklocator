@@ -26,7 +26,8 @@
       <tr>
         <td>Foursquare</td>
         <td><c:choose><c:when test="${empty(truck.foursquareUrl)}">none</c:when><c:otherwise><a
-            target="_blank" href="http://foursquare.com/v/${truck.foursquareUrl}">http://foursquare.com/v/${truck.foursquareUrl}</a></c:otherwise></c:choose>
+            target="_blank"
+            href="http://foursquare.com/v/${truck.foursquareUrl}">http://foursquare.com/v/${truck.foursquareUrl}</a></c:otherwise></c:choose>
         </td>
       </tr>
       <tr>
@@ -56,7 +57,8 @@
       </tr>
       <tr>
         <td>Categories</td>
-        <td><c:forEach items="${truck.categories}" var="category"><span class="label label-info">${category}</span>&nbsp;</c:forEach></td>
+        <td><c:forEach items="${truck.categories}" var="category"><span
+            class="label label-info">${category}</span>&nbsp;</c:forEach></td>
       </tr>
     </table>
   </div>
@@ -65,7 +67,8 @@
     <table class="table">
       <tr>
         <td>Last active</td>
-        <td><joda:format value="${truck.stats.lastSeen}" style="MS"/> @ <ftl:location location="${truck.stats.whereLastSeen}"/></td>
+        <td><joda:format value="${truck.stats.lastSeen}" style="MS"/> @ <ftl:location
+            location="${truck.stats.whereLastSeen}"/></td>
       </tr>
       <tr>
         <td>Stops this year</td>
@@ -94,8 +97,8 @@
   </tbody>
 </table>
 <div class="btn-group">
-<button class="btn primary" id="addButton"><i class="icon-calendar"></i>&nbsp;New Event</button>
-<button class="btn" id="recacheButton"><i class="icon-refresh"></i>&nbsp;Reload from calendar</button>
+  <button class="btn primary" id="addButton"><i class="icon-calendar"></i>&nbsp;New Event</button>
+  <button class="btn" id="recacheButton"><i class="icon-refresh"></i>&nbsp;Reload from calendar</button>
 </div>
 <h2>Weekly Overview</h2>
 
@@ -143,7 +146,7 @@
         <c:otherwise>
       <td>&nbsp;</td>
       <td>&nbsp;</c:otherwise>
-      </c:choose></td>
+        </c:choose></td>
     </tr>
   </c:forEach>
 
@@ -185,14 +188,14 @@
           <label for="startTimeInput">Start time</label>
 
           <div class="input">
-            <input id="startTimeInput" type="text"/>
+            <input class="timeentry" id="startTimeInput" type="text"/>
           </div>
         </div>
         <div class="clearfix">
           <label for="endTimeInput">End time</label>
 
           <div class="input">
-            <input id="endTimeInput" type="text"/>
+            <input class="timeentry" id="endTimeInput" type="text"/>
           </div>
         </div>
         <div class="clearfix">
@@ -220,15 +223,16 @@
 <script type="text/javascript">
   var locations = ${locations};
   $("#locationInput").typeahead({source: locations});
+  $(".timeentry").typeahead({source: generateTimes()});
   function invokeEditDialog(stop, afterwards) {
     $("#startTimeInput").attr("value", stop.startTime);
     $("#endTimeInput").attr("value", stop.endTime);
     $("#locationInput").attr("value", stop.location.name);
     $("#lockStop").attr("checked", stop.locked);
-    $("#edit-stop").modal({ show: true, keyboard : true, backdrop: true});
+    $("#edit-stop").modal({ show: true, keyboard: true, backdrop: true});
     var $saveButton = $("#saveButton");
     $saveButton.unbind('click');
-    $saveButton.click(function(e) {
+    $saveButton.click(function (e) {
       e.preventDefault();
       stop.startTime = $("#startTimeInput").attr("value");
       stop.endTime = $("#endTimeInput").attr("value");
@@ -244,7 +248,7 @@
         type: 'PUT',
         contentType: 'application/json',
         data: JSON.stringify(stop),
-        complete : function() {
+        complete: function () {
           $("#edit-stop").modal('hide');
         },
         success: afterwards
@@ -252,7 +256,7 @@
     });
     var $cancelButton = $("#cancelButton");
     $cancelButton.unbind("click");
-    $cancelButton.click(function(e) {
+    $cancelButton.click(function (e) {
       e.preventDefault();
       $("#edit-stop").modal('hide');
     });
@@ -264,11 +268,11 @@
       url: '/services/schedule/${truckId}',
       type: 'GET',
       dataType: 'json',
-      success : function(schedule) {
+      success: function (schedule) {
         var now = new Date().getTime();
         var numStops = schedule["stops"].length;
         var prevHadStart = false;
-        $.each(schedule["stops"], function(truckIndex, stop) {
+        $.each(schedule["stops"], function (truckIndex, stop) {
           var lockedString = (stop.locked) ? "&nbsp;<span class=\"label important\">locked</span>" :
               "";
           var buf = "<tr><td>" + stop.startTime + "</td><td>" + stop.endTime +
@@ -288,12 +292,12 @@
               "<div class='btn-group'><button id='truckDelete" + truckIndex +
               "' class='btn '><i class='icon-trash'></i> Delete</button>&nbsp;<button class='btn' id='truckEdit" +
               truckIndex + "'><i class='icon-edit'></i> Edit</button></div></td></tr>");
-          $("#truckEdit" + truckIndex).click(function(e) {
+          $("#truckEdit" + truckIndex).click(function (e) {
             invokeEditDialog(stop, refreshSchedule);
           });
 
           function timeUpdateMaker(useStart) {
-            return function(e) {
+            return function (e) {
               e.preventDefault();
               var now = new Date();
               var hour = now.getHours();
@@ -321,12 +325,12 @@
 
           $("#truckStartNow" + truckIndex).click(timeUpdateMaker(true));
           $("#truckEndNow" + truckIndex).click(timeUpdateMaker(false));
-          $("#truckDelete" + truckIndex).click(function(e) {
+          $("#truckDelete" + truckIndex).click(function (e) {
             e.preventDefault();
             $.ajax({
               url: "/services/stops/" + stop.id,
               type: 'DELETE',
-              complete: function() {
+              complete: function () {
                 refreshSchedule();
               }
             })
@@ -335,28 +339,28 @@
       }
     })
   }
-  $("#addButton").click(function(e) {
+  $("#addButton").click(function (e) {
     if (Modernizr.touch) {
       location.href = "/admin/trucks/${truckId}/events/new";
     } else {
-      invokeEditDialog({truckId : "${truckId}", locationName : "", location : { name : ""}, startTime : "", endTime : ""},
+      invokeEditDialog({truckId: "${truckId}", locationName: "", location: { name: ""}, startTime: "", endTime: ""},
           refreshSchedule);
     }
   });
   refreshSchedule();
   var $recacheButton = $("#recacheButton");
-  $recacheButton.click(function(evt) {
+  $recacheButton.click(function (evt) {
     $recacheButton.empty();
     $recacheButton.append("Refreshing...")
     $.ajax({
       url: "/cron/recache?truck=${truckId}",
       context: document.body,
       dataType: 'json',
-      complete: function() {
+      complete: function () {
         $recacheButton.empty();
         $recacheButton.append("Refresh")
       },
-      success: function(data) {
+      success: function (data) {
         refreshSchedule();
       }});
   });
