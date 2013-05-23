@@ -2,8 +2,17 @@
 <div class="row" style="padding-top: 20px">
   <div id="sidebar" class="span3" style="overflow-y: auto">
     <ul class="nav nav-list">
+      <li class="nav-header">ACTIVE TRUCKS</li>
       <c:forEach var="tr" items="${trucks}">
-        <li><a class="<c:if test="${tr.id == truck.id}">active</c:if>" href="/trucks/${tr.id}">${tr.name}</a></li>
+        <c:if test="${!tr.inactive}">
+          <li><a class="<c:if test="${tr.id == truck.id}">active</c:if>" href="/trucks/${tr.id}">${tr.name}</a></li>
+        </c:if>
+      </c:forEach>
+      <li class="nav-header">INACTIVE TRUCKS</li>
+      <c:forEach var="tr" items="${trucks}">
+        <c:if test="${tr.inactive}">
+          <li><a class="<c:if test="${tr.id == truck.id}">active</c:if>" href="/trucks/${tr.id}">${tr.name}</a></li>
+        </c:if>
       </c:forEach>
     </ul>
   </div>
