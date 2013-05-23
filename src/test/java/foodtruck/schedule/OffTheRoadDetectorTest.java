@@ -17,6 +17,12 @@ public class OffTheRoadDetectorTest {
   public void before() {
     topic = new OffTheRoadDetector();
   }
+
+  @Test
+  public void testOffTheRoad_rainCheck() throws Exception {
+    assertTrue(topic.offTheRoad("600 W Chicago Ave- we'll have to take a rain check today!!! See you next week...stay dry amigos!"));
+  }
+
   @Test
   public void testOffTheRoad_withOffTheRoad() throws Exception {
     assertTrue(topic.offTheRoad("The @theslideride will be off the road today"));

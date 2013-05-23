@@ -8,6 +8,7 @@ public class OffTheRoadDetector {
 
   public boolean offTheRoad(String tweet) {
     String lower = tweet.toLowerCase();
-    return lower.contains("off the road") || lower.contains("maintenance") || lower.contains("in the shop");
+    return lower.contains("off the road") || lower.contains("maintenance") || lower.contains("in the shop")
+        || lower.contains("rain check");
   }
 }
