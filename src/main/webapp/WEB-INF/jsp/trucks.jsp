@@ -1,13 +1,13 @@
 <%@ include file="nextgenheader.jsp" %>
 <div class="row" style="padding-top: 20px">
-  <div class="span3">
+  <div id="sidebar" class="span3" style="overflow-y: auto">
     <ul class="nav nav-list">
       <c:forEach var="tr" items="${trucks}">
         <li><a class="<c:if test="${tr.id == truck.id}">active</c:if>" href="/trucks/${tr.id}">${tr.name}</a></li>
       </c:forEach>
     </ul>
   </div>
-  <div class="span9">
+  <div id="content" class="span9">
     <c:choose>
       <c:when test="${!empty(truck)}">
         <div class="row">
@@ -115,4 +115,12 @@
     </c:choose>
   </div>
 </div>
+<%@include file="include/core_js.jsp" %>
+<script type="text/javascript">
+  function handleResize() {
+    $("#sidebar").height($(window).height() - 20);
+  }
+  $(document).ready(handleResize);
+  $(window).resize(handleResize);
+</script>
 <%@ include file="footer.jsp" %>
