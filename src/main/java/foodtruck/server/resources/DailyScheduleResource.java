@@ -11,7 +11,6 @@ import com.google.inject.Inject;
 import org.joda.time.DateTime;
 
 import foodtruck.model.DailySchedule;
-import foodtruck.monitoring.Monitored;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 
@@ -32,7 +31,7 @@ public class DailyScheduleResource {
     this.checker = checker;
   }
 
-  @GET @Produces("application/json") @Monitored
+  @GET @Produces("application/json")
   public DailySchedule findForDay(@QueryParam("appKey") final String appKey, @QueryParam("from") final long from) {
     checker.requireAppKey(appKey);
     if (from > 0) {
