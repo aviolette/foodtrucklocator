@@ -3,6 +3,7 @@ package foodtruck.server.dashboard;
 import java.io.IOException;
 import java.util.List;
 
+import javax.annotation.Nullable;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -76,7 +77,7 @@ public class TruckStopServlet extends HttpServlet {
         start = start.withTime(11, 30, 0, 0);
       }
       DateTime end = start.plusHours(2);
-      truckStop = new TruckStop(truck, start, end, configDAO.find().getCenter(),  null, false);
+      truckStop = new TruckStop(truck, start, end, configDAO.find().getCenter(), null, false);
     }
     req.setAttribute("nav", "trucks");
     req.setAttribute("truckStop", truckStop);
@@ -97,8 +98,8 @@ public class TruckStopServlet extends HttpServlet {
       throws ServletException, IOException {
     String truckID = getTruckId(req);
     Truck truck = truckDAO.findById(truckID);
-    DateTime startTime = parseTime(req.getParameter("startTime"));
-    DateTime endTime = parseTime(req.getParameter("endTime"));
+    DateTime startTime = parseTime(req.getParameter("startTime"), null);
+    DateTime endTime = parseTime(req.getParameter("endTime"), startTime);
     Location location = geolocator.locate(req.getParameter("location"), GeolocationGranularity.NARROW);
     long locationId = ModelEntity.UNINITIALIZED;
     if (req.getParameter("entityId") != null) {
@@ -110,9 +111,13 @@ public class TruckStopServlet extends HttpServlet {
     resp.sendRedirect("/admin/trucks/" + truckID);
   }
 
-  private DateTime parseTime(String time) {
+  private DateTime parseTime(String time, @Nullable DateTime context) {
     DateTime dt = timeFormatter.parseDateTime(time.trim().toLowerCase());
     DateTimeZone zone = dt.getZone();
-    return clock.currentDay().toDateTime(dt.toLocalTime(), zone);
+    DateTime theTime = clock.currentDay().toDateTime(dt.toLocalTime(), zone);
+    if (context == null) {
+      return theTime;
+    }
+    return theTime.isBefore(context) ? theTime.plusDays(1) : theTime;
   }
 }
