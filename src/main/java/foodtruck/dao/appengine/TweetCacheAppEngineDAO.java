@@ -1,6 +1,5 @@
 package foodtruck.dao.appengine;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -10,6 +9,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
@@ -43,18 +43,18 @@ public class TweetCacheAppEngineDAO implements TweetCacheDAO {
     this.zone = zone;
   }
 
-
   @Override
   public List<TweetSummary> findTweetsAfter(DateTime time, String twitterHandle,
       boolean includeIgnored) {
     DatastoreService dataStore = provider.get();
     Query q = new Query(TWEET_KIND);
-    q.addFilter(TWEET_TIME, Query.FilterOperator.GREATER_THAN_OR_EQUAL,
-        time.toDate());
-    q.addFilter(TWEET_SCREEN_NAME, Query.FilterOperator.EQUAL, twitterHandle);
+    List<Query.Filter> filters = Lists.newLinkedList();
+    filters.add(new Query.FilterPredicate(TWEET_TIME, Query.FilterOperator.GREATER_THAN_OR_EQUAL, time.toDate()));
+    filters.add(new Query.FilterPredicate(TWEET_SCREEN_NAME, Query.FilterOperator.EQUAL, twitterHandle));
     if (!includeIgnored) {
-      q.addFilter(TWEET_IGNORE, Query.FilterOperator.EQUAL, false);
+      filters.add(new Query.FilterPredicate(TWEET_IGNORE, Query.FilterOperator.EQUAL, false));
     }
+    q.setFilter(Query.CompositeFilterOperator.and(filters));
     q.addSort(TWEET_TIME, Query.SortDirection.DESCENDING);
     ImmutableList.Builder<TweetSummary> tweets = ImmutableList.builder();
     for (Entity entity : dataStore.prepare(q).asIterable()) {
@@ -68,7 +68,7 @@ public class TweetCacheAppEngineDAO implements TweetCacheDAO {
   public void deleteBefore(DateTime dateTime) {
     DatastoreService dataStore = provider.get();
     Query q = new Query(TWEET_KIND);
-    q.addFilter(TWEET_TIME, Query.FilterOperator.LESS_THAN_OR_EQUAL, dateTime.toDate());
+    q.setFilter(new Query.FilterPredicate(TWEET_TIME, Query.FilterOperator.LESS_THAN_OR_EQUAL, dateTime.toDate()));
     ImmutableList.Builder<Key> keys = ImmutableList.builder();
     for (Entity entity : dataStore.prepare(q).asIterable()) {
       keys.add(entity.getKey());
@@ -108,7 +108,7 @@ public class TweetCacheAppEngineDAO implements TweetCacheDAO {
   @Override public @Nullable TweetSummary findByTweetId(long id) {
     DatastoreService dataStore = provider.get();
     Query q = new Query(TWEET_KIND);
-    q.addFilter(TWEET_ID, Query.FilterOperator.EQUAL, id);
+    q.setFilter(new Query.FilterPredicate(TWEET_ID, Query.FilterOperator.EQUAL, id));
     Entity entity = dataStore.prepare(q).asSingleEntity();
     if (entity == null) {
       return null;
@@ -144,7 +144,7 @@ public class TweetCacheAppEngineDAO implements TweetCacheDAO {
     if (lat != null && lng != null) {
       location = Location.builder().lat(lat).lng(lng).build();
     }
-    DateTime dateTime = new DateTime((Date) entity.getProperty(TWEET_TIME), zone);
+    DateTime dateTime = new DateTime(entity.getProperty(TWEET_TIME), zone);
     return new TweetSummary.Builder()
         .id((Long) entity.getProperty(TWEET_ID))
         .ignoreInTwittalyzer(Boolean.TRUE.equals(entity.getProperty(TWEET_IGNORE)))
