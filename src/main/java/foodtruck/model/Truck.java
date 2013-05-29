@@ -35,17 +35,29 @@ public class Truck extends ModelEntity {
   private final Pattern matchOnlyIf;
   private final Pattern donotMatchIf;
   private final boolean inactive;
-  private @Nullable final String calendarUrl;
-  private final @Nullable String email;
-  private final @Nullable String phone;
+  private
+  @Nullable
+  final String calendarUrl;
+  private final
+  @Nullable
+  String email;
+  private final
+  @Nullable
+  String phone;
   private final boolean twitterGeolocationDataValid;
-  private final @Nullable DateTime muteUntil;
+  private final
+  @Nullable
+  DateTime muteUntil;
   private final String yelpSlug;
-  private final @Nullable String facebookPageId;
-  private final @Nullable Stats stats;
+  private final
+  @Nullable
+  String facebookPageId;
+  private final
+  @Nullable
+  Stats stats;
   private final boolean hidden;
 
-  public static final Function<Truck, String> TO_ID = new Function<Truck, String> () {
+  public static final Function<Truck, String> TO_ID = new Function<Truck, String>() {
     @Nullable @Override public String apply(@Nullable Truck truck) {
       return truck.getId();
     }
@@ -279,10 +291,14 @@ public class Truck extends ModelEntity {
     public static class Builder {
 
       private DateTime lastUpdated = new DateTime(2009, 1, 1, 1, 1, 1, 1);
-      private @Nullable DateTime lastSeen;
+      private
+      @Nullable
+      DateTime lastSeen;
       private long totalStops;
       private long stopsThisYear;
-      private @Nullable Location whereLastSeen;
+      private
+      @Nullable
+      Location whereLastSeen;
 
       public Builder lastUpdate(DateTime lastUpdated) {
         this.lastUpdated = lastUpdated;
@@ -318,9 +334,13 @@ public class Truck extends ModelEntity {
   public static class Builder {
     private String id;
     private String name;
-    private @Nullable String url;
+    private
+    @Nullable
+    String url;
     private String iconUrl;
-    private @Nullable String twitter;
+    private
+    @Nullable
+    String twitter;
     public Set<String> categories = ImmutableSet.of();
     public String description;
     private String foursquareUrl;
@@ -329,15 +349,29 @@ public class Truck extends ModelEntity {
     private String facebook;
     private Pattern matchOnlyIf;
     private boolean inactive;
-    private @Nullable String calendarUrl;
+    private
+    @Nullable
+    String calendarUrl;
     private Pattern donotMatchIf;
-    private @Nullable String email;
-    private @Nullable String phone;
+    private
+    @Nullable
+    String email;
+    private
+    @Nullable
+    String phone;
     public boolean twitterGeolocationDataValid;
-    private @Nullable DateTime muteUntil;
-    private @Nullable String yelpSlug;
-    private @Nullable String facebookPageId;
-    private @Nullable Stats stats;
+    private
+    @Nullable
+    DateTime muteUntil;
+    private
+    @Nullable
+    String yelpSlug;
+    private
+    @Nullable
+    String facebookPageId;
+    private
+    @Nullable
+    Stats stats;
     private boolean hidden;
 
     public Builder() {
@@ -364,6 +398,8 @@ public class Truck extends ModelEntity {
       this.facebookPageId = truck.facebookPageId;
       this.stats = truck.stats;
       this.hidden = truck.hidden;
+      this.phone = truck.phone;
+      this.email = truck.email;
     }
 
     public Builder id(String id) {
