@@ -48,7 +48,8 @@
     <ul class="nav">
       <li class="<c:if test="${nav == 'trucks'}">active</c:if>"><a href="/admin/trucks">Trucks</a>
       </li>
-      <li class="visible-desktop<c:if test="${nav == 'addresses'}"> active</c:if>"><a href="/admin/addresses">Addresses</a>
+      <li class="visible-desktop<c:if test="${nav == 'addresses'}"> active</c:if>"><a
+          href="/admin/addresses">Addresses</a>
       </li>
       <li<c:if test="${nav == 'locations'}"> class="active"</c:if>><a href="/admin/locations">Locations</a>
       </li>
@@ -57,6 +58,8 @@
       <li<c:if test="${nav == 'settings'}"> class="active"</c:if>><a href="/admin/configuration">Settings</a>
       </li>
       <li class="hidden-phone<c:if test="${nav == 'applications'}"> active</c:if>"><a href="/admin/applications">Applications</a>
+      </li>
+      <li class="<c:if test="${nav == 'events'}"> active</c:if>"><a href="/admin/events">Events</a>
       </li>
       <li class="hidden-phone <c:if test="${nav == 'stats'}"> active</c:if>"><a
           href="/admin/stats">Statistics</a>

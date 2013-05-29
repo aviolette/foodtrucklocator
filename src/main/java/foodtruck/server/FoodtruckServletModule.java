@@ -13,6 +13,8 @@ import foodtruck.server.dashboard.AddressRuleServlet;
 import foodtruck.server.dashboard.AdminDashboardServlet;
 import foodtruck.server.dashboard.ApplicationServlet;
 import foodtruck.server.dashboard.ConfigurationServlet;
+import foodtruck.server.dashboard.EventListServlet;
+import foodtruck.server.dashboard.EventServlet;
 import foodtruck.server.dashboard.LocationEditServlet;
 import foodtruck.server.dashboard.LocationListServlet;
 import foodtruck.server.dashboard.NotificationServlet;
@@ -61,6 +63,8 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/admin/configuration").with(ConfigurationServlet.class);
     serve("/admin/applications").with(ApplicationServlet.class);
     serve("/admin/notificationTest").with(TestNotificationServlet.class);
+    serve("/admin/events").with(EventListServlet.class);
+    serve("/admin/events/*").with(EventServlet.class);
     serve("/services/*").with(GuiceContainer.class,
         ImmutableMap.of(PackagesResourceConfig.PROPERTY_PACKAGES, "foodtruck.server.resources"));
     serve("/service/tweets").with(TweetUpdateServlet.class);
