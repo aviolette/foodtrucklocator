@@ -7,6 +7,15 @@
       <label for="mapCenter">Map Center</label>
       <input class="span6" type="text" value="${config.center.name}" name="mapCenter" id="mapCenter"/>
     </div>
+    <div>
+      <div class="input">
+        <ul class="unstyled">
+          <li><label><input name="scheduleCachingOn"
+                            <c:if test="${config.scheduleCachingOn}">checked="checked"</c:if>
+                            type="checkbox"/> <span>Enable Schedule Caching</span></label></li>
+        </ul>
+      </div>
+    </div>
     <legend>Front Door App Key</legend>
     <div class="clearfix">
       <label for="frontDoorAppKey">Front Door App Key</label>

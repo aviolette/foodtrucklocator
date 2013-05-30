@@ -31,6 +31,7 @@ public class Configuration extends ModelEntity {
   private List<String> systemNotificationList;
   private @Nullable String notificationSender;
   private @Nullable String frontDoorAppKey;
+  private boolean scheduleCachingOn;
 
 
   public Configuration(Object key) {
@@ -55,6 +56,7 @@ public class Configuration extends ModelEntity {
     this.systemNotificationList = builder.systemNotificationList;
     this.notificationSender = builder.notificationSender;
     this.frontDoorAppKey = builder.frontDoorAppKey;
+    this.scheduleCachingOn = builder.scheduleCachingOn;
   }
 
   @Nullable public String getFrontDoorAppKey() {
@@ -137,6 +139,10 @@ public class Configuration extends ModelEntity {
     return new Builder(config);
   }
 
+  public boolean isScheduleCachingOn() {
+    return scheduleCachingOn;
+  }
+
   public static class Builder {
     private boolean googleGeolocationEnabled = true;
     private boolean yahooGeolocationEnabled = false;
@@ -155,6 +161,7 @@ public class Configuration extends ModelEntity {
     private List<String> systemNotificationList = ImmutableList.of();
     private @Nullable String notificationSender;
     private @Nullable String frontDoorAppKey;
+    private boolean scheduleCachingOn;
 
     public Builder() {
     }
@@ -176,6 +183,12 @@ public class Configuration extends ModelEntity {
       this.systemNotificationList = config.systemNotificationList;
       this.notificationSender = config.notificationSender;
       this.frontDoorAppKey = config.frontDoorAppKey;
+      this.scheduleCachingOn = config.scheduleCachingOn;
+    }
+
+    public Builder scheduleCachingOn(boolean scheduleCachingOn) {
+      this.scheduleCachingOn = scheduleCachingOn;
+      return this;
     }
 
     public Builder frontDoorAppKey(String frontDoorAppKey) {

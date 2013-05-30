@@ -60,6 +60,7 @@ public class ConfigurationServlet extends HttpServlet {
         .remoteTwitterCacheAddress(req.getParameter("remoteTwitterCacheAddress"))
         .googleCalendarAddress(req.getParameter("googleCalendarAddress"))
         .yahooAppId(req.getParameter("yahooAppId"))
+        .scheduleCachingOn("on".equals(req.getParameter("scheduleCachingOn")))
         .yahooConsumerKey(req.getParameter("yahooConsumerKey"))
         .yahooConsumerSecret(req.getParameter("yahooConsumerSecret"))
         .primaryTwitterList(req.getParameter("primaryTwitterList"))

@@ -1,6 +1,8 @@
 package foodtruck.server;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -16,9 +18,9 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.ConfigurationDAO;
-import foodtruck.dao.ScheduleDAO;
 import foodtruck.model.Configuration;
 import foodtruck.model.DailySchedule;
+import foodtruck.schedule.ScheduleCacher;
 import foodtruck.server.resources.json.DailyScheduleWriter;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
@@ -31,16 +33,17 @@ import foodtruck.util.TimeFormatter;
  */
 @Singleton
 public class FoodTruckServlet extends FrontPageServlet {
+  private static final Logger log = Logger.getLogger(FoodTruckServlet.class.getName());
   private final DateTimeFormatter timeFormatter;
   private final Clock clock;
   private final DateTimeFormatter dateFormatter;
   private final FoodTruckStopService stopService;
-  private final ScheduleDAO scheduleCacher;
   private final DailyScheduleWriter writer;
+  private final ScheduleCacher scheduleCacher;
 
   @Inject
   public FoodTruckServlet(ConfigurationDAO configDAO,
-      Clock clock, FoodTruckStopService service, DailyScheduleWriter writer, ScheduleDAO scheduleCacher,
+      Clock clock, FoodTruckStopService service, DailyScheduleWriter writer, ScheduleCacher scheduleCacher,
       @TimeFormatter DateTimeFormatter timeFormatter) {
     super(configDAO);
     this.clock = clock;
@@ -86,15 +89,19 @@ public class FoodTruckServlet extends FrontPageServlet {
       req.setAttribute("google_analytics_ua", googleAnalytics);
     }
 
-    String payload = scheduleCacher.findSchedule(dateTime.toLocalDate());
-    if (payload == null) {
+    String payload = scheduleCacher.findSchedule();
+    if (payload == null || !configuration.isScheduleCachingOn()) {
       DailySchedule schedule = stopService.findStopsForDayAfter(dateTime);
       try {
         payload = writer.asJSON(schedule).toString();
+        scheduleCacher.saveSchedule(payload);
       } catch (JSONException e) {
         // TODO: fix this
         throw new RuntimeException(e);
       }
+      log.log(Level.INFO, "Loaded page from datastore");
+    } else {
+      log.log(Level.INFO, "Loaded payload from cache");
     }
     final String mode = req.getParameter("mode");
     req.setAttribute("mobile", "mobile".equals(mode));

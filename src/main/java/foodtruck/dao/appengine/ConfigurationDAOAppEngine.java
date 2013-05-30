@@ -38,6 +38,7 @@ public class ConfigurationDAOAppEngine extends
   private static final String PROP_SYSTEM_NOTIFICATION_EMAILS = "system_notification_receivers";
   private static final String PROP_SYSTEM_NOTIFICATION_SENDER = "system_notification_sender";
   private static final String PROP_FRONT_DOOR_APP_KEY = "front_door_app_key";
+  private static final String PROP_SCHEDULE_CACHING = "schedule_caching";
 
   @Inject
   public ConfigurationDAOAppEngine(DatastoreServiceProvider provider, DateTimeZone defaultZone) {
@@ -64,6 +65,7 @@ public class ConfigurationDAOAppEngine extends
     entity.setProperty(PROP_SYSTEM_NOTIFICATION_SENDER, config.getNotificationSender());
     entity.setProperty(PROP_SYSTEM_NOTIFICATION_EMAILS, config.getSystemNotificationList());
     entity.setProperty(PROP_FRONT_DOOR_APP_KEY, config.getFrontDoorAppKey());
+    entity.setProperty(PROP_SCHEDULE_CACHING, config.isScheduleCachingOn());
     return entity;
   }
 
@@ -90,6 +92,7 @@ public class ConfigurationDAOAppEngine extends
         .systemNotificationList(getListProperty(entity, PROP_SYSTEM_NOTIFICATION_EMAILS))
         .notificationSender(getStringProperty(entity, PROP_SYSTEM_NOTIFICATION_SENDER))
         .frontDoorAppKey(getStringProperty(entity, PROP_FRONT_DOOR_APP_KEY))
+        .scheduleCachingOn(getBooleanProperty(entity, PROP_SCHEDULE_CACHING))
         .center(center)
         .key(entity.getKey())
         .build();

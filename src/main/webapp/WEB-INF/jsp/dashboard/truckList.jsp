@@ -2,7 +2,8 @@
 
 <div class="btn-toolbar">
   <div class="btn-group">
-    <a href="/cron/tweets" class="btn primary" id="twitterButton"><i class="icon-refresh"></i>&nbsp;Refresh all tweets</a>
+    <a href="/cron/tweets" class="btn" id="twitterButton"><i class="icon-refresh"></i>&nbsp;Refresh all tweets</a>
+    <a href="/cron/invalidateCache" class="btn" id="invalidateButton"><i class="icon-ban-circle"></i>&nbsp;Invalidate cache</a>
   </div>
   <div class="btn-group toggle-visibility" >
     <button id="inactiveButton" type="button" class="btn active">Inactive</button>
@@ -180,7 +181,7 @@
     }
 
     bindAjaxCallToButton("twitterButton", "/cron/tweets");
-
+    bindAjaxCallToButton("invalidateButton", "/cron/invalidateCache");
     function newTruckDialog() {
       var truckId = prompt("Enter truck ID:");
       if (!truckId) {
