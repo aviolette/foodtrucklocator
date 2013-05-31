@@ -19,7 +19,7 @@
   </style>
 </head>
 <body>
-<div id="topBar" class="navbar">
+<div id="topBar" class="navbar navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container-fluid">
       <a class="brand" href="/">Chicago Food Truck Finder</a>
@@ -48,7 +48,7 @@
 </div>
 
 <div
-    class="<c:choose><c:when test="${containerType == 'fixed'}">container</c:when><c:otherwise>container-fluid</c:otherwise></c:choose>">
+    style="padding-top: 40px" class="<c:choose><c:when test="${containerType == 'fixed'}">container</c:when><c:otherwise>container-fluid</c:otherwise></c:choose>">
   <noscript>
     <div class="alert alert-error">
       Javascript is required for this site to function properly.
