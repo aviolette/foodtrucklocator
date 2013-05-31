@@ -50,6 +50,10 @@ public class Event extends ModelEntity {
     return endTime;
   }
 
+  public boolean isStartAndEndOnSameDay() {
+    return startTime.toLocalDate().equals(endTime.toLocalDate());
+  }
+
   public String getName() {
     return name;
   }

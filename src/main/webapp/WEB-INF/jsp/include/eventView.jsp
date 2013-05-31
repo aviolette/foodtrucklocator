@@ -1,24 +1,32 @@
 <%@include file="../common.jsp" %>
 
-<div>
-  <strong>When: </strong><joda:format value="${event.startTime}" pattern="MMM dd, YYYY hh:mm"/> to
-  <joda:format value="${event.endTime}" pattern="MMM dd, YYYY hh:mm"/>
-</div>
-<div>
-  <strong>Where: </strong>${event.location.name}
-</div>
+<dl>
+  <dt>When</dt>
+  <dd>
+  <c:choose>
+    <c:when test="${event.startAndEndOnSameDay}">
+      <joda:format value="${event.startTime}" pattern="MMM dd"/> from
+      <joda:format value="${event.startTime}" pattern="hh:mm a"/> to
+      <joda:format value="${event.endTime}" pattern="hh:mm a"/>
+    </c:when>
+    <c:otherwise>
+      <joda:format value="${event.startTime}" pattern="MMM dd hh:mm a"/> to
+      <joda:format value="${event.endTime}" pattern="MMM dd hh:mm a"/>
+    </c:otherwise>
+  </c:choose>
+  </dd>
+<dt>Where</dt>
+<dd><address>${event.location.name}</address></dd>
 <c:if test="${!empty(event.url)}">
-  <div>
-    <strong>Url:</strong> <a href="${event.url}">${event.url}</a>
-  </div>
+<dt>Url</dt>
+<dd><a href="${event.url}">${event.url}</a></dd>
 </c:if>
-<div>
-  <strong>Trucks: </strong><c:forEach items="${event.trucks}" var="truck" varStatus="truckStatus">
+<dt>Trucks</dt>
+<dd><c:forEach items="${event.trucks}" var="truck" varStatus="truckStatus">
   <a href="/trucks/${truck.id}">${truck.name}</a><c:if test="${!truckStatus.last}">, </c:if>
-</c:forEach>
-</div>
+</c:forEach></dd>
+</dl>
 <br/>
-
 <div>
   ${event.description}
 </div>
