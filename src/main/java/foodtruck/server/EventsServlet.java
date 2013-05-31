@@ -41,7 +41,7 @@ public class EventsServlet extends HttpServlet {
     req = new GuiceHackRequestWrapper(req, jsp);
     req.setAttribute("tab", "events");
     if (Strings.isNullOrEmpty(eventId)) {
-      req.setAttribute("events", eventDAO.findAll());
+      req.setAttribute("events", eventDAO.findEventsAfter(clock.now()));
     } else {
       req.setAttribute("event", eventDAO.findById(eventId));
     }

@@ -3,6 +3,7 @@ package foodtruck.dao.appengine;
 import java.util.Collection;
 import java.util.List;
 
+import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.EmbeddedEntity;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
@@ -10,6 +11,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import foodtruck.dao.EventDAO;
@@ -45,7 +47,7 @@ public class EventDAOAppengine extends AppEngineDAO<String, Event> implements Ev
   }
 
   @Override protected void modifyFindAllQuery(Query q) {
-    q.addSort(FIELD_START_TIME, Query.SortDirection.DESCENDING);
+    q.addSort(FIELD_START_TIME, Query.SortDirection.ASCENDING);
   }
 
   @Override protected Entity toEntity(Event event, Entity entity) {
@@ -103,5 +105,13 @@ public class EventDAOAppengine extends AppEngineDAO<String, Event> implements Ev
           }
         })
         .toList();
+  }
+
+  @Override public List<Event> findEventsAfter(DateTime time) {
+    DatastoreService dataStore = provider.get();
+    Query q = new Query(getKind());
+    q.addSort(FIELD_START_TIME, Query.SortDirection.ASCENDING);
+    q.setFilter(new Query.FilterPredicate(FIELD_START_TIME, Query.FilterOperator.GREATER_THAN, time.toDate()));
+    return executeQuery(dataStore, q);
   }
 }
