@@ -237,6 +237,7 @@ public class TwitterServiceImpl implements TwitterService {
         if (tweet.getIgnoreInTwittalyzer()) {
           continue;
         }
+        log.log(Level.INFO, "Handling observer tweet: {0}", tweet);
         String lowerText = tweet.getText().toLowerCase();
         if ((lowerText.contains("#foodtrucks") || lowerText.contains("breakfast") || lowerText.contains("lunch"))
             && !tweet.isReply()) {
