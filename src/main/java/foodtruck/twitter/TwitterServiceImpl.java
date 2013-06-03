@@ -13,6 +13,7 @@ import javax.annotation.Nullable;
 
 import com.google.appengine.repackaged.com.google.common.collect.ImmutableList;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
@@ -277,15 +278,21 @@ public class TwitterServiceImpl implements TwitterService {
 
 
   private void handleTruckTweets() {
-    for (Truck truck : truckDAO.findAllTwitterTrucks()) {
+    for (Truck truck : truckDAO.findAll()) {
       // TODO: this number should probably be configurable
+      if (Strings.isNullOrEmpty(truck.getTwitterHandle())) {
+        continue;
+      }
       List<TweetSummary> tweets =
           tweetDAO.findTweetsAfter(clock.now().minusHours(HOURS_BACK_TO_SEARCH),
               truck.getTwitterHandle(),
               false);
+      notifyIfOffTheRoad(tweets, truck);
+      if (!truck.isUsingTwittalyzer()) {
+        continue;
+      }
       TruckStopMatch match = findMatch(tweets, truck);
       DateTime terminationTime = findTermination(tweets, truck);
-      notifyIfOffTheRoad(tweets, truck);
       ignoreTweets(tweets);
       if (match != null) {
         log.log(Level.INFO, "Found match {0}", match);
