@@ -23,6 +23,7 @@ import twitter4j.conf.PropertyConfiguration;
  * @author aviolette
  * @since 12/7/12
  */
+@SuppressWarnings("AppEngineForbiddenCode")
 public class Provisioner {
 
   public static void main(String args[]) throws Exception {
