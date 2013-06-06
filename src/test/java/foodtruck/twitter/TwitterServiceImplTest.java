@@ -85,7 +85,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     truckDAO = createMock(TruckDAO.class);
     expect(truckDAO.findById(TRUCK_1_ID)).andStubReturn(truck1);
     expect(truckDAO.findById(TRUCK_1_ID)).andStubReturn(truck2);
-    expect(truckDAO.findAllTwitterTrucks()).andStubReturn(ImmutableSet.of(truck2));
+    expect(truckDAO.findAll()).andStubReturn(ImmutableSet.of(truck2));
     final int listId = 123;
     terminationDetector = createMock(TerminationDetector.class);
     ConfigurationDAO configDAO = createMock(ConfigurationDAO.class);
