@@ -179,8 +179,7 @@ public class TwitterServiceImpl implements TwitterService {
 
   private @Nullable TweetSummary statusToTweet(Status status) {
     final String screenName = status.getUser().getScreenName().toLowerCase();
-    Collection<Truck> trucks = truckDAO.findByTwitterId(screenName);
-    if (trucks.size() == 0 || status.isRetweet()) {
+    if (status.isRetweet()) {
       return null;
     }
     final GeoLocation geoLocation = status.getGeoLocation();
