@@ -89,6 +89,7 @@
   <tr>
     <td>Start Time</td>
     <td>End Time</td>
+    <td>Duration</td>
     <td>Location</td>
     <td>&nbsp;</td>
   </tr>
@@ -182,34 +183,27 @@
     <h3>Edit Stop</h3>
   </div>
   <div class="modal-body">
-    <form>
+    <form class="form-horizontal">
       <fieldset>
-        <div class="clearfix">
-          <label for="startTimeInput">Start time</label>
+        <div class="control-group">
+          <label class="control-label" for="startTimeInput">Start / End</label>
 
-          <div class="input">
-            <input class="timeentry" id="startTimeInput" type="text"/>
+          <div class="controls">
+            <input class="timeentry span2" id="startTimeInput" type="text"/>
+            <input class="timeentry span2" id="endTimeInput" type="text"/>
           </div>
         </div>
-        <div class="clearfix">
-          <label for="endTimeInput">End time</label>
+        <div class="control-group">
+          <label class="control-label" for="locationInput">Location</label>
 
-          <div class="input">
-            <input class="timeentry" id="endTimeInput" type="text"/>
+          <div class="controls">
+            <input class="span4" id="locationInput" type="text" data-provide="typeahead" data-items="4"/>
           </div>
         </div>
-        <div class="clearfix">
-          <label for="locationInput">Location</label>
-
-          <div class="input">
-            <input class="span5" id="locationInput" type="text" data-provide="typeahead" data-items="4"/>
-          </div>
-        </div>
-        <div class="clearfix">
-          <div class="input">
-            <input type="checkbox" id="lockStop" name="lockStop"/>&nbsp;<label style="float:none"
-                                                                               for="lockStop">Prevent
-            twittalyzer from changing location</label>
+        <div class="control-group">
+          <div class="controls">
+            <label><input id="lockStop" name="lockStop" type="checkbox">&nbsp;Prevent
+              twittalyzer from changing location</label>
           </div>
         </div>
       </fieldset>
@@ -276,7 +270,7 @@
           var lockedString = (stop.locked) ? "&nbsp;<span class=\"label important\">locked</span>" :
               "";
           var buf = "<tr><td>" + stop.startTime + "</td><td>" + stop.endTime +
-              "</td><td><a href='/admin/locations?q=" + encodeURIComponent(stop.location.name) +
+              "</td><td>" + stop.duration + "</td><td><a href='/admin/locations?q=" + encodeURIComponent(stop.location.name) +
               "'>"
               + stop.location.name + "</a>" + lockedString + "</td><td>";
           if (!prevHadStart && now < stop.startTimeMillis) {

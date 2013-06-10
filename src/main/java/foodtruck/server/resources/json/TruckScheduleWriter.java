@@ -17,8 +17,8 @@ import com.google.inject.Inject;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
+import org.joda.time.Duration;
+import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.model.TruckSchedule;
@@ -71,12 +71,15 @@ public class TruckScheduleWriter implements MessageBodyWriter<TruckSchedule> {
         .put("day", schedule.getDate().toString());
     JSONArray arr = new JSONArray();
     for (TruckStop stop : schedule.getStops()) {
+      Period p = new Period(stop.getStartTime(), stop.getEndTime());
       JSONObject truckStop = new JSONObject()
           .put("location", locationWriter.writeLocation(stop.getLocation(), 0, false))
           .put("id", stop.getKey())
           .put("locked", stop.isLocked())
           .put("startTimeMillis", stop.getStartTime().getMillis())
           .put("endTimeMillis", stop.getEndTime().getMillis())
+          .put("duration", p.getHours() + ":" + (p.getMinutes() < 10 ? "0" + p.getMinutes() : p.getMinutes()))
+          .put("durationMillis", new Duration(stop.getStartTime(), stop.getEndTime()).getMillis())
           .put("startTime", timeFormatter.print(stop.getStartTime()))
           .put("endTime", timeFormatter.print(stop.getEndTime()));
       arr.put(truckStop);
