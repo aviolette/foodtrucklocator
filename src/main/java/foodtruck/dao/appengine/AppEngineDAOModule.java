@@ -9,6 +9,7 @@ import foodtruck.dao.EventDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.SystemStatDAO;
 import foodtruck.dao.TruckDAO;
+import foodtruck.dao.TruckObserverDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.dao.TweetCacheDAO;
 import foodtruck.dao.TwitterNotificationAccountDAO;
@@ -30,5 +31,6 @@ public class AppEngineDAOModule extends AbstractModule {
     bind(TwitterNotificationAccountDAO.class).to(TwitterNotificationAccountDAOAppEngine.class);
     bind(ApplicationDAO.class).to(ApplicationDAOAppEngine.class);
     bind(EventDAO.class).to(EventDAOAppengine.class);
+    bind(TruckObserverDAO.class).to(TruckObserverDAOAppEngine.class);
   }
 }

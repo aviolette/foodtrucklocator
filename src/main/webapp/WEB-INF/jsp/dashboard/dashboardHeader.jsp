@@ -60,6 +60,7 @@
       <li class="hidden-phone<c:if test="${nav == 'applications'}"> active</c:if>"><a href="/admin/applications">Applications</a>
       </li>
       <li class="<c:if test="${nav == 'events'}"> active</c:if>"><a href="/admin/events">Events</a>
+      <li class="<c:if test="${nav == 'lookouts'}"> active</c:if>"><a href="/admin/lookouts">Lookouts</a>
       </li>
       <li class="hidden-phone <c:if test="${nav == 'stats'}"> active</c:if>"><a
           href="/admin/stats">Statistics</a>

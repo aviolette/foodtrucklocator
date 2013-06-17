@@ -1,5 +1,7 @@
 package foodtruck.model;
 
+import java.util.List;
+
 import com.google.common.base.Objects;
 
 /**
@@ -7,13 +9,20 @@ import com.google.common.base.Objects;
  * @author aviolette
  * @since 5/17/13
  */
-public class TruckObserver {
+public class TruckObserver extends ModelEntity {
   private final String twitterHandle;
   private final Location location;
+  private final List<String> keywords;
 
-  public TruckObserver(String twitterHandle, Location location) {
+  public TruckObserver(String twitterHandle, Location location, List<String> keywords) {
+    super(twitterHandle);
     this.location = location;
     this.twitterHandle = twitterHandle;
+    this.keywords = keywords;
+  }
+
+  public List<String> getKeywords() {
+    return keywords;
   }
 
   @Override public int hashCode() {

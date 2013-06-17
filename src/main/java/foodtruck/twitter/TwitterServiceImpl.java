@@ -1,6 +1,5 @@
 package foodtruck.twitter;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -229,8 +228,8 @@ public class TwitterServiceImpl implements TwitterService {
     Location uofc = locator.locate("58th and Ellis, Chicago, IL", GeolocationGranularity.NARROW);
     Map<Truck, TweetSummary> trucksAdded = Maps.newHashMap();
     List<TruckStop> truckStops = Lists.newLinkedList();
-    for (TruckObserver observer : ImmutableList.of(new TruckObserver("uchinomgo", uofc),
-        new TruckObserver("mdw2mnl", uofc))) {
+    for (TruckObserver observer : ImmutableList.of(new TruckObserver("uchinomgo", uofc, ImmutableList.<String>of()),
+        new TruckObserver("mdw2mnl", uofc, ImmutableList.<String>of()))) {
       final List<TweetSummary> tweets = tweetDAO.findTweetsAfter(clock.now().minusHours(HOURS_BACK_TO_SEARCH),
           observer.getTwitterHandle(), false);
       for (TweetSummary tweet : tweets) {
