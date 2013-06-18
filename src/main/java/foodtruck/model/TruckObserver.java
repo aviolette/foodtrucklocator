@@ -53,4 +53,13 @@ public class TruckObserver extends ModelEntity {
   public Location getLocation() {
     return location;
   }
+
+  public boolean containsKeyword(String text) {
+    for (String keyword : keywords) {
+      if (text.contains(keyword)) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

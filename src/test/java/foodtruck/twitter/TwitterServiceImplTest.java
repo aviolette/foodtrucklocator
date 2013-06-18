@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.TruckDAO;
+import foodtruck.dao.TruckObserverDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.dao.TweetCacheDAO;
 import foodtruck.email.EmailNotifier;
@@ -23,6 +24,7 @@ import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
+import foodtruck.model.TruckObserver;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TweetSummary;
 import foodtruck.schedule.OffTheRoadDetector;
@@ -61,6 +63,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
   private GeoLocator locator;
   private Location uofc;
   private Truck truck1;
+  private TruckObserverDAO truckObserverDAO;
 
   @Before
   public void before() {
@@ -90,10 +93,11 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     terminationDetector = createMock(TerminationDetector.class);
     ConfigurationDAO configDAO = createMock(ConfigurationDAO.class);
     offTheRoadDetector = createMock(OffTheRoadDetector.class);
+    truckObserverDAO = createMock(TruckObserverDAO.class);
     service = new TwitterServiceImpl(twitterFactory, tweetDAO, zone, matcher,
         truckStopDAO,
         clock, terminationDetector, new LocalCacheUpdater(), truckDAO,
-        new LoggingTruckStopNotifier(), configDAO, emailNotifier, offTheRoadDetector, locator);
+        new LoggingTruckStopNotifier(), configDAO, emailNotifier, offTheRoadDetector, locator, truckObserverDAO);
     loca = Location.builder().lat(1).lng(2).name("a").build();
     locb = Location.builder().lat(3).lng(4).name("b").build();
     basicTweet = new TweetSummary.Builder().time(now.minusHours(2)).text(
@@ -261,6 +265,10 @@ public class TwitterServiceImplTest extends EasyMockSupport {
 
   @Test
   public void testObserverTwittalyzerNoTweets() {
+    Location uchicago = Location.builder().lat(-234).lng(-432).name("University of Chicago").build();
+    expect(truckObserverDAO.findAll()).andReturn(ImmutableList.of(
+        new TruckObserver("uchinomgo", uchicago, ImmutableList.of("breakfast", "lunch")),
+        new TruckObserver("mdw2mnl", uchicago, ImmutableList.of("breakfast", "lunch"))));
     expect(tweetDAO.findTweetsAfter(now.minusHours(6), "uchinomgo", false)).andReturn(ImmutableList.<TweetSummary>of());
     expect(tweetDAO.findTweetsAfter(now.minusHours(6), "mdw2mnl", false)).andReturn(ImmutableList.<TweetSummary>of());
     replayAll();
@@ -270,6 +278,10 @@ public class TwitterServiceImplTest extends EasyMockSupport {
 
   @Test
   public void testObserverTwittalyzerTweetsWithNoHashTag() {
+    Location uchicago = Location.builder().lat(-234).lng(-432).name("University of Chicago").build();
+    expect(truckObserverDAO.findAll()).andReturn(ImmutableList.of(
+        new TruckObserver("uchinomgo", uchicago, ImmutableList.of("breakfast", "lunch")),
+        new TruckObserver("mdw2mnl", uchicago, ImmutableList.of("breakfast", "lunch"))));
     TweetSummary tweet1 = new TweetSummary.Builder().userId("uchinomgo").ignoreInTwittalyzer(false)
         .text("Today we have these food trucks: @CaponiesExp @threejsbbq").build();
     expect(tweetDAO.findTweetsAfter(now.minusHours(6), "uchinomgo", false))
@@ -283,6 +295,10 @@ public class TwitterServiceImplTest extends EasyMockSupport {
 
   @Test
   public void testObserverTwittalyzerTweetsNoExistingStops() {
+    Location uchicago = Location.builder().lat(-234).lng(-432).name("University of Chicago").build();
+    expect(truckObserverDAO.findAll()).andReturn(ImmutableList.of(
+        new TruckObserver("uchinomgo", uchicago, ImmutableList.of("breakfast", "lunch")),
+        new TruckObserver("mdw2mnl", uchicago, ImmutableList.of("breakfast", "lunch"))));
     TweetSummary tweet1 = new TweetSummary.Builder().userId("uchinomgo").ignoreInTwittalyzer(false)
         .text("For lunch we have these #foodtrucks: @CaponiesExp @threejsbbq @somethingelse").build();
     truck1 = Truck.builder(truck1).twitterHandle("caponiesexp").id("caponiesexp").build();
@@ -305,6 +321,10 @@ public class TwitterServiceImplTest extends EasyMockSupport {
 
   @Test
   public void testMultiple() {
+    Location uchicago = Location.builder().lat(-234).lng(-432).name("University of Chicago").build();
+    expect(truckObserverDAO.findAll()).andReturn(ImmutableList.of(
+        new TruckObserver("uchinomgo", uchicago, ImmutableList.of("breakfast", "#foodtrucks")),
+        new TruckObserver("mdw2mnl", uchicago, ImmutableList.of("breakfast", "lunch"))));
     TweetSummary tweet1 = new TweetSummary.Builder().userId("uchinomgo").ignoreInTwittalyzer(false)
         .text("For lunch we have these #foodtrucks: @CaponiesExp @threejsbbq @somethingelse").build();
     TweetSummary tweet2 = new TweetSummary.Builder().userId("mdw2mnl").ignoreInTwittalyzer(false)

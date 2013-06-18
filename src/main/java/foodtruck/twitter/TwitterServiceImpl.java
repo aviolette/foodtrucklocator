@@ -31,6 +31,7 @@ import org.joda.time.LocalDate;
 
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.TruckDAO;
+import foodtruck.dao.TruckObserverDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.dao.TweetCacheDAO;
 import foodtruck.email.EmailNotifier;
@@ -78,6 +79,7 @@ public class TwitterServiceImpl implements TwitterService {
   private final EmailNotifier emailNotifier;
   private final OffTheRoadDetector offTheRoadDetector;
   private final GeoLocator locator;
+  private final TruckObserverDAO truckObserverDAO;
 
   @Inject
   public TwitterServiceImpl(TwitterFactoryWrapper twitter, TweetCacheDAO tweetDAO,
@@ -85,7 +87,8 @@ public class TwitterServiceImpl implements TwitterService {
       TruckStopMatcher matcher, TruckStopDAO truckStopDAO, Clock clock,
       TerminationDetector detector, TweetCacheUpdater updater, TruckDAO truckDAO,
       TruckStopNotifier truckStopNotifier, ConfigurationDAO configDAO,
-      EmailNotifier notifier, OffTheRoadDetector offTheRoadDetector, GeoLocator locator) {
+      EmailNotifier notifier, OffTheRoadDetector offTheRoadDetector, GeoLocator locator,
+      TruckObserverDAO truckObserverDAO) {
     this.tweetDAO = tweetDAO;
     this.twitterFactory = twitter;
     this.defaultZone = zone;
@@ -100,6 +103,7 @@ public class TwitterServiceImpl implements TwitterService {
     this.emailNotifier = notifier;
     this.offTheRoadDetector = offTheRoadDetector;
     this.locator = locator;
+    this.truckObserverDAO = truckObserverDAO;
   }
 
   @Override @Monitored
@@ -222,14 +226,12 @@ public class TwitterServiceImpl implements TwitterService {
   }
 
   public void observerTwittalyze() {
-    //TODO: This should all be configurable
     LocalDate today = clock.currentDay();
     DateTime now = clock.now();
     Location uofc = locator.locate("58th and Ellis, Chicago, IL", GeolocationGranularity.NARROW);
     Map<Truck, TweetSummary> trucksAdded = Maps.newHashMap();
     List<TruckStop> truckStops = Lists.newLinkedList();
-    for (TruckObserver observer : ImmutableList.of(new TruckObserver("uchinomgo", uofc, ImmutableList.<String>of()),
-        new TruckObserver("mdw2mnl", uofc, ImmutableList.<String>of()))) {
+    for (TruckObserver observer : truckObserverDAO.findAll()) {
       final List<TweetSummary> tweets = tweetDAO.findTweetsAfter(clock.now().minusHours(HOURS_BACK_TO_SEARCH),
           observer.getTwitterHandle(), false);
       for (TweetSummary tweet : tweets) {
@@ -238,8 +240,7 @@ public class TwitterServiceImpl implements TwitterService {
         }
         log.log(Level.INFO, "Handling observer tweet: {0}", tweet);
         String lowerText = tweet.getText().toLowerCase();
-        if ((lowerText.contains("#foodtrucks") || lowerText.contains("breakfast") || lowerText.contains("lunch"))
-            && !tweet.isReply()) {
+        if (observer.containsKeyword(lowerText) && !tweet.isReply()) {
           for (String twitterHandle : parseHandles(tweet.getText())) {
             Truck truck = Iterables.getFirst(truckDAO.findByTwitterId(twitterHandle), null);
             if (truck == null || trucksAdded.containsKey(truck)) {
