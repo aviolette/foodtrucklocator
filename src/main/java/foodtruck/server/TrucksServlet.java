@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Collection;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,6 +15,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
+import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
 import foodtruck.truckstops.FoodTruckStopService;
@@ -27,21 +27,23 @@ import foodtruck.util.Clock;
  * @since 5/20/13
  */
 @Singleton
-public class TrucksServlet extends HttpServlet {
+public class TrucksServlet extends FrontPageServlet {
   private final TruckDAO truckDAO;
   private final FoodTruckStopService stops;
   private final Clock clock;
   private final DateTimeZone zone;
 
   @Inject
-  public TrucksServlet(TruckDAO trucks, FoodTruckStopService stops, Clock clock, DateTimeZone zone) {
+  public TrucksServlet(ConfigurationDAO configurationDAO, TruckDAO trucks, FoodTruckStopService stops,
+      Clock clock, DateTimeZone zone) {
+    super(configurationDAO);
     this.truckDAO = trucks;
     this.stops = stops;
     this.clock = clock;
     this.zone = zone;
   }
 
-  @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+  @Override protected void doGetProtected(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     final String requestURI = req.getRequestURI();
     String truckId = (requestURI.equals("/trucks") || requestURI.equals("/trucks/") ? null : requestURI.substring(8));

@@ -3,7 +3,6 @@ package foodtruck.server;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,6 +12,7 @@ import com.google.inject.Singleton;
 
 import org.joda.time.DateTimeZone;
 
+import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.EventDAO;
 import foodtruck.util.Clock;
 
@@ -21,19 +21,20 @@ import foodtruck.util.Clock;
  * @since 5/30/13
  */
 @Singleton
-public class EventsServlet extends HttpServlet {
+public class EventsServlet extends FrontPageServlet {
   private final Clock clock;
   private final DateTimeZone zone;
   private final EventDAO eventDAO;
 
   @Inject
-  public EventsServlet(EventDAO dao, Clock clock, DateTimeZone zone) {
+  public EventsServlet(ConfigurationDAO configurationDAO, EventDAO dao, Clock clock, DateTimeZone zone) {
+    super(configurationDAO);
     this.eventDAO = dao;
     this.clock = clock;
     this.zone = zone;
   }
 
-  @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+  @Override protected void doGetProtected(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     final String requestURI = req.getRequestURI();
     String eventId = (requestURI.equals("/events") || requestURI.equals("/events/") ? null : requestURI.substring(8));

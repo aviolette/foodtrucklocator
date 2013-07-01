@@ -55,7 +55,7 @@ public class FoodTruckServlet extends FrontPageServlet {
   }
 
   @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+  protected void doGetProtected(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     final String path = req.getRequestURI();
     final String serverName = req.getServerName();

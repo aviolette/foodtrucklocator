@@ -1,8 +1,16 @@
 package foodtruck.server;
 
+import java.io.IOException;
+
 import javax.annotation.Nullable;
+import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.model.Location;
@@ -17,6 +25,16 @@ public abstract class FrontPageServlet extends HttpServlet {
   public FrontPageServlet(ConfigurationDAO configDAO) {
     this.configurationDAO = configDAO;
   }
+
+  @Override protected final void doGet(HttpServletRequest req, HttpServletResponse resp)
+      throws ServletException, IOException {
+    UserService userService = UserServiceFactory.getUserService();
+    req.setAttribute("isAdmin", userService.isUserLoggedIn() && userService.isUserAdmin());
+    doGetProtected(req, resp);
+  }
+
+  protected abstract void doGetProtected(HttpServletRequest req, HttpServletResponse resp)
+      throws ServletException, IOException;
 
   protected Location getCenter(@Nullable Cookie[] cookies) {
     double lat = 0, lng = 0;

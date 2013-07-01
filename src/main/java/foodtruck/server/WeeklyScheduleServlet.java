@@ -39,7 +39,7 @@ public class WeeklyScheduleServlet extends FrontPageServlet {
     this.formatter = formatter;
   }
 
-  @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+  @Override protected void doGetProtected(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     String dateString = req.getParameter("date");
     DateTime theDate;
