@@ -53,7 +53,14 @@ public class TrucksServlet extends FrontPageServlet {
     final Collection<Truck> trucks = truckDAO.findVisibleTrucks();
     req.setAttribute("trucks", trucks);
     if (!Strings.isNullOrEmpty(truckId)) {
+      if (truckId.endsWith("/")) {
+        truckId = truckId.substring(0, truckId.length() - 1);
+      }
       Truck truck = truckDAO.findById(truckId);
+      if (truck == null) {
+        resp.sendError(404, "Page cannot be found: " + truckId);
+        return;
+      }
       req.setAttribute("truck", truck);
       LocalDate firstDay = clock.firstDayOfWeek();
       req.setAttribute("stops", stops.findSchedules(truck.getId(), new Interval(firstDay.toDateTimeAtStartOfDay(zone),
