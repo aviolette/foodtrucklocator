@@ -2,18 +2,20 @@
 <div class="row" style="padding-top: 20px">
   <div id="sidebar" class="span3" style="overflow-y: auto">
     <ul class="nav nav-list">
-      <li class="nav-header">ACTIVE TRUCKS</li>
+      <li class="nav-header">TRUCKS AND VENDORS</li>
       <c:forEach var="tr" items="${trucks}">
         <c:if test="${!tr.inactive}">
           <li><a class="<c:if test="${tr.id == truck.id}">active</c:if>" href="/trucks/${tr.id}">${tr.name}</a></li>
         </c:if>
       </c:forEach>
+      <%--
       <li class="nav-header">INACTIVE TRUCKS</li>
       <c:forEach var="tr" items="${trucks}">
         <c:if test="${tr.inactive}">
           <li><a class="<c:if test="${tr.id == truck.id}">active</c:if>" href="/trucks/${tr.id}">${tr.name}</a></li>
         </c:if>
       </c:forEach>
+      --%>
     </ul>
   </div>
   <div id="content" class="span9">
@@ -22,6 +24,8 @@
         <div class="row">
           <div class="span4">
             <h2>${truck.name}</h2>
+
+            <c:if test="${truck.popupVendor}"><p><span class="badge badge-info">Popup Vendor</span></p></c:if>
 
             <p>${truck.description}</p>
 
