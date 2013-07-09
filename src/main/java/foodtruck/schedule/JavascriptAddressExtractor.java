@@ -32,19 +32,22 @@ public class JavascriptAddressExtractor implements AddressExtractor {
   }
 
   @Override public List<String> parse(String tweet, Truck truck) {
-    ScriptEngine jsEngine = scriptEngineManager.getEngineByName("JavaScript");
     String script = dao.find().getScript();
     try {
-      //TODO: sandbox
-      ImmutableList.Builder<String> items = ImmutableList.builder();
-      jsEngine.put("matchedItems", items);
-      jsEngine.put("tweet", tweet);
-      jsEngine.put("truck", truck);
-      jsEngine.eval(script);
-      return items.build();
+      return executeScript(tweet, truck, script);
     } catch (ScriptException ex) {
       log.log(Level.SEVERE, ex.getMessage(), ex);
       return ImmutableList.of();
     }
+  }
+
+  public List<String> executeScript(String tweet, Truck truck, String script) throws ScriptException {
+    ScriptEngine jsEngine = scriptEngineManager.getEngineByName("JavaScript");
+    ImmutableList.Builder<String> items = ImmutableList.builder();
+    jsEngine.put("matchedItems", items);
+    jsEngine.put("tweet", tweet);
+    jsEngine.put("truck", truck);
+    jsEngine.eval(script);
+    return items.build();
   }
 }

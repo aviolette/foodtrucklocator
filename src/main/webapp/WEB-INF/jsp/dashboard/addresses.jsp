@@ -16,30 +16,33 @@
 
   function refreshAddressRules() {
     $.ajax({
-      url : '/services/addressRules',
-      success : function(data) {
+      url: '/services/addressRules',
+      success: function (data) {
         editor.setValue(data["script"]);
         editor.gotoLine(0);
       }
     });
   }
-  $(document).ready(function() {
-    $("#scriptSaveButton").click(function(e) {
+  $(document).ready(function () {
+    $("#scriptSaveButton").click(function (e) {
       e.preventDefault();
       $("#scriptSaveButton").button("loading");
-      var stop = {script : editor.getValue()}
+      var stop = {script: editor.getValue()}
       $.ajax({
         url: "/services/addressRules",
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(stop),
-        complete: function(e) {
-          flash("Successfully saved script");
-          dissolveFlash();
+        complete: function (e) {
           $("#scriptSaveButton").button("reset");
           $('#addressRuleModal').modal('hide');
         },
-        success: function(e) {
+        error: function (e) {
+          flash(e.responseText, "alert-error");
+        },
+        success: function (e) {
+          flash("Successfully saved script");
+          dissolveFlash();
         }
       });
     });

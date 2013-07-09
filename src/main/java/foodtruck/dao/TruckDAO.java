@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import foodtruck.model.Truck;
 
 /**
@@ -39,4 +41,9 @@ public interface TruckDAO extends DAO<String, Truck> {
    * Find all the visible trucks, ordered by name
    */
   List<Truck> findVisibleTrucks();
+
+  /**
+   * Returns the first truck in the db
+   */
+  @Nullable Truck findFirst();
 }

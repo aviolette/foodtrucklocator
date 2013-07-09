@@ -4,12 +4,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Text;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
@@ -159,6 +162,10 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
         new Query(TRUCK_KIND)
             .setFilter(new Query.FilterPredicate(TRUCK_HIDDEN, Query.FilterOperator.EQUAL, false))
             .addSort(TRUCK_NAME_FIELD));
+  }
+
+  @Nullable @Override public Truck findFirst() {
+    return Iterables.getFirst(findAll(), null);
   }
 
   @Override public Set<Truck> findTrucksWithCalendars() {
