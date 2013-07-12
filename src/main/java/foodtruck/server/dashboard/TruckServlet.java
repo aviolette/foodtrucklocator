@@ -155,14 +155,14 @@ public class TruckServlet extends HttpServlet {
       throws ServletException, IOException {
     if (req.getRequestURI().endsWith("/configuration")) {
       handleConfigurationPost(req, resp);
-    } else if(req.getRequestURI().endsWith("/offtheroad")) {
+    } else if (req.getRequestURI().endsWith("/offtheroad")) {
       handleOffTheRoadPost(req, resp);
     } else {
       handleTweetUpdate(req, resp);
     }
   }
 
-  private void handleOffTheRoadPost(HttpServletRequest req, HttpServletResponse resp) {
+  private void handleOffTheRoadPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     String truckId = req.getRequestURI();
     truckId = truckId.substring(14, truckId.lastIndexOf('/'));
     TruckSchedule stops = truckService.findStopsForDay(truckId, clock.currentDay());
@@ -173,6 +173,7 @@ public class TruckServlet extends HttpServlet {
     t = Truck.builder(t).muteUntil(clock.currentDay().toDateMidnight(zone).toDateTime().plusDays(1))
         .build();
     truckDAO.save(t);
+    resp.sendRedirect("/admin/trucks");
 
   }
 
