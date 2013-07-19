@@ -18,7 +18,19 @@ public class TruckStop extends ModelEntity {
   private final DateTime endTime;
   private final Location location;
   private final boolean locked;
+  private final @Nullable DateTime fromBeacon;
 
+  private TruckStop(Builder builder) {
+    super(builder.key);
+    truck = builder.truck;
+    startTime = builder.startTime;
+    endTime = builder.endTime;
+    location = builder.location;
+    locked = builder.locked;
+    fromBeacon = builder.fromBeacon;
+  }
+
+  @Deprecated // use builder instead
   public TruckStop(Truck truck, DateTime startTime, DateTime endTime, Location location,
       @Nullable Long key, boolean locked) {
     super(key);
@@ -27,6 +39,7 @@ public class TruckStop extends ModelEntity {
     this.endTime = endTime;
     this.location = location;
     this.locked = locked;
+    this.fromBeacon = null;
   }
 
   public boolean isLocked() {
@@ -111,5 +124,82 @@ public class TruckStop extends ModelEntity {
    */
   public boolean hasExpiredBy(DateTime currentTime) {
     return endTime.isBefore(currentTime);
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static Builder builder(TruckStop stop) {
+    return new Builder(stop);
+  }
+
+  public @Nullable DateTime getBeaconTime() {
+    return fromBeacon;
+  }
+
+  public boolean isFromBeacon() {
+    return fromBeacon != null;
+  }
+
+  public static class Builder {
+    private Truck truck;
+    private DateTime startTime;
+    private DateTime endTime;
+    private Location location;
+    private boolean locked;
+    private @Nullable DateTime fromBeacon;
+    private @Nullable Long key;
+
+    private Builder() {}
+
+    private Builder(TruckStop stop) {
+      truck = stop.getTruck();
+      startTime = stop.getStartTime();
+      endTime = stop.getEndTime();
+      location = stop.getLocation();
+      locked = stop.isLocked();
+      fromBeacon = stop.getBeaconTime();
+      key = (Long) stop.getKey();
+    }
+
+    public Builder key(@Nullable Long key) {
+      this.key = key;
+      return this;
+    }
+
+    public Builder truck(Truck truck) {
+      this.truck = truck;
+      return this;
+    }
+
+    public Builder startTime(DateTime dateTime) {
+      this.startTime = dateTime;
+      return this;
+    }
+
+    public Builder endTime(DateTime endTime) {
+      this.endTime = endTime;
+      return this;
+    }
+
+    public Builder location(Location location) {
+      this.location = location;
+      return this;
+    }
+
+    public Builder locked(boolean locked) {
+      this.locked = locked;
+      return this;
+    }
+
+    public Builder fromBeacon(@Nullable DateTime fromBeacon) {
+      this.fromBeacon = fromBeacon;
+      return this;
+    }
+
+    public TruckStop build() {
+      return new TruckStop(this);
+    }
   }
 }

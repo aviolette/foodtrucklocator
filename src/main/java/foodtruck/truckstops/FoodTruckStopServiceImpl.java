@@ -26,6 +26,8 @@ import org.joda.time.LocalDate;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
+import foodtruck.geolocation.GeoLocator;
+import foodtruck.beaconnaise.BeaconSignal;
 import foodtruck.model.DailySchedule;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
@@ -36,6 +38,7 @@ import foodtruck.model.TruckStop;
 import foodtruck.model.WeeklySchedule;
 import foodtruck.schedule.ScheduleStrategy;
 import foodtruck.util.Clock;
+import foodtruck.util.ServiceException;
 
 /**
  * @author aviolette@gmail.com
@@ -48,15 +51,17 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   private static final Logger log = Logger.getLogger(FoodTruckStopServiceImpl.class.getName());
   private final Clock clock;
   private final LocationDAO locationDAO;
+  private final GeoLocator geolocator;
 
   @Inject
   public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, ScheduleStrategy googleCalendar,
-      Clock clock, TruckDAO truckDAO, LocationDAO locationDAO) {
+      Clock clock, TruckDAO truckDAO, LocationDAO locationDAO, GeoLocator geoLocator) {
     this.truckStopDAO = truckStopDAO;
     this.scheduleStrategy = googleCalendar;
     this.clock = clock;
     this.truckDAO = truckDAO;
     this.locationDAO = locationDAO;
+    this.geolocator = geoLocator;
   }
 
   @Override
@@ -142,6 +147,71 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
         })
         .toList());
   }
+
+  @Override public TruckStop handleBeacon(BeaconSignal signal) {
+    TruckStop matched = null, afterMatch = null;
+    DateTime now = clock.now();
+    Truck truck = null;
+    for ( TruckStop stop : truckStopDAO.findDuring(signal.getTruckId(), clock.currentDay())) {
+      if (truck == null) {
+        truck = stop.getTruck();
+      }
+      if (matched != null || stop.getStartTime().isAfter(now)) {
+        afterMatch = stop;
+        break;
+      }
+      if (stop.activeDuring(now)) {
+        matched = stop;
+      }
+    }
+
+    final DateTime
+        startTime = (matched == null) ? clock.now() : matched.getStartTime(),
+        greaterEndTime = greaterOf(startTime.plusHours(2), clock.now().plusMinutes(5)),
+        endTime = (afterMatch == null) ? greaterEndTime :
+            lesserOf(greaterEndTime, afterMatch.getStartTime().plusMinutes(5));
+    Location locWithName = signal.getLocation();
+
+    TruckStop newStop;
+    if (matched != null) {
+      // same location
+      if (matched.getLocation().within(0.01).milesOf(signal.getLocation())) {
+        newStop = TruckStop.builder(matched).endTime(endTime).fromBeacon(clock.now()).build();
+      } else {
+        try {
+          locWithName = geolocator.reverseLookup(signal.getLocation());
+        } catch (ServiceException se) {
+          log.log(Level.WARNING, se.getMessage(), se);
+        }
+        matched = TruckStop.builder(matched).endTime(clock.now()).build();
+        truckStopDAO.save(matched);
+        newStop = TruckStop.builder().truck(truck).startTime(clock.now()).endTime(endTime)
+            .location(locWithName).fromBeacon(clock.now()).build();
+      }
+    } else {
+      if (truck == null) {
+        truck = truckDAO.findById(signal.getTruckId());
+      }
+      try {
+        locWithName = geolocator.reverseLookup(signal.getLocation());
+      } catch (ServiceException se) {
+        log.log(Level.WARNING, se.getMessage(), se);
+      }
+      newStop = TruckStop.builder().truck(truck).startTime(startTime).endTime(endTime)
+          .location(locWithName).fromBeacon(clock.now()).build();
+    }
+    truckStopDAO.save(newStop);
+    return newStop;
+  }
+
+  private DateTime lesserOf(DateTime dateTime1, DateTime dateTime2) {
+    return dateTime1.isBefore(dateTime2) ? dateTime1 : dateTime2;
+  }
+
+  private DateTime greaterOf(DateTime dateTime1, DateTime dateTime2) {
+    return (dateTime1.isBefore(dateTime2)) ? dateTime2 : dateTime1;
+  }
+
 
   @Override public List<DailySchedule> findSchedules(String truckId, Interval range) {
     List<TruckStop> stopList = truckStopDAO.findOverRange(truckId, range);

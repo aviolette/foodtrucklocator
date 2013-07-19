@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PropertyContainer;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
@@ -32,7 +33,7 @@ public class Attributes {
     return (String) entity.getProperty(propertyName);
   }
 
-  public static void setDateProperty(String propertyName, Entity entity,
+  public static void setDateProperty(String propertyName, PropertyContainer entity,
       @Nullable DateTime dateTime) {
     if (dateTime == null) {
       entity.setProperty(propertyName, null);

@@ -53,4 +53,6 @@ public interface TruckDAO extends DAO<String, Truck> {
    * @return the collection of trucks
    */
   Collection<Truck> findByCategory(String tag);
+
+  Set<Truck> findByBeaconnaiseEmail(String email);
 }

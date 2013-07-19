@@ -35,26 +35,14 @@ public class Truck extends ModelEntity {
   private final Pattern matchOnlyIf;
   private final Pattern donotMatchIf;
   private final boolean inactive;
-  private
-  @Nullable
-  final String calendarUrl;
-  private final
-  @Nullable
-  String email;
-  private final
-  @Nullable
-  String phone;
+  private @Nullable final String calendarUrl;
+  private final @Nullable String email;
+  private final @Nullable String phone;
   private final boolean twitterGeolocationDataValid;
-  private final
-  @Nullable
-  DateTime muteUntil;
+  private final @Nullable DateTime muteUntil;
   private final String yelpSlug;
-  private final
-  @Nullable
-  String facebookPageId;
-  private final
-  @Nullable
-  Stats stats;
+  private final @Nullable String facebookPageId;
+  private final @Nullable Stats stats;
   private final boolean hidden;
   private final Set<String> beaconnaiseEmails;
 

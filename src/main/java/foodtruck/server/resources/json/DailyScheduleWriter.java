@@ -69,12 +69,14 @@ public class DailyScheduleWriter implements MessageBodyWriter<DailySchedule>, JS
     }
     JSONArray schedules = new JSONArray();
     for (TruckStop stop : schedule.getStops()) {
+      // TODO: use TruckStopWriter!
       JSONObject truckStop = new JSONObject()
           .put("location", locations.get(stop.getLocation()))
           .put("truckId", stop.getTruck().getId())
           .put("startTime", formatter.print(stop.getStartTime()))
           .put("startMillis", stop.getStartTime().getMillis())
           .put("endMillis", stop.getEndTime().getMillis())
+          .put("fromBeacon", stop.isFromBeacon())
           .put("endTime", formatter.print(stop.getEndTime()));
       schedules.put(truckStop);
     }

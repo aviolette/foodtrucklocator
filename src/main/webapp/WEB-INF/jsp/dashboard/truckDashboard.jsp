@@ -268,12 +268,13 @@
         var numStops = schedule["stops"].length;
         var prevHadStart = false;
         $.each(schedule["stops"], function (truckIndex, stop) {
-          var lockedString = (stop.locked) ? "&nbsp;<span class=\"label important\">locked</span>" :
+          var labels = (stop.locked) ? "&nbsp;<span class=\"label important\">locked</span>" :
               "";
+          labels += (stop.fromBeacon) ? "&nbsp;<span class=\"label important\">beacon</span>" : "";
           var buf = "<tr><td>" + stop.startTime + "</td><td>" + stop.endTime +
               "</td><td>" + stop.duration + "</td><td><a href='/admin/locations?q=" + encodeURIComponent(stop.location.name) +
               "'>"
-              + stop.location.name + "</a>" + lockedString + "</td><td>";
+              + stop.location.name + "</a>" + labels + "</td><td>";
           if (!prevHadStart && now < stop.startTimeMillis) {
             prevHadStart = true;
             buf = buf + "<button  id='truckStartNow" + truckIndex +

@@ -76,6 +76,7 @@ public class TruckScheduleWriter implements MessageBodyWriter<TruckSchedule> {
           .put("location", locationWriter.writeLocation(stop.getLocation(), 0, false))
           .put("id", stop.getKey())
           .put("locked", stop.isLocked())
+          .put("fromBeacon", stop.isFromBeacon())
           .put("startTimeMillis", stop.getStartTime().getMillis())
           .put("endTimeMillis", stop.getEndTime().getMillis())
           .put("duration", p.getHours() + ":" + (p.getMinutes() < 10 ? "0" + p.getMinutes() : p.getMinutes()))

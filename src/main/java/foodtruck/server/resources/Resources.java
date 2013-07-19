@@ -4,6 +4,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.sun.jersey.api.JResponse;
@@ -17,6 +18,11 @@ public class Resources {
     return jResponse.header("Cache-Control", "no-cache")
         .header("Pragma", "no-cache")
         .header("Expires", "Thu, 01 Jan 1970 00:00:00 GMT");
+  }
+
+  public static User getPrincipal() {
+    UserService userService = UserServiceFactory.getUserService();
+    return userService.getCurrentUser();
   }
 
   public static void requiresAdmin() {

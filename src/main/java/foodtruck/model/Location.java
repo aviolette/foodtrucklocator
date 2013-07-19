@@ -98,6 +98,14 @@ public class Location extends ModelEntity {
     return valid && latLng.getLatitude() != 0 && latLng.getLongitude() != 0;
   }
 
+  public boolean containedWithRadiusOf(Location loc) {
+    if (loc.getRadius() == 0) {
+      return false;
+    }
+    return within(loc.getRadius()).milesOf(loc);
+  }
+
+
   @Override
   public String toString() {
     return Objects.toStringHelper(this)
@@ -144,6 +152,10 @@ public class Location extends ModelEntity {
 
   public ScalarDistanceRequest within(double distance) {
     return new ScalarDistanceRequest(distance);
+  }
+
+  public Location withName(String name) {
+    return Location.builder(this).name(name).build();
   }
 
   public static class Builder {

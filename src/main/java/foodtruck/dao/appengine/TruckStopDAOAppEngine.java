@@ -53,6 +53,8 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
   private static final String URL_FIELD = "url";
   private static final String END_TIMESTAMP = "endTimeStamp";
   private static final String START_TIMESTAMP = "startTimeStamp";
+  private static final String BEACON_FIELD = "beaconTime";
+
   private final DatastoreServiceProvider serviceProvider;
   private final DateTimeZone zone;
   private final TruckDAO truckDAO;
@@ -133,6 +135,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
     truckStop.setProperty(DESCRIPTION_FIELD, stop.getLocation().getDescription());
     truckStop.setProperty(URL_FIELD, stop.getLocation().getUrl());
     truckStop.setProperty(LOCKED_FIELD, stop.isLocked());
+    Attributes.setDateProperty(BEACON_FIELD, truckStop, stop.getBeaconTime());
     truckStop.setProperty(END_TIMESTAMP, stop.getEndTime().getMillis());
     truckStop.setProperty(START_TIMESTAMP, stop.getStartTime().getMillis());
   }
@@ -170,15 +173,20 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
     final DateTime startTime = new DateTime(entity.getProperty(START_TIME_FIELD), zone);
     final DateTime endTime = new DateTime(entity.getProperty(END_TIME_FIELD), zone);
     Boolean locked = (Boolean) entity.getProperty(LOCKED_FIELD);
-    return new TruckStop(truckDAO.findById((String) entity.getProperty(TRUCK_ID_FIELD)),
-        startTime, endTime,
-        Location.builder().lat((Double) entity.getProperty(LATITUDE_FIELD))
+    return TruckStop.builder()
+        .truck(truckDAO.findById((String) entity.getProperty(TRUCK_ID_FIELD)))
+        .startTime(startTime)
+        .endTime(endTime)
+        .fromBeacon(Attributes.getDateTime(entity, BEACON_FIELD, zone))
+        .location(Location.builder().lat((Double) entity.getProperty(LATITUDE_FIELD))
             .lng((Double) entity.getProperty(
                 LONGITUDE_FIELD)).name((String) entity.getProperty(LOCATION_NAME_FIELD))
             .description((String) entity.getProperty(DESCRIPTION_FIELD))
             .url((String) entity.getProperty(URL_FIELD))
-            .build(),
-        entity.getKey().getId(), locked == null ? false : locked);
+            .build())
+        .key(entity.getKey().getId())
+        .locked(locked == null ? false : locked)
+        .build();
   }
 
   @Override

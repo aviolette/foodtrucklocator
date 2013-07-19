@@ -73,6 +73,11 @@ public class CacheAndStoreLocator implements GeoLocator {
   @Override
   public @Nullable Location reverseLookup(Location location) {
     // TODO: lookup address in cache (can we do a radius search?)
+    for (Location loc : dao.findPopularLocations()) {
+      if (location.containedWithRadiusOf(loc)) {
+        return location.withName(loc.getName());
+      }
+    }
     try {
       // TODO: in the case where the result does not equal the default value, save location to DB
       log.log(Level.INFO, "Looking up location: {0}", location);
