@@ -99,6 +99,7 @@
 </table>
 <div class="btn-group">
   <button class="btn primary" id="addButton"><i class="icon-calendar"></i>&nbsp;New Event</button>
+  <button class="btn" id="offRoadButton"><i class="icon-trash"></i>Off the Road</button>
   <button class="btn" id="recacheButton"><i class="icon-refresh"></i>&nbsp;Reload from calendar</button>
 </div>
 <h2>Weekly Overview</h2>
@@ -342,6 +343,18 @@
     }
   });
   refreshSchedule();
+  var $offTheRoadButton = $("#offRoadButton");
+  $offTheRoadButton.click(function (evt) {
+    $.ajax({
+      url: "/admin/trucks/${truckId}/offtheroad",
+      type: 'POST',
+      context: document.body,
+      dataType: 'json',
+      complete: function (data) {
+        refreshSchedule();
+      }});
+  });
+
   var $recacheButton = $("#recacheButton");
   $recacheButton.click(function (evt) {
     $recacheButton.empty();
