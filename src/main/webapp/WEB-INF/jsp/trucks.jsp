@@ -1,11 +1,19 @@
 <%@ include file="nextgenheader.jsp" %>
 <div class="row" style="padding-top: 20px">
   <div id="sidebar" class="span3" style="overflow-y: auto">
+    <c:if test="${!empty(filteredBy)}">
+      <div class="alert alert-message">
+        Filtering list by: <strong>${filteredBy}</strong> (<a
+          href="/trucks<c:if test="${!empty(truck)}">/${truck.id}</c:if>">reset truck list</a>).
+      </div>
+
+    </c:if>
     <ul class="nav nav-list">
       <li class="nav-header">TRUCKS AND VENDORS</li>
       <c:forEach var="tr" items="${trucks}">
         <c:if test="${!tr.inactive}">
-          <li><a class="<c:if test="${tr.id == truck.id}">active</c:if>" href="/trucks/${tr.id}">${tr.name}</a></li>
+          <li><a class="<c:if test="${tr.id == truck.id}">active</c:if>"
+                 href="/trucks/${tr.id}<c:if test="${!empty(filteredBy)}">?tag=${filteredBy}</c:if>">${tr.name}</a></li>
         </c:if>
       </c:forEach>
       <%--

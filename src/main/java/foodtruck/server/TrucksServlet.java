@@ -50,7 +50,12 @@ public class TrucksServlet extends FrontPageServlet {
     String jsp = "/WEB-INF/jsp/trucks.jsp";
     req = new GuiceHackRequestWrapper(req, jsp);
     req.setAttribute("tab", "trucks");
-    final Collection<Truck> trucks = truckDAO.findVisibleTrucks();
+    String tag = req.getParameter("tag");
+    final Collection<Truck> trucks = Strings.isNullOrEmpty(tag) ? truckDAO.findVisibleTrucks() :
+        truckDAO.findByCategory(tag);
+    if (!Strings.isNullOrEmpty(tag)) {
+      req.setAttribute("filteredBy", tag);
+    }
     req.setAttribute("trucks", trucks);
     if (!Strings.isNullOrEmpty(truckId)) {
       if (truckId.endsWith("/")) {

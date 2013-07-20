@@ -46,4 +46,11 @@ public interface TruckDAO extends DAO<String, Truck> {
    * Returns the first truck in the db
    */
   @Nullable Truck findFirst();
+
+  /**
+   * Returns a set of trucks filtered by category
+   * @param tag the category
+   * @return the collection of trucks
+   */
+  Collection<Truck> findByCategory(String tag);
 }

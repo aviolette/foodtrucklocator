@@ -11,6 +11,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Text;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
@@ -166,6 +167,16 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
 
   @Nullable @Override public Truck findFirst() {
     return Iterables.getFirst(findAll(), null);
+  }
+
+  @Override public Collection<Truck> findByCategory(String tag) {
+    ImmutableList.Builder<Truck> trucks = ImmutableList.builder();
+    for (Truck truck : findVisibleTrucks()) {
+      if (truck.getCategories().contains(tag)) {
+        trucks.add(truck);
+      }
+    }
+    return trucks.build();
   }
 
   @Override public Set<Truck> findTrucksWithCalendars() {
