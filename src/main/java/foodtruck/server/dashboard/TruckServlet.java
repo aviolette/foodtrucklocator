@@ -217,8 +217,9 @@ public class TruckServlet extends HttpServlet {
     builder.matchOnlyIf(Strings.isNullOrEmpty(matchRegex) ? null : matchRegex);
     String doNotMatchRegex = request.getParameter("donotMatchIf");
     builder.donotMatchIf(Strings.isNullOrEmpty(doNotMatchRegex) ? null : doNotMatchRegex);
-    builder.categories(ImmutableSet
-        .copyOf(Splitter.on(",").omitEmptyStrings().trimResults().split(request.getParameter("categories"))));
+    Splitter splitter = Splitter.on(",").omitEmptyStrings().trimResults();
+    builder.categories(ImmutableSet.copyOf(splitter.split(request.getParameter("categories"))));
+    builder.beaconnaiseEmails(ImmutableSet.copyOf(splitter.split(request.getParameter("beaconnaiseEmails"))));
     return builder.build();
   }
 

@@ -25,6 +25,7 @@ import foodtruck.model.Truck;
 import static foodtruck.dao.appengine.Attributes.getDateTime;
 import static foodtruck.dao.appengine.Attributes.getDoubleProperty;
 import static foodtruck.dao.appengine.Attributes.getLongProperty;
+import static foodtruck.dao.appengine.Attributes.getSetProperty;
 import static foodtruck.dao.appengine.Attributes.getStringProperty;
 
 /**
@@ -61,6 +62,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
   private static final String TRUCK_STATS_LAST_SEEN_WHERE_LAT = "last_seen_lat";
   private static final String TRUCK_STATS_LAST_SEEN_WHERE_LNG = "last_seen_lng";
   private static final String TRUCK_HIDDEN = "hidden";
+  private static final String TRUCK_BEACONNAISE_EMAILS = "beaconnaise_emails";
 
   private DateTimeZone zone;
 
@@ -109,6 +111,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
         .facebookPageId(getStringProperty(entity, TRUCK_FACEBOOK_PAGE_ID))
         .matchOnlyIf((String) entity.getProperty(MATCH_REGEX_FIELD))
         .donotMatchIf((String) entity.getProperty(DONT_MATCH_REGEX_FIELD))
+        .beaconnaiseEmails(getSetProperty(entity, TRUCK_BEACONNAISE_EMAILS))
         .url((String) entity.getProperty(TRUCK_URL))
         .categories(categoriesList == null ? ImmutableSet.<String>of() :
             ImmutableSet.copyOf(categoriesList))
@@ -196,6 +199,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     entity.setProperty(TRUCK_TWITTER_HANDLE, truck.getTwitterHandle());
     entity.setProperty(TRUCK_URL, truck.getUrl());
     entity.setProperty(TRUCK_ICON_URL, truck.getIconUrl());
+    entity.setProperty(TRUCK_BEACONNAISE_EMAILS, truck.getBeaconnaiseEmails());
     entity.setProperty(TRUCK_CALENDAR_URL,
         Strings.isNullOrEmpty(truck.getCalendarUrl()) ? null : truck.getCalendarUrl());
     entity.setProperty(TRUCK_DESCRIPTION_FIELD, new Text(Strings.nullToEmpty(truck.getDescription())));

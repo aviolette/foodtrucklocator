@@ -35,15 +35,28 @@ public class Truck extends ModelEntity {
   private final Pattern matchOnlyIf;
   private final Pattern donotMatchIf;
   private final boolean inactive;
-  private @Nullable final String calendarUrl;
-  private final @Nullable String email;
-  private final @Nullable String phone;
+  private
+  @Nullable
+  final String calendarUrl;
+  private final
+  @Nullable
+  String email;
+  private final
+  @Nullable
+  String phone;
   private final boolean twitterGeolocationDataValid;
-  private final @Nullable DateTime muteUntil;
+  private final
+  @Nullable
+  DateTime muteUntil;
   private final String yelpSlug;
-  private final @Nullable String facebookPageId;
-  private final @Nullable Stats stats;
+  private final
+  @Nullable
+  String facebookPageId;
+  private final
+  @Nullable
+  Stats stats;
   private final boolean hidden;
+  private final Set<String> beaconnaiseEmails;
 
   public static final Function<Truck, String> TO_ID = new Function<Truck, String>() {
     @Nullable @Override public String apply(@Nullable Truck truck) {
@@ -76,6 +89,7 @@ public class Truck extends ModelEntity {
     this.yelpSlug = builder.yelpSlug;
     this.stats = builder.stats;
     this.hidden = builder.hidden;
+    this.beaconnaiseEmails = builder.beaconnaiseEmails;
   }
 
   public boolean isHidden() {
@@ -117,6 +131,15 @@ public class Truck extends ModelEntity {
 
   public Set<String> getCategories() {
     return categories;
+  }
+
+  public Set<String> getBeaconnaiseEmails() {
+    return beaconnaiseEmails;
+  }
+
+  @SuppressWarnings("UnusedDeclaration")
+  public String getBeaconnaiseList() {
+    return Joiner.on(", ").join(beaconnaiseEmails);
   }
 
   public @Nullable String getDescription() {
@@ -365,6 +388,7 @@ public class Truck extends ModelEntity {
     @Nullable
     Stats stats;
     private boolean hidden;
+    public Set<String> beaconnaiseEmails = ImmutableSet.of();
 
     public Builder() {
     }
@@ -392,6 +416,7 @@ public class Truck extends ModelEntity {
       this.hidden = truck.hidden;
       this.phone = truck.phone;
       this.email = truck.email;
+      this.beaconnaiseEmails = truck.beaconnaiseEmails;
     }
 
     public Builder id(String id) {
@@ -401,6 +426,11 @@ public class Truck extends ModelEntity {
 
     public Builder hidden(boolean hidden) {
       this.hidden = hidden;
+      return this;
+    }
+
+    public Builder beaconnaiseEmails(Set<String> emails) {
+      this.beaconnaiseEmails = emails;
       return this;
     }
 
