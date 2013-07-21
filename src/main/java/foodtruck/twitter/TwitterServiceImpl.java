@@ -422,6 +422,8 @@ public class TwitterServiceImpl implements TwitterService {
       if (offTheRoadDetector.offTheRoad(tweet.getText())) {
         try {
           emailNotifier.systemNotifyOffTheRoad(truck, tweet);
+          log.log(Level.INFO, "Ignoring tweet: " + tweet.getText());
+          ignoreTweets(ImmutableList.of(tweet));
           return;
         } catch (Exception e) {
           log.log(Level.WARNING, e.getMessage(), e);
