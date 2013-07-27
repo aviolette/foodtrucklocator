@@ -132,7 +132,7 @@ public class TruckStopMatcher {
       return null;
     }
     DateTime startTime = null;
-    final boolean morning = tweet.getTime().toLocalTime().isBefore(new LocalTime(10, 30));
+    final boolean morning = isMorning(tweet.getTime());
     // TODO: this signals a schedule being tweeted, for now we can't handle that
     final String lowerCaseTweet = tweetText.toLowerCase();
     if (lowerCaseTweet.contains("stops") ||
@@ -194,9 +194,15 @@ public class TruckStopMatcher {
         .build();
   }
 
+  private boolean isMorning(DateTime time) {
+    LocalTime lt = time.toLocalTime();
+    // anything before 4 counts as the previous night
+    return lt.isAfter(new LocalTime(4, 0)) && lt.isBefore(new LocalTime(10, 30));
+  }
+
   /**
    * Tests for tweets like this: <code></code>THE TRUCK: M: 600 W Chicago T: NBC Tower W: Clark & Monroe
-   TH: Madison & Wacker + Montrose & Ravenswood (5pm) F: Lake & Wabash</code>
+   * TH: Madison & Wacker + Montrose & Ravenswood (5pm) F: Lake & Wabash</code>
    * @return
    */
   private boolean containsAbbreviatedSchedule(String tweetText) {
