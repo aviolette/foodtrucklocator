@@ -272,6 +272,19 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
   @Test
+  public void testMatch_shouldntMatchDayOfWeek4() {
+    TruckStopMatch match =
+        tweet("Breakfast Sandwich Satisfaction\n" +
+            "\n" +
+            "Th 7AM Monroe/Wacker \n" +
+            "F 7AM 600WChicago \n" +
+            "Sa 10AM NOSH \n" +
+            "Su 9AM 3627 N Southport")
+            .match();
+    assertNull(match);
+  }
+
+  @Test
   public void testMatch_shouldntMatchDayOfWeek3() {
     TruckStopMatch match =
         tweet("We are having maintenance done this week. We will be at U of C on Weds, " +
