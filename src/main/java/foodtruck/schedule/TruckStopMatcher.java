@@ -70,7 +70,7 @@ public class TruckStopMatcher {
     this.timeRangePattern = Pattern.compile(TIME_RANGE_PATTERN);
     this.configDAO = configDAO;
     this.monPattern = Pattern.compile(
-        "\\b(TUE|WED|Weds|THU|Th|FRI|SAT|Sa|SUN|Su|tuesday|wednesday|thursday|friday|saturday|sunday|tues|thurs|" +
+        "\\b(TUE|Tu|WED|Weds|THU|Th|FRI|SAT|Sa|SUN|Su|tuesday|wednesday|thursday|friday|saturday|sunday|tues|thurs|" +
             TOMORROW + ")\\b",
         Pattern.CASE_INSENSITIVE);
     this.tuesPattern = Pattern.compile(
@@ -78,23 +78,23 @@ public class TruckStopMatcher {
             TOMORROW + ")\\b",
         Pattern.CASE_INSENSITIVE);
     this.wedPattern = Pattern.compile(
-        "\\b(MON|TUE|THU|Th|FRI|SAT|Sa|SUN|Su|monday|tuesday|thursday|friday|saturday|sunday|tues|thurs|" +
+        "\\b(MON|TUE|Tu|THU|Th|FRI|SAT|Sa|SUN|Su|monday|tuesday|thursday|friday|saturday|sunday|tues|thurs|" +
             TOMORROW + ")\\b",
         Pattern.CASE_INSENSITIVE);
     this.thursPattern = Pattern.compile(
-        "\\b(MON|TUE|WED|Weds|FRI|SAT|Sa|SUN|Su|monday|tuesday|wednesday|friday|saturday|sunday|tues|" +
+        "\\b(MON|TUE|Tu|WED|Weds|FRI|SAT|Sa|SUN|Su|monday|tuesday|wednesday|friday|saturday|sunday|tues|" +
             TOMORROW + ")\\b",
         Pattern.CASE_INSENSITIVE);
     this.friPattern = Pattern.compile(
-        "\\b(MON|TUE|WED|Weds|THU|Th|SAT|Sa|SUN|Su|monday|tuesday|wednesday|thursday|saturday|sunday|tues|thurs|" +
+        "\\b(MON|TUE|Tu|WED|Weds|THU|Th|SAT|Sa|SUN|Su|monday|tuesday|wednesday|thursday|saturday|sunday|tues|thurs|" +
             TOMORROW + ")\\b",
         Pattern.CASE_INSENSITIVE);
     this.satPattern = Pattern.compile(
-        "\\b(MON|TUE|WED|Weds|THU|Th|FRI|SUN|Su|monday|tuesday|wednesday|thursday|friday|sunday|tues|thurs|" +
+        "\\b(MON|TUE|Tu|WED|Weds|THU|Th|FRI|SUN|Su|monday|tuesday|wednesday|thursday|friday|sunday|tues|thurs|" +
             TOMORROW + ")\\b",
         Pattern.CASE_INSENSITIVE);
     this.sunPattern = Pattern.compile(
-        "\\b(MON|TUE|WED|Weds|THU|Th|FRI|SAT|Sa|monday|tuesday|wednesday|thursday|friday|saturday|tues|thurs|" +
+        "\\b(MON|TUE|Tu|WED|Weds|THU|Th|FRI|SAT|Sa|monday|tuesday|wednesday|thursday|friday|saturday|tues|thurs|" +
             TOMORROW + ")\\b",
         Pattern.CASE_INSENSITIVE);
     formatter = DateTimeFormat.forPattern("hhmma").withZone(defaultZone);

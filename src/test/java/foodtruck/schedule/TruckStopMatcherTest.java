@@ -367,6 +367,16 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
   @Test
+  public void testMatch_onTuesday() {
+    TruckStopMatch match =
+        tweet("Breakfast sandwich awesomeness meets @DarkMatter2521 bliss.\n" +
+            "\n" +
+            "Tu 7a AON\n" +
+            "W 7a 600WChicago").match();
+    assertNull(match);
+  }
+
+  @Test
   public void testMatch_shouldntMatchTodaysSchedule() {
     TruckStopMatch match = tweet("SweetRideChi: TUES STOPS:  1130a - Taylor & Wood\n" +
         "1245p - UIC Campus Vernon Park Circle by BSB bldg\n" +
