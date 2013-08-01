@@ -22,6 +22,7 @@ public class TruckStop extends ModelEntity {
   private final Location location;
   private final boolean locked;
   private final @Nullable DateTime fromBeacon;
+
   private static final Logger log = Logger.getLogger(TruckStop.class.getName());
   private TruckStop(Builder builder) {
     super(builder.key);
@@ -95,10 +96,14 @@ public class TruckStop extends ModelEntity {
 
   @Override
   public String toString() {
-//    return "";
     try {
-      return Objects.toStringHelper(this).add("truck", truck.getId()).add("startTime", startTime)
-          .add("endTime", endTime).add("location", location).add("locked", locked).toString();
+      Objects.ToStringHelper foo = Objects.toStringHelper(this);
+      foo.add("truck", truck.getId());
+      foo.add("startTime", startTime);
+      foo.add("endTime", endTime);
+      foo.add("location", location);
+      foo.add("locked", locked);
+      return foo.toString();
     } catch (Throwable t) {
       log.log(Level.WARNING, t.getMessage(), t);
       return truck.getId();
@@ -109,7 +114,7 @@ public class TruckStop extends ModelEntity {
    * Returns a new TruckStop with a new startTime
    */
   public TruckStop withStartTime(DateTime startTime) {
-    return new TruckStop(truck, startTime, endTime, location, (Long) getKey(), locked);
+    return TruckStop.builder(this).startTime(startTime).build();
   }
 
   /**
