@@ -102,7 +102,6 @@ public class TruckStop extends ModelEntity {
       foo.add("startTime", startTime);
       foo.add("endTime", endTime);
       foo.add("location", location);
-      foo.add("locked", locked);
       return foo.toString();
     } catch (Throwable t) {
       log.log(Level.WARNING, t.getMessage(), t);
