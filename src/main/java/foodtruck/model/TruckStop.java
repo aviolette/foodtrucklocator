@@ -92,8 +92,9 @@ public class TruckStop extends ModelEntity {
 
   @Override
   public String toString() {
-    return Objects.toStringHelper(this).add("truck", truck.getId()).add("startTime", startTime)
-        .add("endTime", endTime).add("location", location).add("locked", locked).toString();
+    return "";
+//    return Objects.toStringHelper(this).add("truck", truck.getId()).add("startTime", startTime)
+//        .add("endTime", endTime).add("location", location).add("locked", locked).toString();
   }
 
   /**
