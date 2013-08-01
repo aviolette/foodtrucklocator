@@ -1,5 +1,8 @@
 package foodtruck.model;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.annotation.Nullable;
 
 import com.google.common.base.Objects;
@@ -19,7 +22,7 @@ public class TruckStop extends ModelEntity {
   private final Location location;
   private final boolean locked;
   private final @Nullable DateTime fromBeacon;
-
+  private static final Logger log = Logger.getLogger(TruckStop.class.getName());
   private TruckStop(Builder builder) {
     super(builder.key);
     truck = builder.truck;
@@ -92,9 +95,14 @@ public class TruckStop extends ModelEntity {
 
   @Override
   public String toString() {
-    return "";
-//    return Objects.toStringHelper(this).add("truck", truck.getId()).add("startTime", startTime)
-//        .add("endTime", endTime).add("location", location).add("locked", locked).toString();
+//    return "";
+    try {
+      return Objects.toStringHelper(this).add("truck", truck.getId()).add("startTime", startTime)
+          .add("endTime", endTime).add("location", location).add("locked", locked).toString();
+    } catch (Throwable t) {
+      log.log(Level.WARNING, t.getMessage(), t);
+      return truck.getId();
+    }
   }
 
   /**
