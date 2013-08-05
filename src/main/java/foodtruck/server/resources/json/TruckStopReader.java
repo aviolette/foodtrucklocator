@@ -87,7 +87,7 @@ public class TruckStopReader implements MessageBodyReader<TruckStop> {
       checkState(location != null && location.isResolved(), "Location is not resolved");
       long key = obj.optLong("id", 0);
       boolean locked = obj.optBoolean("locked", false);
-      return new TruckStop(truck, startTime, endTime, location, (key > 0) ? key : null, locked);
+      return TruckStop.builder().truck(truck).startTime(startTime).endTime(endTime).location(location).key((key > 0) ? key : null).locked(locked).build();
     } catch (JSONException e) {
       throw Throwables.propagate(e);
     }

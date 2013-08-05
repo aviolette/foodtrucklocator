@@ -34,18 +34,6 @@ public class TruckStop extends ModelEntity {
     fromBeacon = builder.fromBeacon;
   }
 
-  @Deprecated // use builder instead
-  public TruckStop(Truck truck, DateTime startTime, DateTime endTime, Location location,
-      @Nullable Long key, boolean locked) {
-    super(key);
-    this.truck = truck;
-    this.startTime = startTime;
-    this.endTime = endTime;
-    this.location = location;
-    this.locked = locked;
-    this.fromBeacon = null;
-  }
-
   public boolean isLocked() {
     return locked;
   }
@@ -97,12 +85,12 @@ public class TruckStop extends ModelEntity {
   @Override
   public String toString() {
     try {
-      Objects.ToStringHelper foo = Objects.toStringHelper(this);
-      foo.add("truck", truck.getId());
-      foo.add("startTime", startTime);
-      foo.add("endTime", endTime);
-      foo.add("location", location);
-      return foo.toString();
+      return Objects.toStringHelper(this)
+          .add("truck", truck.getId())
+          .add("startTime", startTime)
+          .add("endTime", endTime)
+          .add("location", location)
+          .toString();
     } catch (Throwable t) {
       log.log(Level.WARNING, t.getMessage(), t);
       return truck.getId();
@@ -120,7 +108,7 @@ public class TruckStop extends ModelEntity {
    * Returns a new TruckStop with a new endTime
    */
   public TruckStop withEndTime(DateTime endTime) {
-    return new TruckStop(truck, startTime, endTime, location, (Long) getKey(), locked);
+    return TruckStop.builder(this).endTime(endTime).build();
   }
 
   public boolean activeDuring(DateTime dateTime) {
@@ -129,7 +117,7 @@ public class TruckStop extends ModelEntity {
   }
 
   public TruckStop withLocation(Location location) {
-    return new TruckStop(truck, startTime, endTime, location, (Long) getKey(), locked);
+    return TruckStop.builder(this).location(location).build();
   }
 
   /**

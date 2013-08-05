@@ -154,8 +154,9 @@ public class GoogleCalendar implements ScheduleStrategy {
           }
         }
         if (location != null && location.isResolved()) {
-          final TruckStop truckStop = new TruckStop(truck, toJoda(time.getStartTime(), defaultZone),
-              toJoda(time.getEndTime(), defaultZone), location, null, false);
+          final TruckStop truckStop = TruckStop.builder().truck(truck)
+              .startTime(toJoda(time.getStartTime(), defaultZone))
+              .endTime(toJoda(time.getEndTime(), defaultZone)).build();
           log.log(Level.INFO, "Loaded truckstop: {0}", truckStop);
           builder.add(truckStop);
         } else {

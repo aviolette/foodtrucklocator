@@ -188,7 +188,7 @@ public class TruckStopMatcher {
       endTime = startTime.plusHours(stopTime(truck));
     }
     return matchBuilder
-        .stop(new TruckStop(truck, startTime, endTime, location, null, false))
+        .stop(TruckStop.builder().truck(truck).startTime(startTime).endTime(endTime).location(location).build())
         .text(tweetText)
         .terminated(terminationTime != null)
         .build();

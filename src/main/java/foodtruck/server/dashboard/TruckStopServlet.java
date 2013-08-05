@@ -77,7 +77,7 @@ public class TruckStopServlet extends HttpServlet {
         start = start.withTime(11, 30, 0, 0);
       }
       DateTime end = start.plusHours(2);
-      truckStop = new TruckStop(truck, start, end, configDAO.find().getCenter(), null, false);
+      truckStop = TruckStop.builder().truck(truck).startTime(start).endTime(end).location(configDAO.find().getCenter()).build();
     }
     req.setAttribute("nav", "trucks");
     req.setAttribute("truckStop", truckStop);
@@ -106,7 +106,8 @@ public class TruckStopServlet extends HttpServlet {
       locationId = Long.parseLong(req.getParameter("entityId"));
     }
     boolean locked = false;
-    TruckStop stop = new TruckStop(truck, startTime, endTime, location, locationId, locked);
+    TruckStop stop = TruckStop.builder().truck(truck).startTime(startTime).endTime(endTime)
+        .location(location).key(locationId).locked(locked).build();
     truckStopDAO.save(stop);
     resp.sendRedirect("/admin/trucks/" + truckID);
   }

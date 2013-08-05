@@ -248,7 +248,7 @@ public class TwitterServiceImpl implements TwitterService {
             }
             List<TruckStop> trucks = truckStopDAO.findDuring(truck.getId(), today);
             if (trucks.isEmpty()) {
-              truckStops.add(new TruckStop(truck, now, now.plusHours(2), uofc, null, false));
+              truckStops.add(TruckStop.builder().truck(truck).startTime(now).endTime(now.plusHours(2)).location(uofc).build());
               trucksAdded.put(truck, tweet);
             }
           }

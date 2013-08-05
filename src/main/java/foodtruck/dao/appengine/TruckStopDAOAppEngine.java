@@ -96,16 +96,20 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
       final String truckId = getStringProperty(entity, TRUCK_ID_FIELD);
       final Boolean locked = (Boolean) entity.getProperty(LOCKED_FIELD);
       try {
-        stops.add(new TruckStop(truckDAO.findById(truckId),
-            startTime, endTime,
-            Location.builder()
-                .lat(getDoubleProperty(entity, LATITUDE_FIELD, 0d))
-                .lng(getDoubleProperty(entity, LONGITUDE_FIELD, 0d))
-                .name(getStringProperty(entity, LOCATION_NAME_FIELD))
-                .description(getStringProperty(entity, DESCRIPTION_FIELD))
-                .url(getStringProperty(entity, URL_FIELD))
-                .build(),
-            entity.getKey().getId(), locked == null ? false : locked));
+        stops.add(
+            TruckStop.builder()
+                .truck(truckDAO.findById(truckId))
+                .startTime(startTime)
+                .endTime(endTime)
+                .location(
+                    Location.builder()
+                        .lat(getDoubleProperty(entity, LATITUDE_FIELD, 0d))
+                        .lng(getDoubleProperty(entity, LONGITUDE_FIELD, 0d))
+                        .name(getStringProperty(entity, LOCATION_NAME_FIELD))
+                        .description(getStringProperty(entity, DESCRIPTION_FIELD))
+                        .url(getStringProperty(entity, URL_FIELD))
+                        .build())
+                .key(entity.getKey().getId()).locked(locked == null ? false : locked).build());
       } catch (RuntimeException rt) {
         log.log(Level.WARNING, "Error for truckId: " + truckId, rt);
       }
