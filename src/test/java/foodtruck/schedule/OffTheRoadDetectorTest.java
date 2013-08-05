@@ -29,6 +29,17 @@ public class OffTheRoadDetectorTest {
   }
 
   @Test
+  public void offTheRoadStart() throws Exception {
+    assertTrue(topic.offTheRoad("Off the road today for a private event!  After that we have to get a another engine" +
+        " put in so we will not be on... fb.me/Vkebi4sv "));
+  }
+
+  @Test
+  public void inTheShop() throws Exception {
+    assertTrue(topic.offTheRoad("The #Cupcake #Truck's #BRAKES FAILED!!! The truck will be in the shop ALL DAY #today?"));
+  }
+
+  @Test
   public void offTheRoad_mechanical() throws Exception {
     assertTrue(topic.offTheRoad("Encountered a mechanical issue that needs to be addressed ASAP!"));
   }
