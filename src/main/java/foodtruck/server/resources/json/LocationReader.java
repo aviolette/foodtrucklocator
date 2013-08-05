@@ -19,7 +19,8 @@ public class LocationReader {
         .autocomplete(obj.optBoolean("autocomplete", false))
         .radius(obj.getDouble("radius"))
         .name(obj.getString("name")).key((key > 0) ? key : null)
-        .url(obj.optString("url")).description(obj.optString("description"))
+        .url(obj.optString("url"))
+        .description(obj.optString("description"))
         .valid(obj.optBoolean("valid", true)).build();
   }
 }

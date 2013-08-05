@@ -34,6 +34,7 @@ public class LocationWriter implements JSONWriter<Location>, MessageBodyWriter<L
         .put("latitude", location.getLatitude())
         .put("longitude", location.getLongitude())
         .put("radius", location.getRadius())
+        .put("description", location.getDescription())
         .put("name", location.getName());
     if (fullOptions) {
       obj.put("popular", location.isPopular());
