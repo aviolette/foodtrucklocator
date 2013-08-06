@@ -15,10 +15,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import foodtruck.dao.ConfigurationDAO;
+import foodtruck.dao.RetweetsDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckObserverDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.dao.TweetCacheDAO;
+import foodtruck.dao.TwitterNotificationAccountDAO;
 import foodtruck.email.EmailNotifier;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
@@ -27,12 +29,15 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckObserver;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TweetSummary;
+import foodtruck.model.TwitterNotificationAccount;
 import foodtruck.schedule.OffTheRoadDetector;
 import foodtruck.schedule.TerminationDetector;
 import foodtruck.schedule.TruckStopMatch;
 import foodtruck.schedule.TruckStopMatcher;
 import foodtruck.truckstops.LoggingTruckStopNotifier;
 import foodtruck.util.Clock;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 
 /**
@@ -64,11 +69,14 @@ public class TwitterServiceImplTest extends EasyMockSupport {
   private Location uofc;
   private Truck truck1;
   private TruckObserverDAO truckObserverDAO;
+  private RetweetsDAO retweetDAO;
+  private TwitterNotificationAccountDAO notificationDAO;
 
   @Before
   public void before() {
     final TwitterFactoryWrapper twitterFactory = createMock(TwitterFactoryWrapper.class);
     tweetDAO = createMock(TweetCacheDAO.class);
+    retweetDAO = createNiceMock(RetweetsDAO.class);
     truck1 = new Truck.Builder().id(TRUCK_1_ID).twitterHandle(TRUCK_1_ID)
         .useTwittalyzer(false).build();
     truck2 = new Truck.Builder().id(TRUCK_2_ID).twitterHandle(TRUCK_2_ID)
@@ -94,10 +102,13 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     ConfigurationDAO configDAO = createMock(ConfigurationDAO.class);
     offTheRoadDetector = createMock(OffTheRoadDetector.class);
     truckObserverDAO = createMock(TruckObserverDAO.class);
+    notificationDAO = createMock(TwitterNotificationAccountDAO.class);
+    expect(notificationDAO.findAll()).andStubReturn(ImmutableList.<TwitterNotificationAccount>of());
     service = new TwitterServiceImpl(twitterFactory, tweetDAO, zone, matcher,
         truckStopDAO,
         clock, terminationDetector, new LocalCacheUpdater(), truckDAO,
-        new LoggingTruckStopNotifier(), configDAO, emailNotifier, offTheRoadDetector, locator, truckObserverDAO);
+        new LoggingTruckStopNotifier(), configDAO, emailNotifier, offTheRoadDetector, locator, truckObserverDAO,
+        notificationDAO, retweetDAO);
     loca = Location.builder().lat(1).lng(2).name("a").build();
     locb = Location.builder().lat(3).lng(4).name("b").build();
     basicTweet = new TweetSummary.Builder().time(now.minusHours(2)).text(

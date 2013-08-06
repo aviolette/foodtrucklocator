@@ -12,6 +12,7 @@ import com.google.common.collect.Iterables;
 import com.google.gdata.util.common.base.Joiner;
 import com.google.inject.Inject;
 
+import foodtruck.dao.RetweetsDAO;
 import foodtruck.dao.TwitterNotificationAccountDAO;
 import foodtruck.model.Truck;
 import foodtruck.model.TwitterNotificationAccount;
@@ -30,13 +31,15 @@ public class NotificationServiceImpl implements NotificationService {
   private final FoodTruckStopService truckService;
   private final Clock clock;
   private final TwitterNotificationAccountDAO notificationAccountDAO;
+  private final RetweetsDAO retweetsDAO;
 
   @Inject
   public NotificationServiceImpl(FoodTruckStopService truckService, Clock clock,
-      TwitterNotificationAccountDAO notificationAccountDAO) {
+      TwitterNotificationAccountDAO notificationAccountDAO, RetweetsDAO retweetsDAO) {
     this.truckService = truckService;
     this.clock = clock;
     this.notificationAccountDAO = notificationAccountDAO;
+    this.retweetsDAO = retweetsDAO;
   }
 
   @Override public void sendNotifications() {
@@ -50,6 +53,9 @@ public class NotificationServiceImpl implements NotificationService {
         if (trucks.isEmpty()) {
           updateStatus(account, String.format("No trucks at %s today", account.getName()));
         } else {
+          for (Truck truck : trucks) {
+            retweetsDAO.markRetweeted(truck.getId(), account.getTwitterHandle());
+          }
           Joiner joiner = Joiner.on(" ");
           Iterable<String> twitterHandles = Iterables.transform(trucks, new Function<Truck, String>(){
             @Override public String apply(Truck input) {

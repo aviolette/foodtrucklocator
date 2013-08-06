@@ -39,6 +39,7 @@ public class ConfigurationDAOAppEngine extends
   private static final String PROP_SYSTEM_NOTIFICATION_SENDER = "system_notification_sender";
   private static final String PROP_FRONT_DOOR_APP_KEY = "front_door_app_key";
   private static final String PROP_SCHEDULE_CACHING = "schedule_caching";
+  private static final String PROP_RETWEET_STOP_CREATING_TWEETS = "retweet_stop_creation";
 
   @Inject
   public ConfigurationDAOAppEngine(DatastoreServiceProvider provider, DateTimeZone defaultZone) {
@@ -66,6 +67,7 @@ public class ConfigurationDAOAppEngine extends
     entity.setProperty(PROP_SYSTEM_NOTIFICATION_EMAILS, config.getSystemNotificationList());
     entity.setProperty(PROP_FRONT_DOOR_APP_KEY, config.getFrontDoorAppKey());
     entity.setProperty(PROP_SCHEDULE_CACHING, config.isScheduleCachingOn());
+    entity.setProperty(PROP_RETWEET_STOP_CREATING_TWEETS, config.isRetweetStopCreatingTweets());
     return entity;
   }
 
@@ -92,6 +94,7 @@ public class ConfigurationDAOAppEngine extends
         .systemNotificationList(getListProperty(entity, PROP_SYSTEM_NOTIFICATION_EMAILS))
         .notificationSender(getStringProperty(entity, PROP_SYSTEM_NOTIFICATION_SENDER))
         .frontDoorAppKey(getStringProperty(entity, PROP_FRONT_DOOR_APP_KEY))
+        .retweetStopCreatingTweets(getBooleanProperty(entity, PROP_RETWEET_STOP_CREATING_TWEETS, false))
         .scheduleCachingOn(getBooleanProperty(entity, PROP_SCHEDULE_CACHING))
         .center(center)
         .key(entity.getKey())

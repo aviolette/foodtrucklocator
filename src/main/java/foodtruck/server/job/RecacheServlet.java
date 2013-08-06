@@ -20,6 +20,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import foodtruck.dao.RetweetsDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.twitter.TwitterService;
@@ -38,17 +39,18 @@ public class RecacheServlet extends HttpServlet {
   private final DateTimeFormatter timeFormatter;
   private static final Logger log = Logger.getLogger(RecacheServlet.class.getName());
   private final DateTimeZone zone;
+  private final RetweetsDAO retweetsDAO;
 
   @Inject
   public RecacheServlet(FoodTruckStopService service, Clock clock,
-      TwitterService twitterService, TruckDAO truckDAO, DateTimeZone zone) {
+      TwitterService twitterService, TruckDAO truckDAO, DateTimeZone zone, RetweetsDAO retweetsDAO) {
     this.twitterService = twitterService;
     this.service = service;
     this.clock = clock;
     this.truckDAO = truckDAO;
     this.timeFormatter = DateTimeFormat.forPattern("YYYYMMdd").withZone(zone);
     this.zone = zone;
-
+    this.retweetsDAO = retweetsDAO;
   }
 
   @Override
@@ -65,6 +67,7 @@ public class RecacheServlet extends HttpServlet {
       service.updateStopsFor(instant);
     }
     twitterService.twittalyze();
+    retweetsDAO.deleteAll();
   }
 
   private LocalDate parseDate(String date) {

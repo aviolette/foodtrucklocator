@@ -190,6 +190,7 @@ public class TruckStopMatcher {
     return matchBuilder
         .stop(TruckStop.builder().truck(truck).startTime(startTime).endTime(endTime).location(location).build())
         .text(tweetText)
+        .tweetId(tweet.getId())
         .terminated(terminationTime != null)
         .build();
   }

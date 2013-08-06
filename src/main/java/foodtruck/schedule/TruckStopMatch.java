@@ -15,6 +15,7 @@ public class TruckStopMatch {
   private final String text;
   private final boolean terminated;
   private final boolean softEnding;
+  private final long tweetId;
 
   private TruckStopMatch(Builder builder) {
     this.confidence = builder.confidence;
@@ -22,6 +23,7 @@ public class TruckStopMatch {
     this.text = builder.text;
     this.terminated = builder.terminated;
     this.softEnding = builder.softEnding;
+    this.tweetId = builder.tweetId;
   }
 
   public boolean isTerminated() {
@@ -70,14 +72,24 @@ public class TruckStopMatch {
     return new Builder();
   }
 
+  public long getTweetId() {
+    return tweetId;
+  }
+
   public static class Builder {
     private TruckStop stop;
     private String text;
     private Confidence confidence = Confidence.HIGH;
     private boolean terminated;
     private boolean softEnding;
+    private long tweetId;
 
     public Builder() {
+    }
+
+    public Builder tweetId(long tweetId) {
+      this.tweetId = tweetId;
+      return this;
     }
 
     public Builder stop(TruckStop stop) {

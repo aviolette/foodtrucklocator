@@ -30,10 +30,12 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 
 import foodtruck.dao.ConfigurationDAO;
+import foodtruck.dao.RetweetsDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckObserverDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.dao.TweetCacheDAO;
+import foodtruck.dao.TwitterNotificationAccountDAO;
 import foodtruck.email.EmailNotifier;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
@@ -42,6 +44,7 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckObserver;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TweetSummary;
+import foodtruck.model.TwitterNotificationAccount;
 import foodtruck.monitoring.Monitored;
 import foodtruck.schedule.OffTheRoadDetector;
 import foodtruck.schedule.TerminationDetector;
@@ -54,6 +57,7 @@ import twitter4j.Paging;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
 
 /**
  * @author aviolette@gmail.com
@@ -80,6 +84,8 @@ public class TwitterServiceImpl implements TwitterService {
   private final OffTheRoadDetector offTheRoadDetector;
   private final GeoLocator locator;
   private final TruckObserverDAO truckObserverDAO;
+  private final TwitterNotificationAccountDAO notificationAccountDAO;
+  private final RetweetsDAO retweetsDAO;
 
   @Inject
   public TwitterServiceImpl(TwitterFactoryWrapper twitter, TweetCacheDAO tweetDAO,
@@ -88,7 +94,7 @@ public class TwitterServiceImpl implements TwitterService {
       TerminationDetector detector, TweetCacheUpdater updater, TruckDAO truckDAO,
       TruckStopNotifier truckStopNotifier, ConfigurationDAO configDAO,
       EmailNotifier notifier, OffTheRoadDetector offTheRoadDetector, GeoLocator locator,
-      TruckObserverDAO truckObserverDAO) {
+      TruckObserverDAO truckObserverDAO, TwitterNotificationAccountDAO notificationAccountDAO, RetweetsDAO retweetsDAO) {
     this.tweetDAO = tweetDAO;
     this.twitterFactory = twitter;
     this.defaultZone = zone;
@@ -104,6 +110,8 @@ public class TwitterServiceImpl implements TwitterService {
     this.offTheRoadDetector = offTheRoadDetector;
     this.locator = locator;
     this.truckObserverDAO = truckObserverDAO;
+    this.notificationAccountDAO = notificationAccountDAO;
+    this.retweetsDAO = retweetsDAO;
   }
 
   @Override @Monitored
@@ -354,6 +362,7 @@ public class TwitterServiceImpl implements TwitterService {
         if (matchedStop != null) {
           addStops.add(matchedStop);
           for (TruckStop stop : addStops) {
+            checkForRetweet(stop, match);
             notifier.added(stop);
           }
           truckStopDAO.addStops(addStops);
@@ -362,6 +371,28 @@ public class TwitterServiceImpl implements TwitterService {
         capLastMatchingStop(truck, terminationTime);
       } else {
         log.log(Level.FINE, "No matches for {0}", truck.getId());
+      }
+    }
+  }
+
+  private void checkForRetweet(TruckStop stop, TruckStopMatch match) {
+    DateTime elevenAm = clock.now().withTime(11, 0, 0, 0);
+    if (clock.now().isAfter(elevenAm) || stop.getEndTime().isBefore(elevenAm)) {
+      for (TwitterNotificationAccount account : notificationAccountDAO.findAll()) {
+        if (retweetsDAO.hasBeenRetweeted(stop.getTruck().getId(), account.getTwitterHandle())) {
+          continue;
+        }
+        if (stop.getLocation().containedWithRadiusOf(account.getLocation())) {
+          Twitter twitter = new TwitterFactory(account.twitterCredentials()).getInstance();
+          try {
+            log.log(Level.INFO, "RETWEETING:" + match.getText());
+            if (configDAO.find().isRetweetStopCreatingTweets()) {
+              twitter.retweetStatus(match.getTweetId());
+            }
+          } catch (TwitterException e) {
+            log.log(Level.WARNING, e.getMessage(), e);
+          }
+        }
       }
     }
   }

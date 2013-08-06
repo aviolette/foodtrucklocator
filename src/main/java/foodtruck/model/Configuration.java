@@ -32,6 +32,7 @@ public class Configuration extends ModelEntity {
   private @Nullable String notificationSender;
   private @Nullable String frontDoorAppKey;
   private boolean scheduleCachingOn;
+  private boolean retweetStopCreatingTweets;
 
 
   public Configuration(Object key) {
@@ -57,6 +58,7 @@ public class Configuration extends ModelEntity {
     this.notificationSender = builder.notificationSender;
     this.frontDoorAppKey = builder.frontDoorAppKey;
     this.scheduleCachingOn = builder.scheduleCachingOn;
+    this.retweetStopCreatingTweets = builder.retweetStopCreatingTweets;
   }
 
   @Nullable public String getFrontDoorAppKey() {
@@ -143,6 +145,10 @@ public class Configuration extends ModelEntity {
     return scheduleCachingOn;
   }
 
+  public boolean isRetweetStopCreatingTweets() {
+    return retweetStopCreatingTweets;
+  }
+
   public static class Builder {
     private boolean googleGeolocationEnabled = true;
     private boolean yahooGeolocationEnabled = false;
@@ -162,6 +168,7 @@ public class Configuration extends ModelEntity {
     private @Nullable String notificationSender;
     private @Nullable String frontDoorAppKey;
     private boolean scheduleCachingOn;
+    private boolean retweetStopCreatingTweets;
 
     public Builder() {
     }
@@ -277,6 +284,11 @@ public class Configuration extends ModelEntity {
 
     public Builder throttleGoogleGeocoding(DateTime dateTime) {
       this.throttleGoogleUntil = dateTime;
+      return this;
+    }
+
+    public Builder retweetStopCreatingTweets(boolean retweet) {
+      this.retweetStopCreatingTweets = retweet;
       return this;
     }
   }
