@@ -30,6 +30,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 
 import foodtruck.dao.ConfigurationDAO;
+import foodtruck.dao.LocationDAO;
 import foodtruck.dao.RetweetsDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckObserverDAO;
@@ -86,6 +87,7 @@ public class TwitterServiceImpl implements TwitterService {
   private final TruckObserverDAO truckObserverDAO;
   private final TwitterNotificationAccountDAO notificationAccountDAO;
   private final RetweetsDAO retweetsDAO;
+  private final LocationDAO locationDAO;
 
   @Inject
   public TwitterServiceImpl(TwitterFactoryWrapper twitter, TweetCacheDAO tweetDAO,
@@ -94,7 +96,8 @@ public class TwitterServiceImpl implements TwitterService {
       TerminationDetector detector, TweetCacheUpdater updater, TruckDAO truckDAO,
       TruckStopNotifier truckStopNotifier, ConfigurationDAO configDAO,
       EmailNotifier notifier, OffTheRoadDetector offTheRoadDetector, GeoLocator locator,
-      TruckObserverDAO truckObserverDAO, TwitterNotificationAccountDAO notificationAccountDAO, RetweetsDAO retweetsDAO) {
+      TruckObserverDAO truckObserverDAO, TwitterNotificationAccountDAO notificationAccountDAO,
+      RetweetsDAO retweetsDAO, LocationDAO locationDAO) {
     this.tweetDAO = tweetDAO;
     this.twitterFactory = twitter;
     this.defaultZone = zone;
@@ -112,6 +115,7 @@ public class TwitterServiceImpl implements TwitterService {
     this.truckObserverDAO = truckObserverDAO;
     this.notificationAccountDAO = notificationAccountDAO;
     this.retweetsDAO = retweetsDAO;
+    this.locationDAO = locationDAO;
   }
 
   @Override @Monitored
@@ -256,7 +260,8 @@ public class TwitterServiceImpl implements TwitterService {
             }
             List<TruckStop> trucks = truckStopDAO.findDuring(truck.getId(), today);
             if (trucks.isEmpty()) {
-              truckStops.add(TruckStop.builder().truck(truck).startTime(now).endTime(now.plusHours(2)).location(uofc).build());
+              truckStops.add(
+                  TruckStop.builder().truck(truck).startTime(now).endTime(now.plusHours(2)).location(uofc).build());
               trucksAdded.put(truck, tweet);
             }
           }
@@ -385,7 +390,11 @@ public class TwitterServiceImpl implements TwitterService {
             log.log(Level.INFO, "Already retweeted at {0} {1}", new Object[] {stop.getTruck().getId(), account.getTwitterHandle()});
             continue;
           }
-          if (stop.getLocation().containedWithRadiusOf(account.getLocation())) {
+          // TODO: this is a work around to the fact that radius is not stored in the notification account table.
+          // We need to modify the saving of a location so that it adds a radius to this table.
+          Location accountLocation = locationDAO.findByAddress(account.getLocation().getName());
+          accountLocation = (accountLocation == null) ? account.getLocation() : accountLocation;
+          if (stop.getLocation().containedWithRadiusOf(accountLocation)) {
             Twitter twitter = new TwitterFactory(account.twitterCredentials()).getInstance();
             try {
               log.log(Level.INFO, "RETWEETING:" + match.getText());
