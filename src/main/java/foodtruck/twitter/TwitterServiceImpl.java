@@ -390,6 +390,7 @@ public class TwitterServiceImpl implements TwitterService {
             try {
               log.log(Level.INFO, "RETWEETING:" + match.getText());
               if (configDAO.find().isRetweetStopCreatingTweets()) {
+                retweetsDAO.markRetweeted(stop.getTruck().getId(), account.getTwitterHandle());
                 twitter.retweetStatus(match.getTweetId());
               }
             } catch (TwitterException e) {
