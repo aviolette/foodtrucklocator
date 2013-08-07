@@ -361,7 +361,6 @@ public class TwitterServiceImpl implements TwitterService {
         }
         if (matchedStop != null) {
           addStops.add(matchedStop);
-          checkForRetweet(matchedStop, match);
           for (TruckStop stop : addStops) {
             checkForRetweet(stop, match);
             notifier.added(stop);
@@ -379,7 +378,7 @@ public class TwitterServiceImpl implements TwitterService {
   private void checkForRetweet(TruckStop stop, TruckStopMatch match) {
     try {
       DateTime elevenAm = clock.now().withTime(11, 0, 0, 0);
-      log.log(Level.FINE, "Checking for retweets against {0} {1}", new Object[] {stop, match});
+      log.log(Level.INFO, "Checking for retweets against {0} {1}", new Object[] {stop, match});
       if (clock.now().isAfter(elevenAm) || stop.getEndTime().isBefore(elevenAm)) {
         for (TwitterNotificationAccount account : notificationAccountDAO.findAll()) {
           if (retweetsDAO.hasBeenRetweeted(stop.getTruck().getId(), account.getTwitterHandle())) {
