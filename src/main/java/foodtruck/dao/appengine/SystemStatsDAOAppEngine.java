@@ -90,8 +90,12 @@ public class SystemStatsDAOAppEngine extends AppEngineDAO<Long, SystemStats>
         txn.rollback();
       }
     } finally {
-      if (txn.isActive()) {
-        txn.commit();
+      try {
+        if (txn.isActive()) {
+          txn.commit();
+        }
+      } catch (Exception e) {
+        log.log(Level.WARNING, "Error commiting stats", e);
       }
     }
   }
