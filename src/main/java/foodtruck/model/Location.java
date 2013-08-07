@@ -99,6 +99,9 @@ public class Location extends ModelEntity {
   }
 
   public boolean containedWithRadiusOf(Location loc) {
+    if (equals(loc)) {
+      return true;
+    }
     if (loc.getRadius() == 0) {
       return false;
     }
@@ -111,6 +114,7 @@ public class Location extends ModelEntity {
     return Objects.toStringHelper(this)
         .add("Lat/Lng", latLng)
         .add("Name", name)
+        .add("Radius", radius)
         .toString();
   }
 
