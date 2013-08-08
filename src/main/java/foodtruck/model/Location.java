@@ -114,7 +114,8 @@ public class Location extends ModelEntity {
     return Objects.toStringHelper(this)
         .add("Lat/Lng", latLng)
         .add("Name", name)
-        .add("Radius", radius)
+        // appengine throws Method undefined errors 'cause of this...not sure why
+        .add("Radius", String.valueOf(radius))
         .toString();
   }
 
