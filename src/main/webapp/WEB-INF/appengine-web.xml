@@ -3,4 +3,11 @@
   <application>chicagofoodtrucklocator</application>
   <version>2</version>
   <threadsafe>true</threadsafe>
+  <static-files>
+    <include path="/bootstrap2.2.2-custom/**" expiration="100d"/>
+    <include path="/ace/**" expiration="100d"/>
+    <include path="/css/**" expiration="100d"/>
+    <include path="/img/**" expiration="100d"/>
+    <include path="/script/**" expiration="100d"/>
+  </static-files>
 </appengine-web-app>
