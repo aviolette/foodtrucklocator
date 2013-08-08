@@ -14,6 +14,7 @@ import com.google.inject.Inject;
 
 import foodtruck.dao.RetweetsDAO;
 import foodtruck.dao.TwitterNotificationAccountDAO;
+import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TwitterNotificationAccount;
 import foodtruck.truckstops.FoodTruckStopService;
@@ -68,6 +69,15 @@ public class NotificationServiceImpl implements NotificationService {
         log.log(Level.WARNING, "An exception occurred", e);
       }
     }
+  }
+
+  @Override public void updateLocationInNotifications(Location location) {
+    TwitterNotificationAccount account = notificationAccountDAO.findByLocationName(location.getName());
+    if (account == null) {
+      return;
+    }
+    account = TwitterNotificationAccount.builder(account).location(location).build();
+    notificationAccountDAO.save(account);
   }
 
   @VisibleForTesting

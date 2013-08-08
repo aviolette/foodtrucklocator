@@ -1,5 +1,8 @@
 package foodtruck.dao.appengine;
 
+import javax.annotation.Nullable;
+
+import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
 import com.google.inject.Inject;
@@ -20,6 +23,7 @@ public class TwitterNotificationAccountDAOAppEngine extends AppEngineDAO<Long, T
   private static final String PROP_LOCATION_NAME = "location_name";
   private static final String PROP_LOCATION_LAT = "location_lat";
   private static final String PROP_LOCATION_LNG = "location_lng";
+  private static final String PROP_LOCATION_RADIUS = "location_radius";
   private static final String PROP_ACCESS_TOKEN = "access_token";
   private static final String PROP_ACCESS_TOKEN_SECRET = "access_token_secret";
   private static final String PROP_TWITTER_HANDLE = "twitter_handle";
@@ -35,6 +39,7 @@ public class TwitterNotificationAccountDAOAppEngine extends AppEngineDAO<Long, T
     entity.setProperty(PROP_LOCATION_NAME, obj.getLocation().getName());
     entity.setProperty(PROP_LOCATION_LAT, obj.getLocation().getLatitude());
     entity.setProperty(PROP_LOCATION_LNG, obj.getLocation().getLongitude());
+    entity.setProperty(PROP_LOCATION_RADIUS, obj.getLocation().getRadius());
     entity.setProperty(PROP_ACCESS_TOKEN, obj.getOauthToken());
     entity.setProperty(PROP_ACCESS_TOKEN_SECRET, obj.getOauthTokenSecret());
     entity.setProperty(PROP_TWITTER_HANDLE, obj.getTwitterHandle());
@@ -52,6 +57,7 @@ public class TwitterNotificationAccountDAOAppEngine extends AppEngineDAO<Long, T
         .name((String) entity.getProperty(PROP_LOCATION_NAME))
         .lat(getDoubleProperty(entity, PROP_LOCATION_LAT, 0.0d))
         .lng(getDoubleProperty(entity, PROP_LOCATION_LNG, 0.0d))
+        .radius(getDoubleProperty(entity, PROP_LOCATION_RADIUS, 0.0d))
         .build();
     return TwitterNotificationAccount.builder()
         .location(location)
@@ -62,5 +68,16 @@ public class TwitterNotificationAccountDAOAppEngine extends AppEngineDAO<Long, T
         .twitterHandle(getStringProperty(entity, PROP_TWITTER_HANDLE))
         .oauthTokenSecret(getStringProperty(entity, PROP_ACCESS_TOKEN_SECRET))
         .build();
+  }
+
+  @Override public @Nullable TwitterNotificationAccount findByLocationName(String name) {
+    DatastoreService dataStore = provider.get();
+    Query q = new Query(getKind());
+    q.setFilter(new Query.FilterPredicate(PROP_LOCATION_NAME, Query.FilterOperator.EQUAL, name));
+    Entity e = dataStore.prepare(q).asSingleEntity();
+    if (e == null) {
+      return null;
+    }
+    return fromEntity(e);
   }
 }

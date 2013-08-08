@@ -15,13 +15,14 @@ import com.google.inject.Singleton;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import foodtruck.dao.LocationDAO;
 import foodtruck.model.Location;
+import foodtruck.notifications.NotificationService;
 import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.server.resources.json.LocationReader;
 import foodtruck.server.resources.json.LocationWriter;
 import foodtruck.truckstops.FoodTruckStopService;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * @author aviolette@gmail.com
@@ -33,14 +34,16 @@ public class LocationEditServlet extends HttpServlet {
   private final LocationWriter writer;
   private final LocationReader reader;
   private final FoodTruckStopService truckStopService;
+  private final NotificationService notificationService;
 
   @Inject
   public LocationEditServlet(LocationDAO dao, LocationWriter writer, LocationReader reader,
-      FoodTruckStopService truckStopService) {
+      FoodTruckStopService truckStopService, NotificationService notificationService) {
     this.locationDAO = dao;
     this.writer = writer;
     this.reader = reader;
     this.truckStopService = checkNotNull(truckStopService);
+    this.notificationService = checkNotNull(notificationService);
   }
 
   @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -69,6 +72,7 @@ public class LocationEditServlet extends HttpServlet {
       Location location = reader.toLocation(jsonPayload);
       locationDAO.save(location);
       truckStopService.updateLocationInCurrentSchedule(location);
+      notificationService.updateLocationInNotifications(location);
       resp.setStatus(204);
     } catch (JSONException e) {
       throw Throwables.propagate(e);
