@@ -14,18 +14,8 @@ function dissolveFlash() {
 }
 
 function generateTimes() {
-  var times = [];
-  for (var a = 0; a < 2; a++) {
-    for (var i = 1; i < 13; i++) {
-      for (var j = 0; j < 60; j = j + 15) {
-        var t = j;
-        if (t == 0) {
-          t = "00";
-        }
-        var ampm = (a == 0) ? "AM" : "PM";
-        times.push(i + ":" + t + " " + ampm);
-      }
-    }
-  }
-  return times;
+  return ["7:00 AM", "7:30 AM", "8:00 AM", "8:30 AM", "9:00 AM", "9:30 AM", "10:00 AM", "10:30 AM", "11:00 AM",
+    "11:30 AM", "12:00 PM", "12:30 PM", "1:00 PM", "1:30 PM", "2:00 PM", "2:30 PM", "3:00 PM", "3:30 PM",
+    "4:00 PM", "4:30 PM", "5:00 PM", "5:30 PM", "6:00 PM", "6:30 PM", "7:00 PM", "7:30 PM", "8:00 PM",
+    "8:30 PM", "9:00 PM", "9:30 PM", "10:00 PM", "10:30 PM", "11:00 PM"]
 }
