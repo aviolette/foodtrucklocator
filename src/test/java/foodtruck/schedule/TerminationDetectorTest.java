@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import foodtruck.model.TweetSummary;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author aviolette@gmail.com
@@ -144,6 +145,13 @@ public class TerminationDetectorTest {
   @Test
   public void testNextWeek() {
     assertTweet(tweetTime, "Clinton and Lake see you next week with your twisted taco.");
+  }
+
+  @Test
+  public void doesNotTerminate() {
+    assertNull(detector.detect(tweetBuilder.text(
+        "We're at NBC Towers this morning! Come get a waffle! @chiftf_nbctower @nbcchicago @chicagotribune @WGNRadioNews @WGNRadioSports")
+        .build()));
   }
 
   @Test
