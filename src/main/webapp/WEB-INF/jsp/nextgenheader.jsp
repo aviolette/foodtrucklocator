@@ -26,7 +26,7 @@
       <ul class="nav">
         <li <c:if test="${tab == 'weekly'}"> class="active"</c:if>><a href="/weekly-schedule">Weekly</a></li>
         <li <c:if test="${tab == 'trucks'}"> class="active"</c:if>><a href="/trucks">Trucks</a></li>
-        <li <c:if test="${tab == 'events'}"> class="active"</c:if>><a href="/events">Events</a></li>
+<%--        <li <c:if test="${tab == 'events'}"> class="active"</c:if>><a href="/events">Events</a></li> --%>
         <li><a href="http://blog.chicagofoodtruckfinder.com/">Blog</a></li>
         <li class="visible-desktop"><a id="mobileLink" href="#mobile">Mobile</a></li>
       </ul>
