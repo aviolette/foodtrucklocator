@@ -58,6 +58,7 @@ public class ConfigurationServlet extends HttpServlet {
         .localTwitterCachingEnabled("on".equals(req.getParameter("localTwitterCachingEnabled")))
         .remoteTwitterCachingEnabled("on".equals(req.getParameter("remoteTwitterCachingEnabled")))
         .remoteTwitterCacheAddress(req.getParameter("remoteTwitterCacheAddress"))
+        .sendNotificationTweetWhenNoTrucks("on".equals(req.getParameter("sendNotificationTweetWhenNoTrucks")))
         .retweetStopCreatingTweets("on".equals(req.getParameter("retweetStopCreatingTweets")))
         .googleCalendarAddress(req.getParameter("googleCalendarAddress"))
         .yahooAppId(req.getParameter("yahooAppId"))

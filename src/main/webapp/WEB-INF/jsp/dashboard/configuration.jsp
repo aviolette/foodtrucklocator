@@ -87,6 +87,7 @@
           <li><label><input name="remoteTwitterCachingEnabled"
                             <c:if test="${config.remoteTwitterCachingEnabled}">checked="checked"</c:if>
                             type="checkbox"/> <span>Enable Remote Twitter Caching</span></label></li>
+          <li><label><input name="sendNotificationTweetWhenNoTrucks" <c:if test="${config.sendNotificationTweetWhenNoTrucks}">checked="checked"</c:if> type="checkbox"> <span>Send out notifications if no trucks at a stop.</span></label></li>
           <li><label><input name="retweetStopCreatingTweets"
                             <c:if test="${config.retweetStopCreatingTweets}">checked="checked"</c:if>
                             type="checkbox"/> <span>Retweet Stop Creating Tweets</span></label></li>

@@ -40,6 +40,7 @@ public class ConfigurationDAOAppEngine extends
   private static final String PROP_FRONT_DOOR_APP_KEY = "front_door_app_key";
   private static final String PROP_SCHEDULE_CACHING = "schedule_caching";
   private static final String PROP_RETWEET_STOP_CREATING_TWEETS = "retweet_stop_creation";
+  private static final String PROP_SEND_NOTIFICATION_WHEN_NO_TRUCKS = "send_when_no_trucks";
 
   @Inject
   public ConfigurationDAOAppEngine(DatastoreServiceProvider provider, DateTimeZone defaultZone) {
@@ -68,6 +69,7 @@ public class ConfigurationDAOAppEngine extends
     entity.setProperty(PROP_FRONT_DOOR_APP_KEY, config.getFrontDoorAppKey());
     entity.setProperty(PROP_SCHEDULE_CACHING, config.isScheduleCachingOn());
     entity.setProperty(PROP_RETWEET_STOP_CREATING_TWEETS, config.isRetweetStopCreatingTweets());
+    entity.setProperty(PROP_SEND_NOTIFICATION_WHEN_NO_TRUCKS, config.isSendNotificationTweetWhenNoTrucks());
     return entity;
   }
 
@@ -91,6 +93,7 @@ public class ConfigurationDAOAppEngine extends
         .yahooAppId((String) entity.getProperty(PROP_YAHOO_APP_ID))
         .yahooConsumerKey(getStringProperty(entity, PROP_YAHOO_CONSUMER_KEY))
         .yahooConsumerSecret(getStringProperty(entity, PROP_YAHOO_CONSUMER_SECRET))
+        .sendNotificationTweetWhenNoTrucks(getBooleanProperty(entity, PROP_SEND_NOTIFICATION_WHEN_NO_TRUCKS, true))
         .systemNotificationList(getListProperty(entity, PROP_SYSTEM_NOTIFICATION_EMAILS))
         .notificationSender(getStringProperty(entity, PROP_SYSTEM_NOTIFICATION_SENDER))
         .frontDoorAppKey(getStringProperty(entity, PROP_FRONT_DOOR_APP_KEY))

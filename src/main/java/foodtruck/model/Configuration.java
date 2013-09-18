@@ -33,7 +33,7 @@ public class Configuration extends ModelEntity {
   private @Nullable String frontDoorAppKey;
   private boolean scheduleCachingOn;
   private boolean retweetStopCreatingTweets;
-
+  private boolean sendNotificationTweetWhenNoTrucks;
 
   public Configuration(Object key) {
     super(key);
@@ -59,6 +59,11 @@ public class Configuration extends ModelEntity {
     this.frontDoorAppKey = builder.frontDoorAppKey;
     this.scheduleCachingOn = builder.scheduleCachingOn;
     this.retweetStopCreatingTweets = builder.retweetStopCreatingTweets;
+    this.sendNotificationTweetWhenNoTrucks = builder.sendNotificationTweetWhenNoTrucks;
+  }
+
+  public boolean isSendNotificationTweetWhenNoTrucks() {
+    return this.sendNotificationTweetWhenNoTrucks;
   }
 
   @Nullable public String getFrontDoorAppKey() {
@@ -169,6 +174,7 @@ public class Configuration extends ModelEntity {
     private @Nullable String frontDoorAppKey;
     private boolean scheduleCachingOn;
     private boolean retweetStopCreatingTweets;
+    public boolean sendNotificationTweetWhenNoTrucks;
 
     public Builder() {
     }
@@ -191,6 +197,12 @@ public class Configuration extends ModelEntity {
       this.notificationSender = config.notificationSender;
       this.frontDoorAppKey = config.frontDoorAppKey;
       this.scheduleCachingOn = config.scheduleCachingOn;
+      this.sendNotificationTweetWhenNoTrucks = config.sendNotificationTweetWhenNoTrucks;
+    }
+
+    public Builder sendNotificationTweetWhenNoTrucks(boolean sendNotification) {
+      this.sendNotificationTweetWhenNoTrucks = sendNotification;
+      return this;
     }
 
     public Builder scheduleCachingOn(boolean scheduleCachingOn) {
