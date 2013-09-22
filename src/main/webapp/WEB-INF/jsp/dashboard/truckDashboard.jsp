@@ -219,6 +219,20 @@
   var locations = ${locations};
   $("#locationInput").typeahead({source: locations});
   $(".timeentry").typeahead({source: generateTimes()});
+  $("#startTimeInput").blur(function() {
+    var $endTime = $("#endTimeInput");
+    if (!$endTime.attr("value")) {
+      var startTimeVal = $("#startTimeInput").attr("value");
+      if (startTimeVal == "11:00 AM") {
+        $endTime.attr("value", "1:00 PM");
+      } else if (startTimeVal == "11:30 AM") {
+        $endTime.attr("value", "1:30 PM");
+      }
+    }
+  });
+  $("#edit-stop").on("shown", function() {
+    $("#startTimeInput").focus();
+  });
   function invokeEditDialog(stop, afterwards) {
     $("#startTimeInput").attr("value", stop.startTime);
     $("#endTimeInput").attr("value", stop.endTime);
