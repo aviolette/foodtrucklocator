@@ -119,6 +119,10 @@ public class TruckServlet extends HttpServlet {
     // hack required when using * patterns in guice
     req = new GuiceHackRequestWrapper(req, jsp);
     final Truck truck = truckDAO.findById(truckId);
+    if (truck == null) {
+      resp.setStatus(404);
+      return;
+    }
     final List<TweetSummary> tweetSummaries =
         twitterService.findByTwitterHandle(truck.getTwitterHandle());
     req.setAttribute("tweets", tweetSummaries);
