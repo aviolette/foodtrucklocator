@@ -176,6 +176,14 @@ public class TerminationDetectorTest {
   }
 
   @Test
+  public void testLastCall2_PutItAtFifteenMinutesAhead() {
+    assertEquals(tweetTime.plusMinutes(15),
+        detector.detect(
+            tweetBuilder.text(" #chasetower #lastcall #latelunchers we will be rolling out at 2:00 still time to get #delicious #soups #sweets")
+                .build()));
+  }
+
+  @Test
   public void testThx() {
     assertTweet(tweetTime,
         "Ok #Aon @britticisms @ClearlyBrittany @GrouponChicago @aggiefong this duck is flying home. See u all after the holiday. Thx 4 stopping by.");

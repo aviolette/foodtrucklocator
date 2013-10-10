@@ -17,7 +17,7 @@ public class TerminationDetector {
     }
     String tweetText = tweet.getText().toLowerCase();
     // TODO: use regex
-    if (tweetText.contains("last call") || tweetText.contains("almost sold out!")) {
+    if (tweetText.contains("last call") || tweetText.contains("almost sold out!") || tweetText.contains("lastcall")) {
       return tweet.getTime().plusMinutes(15);
     }
     if (tweetText.contains("sold out of") || tweetText.contains("sold outta")) {
