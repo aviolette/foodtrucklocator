@@ -69,11 +69,12 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/admin/notificationTest").with(TestNotificationServlet.class);
     serve("/admin/events").with(EventListServlet.class);
     serve("/admin/events/*").with(EventServlet.class);
+    serve("/vendor").with(VendorServlet.class);
     serve("/services/*").with(GuiceContainer.class,
         ImmutableMap.of(PackagesResourceConfig.PROPERTY_PACKAGES, "foodtruck.server.resources"));
     serve("/service/tweets").with(TweetUpdateServlet.class);
     serve("/weekly-schedule").with(WeeklyScheduleServlet.class);
-    serve("/beaconnaise").with(BeaconnaiseServlet.class);
+    serve("/vendor/beaconnaise").with(BeaconnaiseServlet.class);
     serve("/trucks*").with(TrucksServlet.class);
     serve("/events*").with(EventsServlet.class);
     serveRegex("/[\\w]*").with(FoodTruckServlet.class);

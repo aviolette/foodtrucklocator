@@ -60,4 +60,7 @@ public class ClockImpl implements Clock {
     return dt.minusDays(now().getDayOfWeek()).toLocalDate();
   }
 
+  @Override public DateTimeZone zone() {
+    return zone;
+  }
 }

@@ -18,11 +18,26 @@
   </style>
 </head>
 <body>
+<div id="topBar" class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container-fluid">
+      <a class="brand" href="/">Chicago Food Truck Finder</a>
+      <ul class="nav">
+        <li <c:if test="${tab == 'vendorhome'}"> class="active"</c:if>><a href="/vendor">Home</a></li>
+        <li <c:if test="${tab == 'beaconnaise'}"> class="active"</c:if>><a href="/vendor/beaconnaise/${truck.id}">Beaconnaise</a></li>
+        <li <c:if test="${tab == 'trucksettings'}"> class="active"</c:if>><a href="/vendor/settings/${truck.id}">Settings</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
 
 <div
-    style="padding-top: 40px" class="container">
+    style="padding-top: 60px" class="container">
 <noscript>
   <div class="alert alert-error">
     Javascript is required for this site to function properly.
   </div>
 </noscript>
+
+<div id="flash" style="display:none" class="alert alert-info">
+</div>

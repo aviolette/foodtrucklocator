@@ -1,6 +1,7 @@
 package foodtruck.util;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 
 import foodtruck.model.DayOfWeek;
@@ -38,4 +39,10 @@ public interface Clock {
    * @return the first day of the week.
    */
   LocalDate firstDayOfWeekFrom(DateTime dt);
+
+  /**
+   * Returns the active zone
+   * @return the time zone
+   */
+  DateTimeZone zone();
 }
