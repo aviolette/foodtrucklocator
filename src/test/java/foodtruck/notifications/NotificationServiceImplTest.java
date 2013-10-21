@@ -5,6 +5,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.RetweetsDAO;
 import foodtruck.dao.TwitterNotificationAccountDAO;
 import foodtruck.truckstops.FoodTruckStopService;
@@ -22,11 +23,13 @@ public class NotificationServiceImplTest  {
   private FoodTruckStopService truckService;
   private NotificationServiceImpl service;
   private RetweetsDAO retweetsDAO;
+  private ConfigurationDAO configurationDAO;
 
   @Before
   public void before() {
     truckService = null; clock = null; notificationDAO = null; retweetsDAO = null;
-    service = new NotificationServiceImpl(truckService, clock, notificationDAO, retweetsDAO);
+    configurationDAO = null;
+    service = new NotificationServiceImpl(truckService, clock, notificationDAO, retweetsDAO, configurationDAO);
   }
 
   @Test

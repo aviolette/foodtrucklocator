@@ -12,6 +12,7 @@ import com.google.common.collect.Iterables;
 import com.google.gdata.util.common.base.Joiner;
 import com.google.inject.Inject;
 
+import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.RetweetsDAO;
 import foodtruck.dao.TwitterNotificationAccountDAO;
 import foodtruck.model.Location;
@@ -33,17 +34,21 @@ public class NotificationServiceImpl implements NotificationService {
   private final Clock clock;
   private final TwitterNotificationAccountDAO notificationAccountDAO;
   private final RetweetsDAO retweetsDAO;
+  private final ConfigurationDAO configurationDAO;
 
   @Inject
   public NotificationServiceImpl(FoodTruckStopService truckService, Clock clock,
-      TwitterNotificationAccountDAO notificationAccountDAO, RetweetsDAO retweetsDAO) {
+      TwitterNotificationAccountDAO notificationAccountDAO, RetweetsDAO retweetsDAO,
+      ConfigurationDAO configurationDAO) {
     this.truckService = truckService;
     this.clock = clock;
     this.notificationAccountDAO = notificationAccountDAO;
     this.retweetsDAO = retweetsDAO;
+    this.configurationDAO = configurationDAO;
   }
 
   @Override public void sendNotifications() {
+    boolean updateIfNoneFound = configurationDAO.find().isSendNotificationTweetWhenNoTrucks();
     for (TwitterNotificationAccount account : findTwitterNotificationAccounts()) {
       if (!account.isActive()) {
         log.log(Level.INFO, "Skipping notifications for {0} because it is not active", account.getName());
@@ -52,7 +57,9 @@ public class NotificationServiceImpl implements NotificationService {
       try {
         Set<Truck> trucks = truckService.findTrucksNearLocation(account.getLocation(), clock.now());
         if (trucks.isEmpty()) {
-          updateStatus(account, String.format("No trucks at %s today", account.getName()));
+          if (updateIfNoneFound) {
+            updateStatus(account, String.format("No trucks at %s today", account.getName()));
+          }
         } else {
           for (Truck truck : trucks) {
             retweetsDAO.markRetweeted(truck.getId(), account.getTwitterHandle());
