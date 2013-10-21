@@ -379,32 +379,27 @@ public class TwitterServiceImpl implements TwitterService {
 
   private void checkForRetweet(TruckStop stop, TruckStopMatch match) {
     try {
-      DateTime elevenAm = clock.now().withTime(11, 0, 0, 0);
       log.log(Level.INFO, "Checking for retweets against {0} {1}", new Object[] {stop, match});
-      if (clock.now().isAfter(elevenAm) || stop.getEndTime().isBefore(elevenAm)) {
-        for (TwitterNotificationAccount account : notificationAccountDAO.findAll()) {
-          if (retweetsDAO.hasBeenRetweeted(stop.getTruck().getId(), account.getTwitterHandle())) {
-            log.log(Level.INFO, "Already retweeted at {0} {1}", new Object[] {stop.getTruck().getId(), account.getTwitterHandle()});
-            continue;
-          }
-          if (stop.getLocation().containedWithRadiusOf(account.getLocation())) {
-            Twitter twitter = new TwitterFactory(account.twitterCredentials()).getInstance();
-            try {
-              log.log(Level.INFO, "RETWEETING:" + match.getText());
-              if (configDAO.find().isRetweetStopCreatingTweets()) {
-                retweetsDAO.markRetweeted(stop.getTruck().getId(), account.getTwitterHandle());
-                twitter.retweetStatus(match.getTweetId());
-              }
-            } catch (TwitterException e) {
-              log.log(Level.WARNING, e.getMessage(), e);
-            }
-          } else {
-            log.log(Level.INFO, "{0} not contained within radius of {1}",
-                new Object[] {stop.getLocation(), account.getLocation()});
-          }
+      for (TwitterNotificationAccount account : notificationAccountDAO.findAll()) {
+        if (retweetsDAO.hasBeenRetweeted(stop.getTruck().getId(), account.getTwitterHandle())) {
+          log.log(Level.INFO, "Already retweeted at {0} {1}", new Object[] {stop.getTruck().getId(), account.getTwitterHandle()});
+          continue;
         }
-      } else {
-        log.log(Level.INFO, "Failed time check for {0}", elevenAm.toString());
+        if (stop.getLocation().containedWithRadiusOf(account.getLocation())) {
+          Twitter twitter = new TwitterFactory(account.twitterCredentials()).getInstance();
+          try {
+            log.log(Level.INFO, "RETWEETING:" + match.getText());
+            if (configDAO.find().isRetweetStopCreatingTweets()) {
+              retweetsDAO.markRetweeted(stop.getTruck().getId(), account.getTwitterHandle());
+              twitter.retweetStatus(match.getTweetId());
+            }
+          } catch (TwitterException e) {
+            log.log(Level.WARNING, e.getMessage(), e);
+          }
+        } else {
+          log.log(Level.INFO, "{0} not contained within radius of {1}",
+              new Object[] {stop.getLocation(), account.getLocation()});
+        }
       }
     } catch (Exception e) {
       log.log(Level.WARNING, e.getMessage(), e);
