@@ -193,4 +193,10 @@ public class TerminationDetectorTest {
   public void testSeeYaLater() {
     assertTweet(tweetTime, "See ya later AON. HAPPY HOLIDAYS, TWEEPS! Stay warm out there.");
   }
+
+  @Test
+  public void testLastCall() {
+    tweetBuilder.userId("soupsintheloop");
+    assertTweet(tweetTime.plusMinutes(15), "@SoupsInTheLoop @600WestBuilding @chiftf_600w #lastcall #latelunchers we will be rolling out at 1:45 still time to get the goodness #soups");
+  }
 }

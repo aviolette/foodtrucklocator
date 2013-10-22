@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Strings;
 
 import org.joda.time.DateTime;
 
@@ -57,7 +58,10 @@ public class TweetSummary extends ModelEntity {
   }
 
   public boolean isReply() {
-    return text.length() > 0 && text.charAt(0) == '@';
+    if (Strings.isNullOrEmpty(text) || text.toLowerCase().startsWith("@" + screenName.toLowerCase() + " ")) {
+      return false;
+    }
+    return text.charAt(0) == '@';
   }
 
   @Override public int hashCode() {
