@@ -24,7 +24,7 @@ public class TerminationDetectorTest {
   public void before() {
     tweetTime = new DateTime(2011, 10, 10, 9, 8, 7, 0, DateTimeZone.UTC);
     detector = new TerminationDetector();
-    tweetBuilder = new TweetSummary.Builder().time(tweetTime);
+    tweetBuilder = new TweetSummary.Builder().userId("foobar").time(tweetTime);
   }
 
   @Test
