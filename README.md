@@ -1,10 +1,10 @@
 # Introduction
 
-<< put something here>>
+The Food Truck Locator is an App Engine app that shows a map with the location of food trucks in an area.  Food trucks that are displayed on this map are done so by aggregating data from google calendar feeds and information from twitter.  In addition to the information displayed on the map, a set of web services is provided to build out third party applications.  Finally, the food truck locator publishes information about food trucks to configurable tweet bots that are associated with a location in the area.
 
 # Initial Configuration
 
-Download the Appengine SDK for Java, version 1.7.3: http://googleappengine.googlecode.com/files/appengine-java-sdk-1.7.3.zip
+Download the Appengine SDK for Java, version 1.8.3: http://googleappengine.googlecode.com/files/appengine-java-sdk-1.8.0.zip
 
 Define APPENGINE_HOME in your bashrc.  This should point to the directory where you unpacked the appengine SDK
 
@@ -47,8 +47,6 @@ To run your app on port 8080, run this command in the root directory of your cod
 1. Add all the trucks
 
 Go to http://localhost:8080/admin/trucks
-
-
 
 2. Configure the address location *add more information about this>>
 3. Setup the geolocation
