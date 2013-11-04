@@ -6,9 +6,10 @@
   </div>
 </c:if>
 
-<div>
+<div class="hero-unit">
   <h1>Vendor Dashboard</h1>
   <p>The Vendor Dashboard has some tools to manage your truck's information on The Chicago Food Truck Finder.</p>
+  <a class="btn btn-primary" href="${loginUrl}">Login &raquo;</a>
 </div>
 
 <div>

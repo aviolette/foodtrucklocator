@@ -70,6 +70,9 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/admin/events").with(EventListServlet.class);
     serve("/admin/events/*").with(EventServlet.class);
     serve("/vendor").with(VendorServlet.class);
+    serve("/vendor/recache/*").with(VendorRecacheServlet.class);
+    serve("/vendor/offtheroad/*").with(VendorOffTheRoadServlet.class);
+    serve("/vendor/settings/*").with(VendorSettingsServlet.class);
     serve("/services/*").with(GuiceContainer.class,
         ImmutableMap.of(PackagesResourceConfig.PROPERTY_PACKAGES, "foodtruck.server.resources"));
     serve("/service/tweets").with(TweetUpdateServlet.class);

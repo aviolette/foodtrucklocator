@@ -4,9 +4,6 @@
   Setting up beacon for truck: <strong>${truck.name}</strong>
 </div>
 
-<div id="flash" class="alert alert-info">
-</div>
-
 <label class="checkbox"><input type="checkbox" id="beaconButton"> Beacon enabled</label>
 
 <%@ include file="../include/core_js.jsp" %>
@@ -16,6 +13,7 @@
 
   function runBeacon() {
     if ($beaconButton.is(":checked")) {
+      $("#flash").css("display","block");
       $("#flash").html("Detecting location...");
       navigator.geolocation.getCurrentPosition(function(position) {
         var beaconData = {

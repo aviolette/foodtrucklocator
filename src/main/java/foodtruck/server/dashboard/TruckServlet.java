@@ -35,8 +35,6 @@ import foodtruck.model.DailySchedule;
 import foodtruck.model.DayOfWeek;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
-import foodtruck.model.TruckSchedule;
-import foodtruck.model.TruckStop;
 import foodtruck.model.TweetSummary;
 import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.truckstops.FoodTruckStopService;
@@ -169,14 +167,7 @@ public class TruckServlet extends HttpServlet {
   private void handleOffTheRoadPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     String truckId = req.getRequestURI();
     truckId = truckId.substring(14, truckId.lastIndexOf('/'));
-    TruckSchedule stops = truckService.findStopsForDay(truckId, clock.currentDay());
-    for (TruckStop stop : stops.getStops()) {
-      truckService.delete((Long) stop.getKey());
-    }
-    Truck t = truckDAO.findById(truckId);
-    t = Truck.builder(t).muteUntil(clock.currentDay().toDateMidnight(zone).toDateTime().plusDays(1))
-        .build();
-    truckDAO.save(t);
+    truckService.offRoad(truckId, clock.currentDay());
     resp.sendRedirect("/admin/trucks");
 
   }

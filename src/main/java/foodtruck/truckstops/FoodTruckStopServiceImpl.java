@@ -23,11 +23,11 @@ import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
+import foodtruck.beaconnaise.BeaconSignal;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.geolocation.GeoLocator;
-import foodtruck.beaconnaise.BeaconSignal;
 import foodtruck.model.DailySchedule;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
@@ -204,6 +204,19 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     return newStop;
   }
 
+  @Override public void offRoad(String truckId, LocalDate localDate) {
+    TruckSchedule stops = findStopsForDay(truckId, clock.currentDay());
+    for (TruckStop stop : stops.getStops()) {
+      delete((Long) stop.getKey());
+    }
+    Truck t = truckDAO.findById(truckId);
+    t = Truck.builder(t)
+        .muteUntil(clock.currentDay()
+            .toDateMidnight(clock.zone()).toDateTime().plusDays(1))
+        .build();
+    truckDAO.save(t);
+  }
+
   private DateTime lesserOf(DateTime dateTime1, DateTime dateTime2) {
     return dateTime1.isBefore(dateTime2) ? dateTime1 : dateTime2;
   }
@@ -211,7 +224,6 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   private DateTime greaterOf(DateTime dateTime1, DateTime dateTime2) {
     return (dateTime1.isBefore(dateTime2)) ? dateTime2 : dateTime1;
   }
-
 
   @Override public List<DailySchedule> findSchedules(String truckId, Interval range) {
     List<TruckStop> stopList = truckStopDAO.findOverRange(truckId, range);

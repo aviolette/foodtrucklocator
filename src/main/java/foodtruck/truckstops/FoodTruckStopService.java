@@ -129,4 +129,11 @@ public interface FoodTruckStopService {
    * @return a new or existing truck stop created from the beacon
    */
   TruckStop handleBeacon(BeaconSignal signal);
+
+  /**
+   * Takes a truck off the road (mutes it for the day and removes its stops)
+   * @param truckId the truck ID
+   * @param localDate the current date
+   */
+  void offRoad(String truckId, LocalDate localDate);
 }

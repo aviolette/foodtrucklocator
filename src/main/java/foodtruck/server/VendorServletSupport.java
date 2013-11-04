@@ -62,8 +62,6 @@ public abstract class VendorServletSupport extends HttpServlet {
 
   @Override protected final void doPost(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-    UserService userService = UserServiceFactory.getUserService();
-    String thisURL = req.getRequestURI();
     if (req.getUserPrincipal() == null) {
       resp.setStatus(401);
       return;
@@ -81,7 +79,7 @@ public abstract class VendorServletSupport extends HttpServlet {
     }
   }
 
-  protected void dispatchPost(HttpServletRequest req, HttpServletResponse resp, String truckId) {
+  protected void dispatchPost(HttpServletRequest req, HttpServletResponse resp, String truckId) throws IOException {
     // TODO: default does nothing
   }
 

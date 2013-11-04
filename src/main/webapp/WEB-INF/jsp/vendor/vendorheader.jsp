@@ -24,7 +24,7 @@
       <a class="brand" href="/">Chicago Food Truck Finder</a>
       <ul class="nav">
         <li <c:if test="${tab == 'vendorhome'}"> class="active"</c:if>><a href="/vendor">Home</a></li>
-        <li <c:if test="${tab == 'beaconnaise'}"> class="active"</c:if>><a href="/vendor/beaconnaise/${truck.id}">Beaconnaise</a></li>
+        <li <c:if test="${tab == 'beaconnaise'}"> class="active"</c:if>><a href="/vendor/beaconnaise">Beaconnaise</a></li>
         <li <c:if test="${tab == 'trucksettings'}"> class="active"</c:if>><a href="/vendor/settings/${truck.id}">Settings</a></li>
       </ul>
     </div>

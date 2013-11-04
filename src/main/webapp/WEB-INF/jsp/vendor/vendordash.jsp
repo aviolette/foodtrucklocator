@@ -28,18 +28,32 @@
 <button id="offTheRoad" class="btn">Off The Road!</button>
 
 <%@ include file="../include/core_js.jsp" %>
-<%@ include file="../include/core_js.jsp" %>
 <script type="text/javascript">
   (function() {
-    $("#resyncCalendar").click(function(e) {
+    $("#offTheRoad").click(function(e) {
       e.preventDefault();
       $.ajax({
-        url: "/vendor/recache/${truck.id}",
+        url: "/vendor/offtheroad/${truck.id}",
+        type: 'post',
         context: document.body,
         dataType: 'json',
         complete: function () {
         },
         success: function (data) {
+          location.reload();
+        }});
+    });
+    $("#resyncCalendar").click(function(e) {
+      e.preventDefault();
+      $.ajax({
+        url: "/vendor/recache/${truck.id}",
+        type: 'post',
+        context: document.body,
+        dataType: 'json',
+        complete: function () {
+        },
+        success: function (data) {
+          location.reload();
         }});
     });
   })();

@@ -337,13 +337,9 @@ public class Truck extends ModelEntity {
   public static class Builder {
     private String id;
     private String name;
-    private
-    @Nullable
-    String url;
+    private @Nullable String url;
     private String iconUrl;
-    private
-    @Nullable
-    String twitter;
+    private @Nullable String twitter;
     public Set<String> categories = ImmutableSet.of();
     public String description;
     private String foursquareUrl;
@@ -352,29 +348,16 @@ public class Truck extends ModelEntity {
     private String facebook;
     private Pattern matchOnlyIf;
     private boolean inactive;
-    private
-    @Nullable
+    private @Nullable
     String calendarUrl;
     private Pattern donotMatchIf;
-    private
-    @Nullable
-    String email;
-    private
-    @Nullable
-    String phone;
+    private @Nullable String email;
+    private @Nullable String phone;
     public boolean twitterGeolocationDataValid;
-    private
-    @Nullable
-    DateTime muteUntil;
-    private
-    @Nullable
-    String yelpSlug;
-    private
-    @Nullable
-    String facebookPageId;
-    private
-    @Nullable
-    Stats stats;
+    private @Nullable DateTime muteUntil;
+    private @Nullable String yelpSlug;
+    private @Nullable String facebookPageId;
+    private @Nullable Stats stats;
     private boolean hidden;
     public Set<String> beaconnaiseEmails = ImmutableSet.of();
 
