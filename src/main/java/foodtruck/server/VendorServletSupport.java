@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.text.MessageFormat;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 import javax.servlet.ServletException;
@@ -24,7 +25,7 @@ import foodtruck.model.Truck;
  * @since 10/15/13
  */
 public abstract class VendorServletSupport extends HttpServlet {
-  private static final String ERROR_JSP = "/WEB-INF/jsp/vendor/vendorerror.jsp";
+  private static final Logger log = Logger.getLogger(VendorServletSupport.class.getName());
   private static final String LANDING_JSP = "/WEB-INF/jsp/vendor/index.jsp";
   protected final TruckDAO truckDAO;
 
@@ -38,6 +39,7 @@ public abstract class VendorServletSupport extends HttpServlet {
     String thisURL = req.getRequestURI();
     final Principal userPrincipal = req.getUserPrincipal();
     if (userPrincipal == null) {
+      log.info("User failed logging in");
       req.setAttribute("loginUrl", userService.createLoginURL(thisURL));
       req.getRequestDispatcher(LANDING_JSP).forward(req,resp);
       return;
@@ -46,10 +48,12 @@ public abstract class VendorServletSupport extends HttpServlet {
     if (trucks.isEmpty()) {
       String logoutUrl = userService.createLogoutURL(thisURL);
       String principal = userPrincipal.getName();
-      vendorError("Invalid User",
-          MessageFormat.format("The user <strong>{0}</strong> is not associated with any food trucks.  You can " +
+      final String message = MessageFormat
+          .format("The user <strong>{0}</strong> is not associated with any food trucks.  You can " +
               "<a href=\"{1}\">Click Here</a> to sign in as a different user", principal,
-              logoutUrl), req, resp);
+              logoutUrl);
+      vendorError("Invalid User", message, req, resp);
+      log.info("Sent this message to the user" + message);
     } else if (trucks.size() == 1) {
         Truck truck = Iterables.getFirst(trucks, null);
         req.setAttribute("truck", truck);
@@ -68,6 +72,7 @@ public abstract class VendorServletSupport extends HttpServlet {
     }
     Set<Truck> trucks = associatedTrucks(req);
     if (trucks.isEmpty()) {
+      log.info("Sent 401 on post because user didn't belong to any trucks");
       resp.setStatus(401);
     } else if (trucks.size() == 1) {
       Truck truck = Iterables.getFirst(trucks, null);
