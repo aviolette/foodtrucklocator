@@ -121,7 +121,8 @@ public class TruckStopMatcher {
           tweetText);
       return null;
     }
-
+    // Some trucks, like Starfruit Cafe have configurable expressions (e.g. #KefirTruck) that
+    // should be present in order to do a match
     if (verifyMatchOnlyExpression(truck, tweetText)) {
       log.log(Level.INFO, "Didn't match '{0}' because it didn't contain match-only expression",
           tweetText);
@@ -139,7 +140,7 @@ public class TruckStopMatcher {
         (morning && (lowerCaseTweet.contains("schedule"))) || containsAbbreviatedSchedule(tweetText)) {
       return null;
     }
-
+    // If we're on Tuesday and their tweeting about Wednesday, skip.
     if (matchesOtherDay(tweetText)) {
       log.log(Level.INFO, "Didn't match '{0}' because it contained a day of the week", tweetText);
       return null;
@@ -156,7 +157,6 @@ public class TruckStopMatcher {
         endTime = terminationTime;
       }
     }
-
     // This is detecting something in the format: We will be at Merchandise mart at 11:00.
     if (startTime == null) {
       m = atTimePattern.matcher(tweetText);
