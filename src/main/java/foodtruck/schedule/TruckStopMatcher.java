@@ -41,7 +41,7 @@ public class TruckStopMatcher {
       "(\\d+:\\d+\\s*(p|pm|a|am|a\\.m\\.|p\\.m\\.)?)|noon|(\\d+\\s*(p|pm|a|am|a\\.m\\.|p\\.m\\.)|((11|12|1|2|3|4|5|6)\\b))";
   private static final String TIME_RANGE_PATTERN =
       "(" + TIME_PATTERN + ")\\s*-\\s*(" + TIME_PATTERN + ")[\\s|,|\\.&&[^\\-]]";
-  private static final String TOMORROW = "2morrow|tmw|tomorrow|maana";
+  private static final String TOMORROW = "2morrow|tmw|tmrw|tomorrow|maana";
   private final AddressExtractor addressExtractor;
   private final GeoLocator geoLocator;
   private final Pattern endTimePattern;
@@ -156,6 +156,7 @@ public class TruckStopMatcher {
         endTime = terminationTime;
       }
     }
+
     // This is detecting something in the format: We will be at Merchandise mart at 11:00.
     if (startTime == null) {
       m = atTimePattern.matcher(tweetText);
@@ -168,6 +169,11 @@ public class TruckStopMatcher {
           }
           endTime = startTime.plusHours(stopTime(truck));
         }
+        // This is a special case, since matching ranges like that will produce a lot of
+        // false positives, but 11-1 is commonly used for lunch hour
+      } else if (tweetText.contains("11-1")) {
+        startTime = clock.currentDay().toDateTime(new LocalTime(11, 0));
+        endTime = clock.currentDay().toDateTime(new LocalTime(13, 0));
       }
     }
     if (startTime == null) {
