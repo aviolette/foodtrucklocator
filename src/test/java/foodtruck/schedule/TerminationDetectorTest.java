@@ -105,6 +105,11 @@ public class TerminationDetectorTest {
   }
 
   @Test
+  public void testThanksgiving() {
+    assertTweet(null, "Today's menu: bacon Gouda burger, asiago pork, short rib, buff chix, red pepper falafel, and the new thanksgiving! http://t.co/BruxysPOhU");
+  }
+
+  @Test
   public void testThankYou() {
     assertEquals(tweetTime, detector.detect(tweetBuilder.text(
         "Thank you U of Chicago for braving the weather today and South Loop for closing out our day!  Enjoy the rest of your night!")
