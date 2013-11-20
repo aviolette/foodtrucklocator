@@ -24,6 +24,9 @@
     tr.muted {
       display: none;
     }
+    tr.selected, tr.selected td {
+      background-color: #be9a3f !important;
+    }
   </style>
 
   <style type="text/css" media="screen">

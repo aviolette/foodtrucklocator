@@ -14,7 +14,7 @@
   </div>
 </div>
 <h3>Active Trucks</h3>
-<table class="table table-striped">
+<table class="table table-striped active-trucks">
   <thead>
   <tr>
     <th>Truck</th>
@@ -27,11 +27,11 @@
   </tr>
   </thead>
   <tbody>
-  <c:forEach var="truckStops" items="${trucks}">
+  <c:forEach var="truckStops" varStatus="truckStopsStatus" items="${trucks}">
     <c:if test="${truckStops.active}">
 
-      <tr>
-        <td><a href="/admin/trucks/${truckStops.truck.id}">${truckStops.truck.name}</a></td>
+      <tr class="rowItem">
+        <td><a class="truckLink" href="/admin/trucks/${truckStops.truck.id}">${truckStops.truck.name}</a></td>
         <td>
           <c:choose>
           <c:when
@@ -70,7 +70,7 @@
   </tbody>
 </table>
 <h3>Trucks That Are Inactive Today</h3>
-<table class="table table-striped">
+<table class="table table-striped inactive-trucks">
   <thead>
   <tr>
     <th>Truck</th>
@@ -82,8 +82,8 @@
   <tbody>
   <c:forEach var="truckStops" items="${trucks}">
     <c:if test="${!truckStops.active && !truckStops.truck.inactive}">
-      <tr <c:if test="${truckStops.truck.muted}">class="muted"</c:if>>
-        <td><a href="/admin/trucks/${truckStops.truck.id}">${truckStops.truck.name}</a></td>
+      <tr <c:choose><c:when test="${truckStops.truck.muted}">class="muted rowItem"</c:when><c:otherwise>class="rowItem"</c:otherwise></c:choose>>
+        <td><a class="truckLink" href="/admin/trucks/${truckStops.truck.id}">${truckStops.truck.name}</a></td>
         <td>${truckStops.truck.categoryList}</td>
         <td><c:choose><c:when
             test="${truckStops.truck.usingTwittalyzer}"></c:when><c:otherwise><span
@@ -109,7 +109,7 @@
     <tbody>
     <c:forEach var="truckStops" items="${trucks}">
       <c:if test="${!truckStops.active && truckStops.truck.inactive}">
-        <tr>
+        <tr class="rowItem">
           <td><a href="/admin/trucks/${truckStops.truck.id}">${truckStops.truck.name}</a></td>
           <td>${truckStops.truck.categoryList}</td>
           <td><c:choose><c:when
@@ -127,7 +127,71 @@
       var displayValue = $muteButton.hasClass("active") ? "table-row" : "none";
       $(".muted").css("display", displayValue);
     }
-
+    var currentTable = "table.active-trucks";
+    var $currentSelection = $(currentTable + " tr.rowItem").first();
+    if ($currentSelection.length == 0) {
+      currentTable = "table.inactive-trucks";
+      $currentSelection = $(currentTable + " tr.rowItem").first();
+    }
+    $currentSelection.addClass("selected");
+    $(document).keypress(function(e) {
+      switch(e.which) {
+        case 111: //o
+          e.preventDefault();
+          $currentSelection.find("a.truckLink").each(function(i, item) {
+            location.href = $(item).attr("href");
+          });
+          break;
+        case 109: //m
+          e.preventDefault();
+          $currentSelection.find(".mute-button").each(function(i, item) {
+             muteButtonClick($(item));
+          });
+          break;
+        case 106:  //j
+          (function() {
+            var $item = $currentSelection;
+            while (true) {
+              $item = $item.next();
+              if ($item.css("display") != "none"|| $item.length == 0) {
+                break;
+              }
+            }
+            if ($item.length == 0 && currentTable == "table.active-trucks") {
+              currentTable = "table.inactive-trucks";
+              $item = $(currentTable + " tr.rowItem").first();
+            }
+            if ($item.length > 0) {
+              $currentSelection.removeClass("selected");
+              $item.first().addClass("selected");
+              $currentSelection = $item;
+            }
+            e.preventDefault();
+          })();
+          break;
+        case 107: //k
+          (function() {
+            var $item = $currentSelection;
+            while (true) {
+              $item = $item.prev();
+              if ($item.css("display") != "none" || $item.length == 0) {
+                break;
+              }
+            }
+            if ($item.length == 0 && currentTable == "table.inactive-trucks") {
+              currentTable = "table.active-trucks";
+              $item = $(currentTable + " tr.rowItem").last();
+            }
+            if ($item.length > 0) {
+              $currentSelection.removeClass("selected");
+              $item.first().addClass("selected");
+              $currentSelection = $item;
+            }
+            e.preventDefault();
+          })();
+          break;
+      }
+    });
     $('.toggle-visibility button').click(function(e) {
       var $target = $(e.target);
       if ($target.attr("id") == 'inactiveButton') {
@@ -143,24 +207,27 @@
         $target.addClass("active");
       }
     });
-    $(".mute-button").click(function(e) {
-      var truckId = $(e.target).attr("for-truck");
-      var inner = $(e.target).html();
+    function muteButtonClick($button) {
+      var truckId = $button.attr("for-truck");
+      var inner = $button.html();
       var verb = inner == "Mute" ? "mute" : "unmute";
       $.ajax({
         url : "/services/trucks/" + truckId + "/" + verb,
         type: "POST",
         success : function() {
-          $(e.target).html(verb == "mute" ? "Unmute" : "Mute");
+          $button.html(verb == "mute" ? "Unmute" : "Mute");
           if (verb == "mute") {
-            $(e.target.parentNode.parentNode).addClass("muted");
+            $button.parent().parent().addClass("muted");
           } else {
-            $(e.target.parentNode.parentNode).removeClass("muted");
+            $button.parent().parent().removeClass("muted");
           }
           var displayValue = $("#muteButton").hasClass("active") ? "none" : "table-row";
           $(".muted").css("display", displayValue);
         }
-      })
+      });
+    }
+    $(".mute-button").click(function(e) {
+      muteButtonClick($(e.target));
     });
     function bindAjaxCallToButton(button, url) {
       var link = $("#" + button);
