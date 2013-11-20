@@ -123,72 +123,87 @@
 </div>
 <script type="text/javascript">
   (function() {
+
+    var Cursor = {
+      current : function() {
+        return this.$currentSelection;
+      },
+      init : function() {
+        var self = this;
+        self.currentTable = "table.active-trucks";
+        self.$currentSelection = $(self.currentTable + " tr.rowItem").first();
+        if (self.$currentSelection.length == 0) {
+          self.currentTable = "table.inactive-trucks";
+          self.$currentSelection = $(self.currentTable + " tr.rowItem").first();
+        }
+        self.$currentSelection.addClass("selected");
+      },
+      next : function() {
+        var $item = this.$currentSelection;
+        while (true) {
+          $item = $item.next();
+          if ($item.css("display") != "none"|| $item.length == 0) {
+            break;
+          }
+        }
+        if ($item.length == 0 && this.currentTable == "table.active-trucks") {
+          this.currentTable = "table.inactive-trucks";
+          $item = $(this.currentTable + " tr.rowItem").first();
+        }
+        if ($item.length > 0) {
+          this.$currentSelection.removeClass("selected");
+          $item.first().addClass("selected");
+          this.$currentSelection = $item;
+        }
+      },
+      prev : function() {
+        var $item = this.$currentSelection;
+        while (true) {
+          $item = $item.prev();
+          if ($item.css("display") != "none" || $item.length == 0) {
+            break;
+          }
+        }
+        if ($item.length == 0 && this.currentTable == "table.inactive-trucks") {
+          this.currentTable = "table.active-trucks";
+          $item = $(this.currentTable + " tr.rowItem").last();
+        }
+        if ($item.length > 0) {
+          this.$currentSelection.removeClass("selected");
+          $item.first().addClass("selected");
+          this.$currentSelection = $item;
+        }
+      }
+    };
+
     function toggleMuted($muteButton) {
       var displayValue = $muteButton.hasClass("active") ? "table-row" : "none";
       $(".muted").css("display", displayValue);
     }
-    var currentTable = "table.active-trucks";
-    var $currentSelection = $(currentTable + " tr.rowItem").first();
-    if ($currentSelection.length == 0) {
-      currentTable = "table.inactive-trucks";
-      $currentSelection = $(currentTable + " tr.rowItem").first();
-    }
-    $currentSelection.addClass("selected");
+
+    Cursor.init();
     $(document).keypress(function(e) {
       switch(e.which) {
         case 111: //o
           e.preventDefault();
-          $currentSelection.find("a.truckLink").each(function(i, item) {
+          Cursor.current().find("a.truckLink").each(function(i, item) {
             location.href = $(item).attr("href");
           });
           break;
         case 109: //m
           e.preventDefault();
-          $currentSelection.find(".mute-button").each(function(i, item) {
-             muteButtonClick($(item));
+          Cursor.current().find(".mute-button").each(function(i, item) {
+            muteButtonClick($(item));
+            Cursor.next();
           });
           break;
         case 106:  //j
-          (function() {
-            var $item = $currentSelection;
-            while (true) {
-              $item = $item.next();
-              if ($item.css("display") != "none"|| $item.length == 0) {
-                break;
-              }
-            }
-            if ($item.length == 0 && currentTable == "table.active-trucks") {
-              currentTable = "table.inactive-trucks";
-              $item = $(currentTable + " tr.rowItem").first();
-            }
-            if ($item.length > 0) {
-              $currentSelection.removeClass("selected");
-              $item.first().addClass("selected");
-              $currentSelection = $item;
-            }
-            e.preventDefault();
-          })();
+          e.preventDefault();
+          Cursor.next();
           break;
         case 107: //k
-          (function() {
-            var $item = $currentSelection;
-            while (true) {
-              $item = $item.prev();
-              if ($item.css("display") != "none" || $item.length == 0) {
-                break;
-              }
-            }
-            if ($item.length == 0 && currentTable == "table.inactive-trucks") {
-              currentTable = "table.active-trucks";
-              $item = $(currentTable + " tr.rowItem").last();
-            }
-            if ($item.length > 0) {
-              $currentSelection.removeClass("selected");
-              $item.first().addClass("selected");
-              $currentSelection = $item;
-            }
-            e.preventDefault();
-          })();
+          e.preventDefault();
+          Cursor.prev();
           break;
       }
     });
