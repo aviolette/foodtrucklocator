@@ -158,6 +158,16 @@
           this.$currentSelection.removeClass("selected");
           $item.first().addClass("selected");
           this.$currentSelection = $item;
+          this.scrollIfNecessary();
+        }
+      },
+      scrollIfNecessary : function() {
+        var $window = $(window);
+        var bottom = this.$currentSelection.position().top;
+        if (bottom > ($window.scrollTop() + $window.height())) {
+          window.scrollTo(0, bottom + this.$currentSelection.height());
+        } else if ((bottom - this.$currentSelection.height()) < $window.scrollTop()) {
+          window.scrollTo(0, bottom - this.$currentSelection.height());
         }
       },
       prev : function() {
@@ -176,6 +186,7 @@
           this.$currentSelection.removeClass("selected");
           $item.first().addClass("selected");
           this.$currentSelection = $item;
+          this.scrollIfNecessary();
         }
       }
     };
