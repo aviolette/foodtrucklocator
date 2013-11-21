@@ -17,6 +17,7 @@
 <table class="table table-striped active-trucks">
   <thead>
   <tr>
+    <th class="gutter">&nbsp;</th>
     <th>Truck</th>
     <th>Current Location</th>
     <th>Ends At</th>
@@ -31,6 +32,7 @@
     <c:if test="${truckStops.active}">
 
       <tr class="rowItem">
+        <td class="gutter">&nbsp;</td>
         <td><a class="truckLink" href="/admin/trucks/${truckStops.truck.id}">${truckStops.truck.name}</a></td>
         <td>
           <c:choose>
@@ -73,6 +75,7 @@
 <table class="table table-striped inactive-trucks">
   <thead>
   <tr>
+    <th></th>
     <th>Truck</th>
     <th>Categories</th>
     <th>Twittalyzer</th>
@@ -83,6 +86,7 @@
   <c:forEach var="truckStops" items="${trucks}">
     <c:if test="${!truckStops.active && !truckStops.truck.inactive}">
       <tr <c:choose><c:when test="${truckStops.truck.muted}">class="muted rowItem"</c:when><c:otherwise>class="rowItem"</c:otherwise></c:choose>>
+        <td class="gutter"></td>
         <td><a class="truckLink" href="/admin/trucks/${truckStops.truck.id}">${truckStops.truck.name}</a></td>
         <td>${truckStops.truck.categoryList}</td>
         <td><c:choose><c:when
@@ -130,10 +134,10 @@
       },
       init : function() {
         var self = this;
-        self.currentTable = "table.active-trucks";
+        self.currentTable = "table.inactive-trucks";
         self.$currentSelection = $(self.currentTable + " tr.rowItem").first();
         if (self.$currentSelection.length == 0) {
-          self.currentTable = "table.inactive-trucks";
+          self.currentTable = "table.active-trucks";
           self.$currentSelection = $(self.currentTable + " tr.rowItem").first();
         }
         self.$currentSelection.addClass("selected");

@@ -24,7 +24,10 @@
     tr.muted {
       display: none;
     }
-    tr.selected, tr.selected td {
+    td.gutter {
+      width: 2px;
+    }
+    tr.selected td.gutter {
       background-color: #be9a3f !important;
     }
   </style>
