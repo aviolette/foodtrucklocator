@@ -55,6 +55,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     expect(configDAO.find()).andStubReturn(config);
     topic = new TruckStopMatcher(extractor, geolocator, DateTimeZone.UTC, clock, configDAO, notifier);
     truck = Truck.builder().id("foobar").build();
+    expect(clock.zone()).andStubReturn(DateTimeZone.UTC);
     tweetTime = new DateTime(2011, 11, 10, 11, 13, 7, 7, DateTimeZone.UTC);
   }
 

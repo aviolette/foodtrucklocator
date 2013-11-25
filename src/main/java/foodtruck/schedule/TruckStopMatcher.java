@@ -326,7 +326,7 @@ public class TruckStopMatcher {
       // TODO: handle military time
       int hour = Integer.parseInt(tmpTime.substring(0, 2));
       int min = Integer.parseInt(tmpTime.substring(2, 4));
-      if (after.isAfter(date.toDateTime(new LocalTime(hour, min)))) {
+      if (after.isAfter(date.toDateTime(new LocalTime(hour, min), clock.zone()))) {
         suffix = "pm";
       } else {
         suffix = "am";
