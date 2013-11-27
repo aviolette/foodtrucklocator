@@ -172,8 +172,8 @@ public class TruckStopMatcher {
         // This is a special case, since matching ranges like that will produce a lot of
         // false positives, but 11-1 is commonly used for lunch hour
       } else if (tweetText.contains("11-1")) {
-        startTime = clock.currentDay().toDateTime(new LocalTime(11, 0));
-        endTime = clock.currentDay().toDateTime(new LocalTime(13, 0));
+        startTime = clock.currentDay().toDateTime(new LocalTime(11, 0), clock.zone());
+        endTime = clock.currentDay().toDateTime(new LocalTime(13, 0), clock.zone());
       }
     }
     if (startTime == null) {
