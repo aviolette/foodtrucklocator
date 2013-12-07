@@ -30,7 +30,7 @@ public interface TruckStopDAO {
    * Returns the truck stops during the specified day.
    * @param truckId the truckId
    * @param day the day to search over
-   * @return the list of truck stops
+   * @return the list of truck stops, sorted by start time
    * @throws IllegalStateException if the truck specified is invalid
    */
   List<TruckStop> findDuring(@Nullable String truckId, LocalDate day);

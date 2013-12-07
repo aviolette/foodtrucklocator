@@ -272,6 +272,17 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     return builder.build();
   }
 
+  @Override public List<TruckStop> findStopsNearALocation(Location location, LocalDate theDate) {
+    ImmutableList.Builder<TruckStop> builder = ImmutableList.builder();
+    for (TruckStop stop : truckStopDAO.findDuring(null, theDate)) {
+      if (location.getName().equals(stop.getLocation().getName()) ||
+          location.within(location.getRadius()).milesOf(stop.getLocation())) {
+        builder.add(stop);
+      }
+    }
+    return builder.build();
+  }
+
   @Override public List<TruckStop> findStopsForTruckSince(DateTime since, String truckId) {
     return truckStopDAO.findOverRange(truckId, new Interval(since, clock.now()));
   }

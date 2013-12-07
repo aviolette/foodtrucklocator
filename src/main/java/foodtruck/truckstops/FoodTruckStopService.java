@@ -103,6 +103,14 @@ public interface FoodTruckStopService {
   Set<Truck> findTrucksNearLocation(Location location, DateTime currentTime);
 
   /**
+   * Finds all the truck stops near a location for a a day
+   * @param location the location
+   * @param theDate the date
+   * @return the truck stops in temporal order
+   */
+  List<TruckStop> findStopsNearALocation(Location location, LocalDate theDate);
+
+  /**
    * Find all the truck stops since the specified date for the specified truck
    * @param since the lower bound date
    * @param truckId the truck ID

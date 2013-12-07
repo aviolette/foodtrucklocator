@@ -79,6 +79,7 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/weekly-schedule").with(WeeklyScheduleServlet.class);
     serve("/vendor/beaconnaise").with(BeaconnaiseServlet.class);
     serve("/trucks*").with(TrucksServlet.class);
+    serve("/locations*").with(LocationServlet.class);
     serve("/events*").with(EventsServlet.class);
     serveRegex("/[\\w]*").with(FoodTruckServlet.class);
   }
