@@ -54,7 +54,7 @@ public class LocationServlet extends FrontPageServlet {
       resp.setStatus(404);
       return;
     }
-    if ((location = locationDAO.findById(locId)) == null) {
+    if ((location = locationDAO.findById(locId)) == null || !location.isResolved()) {
       resp.setStatus(404);
       return;
     }
