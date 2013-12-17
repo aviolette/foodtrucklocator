@@ -10,6 +10,14 @@ var FoodTruckLocator = function () {
     return _map == null || _mobile;
   }
 
+  function hideFlash() {
+    $("#flashMsg").css("display", "none");
+  }
+
+  function flash(msg, type) {
+    $("#flashMsg").css("display", "block").html(msg);
+  }
+
   function refreshViewData() {
     updateDistanceFromCurrentLocation();
     if (!isMobile()) {
@@ -152,6 +160,10 @@ var FoodTruckLocator = function () {
       return visible;
     }
 
+    this.hasActive = function() {
+      return self.openNow().length != 0 || self.openLater() != 0;
+    };
+
     this.openNow = function () {
       var now = Clock.now(), items = [];
       $.each(self.stops, function (idx, item) {
@@ -266,9 +278,17 @@ var FoodTruckLocator = function () {
   }
 
   function updateTruckLists() {
-    var location = findLocation();
-    buildTruckList($("#nowTrucks"), sortByDistanceFromLocation(_trucks.openNow(), location));
-    buildTruckList($("#laterTrucks"), sortByDistanceFromLocation(_trucks.openLater(), location));
+    var location = findLocation(),
+        nowTrucks = sortByDistanceFromLocation(_trucks.openNow(), location),
+        laterTrucks = sortByDistanceFromLocation(_trucks.openLater(), location);
+    if (nowTrucks.length == 0 && laterTrucks.length == 0) {
+      $(".trucksListHeader").css("display", "none");
+      $(".truckDL").empty();
+    } else {
+      $(".trucksListHeader").css("display", "block");
+      buildTruckList($("#nowTrucks"), nowTrucks);
+      buildTruckList($("#laterTrucks"), laterTrucks);
+    }
   }
 
   function updateDistanceFromCurrentLocation() {
@@ -315,10 +335,12 @@ var FoodTruckLocator = function () {
   }
 
   function displayWarningIfMarkersNotVisible() {
-    if (_trucks.allVisible()) {
-      $("#filteredWarning").css("display", "none");
+    if (!_trucks.hasActive()) {
+      flash("There are no food trucks on the road right now.");
+    } else if (_trucks.allVisible()) {
+      hideFlash();
     } else {
-      $("#filteredWarning").css("display", "block");
+      flash("The result list is currently being filtered based on the zoom-level of the map.  To see all trucks, zoom out.", "warning")
     }
   }
 
@@ -405,13 +427,23 @@ var FoodTruckLocator = function () {
         dataType: 'json',
         cache: false,
         error: function () {
-          console.log("Failed to reload model");
+          try {
+            console.log("Failed to reload model at " + (new Date()));
+          } catch (e) {}
         },
         success: function (data) {
-          console.log("Successfully loaded model")
+          try {
+            console.log("Successfully loaded model at " + (new Date()));
+          } catch (e) {}
           self.setModel(data);
         }
       });
+    },
+    hideFlash: function() {
+      hideFlash();
+    },
+    flash: function(msg, type) {
+      flash(msg, type);
     },
     extend: function () {
       _map.fitBounds(_markers.bounds);

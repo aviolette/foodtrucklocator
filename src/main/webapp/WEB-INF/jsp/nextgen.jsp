@@ -2,14 +2,13 @@
 
 <div class="row-fluid" id="sidebar">
   <div class="span4" id="listContainer">
-    <div style="padding-top:10px;" class="alert alert-block" id="filteredWarning" style="display:none">
-      The result list is currently being filtered based on the zoom-level of the map.  To see all trucks, zoom out.
+    <div style="margin-top:10px;" class="alert alert-block" id="flashMsg" style="display:none">
     </div>
-    <h3>Trucks Open Now</h3>
-    <dl id="nowTrucks">
+    <h3 class="trucksListHeader">Trucks Open Now</h3>
+    <dl id="nowTrucks" class="truckDL">
     </dl>
-    <h3>Trucks Open Later</h3>
-    <dl id="laterTrucks">
+    <h3 class="trucksListHeader">Trucks Open Later</h3>
+    <dl id="laterTrucks" class="truckDL">
     </dl>
   </div>
   <div id="content" class="span8">
@@ -25,7 +24,7 @@
 <%@include file="include/core_js.jsp" %>
 <script type="text/javascript"
         src="http://maps.google.com/maps/api/js?sensor=false&libraries=geometry"></script>
-<script type="text/javascript" src="script/chiftf-view.js?ver=4"></script>
+<script type="text/javascript" src="script/chiftf-view.js?ver=5"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     FoodTruckLocator.run(${mobile}, new google.maps.LatLng(${center.latitude}, ${center.longitude}),
