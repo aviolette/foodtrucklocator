@@ -1,6 +1,6 @@
 <%@ include file="vendorheader.jsp" %>
 
-<h2>Today's Schedule</h2>
+<h2>Today's Schedule for ${truck.name}</h2>
 <div>
 <c:choose>
   <c:when test="${hasStops}">
