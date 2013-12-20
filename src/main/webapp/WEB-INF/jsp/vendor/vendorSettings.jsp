@@ -4,15 +4,15 @@
   <fieldset>
     <legend>Truck Settings</legend>
     <label for="name">Name</label>
-    <input id="name" name="name" type="text" value="${truck.name}" placeholder="The display name"/>
-    <label for="url">URL</label>
-    <input id="url" name="url" type="text" value="${truck.url}" placeholder="The URL to your website"/>
+    <input class="span3" id="name" name="name" type="text" value="${truck.name}" placeholder="The display name"/>
     <label for="phone">Phone</label>
-    <input id="phone" name="phone" type="text" value="${truck.phone}" placeholder="XXX-XXX-XXXX"/>
+    <input class="span3" id="phone" name="phone" type="text" value="${truck.phone}" placeholder="XXX-XXX-XXXX"/>
     <label for="email">Email</label>
-    <input id="email" name="email" type="text" value="${truck.email}" placeholder="foo@bar.com"/>
+    <input class="span3" id="email" name="email" type="text" value="${truck.email}" placeholder="foo@bar.com"/>
+    <label for="url">URL</label>
+    <input class="span4" id="url" name="url" type="text" value="${truck.url}" placeholder="The URL to your website"/>
     <label for="description">Description</label>
-    <textarea id="description" name="description">${truck.description}</textarea>
+    <textarea class="span6" id="description" name="description">${truck.description}</textarea>
     <div>
       <button id="settingsButton" type="button" class="btn btn-primary">Submit</button>
     </div>
