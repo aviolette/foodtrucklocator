@@ -70,6 +70,7 @@ public class TrucksServlet extends FrontPageServlet {
       if (!Strings.isNullOrEmpty(tag)) {
         req.setAttribute("filteredBy", tag);
       }
+      req.setAttribute("foodTruckRequestOn", configurationDAO.find().isFoodTruckRequestOn());
       req.setAttribute("trucks", trucks);
       req.setAttribute("title", "Food Trucks in Chicago");
     }

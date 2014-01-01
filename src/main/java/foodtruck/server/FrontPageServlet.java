@@ -31,6 +31,8 @@ public abstract class FrontPageServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     req.setAttribute("isAdmin", userService.isUserLoggedIn() && userService.isUserAdmin());
     req.setAttribute("title", "Chicago Food Truck Finder");
+    req.setAttribute("signoutUrl", userService.isUserLoggedIn() ? userService.createLogoutURL("/") : null);
+    req.setAttribute("user", userService.getCurrentUser());
     doGetProtected(req, resp);
   }
 

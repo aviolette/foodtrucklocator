@@ -17,11 +17,15 @@ import javax.mail.internet.MimeMessage;
 
 import com.google.inject.Inject;
 
+import org.joda.time.format.DateTimeFormatter;
+
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.model.Configuration;
+import foodtruck.model.FoodTruckRequest;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TweetSummary;
+import foodtruck.util.FriendlyDateOnlyFormat;
 
 /**
  * An email notifier that sends the email immediately.
@@ -32,11 +36,14 @@ public class SimpleEmailNotifier implements EmailNotifier {
   public static Logger log = Logger.getLogger(SimpleEmailNotifier.class.getName());
   private final ConfigurationDAO configDAO;
   private final MessageBuilder messageBuilder;
+  private final DateTimeFormatter dateOnlyFormatter;
 
   @Inject
-  public SimpleEmailNotifier(ConfigurationDAO configurationDAO, MessageBuilder messageBuilder) {
+  public SimpleEmailNotifier(ConfigurationDAO configurationDAO, MessageBuilder messageBuilder,
+      @FriendlyDateOnlyFormat DateTimeFormatter dateOnlyFormat) {
     this.configDAO = configurationDAO;
     this.messageBuilder = messageBuilder;
+    this.dateOnlyFormatter = dateOnlyFormat;
   }
 
   @Override public void systemNotifyOffTheRoad(Truck truck, TweetSummary tweet) {
@@ -69,6 +76,26 @@ public class SimpleEmailNotifier implements EmailNotifier {
     } catch (Exception e) {
       log.log(Level.WARNING, e.getMessage(), e);
     }
+  }
+
+  @Override public void notifyNewFoodTruckRequest(FoodTruckRequest request) {
+    try {
+      StringBuilder builder = new StringBuilder("The following request was added: \n\n");
+      builder.append(request.getEventName()).append("\n\n");
+      builder.append(dateOnlyFormatter.print(request.getStartTime())).append(" - ");
+      builder.append(dateOnlyFormatter.print(request.getEndTime())).append("\n");
+      builder.append("Requested by: ").append(request.getRequester()).append("\n");
+      builder.append("Email: ").append(request.getEmail()).append("\n");
+      builder.append("Phone: ").append(request.getPhone()).append("\n");
+      builder.append("Expected number of guests: ").append(request.getExpectedGuests()).append("\n");
+      builder.append("Prepaid: ").append(request.isPrepaid()).append("\n");
+      builder.append("\n\n");
+      builder.append(request.getDescription());
+      sendSystemMessage("New food truck request", builder.toString());
+    } catch (Exception e) {
+      log.log(Level.WARNING, e.getMessage(), e);
+    }
+
   }
 
   private void sendSystemMessage(String subject, String msgBody) {

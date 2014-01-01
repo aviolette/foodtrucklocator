@@ -41,6 +41,7 @@ public class ConfigurationDAOAppEngine extends
   private static final String PROP_SCHEDULE_CACHING = "schedule_caching";
   private static final String PROP_RETWEET_STOP_CREATING_TWEETS = "retweet_stop_creation";
   private static final String PROP_SEND_NOTIFICATION_WHEN_NO_TRUCKS = "send_when_no_trucks";
+  private static final String PROP_FOOD_TRUCK_REQUEST_ON = "food_truck_request_on";
 
   @Inject
   public ConfigurationDAOAppEngine(DatastoreServiceProvider provider, DateTimeZone defaultZone) {
@@ -70,6 +71,7 @@ public class ConfigurationDAOAppEngine extends
     entity.setProperty(PROP_SCHEDULE_CACHING, config.isScheduleCachingOn());
     entity.setProperty(PROP_RETWEET_STOP_CREATING_TWEETS, config.isRetweetStopCreatingTweets());
     entity.setProperty(PROP_SEND_NOTIFICATION_WHEN_NO_TRUCKS, config.isSendNotificationTweetWhenNoTrucks());
+    entity.setProperty(PROP_FOOD_TRUCK_REQUEST_ON, config.isFoodTruckRequestOn());
     return entity;
   }
 
@@ -91,6 +93,7 @@ public class ConfigurationDAOAppEngine extends
         .googleCalendarAddress((String) entity.getProperty(PROP_GOOGLE_CALENDAR_ADDRESS))
         .primaryTwitterList((String) entity.getProperty(PROP_PRIMARY_TWITTER_LIST))
         .yahooAppId((String) entity.getProperty(PROP_YAHOO_APP_ID))
+        .foodTruckRequestOn(getBooleanProperty(entity, PROP_FOOD_TRUCK_REQUEST_ON))
         .yahooConsumerKey(getStringProperty(entity, PROP_YAHOO_CONSUMER_KEY))
         .yahooConsumerSecret(getStringProperty(entity, PROP_YAHOO_CONSUMER_SECRET))
         .sendNotificationTweetWhenNoTrucks(getBooleanProperty(entity, PROP_SEND_NOTIFICATION_WHEN_NO_TRUCKS, true))

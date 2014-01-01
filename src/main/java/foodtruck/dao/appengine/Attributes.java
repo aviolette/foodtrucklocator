@@ -42,7 +42,15 @@ public class Attributes {
     }
   }
 
-  public static long getLongProperty(Entity entity, String statName, int defaultValue) {
+  public static int getIntProperty(Entity entity, String statName, int defaultValue) {
+    if (entity.hasProperty(statName)) {
+      Number num = (Number) entity.getProperty(statName);
+      return num.intValue();
+    }
+    return defaultValue;
+  }
+
+  public static long getLongProperty(Entity entity, String statName, long defaultValue) {
     if (entity.hasProperty(statName)) {
       return (Long) entity.getProperty(statName);
     }

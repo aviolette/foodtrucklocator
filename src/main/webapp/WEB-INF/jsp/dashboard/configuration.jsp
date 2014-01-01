@@ -32,6 +32,14 @@
       <label for="notificationReceivers">List of notification receivers</label>
       <input class="span6" type="text" value="${config.notificationReceivers}" name="notificationReceivers" id="notificationReceivers"/>
     </div>
+    <div class="input">
+      <ul class="unstyled">
+        <li><label><input name="foodTruckRequestOn"
+                          <c:if
+                              test="${config.foodTruckRequestOn}">checked="checked"</c:if>
+                          type="checkbox"/> <span>Enable food truck request support</span></label></li>
+      </ul>
+    </div>
   </fieldset>
   <fieldset>
     <legend>Google Calendar</legend>

@@ -52,6 +52,7 @@ public class ConfigurationServlet extends HttpServlet {
     Location mapCenter = geoLocator.locate(req.getParameter("mapCenter"), GeolocationGranularity.NARROW);
     // TODO: handle null map center
     config = Configuration.builder(config)
+        .foodTruckRequestOn("on".equals(req.getParameter("foodTruckRequestOn")))
         .yahooGeolocationEnabled("on".equals(req.getParameter("yahooGeolocationEnabled")))
         .googleGeolocationEnabled("on".equals(req.getParameter("googleGeolocationEnabled")))
         .tweetUpdateServletEnabled("on".equals(req.getParameter("tweetUpdateServletEnabled")))

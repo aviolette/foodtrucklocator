@@ -36,6 +36,11 @@
       <ul class="nav navbar-right navbar-nav">
         <li><a style="padding: 10px 0 0 0" href="http://twitter.com/chifoodtruckz"><img src="/img/twitter02_dark.png"/></a></li>
         <li><a style="padding: 10px 0 0 0" href="http://facebook.com/chicagofoodtruckfinder"><img src="/img/facebook_dark.png"/></a></li>
+        <c:if test="${!empty(user)}">
+          <li><a href="#">${user}</a></li>
+          <li><a href="${signoutUrl}">Logout</a></li>
+        </c:if>
+
       </ul>
     </div>
   </div>

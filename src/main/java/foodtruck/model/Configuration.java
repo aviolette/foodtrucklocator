@@ -34,6 +34,7 @@ public class Configuration extends ModelEntity {
   private boolean scheduleCachingOn;
   private boolean retweetStopCreatingTweets;
   private boolean sendNotificationTweetWhenNoTrucks;
+  private boolean foodTruckRequestOn;
 
   public Configuration(Object key) {
     super(key);
@@ -60,10 +61,15 @@ public class Configuration extends ModelEntity {
     this.scheduleCachingOn = builder.scheduleCachingOn;
     this.retweetStopCreatingTweets = builder.retweetStopCreatingTweets;
     this.sendNotificationTweetWhenNoTrucks = builder.sendNotificationTweetWhenNoTrucks;
+    this.foodTruckRequestOn = builder.foodTruckRequestOn;
   }
 
   public boolean isSendNotificationTweetWhenNoTrucks() {
     return this.sendNotificationTweetWhenNoTrucks;
+  }
+
+  public boolean isFoodTruckRequestOn() {
+    return this.foodTruckRequestOn;
   }
 
   @Nullable public String getFrontDoorAppKey() {
@@ -175,6 +181,7 @@ public class Configuration extends ModelEntity {
     private boolean scheduleCachingOn;
     private boolean retweetStopCreatingTweets;
     public boolean sendNotificationTweetWhenNoTrucks;
+    public boolean foodTruckRequestOn = true;
 
     public Builder() {
     }
@@ -198,6 +205,12 @@ public class Configuration extends ModelEntity {
       this.frontDoorAppKey = config.frontDoorAppKey;
       this.scheduleCachingOn = config.scheduleCachingOn;
       this.sendNotificationTweetWhenNoTrucks = config.sendNotificationTweetWhenNoTrucks;
+      this.foodTruckRequestOn = config.foodTruckRequestOn;
+    }
+
+    public Builder foodTruckRequestOn(boolean foodTruckRequestOn) {
+      this.foodTruckRequestOn = foodTruckRequestOn;
+      return this;
     }
 
     public Builder sendNotificationTweetWhenNoTrucks(boolean sendNotification) {
