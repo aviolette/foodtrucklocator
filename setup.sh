@@ -1,6 +1,6 @@
 #!/bin/sh
 
-APPENGINE_VERSION=1.8.6
+APPENGINE_VERSION=1.8.8
 
 mvn install:install-file -Dfile=vendor/google/guice-2.0.jar \
     -DgroupId=com.google.code.guice \
