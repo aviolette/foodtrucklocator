@@ -2,7 +2,7 @@
 
 <div class="row" id="sidebar">
   <div class="col-md-4" id="listContainer">
-    <div style="margin-top:10px;" class="alert alert-info" id="flashMsg" style="display:none">
+    <div class="alert alert-info" id="flashMsg" style="display:none">
     </div>
     <h3 class="trucksListHeader">Trucks Open Now</h3>
     <div id="nowTrucks" class="truckDL">

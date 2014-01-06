@@ -390,13 +390,14 @@ var FoodTruckLocator = function () {
           truck.url + "</a>");
     }
     var $truckSchedule = $("#truckSchedule");
-
     $truckSchedule.empty();
     $.each(_trucks.findStopsForTruck(truck.id), function (idx, stop) {
-      $truckSchedule.append("<li>" + stop.stop.startTime + " " + stop.location.name + "</li>")
+      var $tr = $("<tr></tr>");
+      $tr.append("<td>" + stop.stop.startTime + "</td>");
+      $tr.append("<td>" + stop.location.name + "</td>")
+      $truckSchedule.append($tr);
     });
-    $("#truckTitle").empty();
-    $("#truckTitle").append(truck.name);
+    $("#truckTitle").html(truck.name);
     $truckDialog.modal({ show: true, keyboard: true, backdrop: true});
   }
 

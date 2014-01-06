@@ -18,7 +18,8 @@
         </div>
         <div id="truckInfo"></div>
         <h3>Scheduled Stops</h3>
-        <ul class="unstyled" id="truckSchedule"></ul>
+        <table class="table"><tbody id="truckSchedule">
+        </tbody></table>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
