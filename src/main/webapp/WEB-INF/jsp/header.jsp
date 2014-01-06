@@ -34,6 +34,9 @@
         </ul>
         </li>
         <li><a href="http://blog.chicagofoodtruckfinder.com/">Blog</a></li>
+        <c:if test="${isAdmin}">
+        <li><a href="/admin">Admin</a></li>
+        </c:if>
       </ul>
       <ul class="nav navbar-right navbar-nav">
         <li><a style="padding: 10px 0 0 0" href="http://twitter.com/chifoodtruckz"><img src="/img/twitter02_dark.png"/></a></li>
