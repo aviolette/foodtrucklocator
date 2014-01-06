@@ -1,6 +1,6 @@
 <%@include file="../common.jsp" %>
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script>window.jQuery ||
-document.write("<script src='/script/lib/jquery-1.7.1.min.js'>\x3C/script>")</script>
-<script type="text/javascript" src="/bootstrap2.2.2-custom/js/bootstrap.js"></script>
+document.write("<script src='/script/lib/jquery-1.10.2.min.js'>\x3C/script>")</script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>

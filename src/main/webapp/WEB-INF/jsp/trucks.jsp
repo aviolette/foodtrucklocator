@@ -1,6 +1,6 @@
-<%@ include file="nextgenheader.jsp" %>
-<div class="row" style="padding-top: 20px">
-  <div id="sidebar" class="span3" style="overflow-y: auto">
+<%@ include file="header.jsp" %>
+<div class="row">
+  <div id="sidebar" class="col-md-4" style="overflow-y: auto">
     <c:if test="${!empty(filteredBy)}">
       <div class="alert alert-message">
         Filtering list by: <strong>${filteredBy}</strong> (<a
@@ -8,12 +8,12 @@
       </div>
 
     </c:if>
-    <ul class="nav nav-list">
-      <li class="nav-header">TRUCKS AND VENDORS</li>
+    <h4>TRUCKS AND VENDORS</h4>
+    <ul class="media-list">
       <c:forEach var="tr" items="${trucks}">
         <c:if test="${!tr.inactive}">
-          <li><a class="<c:if test="${tr.id == truck.id}">active</c:if>"
-                 href="/trucks/${tr.id}<c:if test="${!empty(filteredBy)}">?tag=${filteredBy}</c:if>">${tr.name}</a></li>
+          <li class="media<c:if test="${tr.id == truck.id}"> active</c:if>"><a class="pull-left"
+                 href="/trucks/${tr.id}<c:if test="${!empty(filteredBy)}">?tag=${filteredBy}</c:if>"><img src="${tr.iconUrl}"/></a><div class='media-body'><a href="/trucks/${tr.id}">${tr.name}</a></div></li>
         </c:if>
       </c:forEach>
       <%--
@@ -26,7 +26,7 @@
       --%>
     </ul>
   </div>
-  <div id="content" class="span9">
+  <div id="content" class="col-md-8">
     <c:choose>
       <c:when test="${!empty(truck)}">
         <div class="row">

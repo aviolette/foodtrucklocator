@@ -193,9 +193,8 @@ var FoodTruckLocator = function () {
   }
 
   function buildGroupTableRow(stop) {
-    return "<tr><td><img src='" + stop.truck.iconUrl + "'/></td><td style='padding-left:10px'>" +
-        stop.stop.startTime + " - <br/>" + stop.stop.endTime + "</td><td style='padding-left:10px'>" +
-        "<strong>" + stop.truck.name + "</strong></td></tr>";
+    return "<div class='media'><a href='/trucks/" + stop.truck.id + "' class='pull-left'><img src='" + stop.truck.iconUrl + "'/></a><div class='media-body' >" +
+        "<div><strong>" + stop.truck.name + "</strong></div><div>" + stop.stop.startTime + " - " + stop.stop.endTime + " </div></div></div>";
   }
 
   function buildInfoWindow(marker, stops) {
@@ -204,11 +203,11 @@ var FoodTruckLocator = function () {
     if (stops.distance != null) {
       contentString += "<p>" + stops[0].distance + " miles from your location</p>"
     }
-    contentString = contentString + "<table><tbody>"
+    contentString = contentString + "<div class='media-list'>"
     $.each(stops, function (idx, stop) {
       contentString += buildGroupTableRow(stop);
     });
-    contentString = contentString + "</tbody></table></div>";
+    contentString = contentString + "</div></div>";
     var infowindow = new google.maps.InfoWindow({
       content: contentString
     });
@@ -221,38 +220,35 @@ var FoodTruckLocator = function () {
 
   function buildTruckList($truckList, stops) {
     $truckList.empty();
-    var markerIds = [];
-    var items = "<ul class='unstyled'>", lastIcon = null;
-    var lastMarkerGroup;
+    var $items = $("<ul class='media-list'></ul>"), lastIcon = null, $location, $div, markerIds =[], lastMarkerGroup;
+    $items.appendTo($truckList);
     $.each(stops, function (idx, stop) {
-      var distance = stop.distance ? (" (" + stop.distance + " miles away) ") : "";
-      var iconColumn = "";
-      if (!isMobile()) {
-        if (lastIcon != stop.marker.icon) {
-          iconColumn = "<td style=\"vertical-align: top;width:20px !important\"><img id='" + stop.markerId + "'  src='" + stop.marker.icon + "'/></td>";
-          lastMarkerGroup = {marker: stop.marker, id: stop.markerId, stops: [stop]};
-          markerIds.push(lastMarkerGroup);
-        } else {
-          iconColumn = "<td style=\"vertical-align: top;width:20px !important\"><img style='visibility:hidden' src='" + stop.marker.icon + "'/></td>";
-          lastMarkerGroup["stops"].push(stop);
-        }
-        lastIcon = stop.marker.icon;
+      var distance = stop.distance ? (" (" + stop.distance + " miles away) ") : ""
+      if (lastIcon != stop.marker.icon) {
+        $div = $("<div class='media-body'><h4>" + formatLocation(stop.location.name) + "</h4>"
+            + distance + "</div>");
+        $location = $("<li class='media'><a class='pull-left' href='#'><img id='" + stop.markerId + "' class='media-object' src='"
+            + stop.marker.icon +"'/></a></li>");
+        $location.append($div);
+        $items.append($location);
+        lastMarkerGroup = {marker: stop.marker, id: stop.markerId, stops: [stop]};
+        markerIds.push(lastMarkerGroup);
+      } else {
+        lastMarkerGroup["stops"].push(stop);
       }
-      items += "<li style='padding-bottom:20px'>" +
-          "<table><tr>" + iconColumn + "<td style='width: 48px; vertical-align:top;padding-right:5px'>" +
-          "<img src='" + stop.truck.iconUrl + "'/></td><td style='vertical-align:top'><a class='truckLink' href='#' id='link" + stop.truck.id + "'>" +
-          stop.truck.name + "</a><br/>" +
-          formatLocation(stop.location.name) + distance + "<br/>" +
-          stop.stop.startTime + " - " + stop.stop.endTime +
-          "</td></tr></table>" +
-          "</li>";
+      lastIcon = stop.marker.icon;
+      $div.append($("<div class='media'><a class='pull-left truckLink' truck-id='" + stop.truck.id
+          +"' href='#'><img class='media-object' src='"
+          + stop.truck.iconUrl +"'/></a><div class='media-body'><strong>" + stop.truck.name + "</strong><div>"
+          + stop.stop.startTime + " - " + stop.stop.endTime
+          +"</div></div></div>"));
     });
-    $truckList.append(items + "</ul>");
     $("a.truckLink").each(function (idx, item) {
-      var $item = $(item), id = $item.attr("id"), truckId = id.substring(4, id.length);
+      var $item = $(item), truckId = $item.attr("truck-id");
       if (isMobile()) {
         $item.attr("href", "http://twitter.com/" + _trucks.findTruck(truckId).twitterHandle);
       } else {
+        $item.off('click');
         $item.click(function (e) {
           e.preventDefault();
           buildTruckDialog(_trucks.findTruck(truckId));
@@ -266,7 +262,8 @@ var FoodTruckLocator = function () {
           return;
         }
         buildInfoWindow(markerAndId.marker, markerAndId.stops);
-        $("#" + markerAndId.id).click(function () {
+        $("#" + markerAndId.id).click(function (e) {
+          e.preventDefault();
           markerAndId.marker.setAnimation(google.maps.Animation.BOUNCE);
           setTimeout(function () {
             markerAndId.marker.setAnimation(null);

@@ -9,36 +9,43 @@
   <meta name="description"
         content="Find food trucks on the streets of Chicago by time and location.  Results are updated in real-time throughout the day."/>
   <title>Chicago Food Truck Finder</title>
-  <link href="/bootstrap2.2.2-custom/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
   <link href="/css/main.css?ver=5" rel="stylesheet"/>
   <script src="/script/lib/modernizr-1.7.min.js"></script>
+  <style type="text/css">
+    #listContainer {
+      overflow-y: auto !important;
+    }
+  </style>
 </head>
 <body>
-<div id="topBar" class="navbar">
-  <div class="navbar-inner">
-    <div class="container-fluid">
-      <a class="brand" href="/">Chicago Food Truck Finder</a>
-      <ul class="nav">
-        <li class="visible-desktop"><a id="aboutLink" href="#about">About</a></li>
-        <li class="visible-desktop"><a id="mobileLink" href="#mobile">Mobile</a></li>
-        <%--
-        <li><a href="#settings">Settings</a></li>
-        <li><a href="/trucks">Trucks</a></li>
-        <li><a target="_blank" href="http://blog.chicagofoodtruckfinder.com">Blog</a></li>
-        --%>
+<nav id="topBar" class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">Chicago Food Truck Finder</a>
+    </div>
+    <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li class=dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Trucks <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+          <li><a href="/">Today's Schedule</a></li>
+          <li <c:if test="${tab == 'weekly'}"> class="active"</c:if>><a href="/weekly-schedule">Weekly Schedule</a></li>
+          <li <c:if test="${tab == 'trucks'}"> class="active"</c:if>><a href="/trucks">Truck List</a></li>
+        </ul>
+        </li>
+        <li><a href="http://blog.chicagofoodtruckfinder.com/">Blog</a></li>
       </ul>
-      <p style="padding-top: 4px" class="navbar-form pull-right"><a href="https://twitter.com/chifoodtruckz"
-                                                                    class="twitter-follow-button" data-button="grey"
-                                                                    data-text-color="#FFF" data-link-color="#FFF">Follow
-        @chifoodtruckz</a></p>
-
-      <div style="padding-right: 10px !important" class="navbar-form pull-right fb-like"
-           data-href="http://www.facebook.com/chicagofoodtruckfinder"
-           data-send="false" data-layout="button_count" data-width="50"
-           data-show-faces="false"></div>
-
+      <ul class="nav navbar-right navbar-nav">
+        <li><a style="padding: 10px 0 0 0" href="http://twitter.com/chifoodtruckz"><img src="/img/twitter02_dark.png"/></a></li>
+        <li><a style="padding: 10px 0 0 0" href="http://facebook.com/chicagofoodtruckfinder"><img src="/img/facebook_dark.png"/></a></li>
+      </ul>
     </div>
   </div>
-</div>
+</nav>
 
-<div class="container-fluid">
+<div class="container cftf-main-container">
+  <noscript>
+    <div class="alert alert-error">
+      Javascript is required for this site to function properly.
+    </div>
+  </noscript>

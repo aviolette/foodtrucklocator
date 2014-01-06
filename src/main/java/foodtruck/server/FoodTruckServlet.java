@@ -65,10 +65,7 @@ public class FoodTruckServlet extends FrontPageServlet {
       resp.setHeader("Location", "http://www.chicagofoodtruckfinder.com" + path);
       return;
     }
-    boolean showNextGen = true;
-    if ("/classic".equals(path)) {
-      showNextGen = false;
-    } else if (!Strings.isNullOrEmpty(path)) {
+    if (!Strings.isNullOrEmpty(path)) {
       req.setAttribute("showScheduleFor", path.substring(1));
     }
     final String timeRequest = req.getParameter("time");
@@ -113,7 +110,7 @@ public class FoodTruckServlet extends FrontPageServlet {
     resp.setHeader("Pragma", "no-cache");
     resp.setHeader("Expires", "Thu, 01 Jan 1970 00:00:00 GMT");
     req.setAttribute("payload", payload);
-    String jsp = "/WEB-INF/jsp/" + (showNextGen ? "nextgen.jsp" : "index.jsp");
+    final String jsp = "/WEB-INF/jsp/index.jsp";
     req.getRequestDispatcher(jsp).forward(req, resp);
   }
 }

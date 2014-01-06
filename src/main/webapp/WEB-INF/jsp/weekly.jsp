@@ -1,4 +1,4 @@
-<%@ include file="nextgenheader.jsp" %>
+<%@ include file="header.jsp" %>
 
 <h1 class="text-center">The Week of <joda:format style="M-" value="${weekOf}"/></h1>
 
