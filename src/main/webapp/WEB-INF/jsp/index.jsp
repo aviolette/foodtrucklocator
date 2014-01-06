@@ -18,7 +18,6 @@
   </div>
 </div>
 <c:if test="${not mobile}">
-  <%@include file="include/mobile_dialog.jsp" %>
   <%@include file="include/truck_dialog.jsp" %>
 </c:if>
 <%@include file="include/core_js.jsp" %>

@@ -322,10 +322,6 @@ var FoodTruckLocator = function () {
   }
 
   function setupGlobalEventHandlers() {
-    $("#mobileLink").click(function (e) {
-      e.preventDefault();
-      $("#mobileDialog").modal({ show: true, keyboard: true, backdrop: true});
-    });
     $(window).resize(function () {
       resize();
     });
