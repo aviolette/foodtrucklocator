@@ -145,7 +145,7 @@ var FoodTruckLocator = function () {
             stop.position, 3959);
         stop.distance = Math.round(distance * 100) / 100;
       });
-    }
+    };
 
     this.allVisible = function () {
       if (isMobile()) {
@@ -158,7 +158,7 @@ var FoodTruckLocator = function () {
         }
       });
       return visible;
-    }
+    };
 
     this.hasActive = function() {
       return self.openNow().length != 0 || self.openLater() != 0;
@@ -316,9 +316,9 @@ var FoodTruckLocator = function () {
   }
 
   function resize() {
-    $("#map_canvas").height($(window).height() - $("#topBar").height());
-    $("#sidebar").height($(window).height() - $("#topBar").height());
-    $("#listContainer").height($(window).height() - $("#topBar").height());
+    $("#map_canvas").height($(window).height() - $("#topBar").height()-20);
+    $("#sidebar").height($(window).height() - $("#topBar").height()-20);
+    $("#listContainer").height($(window).height() - $("#topBar").height()-20);
   }
 
   function setupGlobalEventHandlers() {
