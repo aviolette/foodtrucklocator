@@ -225,7 +225,7 @@ var FoodTruckLocator = function () {
     $.each(stops, function (idx, stop) {
       var distance = stop.distance ? (" (" + stop.distance + " miles away) ") : ""
       if (lastIcon != stop.marker.icon) {
-        $div = $("<div class='media-body'><h4><a href='/locations/" + stop.location.key + "'>" + formatLocation(stop.location.name) + "</a></h4>"
+        $div = $("<div class='media-body'><h4>" + formatLocation(stop.location.name) + "</h4>"
             + distance + "</div>");
         $location = $("<li class='media'><a class='pull-left' href='#'><img id='" + stop.markerId + "' class='media-object' src='"
             + stop.marker.icon +"'/></a></li>");
