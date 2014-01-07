@@ -60,7 +60,7 @@ public class FoodTruckServlet extends FrontPageServlet {
     final String path = req.getRequestURI();
     final String serverName = req.getServerName();
     if (serverName.contains("chifoodtruckz.com") ||
-        serverName.contains("chicagofoodtrucklocator.appspot.com")) {
+        serverName.equals("chicagofoodtrucklocator.appspot.com")) {
       resp.setStatus(301);
       resp.setHeader("Location", "http://www.chicagofoodtruckfinder.com" + path);
       return;
