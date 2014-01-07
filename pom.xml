@@ -61,13 +61,13 @@
     <dependency>
       <groupId>com.google</groupId>
       <artifactId>appengine-local-runtime-shared</artifactId>
-      <version>1.8.8</version>
+      <version>1.8.6</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.google</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.8.8</version>
+      <version>1.8.0</version>
     </dependency>
     <dependency>
       <groupId>com.javadocmd</groupId>
