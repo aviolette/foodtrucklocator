@@ -11,9 +11,12 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
+import com.google.inject.Inject;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import foodtruck.dao.LocationDAO;
 import foodtruck.model.Location;
 import foodtruck.server.resources.BadRequestException;
 
@@ -24,23 +27,38 @@ import foodtruck.server.resources.BadRequestException;
 
 @Provider
 public class LocationWriter implements JSONWriter<Location>, MessageBodyWriter<Location> {
+
+  private final LocationDAO locationDAO;
+
+  @Inject
+  public LocationWriter(LocationDAO locationDAO) {
+    this.locationDAO = locationDAO;
+  }
+
   @Override public JSONObject asJSON(Location location) throws JSONException {
     return writeLocation(location, 0, false);
   }
 
   public JSONObject writeLocation(Location location, int id, boolean fullOptions)
       throws JSONException {
+    // this is kind of a hack
+    if (location.getKey() == null) {
+      Location loc = locationDAO.findByAddress(location.getName());
+      if (loc != null) {
+        location = Location.builder(location).key(loc.getKey()).build();
+      }
+    }
     JSONObject obj = new JSONObject()
         .put("latitude", location.getLatitude())
         .put("longitude", location.getLongitude())
         .put("radius", location.getRadius())
         .put("description", location.getDescription())
         .put("name", location.getName());
+    obj.put("key", location.getKey());
     if (fullOptions) {
       obj.put("popular", location.isPopular());
       obj.put("autocomplete", location.isAutocomplete());
       obj.put("valid", location.isValid());
-      obj.put("key", location.getKey());
     }
     return (id != 0) ? obj.put("id", id) : obj;
   }

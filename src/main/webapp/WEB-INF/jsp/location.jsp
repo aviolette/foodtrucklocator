@@ -1,7 +1,7 @@
 <%@ include file="header.jsp" %>
 
 <div class="row" >
-  <div class="span6">
+  <div class="col-md-6">
     <h2>Trucks at ${location.name} on <joda:format value="${thedate}" pattern="MMM dd, YYYY"/></h2>
 
     <table>
@@ -18,7 +18,7 @@
     </table>
 
   </div>
-  <div class="span6">
+  <div class="col-md-6">
     <div id="map_canvas" style="width:100%; height:300px; margin-top:10px; padding-bottom:20px;">
     </div>
   </div>
