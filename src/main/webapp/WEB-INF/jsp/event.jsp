@@ -1,4 +1,4 @@
-<%@ include file="nextgenheader.jsp" %>
+<%@ include file="header.jsp" %>
 
 <h2>${event.name}</h2>
 
