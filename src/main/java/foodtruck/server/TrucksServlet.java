@@ -72,6 +72,7 @@ public class TrucksServlet extends FrontPageServlet {
           firstDay.toDateTimeAtStartOfDay(zone).plusDays(7))));
     }
     req.setAttribute("containerType", "fixed");
+    req.setAttribute("title", "Food Trucks in Chicago");
     req.getRequestDispatcher(jsp).forward(req, resp);
   }
 }

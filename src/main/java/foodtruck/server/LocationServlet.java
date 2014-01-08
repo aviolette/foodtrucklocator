@@ -72,6 +72,7 @@ public class LocationServlet extends FrontPageServlet {
     req.setAttribute("stops", truckStopService.findStopsNearALocation(location, dateTime.toLocalDate()));
     req.setAttribute("thedate", dateTime);
     req.setAttribute("location", location);
+    req.setAttribute("title", location.getName());
     String jsp = "/WEB-INF/jsp/location.jsp";
     req = new GuiceHackRequestWrapper(req, jsp);
     req.setAttribute("containerType", "fixed");

@@ -106,6 +106,7 @@ public class FoodTruckServlet extends FrontPageServlet {
     req.setAttribute("requestTime", timeFormatter.print(dateTime));
     req.setAttribute("requestTimeInMillis", dateTime.getMillis());
     req.setAttribute("appKey", configuration.getFrontDoorAppKey());
+    req.setAttribute("title", "Chicago Food Truck Finder");
     resp.setHeader("Cache-Control", "no-cache");
     resp.setHeader("Pragma", "no-cache");
     resp.setHeader("Expires", "Thu, 01 Jan 1970 00:00:00 GMT");

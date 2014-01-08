@@ -30,6 +30,7 @@ public abstract class FrontPageServlet extends HttpServlet {
       throws ServletException, IOException {
     UserService userService = UserServiceFactory.getUserService();
     req.setAttribute("isAdmin", userService.isUserLoggedIn() && userService.isUserAdmin());
+    req.setAttribute("title", "Chicago Food Truck Finder");
     doGetProtected(req, resp);
   }
 
