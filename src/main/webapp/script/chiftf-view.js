@@ -223,20 +223,28 @@ var FoodTruckLocator = function () {
     var $items = $("<ul class='media-list'></ul>"), lastIcon = null, $location, $div, markerIds =[], lastMarkerGroup;
     $items.appendTo($truckList);
     $.each(stops, function (idx, stop) {
-      var distance = stop.distance ? (" (" + stop.distance + " miles away) ") : ""
-      if (lastIcon != stop.marker.icon) {
+      var distance = stop.distance ? (" (" + stop.distance + " miles away) ") : "";
+      if (!isMobile()) {
+        if (lastIcon != stop.marker.icon) {
+          $div = $("<div class='media-body'><h4><a href='/locations/" + stop.location.key + "'>" + formatLocation(stop.location.name) + "</a></h4>"
+              + distance + "</div>");
+          $location = $("<li class='media'><a class='pull-left' href='#'><img id='" + stop.markerId + "' class='media-object' src='"
+              + stop.marker.icon +"'/></a></li>");
+          $location.append($div);
+          $items.append($location);
+          lastMarkerGroup = {marker: stop.marker, id: stop.markerId, stops: [stop]};
+          markerIds.push(lastMarkerGroup);
+        } else {
+          lastMarkerGroup["stops"].push(stop);
+        }
+        lastIcon = stop.marker.icon;
+      } else {
         $div = $("<div class='media-body'><h4><a href='/locations/" + stop.location.key + "'>" + formatLocation(stop.location.name) + "</a></h4>"
             + distance + "</div>");
-        $location = $("<li class='media'><a class='pull-left' href='#'><img id='" + stop.markerId + "' class='media-object' src='"
-            + stop.marker.icon +"'/></a></li>");
+        $location = $("<li class='media'></li>");
         $location.append($div);
         $items.append($location);
-        lastMarkerGroup = {marker: stop.marker, id: stop.markerId, stops: [stop]};
-        markerIds.push(lastMarkerGroup);
-      } else {
-        lastMarkerGroup["stops"].push(stop);
       }
-      lastIcon = stop.marker.icon;
       $div.append($("<div class='media'><a class='pull-left truckLink' truck-id='" + stop.truck.id
           +"' href='#'><img class='media-object' src='"
           + stop.truck.iconUrl +"'/></a><div class='media-body'><strong>" + stop.truck.name + "</strong><div>"
