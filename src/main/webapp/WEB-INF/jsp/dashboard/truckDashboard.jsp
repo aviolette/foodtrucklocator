@@ -2,6 +2,26 @@
 
 <img src="${truck.iconUrl}"/>
 
+<h2>Schedule</h2>
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <td>Start Time</td>
+    <td>End Time</td>
+    <td>Duration</td>
+    <td>Location</td>
+    <td>&nbsp;</td>
+  </tr>
+  </thead>
+  <tbody id="scheduleTable">
+  </tbody>
+</table>
+<div class="btn-group">
+  <button class="btn primary" id="addButton"><i class="icon-calendar"></i>&nbsp;New Event</button>
+  <button class="btn" id="offRoadButton"><i class="icon-trash"></i>Off the Road</button>
+  <button class="btn" id="recacheButton"><i class="icon-refresh"></i>&nbsp;Reload from calendar</button>
+</div>
+
 <div class="row">
   <div class="span6">
     <h2>Configuration
@@ -83,25 +103,6 @@
 </div>
 
 
-<h2>Schedule</h2>
-<table class="table table-striped">
-  <thead>
-  <tr>
-    <td>Start Time</td>
-    <td>End Time</td>
-    <td>Duration</td>
-    <td>Location</td>
-    <td>&nbsp;</td>
-  </tr>
-  </thead>
-  <tbody id="scheduleTable">
-  </tbody>
-</table>
-<div class="btn-group">
-  <button class="btn primary" id="addButton"><i class="icon-calendar"></i>&nbsp;New Event</button>
-  <button class="btn" id="offRoadButton"><i class="icon-trash"></i>Off the Road</button>
-  <button class="btn" id="recacheButton"><i class="icon-refresh"></i>&nbsp;Reload from calendar</button>
-</div>
 <h2>Weekly Overview</h2>
 
 <table class="table table-striped">
