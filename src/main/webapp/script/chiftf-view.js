@@ -194,7 +194,7 @@ var FoodTruckLocator = function () {
 
   function buildGroupTableRow(stop) {
     return "<div class='media'><a href='/trucks/" + stop.truck.id + "' class='pull-left'><img src='" + stop.truck.iconUrl + "'/></a><div class='media-body' >" +
-        "<div><strong>" + stop.truck.name + "</strong></div><div>" + stop.stop.startTime + " - " + stop.stop.endTime + " </div></div></div>";
+        "<div><strong>" + stop.truck.name + "</strong></div><div>" + buildTimeRange(stop.stop, Clock.now()) + " </div></div></div>";
   }
 
   function buildInfoWindow(marker, stops) {
@@ -217,10 +217,18 @@ var FoodTruckLocator = function () {
     });
   }
 
+  function buildTimeRange(stop, time) {
+    if (stop.startMillis < time && stop.endMillis > time) {
+      return "Estimated departure time: " + stop.endTime;
+    } else {
+      return stop.startTime + " - " + stop.endTime;
+    }
+  }
 
   function buildTruckList($truckList, stops) {
     $truckList.empty();
-    var $items = $("<ul class='media-list'></ul>"), lastIcon = null, $location, $div, markerIds =[], lastMarkerGroup;
+    var $items = $("<ul class='media-list'></ul>"), lastIcon = null, now = Clock.now(),
+        $location, $div, markerIds =[], lastMarkerGroup;
     $items.appendTo($truckList);
     $.each(stops, function (idx, stop) {
       var distance = stop.distance ? (" (" + stop.distance + " miles away) ") : "";
@@ -248,7 +256,7 @@ var FoodTruckLocator = function () {
       $div.append($("<div class='media'><a class='pull-left truckLink' truck-id='" + stop.truck.id
           +"' href='#'><img class='media-object' src='"
           + stop.truck.iconUrl +"'/></a><div class='media-body'><strong>" + stop.truck.name + "</strong><div>"
-          + stop.stop.startTime + " - " + stop.stop.endTime
+          + buildTimeRange(stop.stop, now)
           +"</div></div></div>"));
     });
     $("a.truckLink").each(function (idx, item) {
