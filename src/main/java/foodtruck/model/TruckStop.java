@@ -21,6 +21,7 @@ public class TruckStop extends ModelEntity {
   private final DateTime endTime;
   private final Location location;
   private final boolean locked;
+  private final @Nullable DateTime lastUpdated;
   private final @Nullable DateTime fromBeacon;
 
   private static final Logger log = Logger.getLogger(TruckStop.class.getName());
@@ -32,6 +33,7 @@ public class TruckStop extends ModelEntity {
     location = builder.location;
     locked = builder.locked;
     fromBeacon = builder.fromBeacon;
+    lastUpdated = builder.lastUpdated;
   }
 
   public boolean isLocked() {
@@ -40,6 +42,13 @@ public class TruckStop extends ModelEntity {
 
   public Truck getTruck() {
     return truck;
+  }
+
+  /**
+   * Returns the time the stop was last automatically updated (could be null if it was only manually entered).
+   */
+  public @Nullable DateTime getLastUpdated() {
+    return lastUpdated;
   }
 
   public DateTime getStartTime() {
@@ -89,6 +98,7 @@ public class TruckStop extends ModelEntity {
           .add("truck", truck.getId())
           .add("startTime", startTime)
           .add("endTime", endTime)
+          .add("lastUpdated", lastUpdated)
           .add("location", location)
           .toString();
     } catch (Throwable t) {
@@ -151,6 +161,7 @@ public class TruckStop extends ModelEntity {
     private boolean locked;
     private @Nullable DateTime fromBeacon;
     private @Nullable Long key;
+    private @Nullable DateTime lastUpdated;
 
     private Builder() {}
 
@@ -162,6 +173,7 @@ public class TruckStop extends ModelEntity {
       locked = stop.isLocked();
       fromBeacon = stop.getBeaconTime();
       key = (Long) stop.getKey();
+      lastUpdated = stop.getLastUpdated();
     }
 
     public Builder key(@Nullable Long key) {
@@ -176,6 +188,11 @@ public class TruckStop extends ModelEntity {
 
     public Builder startTime(DateTime dateTime) {
       this.startTime = dateTime;
+      return this;
+    }
+
+    public Builder lastUpdated(@Nullable DateTime lastUpdated) {
+      this.lastUpdated = lastUpdated;
       return this;
     }
 

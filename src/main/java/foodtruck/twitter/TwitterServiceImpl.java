@@ -277,7 +277,6 @@ public class TwitterServiceImpl implements TwitterService {
   private Set<String> parseHandles(String text) {
     ImmutableSet.Builder<String> builder = ImmutableSet.builder();
     Matcher matcher = TWITTER_PATTERN.matcher(text);
-    int pos = 0;
     while (matcher.find()) {
       String twitterId = matcher.group(0).substring(1);
       builder.add(twitterId.toLowerCase());
@@ -313,8 +312,13 @@ public class TwitterServiceImpl implements TwitterService {
           boolean locationsSame = stop.getLocation().equals(matchedStop.getLocation());
           // matched start time is contained within stop.  delete stop and make matched stop take
           // new start time
-          if (stop.getEndTime().isAfter(matchedStop.getStartTime()) &&
-              stop.getStartTime().isBefore(matchedStop.getStartTime())) {
+          final DateTime stopEnd = stop.getEndTime(), matchedStart = matchedStop.getStartTime(),
+              stopStart = stop.getStartTime();
+          // current stop: 7am - 9am
+          // matched stop: 8am - 930am
+          // if location the same, and soft ending => 7am-9am; if
+          TruckStop.Builder matchBuilder = TruckStop.builder(matchedStop).lastUpdated(clock.now());
+          if (stopEnd.isAfter(matchedStart) && stopStart.isBefore(matchedStart)) {
             if (stop.isLocked()) {
               matchedStop = null;
               break;
@@ -322,37 +326,39 @@ public class TwitterServiceImpl implements TwitterService {
             deleteStops.add(stop);
             if (locationsSame) {
               if (match.isSoftEnding()) {
-                matchedStop = matchedStop.withEndTime(stop.getEndTime());
+                matchedStop = matchBuilder.startTime(stopStart).endTime(stopEnd).build();
               } else {
-                matchedStop = matchedStop.withStartTime(stop.getStartTime());
+                matchedStop = matchBuilder.startTime(stopStart).build();
               }
             } else {
-              addStops.add(stop.withEndTime(matchedStop.getStartTime()));
+              addStops.add(stop.withEndTime(matchedStart));
             }
-          } else if (stop.getStartTime().isBefore(matchedStop.getEndTime()) &&
-              stop.getEndTime().isAfter(matchedStop.getEndTime())) {
-            if (stop.isLocked()) {
-              matchedStop = null;
-              break;
-            }
-            if ((locationsSame && !match.isTerminated()) ||
-                (stop.getStartTime().getHourOfDay() == 11
-                    && stop.getStartTime().getMinuteOfHour() == 30)) {
+          } else {
+            final DateTime matchedEnd = matchedStop.getEndTime();
+            if (stopStart.isBefore(matchedEnd) && stopEnd.isAfter(matchedEnd)) {
+              if (stop.isLocked()) {
+                matchedStop = null;
+                break;
+              }
+              if ((locationsSame && !match.isTerminated()) ||
+                  (stopStart.getHourOfDay() == 11
+                      && stopStart.getMinuteOfHour() == 30)) {
+                deleteStops.add(stop);
+                matchedStop = matchBuilder.endTime(stopEnd).build();
+              } else {
+                matchedStop = matchBuilder.endTime(stopStart).build();
+              }
+            } else if ((stopStart.equals(matchedStart) ||
+                stopStart.isAfter(matchedStart)) &&
+                (stopEnd.equals(matchedEnd) ||
+                    stopEnd.isBefore(matchedEnd))) {
+              if (stop.isLocked()) {
+                matchedStop = null;
+                break;
+              }
               deleteStops.add(stop);
-              matchedStop = matchedStop.withEndTime(stop.getEndTime());
-            } else {
-              matchedStop = matchedStop.withEndTime(stop.getStartTime());
+              matchedStop = matchBuilder.startTime(stopStart).build();
             }
-          } else if ((stop.getStartTime().equals(matchedStop.getStartTime()) ||
-              stop.getStartTime().isAfter(matchedStop.getStartTime())) &&
-              (stop.getEndTime().equals(matchedStop.getEndTime()) ||
-                  stop.getEndTime().isBefore(matchedStop.getEndTime()))) {
-            if (stop.isLocked()) {
-              matchedStop = null;
-              break;
-            }
-            deleteStops.add(stop);
-            matchedStop = matchedStop.withStartTime(stop.getStartTime());
           }
         }
         if (!deleteStops.isEmpty()) {

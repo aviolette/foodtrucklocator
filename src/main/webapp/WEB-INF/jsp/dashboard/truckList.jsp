@@ -20,10 +20,10 @@
     <th class="gutter">&nbsp;</th>
     <th>Truck</th>
     <th>Current Location</th>
+    <th>Last Updated</th>
     <th>Ends At</th>
     <th>Starts At</th>
     <th>Next Location</th>
-    <th>Categories</th>
     <th>Twittalyzer</th>
   </tr>
   </thead>
@@ -43,9 +43,10 @@
             <c:param name="q" value="${truckStops.currentStop.location.name}"/>
           </c:url> <a
             href="${locationUrl}">${truckStops.currentStop.location.name}</a></td>
+        <td><joda:format value="${truckStops.currentStop.lastUpdated}" style="-S"/></td>
         <td><joda:format value="${truckStops.currentStop.endTime}" style="-S"/></c:when><c:otherwise>
           Not Active
-        </td>
+        </td><td>&nbsp;</td>
         <td>&nbsp;</c:otherwise>
           </c:choose>
 
@@ -62,7 +63,6 @@
           <c:otherwise></td><td>None</c:otherwise>
           </c:choose>
         </td>
-        <td>${truckStops.truck.categoryList}</td>
         <td><c:choose><c:when
             test="${truckStops.truck.usingTwittalyzer}"></c:when><c:otherwise><span
             class="label warning">off</span></c:otherwise></c:choose></td>

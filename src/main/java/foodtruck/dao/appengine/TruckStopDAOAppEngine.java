@@ -54,6 +54,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
   private static final String END_TIMESTAMP = "endTimeStamp";
   private static final String START_TIMESTAMP = "startTimeStamp";
   private static final String BEACON_FIELD = "beaconTime";
+  private static final String LAST_UPDATED = "last_updated";
 
   private final DatastoreServiceProvider serviceProvider;
   private final DateTimeZone zone;
@@ -101,6 +102,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
                 .truck(truckDAO.findById(truckId))
                 .startTime(startTime)
                 .endTime(endTime)
+                .lastUpdated(getDateTime(entity, LAST_UPDATED, zone))
                 .location(
                     Location.builder()
                         .lat(getDoubleProperty(entity, LATITUDE_FIELD, 0d))
@@ -140,6 +142,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
     truckStop.setProperty(URL_FIELD, stop.getLocation().getUrl());
     truckStop.setProperty(LOCKED_FIELD, stop.isLocked());
     Attributes.setDateProperty(BEACON_FIELD, truckStop, stop.getBeaconTime());
+    Attributes.setDateProperty(LAST_UPDATED, truckStop, stop.getLastUpdated());
     truckStop.setProperty(END_TIMESTAMP, stop.getEndTime().getMillis());
     truckStop.setProperty(START_TIMESTAMP, stop.getStartTime().getMillis());
   }
@@ -181,6 +184,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
         .truck(truckDAO.findById((String) entity.getProperty(TRUCK_ID_FIELD)))
         .startTime(startTime)
         .endTime(endTime)
+        .lastUpdated(Attributes.getDateTime(entity, LAST_UPDATED, zone))
         .fromBeacon(Attributes.getDateTime(entity, BEACON_FIELD, zone))
         .location(Location.builder().lat((Double) entity.getProperty(LATITUDE_FIELD))
             .lng((Double) entity.getProperty(

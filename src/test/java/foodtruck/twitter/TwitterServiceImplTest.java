@@ -202,7 +202,8 @@ public class TwitterServiceImplTest extends EasyMockSupport {
         .andReturn(ImmutableList.<TruckStop>of(currentStop));
     truckStopDAO.deleteStops(ImmutableList.<TruckStop>of(currentStop));
     truckStopDAO.addStops(ImmutableList.<TruckStop>of(
-        matchedStop.withEndTime(currentStop.getEndTime())));
+        matchedStop.withStartTime(currentStop.getStartTime())
+            .withEndTime(currentStop.getEndTime())));
     expectTweetsIgnored();
     replayAll();
     service.twittalyze();
@@ -243,7 +244,8 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     expectMatched(false);
     expectOffTheRoad(false);
     TruckStop currentStop =
-        TruckStop.builder().truck(truck2).startTime(matchStartTime.plusMinutes(30)).endTime(matchEndTime.plusHours(1)).location(loca).build();
+        TruckStop.builder().truck(truck2).startTime(matchStartTime.plusMinutes(30))
+            .endTime(matchEndTime.plusHours(1)).location(loca).build();
     expect(truckStopDAO.findDuring(TRUCK_2_ID, currentDay)).andReturn(
         ImmutableList.<TruckStop>of(currentStop));
     truckStopDAO.deleteStops(ImmutableList.of(currentStop));
