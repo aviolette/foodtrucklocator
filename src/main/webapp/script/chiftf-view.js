@@ -234,8 +234,8 @@ var FoodTruckLocator = function () {
       var $locationDescription = $("<div></div>");
       if (stop.location.url) $locationDescription.append("<div><a href='" + stop.location.url + "'>" + stop.location.url + "</a></div>");
       if (stop.location.description) $locationDescription.append("<div>" + stop.location.description + " </div>");
-      if (stop.distance) $locationDescription.append("<div>(" + stop.distance + " miles away)</div>");
       if (!isMobile()) {
+        if (stop.distance) $locationDescription.append("<div>(" + stop.distance + " miles from map center)</div>");
         if (lastIcon != stop.marker.icon) {
           $div = $("<div class='media-body'><h4><a href='/locations/" + stop.location.key + "'>" + formatLocation(stop.location.name) + "</a></h4></div>");
           $div.append($locationDescription);
@@ -250,6 +250,7 @@ var FoodTruckLocator = function () {
         }
         lastIcon = stop.marker.icon;
       } else {
+        if (stop.distance) $locationDescription.append("<div>(" + stop.distance + " miles away)</div>");
         $div = $("<div class='media-body'><h4><a href='/locations/" + stop.location.key + "'>" + formatLocation(stop.location.name) + "</a></h4></div>");
         $div.append($locationDescription);
         $location = $("<li class='media'></li>");
