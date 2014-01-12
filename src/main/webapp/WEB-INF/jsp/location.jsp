@@ -4,18 +4,24 @@
   <div class="col-md-6">
     <h2>Trucks at ${location.name} on <joda:format value="${thedate}" pattern="MMM dd, YYYY"/></h2>
 
-    <table>
-      <tbody>
+    <c:if test="${!empty(location.description)}">
+      <div>${location.description}</div>
+    </c:if>
+    <c:if test="${!empty(location.url)}">
+      <div><a href='${location.url}'>${location.url}</a></div>
+    </c:if>
       <c:forEach items="${stops}" var="stop">
-        <tr>
-        <tr>
-          <td style="width:48px; vertical-align:top; padding-right:5px"><img src="${stop.truck.iconUrl}" alt="${stop.truck.name} icon"/></td>
-          <td><a class="truckLink" href="/trucks/${stop.truck.id}">${stop.truck.name}</a><br/>
-            <joda:format value="${stop.startTime}" style="-S"/> - <joda:format value="${stop.endTime}" style="-S"/></td>
-        </tr>
+        <div class="media">
+          <a class="pull-left" href="/trucks/${stop.truck.id}">
+            <img class="media-object" src="${stop.truck.iconUrl}" alt="${stop.truck.name} icon"/>
+          </a>
+          <div class="media-body">
+            <h4 class="media-heading">${stop.truck.name}</h4>
+            <joda:format value="${stop.startTime}" style="-S"/> - <joda:format value="${stop.endTime}" style="-S"/>
+          </div>
+        </div>
+
       </c:forEach>
-      </tbody>
-    </table>
 
   </div>
   <div class="col-md-6">
