@@ -326,7 +326,11 @@ public class TwitterServiceImpl implements TwitterService {
             deleteStops.add(stop);
             if (locationsSame) {
               if (match.isSoftEnding()) {
-                matchedStop = matchBuilder.startTime(stopStart).endTime(stopEnd).build();
+                matchBuilder.endTime(stopEnd);
+                if (clock.now().isAfter(stopStart)) {
+                  matchBuilder.startTime(stopStart);
+                }
+                matchedStop = matchBuilder.build();
               } else {
                 matchedStop = matchBuilder.startTime(stopStart).build();
               }
