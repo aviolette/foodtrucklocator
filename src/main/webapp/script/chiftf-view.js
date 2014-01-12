@@ -161,7 +161,7 @@ var FoodTruckLocator = function () {
     };
 
     this.hasActive = function() {
-      return self.openNow().length != 0 || self.openLater() != 0;
+      return self.stops.length > 0;
     };
 
     this.openNow = function () {
@@ -352,7 +352,7 @@ var FoodTruckLocator = function () {
     } else if (_trucks.allVisible()) {
       hideFlash();
     } else {
-      flash("The result list is currently being filtered based on the zoom-level of the map.  To see all trucks, zoom out.", "warning")
+      flash("The result list is currently being filtered based on the zoom-level and center of the map.  To see all trucks, zoom out.", "warning")
     }
   }
 
