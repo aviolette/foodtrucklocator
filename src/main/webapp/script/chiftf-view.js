@@ -231,11 +231,14 @@ var FoodTruckLocator = function () {
         $location, $div, markerIds =[], lastMarkerGroup;
     $items.appendTo($truckList);
     $.each(stops, function (idx, stop) {
-      var distance = stop.distance ? (" (" + stop.distance + " miles away) ") : "";
+      var $locationDescription = $("<div></div>");
+      if (stop.location.url) $locationDescription.append("<div><a href='" + stop.location.url + "'>" + stop.location.url + "</a></div>");
+      if (stop.location.description) $locationDescription.append("<div>" + stop.location.description + " </div>");
+      if (stop.distance) $locationDescription.append("<div>(" + stop.distance + " miles away)</div>");
       if (!isMobile()) {
         if (lastIcon != stop.marker.icon) {
-          $div = $("<div class='media-body'><h4><a href='/locations/" + stop.location.key + "'>" + formatLocation(stop.location.name) + "</a></h4>"
-              + distance + "</div>");
+          $div = $("<div class='media-body'><h4><a href='/locations/" + stop.location.key + "'>" + formatLocation(stop.location.name) + "</a></h4></div>");
+          $div.append($locationDescription);
           $location = $("<li class='media'><a class='pull-left' href='#'><img id='" + stop.markerId + "' class='media-object' src='"
               + stop.marker.icon +"'/></a></li>");
           $location.append($div);
@@ -247,8 +250,8 @@ var FoodTruckLocator = function () {
         }
         lastIcon = stop.marker.icon;
       } else {
-        $div = $("<div class='media-body'><h4><a href='/locations/" + stop.location.key + "'>" + formatLocation(stop.location.name) + "</a></h4>"
-            + distance + "</div>");
+        $div = $("<div class='media-body'><h4><a href='/locations/" + stop.location.key + "'>" + formatLocation(stop.location.name) + "</a></h4></div>");
+        $div.append($locationDescription);
         $location = $("<li class='media'></li>");
         $location.append($div);
         $items.append($location);

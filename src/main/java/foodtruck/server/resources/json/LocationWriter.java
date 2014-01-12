@@ -51,6 +51,7 @@ public class LocationWriter implements JSONWriter<Location>, MessageBodyWriter<L
     JSONObject obj = new JSONObject()
         .put("latitude", location.getLatitude())
         .put("longitude", location.getLongitude())
+        .put("url", location.getUrl())
         .put("radius", location.getRadius())
         .put("description", location.getDescription())
         .put("name", location.getName());
