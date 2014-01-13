@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
@@ -51,7 +52,7 @@ public class CacheAndStoreLocator implements GeoLocator {
     }
     DateTime now = clock.now();
     monitor.updateCount(now, "cacheLookup_total");
-    Location loc = dao.findByAddress(location);
+    Location loc = findByAddress(location);
     if (loc != null) {
       return loc;
     } else {
@@ -68,6 +69,18 @@ public class CacheAndStoreLocator implements GeoLocator {
       log.warning("Failed at attempt to geo locate: " + location);
     }
     return dao.saveAndFetch(loc).wasJustResolved();
+  }
+
+  private @Nullable Location findByAddress(String location) {
+    // max of three marches up the alias-tree
+    for (int i=0; i < 3; i++) {
+      Location loc = dao.findByAddress(location);
+      if (loc == null || Strings.isNullOrEmpty(loc.getAlias())) {
+        return loc;
+      }
+      location = loc.getAlias();
+    }
+    return null;
   }
 
   @Override

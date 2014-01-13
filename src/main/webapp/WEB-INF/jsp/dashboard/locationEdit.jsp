@@ -41,6 +41,12 @@
       </div>
     </div>
     <div class="control-group">
+      <label class="control-label" for="alias">Alias for</label>
+      <div class="controls">
+        <input id="alias" class="span6" type="text"/>
+      </div>
+    </div>
+    <div class="control-group">
       <label for="description" class="control-label">Description</label>
       <div class="controls">
         <textarea class="span6" id="description" rows="5" cols="80"></textarea>
@@ -76,6 +82,7 @@
       $("#longitude").attr("value", loc.longitude);
       $("#radius").attr("value", loc.radius);
       $("#name").attr("value", loc.name);
+      $("#alias").attr("value", loc.alias);
       $("#invalidLoc").attr("checked", !loc.valid);
       $("#description").attr("value", loc.description);
       $("#popular").attr("checked", loc.popular);
@@ -176,6 +183,7 @@
       loc.latitude = parseFloat($("#latitude").attr("value"));
       loc.longitude = parseFloat($("#longitude").attr("value"));
       loc.name = $("#name").attr("value");
+      loc.alias = $("#alias").attr("value");
       loc.radius = parseFloat($("#radius").attr("value"));
       loc.valid = !$("#invalidLoc").is(":checked");
       loc.description = $("#description").attr("value");

@@ -30,6 +30,7 @@ public class Location extends ModelEntity {
   private final boolean popular;
   private final boolean justResolved;
   private final boolean autocomplete;
+  private final @Nullable String alias;
 
   public Location(Builder builder) {
     super(builder.key);
@@ -43,6 +44,7 @@ public class Location extends ModelEntity {
     popular = builder.popular;
     justResolved = builder.justResolved;
     autocomplete = builder.autocomplete;
+    alias = builder.alias;
   }
 
   public boolean isPopular() {
@@ -163,6 +165,10 @@ public class Location extends ModelEntity {
     return Location.builder(this).name(name).build();
   }
 
+  @Nullable public String getAlias() {
+    return alias;
+  }
+
   public static class Builder {
     private Object key;
     private double lat;
@@ -176,6 +182,7 @@ public class Location extends ModelEntity {
     private boolean popular;
     private boolean justResolved;
     private boolean autocomplete;
+    private @Nullable String alias;
 
     public Builder(Location location) {
       key = location.getKey();
@@ -190,6 +197,7 @@ public class Location extends ModelEntity {
       popular = location.isPopular();
       justResolved = location.justResolved;
       autocomplete = location.autocomplete;
+      alias = location.alias;
     }
 
     public Builder() {
@@ -197,6 +205,11 @@ public class Location extends ModelEntity {
 
     public Builder radius(double radius) {
       this.radius = radius;
+      return this;
+    }
+
+    public Builder alias(@Nullable String alias) {
+      this.alias = alias;
       return this;
     }
 

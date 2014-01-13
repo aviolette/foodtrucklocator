@@ -15,6 +15,7 @@ public class LocationReader {
     return Location.builder()
         .lat(obj.getDouble("latitude"))
         .lng(obj.getDouble("longitude"))
+        .alias(obj.optString("alias"))
         .popular(obj.optBoolean("popular", false))
         .autocomplete(obj.optBoolean("autocomplete", false))
         .radius(obj.getDouble("radius"))
