@@ -35,7 +35,7 @@ public class DailyScheduleResource {
   public DailySchedule findForDay(@QueryParam("appKey") final String appKey, @QueryParam("from") final long from) {
     checker.requireAppKey(appKey);
     if (from > 0) {
-      return truckService.findStopsForDayAfter(new DateTime(from));
+      return truckService.findStopsForDayAfter(new DateTime(from, clock.zone()));
     }
     return truckService.findStopsForDay(clock.currentDay());
   }
