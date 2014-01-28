@@ -300,11 +300,16 @@ var FoodTruckLocator = function () {
         laterTrucks = sortByDistanceFromLocation(_trucks.openLater(), location);
     if (nowTrucks.length == 0 && laterTrucks.length == 0) {
       $(".trucksListHeader").css("display", "none");
+      $("#navTabs").css("display", "none");
       $(".truckDL").empty();
     } else {
       $(".trucksListHeader").css("display", "block");
+      $("#navTabs").css("display", "block");
       buildTruckList($("#nowTrucks"), nowTrucks);
       buildTruckList($("#laterTrucks"), laterTrucks);
+      if (nowTrucks.length == 0) {
+        $('a[href="#laterTrucks"]').tab('show');
+      }
     }
   }
 
@@ -344,6 +349,14 @@ var FoodTruckLocator = function () {
   function setupGlobalEventHandlers() {
     $(window).resize(function () {
       resize();
+    });
+    $('a[href="#nowTrucks"]').click(function (e) {
+      e.preventDefault()
+      $(this).tab('show')
+    });
+    $('a[href="#laterTrucks"]').click(function (e) {
+      e.preventDefault()
+      $(this).tab('show')
     });
   }
 

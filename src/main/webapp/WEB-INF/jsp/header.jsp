@@ -10,7 +10,7 @@
         content="Find food trucks on the streets of Chicago by time and location.  Results are updated in real-time throughout the day."/>
   <title>${title}</title>
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
-  <link href="/css/main.css?ver=5" rel="stylesheet"/>
+  <link href="/css/main.css?ver=6" rel="stylesheet"/>
   <script src="/script/lib/modernizr-1.7.min.js"></script>
   <style type="text/css">
     #listContainer {

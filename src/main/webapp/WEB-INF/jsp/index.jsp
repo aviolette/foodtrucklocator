@@ -4,11 +4,15 @@
   <div class="col-md-4" id="listContainer">
     <div class="alert alert-info" id="flashMsg" style="display:none">
     </div>
-    <h3 class="trucksListHeader">Trucks Open Now</h3>
-    <div id="nowTrucks" class="truckDL">
-    </div>
-    <h3 class="trucksListHeader">Trucks Open Later</h3>
-    <div id="laterTrucks" class="truckDL">
+    <ul class="nav nav-tabs" id="navTabs">
+      <li class="active"><a href="#nowTrucks" data-toggle="tab">Open Now</a></li>
+      <li><a href="#laterTrucks" data-toggle="tab">Open Later</a></li>
+    </ul>
+    <div class="tab-content">
+      <div id="nowTrucks" class="tab-pane active truckDL">
+      </div>
+      <div id="laterTrucks" class="tab-pane truckDL">
+      </div>
     </div>
   </div>
   <div id="content" class="col-md-8">
@@ -23,7 +27,7 @@
 <%@include file="include/core_js.jsp" %>
 <script type="text/javascript"
         src="http://maps.google.com/maps/api/js?sensor=false&libraries=geometry"></script>
-<script type="text/javascript" src="script/chiftf-view.js?ver=9"></script>
+<script type="text/javascript" src="script/chiftf-view.js?ver=10"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     FoodTruckLocator.run(${mobile}, new google.maps.LatLng(${center.latitude}, ${center.longitude}),

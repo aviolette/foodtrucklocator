@@ -3,6 +3,14 @@
   color: #f2f2f2;
 }
 
+.truckDL {
+  padding-top: 20px;
+}
+
+li.active {
+  font-weight: bold;
+}
+
 .cftf-header  a {
   color: #f2f2f2;
 }
