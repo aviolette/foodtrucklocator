@@ -95,6 +95,7 @@
         <td>
           <button class="btn mute-button" for-truck="${truckStops.truck.id}"><c:choose><c:when
               test="${truckStops.truck.muted}">Unmute</c:when><c:otherwise>Mute</c:otherwise></c:choose></button>
+          <button class="btn mute-until-button" for-truck="${truckStops.truck.id}">Mute until...</button>
         </td>
       </tr>
     </c:if>
@@ -237,12 +238,14 @@
         $target.addClass("active");
       }
     });
-    function muteButtonClick($button) {
+    function muteButtonClick($button, date) {
       var truckId = $button.attr("for-truck");
       var inner = $button.html();
-      var verb = inner == "Mute" ? "mute" : "unmute";
+      var verb = inner == "Mute" || date ? "mute" : "unmute",
+          until = (date ? "?until=" + date : "")
+
       $.ajax({
-        url : "/services/trucks/" + truckId + "/" + verb,
+        url : "/services/trucks/" + truckId + "/" + verb + until,
         type: "POST",
         success : function() {
           $button.html(verb == "mute" ? "Unmute" : "Mute");
@@ -258,6 +261,12 @@
     }
     $(".mute-button").click(function(e) {
       muteButtonClick($(e.target));
+    });
+    $(".mute-until-button").click(function(e) {
+      var date = prompt("Enter a date in the format YYYYMMdd");
+      if (date) {
+        muteButtonClick($(e.target), date);
+      }
     });
     function bindAjaxCallToButton(button, url) {
       var link = $("#" + button);

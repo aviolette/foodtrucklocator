@@ -9,16 +9,21 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.sun.jersey.api.JResponse;
 
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
 import foodtruck.util.Clock;
+import foodtruck.util.DateOnlyFormatter;
 import static foodtruck.server.resources.Resources.requiresAdmin;
 
 /**
@@ -30,12 +35,14 @@ public class TruckResource {
   private final TruckDAO truckDAO;
   private final Clock clock;
   private final DateTimeZone zone;
+  private final DateTimeFormatter formatter;
 
   @Inject
-  public TruckResource(TruckDAO truckDAO, Clock clock, DateTimeZone zone) {
+  public TruckResource(TruckDAO truckDAO, Clock clock, DateTimeZone zone, @DateOnlyFormatter DateTimeFormatter formatter) {
     this.truckDAO = truckDAO;
     this.clock = clock;
     this.zone = zone;
+    this.formatter = formatter;
   }
 
   @GET
@@ -55,10 +62,13 @@ public class TruckResource {
   }
 
   @POST @Path("{truckId}/mute")
-  public void muteTruck(@PathParam("truckId") String truckId) {
+  public void muteTruck(@PathParam("truckId") String truckId, @QueryParam("until") String until) {
     requiresAdmin();
+    DateTime muteUntil = Strings.isNullOrEmpty(until) ?
+        clock.currentDay().toDateMidnight(zone).toDateTime().plusDays(1) :
+        formatter.parseDateTime(until);
     Truck t = truckDAO.findById(truckId);
-    t = Truck.builder(t).muteUntil(clock.currentDay().toDateMidnight(zone).toDateTime().plusDays(1))
+    t = Truck.builder(t).muteUntil(muteUntil)
         .build();
     truckDAO.save(t);
   }
@@ -81,7 +91,7 @@ public class TruckResource {
   public JResponse<Truck> createTruck(Truck truck) {
     Resources.requiresAdmin();
     if (truckDAO.findById(truck.getId()) != null) {
-      throw new BadRequestException("POST can only be used for creating objects");
+      throw new BadRequestException("POST can only be used , for creating objects");
     }
 
     truckDAO.save(truck);
