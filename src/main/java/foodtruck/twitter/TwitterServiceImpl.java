@@ -287,7 +287,6 @@ public class TwitterServiceImpl implements TwitterService {
 
   private void handleTruckTweets() {
     for (Truck truck : truckDAO.findAll()) {
-      // TODO: this number should probably be configurable
       if (Strings.isNullOrEmpty(truck.getTwitterHandle())) {
         continue;
       }
@@ -297,94 +296,100 @@ public class TwitterServiceImpl implements TwitterService {
               false);
       notifyIfOffTheRoad(tweets, truck);
       if (!truck.isUsingTwittalyzer()) {
+        log.log(Level.FINE, "Twittalyzer isn't enabled for {0}", truck.getId());
         continue;
       }
       TruckStopMatch match = findMatch(tweets, truck);
       DateTime terminationTime = findTermination(tweets, truck);
       ignoreTweets(tweets);
       if (match != null) {
-        log.log(Level.INFO, "Found match {0}", match);
-        List<TruckStop> currentStops = truckStopDAO.findDuring(truck.getId(), clock.currentDay());
-        List<TruckStop> deleteStops = Lists.newLinkedList();
-        List<TruckStop> addStops = Lists.newLinkedList();
-        TruckStop matchedStop = match.getStop();
-        for (TruckStop stop : currentStops) {
-          boolean locationsSame = stop.getLocation().equals(matchedStop.getLocation());
-          // matched start time is contained within stop.  delete stop and make matched stop take
-          // new start time
-          final DateTime stopEnd = stop.getEndTime(), matchedStart = matchedStop.getStartTime(),
-              stopStart = stop.getStartTime();
-          // current stop: 7am - 9am
-          // matched stop: 8am - 930am
-          // if location the same, and soft ending => 7am-9am; if
-          TruckStop.Builder matchBuilder = TruckStop.builder(matchedStop).lastUpdated(clock.now());
-          if (stopEnd.isAfter(matchedStart) && stopStart.isBefore(matchedStart)) {
-            if (stop.isLocked()) {
-              matchedStop = null;
-              break;
-            }
-            deleteStops.add(stop);
-            if (locationsSame) {
-              if (match.isSoftEnding()) {
-                matchBuilder.endTime(stopEnd);
-                if (clock.now().isAfter(stopStart)) {
-                  matchBuilder.startTime(stopStart);
-                }
-                matchedStop = matchBuilder.build();
-              } else {
-                matchedStop = matchBuilder.startTime(stopStart).build();
-              }
-            } else {
-              addStops.add(stop.withEndTime(matchedStart));
-            }
-          } else {
-            final DateTime matchedEnd = matchedStop.getEndTime();
-            if (stopStart.isBefore(matchedEnd) && stopEnd.isAfter(matchedEnd)) {
-              if (stop.isLocked()) {
-                matchedStop = null;
-                break;
-              }
-              if ((locationsSame && !match.isTerminated()) ||
-                  (stopStart.getHourOfDay() == 11
-                      && stopStart.getMinuteOfHour() == 30)) {
-                deleteStops.add(stop);
-                matchedStop = matchBuilder.endTime(stopEnd).build();
-              } else {
-                matchedStop = matchBuilder.endTime(stopStart).build();
-              }
-            } else if ((stopStart.equals(matchedStart) ||
-                stopStart.isAfter(matchedStart)) &&
-                (stopEnd.equals(matchedEnd) ||
-                    stopEnd.isBefore(matchedEnd))) {
-              if (stop.isLocked()) {
-                matchedStop = null;
-                break;
-              }
-              deleteStops.add(stop);
-              matchedStop = matchBuilder.startTime(stopStart).build();
-            }
-          }
-        }
-        if (!deleteStops.isEmpty()) {
-          for (TruckStop stop : deleteStops) {
-            notifier.removed(stop);
-          }
-          truckStopDAO.deleteStops(deleteStops);
-        }
-        if (matchedStop != null) {
-          addStops.add(matchedStop);
-          for (TruckStop stop : addStops) {
-            checkForRetweet(stop, match);
-            notifier.added(stop);
-          }
-          truckStopDAO.addStops(addStops);
-        }
+        handleStopMatch(truck, match);
       } else if (terminationTime != null) {
         capLastMatchingStop(truck, terminationTime);
       } else {
         log.log(Level.FINE, "No matches for {0}", truck.getId());
       }
     }
+  }
+
+  private void handleStopMatch(Truck truck, TruckStopMatch match) {
+    log.log(Level.INFO, "Found match {0}", match);
+    List<TruckStop> currentStops = truckStopDAO.findDuring(truck.getId(), clock.currentDay()),
+                    deleteStops = Lists.newLinkedList(),
+                    addStops = Lists.newLinkedList();
+    TruckStop matchedStop = match.getStop();
+    for (TruckStop stop : currentStops) {
+      boolean locationsSame = stop.getLocation().equals(matchedStop.getLocation());
+      // matched start time is contained within stop.  delete stop and make matched stop take
+      // new start time
+      final DateTime stopEnd = stop.getEndTime(), matchedStart = matchedStop.getStartTime(),
+          stopStart = stop.getStartTime();
+      // current stop: 7am - 9am
+      // matched stop: 8am - 930am
+      // if location the same, and soft ending => 7am-9am; if
+      TruckStop.Builder matchBuilder = TruckStop.builder(matchedStop).lastUpdated(clock.now());
+      if (stopEnd.isAfter(matchedStart) && stopStart.isBefore(matchedStart)) {
+        if (stop.isLocked()) {
+          matchedStop = null;
+          break;
+        }
+        deleteStops.add(stop);
+        if (locationsSame) {
+          if (match.isSoftEnding()) {
+            matchBuilder.endTime(stopEnd);
+            if (clock.now().isAfter(stopStart)) {
+              matchBuilder.startTime(stopStart);
+            }
+            matchedStop = matchBuilder.build();
+          } else {
+            matchedStop = matchBuilder.startTime(stopStart).build();
+          }
+        } else {
+          addStops.add(stop.withEndTime(matchedStart));
+        }
+      } else {
+        final DateTime matchedEnd = matchedStop.getEndTime();
+        if (stopStart.isBefore(matchedEnd) && stopEnd.isAfter(matchedEnd)) {
+          if (stop.isLocked()) {
+            matchedStop = null;
+            break;
+          }
+          if ((locationsSame && !match.isTerminated()) ||
+              (stopStart.getHourOfDay() == 11
+                  && stopStart.getMinuteOfHour() == 30)) {
+            deleteStops.add(stop);
+            matchedStop = matchBuilder.endTime(stopEnd).build();
+          } else {
+            matchedStop = matchBuilder.endTime(stopStart).build();
+          }
+        } else if ((stopStart.equals(matchedStart) ||
+            stopStart.isAfter(matchedStart)) &&
+            (stopEnd.equals(matchedEnd) ||
+                stopEnd.isBefore(matchedEnd))) {
+          if (stop.isLocked()) {
+            matchedStop = null;
+            break;
+          }
+          deleteStops.add(stop);
+          matchedStop = matchBuilder.startTime(stopStart).build();
+        }
+      }
+    }
+    if (!deleteStops.isEmpty()) {
+      for (TruckStop stop : deleteStops) {
+        notifier.removed(stop);
+      }
+      truckStopDAO.deleteStops(deleteStops);
+    }
+    if (matchedStop != null) {
+      addStops.add(matchedStop);
+      for (TruckStop stop : addStops) {
+        checkForRetweet(stop, match);
+        notifier.added(stop);
+      }
+      truckStopDAO.addStops(addStops);
+    }
+    compressAdjacentStops(truck.getId(), clock.currentDay());
   }
 
   private void checkForRetweet(TruckStop stop, TruckStopMatch match) {
@@ -515,4 +520,24 @@ public class TwitterServiceImpl implements TwitterService {
     }
     return null;
   }
+
+  private void compressAdjacentStops(String truckId, LocalDate day) {
+    TruckStop previousStop =  null;
+    for (TruckStop stop : truckStopDAO.findDuring(truckId, day)) {
+      if (previousStop != null) {
+        DateTime pEnd = previousStop.getEndTime(), cStart = stop.getStartTime();
+        if (pEnd.getHourOfDay() == cStart.getHourOfDay() && pEnd.getMinuteOfDay() == cStart.getMinuteOfDay()
+            && stop.getLocation().containedWithRadiusOf(previousStop.getLocation())) {
+          truckStopDAO.delete((Long) previousStop.getKey());
+          stop = TruckStop.builder(stop)
+              .startTime(previousStop.getStartTime())
+              .build();
+          truckStopDAO.save(stop);
+        }
+
+      }
+      previousStop = stop;
+    }
+  }
+
 }

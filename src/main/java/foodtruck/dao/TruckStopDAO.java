@@ -67,7 +67,7 @@ public interface TruckStopDAO {
    * Returns all the truck stops over a specific time range
    * @param truckId the truck ID
    * @param range the range to search over
-   * @return the list of all the truck stops
+   * @return the list of all the truck stops (sorted ascending by time)
    */
   List<TruckStop> findOverRange(@Nullable String truckId, Interval range);
 
