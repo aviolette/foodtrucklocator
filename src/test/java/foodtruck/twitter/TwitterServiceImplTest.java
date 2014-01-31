@@ -144,7 +144,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     TruckStop stopBeforeCurrent = TruckStop.builder().truck(truck2).startTime(matchStartTime.minusHours(2))
         .endTime(matchStartTime.minusHours(3)).location(locb).build();
     expect(truckStopDAO.findDuring(TRUCK_2_ID, currentDay))
-        .andReturn(ImmutableList.<TruckStop>of(stopBeforeCurrent));
+        .andReturn(ImmutableList.<TruckStop>of(stopBeforeCurrent)).times(2);
     truckStopDAO.addStops(ImmutableList.<TruckStop>of(matchedStop));
     expectTweetsIgnored();
     replayAll();
@@ -164,7 +164,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
         TruckStop.builder().truck(truck2).startTime(matchStartTime.minusMinutes(30))
             .endTime(matchEndTime.minusMinutes(30)).location(loca).build();
     expect(truckStopDAO.findDuring(TRUCK_2_ID, currentDay))
-        .andReturn(ImmutableList.<TruckStop>of(currentStop));
+        .andReturn(ImmutableList.<TruckStop>of(currentStop)).times(2);
     truckStopDAO.deleteStops(ImmutableList.<TruckStop>of(currentStop));
     truckStopDAO.addStops(ImmutableList.<TruckStop>of(
         matchedStop.withStartTime(currentStop.getStartTime())));
@@ -181,7 +181,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     TruckStop currentStop =
         TruckStop.builder().truck(truck2).startTime(matchStartTime.minusMinutes(30)).endTime(matchEndTime.plusMinutes(30)).location(loca).build();
     expect(truckStopDAO.findDuring(TRUCK_2_ID, currentDay))
-        .andReturn(ImmutableList.<TruckStop>of(currentStop));
+        .andReturn(ImmutableList.<TruckStop>of(currentStop)).times(2);
     truckStopDAO.deleteStops(ImmutableList.<TruckStop>of(currentStop));
     truckStopDAO.addStops(ImmutableList.<TruckStop>of(
         matchedStop.withStartTime(currentStop.getStartTime())));
@@ -199,7 +199,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
         TruckStop.builder().truck(truck2).startTime(matchStartTime.minusMinutes(30))
             .endTime(matchEndTime.plusMinutes(30)).location(loca).build();
     expect(truckStopDAO.findDuring(TRUCK_2_ID, currentDay))
-        .andReturn(ImmutableList.<TruckStop>of(currentStop));
+        .andReturn(ImmutableList.<TruckStop>of(currentStop)).times(2);
     truckStopDAO.deleteStops(ImmutableList.<TruckStop>of(currentStop));
     truckStopDAO.addStops(ImmutableList.<TruckStop>of(
         matchedStop.withStartTime(currentStop.getStartTime())
@@ -218,7 +218,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
         TruckStop.builder().truck(truck2).startTime( matchStartTime.plusMinutes(3))
             .endTime(matchEndTime.minusMinutes(3)).location(loca).build();
     expect(truckStopDAO.findDuring(TRUCK_2_ID, currentDay))
-        .andReturn(ImmutableList.<TruckStop>of(currentStop));
+        .andReturn(ImmutableList.<TruckStop>of(currentStop)).times(2);
     truckStopDAO.deleteStops(ImmutableList.<TruckStop>of(currentStop));
     truckStopDAO.addStops(
         ImmutableList.<TruckStop>of(matchedStop.withStartTime(currentStop.getStartTime())));
@@ -247,7 +247,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
         TruckStop.builder().truck(truck2).startTime(matchStartTime.plusMinutes(30))
             .endTime(matchEndTime.plusHours(1)).location(loca).build();
     expect(truckStopDAO.findDuring(TRUCK_2_ID, currentDay)).andReturn(
-        ImmutableList.<TruckStop>of(currentStop));
+        ImmutableList.<TruckStop>of(currentStop)).times(2);
     truckStopDAO.deleteStops(ImmutableList.of(currentStop));
     truckStopDAO.addStops(
         ImmutableList.<TruckStop>of(matchedStop.withEndTime(currentStop.getEndTime())));
@@ -264,7 +264,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     TruckStop stopAfter =
         TruckStop.builder().truck(truck2).startTime(matchEndTime.plusHours(1).toDateTime()).endTime(matchEndTime.plusHours(2).toDateTime()).location(loca).build();
     expect(truckStopDAO.findDuring(TRUCK_2_ID, currentDay))
-        .andReturn(ImmutableList.<TruckStop>of(stopAfter));
+        .andReturn(ImmutableList.<TruckStop>of(stopAfter)).times(2);
     expectTweetsIgnored();
     truckStopDAO.addStops(ImmutableList.<TruckStop>of(matchedStop));
     replayAll();
