@@ -36,4 +36,10 @@ public interface LocationDAO extends DAO<Long, Location> {
    * Finds all the locations that should be in the autocomplete list, sorted by name
    */
   List<Location> findAutocompleteLocations();
+
+  /**
+   * Finds all alias for a specified location, sorted by name (ascending)
+   */
+  List<Location> findAliasesFor(String locationName);
+
 }

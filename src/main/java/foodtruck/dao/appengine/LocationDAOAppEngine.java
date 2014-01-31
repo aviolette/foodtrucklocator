@@ -87,6 +87,12 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     return executeQuery(dataStore, q);
   }
 
+  @Override public List<Location> findAliasesFor(String locationName) {
+    return executeQuery(provider.get(), new Query(LOCATION_KIND)
+        .setFilter(new Query.FilterPredicate(ALIAS, Query.FilterOperator.EQUAL, locationName))
+        .addSort(NAME_FIELD));
+  }
+
   private Query locationQuery(String keyword) {
     Query q = new Query(LOCATION_KIND);
     Query.Filter nameFilter = new Query.FilterPredicate(NAME_FIELD, Query.FilterOperator.EQUAL, keyword);
