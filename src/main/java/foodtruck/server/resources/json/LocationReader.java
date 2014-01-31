@@ -16,6 +16,7 @@ public class LocationReader {
         .lat(obj.getDouble("latitude"))
         .lng(obj.getDouble("longitude"))
         .alias(obj.optString("alias"))
+        .twitterHandle(obj.optString("twitterHandle"))
         .popular(obj.optBoolean("popular", false))
         .autocomplete(obj.optBoolean("autocomplete", false))
         .radius(obj.getDouble("radius"))

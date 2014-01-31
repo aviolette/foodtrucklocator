@@ -39,6 +39,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
   private static final String POPULAR_FIELD = "popular";
   private static final String AUTOCOMPLETE = "autocomplete";
   private static final String ALIAS = "alias";
+  private static final String TWITTERHANDLE = "twitter_handle";
 
   private static final Logger log = Logger.getLogger(LocationDAOAppEngine.class.getName());
   private final Clock clock;
@@ -133,6 +134,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     entity.setProperty(POPULAR_FIELD, location.isPopular());
     entity.setProperty(AUTOCOMPLETE, location.isAutocomplete());
     entity.setProperty(ALIAS, location.getAlias());
+    entity.setProperty(TWITTERHANDLE, location.getTwitterHandle());
     return entity;
   }
 
@@ -149,6 +151,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     builder.autocomplete(getBooleanProperty(entity, AUTOCOMPLETE, false));
     builder.alias(getStringProperty(entity, ALIAS));
     builder.radius(Attributes.getDoubleProperty(entity, RADIAL_FIELD, 0.0));
+    builder.twitterHandle(Attributes.getStringProperty(entity, TWITTERHANDLE));
     boolean isValid = valid == null || valid;
     if (lat == null || lng == null) {
       builder.valid(false);

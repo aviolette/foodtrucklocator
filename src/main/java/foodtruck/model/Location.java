@@ -31,6 +31,7 @@ public class Location extends ModelEntity {
   private final boolean justResolved;
   private final boolean autocomplete;
   private final @Nullable String alias;
+  private final @Nullable String twitterHandle;
 
   public Location(Builder builder) {
     super(builder.key);
@@ -45,6 +46,7 @@ public class Location extends ModelEntity {
     justResolved = builder.justResolved;
     autocomplete = builder.autocomplete;
     alias = builder.alias;
+    twitterHandle = builder.twitterHandle;
   }
 
   public boolean isPopular() {
@@ -61,6 +63,10 @@ public class Location extends ModelEntity {
 
   public String getName() {
     return this.name;
+  }
+
+  public @Nullable String getTwitterHandle() {
+    return this.twitterHandle;
   }
 
   public Location wasJustResolved() {
@@ -183,6 +189,7 @@ public class Location extends ModelEntity {
     private boolean justResolved;
     private boolean autocomplete;
     private @Nullable String alias;
+    private @Nullable String twitterHandle;
 
     public Builder(Location location) {
       key = location.getKey();
@@ -198,6 +205,7 @@ public class Location extends ModelEntity {
       justResolved = location.justResolved;
       autocomplete = location.autocomplete;
       alias = location.alias;
+      twitterHandle = location.twitterHandle;
     }
 
     public Builder() {
@@ -210,6 +218,11 @@ public class Location extends ModelEntity {
 
     public Builder alias(@Nullable String alias) {
       this.alias = alias;
+      return this;
+    }
+
+    public Builder twitterHandle(@Nullable String twitterHandle) {
+      this.twitterHandle = twitterHandle;
       return this;
     }
 

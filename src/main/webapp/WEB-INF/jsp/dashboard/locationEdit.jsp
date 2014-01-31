@@ -59,6 +59,12 @@
       </div>
     </div>
     <div class="control-group">
+      <label for="twitterHandle" class="control-label">Twitter Handle</label>
+      <div class="controls">
+        <input id="twitterHandle" class="span6" type="text"/>
+      </div>
+    </div>
+    <div class="control-group">
       <div class="controls">
         <label><input id="invalidLoc" type="checkbox">&nbsp;Ignore in geolocation lookups</label>
         <label><input id="popular" type="checkbox">&nbsp;Popular?</label>
@@ -83,6 +89,7 @@
       $("#radius").attr("value", loc.radius);
       $("#name").attr("value", loc.name);
       $("#alias").attr("value", loc.alias);
+      $("#twitterHandle").attr("value", loc.twitterHandle);
       $("#invalidLoc").attr("checked", !loc.valid);
       $("#description").attr("value", loc.description);
       $("#popular").attr("checked", loc.popular);
@@ -184,6 +191,7 @@
       loc.longitude = parseFloat($("#longitude").attr("value"));
       loc.name = $("#name").attr("value");
       loc.alias = $("#alias").attr("value");
+      loc.twitterHandle = $("#twitterHandle").attr("value");
       loc.radius = parseFloat($("#radius").attr("value"));
       loc.valid = !$("#invalidLoc").is(":checked");
       loc.description = $("#description").attr("value");

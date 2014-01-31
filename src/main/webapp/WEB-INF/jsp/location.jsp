@@ -2,7 +2,7 @@
 
 <div class="row" >
   <div class="col-md-6">
-    <h2>Trucks at ${location.name} on <joda:format value="${thedate}" pattern="MMM dd, YYYY"/></h2>
+    <h2>${location.name}</h2>
 
     <c:if test="${!empty(location.description)}">
       <div>${location.description}</div>
@@ -10,7 +10,13 @@
     <c:if test="${!empty(location.url)}">
       <div><a href='${location.url}'>${location.url}</a></div>
     </c:if>
-      <c:forEach items="${stops}" var="stop">
+    <c:if test="${!empty(location.twitterHandle)}">
+      <div><a href="http://twitter.com/${location.twitterHandle}">@${location.twitterHandle}</a></div>
+    </c:if>
+      <c:forEach items="${stops}" var="stop" varStatus="status">
+        <c:if test="${status.index == 0}">
+          <h3>Schedule for <joda:format value="${thedate}" pattern="MMM dd, YYYY"/></h3>
+        </c:if>
         <div class="media">
           <a class="pull-left" href="/trucks/${stop.truck.id}">
             <img class="media-object" src="${stop.truck.iconUrl}" alt="${stop.truck.name} icon"/>
@@ -20,7 +26,6 @@
             <joda:format value="${stop.startTime}" style="-S"/> - <joda:format value="${stop.endTime}" style="-S"/>
           </div>
         </div>
-
       </c:forEach>
 
   </div>
