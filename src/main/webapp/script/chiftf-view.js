@@ -542,7 +542,9 @@ var FoodTruckLocator = function () {
             // sanity check.  Don't pan beyond 60 miles from default center
             if (distance < 60) {
               saveCenter(latLng);
+              // refresh the distances
               _map.panTo(_center);
+              refreshViewData();
             }
           }, function () {
           });
