@@ -337,7 +337,6 @@ var FoodTruckLocator = function () {
     $.each(sortByDistanceFromLocation(_trucks.openLater(), currentLocation), function (idx, stop) {
       _markers.add(stop);
     });
-//    _map.fitBounds(bounds);
   }
 
   function resize() {
@@ -533,6 +532,21 @@ var FoodTruckLocator = function () {
           }
         });
         setupGlobalEventHandlers();
+
+        if (Modernizr.geolocation) {
+          navigator.geolocation.getCurrentPosition(function (position) {
+            var latLng = new google.maps.LatLng(position.coords.latitude,
+                position.coords.longitude),
+                distance = google.maps.geometry.spherical.computeDistanceBetween(center,
+                latLng, 3959);
+            // sanity check.  Don't pan beyond 60 miles from default center
+            if (distance < 60) {
+              saveCenter(latLng);
+              _map.panTo(_center);
+            }
+          }, function () {
+          });
+        }
       }
       // reload the model every 5 minutes
       setInterval(function () {
