@@ -191,7 +191,13 @@ public class TruckStopMatcher {
     }
     if (endTime == null) {
       matchBuilder.softEnding(true);
-      endTime = startTime.plusHours(stopTime(truck));
+      // If it's a lunch truck, extend its time to a min of 1pm.
+      if (startTime.getHourOfDay() == 10 && startTime.getMinuteOfHour() >= 30
+          && truck.getCategoryList().contains("Lunch")) {
+        endTime = startTime.withTime(13, 0, 0, 0);
+      } else {
+        endTime = startTime.plusHours(stopTime(truck));
+      }
     }
     return matchBuilder
         .stop(TruckStop.builder().truck(truck).startTime(startTime).endTime(endTime).location(location).build())

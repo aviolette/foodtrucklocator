@@ -286,6 +286,17 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
   @Test
+  public void testMatch_when1030AndLunchTruckExtendEndTimeToOne() {
+    TruckStopMatch match =
+        tweet("foo")
+          .withTime(tweetTime.withTime(10, 30, 0, 0))
+          .withTruck(Truck.builder(truck).categories(ImmutableSet.of("Lunch")).build())
+          .match();
+    assertEquals(13, match.getStop().getEndTime().getHourOfDay());
+    assertEquals(0, match.getStop().getEndTime().getMinuteOfHour());
+  }
+
+  @Test
   public void testMatch_shouldntMatchDayOfWeek3() {
     TruckStopMatch match =
         tweet("We are having maintenance done this week. We will be at U of C on Weds, " +
