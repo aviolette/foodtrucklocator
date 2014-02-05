@@ -37,7 +37,7 @@ public class LocationResource {
       @QueryParam("appKey") String appKey) {
     authorizationChecker.requireAppKey(appKey);
     try {
-      Location loc = locator.locate(locationName, GeolocationGranularity.BROAD);
+      Location loc = locator.locate(locationName, GeolocationGranularity.NARROW);
       if (loc != null) {
         return JResponse.ok(loc).build();
       }

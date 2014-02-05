@@ -1,5 +1,6 @@
 package foodtruck.geolocation;
 
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -8,6 +9,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 import com.sun.jersey.api.client.ClientHandlerException;
 
@@ -28,6 +30,8 @@ public class GoogleGeolocator implements GeoLocator {
   private final Pattern latLongExpression;
   private static final Logger log = Logger.getLogger(GoogleGeolocator.class.getName());
   private final GoogleResource googleResource;
+  private final Set<String> NARROW_SET = ImmutableSet.of("intersection", "street_address"),
+                BROAD_SET = ImmutableSet.of("intersection", "street_address", "airport", "park", "point_of_interest");
 
   @Inject
   public GoogleGeolocator(GoogleResource googleResource) {
@@ -84,7 +88,8 @@ public class GoogleGeolocator implements GeoLocator {
       if (results.length() > 0) {
         final JSONObject firstResult = results.getJSONObject(0);
         final JSONArray types = firstResult.getJSONArray("types");
-        if (!arrayContains(types, "intersection", "street_address", "airport", "park", "point_of_interest")) {
+
+        if (!arrayContains(types, granularity == GeolocationGranularity.BROAD ? BROAD_SET : NARROW_SET)) {
           log.log(Level.INFO, "Result was too granular");
           return null;
         }
@@ -102,7 +107,7 @@ public class GoogleGeolocator implements GeoLocator {
     return null;
   }
 
-  private boolean arrayContains(@Nullable JSONArray arr, String ...searchWords) throws JSONException {
+  private boolean arrayContains(@Nullable JSONArray arr, Set<String> searchWords) throws JSONException {
     if (arr == null) {
       return false;
     }

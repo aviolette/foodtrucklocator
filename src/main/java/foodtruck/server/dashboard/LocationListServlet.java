@@ -44,7 +44,7 @@ public class LocationListServlet extends HttpServlet {
     req = new GuiceHackRequestWrapper(req, jsp);
     String searchField = req.getParameter("q");
     if (!Strings.isNullOrEmpty(searchField)) {
-      Location location = locator.locate(searchField, GeolocationGranularity.NARROW);
+      Location location = locator.locate(searchField, GeolocationGranularity.BROAD);
       if (location == null) {
         location = locationDAO.findByAddress(searchField);
       }

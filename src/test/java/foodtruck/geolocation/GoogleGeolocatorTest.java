@@ -917,4 +917,108 @@ public class GoogleGeolocatorTest extends EasyMockSupport {
     replayAll();
     geoLocator.reverseLookup(location);
   }
+
+  @Test
+  public void testOverlyBroad() throws JSONException {
+    String jsonText = "{\n" +
+        "    \"results\": [\n" +
+        "        {\n" +
+        "            \"address_components\": [\n" +
+        "                {\n" +
+        "                    \"long_name\": \"Sculpture \\\"Monument to the Great Northern Migration\\\"\", \n" +
+        "                    \"short_name\": \"Sculpture \\\"Monument to the Great Northern Migration\\\"\", \n" +
+        "                    \"types\": [\n" +
+        "                        \"point_of_interest\", \n" +
+        "                        \"establishment\"\n" +
+        "                    ]\n" +
+        "                }, \n" +
+        "                {\n" +
+        "                    \"long_name\": \"South Doctor Martin Luther King Junior Drive\", \n" +
+        "                    \"short_name\": \"S Martin Luther King Dr\", \n" +
+        "                    \"types\": [\n" +
+        "                        \"route\"\n" +
+        "                    ]\n" +
+        "                }, \n" +
+        "                {\n" +
+        "                    \"long_name\": \"Near South Side\", \n" +
+        "                    \"short_name\": \"Near South Side\", \n" +
+        "                    \"types\": [\n" +
+        "                        \"neighborhood\", \n" +
+        "                        \"political\"\n" +
+        "                    ]\n" +
+        "                }, \n" +
+        "                {\n" +
+        "                    \"long_name\": \"Chicago\", \n" +
+        "                    \"short_name\": \"Chicago\", \n" +
+        "                    \"types\": [\n" +
+        "                        \"locality\", \n" +
+        "                        \"political\"\n" +
+        "                    ]\n" +
+        "                }, \n" +
+        "                {\n" +
+        "                    \"long_name\": \"Cook\", \n" +
+        "                    \"short_name\": \"Cook\", \n" +
+        "                    \"types\": [\n" +
+        "                        \"administrative_area_level_2\", \n" +
+        "                        \"political\"\n" +
+        "                    ]\n" +
+        "                }, \n" +
+        "                {\n" +
+        "                    \"long_name\": \"Illinois\", \n" +
+        "                    \"short_name\": \"IL\", \n" +
+        "                    \"types\": [\n" +
+        "                        \"administrative_area_level_1\", \n" +
+        "                        \"political\"\n" +
+        "                    ]\n" +
+        "                }, \n" +
+        "                {\n" +
+        "                    \"long_name\": \"United States\", \n" +
+        "                    \"short_name\": \"US\", \n" +
+        "                    \"types\": [\n" +
+        "                        \"country\", \n" +
+        "                        \"political\"\n" +
+        "                    ]\n" +
+        "                }, \n" +
+        "                {\n" +
+        "                    \"long_name\": \"60616\", \n" +
+        "                    \"short_name\": \"60616\", \n" +
+        "                    \"types\": [\n" +
+        "                        \"postal_code\"\n" +
+        "                    ]\n" +
+        "                }\n" +
+        "            ], \n" +
+        "            \"formatted_address\": \"Sculpture \\\"Monument to the Great Northern Migration\\\", South Doctor Martin Luther King Junior Drive, Chicago, IL 60616, USA\", \n" +
+        "            \"geometry\": {\n" +
+        "                \"location\": {\n" +
+        "                    \"lat\": 41.8468682, \n" +
+        "                    \"lng\": -87.61754959999999\n" +
+        "                }, \n" +
+        "                \"location_type\": \"APPROXIMATE\", \n" +
+        "                \"viewport\": {\n" +
+        "                    \"northeast\": {\n" +
+        "                        \"lat\": 41.84821718029149, \n" +
+        "                        \"lng\": -87.61620061970848\n" +
+        "                    }, \n" +
+        "                    \"southwest\": {\n" +
+        "                        \"lat\": 41.8455192197085, \n" +
+        "                        \"lng\": -87.61889858029149\n" +
+        "                    }\n" +
+        "                }\n" +
+        "            }, \n" +
+        "            \"partial_match\": true, \n" +
+        "            \"types\": [\n" +
+        "                \"point_of_interest\", \n" +
+        "                \"establishment\"\n" +
+        "            ]\n" +
+        "        }\n" +
+        "    ], \n" +
+        "    \"status\": \"OK\"\n" +
+        "}\n";
+    JSONObject response = new JSONObject(jsonText);
+    expect(resource.findLocation("Willis Tower")).andReturn(response);
+    replayAll();
+    Location location = geoLocator.locate("Willis Tower",
+        GeolocationGranularity.NARROW);
+    assertNull(location);
+  }
 }

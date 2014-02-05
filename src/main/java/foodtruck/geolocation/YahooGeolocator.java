@@ -21,6 +21,8 @@ import foodtruck.util.ServiceException;
  * @author aviolette@gmail.com
  * @since 10/16/11
  */
+// Use the YQL Geolocator instead
+@Deprecated
 public class YahooGeolocator implements GeoLocator {
   private static final Logger log = Logger.getLogger(YahooGeolocator.class.getName());
   private final YahooResource yahooResource;
@@ -34,7 +36,7 @@ public class YahooGeolocator implements GeoLocator {
   public Location locate(String location, GeolocationGranularity granularity) {
     try {
       JSONObject obj = yahooResource.findLocation(location, false);
-      return parseResponse(location, obj);
+      return parseResponse(location, obj, granularity);
     } catch (JSONException e) {
       log.log(Level.WARNING, e.getMessage(), e);
     } catch (ServiceException e) {
@@ -43,15 +45,16 @@ public class YahooGeolocator implements GeoLocator {
     return null;
   }
 
-  private Location parseResponse(@Nullable String location, JSONObject obj) throws JSONException {
+  private Location parseResponse(@Nullable String location, JSONObject obj, GeolocationGranularity granularity) throws JSONException {
     log.log(Level.INFO, "Geolocation result for {0}: \n{1}",
         new Object[] {location, obj.toString()});
     JSONObject resultSet = obj.getJSONObject("ResultSet");
     if (resultSet.getInt("Found") == 0) {
       return null;
     }
+    int quality = (granularity == GeolocationGranularity.BROAD) ? 50 : 80;
     // YAHOO ADRESS QUALITY: http://developer.yahoo.com/geo/placefinder/guide/responses.html#address-quality
-    if (resultSet.getInt("Quality") < 50) {
+    if (resultSet.getInt("Quality") < quality) {
       log.log(Level.INFO, "Result Set was too broad");
       return null;
     }
@@ -70,7 +73,7 @@ public class YahooGeolocator implements GeoLocator {
     try {
       JSONObject obj = yahooResource.findLocation(location.getLatitude() + "," +
           location.getLongitude(), true);
-      return parseResponse(null, obj);
+      return parseResponse(null, obj, GeolocationGranularity.BROAD);
     } catch (ServiceException e) {
       throw new ServiceException(e);
     } catch (JSONException e) {

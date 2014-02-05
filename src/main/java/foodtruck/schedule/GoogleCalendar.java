@@ -137,7 +137,7 @@ public class GoogleCalendar implements ScheduleStrategy {
                 coalesce(Iterables.getFirst(addressExtractor.parse(whereString, truck), null),
                     whereString);
           }
-          location = geolocator.locate(whereString, GeolocationGranularity.BROAD);
+          location = geolocator.locate(whereString, GeolocationGranularity.NARROW);
         }
         if ((location == null || !location.isResolved()) && customCalendar) {
           // Sometimes the location is in the title - try that too
@@ -150,7 +150,7 @@ public class GoogleCalendar implements ScheduleStrategy {
             locString = titleText;
           }
           if (locString != null) {
-            location = geolocator.locate(locString, GeolocationGranularity.BROAD);
+            location = geolocator.locate(locString, GeolocationGranularity.NARROW);
           }
         }
         if (location != null && location.isResolved()) {

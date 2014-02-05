@@ -32,7 +32,7 @@ public class YQLGeolocator implements GeoLocator {
       throws ServiceException {
     try {
       JSONObject obj = yahooResource.findLocation(location, false);
-      return parseResponse(location, obj);
+      return parseResponse(location, obj, granularity);
     } catch (JSONException e) {
       log.log(Level.WARNING, e.getMessage(), e);
     } catch (ServiceException e) {
@@ -41,7 +41,8 @@ public class YQLGeolocator implements GeoLocator {
     return null;
   }
 
-  private @Nullable Location parseResponse(String location, JSONObject response) throws JSONException {
+  private @Nullable Location parseResponse(String location, JSONObject response,
+      GeolocationGranularity granularity) throws JSONException {
     log.log(Level.INFO, "Geolocation result for {0}: \n{1}",
         new Object[] {location, response.toString()});
     JSONObject resultSet = response.getJSONObject("query");
@@ -50,14 +51,15 @@ public class YQLGeolocator implements GeoLocator {
       return null;
     }
     JSONObject result;
+    result = resultSet.getJSONObject("results");
+
     if (count == 1) {
-      result = resultSet.getJSONObject("results");
+      result = result.getJSONObject("Result");
     } else {
-      JSONArray results = resultSet.getJSONArray("results");
-      result = results.getJSONObject(0);
+      result = result.getJSONArray("Result").getJSONObject(0);
     }
-    result = result.getJSONObject("Result");
-    if (result.getInt("quality") < 40) {
+    int quality = (granularity == GeolocationGranularity.BROAD) ? 40 : 80;
+    if (result.getInt("quality") < quality) {
       log.log(Level.INFO, "Result was too broad");
       return null;
     }
