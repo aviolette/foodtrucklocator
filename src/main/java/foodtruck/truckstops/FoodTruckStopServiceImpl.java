@@ -25,6 +25,7 @@ import org.joda.time.LocalDate;
 
 import foodtruck.beaconnaise.BeaconSignal;
 import foodtruck.dao.LocationDAO;
+import foodtruck.dao.MessageDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.geolocation.GeoLocator;
@@ -52,16 +53,18 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   private final Clock clock;
   private final LocationDAO locationDAO;
   private final GeoLocator geolocator;
+  private final MessageDAO messageDAO;
 
   @Inject
   public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, ScheduleStrategy googleCalendar,
-      Clock clock, TruckDAO truckDAO, LocationDAO locationDAO, GeoLocator geoLocator) {
+      Clock clock, TruckDAO truckDAO, LocationDAO locationDAO, GeoLocator geoLocator, MessageDAO messageDAO) {
     this.truckStopDAO = truckStopDAO;
     this.scheduleStrategy = googleCalendar;
     this.clock = clock;
     this.truckDAO = truckDAO;
     this.locationDAO = locationDAO;
     this.geolocator = geoLocator;
+    this.messageDAO = messageDAO;
   }
 
   @Override
@@ -133,13 +136,17 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   @Override
   public DailySchedule findStopsForDay(LocalDate day) {
     List<TruckStop> stops = truckStopDAO.findDuring(null, day);
-    return new DailySchedule(day, stops);
+    return dailySchedule(day, stops);
+  }
+
+  private DailySchedule dailySchedule(LocalDate day, List<TruckStop> stops) {
+    return new DailySchedule(day, stops, messageDAO.findByDay(day));
   }
 
   @Override public DailySchedule findStopsForDayAfter(final DateTime dateTime) {
     LocalDate day = dateTime.toLocalDate();
     List<TruckStop> stops = truckStopDAO.findDuring(null, day);
-    return new DailySchedule(day, FluentIterable.from(stops)
+    return dailySchedule(day, FluentIterable.from(stops)
         .filter(new Predicate<TruckStop>() {
           @Override public boolean apply(TruckStop truckStop) {
             return truckStop.getEndTime().isAfter(dateTime);
@@ -235,14 +242,14 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
       if (!date.equals(localDate)) {
         ImmutableList<TruckStop> cs = currentStops.build();
         if (!cs.isEmpty()) {
-          stops.add(new DailySchedule(date, cs));
+          stops.add(new DailySchedule(date, cs, null));
         }
         currentStops = ImmutableList.builder();
         date = localDate;
       }
       currentStops.add(truckStop);
     }
-    stops.add(new DailySchedule(date, currentStops.build()));
+    stops.add(new DailySchedule(date, currentStops.build(), null));
     return stops.build();
   }
 

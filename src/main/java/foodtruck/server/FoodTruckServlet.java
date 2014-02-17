@@ -70,7 +70,8 @@ public class FoodTruckServlet extends FrontPageServlet {
     }
     final String timeRequest = req.getParameter("time");
     DateTime dateTime = null;
-    if (!Strings.isNullOrEmpty(timeRequest)) {
+    final boolean timeSpecified = !Strings.isNullOrEmpty(timeRequest);
+    if (timeSpecified) {
       try {
         dateTime = timeFormatter.parseDateTime(timeRequest);
       } catch (IllegalArgumentException ignored) {
@@ -86,12 +87,14 @@ public class FoodTruckServlet extends FrontPageServlet {
       req.setAttribute("google_analytics_ua", googleAnalytics);
     }
 
-    String payload = scheduleCacher.findSchedule();
+    String payload = timeSpecified ? null : scheduleCacher.findSchedule();
     if (payload == null || !configuration.isScheduleCachingOn()) {
       DailySchedule schedule = stopService.findStopsForDayAfter(dateTime);
       try {
         payload = writer.asJSON(schedule).toString();
-        scheduleCacher.saveSchedule(payload);
+        if (!timeSpecified) {
+          scheduleCacher.saveSchedule(payload);
+        }
       } catch (JSONException e) {
         // TODO: fix this
         throw new RuntimeException(e);

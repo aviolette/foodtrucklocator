@@ -32,6 +32,11 @@ public class UtilModule extends AbstractModule {
     return DateTimeFormat.forPattern("hh:mm a").withZone(zone);
   }
 
+  @FriendlyDateOnlyFormat @Provides
+  public DateTimeFormatter providesFriendlyDateFormat(DateTimeZone zone) {
+    return DateTimeFormat.forPattern("MM/dd/YYYY");
+  }
+
   @DateOnlyFormatter @Provides
   public DateTimeFormatter providesDateOnlyFormat(DateTimeZone zone) {
     return DateTimeFormat.forPattern("YYYYMMdd");

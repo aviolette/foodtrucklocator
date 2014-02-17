@@ -26,6 +26,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.model.DailySchedule;
 import foodtruck.model.Location;
+import foodtruck.model.Message;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.server.resources.BadRequestException;
@@ -85,7 +86,18 @@ public class DailyScheduleWriter implements MessageBodyWriter<DailySchedule>, JS
     payload.put("locations", locationArr);
     payload.put("stops", schedules);
     payload.put("date", dateOnlyFormatter.print(schedule.getDay()));
+    Message message = schedule.getMessageOfTheDay();
+    if (message != null) {
+      payload.put("message", writeMessage(message));
+    }
     return payload;
+  }
+
+  private JSONObject writeMessage(Message message) throws JSONException {
+    return new JSONObject()
+        .put("startTime", message.getStartTime().getMillis())
+        .put("message", message.getMessage())
+        .put("id", message.getKey());
   }
 
   @Override public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
