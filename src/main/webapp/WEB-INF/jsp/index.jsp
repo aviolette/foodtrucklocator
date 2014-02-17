@@ -2,6 +2,10 @@
 
 <div class="row" id="sidebar">
   <div class="col-md-4" id="listContainer">
+    <div id="motd" class="alert alert-warning alert-dismissable hidden">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      <span id="motd-message"></span>
+    </div>
     <div class="alert alert-info" id="flashMsg" style="display:none">
     </div>
     <ul class="nav nav-tabs" id="navTabs">
@@ -27,7 +31,7 @@
 <%@include file="include/core_js.jsp" %>
 <script type="text/javascript"
         src="http://maps.google.com/maps/api/js?sensor=false&libraries=geometry"></script>
-<script type="text/javascript" src="script/chiftf-view.js?ver=11"></script>
+<script type="text/javascript" src="script/chiftf-view.js?ver=12"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     FoodTruckLocator.run(${mobile}, new google.maps.LatLng(${center.latitude}, ${center.longitude}),

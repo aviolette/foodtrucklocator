@@ -437,6 +437,17 @@ var FoodTruckLocator = function () {
     return (Modernizr.touch && window.screen.width < 1024);
   }
 
+  function displayMessageOfTheDay(model) {
+    var id = getCookie("motd");
+    if (model["message"] && (id != model["message"]["id"])) {
+      $("#motd-message").html(model["message"]["message"]);
+      $("#motd").removeClass("hidden");
+      $('#motd').on('closed.bs.alert', function (e) {
+        setCookie("motd", model["message"]["id"])
+      });
+    }
+  }
+
   return {
     setModel: function (model) {
       _trucks = new Trucks(model);
@@ -479,6 +490,7 @@ var FoodTruckLocator = function () {
       _appKey = appKey;
       _center = findCenter(center);
       resize();
+      displayMessageOfTheDay(modelPayload);
       if (displayListOnly() || mobile) {
         _mobile = true;
         $("#map_wrapper").css("display", "none");
