@@ -426,6 +426,14 @@ public class TwitterServiceImpl implements TwitterService {
     TruckStop found = null;
     for (TruckStop stop : currentStops) {
       if (stop.activeDuring(terminationTime)) {
+        if (stop.getStartTime().plusMinutes(10).isAfter(terminationTime)) {
+          // This logic is to test the case where a cupcake truck or some truck with a lot of stops might say
+          // 'thanks' at one spot like 3 minutes into their next scheduled spot, capping the next scheduled spot
+          // when they were really saying thans for the previous spot.
+          log.log(Level.INFO, "Didn't cap spot since it was w/in a threshold of ten minutes for stop {0} " +
+              "and termination time {1}", new Object[] {stop, terminationTime});
+          return;
+        }
         found = stop;
         break;
       }
