@@ -534,6 +534,7 @@ public class TwitterServiceImpl implements TwitterService {
     for (TruckStop stop : truckStopDAO.findDuring(truckId, day)) {
       if (previousStop != null) {
         DateTime pEnd = previousStop.getEndTime(), cStart = stop.getStartTime();
+        // If two stops are adjacent, then combine them
         if (pEnd.getHourOfDay() == cStart.getHourOfDay() && pEnd.getMinuteOfDay() == cStart.getMinuteOfDay()
             && stop.getLocation().containedWithRadiusOf(previousStop.getLocation())) {
           truckStopDAO.delete((Long) previousStop.getKey());
@@ -541,8 +542,12 @@ public class TwitterServiceImpl implements TwitterService {
               .startTime(previousStop.getStartTime())
               .build();
           truckStopDAO.save(stop);
+        // If two stops are the exact same time and location, then delete the previousStop
+        } else if (previousStop.getStartTime().equals(stop.getStartTime())
+            && previousStop.getEndTime().equals(stop.getEndTime())
+            && stop.getLocation().containedWithRadiusOf(previousStop.getLocation())) {
+          truckStopDAO.delete((Long) previousStop.getKey());
         }
-
       }
       previousStop = stop;
     }
