@@ -48,16 +48,8 @@ public class TrucksServlet extends FrontPageServlet {
     final String requestURI = req.getRequestURI();
     String truckId = (requestURI.equals("/trucks") || requestURI.equals("/trucks/") ? null : requestURI.substring(8));
     String jsp = "/WEB-INF/jsp/trucks.jsp";
-    req = new GuiceHackRequestWrapper(req, jsp);
-    req.setAttribute("tab", "trucks");
-    String tag = req.getParameter("tag");
-    final Collection<Truck> trucks = Strings.isNullOrEmpty(tag) ? truckDAO.findVisibleTrucks() :
-        truckDAO.findByCategory(tag);
-    if (!Strings.isNullOrEmpty(tag)) {
-      req.setAttribute("filteredBy", tag);
-    }
-    req.setAttribute("trucks", trucks);
     if (!Strings.isNullOrEmpty(truckId)) {
+      jsp = "/WEB-INF/jsp/truck.jsp";
       if (truckId.endsWith("/")) {
         truckId = truckId.substring(0, truckId.length() - 1);
       }
@@ -70,9 +62,20 @@ public class TrucksServlet extends FrontPageServlet {
       LocalDate firstDay = clock.firstDayOfWeek();
       req.setAttribute("stops", stops.findSchedules(truck.getId(), new Interval(firstDay.toDateTimeAtStartOfDay(zone),
           firstDay.toDateTimeAtStartOfDay(zone).plusDays(7))));
+      req.setAttribute("title", truck.getName());
+    } else {
+      String tag = req.getParameter("tag");
+      final Collection<Truck> trucks = Strings.isNullOrEmpty(tag) ? truckDAO.findVisibleTrucks() :
+          truckDAO.findByCategory(tag);
+      if (!Strings.isNullOrEmpty(tag)) {
+        req.setAttribute("filteredBy", tag);
+      }
+      req.setAttribute("trucks", trucks);
+      req.setAttribute("title", "Food Trucks in Chicago");
     }
-    req.setAttribute("containerType", "fixed");
-    req.setAttribute("title", "Food Trucks in Chicago");
+
+    req = new GuiceHackRequestWrapper(req, jsp);
+    req.setAttribute("tab", "trucks");
     req.getRequestDispatcher(jsp).forward(req, resp);
   }
 }
