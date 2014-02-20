@@ -96,6 +96,14 @@
         </div>
       </div>
       <div class="clearfix">
+        <label for="iconUrl">Preview Image URL:</label>
+
+        <div class="input">
+          <input type="text" class="input-xlarge span5" class="input-xlarge" id="previewIcon" name="previewIcon"
+                 value="${truck.previewIcon}"/>
+        </div>
+      </div>
+      <div class="clearfix">
         <label for="calendarUrl">Calendar URL</label>
 
         <div class="input">

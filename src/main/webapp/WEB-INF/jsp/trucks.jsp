@@ -1,29 +1,32 @@
 <%@ include file="header.jsp" %>
-<div class="row">
-    <c:if test="${!empty(filteredBy)}">
-      <div class="alert alert-message">
-        Filtering list by: <strong>${filteredBy}</strong> (<a
-          href="/trucks<c:if test="${!empty(truck)}">/${truck.id}</c:if>">reset truck list</a>).
-      </div>
+<script src="/script/holder.js"></script>
 
-    </c:if>
-    <h4>TRUCKS AND VENDORS</h4>
-    <ul class="media-list">
-      <c:forEach var="tr" items="${trucks}">
-        <c:if test="${!tr.inactive}">
-          <li class="media<c:if test="${tr.id == truck.id}"> active</c:if>"><a class="pull-left"
-                 href="/trucks/${tr.id}<c:if test="${!empty(filteredBy)}">?tag=${filteredBy}</c:if>"><img src="${tr.iconUrl}"/></a><div class='media-body'><a href="/trucks/${tr.id}">${tr.name}</a></div></li>
-        </c:if>
-      </c:forEach>
-      <%--
-      <li class="nav-header">INACTIVE TRUCKS</li>
-      <c:forEach var="tr" items="${trucks}">
-        <c:if test="${tr.inactive}">
-          <li><a class="<c:if test="${tr.id == truck.id}">active</c:if>" href="/trucks/${tr.id}">${tr.name}</a></li>
-        </c:if>
-      </c:forEach>
-      --%>
-    </ul>
+<div class="row" style="margin-top:20px" id="truckList">
 </div>
+
 <%@include file="include/core_js.jsp" %>
+<script type="text/javascript">
+  (function() {
+    var $truckList = $("#truckList");
+    $.ajax({
+      url: '/services/trucks',
+      success: function(data) {
+        $truckList.empty();
+        $.each(data, function(i, datum) {
+          var icon = datum["previewIcon"];
+          var $section = $("<div class='col-xs-6 col-md-3'></div>");
+          var $thumbnail = $("<div class='thumbnail' id='thumbnail-" + i + "'></div>");
+          $section.append($thumbnail);
+          $truckList.append($section);
+          if (icon) {
+            $thumbnail.append("<img src='" + icon + "'/>")
+          } else {
+            Holder.add_image("/script/holder.js/180x180/sky/text:Truck Image", "#thumbnail-" + i).run();
+          }
+          $thumbnail.append("<p class='text-center'><a href='/trucks/" + datum["id"] + "'>" + datum['name']+"</a></p>")
+        });
+      }
+    })
+  })();
+</script>
 <%@ include file="footer.jsp" %>

@@ -45,6 +45,7 @@ public class Truck extends ModelEntity {
   private final @Nullable Stats stats;
   private final boolean hidden;
   private final Set<String> beaconnaiseEmails;
+  private final @Nullable String previewIcon;
 
   public static final Function<Truck, String> TO_ID = new Function<Truck, String>() {
     @Nullable @Override public String apply(@Nullable Truck truck) {
@@ -78,6 +79,7 @@ public class Truck extends ModelEntity {
     this.stats = builder.stats;
     this.hidden = builder.hidden;
     this.beaconnaiseEmails = builder.beaconnaiseEmails;
+    this.previewIcon = builder.previewIcon;
   }
 
   public boolean isHidden() {
@@ -94,6 +96,10 @@ public class Truck extends ModelEntity {
 
   public String getDefaultCity() {
     return defaultCity;
+  }
+
+  public String getPreviewIcon() {
+    return previewIcon;
   }
 
   public String getName() {
@@ -258,6 +264,7 @@ public class Truck extends ModelEntity {
     private long totalStops;
     private long stopsThisYear;
     private Location whereLastSeen;
+    private int numberOfDaysOutThisYear;
 
     public Stats(Builder builder) {
       this.lastUpdated = builder.lastUpdated;
@@ -265,6 +272,7 @@ public class Truck extends ModelEntity {
       this.totalStops = builder.totalStops;
       this.stopsThisYear = builder.stopsThisYear;
       this.whereLastSeen = builder.whereLastSeen;
+      this.numberOfDaysOutThisYear = builder.numberOfDaysOutThisYear;
     }
 
     public long getStopsThisYear() {
@@ -294,14 +302,11 @@ public class Truck extends ModelEntity {
     public static class Builder {
 
       private DateTime lastUpdated = new DateTime(2009, 1, 1, 1, 1, 1, 1);
-      private
-      @Nullable
-      DateTime lastSeen;
+      private @Nullable DateTime lastSeen;
       private long totalStops;
       private long stopsThisYear;
-      private
-      @Nullable
-      Location whereLastSeen;
+      private @Nullable Location whereLastSeen;
+      private int numberOfDaysOutThisYear;
 
       public Builder lastUpdate(DateTime lastUpdated) {
         this.lastUpdated = lastUpdated;
@@ -328,6 +333,11 @@ public class Truck extends ModelEntity {
         return this;
       }
 
+      public Builder numberOfDaysOutThisYear(int daysOut) {
+        this.numberOfDaysOutThisYear = daysOut;
+        return this;
+      }
+
       public Stats build() {
         return new Stats(this);
       }
@@ -348,8 +358,7 @@ public class Truck extends ModelEntity {
     private String facebook;
     private Pattern matchOnlyIf;
     private boolean inactive;
-    private @Nullable
-    String calendarUrl;
+    private @Nullable String calendarUrl;
     private Pattern donotMatchIf;
     private @Nullable String email;
     private @Nullable String phone;
@@ -359,6 +368,8 @@ public class Truck extends ModelEntity {
     private @Nullable String facebookPageId;
     private @Nullable Stats stats;
     private boolean hidden;
+    private @Nullable String previewIcon;
+
     public Set<String> beaconnaiseEmails = ImmutableSet.of();
 
     public Builder() {
@@ -387,6 +398,7 @@ public class Truck extends ModelEntity {
       this.hidden = truck.hidden;
       this.phone = truck.phone;
       this.email = truck.email;
+      this.previewIcon = truck.previewIcon;
       this.beaconnaiseEmails = truck.beaconnaiseEmails;
     }
 
@@ -412,6 +424,11 @@ public class Truck extends ModelEntity {
 
     public Builder name(String name) {
       this.name = name;
+      return this;
+    }
+
+    public Builder previewIcon(String previewIcon) {
+      this.previewIcon = previewIcon;
       return this;
     }
 

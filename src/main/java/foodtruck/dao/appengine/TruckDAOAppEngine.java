@@ -63,6 +63,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
   private static final String TRUCK_STATS_LAST_SEEN_WHERE_LNG = "last_seen_lng";
   private static final String TRUCK_HIDDEN = "hidden";
   private static final String TRUCK_BEACONNAISE_EMAILS = "beaconnaise_emails";
+  private static final String TRUCK_PREVIEW_ICON = "truck_preview_icon";
 
   private DateTimeZone zone;
 
@@ -97,6 +98,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
 
     return builder.id(entity.getKey().getName())
         .stats(stats)
+        .previewIcon(getStringProperty(entity, TRUCK_PREVIEW_ICON))
         .inactive((Boolean) entity.getProperty(INACTIVE_FIELD))
         .twitterHandle((String) entity.getProperty(TRUCK_TWITTER_HANDLE))
         .defaultCity((String) entity.getProperty(TRUCK_DEFAULT_CITY_FIELD))
@@ -210,6 +212,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     entity.setProperty(TRUCK_NAME_FIELD, truck.getName());
     entity.setProperty(TRUCK_TWITTER_HANDLE, truck.getTwitterHandle());
     entity.setProperty(TRUCK_URL, truck.getUrl());
+    entity.setProperty(TRUCK_PREVIEW_ICON, truck.getPreviewIcon());
     entity.setProperty(TRUCK_ICON_URL, truck.getIconUrl());
     entity.setProperty(TRUCK_BEACONNAISE_EMAILS, truck.getBeaconnaiseEmails());
     entity.setProperty(TRUCK_CALENDAR_URL,
