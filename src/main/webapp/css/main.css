@@ -36,22 +36,16 @@ address.locationName {
     margin-left: 50px;
 }
 
-address {
-    margin: 0; padding:  0;
-}
-
-dd {
-    margin-bottom: 5px;
-}
-
-dt {
-    margin-top: 10px;
-}
-
-.fb-like {
-    margin-top: 4px;
-}
 
 .infoWindowContent {
  margin: 10px;
+}
+
+.modal-header {
+  background-color: #183864 !important;
+  color: white !important;
+}
+
+.whitelink {
+  color: white !important;
 }

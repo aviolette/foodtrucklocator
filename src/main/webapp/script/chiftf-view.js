@@ -400,6 +400,8 @@ var FoodTruckLocator = function () {
     $("#truckIcon").attr("src", truck.iconUrl);
     var $truckSocial = $("#truckSocial");
     $truckSocial.empty();
+    $("#truck-url").empty();
+    $("#truckInfoLink").attr("href", "/trucks/" + truck.id);
     if (truck.twitterHandle) {
       $truckSocial.append("<a target='_blank' href='http://twitter.com/" + truck.twitterHandle +
           "'><img alt='@" +
@@ -418,8 +420,10 @@ var FoodTruckLocator = function () {
     var $truckInfo = $("#truckInfo");
     $truckInfo.empty();
     if (truck.url) {
-      $truckInfo.append("<h3>Website</h3><a target='_blank' href='" + truck.url + "'>" +
-          truck.url + "</a>");
+      $("#truck-url").append("<a class='whitelink' target='_blank' href='" + truck.url + "'>" +
+          truck.url + "</a>").removeClass("hidden");
+    } else {
+      $("#truck-url").addClass("hidden");
     }
     var $truckSchedule = $("#truckSchedule");
     $truckSchedule.empty();
