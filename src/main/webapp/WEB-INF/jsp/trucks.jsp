@@ -1,10 +1,9 @@
 <%@ include file="header.jsp" %>
 <script src="/script/holder.js"></script>
-<%--
+
 <c:if test="${foodTruckRequestOn}">
   <a href="/request" class="btn btn-primary" role="button">Request a Truck</a>
 </c:if>
---%>
 
 <div class="row" style="margin-top:20px" id="truckList">
 </div>
