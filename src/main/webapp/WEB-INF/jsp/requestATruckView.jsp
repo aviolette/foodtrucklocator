@@ -23,6 +23,10 @@
     <td> ${foodTruckRequest.phone}</td>
   </tr>
   <tr>
+    <td>Address:</td>
+    <td>${foodTruckRequest.location.name}</td>
+  </tr>
+  <tr>
     <td>Expected Guests</td><td> ${foodTruckRequest.expectedGuests}</td>
   </tr>
   <tr>

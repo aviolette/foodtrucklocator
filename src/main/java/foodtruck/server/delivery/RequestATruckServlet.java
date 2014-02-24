@@ -1,6 +1,8 @@
 package foodtruck.server.delivery;
 
 import java.io.IOException;
+import java.text.NumberFormat;
+import java.text.ParseException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.common.base.Strings;
+import com.google.common.base.Throwables;
 import com.google.common.escape.Escaper;
 import com.google.common.html.HtmlEscapers;
 import com.google.inject.Inject;
@@ -109,24 +112,29 @@ public class RequestATruckServlet extends FrontPageServlet {
 
     DateTime startTime = formatter.parseDateTime(req.getParameter("startDate")),
       endTime = formatter.parseDateTime(req.getParameter("startDate"));
-    Location location = geoLocator.locate("Clark and Monroe, Chicago, IL", GeolocationGranularity.NARROW);
+    final Escaper escaper = HtmlEscapers.htmlEscaper();
+    String address = req.getParameter("address");
+    Location location = geoLocator.locate(escaper.escape(address), GeolocationGranularity.NARROW);
 
     String description = req.getParameter("description");
     if (Strings.isNullOrEmpty(description)) {
       throw new ServletException("Description not specified");
     }
 
-    final Escaper escaper = HtmlEscapers.htmlEscaper();
     description = escaper.escape(description);
     String requester = escaper.escape(req.getParameter("requester"));
 
-    // TODO: handle failed location lookup
+    Number expected = 0;
+    try {
+      expected = NumberFormat.getInstance().parse(req.getParameter("expectedGuests"));
+    } catch (ParseException e) {
+    }
 
     FoodTruckRequest request = builder
         .description(description)
         .archived(false)
         .eventName(escaper.escape(req.getParameter("eventName")))
-        .expectedGuests(Integer.parseInt(req.getParameter("expectedGuests")))
+        .expectedGuests(expected.intValue())
         .prepaid("prepaid".equals(req.getParameter("prepaid")))
         .email(userService.getCurrentUser().getEmail())
         .userId(userService.getCurrentUser().getUserId())
@@ -137,7 +145,6 @@ public class RequestATruckServlet extends FrontPageServlet {
         .location(location)
         .build();
     long key = foodTruckRequestDAO.save(request);
-
     notifier.notifyNewFoodTruckRequest(FoodTruckRequest.builder(request).key(key).build());
     resp.sendRedirect("/requests/view/" + key);
   }

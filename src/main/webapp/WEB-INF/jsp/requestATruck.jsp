@@ -1,7 +1,6 @@
 <%@ include file="header.jsp" %>
 
-<p>Please be advised that the information you submit here will be posted (after it is moderated) on the public internet.
-  Do not include any confidential information.</p>
+<p>Submit this form to request a food truck.  Thanks!</p>
 <form method="POST" action="">
   <c:if test="${!empty(foodTruckRequest)}"><input type="hidden" name="id" value="${foodTruckRequest.key}"/></c:if>
   <div class="form-group">
