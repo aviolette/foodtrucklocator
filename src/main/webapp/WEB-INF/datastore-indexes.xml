@@ -13,4 +13,8 @@
         <property name="screenName" direction="asc"/>
         <property name="time" direction="desc"/>
   </datastore-index>
+  <datastore-index kind="Store" ancestor="false" source="manual">
+    <property name="allow_system_notifications" direction="asc"/>
+    <property name="email" direction="asc"/>
+  </datastore-index>
 </datastore-indexes>
