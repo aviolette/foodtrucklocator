@@ -163,6 +163,9 @@
                               value="systemNotifications" ${truck.allowSystemNotifications ? "checked='checked'" : ""}/>
               <span>Allow System Notifications</span></label></li>
             <li><label><input type="checkbox" name="options"
+                              value="displayEmailPublicly" ${truck.displayEmailPublicly ? "checked='checked'" : ""}/>
+              <span>Display email publicly</span></label></li>
+            <li><label><input type="checkbox" name="options"
                               value="twitterGeolocation" ${truck.twitterGeolocationDataValid ? "checked='checked'" : ""}/>
               <span>Can Use Twitter Geolocation Data</span></label>
             <li><label><input type="checkbox" name="options"

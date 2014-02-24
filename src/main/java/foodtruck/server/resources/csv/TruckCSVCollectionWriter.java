@@ -66,7 +66,7 @@ public class TruckCSVCollectionWriter implements MessageBodyWriter<Iterable<Truc
     entries.add(completeFoursquare(truck.getFoursquareUrl()));
     entries.add(truck.getUrl());
     entries.add(truck.getPhone());
-    entries.add(truck.getEmail());
+    entries.add(truck.getPublicEmail());
     return entries.toArray(new String[entries.size()]);
   }
 

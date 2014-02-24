@@ -65,6 +65,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
   private static final String TRUCK_BEACONNAISE_EMAILS = "beaconnaise_emails";
   private static final String TRUCK_PREVIEW_ICON = "truck_preview_icon";
   private static final String TRUCK_ALLOW_SYSTEM_NOTIFICATIONS = "allow_system_notifications";
+  private static final String TRUCK_DISPLAY_EMAIL = "display_email";
 
   private DateTimeZone zone;
 
@@ -99,6 +100,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
 
     return builder.id(entity.getKey().getName())
         .stats(stats)
+        .displayEmailPublicly(getBooleanProperty(entity, TRUCK_DISPLAY_EMAIL, true))
         .allowSystemNotifications(getBooleanProperty(entity, TRUCK_ALLOW_SYSTEM_NOTIFICATIONS, false))
         .previewIcon(getStringProperty(entity, TRUCK_PREVIEW_ICON))
         .inactive((Boolean) entity.getProperty(INACTIVE_FIELD))
@@ -219,6 +221,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
   }
 
   protected Entity toEntity(Truck truck, Entity entity) {
+    entity.setProperty(TRUCK_DISPLAY_EMAIL, truck.isDisplayEmailPublicly());
     entity.setProperty(TRUCK_NAME_FIELD, truck.getName());
     entity.setProperty(TRUCK_TWITTER_HANDLE, truck.getTwitterHandle());
     entity.setProperty(TRUCK_URL, truck.getUrl());

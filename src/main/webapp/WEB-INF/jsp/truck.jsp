@@ -32,8 +32,8 @@
           </tr>
           <tr>
             <td>Email</td>
-            <td><c:choose><c:when test="${empty(truck.email)}">none</c:when><c:otherwise><a target="_blank"
-                                                                                            href="mailto:${truck.email}">${truck.email}</a></c:otherwise></c:choose>
+            <td><c:choose><c:when test="${empty(truck.publicEmail)}">none</c:when><c:otherwise><a target="_blank"
+                                                                                            href="mailto:${truck.publicEmail}">${truck.publicEmail}</a></c:otherwise></c:choose>
             </td>
           </tr>
           <tr>

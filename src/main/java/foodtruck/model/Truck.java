@@ -47,6 +47,7 @@ public class Truck extends ModelEntity {
   private final Set<String> beaconnaiseEmails;
   private final @Nullable String previewIcon;
   private final boolean allowSystemNotifications;
+  private final boolean displayEmailPublicly;
 
   public static final Function<Truck, String> TO_ID = new Function<Truck, String>() {
     @Nullable @Override public String apply(@Nullable Truck truck) {
@@ -82,6 +83,11 @@ public class Truck extends ModelEntity {
     this.beaconnaiseEmails = builder.beaconnaiseEmails;
     this.previewIcon = builder.previewIcon;
     this.allowSystemNotifications = builder.allowSystemNotifications;
+    this.displayEmailPublicly = builder.displayEmailPublicly;
+  }
+
+  public boolean isDisplayEmailPublicly() {
+    return this.displayEmailPublicly;
   }
 
   public boolean isAllowSystemNotifications() {
@@ -176,6 +182,10 @@ public class Truck extends ModelEntity {
 
   public boolean isInactive() {
     return inactive;
+  }
+
+  public @Nullable String getPublicEmail() {
+    return displayEmailPublicly ? getEmail() : null;
   }
 
   public @Nullable String getEmail() {
@@ -377,6 +387,7 @@ public class Truck extends ModelEntity {
     private @Nullable String previewIcon;
     public Set<String> beaconnaiseEmails = ImmutableSet.of();
     public boolean allowSystemNotifications;
+    private boolean displayEmailPublicly;
 
     public Builder() {
     }
@@ -407,10 +418,16 @@ public class Truck extends ModelEntity {
       this.previewIcon = truck.previewIcon;
       this.beaconnaiseEmails = truck.beaconnaiseEmails;
       this.allowSystemNotifications = truck.allowSystemNotifications;
+      this.displayEmailPublicly = truck.displayEmailPublicly;
     }
 
     public Builder id(String id) {
       this.id = id;
+      return this;
+    }
+
+    public Builder displayEmailPublicly(boolean displayEmailPublicly) {
+      this.displayEmailPublicly = displayEmailPublicly;
       return this;
     }
 
