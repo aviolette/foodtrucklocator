@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
 import com.google.common.escape.Escaper;
 import com.google.common.html.HtmlEscapers;
 import com.google.inject.Inject;
@@ -80,6 +79,7 @@ public class RequestATruckServlet extends FrontPageServlet {
         req.setAttribute("foodTruckRequest", foodTruckRequest);
       }
     }
+    req.setAttribute("title", "Request a Food Truck");
     req.getRequestDispatcher(JSP).forward(req, resp);
   }
 

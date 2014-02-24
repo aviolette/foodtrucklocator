@@ -41,6 +41,7 @@ public class ViewRequestATruckServlet extends FrontPageServlet {
       String jsp = "/WEB-INF/jsp/requestATruckView.jsp";
       req = new GuiceHackRequestWrapper(req, jsp);
       req.setAttribute("foodTruckRequest", foodTruckRequest);
+      req.setAttribute("title", "Event - " + foodTruckRequest.getEventName());
       req.getRequestDispatcher(jsp).forward(req, resp);
     }
   }
