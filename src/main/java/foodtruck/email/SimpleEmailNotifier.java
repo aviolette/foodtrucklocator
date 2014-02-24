@@ -15,6 +15,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 
@@ -111,10 +112,10 @@ public class SimpleEmailNotifier implements EmailNotifier {
       return false;
     }
     log.log(Level.INFO, "Sending Request {0} to {1}", new Object[] { request.getKey(), Joiner.on(",").join(addresses) });
-    return sendMessage("Food Truck Request", addresses, buildRequest(request).toString());
+    return sendMessage("Food Truck Request", configDAO.find().getSystemNotificationList() , buildRequest(request).toString(), addresses);
   }
 
-  private boolean sendMessage(String subject, Iterable<String> receivers, String msgBody) {
+  private boolean sendMessage(String subject, Iterable<String> receivers, String msgBody, Iterable<String> bccs) {
     Configuration config = configDAO.find();
     String sender = config.getNotificationSender();
     Properties props = new Properties();
@@ -125,6 +126,9 @@ public class SimpleEmailNotifier implements EmailNotifier {
       for (String receiver : receivers) {
         msg.addRecipient(Message.RecipientType.TO,
             new InternetAddress(receiver));
+      }
+      for (String receiver : bccs) {
+        msg.addRecipient(Message.RecipientType.BCC, new InternetAddress(receiver));
       }
       msg.setSubject(subject);
       msg.setText(msgBody);
@@ -140,6 +144,6 @@ public class SimpleEmailNotifier implements EmailNotifier {
   }
 
   private void sendSystemMessage(String subject, String msgBody) {
-    sendMessage(subject, configDAO.find().getSystemNotificationList(), msgBody);
+    sendMessage(subject, configDAO.find().getSystemNotificationList(), msgBody, ImmutableList.<String>of());
   }
 }
