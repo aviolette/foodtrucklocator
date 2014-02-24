@@ -2,7 +2,6 @@ package foodtruck.email;
 
 import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -15,6 +14,8 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import com.google.common.base.Joiner;
+import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 
 import org.joda.time.format.DateTimeFormatter;
@@ -80,27 +81,41 @@ public class SimpleEmailNotifier implements EmailNotifier {
 
   @Override public void notifyNewFoodTruckRequest(FoodTruckRequest request) {
     try {
-      StringBuilder builder = new StringBuilder("The following request was added: \n\n");
-      builder.append(request.getEventName()).append("\n\n");
-      builder.append(dateOnlyFormatter.print(request.getStartTime())).append(" - ");
-      builder.append(dateOnlyFormatter.print(request.getEndTime())).append("\n");
-      builder.append("Requested by: ").append(request.getRequester()).append("\n");
-      builder.append("Email: ").append(request.getEmail()).append("\n");
-      builder.append("Phone: ").append(request.getPhone()).append("\n");
-      builder.append("Expected number of guests: ").append(request.getExpectedGuests()).append("\n");
-      builder.append("Prepaid: ").append(request.isPrepaid()).append("\n");
-      builder.append("\n\n");
-      builder.append(request.getDescription());
+      StringBuilder builder = buildRequest(request);
+      builder.append("\n\nClick here to promote: http://www.chicagofoodtruckfinder.com/admin/requests/promote?id=")
+          .append(request.getKey()).append("\n\n");
       sendSystemMessage("New food truck request", builder.toString());
     } catch (Exception e) {
       log.log(Level.WARNING, e.getMessage(), e);
     }
-
   }
 
-  private void sendSystemMessage(String subject, String msgBody) {
+  private StringBuilder buildRequest(FoodTruckRequest request) {
+    StringBuilder builder = new StringBuilder("The following request was added: \n\n");
+    builder.append(request.getEventName()).append("\n\n");
+    builder.append(dateOnlyFormatter.print(request.getStartTime())).append(" - ");
+    builder.append(dateOnlyFormatter.print(request.getEndTime())).append("\n");
+    builder.append("Requested by: ").append(request.getRequester()).append("\n");
+    builder.append("Email: ").append(request.getEmail()).append("\n");
+    builder.append("Phone: ").append(request.getPhone()).append("\n");
+    builder.append("Expected number of guests: ").append(request.getExpectedGuests()).append("\n");
+    builder.append("Prepaid: ").append(request.isPrepaid()).append("\n");
+    builder.append("\n\n");
+    builder.append(request.getDescription());
+    return builder;
+  }
+
+  @Override public boolean notifyFoodTrucksOfRequest(Iterable<String> addresses, FoodTruckRequest request) {
+    if (Iterables.size(addresses) == 0) {
+      log.log(Level.INFO, "Message for request: {0} not sent 'cause there are no recipients", request.getKey());
+      return false;
+    }
+    log.log(Level.INFO, "Sending Request {0} to {1}", new Object[] { request.getKey(), Joiner.on(",").join(addresses) });
+    return sendMessage("Food Truck Request", addresses, buildRequest(request).toString());
+  }
+
+  private boolean sendMessage(String subject, Iterable<String> receivers, String msgBody) {
     Configuration config = configDAO.find();
-    List<String> receivers = config.getSystemNotificationList();
     String sender = config.getNotificationSender();
     Properties props = new Properties();
     Session session = Session.getDefaultInstance(props, null);
@@ -116,8 +131,15 @@ public class SimpleEmailNotifier implements EmailNotifier {
       Transport.send(msg);
     } catch (MessagingException e) {
       log.log(Level.WARNING, e.getMessage(), e);
+      return false;
     } catch (UnsupportedEncodingException e) {
       log.log(Level.WARNING, e.getMessage(), e);
+      return false;
     }
+    return true;
+  }
+
+  private void sendSystemMessage(String subject, String msgBody) {
+    sendMessage(subject, configDAO.find().getSystemNotificationList(), msgBody);
   }
 }

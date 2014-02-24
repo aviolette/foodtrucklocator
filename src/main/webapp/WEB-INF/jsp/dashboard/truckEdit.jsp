@@ -160,6 +160,9 @@
                               value="twittalyzer" ${truck.usingTwittalyzer ? "checked='checked'" : ""}/>
               <span>Use twittalyzer</span></label></li>
             <li><label><input type="checkbox" name="options"
+                              value="systemNotifications" ${truck.allowSystemNotifications ? "checked='checked'" : ""}/>
+              <span>Allow System Notifications</span></label></li>
+            <li><label><input type="checkbox" name="options"
                               value="twitterGeolocation" ${truck.twitterGeolocationDataValid ? "checked='checked'" : ""}/>
               <span>Can Use Twitter Geolocation Data</span></label>
             <li><label><input type="checkbox" name="options"

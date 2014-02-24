@@ -46,6 +46,7 @@ public class Truck extends ModelEntity {
   private final boolean hidden;
   private final Set<String> beaconnaiseEmails;
   private final @Nullable String previewIcon;
+  private final boolean allowSystemNotifications;
 
   public static final Function<Truck, String> TO_ID = new Function<Truck, String>() {
     @Nullable @Override public String apply(@Nullable Truck truck) {
@@ -80,6 +81,11 @@ public class Truck extends ModelEntity {
     this.hidden = builder.hidden;
     this.beaconnaiseEmails = builder.beaconnaiseEmails;
     this.previewIcon = builder.previewIcon;
+    this.allowSystemNotifications = builder.allowSystemNotifications;
+  }
+
+  public boolean isAllowSystemNotifications() {
+    return this.allowSystemNotifications;
   }
 
   public boolean isHidden() {
@@ -369,8 +375,8 @@ public class Truck extends ModelEntity {
     private @Nullable Stats stats;
     private boolean hidden;
     private @Nullable String previewIcon;
-
     public Set<String> beaconnaiseEmails = ImmutableSet.of();
+    public boolean allowSystemNotifications;
 
     public Builder() {
     }
@@ -400,10 +406,16 @@ public class Truck extends ModelEntity {
       this.email = truck.email;
       this.previewIcon = truck.previewIcon;
       this.beaconnaiseEmails = truck.beaconnaiseEmails;
+      this.allowSystemNotifications = truck.allowSystemNotifications;
     }
 
     public Builder id(String id) {
       this.id = id;
+      return this;
+    }
+
+    public Builder allowSystemNotifications(boolean systemNotifications) {
+      this.allowSystemNotifications = systemNotifications;
       return this;
     }
 

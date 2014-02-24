@@ -209,6 +209,7 @@ public class TruckServlet extends HttpServlet {
     builder.twitterGeolocationDataValid(options.contains("twitterGeolocation"));
     builder.hidden(options.contains("hidden"));
     builder.useTwittalyzer(options.contains("twittalyzer"));
+    builder.allowSystemNotifications(options.contains("systemNotifications"));
     String matchRegex = request.getParameter("matchOnlyIf");
     builder.matchOnlyIf(Strings.isNullOrEmpty(matchRegex) ? null : matchRegex);
     String doNotMatchRegex = request.getParameter("donotMatchIf");

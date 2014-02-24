@@ -37,4 +37,9 @@ public interface EmailNotifier {
    * Send a notification when a request has come through.
    */
   void notifyNewFoodTruckRequest(FoodTruckRequest request);
+
+  /**
+   * Send a notifications to all food trucks of a food truck request.
+   */
+  boolean notifyFoodTrucksOfRequest(Iterable<String> addresses, FoodTruckRequest request);
 }

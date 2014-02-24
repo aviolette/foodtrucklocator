@@ -55,4 +55,6 @@ public interface TruckDAO extends DAO<String, Truck> {
   Collection<Truck> findByCategory(String tag);
 
   Set<Truck> findByBeaconnaiseEmail(String email);
+
+  Iterable<Truck> findTrucksWithEmail();
 }

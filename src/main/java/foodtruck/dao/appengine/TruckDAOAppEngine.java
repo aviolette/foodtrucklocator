@@ -64,6 +64,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
   private static final String TRUCK_HIDDEN = "hidden";
   private static final String TRUCK_BEACONNAISE_EMAILS = "beaconnaise_emails";
   private static final String TRUCK_PREVIEW_ICON = "truck_preview_icon";
+  private static final String TRUCK_ALLOW_SYSTEM_NOTIFICATIONS = "allow_system_notifications";
 
   private DateTimeZone zone;
 
@@ -98,6 +99,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
 
     return builder.id(entity.getKey().getName())
         .stats(stats)
+        .allowSystemNotifications(getBooleanProperty(entity, TRUCK_ALLOW_SYSTEM_NOTIFICATIONS, false))
         .previewIcon(getStringProperty(entity, TRUCK_PREVIEW_ICON))
         .inactive((Boolean) entity.getProperty(INACTIVE_FIELD))
         .twitterHandle((String) entity.getProperty(TRUCK_TWITTER_HANDLE))
@@ -196,6 +198,14 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     return trucks.build();
   }
 
+  @Override public Iterable<Truck> findTrucksWithEmail() {
+    DatastoreService dataStore = provider.get();
+    Query q = new Query(TRUCK_KIND);
+    q.setFilter(Query.CompositeFilterOperator.and(new Query.FilterPredicate(TRUCK_EMAIL, Query.FilterOperator.NOT_EQUAL, null),
+        new Query.FilterPredicate(TRUCK_ALLOW_SYSTEM_NOTIFICATIONS, Query.FilterOperator.EQUAL, true)));
+    return executeQuery(dataStore, q);
+  }
+
   @Override public Set<Truck> findTrucksWithCalendars() {
     DatastoreService dataStore = provider.get();
     Query q = new Query(TRUCK_KIND);
@@ -230,6 +240,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     entity.setProperty(TRUCK_YELP_SLUG, truck.getYelpSlug());
     entity.setProperty(TRUCK_PHONE, truck.getPhone());
     entity.setProperty(TRUCK_HIDDEN, truck.isHidden());
+    entity.setProperty(TRUCK_ALLOW_SYSTEM_NOTIFICATIONS, truck.isAllowSystemNotifications());
     entity.setProperty(TRUCK_FACEBOOK_PAGE_ID, truck.getFacebookPageId());
     entity.setProperty(TRUCK_TWITTER_GEOLOCATION, truck.isTwitterGeolocationDataValid());
     Attributes.setDateProperty(TRUCK_MUTE_UNTIL, entity, truck.getMuteUntil());
