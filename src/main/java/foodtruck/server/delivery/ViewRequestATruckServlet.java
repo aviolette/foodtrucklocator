@@ -6,6 +6,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -37,6 +39,8 @@ public class ViewRequestATruckServlet extends FrontPageServlet {
     FoodTruckRequest foodTruckRequest = foodTruckRequestDAO.findById(Long.parseLong(id));
     if (foodTruckRequest == null) {
       resp.setStatus(404);
+    } else if (!canView(foodTruckRequest)) {
+      resp.setStatus(403);
     } else {
       String jsp = "/WEB-INF/jsp/requestATruckView.jsp";
       req = new GuiceHackRequestWrapper(req, jsp);
@@ -45,4 +49,10 @@ public class ViewRequestATruckServlet extends FrontPageServlet {
       req.getRequestDispatcher(jsp).forward(req, resp);
     }
   }
+
+  private boolean canView(FoodTruckRequest request) {
+    UserService userService = UserServiceFactory.getUserService();
+    return userService.isUserAdmin() || request.getEmail().equalsIgnoreCase(userService.getCurrentUser().getEmail());
+  }
+
 }
