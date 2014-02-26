@@ -15,6 +15,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
@@ -124,10 +125,16 @@ public class SimpleEmailNotifier implements EmailNotifier {
     try {
       msg.setFrom(new InternetAddress(sender, "Food Truck Finder"));
       for (String receiver : receivers) {
+        if (Strings.isNullOrEmpty(receiver)) {
+          continue;
+        }
         msg.addRecipient(Message.RecipientType.TO,
             new InternetAddress(receiver));
       }
       for (String receiver : bccs) {
+        if (Strings.isNullOrEmpty(receiver)) {
+          continue;
+        }
         msg.addRecipient(Message.RecipientType.BCC, new InternetAddress(receiver));
       }
       msg.setSubject(subject);
