@@ -47,12 +47,16 @@ public class TruckResource {
 
   @GET
   @Produces({"application/json", "text/csv"})
-  public JResponse<Collection<Truck>> getTrucks(@PathParam("view") String view) {
+  public JResponse<Collection<Truck>> getTrucks(@PathParam("view") String view, @QueryParam("active") final String active) {
     MediaType mediaType = MediaType.APPLICATION_JSON_TYPE;
     if (".csv".equals(view)) {
       mediaType = new MediaType("text", "csv");
     }
-    return JResponse.ok(truckDAO.findActiveTrucks(), mediaType).build();
+    if ("false".equals(active)) {
+      return JResponse.ok(truckDAO.findInactiveTrucks(), mediaType).build();
+    } else {
+      return JResponse.ok(truckDAO.findActiveTrucks(), mediaType).build();
+    }
   }
 
   @GET @Produces("application/json") @Path("{truckId}")

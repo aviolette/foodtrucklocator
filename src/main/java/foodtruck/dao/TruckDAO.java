@@ -33,6 +33,11 @@ public interface TruckDAO extends DAO<String, Truck> {
   Collection<Truck> findActiveTrucks();
 
   /**
+   * Find all trucks that have not been marked inactive.
+   */
+  Collection<Truck> findInactiveTrucks();
+
+  /**
    * Find trucks with associated google calendars.
    */
   Set<Truck> findTrucksWithCalendars();

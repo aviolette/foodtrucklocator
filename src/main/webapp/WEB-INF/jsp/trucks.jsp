@@ -5,31 +5,51 @@
   <a href="/request" class="btn btn-primary" role="button">Request a Truck</a>
 </c:if>
 
-<div class="row" style="margin-top:20px" id="truckList">
+<ul class="nav nav-tabs" id="navTabs" style="margin-top:20px">
+  <li class="active"><a href="#truckList" data-toggle="tab">Active Trucks</a></li>
+  <li><a href="#inactiveTrucks" data-toggle="tab">Inactive Trucks</a></li>
+</ul>
+<div class="tab-content" style="margin-top:20px">
+  <div id="truckList" class="tab-pane active">
+  </div>
+  <div id="inactiveTrucks" class="tab-pane">
+  </div>
 </div>
 
 <%@include file="include/core_js.jsp" %>
 <script type="text/javascript">
   (function() {
-    var $truckList = $("#truckList");
-    $.ajax({
-      url: '/services/trucks',
-      success: function(data) {
-        $truckList.empty();
-        $.each(data, function(i, datum) {
-          var icon = datum["previewIcon"];
-          var $section = $("<div class='col-xs-6 col-md-3'></div>");
-          var $thumbnail = $("<div class='thumbnail' id='thumbnail-" + i + "'></div>");
-          $section.append($thumbnail);
-          $truckList.append($section);
-          if (icon) {
-            $thumbnail.append("<img src='" + icon + "'/>")
-          } else {
-            Holder.add_image("/script/holder.js/180x180/sky/text:Truck Image", "#thumbnail-" + i).run();
-          }
-          $thumbnail.append("<p class='text-center'><a href='/trucks/" + datum["id"] + "'>" + datum['name']+"</a></p>")
-        });
+    function loadTruckList(active, $truckList, prefix) {
+      $.ajax({
+        url: '/services/trucks?active=' + active,
+        success: function(data) {
+          $truckList.empty();
+          $.each(data, function(i, datum) {
+            var icon = datum["previewIcon"];
+            var $section = $("<div class='col-xs-6 col-md-3'></div>");
+            var thumbnailId ="thumbnail-" + prefix + "-" + i;
+            var $thumbnail = $("<div class='thumbnail' id='" + thumbnailId + "'></div>");
+            $section.append($thumbnail);
+            $truckList.append($section);
+            if (icon) {
+              $thumbnail.append("<img src='" + icon + "'/>")
+            } else {
+              Holder.add_image("/script/holder.js/180x180/sky/text:Truck Image", "#" + thumbnailId).run();
+            }
+            $thumbnail.append("<p class='text-center'><a href='/trucks/" + datum["id"] + "'>" + datum['name']+"</a></p>")
+          });
+        }
+      })
+
+    }
+    loadTruckList(true, $("#truckList"), 'active');
+    var inactiveLoaded = false;
+    $('a[href="#inactiveTrucks"]').on('shown.bs.tab', function (e) {
+      if (inactiveLoaded) {
+        return;
       }
+      loadTruckList(false, $("#inactiveTrucks"), 'inactive');
+      inactiveLoaded = true;
     })
   })();
 </script>

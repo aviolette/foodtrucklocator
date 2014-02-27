@@ -154,17 +154,20 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     return trucks.build();
   }
 
+  @Override public Collection<Truck> findInactiveTrucks() {
+    DatastoreService dataStore = provider.get();
+    return executeQuery(dataStore,
+        new Query(getKind())
+            .addSort(TRUCK_NAME_FIELD)
+            .setFilter(new Query.FilterPredicate(INACTIVE_FIELD, Query.FilterOperator.EQUAL, true)));
+  }
+
   @Override public Collection<Truck> findActiveTrucks() {
     DatastoreService dataStore = provider.get();
-    Query q = new Query(getKind());
-    q.addFilter(INACTIVE_FIELD, Query.FilterOperator.NOT_EQUAL, true);
-    q.addSort(TRUCK_NAME_FIELD);
-    ImmutableSet.Builder<Truck> objs = ImmutableSet.builder();
-    for (Entity entity : dataStore.prepare(q).asIterable()) {
-      Truck obj = fromEntity(entity);
-      objs.add(obj);
-    }
-    return objs.build();
+    return executeQuery(dataStore,
+        new Query(getKind())
+          .addSort(TRUCK_NAME_FIELD)
+          .setFilter(new Query.FilterPredicate(INACTIVE_FIELD, Query.FilterOperator.EQUAL, false)));
   }
 
   public List<Truck> findVisibleTrucks() {
