@@ -7,6 +7,8 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Nullable;
+import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -17,6 +19,7 @@ import javax.mail.internet.MimeMessage;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 
@@ -83,7 +86,8 @@ public class SimpleEmailNotifier implements EmailNotifier {
 
   @Override public void notifyNewFoodTruckRequest(FoodTruckRequest request) {
     try {
-      StringBuilder builder = buildRequest(request);
+      StringBuilder builder = new StringBuilder("The following request was added: \n\n");
+      buildRequest(request,builder);
       builder.append("\n\nClick here to promote: http://www.chicagofoodtruckfinder.com/admin/requests/promote?id=")
           .append(request.getKey()).append("\n\n");
       sendSystemMessage("New food truck request", builder.toString());
@@ -92,8 +96,7 @@ public class SimpleEmailNotifier implements EmailNotifier {
     }
   }
 
-  private StringBuilder buildRequest(FoodTruckRequest request) {
-    StringBuilder builder = new StringBuilder("The following request was added: \n\n");
+  private StringBuilder buildRequest(FoodTruckRequest request, StringBuilder builder) {
     builder.append(request.getEventName()).append("\n\n");
     builder.append(dateOnlyFormatter.print(request.getStartTime())).append(" - ");
     builder.append(dateOnlyFormatter.print(request.getEndTime())).append("\n");
@@ -101,7 +104,11 @@ public class SimpleEmailNotifier implements EmailNotifier {
     builder.append("Email: ").append(request.getEmail()).append("\n");
     builder.append("Phone: ").append(request.getPhone()).append("\n");
     builder.append("Expected number of guests: ").append(request.getExpectedGuests()).append("\n");
-    builder.append("Prepaid: ").append(request.isPrepaid()).append("\n");
+    if (request.isPrepaid()) {
+      builder.append("Food is not prepaid\n");
+    } else {
+      builder.append("Food will be paid for in advance\n");
+    }
     builder.append("\n\n");
     builder.append(request.getDescription());
     return builder;
@@ -113,10 +120,13 @@ public class SimpleEmailNotifier implements EmailNotifier {
       return false;
     }
     log.log(Level.INFO, "Sending Request {0} to {1}", new Object[] { request.getKey(), Joiner.on(",").join(addresses) });
-    return sendMessage("Food Truck Request", configDAO.find().getSystemNotificationList() , buildRequest(request).toString(), addresses);
+    return sendMessage("Food Trucks Needed: " + request.getEventName(), ImmutableSet
+        .of(configDAO.find().getNotificationSender()) ,
+        buildRequest(request, new StringBuilder()).toString(), addresses, request.getEmail());
   }
 
-  private boolean sendMessage(String subject, Iterable<String> receivers, String msgBody, Iterable<String> bccs) {
+  private boolean sendMessage(String subject, Iterable<String> receivers, String msgBody, Iterable<String> bccs,
+      @Nullable String replyTo) {
     Configuration config = configDAO.find();
     String sender = config.getNotificationSender();
     Properties props = new Properties();
@@ -137,6 +147,9 @@ public class SimpleEmailNotifier implements EmailNotifier {
         }
         msg.addRecipient(Message.RecipientType.BCC, new InternetAddress(receiver));
       }
+      if (!Strings.isNullOrEmpty(replyTo)) {
+        msg.setReplyTo(new Address[] { new InternetAddress(replyTo) });
+      }
       msg.setSubject(subject);
       msg.setText(msgBody);
       Transport.send(msg);
@@ -151,6 +164,6 @@ public class SimpleEmailNotifier implements EmailNotifier {
   }
 
   private void sendSystemMessage(String subject, String msgBody) {
-    sendMessage(subject, configDAO.find().getSystemNotificationList(), msgBody, ImmutableList.<String>of());
+    sendMessage(subject, configDAO.find().getSystemNotificationList(), msgBody, ImmutableList.<String>of(), null);
   }
 }

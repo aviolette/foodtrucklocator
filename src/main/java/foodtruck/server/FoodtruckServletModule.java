@@ -25,6 +25,7 @@ import foodtruck.server.dashboard.PromoteServlet;
 import foodtruck.server.dashboard.StatsServlet;
 import foodtruck.server.dashboard.TestNotificationServlet;
 import foodtruck.server.dashboard.TruckListServlet;
+import foodtruck.server.dashboard.TruckRequestServlet;
 import foodtruck.server.dashboard.TruckServlet;
 import foodtruck.server.dashboard.TruckStopServlet;
 import foodtruck.server.delivery.RequestATruckLandingServlet;
@@ -77,6 +78,7 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/admin/notificationTest").with(TestNotificationServlet.class);
     serve("/admin/events").with(EventListServlet.class);
     serve("/admin/events/*").with(EventServlet.class);
+    serve("/admin/requests/edit/*").with(TruckRequestServlet.class);
     serve("/admin/requests/promote").with(PromoteServlet.class);
     serve("/vendor").with(VendorServlet.class);
     serve("/vendor/recache/*").with(VendorRecacheServlet.class);

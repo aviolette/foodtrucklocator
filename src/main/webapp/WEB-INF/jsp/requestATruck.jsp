@@ -4,7 +4,7 @@
 <form method="POST" action="">
   <c:if test="${!empty(foodTruckRequest)}"><input type="hidden" name="id" value="${foodTruckRequest.key}"/></c:if>
   <div class="form-group">
-    <label for="eventName">Event Name</label>
+    <label for="eventName">Title (will go in Subject Line)</label>
     <input type="text" placeholder="" name="eventName" class="form-control" id="eventName" value="<c:if test="${!empty(foodTruckRequest)}">${foodTruckRequest.eventName}</c:if>"/>
     <p class="help-block hidden" id="eventNameHelp">Event name is required</p>
   </div>
@@ -24,6 +24,12 @@
     <input type="text" placeholder="Your first and last name" name="requester" class="form-control" id="requester" value="<c:if test="${!empty(foodTruckRequest)}">${foodTruckRequest.requester}</c:if>"/>
     <p class="help-block hidden" id="requesterHelp">Contact name is required</p>
   </div>
+  <c:if test="${useEmail}">
+    <div class="form-group">
+      <label for="requester">Contact Email</label>
+      <input type="email" name="email" class="form-control" id="email" value="<c:if test="${!empty(foodTruckRequest)}">${foodTruckRequest.email}</c:if>"/>
+    </div>
+  </c:if>
   <div class="form-group">
     <label for="expectedGuests">Expected number of guests</label>
     <input type="text" name="expectedGuests" id="expectedGuests" class="form-control" value="<c:if test="${!empty(foodTruckRequest)}">${foodTruckRequest.expectedGuests}</c:if>"/>
@@ -52,9 +58,8 @@
     <input type="text" placeholder="XXX-XXX-XXXX" name="phone" id="phone" class="form-control" <c:if test="${!empty(foodTruckRequest)}">value="${foodTruckRequest.phone}"</c:if>/>
   </div>
   <div class="form-group">
-    <label for="description">Description</label>
+    <label for="description">Additional Information</label>
     <textarea name="description" id="description" class="form-control"><c:if test="${!empty(foodTruckRequest)}">${foodTruckRequest.description}</c:if></textarea>
-    <p class="help-block hidden" id="descriptionHelp">Description is required</p>
   </div>
 
   <button id="submitButton" type="submit" class="btn btn-primary">Submit</button>
@@ -96,7 +101,6 @@
       assertCondition(startDate != null && (startDate.getTime() > yesterday), "startDate");
       assertCondition(endDate != null && (endDate.getTime() >= startDate.getTime()), "endDate");
       assertCondition(contactName.length > 0, "requester");
-      assertCondition(description.length > 0, "description");
       assertCondition(expectedGuests.length > 0 && !isNaN(parseInt(expectedGuests)), "expectedGuests");
       assertCondition(eventName.length > 0, "eventName");
       if (errors == 0) {
