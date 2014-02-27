@@ -2,6 +2,7 @@ package foodtruck.server.resources;
 
 import java.util.Collection;
 
+import javax.annotation.Nullable;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -12,7 +13,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
+import com.google.common.collect.Collections2;
 import com.google.inject.Inject;
 import com.sun.jersey.api.JResponse;
 
@@ -53,7 +56,11 @@ public class TruckResource {
       mediaType = new MediaType("text", "csv");
     }
     if ("false".equals(active)) {
-      return JResponse.ok(truckDAO.findInactiveTrucks(), mediaType).build();
+      return JResponse.ok(Collections2.filter(truckDAO.findInactiveTrucks(), new Predicate<Truck>() {
+        @Override public boolean apply(@Nullable Truck truck) {
+          return !truck.isHidden();
+        }
+      }), mediaType).build();
     } else {
       return JResponse.ok(truckDAO.findActiveTrucks(), mediaType).build();
     }
