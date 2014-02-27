@@ -158,6 +158,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     DatastoreService dataStore = provider.get();
     Query q = new Query(getKind());
     q.addFilter(INACTIVE_FIELD, Query.FilterOperator.NOT_EQUAL, true);
+    q.addSort(TRUCK_NAME_FIELD);
     ImmutableSet.Builder<Truck> objs = ImmutableSet.builder();
     for (Entity entity : dataStore.prepare(q).asIterable()) {
       Truck obj = fromEntity(entity);
