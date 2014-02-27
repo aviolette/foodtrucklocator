@@ -13,6 +13,7 @@
   <div id="truckList" class="tab-pane active">
   </div>
   <div id="inactiveTrucks" class="tab-pane">
+    <em>Loading list...</em>
   </div>
 </div>
 
