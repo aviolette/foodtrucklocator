@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import foodtruck.dao.SystemStatDAO;
+import foodtruck.dao.FifteenMinuteRollupDAO;
 import foodtruck.util.Clock;
 
 /**
@@ -20,10 +20,10 @@ import foodtruck.util.Clock;
 @Singleton
 public class PurgeStatsServlet extends HttpServlet {
   private Clock clock;
-  private SystemStatDAO dao;
+  private FifteenMinuteRollupDAO dao;
 
   @Inject
-  public void PurgeStatsServlet(SystemStatDAO dao, Clock clock) {
+  public void PurgeStatsServlet(FifteenMinuteRollupDAO dao, Clock clock) {
     this.dao = dao;
     this.clock = clock;
   }

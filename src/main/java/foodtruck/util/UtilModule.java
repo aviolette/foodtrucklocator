@@ -41,4 +41,14 @@ public class UtilModule extends AbstractModule {
   public DateTimeFormatter providesDateOnlyFormat(DateTimeZone zone) {
     return DateTimeFormat.forPattern("YYYYMMdd");
   }
+
+  @WeeklyRollup @Provides
+  public Slots provideWeeklyRollup() {
+    return new Slots(1000 * 60 * 60 * 24 * 7);
+  }
+
+  @FifteenMinuteRollup @Provides
+  public Slots provideFifteenMinuteRollup() {
+    return new Slots(1000 * 60 * 15);
+  }
 }

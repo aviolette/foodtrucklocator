@@ -15,6 +15,7 @@ import com.google.inject.Singleton;
 import org.joda.time.DateTime;
 
 import foodtruck.dao.TruckDAO;
+import foodtruck.dao.WeeklyRollupDAO;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
@@ -31,12 +32,15 @@ public class UpdateTruckStats extends HttpServlet {
   private final FoodTruckStopService stopService;
   private final TruckDAO truckDAO;
   private final Clock clock;
+  private final WeeklyRollupDAO weeklyRollupDAO;
 
   @Inject
-  public UpdateTruckStats(FoodTruckStopService foodTruckStopService, TruckDAO truckDAO, Clock clock) {
+  public UpdateTruckStats(FoodTruckStopService foodTruckStopService, TruckDAO truckDAO, Clock clock,
+      WeeklyRollupDAO weeklyRollupDAO) {
     this.stopService = foodTruckStopService;
     this.truckDAO = truckDAO;
     this.clock = clock;
+    this.weeklyRollupDAO = weeklyRollupDAO;
   }
   @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
@@ -96,6 +100,7 @@ public class UpdateTruckStats extends HttpServlet {
         lastSeen = endTime;
         whereLastSeen = stop.getLocation();
       }
+      weeklyRollupDAO.updateCount(stop.getStartTime(), "count." + truck.getId());
       totalStops++;
     }
     stats = Truck.Stats.builder()

@@ -6,7 +6,7 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.joda.time.DateTime;
 
-import foodtruck.dao.SystemStatDAO;
+import foodtruck.dao.FifteenMinuteRollupDAO;
 import foodtruck.util.Clock;
 
 /**
@@ -14,7 +14,7 @@ import foodtruck.util.Clock;
  * @since 7/5/12
  */
 public class MonitorInterceptor implements MethodInterceptor {
-  private SystemStatDAO systemStatDAO;
+  private FifteenMinuteRollupDAO fifteenMinuteRollupDAO;
   private Clock clock;
 
   @Inject
@@ -22,8 +22,8 @@ public class MonitorInterceptor implements MethodInterceptor {
   }
 
   @Inject
-  public void initialize(SystemStatDAO dao, Clock clock) {
-    this.systemStatDAO = dao;
+  public void initialize(FifteenMinuteRollupDAO dao, Clock clock) {
+    this.fifteenMinuteRollupDAO = dao;
     this.clock = clock;
   }
 
@@ -36,10 +36,10 @@ public class MonitorInterceptor implements MethodInterceptor {
     try {
       return invocation.proceed();
     } catch (Exception e) {
-      systemStatDAO.updateCount(now, prefix + "_failed");
+      fifteenMinuteRollupDAO.updateCount(now, prefix + "_failed");
       throw e;
     } finally {
-      systemStatDAO.updateCount(now, prefix + "_total");
+      fifteenMinuteRollupDAO.updateCount(now, prefix + "_total");
     }
   }
 }

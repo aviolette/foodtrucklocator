@@ -1,6 +1,8 @@
 <%@ include file="header.jsp" %>
+<link href="/css/rickshaw/rickshaw.min.css" rel="stylesheet">
 
-<div id="content" class="col-md-8">
+
+<div id="content" >
   <div class="row">
     <div class="span4">
       <h2>${truck.name}</h2>
@@ -47,6 +49,7 @@
     </div>
     <div class="span5">
       <h2>Statistics</h2>
+      <div id="chart"></div>
 
       <c:choose>
         <c:when test="${truck.inactive}">
@@ -106,11 +109,56 @@
 </div>
 </div>
 <%@include file="include/core_js.jsp" %>
-<script type="text/javascript">
-  function handleResize() {
-    $("#sidebar").height($(window).height() - 20);
+<script src="/script/lib/d3.min.js" type="text/javascript"></script>
+<script src="/script/lib/d3.layout.min.js" type="text/javascript"></script>
+<script src="/script/lib/rickshaw.min.js" type="text/javascript"></script>
+
+<script>
+
+  function drawGraphs(statNames, containerId) {
+    if (typeof(statNames) == "string") {
+      drawGraph([statNames], containerId);
+    } else {
+      drawGraph(statNames, containerId);
+    }
   }
-  $(document).ready(handleResize);
-  $(window).resize(handleResize);
+
+  function drawGraph(statNames, containerId) {
+    var series = [];
+    var colors = ["steelblue", "red", "green"];
+    $.each(statNames, function(i, statName) {
+      series.push({name : statName, color : colors[i]});
+    });
+    var DAY_IN_MILLIS = 24 * 60 * 60 * 1000;
+    var end = new Date();
+    var start = new Date(end.getTime() - (1095 * DAY_IN_MILLIS));
+    var url = "/services/stats/counts/" + encodeURIComponent(statNames.join(",")) + "?start=" +
+        start.getTime() +
+        "&interval=604800000" +
+        "&end=" + end.getTime();
+    new Rickshaw.Graph.Ajax({
+      element: document.getElementById(containerId),
+      width: 1140,
+      height: 200,
+      renderer: 'area',
+      stroke: true,
+      dataURL: url,
+      onData: function(d) {
+        return d
+      },
+      onComplete: function(transport) {
+        var graph = transport.graph;
+        graph.renderer.unstack = true;
+        var xAxis = new Rickshaw.Graph.Axis.Time({ graph: graph });
+        xAxis.render();
+        var yAxis = new Rickshaw.Graph.Axis.Y({ graph: graph });
+        yAxis.render();
+      },
+      series: series
+    });
+  }
+//  drawGraphs(["count.${truck.id}"], "chart");
 </script>
+
+
 <%@ include file="footer.jsp" %>

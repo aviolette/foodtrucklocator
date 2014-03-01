@@ -8,10 +8,10 @@ import org.joda.time.LocalDate;
 import foodtruck.model.SystemStats;
 
 /**
- * @author aviolette@gmail.com
- * @since 7/5/12
+ * @author aviolette
+ * @since 2/27/14
  */
-public interface SystemStatDAO extends DAO<Long, SystemStats> {
+public interface TimeSeriesDAO extends DAO<Long, SystemStats>{
   List<SystemStats> findWithinRange(long startTime, long endTime);
 
   /**
@@ -27,4 +27,5 @@ public interface SystemStatDAO extends DAO<Long, SystemStats> {
    * @param localDate
    */
   void deleteBefore(LocalDate localDate);
+
 }

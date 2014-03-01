@@ -5,8 +5,8 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
+import foodtruck.dao.FifteenMinuteRollupDAO;
 import foodtruck.dao.LocationDAO;
-import foodtruck.dao.SystemStatDAO;
 import foodtruck.model.Location;
 import foodtruck.util.Clock;
 import static org.easymock.EasyMock.expect;
@@ -25,14 +25,14 @@ public class CacheAndStoreLocatorTest extends EasyMockSupport {
   private Location unnamedLocation;
   private Location namedLocation;
   private Clock clock;
-  private SystemStatDAO monitor;
+  private FifteenMinuteRollupDAO monitor;
   private DateTime now;
 
   @Before
   public void before() {
     dao = createMock(LocationDAO.class);
     secondary = createMock(GeoLocator.class);
-    monitor = createMock(SystemStatDAO.class);
+    monitor = createMock(FifteenMinuteRollupDAO.class);
     clock = createMock(Clock.class);
     now = new DateTime();
     expect(clock.now()).andStubReturn(now);

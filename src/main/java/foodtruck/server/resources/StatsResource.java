@@ -16,48 +16,75 @@ import com.sun.jersey.api.JResponse;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
-import foodtruck.dao.SystemStatDAO;
+import foodtruck.dao.FifteenMinuteRollupDAO;
+import foodtruck.dao.TimeSeriesDAO;
 import foodtruck.dao.TruckStopDAO;
+import foodtruck.dao.WeeklyRollupDAO;
 import foodtruck.model.StatVector;
 import foodtruck.model.SystemStats;
 import foodtruck.model.TimeValue;
 import foodtruck.model.TruckStop;
-import foodtruck.stats.Slots;
+import foodtruck.util.FifteenMinuteRollup;
+import foodtruck.util.Slots;
+import foodtruck.util.WeeklyRollup;
 
 /**
  * @author aviolette@gmail.com
  * @since 7/6/12
  */
 @Path("/stats")
-@Produces(MediaType.APPLICATION_JSON)
 public class StatsResource {
-  private final SystemStatDAO systemStatDAO;
+  private final FifteenMinuteRollupDAO fifteenMinuteRollupDAO;
   private final TruckStopDAO truckStopDAO;
+  private final Slots fifteenMinuteRollups;
+  private final Slots weeklyRollups;
+  private final WeeklyRollupDAO weeklyRollupDAO;
 
   @Inject
-  public StatsResource(SystemStatDAO systemStatDAO, TruckStopDAO truckStopDAO) {
-    this.systemStatDAO = systemStatDAO;
+  public StatsResource(FifteenMinuteRollupDAO fifteenMinuteRollupDAO, TruckStopDAO truckStopDAO,
+      WeeklyRollupDAO weeklyRollupDAO,
+      @FifteenMinuteRollup Slots fifteenMinuteRollups,
+      @WeeklyRollup Slots weeklyRollups) {
+    this.fifteenMinuteRollupDAO = fifteenMinuteRollupDAO;
     this.truckStopDAO = truckStopDAO;
+    this.fifteenMinuteRollups = fifteenMinuteRollups;
+    this.weeklyRollups = weeklyRollups;
+    this.weeklyRollupDAO = weeklyRollupDAO;
   }
 
-  @GET @Path("counts/{statList}")
-  public JResponse<List<StatVector>> getStatsFor(@PathParam("statList") final String statNames,
-      @QueryParam("start") final long startTime, @QueryParam("end") final long endTime) {
-    String[] statList = statNames.split(",");
-    if (statList.length > 0 && statList[0].equals("trucksOnRoad")) {
-      return trucksOnRoad(startTime, endTime);
+  private TimeSeriesDAO dao(long interval) {
+    // TODO: this is a really stupid way to do it
+    if (interval == 604800000L) {
+      return weeklyRollupDAO;
+    } else {
+      return fifteenMinuteRollupDAO;
     }
-    List<SystemStats> stats = systemStatDAO.findWithinRange(startTime, endTime);
+  }
+
+  private Slots slots(long interval) {
+    return (interval == 604800000L) ? weeklyRollups : fifteenMinuteRollups;
+  }
+
+  @GET @Path("counts/{statList}") @Produces(MediaType.APPLICATION_JSON)
+  public JResponse<List<StatVector>> getStatsFor(@PathParam("statList") final String statNames,
+      @QueryParam("start") final long startTime, @QueryParam("end") final long endTime,
+      @QueryParam("interval") final long interval) {
+    String[] statList = statNames.split(",");
+    Slots slots = slots(interval);
+    if (statList.length > 0 && statList[0].equals("trucksOnRoad")) {
+      return trucksOnRoad(startTime, endTime, slots);
+    }
+    List<SystemStats> stats = dao(interval).findWithinRange(startTime, endTime);
     ImmutableList.Builder<StatVector> builder = ImmutableList.builder();
     for (String statName : statList) {
-      builder.add(Slots.fillIn(stats, statName, startTime, endTime));
+      builder.add(slots.fillIn(stats, statName, startTime, endTime));
     }
     List<StatVector> statVectors = builder.build();
     return JResponse.ok(statVectors).build();
   }
 
-  private JResponse<List<StatVector>> trucksOnRoad(long startTime, long endTime) {
-    StatVector vector = Slots.fillIn(ImmutableList.<SystemStats>of(), "trucksOnRoad",
+  private JResponse<List<StatVector>> trucksOnRoad(long startTime, long endTime, Slots slots) {
+    StatVector vector = slots.fillIn(ImmutableList.<SystemStats>of(), "trucksOnRoad",
         startTime, endTime);
     List<TruckStop> truckStops =
         truckStopDAO.findOverRange(null, new Interval(startTime, endTime));

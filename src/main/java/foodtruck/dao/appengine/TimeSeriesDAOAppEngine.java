@@ -12,44 +12,37 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Transaction;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
-import foodtruck.dao.SystemStatDAO;
+import foodtruck.dao.TimeSeriesDAO;
 import foodtruck.model.SystemStats;
-import foodtruck.stats.Slots;
+import foodtruck.util.Slots;
 
 /**
- * @author aviolette@gmail.com
- * @since 7/5/12
+ * @author aviolette
+ * @since 2/27/14
  */
-public class SystemStatsDAOAppEngine extends AppEngineDAO<Long, SystemStats>
-    implements SystemStatDAO {
-  private final static long FIFTEEN_MIN_IN_MS = 900000;
+public abstract class TimeSeriesDAOAppEngine extends AppEngineDAO<Long, SystemStats> implements TimeSeriesDAO {
   private static final String PARAM_TIMESTAMP = "timestamp";
-  private static final Logger log = Logger.getLogger(SystemStatsDAOAppEngine.class.getName());
+  private static final Logger log = Logger.getLogger(FifteenMinuteRollupDAOAppEngine.class.getName());
+  private final Slots slotter;
 
-  @Inject
-  public SystemStatsDAOAppEngine(DatastoreServiceProvider provider) {
-    super("fifteen_min_stat", provider);
+  public TimeSeriesDAOAppEngine(String kind, DatastoreServiceProvider provider, Slots slotter) {
+    super(kind, provider);
+    this.slotter = slotter;
   }
 
   @Override public List<SystemStats> findWithinRange(long startTime, long endTime) {
     DatastoreService dataStore = provider.get();
-    Query q = new Query(getKind());
-    q.addFilter(PARAM_TIMESTAMP, Query.FilterOperator.GREATER_THAN_OR_EQUAL, startTime);
-    q.addFilter(PARAM_TIMESTAMP, Query.FilterOperator.LESS_THAN, endTime);
-    q.addSort(PARAM_TIMESTAMP, Query.SortDirection.ASCENDING);
-    ImmutableList.Builder<SystemStats> stats = ImmutableList.builder();
-    for (Entity e : dataStore.prepare(q).asIterable()) {
-      stats.add(fromEntity(e));
-    }
-    return stats.build();
+    return executeQuery(dataStore, new Query(getKind())
+      .setFilter(Query.CompositeFilterOperator.and(
+          new Query.FilterPredicate(PARAM_TIMESTAMP, Query.FilterOperator.GREATER_THAN_OR_EQUAL, startTime),
+          new Query.FilterPredicate(PARAM_TIMESTAMP, Query.FilterOperator.LESS_THAN, endTime)))
+      .addSort(PARAM_TIMESTAMP, Query.SortDirection.ASCENDING));
   }
 
   @Override public void updateCount(DateTime timestamp, String key) {
@@ -58,10 +51,9 @@ public class SystemStatsDAOAppEngine extends AppEngineDAO<Long, SystemStats>
 
   @Override public void deleteBefore(LocalDate localDate) {
     DatastoreService dataStore = provider.get();
-    Query q = new Query(getKind());
     long ts = localDate.toDateMidnight().getMillis();
-    log.log(Level.INFO, "Purgin stats before {0}", ts);
-    q.addFilter(PARAM_TIMESTAMP, Query.FilterOperator.LESS_THAN, ts);
+    Query q = new Query(getKind())
+        .setFilter(new Query.FilterPredicate(PARAM_TIMESTAMP, Query.FilterOperator.LESS_THAN, ts));
     List<Key> entities = Lists.newLinkedList();
     for (Entity e : dataStore.prepare(q).asIterable()) {
       entities.add(e.getKey());
@@ -73,7 +65,7 @@ public class SystemStatsDAOAppEngine extends AppEngineDAO<Long, SystemStats>
   public void updateCount(DateTime timestamp, String statName, long by) {
     DatastoreService dataStore = provider.get();
     Transaction txn = dataStore.beginTransaction();
-    long slot = Slots.getSlot(timestamp.getMillis());
+    long slot = slotter.getSlot(timestamp.getMillis());
     try {
       Entity entity = findBySlot(slot, dataStore);
       if (entity == null) {
@@ -124,4 +116,5 @@ public class SystemStatsDAOAppEngine extends AppEngineDAO<Long, SystemStats>
     return new SystemStats(entity.getKey().getId(), (Long) entity.getProperty(PARAM_TIMESTAMP),
         entries.build());
   }
+
 }

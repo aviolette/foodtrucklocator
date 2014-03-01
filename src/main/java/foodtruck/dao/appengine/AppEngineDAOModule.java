@@ -6,16 +6,17 @@ import foodtruck.dao.AddressRuleScriptDAO;
 import foodtruck.dao.ApplicationDAO;
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.EventDAO;
+import foodtruck.dao.FifteenMinuteRollupDAO;
 import foodtruck.dao.FoodTruckRequestDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.MessageDAO;
 import foodtruck.dao.RetweetsDAO;
-import foodtruck.dao.SystemStatDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckObserverDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.dao.TweetCacheDAO;
 import foodtruck.dao.TwitterNotificationAccountDAO;
+import foodtruck.dao.WeeklyRollupDAO;
 
 /**
  * @author aviolette@gmail.com
@@ -31,12 +32,13 @@ public class AppEngineDAOModule extends AbstractModule {
     bind(LocationDAO.class).to(LocationDAOAppEngine.class);
     bind(MessageDAO.class).to(MessageDAOAppEngine.class);
     bind(RetweetsDAO.class).to(RetweetDAOAppEngine.class);
-    bind(SystemStatDAO.class).to(SystemStatsDAOAppEngine.class);
+    bind(FifteenMinuteRollupDAO.class).to(FifteenMinuteRollupDAOAppEngine.class);
     bind(TruckDAO.class).to(TruckDAOAppEngine.class);
     bind(TruckObserverDAO.class).to(TruckObserverDAOAppEngine.class);
     bind(TweetCacheDAO.class).to(TweetCacheAppEngineDAO.class);
     bind(TruckStopDAO.class).to(TruckStopDAOAppEngine.class);
     bind(TwitterNotificationAccountDAO.class).to(TwitterNotificationAccountDAOAppEngine.class);
     bind(FoodTruckRequestDAO.class).to(FoodTruckRequestDAOAppEngine.class);
+    bind(WeeklyRollupDAO.class).to(WeeklyRollupDAOAppEngine.class);
   }
 }

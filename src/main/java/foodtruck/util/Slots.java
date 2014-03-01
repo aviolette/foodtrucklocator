@@ -1,4 +1,4 @@
-package foodtruck.stats;
+package foodtruck.util;
 
 import java.util.List;
 import java.util.Map;
@@ -15,14 +15,18 @@ import foodtruck.model.TimeValue;
  * @since 7/7/12
  */
 public class Slots {
-  private final static long FIFTEEN_MIN_IN_MS = 900000;
+  private final long slotLength;
 
-  public static StatVector fillIn(List<SystemStats> stats, String statName, long startTime,
+  public Slots(long slotLength) {
+    this.slotLength = slotLength;
+  }
+
+  public StatVector fillIn(List<SystemStats> stats, String statName, long startTime,
       long endTime) {
     ImmutableList.Builder<TimeValue> dataPoints = ImmutableList.builder();
     long startSlot = getSlot(startTime);
     Map<Long, TimeValue> timeValues = Maps.newHashMap();
-    for (long i = startSlot; i < endTime; i = i + FIFTEEN_MIN_IN_MS) {
+    for (long i = startSlot; i < endTime; i = i + slotLength) {
       final TimeValue timeValue = new TimeValue(i, 0);
       // TODO: use a map that maintains insertion order
       dataPoints.add(timeValue);
@@ -36,7 +40,7 @@ public class Slots {
     return new StatVector(statName, dataPoints.build());
   }
 
-  public static long getSlot(long time) {
-    return (long) Math.floor((double) time / (double) FIFTEEN_MIN_IN_MS) * FIFTEEN_MIN_IN_MS;
+  public long getSlot(long time) {
+    return (long) Math.floor((double) time / (double) slotLength) * slotLength;
   }
 }
