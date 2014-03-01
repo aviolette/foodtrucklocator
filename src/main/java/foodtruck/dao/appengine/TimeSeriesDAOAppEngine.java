@@ -13,6 +13,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Transaction;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import org.joda.time.DateTime;
@@ -62,10 +63,14 @@ public abstract class TimeSeriesDAOAppEngine extends AppEngineDAO<Long, SystemSt
     dataStore.delete(entities);
   }
 
-  public void updateCount(DateTime timestamp, String statName, long by) {
+  @Override public void updateCount(DateTime timestamp, String statName, long by) {
+    long slot = slotter.getSlot(timestamp.getMillis());
+    updateCount(slot, statName, by);
+  }
+
+  @Override public void updateCount(long slot, String statName, long by) {
     DatastoreService dataStore = provider.get();
     Transaction txn = dataStore.beginTransaction();
-    long slot = slotter.getSlot(timestamp.getMillis());
     try {
       Entity entity = findBySlot(slot, dataStore);
       if (entity == null) {
@@ -94,8 +99,8 @@ public abstract class TimeSeriesDAOAppEngine extends AppEngineDAO<Long, SystemSt
 
   private @Nullable Entity findBySlot(long slot, DatastoreService dataStore) {
     Query q = new Query(getKind());
-    q.addFilter(PARAM_TIMESTAMP, Query.FilterOperator.EQUAL, slot);
-    return dataStore.prepare(q).asSingleEntity();
+    q.setFilter(new Query.FilterPredicate(PARAM_TIMESTAMP, Query.FilterOperator.EQUAL, slot));
+    return Iterables.getFirst(dataStore.prepare(q).asIterable(), null);
   }
 
   @Override protected Entity toEntity(SystemStats obj, Entity entity) {

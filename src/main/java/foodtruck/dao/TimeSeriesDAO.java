@@ -28,4 +28,7 @@ public interface TimeSeriesDAO extends DAO<Long, SystemStats>{
    */
   void deleteBefore(LocalDate localDate);
 
+  void updateCount(DateTime timestamp, String statName, long by);
+
+  void updateCount(long timestamp, String statName, long by);
 }
