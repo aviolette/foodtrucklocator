@@ -13,6 +13,9 @@
           <li><label><input name="scheduleCachingOn"
                             <c:if test="${config.scheduleCachingOn}">checked="checked"</c:if>
                             type="checkbox"/> <span>Enable Schedule Caching</span></label></li>
+          <li><label><input name="showPublicTruckGraphs"
+                            <c:if test="${config.showPublicTruckGraphs}">checked="checked"</c:if>
+                            type="checkbox"/> <span>Show public truck graphs</span></label></li>
         </ul>
       </div>
     </div>

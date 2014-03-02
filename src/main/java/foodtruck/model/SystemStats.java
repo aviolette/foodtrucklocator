@@ -41,4 +41,15 @@ public class SystemStats extends ModelEntity {
         .add("attributes", attributes)
         .toString();
   }
+
+  public SystemStats merge(SystemStats prev) {
+    for (Map.Entry<String, Long> attr : prev.getAttributes().entrySet()) {
+      if (attributes.containsKey(attr.getKey())) {
+        attributes.put(attr.getKey(), attributes.get(attr.getKey()) + attr.getValue());
+      } else {
+        attributes.put(attr.getKey(), attr.getValue());
+      }
+    }
+    return this;
+  }
 }

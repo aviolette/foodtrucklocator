@@ -42,6 +42,7 @@ public class ConfigurationDAOAppEngine extends
   private static final String PROP_RETWEET_STOP_CREATING_TWEETS = "retweet_stop_creation";
   private static final String PROP_SEND_NOTIFICATION_WHEN_NO_TRUCKS = "send_when_no_trucks";
   private static final String PROP_FOOD_TRUCK_REQUEST_ON = "food_truck_request_on";
+  private static final String PROP_SHOW_PUBLIC_TRUCK_GRAPHS = "show_public_truck_graphs";
 
   @Inject
   public ConfigurationDAOAppEngine(DatastoreServiceProvider provider, DateTimeZone defaultZone) {
@@ -72,6 +73,7 @@ public class ConfigurationDAOAppEngine extends
     entity.setProperty(PROP_RETWEET_STOP_CREATING_TWEETS, config.isRetweetStopCreatingTweets());
     entity.setProperty(PROP_SEND_NOTIFICATION_WHEN_NO_TRUCKS, config.isSendNotificationTweetWhenNoTrucks());
     entity.setProperty(PROP_FOOD_TRUCK_REQUEST_ON, config.isFoodTruckRequestOn());
+    entity.setProperty(PROP_SHOW_PUBLIC_TRUCK_GRAPHS, config.isShowPublicTruckGraphs());
     return entity;
   }
 
@@ -83,6 +85,7 @@ public class ConfigurationDAOAppEngine extends
             .name((String) entity.getProperty(PROP_CENTER_NAME))
             .build();
     return Configuration.builder()
+        .showPublicTruckGraphs(getBooleanProperty(entity, PROP_SHOW_PUBLIC_TRUCK_GRAPHS, true))
         .googleGeolocationEnabled((Boolean) entity.getProperty(PROP_GOOGLE_GEOLOCATION_ENABLED))
         .yahooGeolocationEnabled((Boolean) entity.getProperty(PROP_YAHOO_GEOLOCATION_ENABLED))
         .tweetUpdateServletEnabled(getBooleanProperty(entity, PROP_GOOGLE_TWEET_UPLOADING_ENABLED))

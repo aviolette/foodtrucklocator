@@ -62,6 +62,7 @@ public class TrucksServlet extends FrontPageServlet {
       LocalDate firstDay = clock.firstDayOfWeek();
       req.setAttribute("stops", stops.findSchedules(truck.getId(), new Interval(firstDay.toDateTimeAtStartOfDay(zone),
           firstDay.toDateTimeAtStartOfDay(zone).plusDays(7))));
+      req.setAttribute("enableGraphs", configurationDAO.find().isShowPublicTruckGraphs());
       req.setAttribute("title", truck.getName());
     } else {
       String tag = req.getParameter("tag");

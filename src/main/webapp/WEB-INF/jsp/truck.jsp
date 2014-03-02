@@ -161,7 +161,9 @@
       series: series
     });
   }
-//  drawGraphs(["count.${truck.id}"], "chart");
+  <c:if test="${enableGraphs}">
+    drawGraphs(["count.${truck.id}"], "chart");
+  </c:if>
 </script>
 
 

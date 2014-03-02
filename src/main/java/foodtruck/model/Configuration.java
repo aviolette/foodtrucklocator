@@ -35,6 +35,7 @@ public class Configuration extends ModelEntity {
   private boolean retweetStopCreatingTweets;
   private boolean sendNotificationTweetWhenNoTrucks;
   private boolean foodTruckRequestOn;
+  private boolean showPublicTruckGraphs;
 
   public Configuration(Object key) {
     super(key);
@@ -62,6 +63,11 @@ public class Configuration extends ModelEntity {
     this.retweetStopCreatingTweets = builder.retweetStopCreatingTweets;
     this.sendNotificationTweetWhenNoTrucks = builder.sendNotificationTweetWhenNoTrucks;
     this.foodTruckRequestOn = builder.foodTruckRequestOn;
+    this.showPublicTruckGraphs = builder.showPublicTruckGraphs;
+  }
+
+  public boolean isShowPublicTruckGraphs() {
+    return this.showPublicTruckGraphs;
   }
 
   public boolean isSendNotificationTweetWhenNoTrucks() {
@@ -182,6 +188,7 @@ public class Configuration extends ModelEntity {
     private boolean retweetStopCreatingTweets;
     public boolean sendNotificationTweetWhenNoTrucks;
     public boolean foodTruckRequestOn = true;
+    public boolean showPublicTruckGraphs = true;
 
     public Builder() {
     }
@@ -206,6 +213,12 @@ public class Configuration extends ModelEntity {
       this.scheduleCachingOn = config.scheduleCachingOn;
       this.sendNotificationTweetWhenNoTrucks = config.sendNotificationTweetWhenNoTrucks;
       this.foodTruckRequestOn = config.foodTruckRequestOn;
+      this.showPublicTruckGraphs = config.showPublicTruckGraphs;
+    }
+
+    public Builder showPublicTruckGraphs(boolean showPublicTruckGraphs) {
+      this.showPublicTruckGraphs = showPublicTruckGraphs;
+      return this;
     }
 
     public Builder foodTruckRequestOn(boolean foodTruckRequestOn) {

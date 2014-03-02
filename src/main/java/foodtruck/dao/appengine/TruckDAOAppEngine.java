@@ -142,6 +142,9 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
         .build();
   }
 
+  @Override protected void modifyFindAllQuery(Query q) {
+    q.addSort(TRUCK_NAME_FIELD);
+  }
 
   @Override public Collection<Truck> findByTwitterId(String screenName) {
     DatastoreService dataStore = provider.get();
