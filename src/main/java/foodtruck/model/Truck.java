@@ -277,9 +277,11 @@ public class Truck extends ModelEntity {
   public static class Stats {
     private DateTime lastUpdated;
     private DateTime lastSeen;
+    private DateTime firstSeen;
     private long totalStops;
     private long stopsThisYear;
     private Location whereLastSeen;
+    private Location whereFirstSeen;
     private int numberOfDaysOutThisYear;
 
     public Stats(Builder builder) {
@@ -289,6 +291,16 @@ public class Truck extends ModelEntity {
       this.stopsThisYear = builder.stopsThisYear;
       this.whereLastSeen = builder.whereLastSeen;
       this.numberOfDaysOutThisYear = builder.numberOfDaysOutThisYear;
+      this.firstSeen = builder.firstSeen;
+      this.whereFirstSeen = builder.whereFirstSeen;
+    }
+
+    public DateTime getFirstSeen() {
+      return firstSeen;
+    }
+
+    public Location getWhereFirstSeen() {
+      return whereFirstSeen;
     }
 
     public long getStopsThisYear() {
@@ -323,6 +335,21 @@ public class Truck extends ModelEntity {
       private long stopsThisYear;
       private @Nullable Location whereLastSeen;
       private int numberOfDaysOutThisYear;
+      private @Nullable DateTime firstSeen;
+      private Location whereFirstSeen;
+
+      public Builder() {}
+
+      public Builder(Stats stats) {
+        this.lastUpdated = stats.getLastUpdated();
+        this.lastSeen = stats.getLastSeen();
+        this.totalStops = stats.getTotalStops();
+        this.stopsThisYear = stats.getStopsThisYear();
+        this.whereLastSeen = stats.getWhereLastSeen();
+        this.numberOfDaysOutThisYear = stats.numberOfDaysOutThisYear;
+        this.firstSeen = stats.getFirstSeen();
+        this.whereFirstSeen = stats.getWhereFirstSeen();
+      }
 
       public Builder lastUpdate(DateTime lastUpdated) {
         this.lastUpdated = lastUpdated;
@@ -331,6 +358,16 @@ public class Truck extends ModelEntity {
 
       public Builder totalStops(long totalStops) {
         this.totalStops = totalStops;
+        return this;
+      }
+
+      public Builder whereFirstSeen(@Nullable Location whereFirstSeen) {
+        this.whereFirstSeen = whereFirstSeen;
+        return this;
+      }
+
+      public Builder firstSeen(@Nullable DateTime firstSeen) {
+        this.firstSeen = firstSeen;
         return this;
       }
 

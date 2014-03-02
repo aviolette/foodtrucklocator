@@ -3,6 +3,7 @@
 
 
 <div id="content" >
+
   <div class="row">
     <div class="span4">
       <h2>${truck.name}</h2>
@@ -47,24 +48,23 @@
         </table>
       </div>
     </div>
+
+
+
+
     <div class="span5">
       <h2>Statistics</h2>
       <div id="chart"></div>
-
-      <c:choose>
-        <c:when test="${truck.inactive}">
-          <div class="badge badge-important" style="margin-bottom: 20px">Inactive</div>
-        </c:when>
-        <c:otherwise>
-          <div class="badge badge-success" style="margin-bottom: 20px">Active</div>
-        </c:otherwise>
-      </c:choose>
-
       <table class="table">
         <tr>
-          <td>Last active</td>
+          <td>Last seen</td>
           <td><joda:format value="${truck.stats.lastSeen}" style="MS"/> @ <br/>
             ${truck.stats.whereLastSeen.name}</td>
+        </tr>
+        <tr>
+          <td>First seen</td>
+          <td><joda:format value="${truck.stats.firstSeen}" style="MS"/> @ <br/>
+            ${truck.stats.whereFirstSeen.name}</td>
         </tr>
         <tr>
           <td>Stops this year</td>
@@ -77,9 +77,11 @@
       </table>
     </div>
   </div>
+
+
   <div class="row" style="padding-top: 20px">
     <div class="span9">
-      <h2>Schedule</h2>
+      <h2>This Week's Schedule</h2>
       <table class="table table-striped">
         <thead>
         <tr>
@@ -106,7 +108,9 @@
       </table>
     </div>
   </div>
+
 </div>
+
 </div>
 <%@include file="include/core_js.jsp" %>
 <script src="/script/lib/d3.min.js" type="text/javascript"></script>

@@ -1,6 +1,7 @@
 package foodtruck.server.job;
 
 import java.io.IOException;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -32,15 +34,14 @@ public class UpdateTruckStats extends HttpServlet {
   private final FoodTruckStopService stopService;
   private final TruckDAO truckDAO;
   private final Clock clock;
-  private final WeeklyRollupDAO weeklyRollupDAO;
+  private final WeeklyRollupDAO rollupDAO;
 
   @Inject
-  public UpdateTruckStats(FoodTruckStopService foodTruckStopService, TruckDAO truckDAO, Clock clock,
-      WeeklyRollupDAO weeklyRollupDAO) {
+  public UpdateTruckStats(FoodTruckStopService foodTruckStopService, TruckDAO truckDAO, Clock clock, WeeklyRollupDAO rollupDAO) {
     this.stopService = foodTruckStopService;
     this.truckDAO = truckDAO;
     this.clock = clock;
-    this.weeklyRollupDAO = weeklyRollupDAO;
+    this.rollupDAO = rollupDAO;
   }
   @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
@@ -91,6 +92,7 @@ public class UpdateTruckStats extends HttpServlet {
       lastSeen = stats.getLastSeen();
       stopsThisYear = (lastUpdate.getYear() == year) ? stats.getStopsThisYear() : 0;
     }
+    Set<Long> timestamps = Sets.newHashSet();
     for (TruckStop stop : stopService.findStopsForTruckSince(lastUpdate, truck.getId())) {
       final DateTime endTime = stop.getEndTime();
       if (endTime.getYear() == year) {
@@ -100,8 +102,11 @@ public class UpdateTruckStats extends HttpServlet {
         lastSeen = endTime;
         whereLastSeen = stop.getLocation();
       }
-      weeklyRollupDAO.updateCount(stop.getStartTime(), "count." + truck.getId());
+      timestamps.add(stop.getStartTime().toDateMidnight().getMillis());
       totalStops++;
+    }
+    for (Long timestamp : timestamps) {
+      rollupDAO.updateCount(new DateTime(timestamp, clock.zone()), "count." + truck.getId() , 1);
     }
     stats = Truck.Stats.builder()
         .lastUpdate(now)

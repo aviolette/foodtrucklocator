@@ -16,7 +16,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 
-import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import foodtruck.dao.TruckDAO;
@@ -27,6 +26,7 @@ import static foodtruck.dao.appengine.Attributes.getDoubleProperty;
 import static foodtruck.dao.appengine.Attributes.getLongProperty;
 import static foodtruck.dao.appengine.Attributes.getSetProperty;
 import static foodtruck.dao.appengine.Attributes.getStringProperty;
+import static foodtruck.dao.appengine.Attributes.setDateProperty;
 
 /**
  * @author aviolette@gmail.com
@@ -61,6 +61,10 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
   private static final String TRUCK_STATS_STOPS_THIS_YEAR = "stops_this_year";
   private static final String TRUCK_STATS_LAST_SEEN_WHERE_LAT = "last_seen_lat";
   private static final String TRUCK_STATS_LAST_SEEN_WHERE_LNG = "last_seen_lng";
+  private static final String TRUCK_STATS_FIRST_SEEN_WHEN = "first_seen_when";
+  private static final String TRUCK_STATS_FIRST_SEEN_WHERE = "first_seen_where";
+  private static final String TRUCK_STATS_FIRST_SEEN_WHERE_LAT = "first_seen_lat";
+  private static final String TRUCK_STATS_FIRST_SEEN_WHERE_LNG = "first_seen_lng";
   private static final String TRUCK_HIDDEN = "hidden";
   private static final String TRUCK_BEACONNAISE_EMAILS = "beaconnaise_emails";
   private static final String TRUCK_PREVIEW_ICON = "truck_preview_icon";
@@ -81,20 +85,29 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     Text t = (Text) entity.getProperty(TRUCK_DESCRIPTION_FIELD);
     Truck.Stats stats = null;
     if (entity.hasProperty(TRUCK_STATS_TOTAL_STOPS)) {
-      Location loc = null;
+      Location lastSeenLocation = null, firstSeenLocation = null;
       if (entity.hasProperty(TRUCK_STATS_LAST_SEEN_WHERE)) {
-        loc = Location.builder()
+        lastSeenLocation = Location.builder()
             .lat(getDoubleProperty(entity, TRUCK_STATS_LAST_SEEN_WHERE_LAT, 0))
             .lng(getDoubleProperty(entity, TRUCK_STATS_LAST_SEEN_WHERE_LNG, 0))
             .name(getStringProperty(entity, TRUCK_STATS_LAST_SEEN_WHERE))
             .build();
       }
+      if (entity.hasProperty(TRUCK_STATS_FIRST_SEEN_WHERE)) {
+        firstSeenLocation = Location.builder()
+            .lat(getDoubleProperty(entity, TRUCK_STATS_FIRST_SEEN_WHERE_LAT, 0))
+            .lng(getDoubleProperty(entity, TRUCK_STATS_FIRST_SEEN_WHERE_LNG, 0))
+            .name(getStringProperty(entity, TRUCK_STATS_FIRST_SEEN_WHERE))
+            .build();
+      }
       stats = Truck.Stats.builder()
+          .firstSeen(getDateTime(entity, TRUCK_STATS_FIRST_SEEN_WHEN, zone))
+          .whereFirstSeen(firstSeenLocation)
           .lastSeen(getDateTime(entity, TRUCK_STATS_LAST_SEEN_WHEN, zone))
           .lastUpdate(getDateTime(entity, TRUCK_STATS_LAST_UPDATED, zone))
           .stopsThisYear(getLongProperty(entity, TRUCK_STATS_STOPS_THIS_YEAR, 0))
           .totalStops(getLongProperty(entity, TRUCK_STATS_TOTAL_STOPS, 0))
-          .whereLastSeen(loc)
+          .whereLastSeen(lastSeenLocation)
           .build();
     }
 
@@ -255,17 +268,18 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     if (stats == null) {
       stats = Truck.Stats.builder().build();
     }
-    final DateTime lastSeen = stats.getLastSeen();
-    if (lastSeen == null) {
-      entity.setProperty(TRUCK_STATS_LAST_SEEN_WHEN, null);
-    } else {
-      entity.setProperty(TRUCK_STATS_LAST_SEEN_WHEN, lastSeen.toDate());
+    setDateProperty(TRUCK_STATS_LAST_SEEN_WHEN, entity, stats.getLastSeen());
+    setDateProperty(TRUCK_STATS_FIRST_SEEN_WHEN, entity, stats.getFirstSeen());
+    Location whereLastSeen = stats.getWhereLastSeen(), whereFirstSeen = stats.getWhereFirstSeen();
+    if (whereLastSeen != null) {
+      entity.setProperty(TRUCK_STATS_LAST_SEEN_WHERE, whereLastSeen.getName());
+      entity.setProperty(TRUCK_STATS_LAST_SEEN_WHERE_LAT, whereLastSeen.getLatitude());
+      entity.setProperty(TRUCK_STATS_LAST_SEEN_WHERE_LNG, whereLastSeen.getLongitude());
     }
-    Location loc = stats.getWhereLastSeen();
-    if (loc != null) {
-      entity.setProperty(TRUCK_STATS_LAST_SEEN_WHERE, loc.getName());
-      entity.setProperty(TRUCK_STATS_LAST_SEEN_WHERE_LAT, loc.getLatitude());
-      entity.setProperty(TRUCK_STATS_LAST_SEEN_WHERE_LNG, loc.getLongitude());
+    if (whereFirstSeen != null) {
+      entity.setProperty(TRUCK_STATS_FIRST_SEEN_WHERE, whereFirstSeen.getName());
+      entity.setProperty(TRUCK_STATS_FIRST_SEEN_WHERE_LAT, whereFirstSeen.getLatitude());
+      entity.setProperty(TRUCK_STATS_FIRST_SEEN_WHERE_LNG, whereFirstSeen.getLongitude());
     }
     entity.setProperty(TRUCK_STATS_LAST_UPDATED, stats.getLastUpdated().toDate());
     entity.setProperty(TRUCK_STATS_TOTAL_STOPS, stats.getTotalStops());
