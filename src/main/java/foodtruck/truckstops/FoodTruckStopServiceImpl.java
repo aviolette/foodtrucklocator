@@ -246,7 +246,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     for (int i=0; i < numDays; i++) {
       LocalDate currentDay = date.plusDays(i);
       if (stopMM.containsKey(currentDay)) {
-        stops.add(new DailySchedule(currentDay, ImmutableList.copyOf(stopMM.values()), null));
+        stops.add(new DailySchedule(currentDay, ImmutableList.copyOf(stopMM.get(currentDay)), null));
       } else {
         stops.add(new DailySchedule(currentDay, ImmutableList.<TruckStop>of(), null));
       }
