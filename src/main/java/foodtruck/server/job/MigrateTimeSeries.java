@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -22,6 +23,8 @@ import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.truckstops.FoodTruckStopService;
+import foodtruck.util.Clock;
+import foodtruck.util.ClockImpl;
 import foodtruck.util.Slots;
 import foodtruck.util.WeeklyRollup;
 
@@ -36,14 +39,24 @@ public class MigrateTimeSeries extends HttpServlet {
   private static final Logger log = Logger.getLogger(MigrateTimeSeries.class.getName());
   private final Slots slotter;
   private final TruckDAO truckDAO;
+  private final Clock clock;
 
   @Inject
   public MigrateTimeSeries(FoodTruckStopService foodTruckStopService, WeeklyRollupDAO rollupDAO,
-      @WeeklyRollup foodtruck.util.Slots slotter, TruckDAO dao) {
+      @WeeklyRollup foodtruck.util.Slots slotter, TruckDAO dao, Clock clock) {
     this.service = foodTruckStopService;
     this.rollupDAO = rollupDAO;
     this.slotter = slotter;
     this.truckDAO = dao;
+    this.clock = clock;
+  }
+
+  @Override protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+      throws ServletException, IOException {
+    if ("true".equals(req.getParameter("delete"))) {
+      rollupDAO.deleteBefore(clock.currentDay().plusDays(1));
+      return;
+    }
   }
 
   @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -60,9 +73,6 @@ public class MigrateTimeSeries extends HttpServlet {
       }
       timestamps.add(stop.getStartTime().toDateMidnight().getMillis());
     }
-    for (Long timestamp : timestamps) {
-      rollupDAO.updateCount(slotter.getSlot(timestamp),  statName, 1);
-    }
     log.log(Level.INFO, "Finished migration for {0}", truckId);
     if (firstSeen != null) {
       Truck truck = truckDAO.findById(truckId);
@@ -70,5 +80,11 @@ public class MigrateTimeSeries extends HttpServlet {
       truck = Truck.builder(truck).stats(stats).build();
       truckDAO.save(truck);
     }
+    for (Long timestamp : timestamps) {
+      rollupDAO.updateCount(slotter.getSlot(timestamp),  statName, 1);
+    }
+    req.setAttribute("trucks", truckDAO.findAll());
+    req.getRequestDispatcher("/WEB-INF/jsp/dashboard/migrate_trucks.jsp").forward(req, resp);
+
   }
 }
