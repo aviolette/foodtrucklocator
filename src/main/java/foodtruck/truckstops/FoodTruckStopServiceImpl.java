@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -234,22 +235,22 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
 
   @Override public List<DailySchedule> findSchedules(String truckId, Interval range) {
     List<TruckStop> stopList = truckStopDAO.findOverRange(truckId, range);
-    ImmutableList.Builder<DailySchedule> stops = ImmutableList.builder();
     LocalDate date = range.getStart().toLocalDate();
-    ImmutableList.Builder<TruckStop> currentStops = ImmutableList.builder();
+    long numDays = range.toDuration().getStandardDays();
+    Multimap<LocalDate, TruckStop> stopMM = ArrayListMultimap.create();
     for (TruckStop truckStop : stopList) {
       final LocalDate localDate = truckStop.getStartTime().toLocalDate();
-      if (!date.equals(localDate)) {
-        ImmutableList<TruckStop> cs = currentStops.build();
-        if (!cs.isEmpty()) {
-          stops.add(new DailySchedule(date, cs, null));
-        }
-        currentStops = ImmutableList.builder();
-        date = localDate;
-      }
-      currentStops.add(truckStop);
+      stopMM.put(localDate, truckStop);
     }
-    stops.add(new DailySchedule(date, currentStops.build(), null));
+    ImmutableList.Builder<DailySchedule> stops = ImmutableList.builder();
+    for (int i=0; i < numDays; i++) {
+      LocalDate currentDay = date.plusDays(i);
+      if (stopMM.containsKey(currentDay)) {
+        stops.add(new DailySchedule(currentDay, ImmutableList.copyOf(stopMM.values()), null));
+      } else {
+        stops.add(new DailySchedule(currentDay, ImmutableList.<TruckStop>of(), null));
+      }
+    }
     return stops.build();
   }
 

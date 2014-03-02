@@ -2,21 +2,26 @@ package foodtruck.server;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.TruckDAO;
+import foodtruck.model.DailySchedule;
 import foodtruck.model.Truck;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
@@ -60,8 +65,8 @@ public class TrucksServlet extends FrontPageServlet {
       }
       req.setAttribute("truck", truck);
       LocalDate firstDay = clock.firstDayOfWeek();
-      req.setAttribute("stops", stops.findSchedules(truck.getId(), new Interval(firstDay.toDateTimeAtStartOfDay(zone),
-          firstDay.toDateTimeAtStartOfDay(zone).plusDays(7))));
+      req.setAttribute("stops", getSchedules(truck, firstDay));
+      req.setAttribute("daysOfWeek", daysOfWeek(firstDay));
       req.setAttribute("enableGraphs", configurationDAO.find().isShowPublicTruckGraphs());
       req.setAttribute("title", truck.getName());
     } else {
@@ -80,4 +85,21 @@ public class TrucksServlet extends FrontPageServlet {
     req.setAttribute("tab", "trucks");
     req.getRequestDispatcher(jsp).forward(req, resp);
   }
+
+  private List<DailySchedule> getSchedules(Truck truck, LocalDate firstDay) {
+    return stops.findSchedules(truck.getId(), new Interval(firstDay.toDateTimeAtStartOfDay(zone),
+        firstDay.toDateTimeAtStartOfDay(zone).plusDays(7)));
+  }
+
+  private Iterable<String> daysOfWeek(LocalDate firstDay) {
+    DateTimeFormatter formatter = DateTimeFormat.forPattern("EEE MM/dd");
+    ImmutableList.Builder builder = ImmutableList.builder();
+    LocalDate date = firstDay;
+    for (int i=0; i < 7; i++) {
+      builder.add(formatter.print(date));
+      date = date.plusDays(1);
+    }
+    return builder.build();
+  }
+
 }

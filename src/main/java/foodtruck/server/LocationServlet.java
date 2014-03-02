@@ -15,6 +15,8 @@ import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.LocationDAO;
+import foodtruck.geolocation.GeoLocator;
+import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
@@ -31,15 +33,17 @@ public class LocationServlet extends FrontPageServlet {
   private final Clock clock;
   private final DateTimeFormatter dateFormatter;
   private final FoodTruckStopService truckStopService;
+  private final GeoLocator geoLocator;
 
   @Inject
   public LocationServlet(ConfigurationDAO configDAO, LocationDAO locationDAO, Clock clock,
-      @DateOnlyFormatter DateTimeFormatter dateFormatter, FoodTruckStopService truckStopService) {
+      @DateOnlyFormatter DateTimeFormatter dateFormatter, FoodTruckStopService truckStopService, GeoLocator geoLocator) {
     super(configDAO);
     this.locationDAO = locationDAO;
     this.clock = clock;
     this.dateFormatter = dateFormatter;
     this.truckStopService = truckStopService;
+    this.geoLocator = geoLocator;
   }
 
   @Override protected void doGetProtected(HttpServletRequest req, HttpServletResponse resp)
@@ -48,13 +52,23 @@ public class LocationServlet extends FrontPageServlet {
     String locationId = (requestURI.equals("/locations") || requestURI.equals("/locations/") ? null : requestURI.substring(11));
     Location location;
     long locId;
-    try {
-      locId = Long.parseLong(locationId);
-    } catch (Exception e) {
-      resp.setStatus(404);
-      return;
+    String query = req.getParameter("q");
+    if (Strings.isNullOrEmpty(query)) {
+      try {
+        locId = Long.parseLong(locationId);
+      } catch (Exception e) {
+        resp.setStatus(404);
+        return;
+      }
+      location = locationDAO.findById(locId);
+    } else {
+      location = geoLocator.locate(query, GeolocationGranularity.NARROW);
+      if (location != null && location.isResolved()) {
+        resp.sendRedirect("/locations/" + location.getKey());
+        return;
+      }
     }
-    if ((location = locationDAO.findById(locId)) == null || !location.isResolved()) {
+    if (location == null || !location.isResolved()) {
       resp.setStatus(404);
       return;
     }

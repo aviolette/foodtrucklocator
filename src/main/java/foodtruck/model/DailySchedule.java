@@ -33,4 +33,8 @@ public class DailySchedule {
   public List<TruckStop> getStops() {
     return stops;
   }
+
+  public boolean isHasStops() {
+    return !stops.isEmpty();
+  }
 }
