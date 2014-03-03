@@ -67,10 +67,15 @@
           <td style="min-height:200px">
             <c:choose>
               <c:when test="${schedule.hasStops}">
-                <c:forEach items="${schedule.stops}" var="stop">
-                  <joda:format value="${stop.startTime}" style="-S"/>
-                  <ftl:location location="${stop.location}"/>
-                </c:forEach>
+                <ul class="list-unstyled">
+                  <c:forEach items="${schedule.stops}" var="stop">
+                    <li style="padding-bottom:10px">
+                    <joda:format value="${stop.startTime}" style="-S"/>
+                    <ftl:location location="${stop.location}"/>
+                    </li>
+                  </c:forEach>
+
+                </ul>
               </c:when>
               <c:otherwise>
                 <em>No Stops</em>
