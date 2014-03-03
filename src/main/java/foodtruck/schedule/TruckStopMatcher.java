@@ -233,7 +233,7 @@ public class TruckStopMatcher {
     Set<String> categories = truck.getCategories();
     boolean breakfast = categories.contains("Breakfast");
     if (breakfast && categories.contains("Lunch")) {
-      return tweetText.toLowerCase().matches(".*b\\w*fast.*");
+      return tweetText.toLowerCase().matches(".*b\\w*fast.*") || tweetText.toLowerCase().contains("open for b");
     } else if (breakfast) {
       return true;
     }
