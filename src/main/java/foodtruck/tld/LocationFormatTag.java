@@ -1,6 +1,8 @@
 package foodtruck.tld;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 import javax.servlet.jsp.JspException;
@@ -18,6 +20,7 @@ import foodtruck.model.Location;
  */
 public class LocationFormatTag extends TagSupport {
   private Location location;
+  private static final Logger log = Logger.getLogger(LocationFormatTag.class.getName());
 
   public void setLocation(@Nullable Location location) {
     this.location = location;
@@ -33,8 +36,12 @@ public class LocationFormatTag extends TagSupport {
       if (location != null) {
         out.println("<a href='/locations?q=" + UrlEscapers.urlPathSegmentEscaper().escape(location.getName()) + "'>" + location.getName() + "</a>");
       }
-    } catch (IOException e) {
-      throw Throwables.propagate(e);
+    } catch (Exception e) {
+      if (location != null) {
+        log.log(Level.INFO, "Error saving location: " + location.getName());
+      }
+      log.log(Level.INFO, e.getMessage(), e);
+      //throw Throwables.propagate(e);
     }
     return SKIP_BODY;
   }
