@@ -34,6 +34,11 @@ public class DailySchedule {
     return stops;
   }
 
+  public boolean isAfterToday() {
+    // TODO: this is kinda crappy since it doesn't take into effect time zones
+    return day.isAfter(new LocalDate());
+  }
+
   public boolean isHasStops() {
     return !stops.isEmpty();
   }

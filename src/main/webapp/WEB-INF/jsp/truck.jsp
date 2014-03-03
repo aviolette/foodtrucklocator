@@ -78,7 +78,14 @@
                 </ul>
               </c:when>
               <c:otherwise>
-                <em>No Stops</em>
+                <c:choose>
+                  <c:when test="${schedule.afterToday}">
+                    <em>No Scheduled Stops</em>
+                  </c:when>
+                  <c:otherwise>
+                    <em>No Stops</em>
+                  </c:otherwise>
+                </c:choose>
               </c:otherwise>
             </c:choose>
           </td>
