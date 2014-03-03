@@ -111,6 +111,7 @@ public class UpdateTruckStats extends HttpServlet {
     Truck.Stats.Builder builder = Truck.Stats.builder(stats);
     // fix a bug where this was getting trashed
     if (stats.getWhereFirstSeen() == null || stats.getFirstSeen() == null) {
+      log.info("Correcting first-seen for " + truck.getId());
       TruckStop stop = stopService.findFirstStop(truck);
       builder.firstSeen(stop.getStartTime());
       builder.whereFirstSeen(stop.getLocation());

@@ -11,6 +11,7 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PropertyContainer;
@@ -287,11 +288,12 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
     return stops.build();
   }
 
-  @Override public TruckStop findFirstStop(String id) {
+  @Override public TruckStop findFirstStop(String truckId) {
     DatastoreService dataStore = serviceProvider.get();
     Query q = new Query(STOP_KIND);
     q.addSort(START_TIME_FIELD, Query.SortDirection.ASCENDING);
-    Iterable<Entity> items = dataStore.prepare(q).asIterable();
+    q.setFilter(new Query.FilterPredicate(TRUCK_ID_FIELD, Query.FilterOperator.EQUAL, truckId));
+    Iterable<Entity> items = dataStore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
     Entity item = Iterables.getFirst(items, null);
     if (item != null) {
       return toTruckStop(item);
