@@ -108,9 +108,9 @@ public class UpdateTruckStats extends HttpServlet {
     for (Long timestamp : timestamps) {
       rollupDAO.updateCount(new DateTime(timestamp, clock.zone()), "count." + truck.getId() , 1);
     }
-    Truck.Stats.Builder builder = Truck.Stats.builder(stats);
+    Truck.Stats.Builder builder = stats == null ? Truck.Stats.builder() : Truck.Stats.builder(stats);
     // fix a bug where this was getting trashed
-    if (stats.getWhereFirstSeen() == null || stats.getFirstSeen() == null) {
+    if (stats == null || stats.getFirstSeen() == null) {
       log.info("Correcting first-seen for " + truck.getId());
       TruckStop stop = stopService.findFirstStop(truck);
       if (stop != null) {
