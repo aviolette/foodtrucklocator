@@ -1,6 +1,5 @@
 package foodtruck.tld;
 
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -9,7 +8,6 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import com.google.common.base.Throwables;
 import com.google.common.net.UrlEscapers;
 
 import foodtruck.model.Location;

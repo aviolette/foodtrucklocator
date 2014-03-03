@@ -17,6 +17,7 @@ import com.google.appengine.api.datastore.PropertyContainer;
 import com.google.appengine.api.datastore.Query;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
@@ -284,6 +285,18 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
       stops.add(toTruckStop(entity));
     }
     return stops.build();
+  }
+
+  @Override public TruckStop findFirstStop(String id) {
+    DatastoreService dataStore = serviceProvider.get();
+    Query q = new Query(STOP_KIND);
+    q.addSort(START_TIME_FIELD, Query.SortDirection.ASCENDING);
+    Iterable<Entity> items = dataStore.prepare(q).asIterable();
+    Entity item = Iterables.getFirst(items, null);
+    if (item != null) {
+      return toTruckStop(item);
+    }
+    return null;
   }
 
   private List<Query.Filter> trucksOverRange(@Nullable String truckId, Interval range) {

@@ -295,6 +295,14 @@ public class Truck extends ModelEntity {
       this.whereFirstSeen = builder.whereFirstSeen;
     }
 
+    public static Builder builder() {
+      return new Builder();
+    }
+
+    public static Builder builder(Stats stats) {
+      return new Builder(stats);
+    }
+
     public DateTime getFirstSeen() {
       return firstSeen;
     }
@@ -307,9 +315,6 @@ public class Truck extends ModelEntity {
       return stopsThisYear;
     }
 
-    public static Builder builder() {
-      return new Builder();
-    }
 
     public DateTime getLastUpdated() {
       return lastUpdated;

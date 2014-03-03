@@ -144,4 +144,6 @@ public interface FoodTruckStopService {
    * @param localDate the current date
    */
   void offRoad(String truckId, LocalDate localDate);
+
+  TruckStop findFirstStop(Truck truck);
 }

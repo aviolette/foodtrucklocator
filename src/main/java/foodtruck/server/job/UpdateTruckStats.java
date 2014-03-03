@@ -108,7 +108,14 @@ public class UpdateTruckStats extends HttpServlet {
     for (Long timestamp : timestamps) {
       rollupDAO.updateCount(new DateTime(timestamp, clock.zone()), "count." + truck.getId() , 1);
     }
-    stats = Truck.Stats.builder()
+    Truck.Stats.Builder builder = Truck.Stats.builder(stats);
+    // fix a bug where this was getting trashed
+    if (stats.getWhereFirstSeen() == null || stats.getFirstSeen() == null) {
+      TruckStop stop = stopService.findFirstStop(truck);
+      builder.firstSeen(stop.getStartTime());
+      builder.whereFirstSeen(stop.getLocation());
+    }
+    stats = builder
         .lastUpdate(now)
         .totalStops(totalStops)
         .lastSeen(lastSeen)

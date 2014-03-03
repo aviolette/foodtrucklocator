@@ -225,6 +225,10 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     truckDAO.save(t);
   }
 
+  @Override public TruckStop findFirstStop(Truck truck) {
+    return truckStopDAO.findFirstStop(truck.getId());
+  }
+
   private DateTime lesserOf(DateTime dateTime1, DateTime dateTime2) {
     return dateTime1.isBefore(dateTime2) ? dateTime1 : dateTime2;
   }
