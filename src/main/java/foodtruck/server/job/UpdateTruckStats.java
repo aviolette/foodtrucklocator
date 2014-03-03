@@ -113,8 +113,10 @@ public class UpdateTruckStats extends HttpServlet {
     if (stats.getWhereFirstSeen() == null || stats.getFirstSeen() == null) {
       log.info("Correcting first-seen for " + truck.getId());
       TruckStop stop = stopService.findFirstStop(truck);
-      builder.firstSeen(stop.getStartTime());
-      builder.whereFirstSeen(stop.getLocation());
+      if (stop != null) {
+        builder.firstSeen(stop.getStartTime());
+        builder.whereFirstSeen(stop.getLocation());
+      }
     }
     stats = builder
         .lastUpdate(now)
