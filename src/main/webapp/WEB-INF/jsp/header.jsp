@@ -28,6 +28,7 @@
       <ul class="nav navbar-nav">
         <li <c:if test="${tab == 'map'}"> class="active"</c:if>><a href="/">Map</a></li>
         <li <c:if test="${tab == 'trucks'}"> class="active"</c:if>><a href="/trucks">Vendors</a></li>
+        <li <c:if test="${tab == 'weekly'}"> class="active"</c:if>><a href="/weekly-schedule">Weekly Schedule</a></li>
         <li><a href="http://blog.chicagofoodtruckfinder.com/">Blog</a></li>
         <c:if test="${isAdmin}">
         <li><a href="/admin">Admin</a></li>
