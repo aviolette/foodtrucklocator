@@ -118,5 +118,17 @@ public class YQLGeolocatorTest extends EasyMockSupport {
 
   }
 
-
+  // The results item is not an object, but rather an array in when count is > 1
+  @Test
+  public void narrowSearchWithMismatchIntersection() throws Exception {
+    String location = "Chicago and Paczki, Chicago, IL";
+    String jsonText = "{\"query\":{\"count\":1,\"created\":\"2014-03-03T22:45:02Z\",\"lang\":\"en-US\",\"results\":{\"Result\":{\"quality\":\"80\",\"latitude\":\"41.89669\",\"longitude\":\"-87.628212\",\"offsetlat\":\"41.89669\",\"offsetlon\":\"-87.628212\",\"radius\":\"1400\",\"name\":null,\"line1\":\"E Chicago Ave & W Chicago Ave\",\"line2\":\"Chicago, IL 60654\",\"line3\":null,\"line4\":\"United States\",\"house\":null,\"street\":\"E Chicago Ave\",\"xstreet\":\"W Chicago Ave\",\"unittype\":null,\"unit\":null,\"postal\":\"60654\",\"neighborhood\":null,\"city\":\"Chicago\",\"county\":\"Cook County\",\"state\":\"Illinois\",\"country\":\"United States\",\"countrycode\":\"US\",\"statecode\":\"IL\",\"countycode\":null,\"uzip\":\"60654\",\"hash\":null,\"woeid\":\"12784303\",\"woetype\":\"11\"}}}} \n" +
+        "{\"query\":{\"count\":1,\"created\":\"2014-03-03T22:45:02Z\",\"lang\":\"en-US\",\"results\":{\"Result\":{\"quality\":\"80\",\"latitude\":\"41.89669\",\"longitude\":\"-87.628212\",\"offsetlat\":\"41.89669\",\"offsetlon\":\"-87.628212\",\"radius\":\"1400\",\"name\":null,\"line1\":\"E Chicago Ave & W Chicago Ave\",\"line2\":\"Chicago, IL 60654\",\"line3\":null,\"line4\":\"United States\",\"house\":null,\"street\":\"E Chicago Ave\",\"xstreet\":\"W Chicago Ave\",\"unittype\":null,\"unit\":null,\"postal\":\"60654\",\"neighborhood\":null,\"city\":\"Chicago\",\"county\":\"Cook County\",\"state\":\"Illinois\",\"country\":\"United States\",\"countrycode\":\"US\",\"statecode\":\"IL\",\"countycode\":null,\"uzip\":\"60654\",\"hash\":null,\"woeid\":\"12784303\",\"woetype\":\"11\"}}}}";
+    JSONObject jsonObject = new JSONObject(jsonText);
+    expect(resource.findLocation(location, false)).andReturn(jsonObject);
+    replayAll();
+    Location loc = yqlGeolocator.locate(location, GeolocationGranularity.NARROW);
+    assertNull(loc);
+    verifyAll();
+  }
 }

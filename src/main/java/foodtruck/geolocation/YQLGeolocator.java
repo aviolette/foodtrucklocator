@@ -8,7 +8,6 @@ import javax.annotation.Nullable;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
-import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -62,6 +61,19 @@ public class YQLGeolocator implements GeoLocator {
     if (result.getInt("quality") < quality) {
       log.log(Level.INFO, "Result was too broad");
       return null;
+    }
+    if (quality == 80) {
+      String first = result.getString("street"),
+          second = result.getString("xstreet");
+      if (!Strings.isNullOrEmpty(first) && !Strings.isNullOrEmpty(second)) {
+        String firstSplit[] = first.split(" "), secondSplit[] = second.split(" ");
+        if (firstSplit.length > 1 && secondSplit.length > 1) {
+          if (firstSplit[1].equalsIgnoreCase(secondSplit[1])) {
+            log.log(Level.INFO, "Cross street was the same as main street, probably a bogus address");
+            return null;
+          }
+        }
+      }
     }
     String name = Strings.isNullOrEmpty(location) ? result.getString("line1") : location;
     return Location.builder().lat(Double.parseDouble(result.getString("latitude")))
