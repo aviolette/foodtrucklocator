@@ -74,7 +74,7 @@ public class StatsResource {
     if (statList.length > 0 && statList[0].equals("trucksOnRoad")) {
       return trucksOnRoad(startTime, endTime, slots);
     }
-    List<SystemStats> stats = dao(interval).findWithinRange(startTime, endTime);
+    List<SystemStats> stats = dao(interval).findWithinRange(startTime, endTime, statList);
     ImmutableList.Builder<StatVector> builder = ImmutableList.builder();
     for (String statName : statList) {
       builder.add(slots.fillIn(stats, statName, startTime, endTime));

@@ -12,7 +12,7 @@ import foodtruck.model.SystemStats;
  * @since 2/27/14
  */
 public interface TimeSeriesDAO extends DAO<Long, SystemStats>{
-  List<SystemStats> findWithinRange(long startTime, long endTime);
+  List<SystemStats> findWithinRange(long startTime, long endTime, String[] statList);
 
   /**
    * Updates a count on a stat

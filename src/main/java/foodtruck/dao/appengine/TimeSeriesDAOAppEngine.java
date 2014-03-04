@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.PropertyProjection;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Transaction;
 import com.google.common.collect.ImmutableMap;
@@ -37,13 +38,19 @@ public abstract class TimeSeriesDAOAppEngine extends AppEngineDAO<Long, SystemSt
     this.slotter = slotter;
   }
 
-  @Override public List<SystemStats> findWithinRange(long startTime, long endTime) {
+  @Override public List<SystemStats> findWithinRange(long startTime, long endTime, String[] statList) {
     DatastoreService dataStore = provider.get();
-    return executeQuery(dataStore, new Query(getKind())
-      .setFilter(Query.CompositeFilterOperator.and(
-          new Query.FilterPredicate(PARAM_TIMESTAMP, Query.FilterOperator.GREATER_THAN_OR_EQUAL, startTime),
-          new Query.FilterPredicate(PARAM_TIMESTAMP, Query.FilterOperator.LESS_THAN, endTime)))
-      .addSort(PARAM_TIMESTAMP, Query.SortDirection.ASCENDING));
+    Query q = new Query(getKind())
+        .setFilter(Query.CompositeFilterOperator.and(
+            new Query.FilterPredicate(PARAM_TIMESTAMP, Query.FilterOperator.GREATER_THAN_OR_EQUAL, startTime),
+            new Query.FilterPredicate(PARAM_TIMESTAMP, Query.FilterOperator.LESS_THAN, endTime)))
+        .addProjection(new PropertyProjection(PARAM_TIMESTAMP, Long.class))
+
+        .addSort(PARAM_TIMESTAMP, Query.SortDirection.ASCENDING);
+    for (String statName : statList) {
+      q.addProjection(new PropertyProjection(statName, Long.class));
+    }
+    return executeQuery(dataStore, q);
   }
 
   @Override public void updateCount(DateTime timestamp, String key) {
