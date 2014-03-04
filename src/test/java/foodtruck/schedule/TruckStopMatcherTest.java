@@ -8,6 +8,7 @@ import com.google.common.collect.ImmutableSet;
 import org.easymock.EasyMockSupport;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,6 +57,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     topic = new TruckStopMatcher(extractor, geolocator, DateTimeZone.UTC, clock, configDAO, notifier);
     truck = Truck.builder().id("foobar").build();
     expect(clock.zone()).andStubReturn(DateTimeZone.UTC);
+    expect(clock.currentDay()).andStubReturn(new LocalDate(2011, 11, 10));
     tweetTime = new DateTime(2011, 11, 10, 11, 13, 7, 7, DateTimeZone.UTC);
   }
 
@@ -506,9 +508,38 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
   @Test
+  public void testMatch_shoudMatchTimeWhenNoAmPm() {
+    tweetTime = new DateTime(2011, 11, 7, 7, 0, 0, 0, DateTimeZone.UTC);
+    TruckStopMatch match = tweet("Pancake lovers! We'll be at 750 N Orleans today, approx 8:30 - 10am. Stop by! Flavors: Bacon Egg n Chs, Red Velvet, Cinnamon Roll!").match();
+    assertEquals(tweetTime.withTime(8, 30, 0, 0), match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(10, 0, 0, 0), match.getStop().getEndTime());
+  }
+
+  @Test
+  public void testMatch_shoudMatchTimeRange() {
+    tweetTime = new DateTime(2011, 11, 7, 7, 0, 0, 0, DateTimeZone.UTC);
+    TruckStopMatch match = tweet("Hey #UChicago....we are parked at 58th & Ellis for lunch today from 11:00am-2:00pm.   See ya'll soon.").match();
+    assertEquals(tweetTime.withTime(11, 0, 0, 0), match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getStop().getEndTime());
+  }
+
+  @Test
   public void testMatch_shouldMatchLunchHour() {
     tweetTime = new DateTime(2011, 11, 7, 7, 0, 0, 0, DateTimeZone.UTC);
     TruckStopMatch match = tweet("Here we come!!! Lunch is served! 11-1 600 W Chicago Ave.  #bbq # lunch # foodtruck @GrouponChicago @chifoodtruckz @chiftf_600w")
+        .match();
+    assertEquals(tweetTime.withTime(11, 0, 0, 0), match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(13, 0, 0, 0), match.getStop().getEndTime());
+  }
+
+  @Test
+  public void testMatch_lunchAnd11a() {
+    truck = Truck.builder(truck)
+        .categories(ImmutableSet.of("Lunch")).build();
+    tweetTime = tweetTime.withHourOfDay(7);
+    TruckStopMatch match = tweet("\n" +
+        "Jerk. is at Madison/Wacker today 11a #jerkchicken #foodtruck #jamaican #chicago #lunch #foodie http://t.co/jWVAaz2BxR\n" +
+        "2/19/14 9:05 AM")
         .match();
     assertEquals(tweetTime.withTime(11, 0, 0, 0), match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(13, 0, 0, 0), match.getStop().getEndTime());

@@ -155,6 +155,9 @@ public class TruckStopMatcher {
       endTime = parseTime(m.group(5), date, endTime);
       if (endTime != null && terminationTime != null && endTime.isAfter(terminationTime)) {
         endTime = terminationTime;
+      } else if (startTime != null && endTime != null && terminationTime == null &&
+          startTime.getHourOfDay() > 12 && endTime.getHourOfDay() < 12) {
+          startTime = startTime.minusHours(12);
       }
     }
     // This is detecting something in the format: We will be at Merchandise mart at 11:00.
@@ -172,6 +175,9 @@ public class TruckStopMatcher {
         // This is a special case, since matching ranges like that will produce a lot of
         // false positives, but 11-1 is commonly used for lunch hour
       } else if (tweetText.contains("11-1")) {
+        startTime = clock.currentDay().toDateTime(new LocalTime(11, 0), clock.zone());
+        endTime = clock.currentDay().toDateTime(new LocalTime(13, 0), clock.zone());
+      } else if (tweetText.contains("11a") && truck.getCategories().contains("Lunch")) {
         startTime = clock.currentDay().toDateTime(new LocalTime(11, 0), clock.zone());
         endTime = clock.currentDay().toDateTime(new LocalTime(13, 0), clock.zone());
       }
