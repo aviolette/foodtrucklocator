@@ -37,11 +37,11 @@
   </thead>
   <c:forEach var="row" varStatus="rowStatus" items="${weeklySchedule.stops}">
     <tr>
-      <td style="width:13%">${row.location.name}</td>
+      <td style="width:13%"><ftl:location location="${row.location}"/></td>
       <c:forEach var="dayOfWeek" items="${row.stopsForWeek}">
         <td style="width:12%"><c:forEach var="stop" items="${dayOfWeek}">
-          <img src="${stop.truck.iconUrl}" alt=""
-               title="<joda:format pattern="hh:mm a" value="${stop.startTime}"/> - <joda:format pattern="hh:mm a" value="${stop.endTime}"/> ${stop.truck.name}"/>
+          <a href="/trucks/${stop.truck.id}"><img src="${stop.truck.iconUrl}" alt=""
+               title="<joda:format pattern="hh:mm a" value="${stop.startTime}"/> - <joda:format pattern="hh:mm a" value="${stop.endTime}"/> ${stop.truck.name}"/></a>
         </c:forEach>&nbsp;</td>
       </c:forEach>
     </tr>
