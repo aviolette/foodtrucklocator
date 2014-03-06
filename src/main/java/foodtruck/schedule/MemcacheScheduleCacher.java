@@ -1,5 +1,7 @@
 package foodtruck.schedule;
 
+import javax.annotation.Nullable;
+
 import com.google.appengine.api.memcache.Expiration;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.inject.Inject;
@@ -16,7 +18,7 @@ public class MemcacheScheduleCacher implements ScheduleCacher {
   public MemcacheScheduleCacher(MemcacheService cache) {
     this.cache = cache;
   }
-  @Override public String findSchedule() {
+  @Override public @Nullable String findSchedule() {
     return (String) cache.get(DAILY_SCHEDULE);
   }
 
