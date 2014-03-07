@@ -6,10 +6,15 @@ package foodtruck.schedule;
  */
 public class OffTheRoadDetector {
 
-  public boolean offTheRoad(String tweet) {
+  public OffTheRoadResponse offTheRoad(String tweet) {
     String lower = tweet.toLowerCase();
-    return lower.contains("off the road") || lower.contains("maintenance") || lower.contains("in the shop")
-        || lower.contains("rain check") || lower.contains("mechanic") || lower.contains("sorry")
-        || lower.contains("staying in");
+
+    if (lower.contains("off the road") || lower.contains("in the shop") || lower.contains("no stops today")) {
+      return new OffTheRoadResponse(true, true);
+    } else if(lower.contains("maintenance") || lower.contains("mechanic") || lower.contains("sorry") ||
+        lower.contains("rain check") || lower.contains("staying in")) {
+      return new OffTheRoadResponse(true, false);
+    }
+    return new OffTheRoadResponse(false, true);
   }
 }

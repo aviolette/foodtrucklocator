@@ -31,6 +31,7 @@ import foodtruck.model.TruckStop;
 import foodtruck.model.TweetSummary;
 import foodtruck.model.TwitterNotificationAccount;
 import foodtruck.schedule.OffTheRoadDetector;
+import foodtruck.schedule.OffTheRoadResponse;
 import foodtruck.schedule.TerminationDetector;
 import foodtruck.schedule.TruckStopMatch;
 import foodtruck.schedule.TruckStopMatcher;
@@ -153,7 +154,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
   }
 
   private void expectOffTheRoad(boolean offTheRoad) {
-    expect(offTheRoadDetector.offTheRoad(basicTweet.getText())).andReturn(offTheRoad);
+    expect(offTheRoadDetector.offTheRoad(basicTweet.getText())).andReturn(new OffTheRoadResponse(offTheRoad, false));
   }
 
   @Test

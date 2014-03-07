@@ -47,6 +47,7 @@ import foodtruck.model.TweetSummary;
 import foodtruck.model.TwitterNotificationAccount;
 import foodtruck.monitoring.Monitored;
 import foodtruck.schedule.OffTheRoadDetector;
+import foodtruck.schedule.OffTheRoadResponse;
 import foodtruck.schedule.TerminationDetector;
 import foodtruck.schedule.TruckStopMatch;
 import foodtruck.schedule.TruckStopMatcher;
@@ -482,7 +483,8 @@ public class TwitterServiceImpl implements TwitterService {
       if (tweet.getIgnoreInTwittalyzer()) {
         continue;
       }
-      if (offTheRoadDetector.offTheRoad(tweet.getText())) {
+      final OffTheRoadResponse offTheRoadResponse = offTheRoadDetector.offTheRoad(tweet.getText());
+      if (offTheRoadResponse.isOffTheRoad()) {
         try {
           emailNotifier.systemNotifyOffTheRoad(truck, tweet);
           if (!truck.isUsingTwittalyzer()) {
