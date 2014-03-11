@@ -36,6 +36,7 @@ public class Configuration extends ModelEntity {
   private boolean sendNotificationTweetWhenNoTrucks;
   private boolean foodTruckRequestOn;
   private boolean showPublicTruckGraphs;
+  private boolean autoOffRoad;
 
   public Configuration(Object key) {
     super(key);
@@ -64,6 +65,11 @@ public class Configuration extends ModelEntity {
     this.sendNotificationTweetWhenNoTrucks = builder.sendNotificationTweetWhenNoTrucks;
     this.foodTruckRequestOn = builder.foodTruckRequestOn;
     this.showPublicTruckGraphs = builder.showPublicTruckGraphs;
+    this.autoOffRoad = builder.autoOffRoad;
+  }
+
+  public boolean isAutoOffRoad() {
+    return autoOffRoad;
   }
 
   public boolean isShowPublicTruckGraphs() {
@@ -189,6 +195,7 @@ public class Configuration extends ModelEntity {
     public boolean sendNotificationTweetWhenNoTrucks;
     public boolean foodTruckRequestOn = true;
     public boolean showPublicTruckGraphs = true;
+    public boolean autoOffRoad;
 
     public Builder() {
     }
@@ -214,6 +221,12 @@ public class Configuration extends ModelEntity {
       this.sendNotificationTweetWhenNoTrucks = config.sendNotificationTweetWhenNoTrucks;
       this.foodTruckRequestOn = config.foodTruckRequestOn;
       this.showPublicTruckGraphs = config.showPublicTruckGraphs;
+      this.autoOffRoad = config.autoOffRoad;
+    }
+
+    public Builder autoOffRoad(boolean autoOffRoad) {
+      this.autoOffRoad = autoOffRoad;
+      return this;
     }
 
     public Builder showPublicTruckGraphs(boolean showPublicTruckGraphs) {

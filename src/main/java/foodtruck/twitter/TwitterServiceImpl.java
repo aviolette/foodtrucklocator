@@ -51,6 +51,7 @@ import foodtruck.schedule.OffTheRoadResponse;
 import foodtruck.schedule.TerminationDetector;
 import foodtruck.schedule.TruckStopMatch;
 import foodtruck.schedule.TruckStopMatcher;
+import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.truckstops.TruckStopNotifier;
 import foodtruck.util.Clock;
 import twitter4j.GeoLocation;
@@ -87,6 +88,7 @@ public class TwitterServiceImpl implements TwitterService {
   private final TruckObserverDAO truckObserverDAO;
   private final TwitterNotificationAccountDAO notificationAccountDAO;
   private final RetweetsDAO retweetsDAO;
+  private final FoodTruckStopService truckStopService;
 
   @Inject
   public TwitterServiceImpl(TwitterFactoryWrapper twitter, TweetCacheDAO tweetDAO,
@@ -96,7 +98,7 @@ public class TwitterServiceImpl implements TwitterService {
       TruckStopNotifier truckStopNotifier, ConfigurationDAO configDAO,
       EmailNotifier notifier, OffTheRoadDetector offTheRoadDetector, GeoLocator locator,
       TruckObserverDAO truckObserverDAO, TwitterNotificationAccountDAO notificationAccountDAO,
-      RetweetsDAO retweetsDAO) {
+      RetweetsDAO retweetsDAO, FoodTruckStopService truckStopService) {
     this.tweetDAO = tweetDAO;
     this.twitterFactory = twitter;
     this.defaultZone = zone;
@@ -114,6 +116,7 @@ public class TwitterServiceImpl implements TwitterService {
     this.truckObserverDAO = truckObserverDAO;
     this.notificationAccountDAO = notificationAccountDAO;
     this.retweetsDAO = retweetsDAO;
+    this.truckStopService = truckStopService;
   }
 
   @Override @Monitored
@@ -485,14 +488,18 @@ public class TwitterServiceImpl implements TwitterService {
       }
       final OffTheRoadResponse offTheRoadResponse = offTheRoadDetector.offTheRoad(tweet.getText());
       if (offTheRoadResponse.isOffTheRoad()) {
-        try {
-          emailNotifier.systemNotifyOffTheRoad(truck, tweet);
-          if (!truck.isUsingTwittalyzer()) {
-            ignoreTweets(ImmutableList.of(tweet));
+        if (offTheRoadResponse.isConfidenceHigh() && configDAO.find().isAutoOffRoad()) {
+          truckStopService.cancelRemainingStops(truck.getId(), clock.now());
+        } else {
+          try {
+            emailNotifier.systemNotifyOffTheRoad(truck, tweet);
+            if (!truck.isUsingTwittalyzer()) {
+              ignoreTweets(ImmutableList.of(tweet));
+            }
+            return;
+          } catch (Exception e) {
+            log.log(Level.WARNING, e.getMessage(), e);
           }
-          return;
-        } catch (Exception e) {
-          log.log(Level.WARNING, e.getMessage(), e);
         }
       }
     }

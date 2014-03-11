@@ -16,6 +16,9 @@
           <li><label><input name="showPublicTruckGraphs"
                             <c:if test="${config.showPublicTruckGraphs}">checked="checked"</c:if>
                             type="checkbox"/> <span>Show public truck graphs</span></label></li>
+          <li><label><input name="autoOffRoad"
+                            <c:if test="${config.autoOffRoad}">checked="checked"</c:if>
+                            type="checkbox"/> <span>Enable ability to take trucks off road automatically</span></label></li>
         </ul>
       </div>
     </div>

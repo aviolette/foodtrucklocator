@@ -43,6 +43,7 @@ public class ConfigurationDAOAppEngine extends
   private static final String PROP_SEND_NOTIFICATION_WHEN_NO_TRUCKS = "send_when_no_trucks";
   private static final String PROP_FOOD_TRUCK_REQUEST_ON = "food_truck_request_on";
   private static final String PROP_SHOW_PUBLIC_TRUCK_GRAPHS = "show_public_truck_graphs";
+  private static final String PROP_AUTO_OFF_ROAD = "auto_off_road";
 
   @Inject
   public ConfigurationDAOAppEngine(DatastoreServiceProvider provider, DateTimeZone defaultZone) {
@@ -74,6 +75,7 @@ public class ConfigurationDAOAppEngine extends
     entity.setProperty(PROP_SEND_NOTIFICATION_WHEN_NO_TRUCKS, config.isSendNotificationTweetWhenNoTrucks());
     entity.setProperty(PROP_FOOD_TRUCK_REQUEST_ON, config.isFoodTruckRequestOn());
     entity.setProperty(PROP_SHOW_PUBLIC_TRUCK_GRAPHS, config.isShowPublicTruckGraphs());
+    entity.setProperty(PROP_AUTO_OFF_ROAD, config.isAutoOffRoad());
     return entity;
   }
 
@@ -85,6 +87,7 @@ public class ConfigurationDAOAppEngine extends
             .name((String) entity.getProperty(PROP_CENTER_NAME))
             .build();
     return Configuration.builder()
+        .autoOffRoad(getBooleanProperty(entity, PROP_AUTO_OFF_ROAD))
         .showPublicTruckGraphs(getBooleanProperty(entity, PROP_SHOW_PUBLIC_TRUCK_GRAPHS, true))
         .googleGeolocationEnabled((Boolean) entity.getProperty(PROP_GOOGLE_GEOLOCATION_ENABLED))
         .yahooGeolocationEnabled((Boolean) entity.getProperty(PROP_YAHOO_GEOLOCATION_ENABLED))

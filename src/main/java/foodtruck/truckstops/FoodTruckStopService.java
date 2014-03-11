@@ -145,5 +145,13 @@ public interface FoodTruckStopService {
    */
   void offRoad(String truckId, LocalDate localDate);
 
+  /**
+   * Similar to offTheRoad, but only removes stops that start after the current time.  It also caps any stop that is
+   * active at the specified time.
+   * @param truckId
+   * @param after
+   */
+  void cancelRemainingStops(String truckId, DateTime after);
+
   TruckStop findFirstStop(Truck truck);
 }
