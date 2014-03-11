@@ -489,7 +489,10 @@ public class TwitterServiceImpl implements TwitterService {
       final OffTheRoadResponse offTheRoadResponse = offTheRoadDetector.offTheRoad(tweet.getText());
       if (offTheRoadResponse.isOffTheRoad()) {
         if (offTheRoadResponse.isConfidenceHigh() && configDAO.find().isAutoOffRoad()) {
+          log.log(Level.INFO, "Auto canceling stops for truck {0} based on tweet: {1}",
+              new Object[] { truck.getId(), tweet.getText()} );
           truckStopService.cancelRemainingStops(truck.getId(), clock.now());
+          emailNotifier.systemNotifyAutoCanceled(truck, tweet);
         } else {
           try {
             emailNotifier.systemNotifyOffTheRoad(truck, tweet);

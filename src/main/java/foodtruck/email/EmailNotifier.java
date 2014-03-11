@@ -42,4 +42,6 @@ public interface EmailNotifier {
    * Send a notifications to all food trucks of a food truck request.
    */
   boolean notifyFoodTrucksOfRequest(Iterable<String> addresses, FoodTruckRequest request);
+
+  void systemNotifyAutoCanceled(Truck truck, TweetSummary tweet);
 }

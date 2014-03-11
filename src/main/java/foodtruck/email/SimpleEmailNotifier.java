@@ -98,8 +98,8 @@ public class SimpleEmailNotifier implements EmailNotifier {
 
   private StringBuilder buildRequest(FoodTruckRequest request, StringBuilder builder) {
     builder.append(request.getEventName()).append("\n\n");
-    builder.append(dateOnlyFormatter.print(request.getStartTime())).append(" - ");
-    builder.append(dateOnlyFormatter.print(request.getEndTime())).append("\n");
+//    builder.append(dateOnlyFormatter.print(request.getStartTime())).append(" - ");
+//    builder.append(dateOnlyFormatter.print(request.getEndTime())).append("\n");
     builder.append("Requested by: ").append(request.getRequester()).append("\n");
     builder.append("Email: ").append(request.getEmail()).append("\n");
     builder.append("Phone: ").append(request.getPhone()).append("\n");
@@ -123,6 +123,14 @@ public class SimpleEmailNotifier implements EmailNotifier {
     return sendMessage("Food Trucks Needed: " + request.getEventName(), ImmutableSet
         .of(configDAO.find().getNotificationSender()) ,
         buildRequest(request, new StringBuilder()).toString(), addresses, request.getEmail());
+  }
+
+  @Override public void systemNotifyAutoCanceled(Truck truck, TweetSummary tweet) {
+    String msgBody = MessageFormat.format("This tweet might indicate that {0} is off the road:\n" +
+        "\n \"{1}\"\n\n" +
+        "Because it was flagged as high-confidenced, all remaining stops were cancelled",
+        truck.getName(), tweet.getText());
+    sendSystemMessage("Stops auto-canceled for " + truck.getName(), msgBody);
   }
 
   private boolean sendMessage(String subject, Iterable<String> receivers, String msgBody, Iterable<String> bccs,
