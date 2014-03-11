@@ -75,6 +75,7 @@ public class DailyScheduleWriter implements MessageBodyWriter<DailySchedule>, JS
        JSONObject truckStop = new JSONObject()
           .put("location", locations.get(stop.getLocation()))
           .put("truckId", stop.getTruck().getId())
+          .put("confidence", stop.getConfidence())
           .put("startTime", formatter.print(stop.getStartTime()))
           .put("startMillis", stop.getStartTime().getMillis())
           .put("endMillis", stop.getEndTime().getMillis())

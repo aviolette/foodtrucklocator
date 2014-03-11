@@ -1,6 +1,7 @@
 package foodtruck.dao.appengine;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTimeZone;
@@ -8,6 +9,7 @@ import org.joda.time.DateTimeZone;
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.model.Configuration;
 import foodtruck.model.Location;
+import foodtruck.schedule.Confidence;
 import static foodtruck.dao.appengine.Attributes.getBooleanProperty;
 import static foodtruck.dao.appengine.Attributes.getListProperty;
 import static foodtruck.dao.appengine.Attributes.getStringProperty;
@@ -44,6 +46,7 @@ public class ConfigurationDAOAppEngine extends
   private static final String PROP_FOOD_TRUCK_REQUEST_ON = "food_truck_request_on";
   private static final String PROP_SHOW_PUBLIC_TRUCK_GRAPHS = "show_public_truck_graphs";
   private static final String PROP_AUTO_OFF_ROAD = "auto_off_road";
+  private static final String MINIMUM_CONFIDENCE_FOR_DISPLAY = "minimum_display_confidence";
 
   @Inject
   public ConfigurationDAOAppEngine(DatastoreServiceProvider provider, DateTimeZone defaultZone) {
@@ -76,6 +79,7 @@ public class ConfigurationDAOAppEngine extends
     entity.setProperty(PROP_FOOD_TRUCK_REQUEST_ON, config.isFoodTruckRequestOn());
     entity.setProperty(PROP_SHOW_PUBLIC_TRUCK_GRAPHS, config.isShowPublicTruckGraphs());
     entity.setProperty(PROP_AUTO_OFF_ROAD, config.isAutoOffRoad());
+    entity.setProperty(MINIMUM_CONFIDENCE_FOR_DISPLAY, config.getMinimumConfidenceForDisplay().toString());
     return entity;
   }
 
@@ -86,7 +90,10 @@ public class ConfigurationDAOAppEngine extends
             .lng(Attributes.getDoubleProperty(entity, PROP_CENTER_LONGITUDE, -87.6293867))
             .name((String) entity.getProperty(PROP_CENTER_NAME))
             .build();
+    String minimumDisplayConfidence = getStringProperty(entity, MINIMUM_CONFIDENCE_FOR_DISPLAY);
+    Confidence confidence = Strings.isNullOrEmpty(minimumDisplayConfidence) ? Confidence.HIGH : Confidence.valueOf(minimumDisplayConfidence);
     return Configuration.builder()
+        .minimumConfidenceForDisplay(confidence)
         .autoOffRoad(getBooleanProperty(entity, PROP_AUTO_OFF_ROAD))
         .showPublicTruckGraphs(getBooleanProperty(entity, PROP_SHOW_PUBLIC_TRUCK_GRAPHS, true))
         .googleGeolocationEnabled((Boolean) entity.getProperty(PROP_GOOGLE_GEOLOCATION_ENABLED))

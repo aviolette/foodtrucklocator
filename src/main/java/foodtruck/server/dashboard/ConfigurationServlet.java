@@ -18,6 +18,7 @@ import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Configuration;
 import foodtruck.model.Location;
+import foodtruck.schedule.Confidence;
 
 /**
  * @author aviolette@gmail.com
@@ -52,6 +53,7 @@ public class ConfigurationServlet extends HttpServlet {
     Location mapCenter = geoLocator.locate(req.getParameter("mapCenter"), GeolocationGranularity.NARROW);
     // TODO: handle null map center
     config = Configuration.builder(config)
+        .minimumConfidenceForDisplay(Confidence.valueOf(req.getParameter("minimumConfidenceForDisplay")))
         .autoOffRoad("on".equals(req.getParameter("autoOffRoad")))
         .showPublicTruckGraphs("on".equals(req.getParameter("showPublicTruckGraphs")))
         .foodTruckRequestOn("on".equals(req.getParameter("foodTruckRequestOn")))

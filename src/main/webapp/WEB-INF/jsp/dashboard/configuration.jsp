@@ -7,6 +7,14 @@
       <label for="mapCenter">Map Center</label>
       <input class="span6" type="text" value="${config.center.name}" name="mapCenter" id="mapCenter"/>
     </div>
+    <div class="clearfix">
+      <label>
+        Minimum display confidence <select name="minimumConfidenceForDisplay">
+        <option value="HIGH" <c:if test="${config.minimumConfidenceForDisplay == 'HIGH'}">selected</c:if>>High</option>
+        <option value="MEDIUM" <c:if test="${config.minimumConfidenceForDisplay == 'MEDIUM'}">selected</c:if>>Medium</option>
+        <option value="LOW" <c:if test="${config.minimumConfidenceForDisplay == 'LOW'}">selected</c:if>>Low</option></select>
+      </label>
+    </div>
     <div>
       <div class="input">
         <ul class="unstyled">

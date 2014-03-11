@@ -9,6 +9,8 @@ import com.google.common.base.Objects;
 
 import org.joda.time.DateTime;
 
+import foodtruck.schedule.Confidence;
+
 
 /**
  * Specifies an truck at a location at a date and time.
@@ -23,6 +25,7 @@ public class TruckStop extends ModelEntity {
   private final boolean locked;
   private final @Nullable DateTime lastUpdated;
   private final @Nullable DateTime fromBeacon;
+  private final Confidence matchConfidence;
 
   private static final Logger log = Logger.getLogger(TruckStop.class.getName());
   private TruckStop(Builder builder) {
@@ -34,6 +37,11 @@ public class TruckStop extends ModelEntity {
     locked = builder.locked;
     fromBeacon = builder.fromBeacon;
     lastUpdated = builder.lastUpdated;
+    matchConfidence = builder.matchConfidence;
+  }
+
+  public Confidence getConfidence() {
+    return matchConfidence;
   }
 
   public boolean isLocked() {
@@ -162,6 +170,7 @@ public class TruckStop extends ModelEntity {
     private @Nullable DateTime fromBeacon;
     private @Nullable Long key;
     private @Nullable DateTime lastUpdated;
+    public Confidence matchConfidence = Confidence.HIGH;
 
     private Builder() {}
 
@@ -174,6 +183,11 @@ public class TruckStop extends ModelEntity {
       fromBeacon = stop.getBeaconTime();
       key = (Long) stop.getKey();
       lastUpdated = stop.getLastUpdated();
+    }
+
+    public Builder confidence(Confidence matchConfidence) {
+      this.matchConfidence = matchConfidence;
+      return this;
     }
 
     public Builder key(@Nullable Long key) {

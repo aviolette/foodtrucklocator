@@ -10,6 +10,8 @@ import com.google.common.collect.ImmutableList;
 
 import org.joda.time.DateTime;
 
+import foodtruck.schedule.Confidence;
+
 /**
  * @author aviolette@gmail.com
  * @since 4/10/12
@@ -37,6 +39,7 @@ public class Configuration extends ModelEntity {
   private boolean foodTruckRequestOn;
   private boolean showPublicTruckGraphs;
   private boolean autoOffRoad;
+  private Confidence minimumConfidenceForDisplay;
 
   public Configuration(Object key) {
     super(key);
@@ -66,6 +69,15 @@ public class Configuration extends ModelEntity {
     this.foodTruckRequestOn = builder.foodTruckRequestOn;
     this.showPublicTruckGraphs = builder.showPublicTruckGraphs;
     this.autoOffRoad = builder.autoOffRoad;
+    this.minimumConfidenceForDisplay = builder.minimumConfidenceForDisplay;
+  }
+
+  public Confidence getMinimumConfidenceForDisplay() {
+    return minimumConfidenceForDisplay;
+  }
+
+  public String getDisplayConfidenceMinimum() {
+    return minimumConfidenceForDisplay.toString();
   }
 
   public boolean isAutoOffRoad() {
@@ -196,6 +208,7 @@ public class Configuration extends ModelEntity {
     public boolean foodTruckRequestOn = true;
     public boolean showPublicTruckGraphs = true;
     public boolean autoOffRoad;
+    public Confidence minimumConfidenceForDisplay = Confidence.HIGH;
 
     public Builder() {
     }
@@ -340,6 +353,11 @@ public class Configuration extends ModelEntity {
 
     public Builder retweetStopCreatingTweets(boolean retweet) {
       this.retweetStopCreatingTweets = retweet;
+      return this;
+    }
+
+    public Builder minimumConfidenceForDisplay(Confidence confidence) {
+      this.minimumConfidenceForDisplay = confidence;
       return this;
     }
   }

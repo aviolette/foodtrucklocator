@@ -27,6 +27,7 @@ public class TruckStopWriter implements JSONWriter<TruckStop> {
     return new JSONObject()
         .put("location", locationWriter.asJSON(stop.getLocation()))
         .put("truckId", stop.getTruck().getId())
+        .put("confidence", stop.getConfidence())
         .put("fromBeacon", stop.isFromBeacon())
         .put("startTime", formatter.print(stop.getStartTime()))
         .put("startMillis", stop.getStartTime().getMillis())
