@@ -384,7 +384,7 @@ public class TwitterServiceImpl implements TwitterService {
             matchedStop = matchBuilder.endTime(stopEnd).build();
           } else {
             if (!matchedStart.equals(stopStart)) {
-              matchBuilder.appendNote("Changed start time to " + timeFormatter.print(stopStart));
+              matchBuilder.appendNote("Changed end time to " + timeFormatter.print(stopStart));
             }
             matchedStop = matchBuilder.endTime(stopStart).build();
           }
