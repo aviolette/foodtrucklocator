@@ -1,5 +1,6 @@
 package foodtruck.dao.appengine;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -37,6 +38,7 @@ import foodtruck.schedule.Confidence;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static foodtruck.dao.appengine.Attributes.getDateTime;
 import static foodtruck.dao.appengine.Attributes.getDoubleProperty;
+import static foodtruck.dao.appengine.Attributes.getListProperty;
 import static foodtruck.dao.appengine.Attributes.getStringProperty;
 
 /**
@@ -60,6 +62,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
   private static final String BEACON_FIELD = "beaconTime";
   private static final String LAST_UPDATED = "last_updated";
   private static final String MATCH_CONFIDENCE = "match_confidence";
+  private static final String NOTES = "notes";
 
   private final DatastoreServiceProvider serviceProvider;
   private final DateTimeZone zone;
@@ -102,6 +105,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
       final String truckId = getStringProperty(entity, TRUCK_ID_FIELD);
       final Boolean locked = (Boolean) entity.getProperty(LOCKED_FIELD);
       final String confidence = getStringProperty(entity, MATCH_CONFIDENCE);
+      Collection<String> notes = getListProperty(entity, NOTES);
       try {
         stops.add(
             TruckStop.builder()
@@ -109,6 +113,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
                 .startTime(startTime)
                 .confidence(Strings.isNullOrEmpty(confidence) ? Confidence.HIGH : Confidence.valueOf(confidence))
                 .endTime(endTime)
+                .notes(notes == null ? ImmutableList.<String>of() : ImmutableList.copyOf(notes))
                 .lastUpdated(getDateTime(entity, LAST_UPDATED, zone))
                 .location(
                     Location.builder()
@@ -149,6 +154,7 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
     truckStop.setProperty(URL_FIELD, stop.getLocation().getUrl());
     truckStop.setProperty(LOCKED_FIELD, stop.isLocked());
     truckStop.setProperty(MATCH_CONFIDENCE, stop.getConfidence().toString());
+    truckStop.setProperty(NOTES, stop.getNotes());
     Attributes.setDateProperty(BEACON_FIELD, truckStop, stop.getBeaconTime());
     Attributes.setDateProperty(LAST_UPDATED, truckStop, stop.getLastUpdated());
     truckStop.setProperty(END_TIMESTAMP, stop.getEndTime().getMillis());
@@ -189,9 +195,12 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
     final DateTime endTime = new DateTime(entity.getProperty(END_TIME_FIELD), zone);
     Boolean locked = (Boolean) entity.getProperty(LOCKED_FIELD);
     final String confidence = getStringProperty(entity, MATCH_CONFIDENCE);
+    Collection<String> notes = getListProperty(entity, NOTES);
+
     return TruckStop.builder()
         .truck(truckDAO.findById((String) entity.getProperty(TRUCK_ID_FIELD)))
         .startTime(startTime)
+        .notes(notes == null ? ImmutableList.<String>of() : ImmutableList.copyOf(notes))
         .endTime(endTime)
         .confidence(Strings.isNullOrEmpty(confidence) ? Confidence.HIGH : Confidence.valueOf(confidence))
         .lastUpdated(Attributes.getDateTime(entity, LAST_UPDATED, zone))

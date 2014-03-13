@@ -1,11 +1,14 @@
 package foodtruck.model;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 import org.joda.time.DateTime;
 
@@ -26,6 +29,7 @@ public class TruckStop extends ModelEntity {
   private final @Nullable DateTime lastUpdated;
   private final @Nullable DateTime fromBeacon;
   private final Confidence matchConfidence;
+  private final List<String> notes;
 
   private static final Logger log = Logger.getLogger(TruckStop.class.getName());
   private TruckStop(Builder builder) {
@@ -38,6 +42,11 @@ public class TruckStop extends ModelEntity {
     fromBeacon = builder.fromBeacon;
     lastUpdated = builder.lastUpdated;
     matchConfidence = builder.matchConfidence;
+    notes = ImmutableList.copyOf(builder.notes);
+  }
+
+  public List<String> getNotes() {
+    return notes;
   }
 
   public Confidence getConfidence() {
@@ -170,8 +179,8 @@ public class TruckStop extends ModelEntity {
     private @Nullable DateTime fromBeacon;
     private @Nullable Long key;
     private @Nullable DateTime lastUpdated;
-    public Confidence matchConfidence = Confidence.HIGH;
-
+    private Confidence matchConfidence = Confidence.HIGH;
+    private List<String> notes = Lists.newLinkedList();
     private Builder() {}
 
     private Builder(TruckStop stop) {
@@ -183,6 +192,17 @@ public class TruckStop extends ModelEntity {
       fromBeacon = stop.getBeaconTime();
       key = (Long) stop.getKey();
       lastUpdated = stop.getLastUpdated();
+      notes = Lists.newLinkedList(stop.getNotes());
+    }
+
+    public Builder notes(List<String> notes) {
+      this.notes = Lists.newLinkedList(notes);
+      return this;
+    }
+
+    public Builder appendNote(String note) {
+      this.notes.add(note);
+      return this;
     }
 
     public Builder confidence(Confidence matchConfidence) {

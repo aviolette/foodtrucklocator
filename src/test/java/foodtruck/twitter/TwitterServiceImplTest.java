@@ -107,7 +107,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
         truckStopDAO,
         clock, terminationDetector, new LocalCacheUpdater(), truckDAO,
         new LoggingTruckStopNotifier(), configDAO, emailNotifier, offTheRoadDetector, locator, truckObserverDAO,
-        notificationDAO, retweetDAO, null);
+        notificationDAO, retweetDAO, null, null);
     loca = Location.builder().lat(1).lng(2).name("a").build();
     locb = Location.builder().lat(3).lng(4).name("b").build();
     basicTweet = new TweetSummary.Builder().time(now.minusHours(2)).text(

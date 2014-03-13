@@ -84,6 +84,15 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   }
 
   @Override public void update(TruckStop truckStop) {
+    if (truckStop.isNew()) {
+      truckStop = TruckStop.builder(truckStop)
+          .notes(ImmutableList.of("Entered manually at " + clock.nowFormattedAsTime())).build();
+    } else {
+      TruckStop stop = truckStopDAO.findById((Long) truckStop.getKey());
+      truckStop = TruckStop.builder(truckStop)
+          .notes(stop.getNotes())
+          .appendNote("Changed manually at " + clock.nowFormattedAsTime()).build();
+    }
     truckStopDAO.save(truckStop);
   }
 

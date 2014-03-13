@@ -6,5 +6,17 @@ package foodtruck.schedule;
  * @since 9/19/11
  */
 public enum Confidence {
-  LOW, MEDIUM, HIGH
+  LOW {
+    @Override public Confidence up() {
+      return MEDIUM;
+    }
+  }, MEDIUM {
+    @Override public Confidence up() {
+      return HIGH;
+    }
+  }, HIGH;
+
+  public Confidence up() {
+    return this;
+  }
 }

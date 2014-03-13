@@ -28,6 +28,7 @@ import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.RetweetsDAO;
@@ -54,6 +55,7 @@ import foodtruck.schedule.TruckStopMatcher;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.truckstops.TruckStopNotifier;
 import foodtruck.util.Clock;
+import foodtruck.util.TimeOnlyFormatter;
 import twitter4j.GeoLocation;
 import twitter4j.Paging;
 import twitter4j.Status;
@@ -89,6 +91,7 @@ public class TwitterServiceImpl implements TwitterService {
   private final TwitterNotificationAccountDAO notificationAccountDAO;
   private final RetweetsDAO retweetsDAO;
   private final FoodTruckStopService truckStopService;
+  private final DateTimeFormatter timeFormatter;
 
   @Inject
   public TwitterServiceImpl(TwitterFactoryWrapper twitter, TweetCacheDAO tweetDAO,
@@ -98,7 +101,8 @@ public class TwitterServiceImpl implements TwitterService {
       TruckStopNotifier truckStopNotifier, ConfigurationDAO configDAO,
       EmailNotifier notifier, OffTheRoadDetector offTheRoadDetector, GeoLocator locator,
       TruckObserverDAO truckObserverDAO, TwitterNotificationAccountDAO notificationAccountDAO,
-      RetweetsDAO retweetsDAO, FoodTruckStopService truckStopService) {
+      RetweetsDAO retweetsDAO, FoodTruckStopService truckStopService,
+      @TimeOnlyFormatter DateTimeFormatter timeFormatter) {
     this.tweetDAO = tweetDAO;
     this.twitterFactory = twitter;
     this.defaultZone = zone;
@@ -117,6 +121,7 @@ public class TwitterServiceImpl implements TwitterService {
     this.notificationAccountDAO = notificationAccountDAO;
     this.retweetsDAO = retweetsDAO;
     this.truckStopService = truckStopService;
+    this.timeFormatter = timeFormatter;
   }
 
   @Override @Monitored
@@ -262,7 +267,11 @@ public class TwitterServiceImpl implements TwitterService {
             List<TruckStop> trucks = truckStopDAO.findDuring(truck.getId(), today);
             if (trucks.isEmpty()) {
               truckStops.add(
-                  TruckStop.builder().truck(truck).startTime(now).endTime(now.plusHours(2)).location(uofc).build());
+                  TruckStop.builder().truck(truck).startTime(now).endTime(now.plusHours(2)).location(uofc)
+                      .appendNote("Added by @" + observer.getTwitterHandle() + " at " +
+                          clock.nowFormattedAsTime()
+                          + " from tweet '" + tweet.getText() + "'")
+                      .build());
               trucksAdded.put(truck, tweet);
             }
           }
@@ -340,6 +349,7 @@ public class TwitterServiceImpl implements TwitterService {
         deleteStops.add(stop);
         if (locationsSame) {
           if (match.isSoftEnding()) {
+            matchBuilder.appendNote("Changed end time to " + timeFormatter.print(stopEnd));
             matchBuilder.endTime(stopEnd);
             if (clock.now().isAfter(stopStart)) {
               matchBuilder.startTime(stopStart);

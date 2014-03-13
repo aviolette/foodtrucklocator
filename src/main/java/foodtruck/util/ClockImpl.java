@@ -6,6 +6,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.model.DayOfWeek;
 
@@ -15,10 +16,11 @@ import foodtruck.model.DayOfWeek;
  */
 public class ClockImpl implements Clock {
   private final DateTimeZone zone;
-
+  private final DateTimeFormatter timeFormatter;
   @Inject
-  public ClockImpl(DateTimeZone zone) {
+  public ClockImpl(DateTimeZone zone, @TimeOnlyFormatter DateTimeFormatter timeFormatter) {
     this.zone = zone;
+    this.timeFormatter = timeFormatter;
   }
 
   @Override
@@ -62,5 +64,9 @@ public class ClockImpl implements Clock {
 
   @Override public DateTimeZone zone() {
     return zone;
+  }
+
+  @Override public String nowFormattedAsTime() {
+    return timeFormatter.print(now());
   }
 }

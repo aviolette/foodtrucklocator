@@ -257,11 +257,25 @@ var FoodTruckLocator = function () {
         $location.append($div);
         $items.append($location);
       }
+      var toolTipId = "tooltip-" + idx,
+          tooltipHtml = '';
+      if (stop.stop.notes && stop.stop.notes.length > 0) {
+        tooltipHtml = " <a id='" + toolTipId + "' href='#' data-container='body' data-toggle='popover' " +
+        "data-placement='left' data-content=''><span class='glyphicon glyphicon-question-sign'></span></a>";
+      }
+
       $div.append($("<div class='media'><a class='pull-left truckLink' truck-id='" + stop.truck.id
           +"' href='#'><img class='media-object' src='"
           + stop.truck.iconUrl +"'/></a><div class='media-body'><strong>" + stop.truck.name + "</strong><div>"
           + buildTimeRange(stop.stop, now)
-          +"</div></div></div>"));
+          +"</div><div>Confidence: " + stop.stop.confidence + tooltipHtml +"</div>"
+          + "</div></div>"));
+      if (stop.stop.notes && stop.stop.notes.length > 0) {
+        $("#"+ toolTipId).click(function(e) {
+          e.preventDefault();
+          $(e.target).popover({"html": true, "content" :  "<div class='small'>" + stop.stop.notes.join("<br/><br/>") + "</div>"});
+        });
+      }
     });
     $("a.truckLink").each(function (idx, item) {
       var $item = $(item), truckId = $item.attr("truck-id");

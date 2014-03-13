@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
@@ -121,13 +122,21 @@ public class TruckStopMatcher {
           tweetText);
       return null;
     }
+    final String lowerCaseTweet = tweetText.toLowerCase();
+    Confidence confidence = Confidence.LOW;
+    List<String> notes = Lists.newLinkedList();
     // Some trucks, like Starfruit Cafe have configurable expressions (e.g. #KefirTruck) that
     // should be present in order to do a match
+    notes.add(String.format("Adding stop based on tweet: '%s'", tweetText));
     if (verifyMatchOnlyExpression(truck, tweetText)) {
       log.log(Level.INFO, "Didn't match '{0}' because it didn't contain match-only expression",
           tweetText);
       return null;
+    } else if (truck.getMatchOnlyIf() != null || lowerCaseTweet.contains("#ftf")) {
+      confidence = confidence.up();
+      notes.add("Presense of #ftf in tweet increased confidence.");
     }
+
     Location location = extractLocation(tweet, truck);
     if (location == null || location.distanceFrom(getMapCenter()) > 50.0d) {
       return null;
@@ -135,7 +144,6 @@ public class TruckStopMatcher {
     DateTime startTime = null;
     final boolean morning = isMorning(tweet.getTime());
     // TODO: this signals a schedule being tweeted, for now we can't handle that
-    final String lowerCaseTweet = tweetText.toLowerCase();
     if (lowerCaseTweet.contains("stops") ||
         (morning && (lowerCaseTweet.contains("schedule"))) || containsAbbreviatedSchedule(tweetText)) {
       return null;
@@ -159,6 +167,8 @@ public class TruckStopMatcher {
           startTime.getHourOfDay() > 12 && endTime.getHourOfDay() < 12) {
           startTime = startTime.minusHours(12);
       }
+      notes.add("Presence of time range in tweet increased confidence.");
+      confidence = confidence.up();
     }
     // This is detecting something in the format: We will be at Merchandise mart at 11:00.
     if (startTime == null) {
@@ -172,11 +182,13 @@ public class TruckStopMatcher {
           }
           endTime = startTime.plusHours(stopTime(truck));
         }
+        confidence = confidence.up();
         // This is a special case, since matching ranges like that will produce a lot of
         // false positives, but 11-1 is commonly used for lunch hour
       } else if (tweetText.contains("11-1")) {
         startTime = clock.currentDay().toDateTime(new LocalTime(11, 0), clock.zone());
         endTime = clock.currentDay().toDateTime(new LocalTime(13, 0), clock.zone());
+        confidence = confidence.up();
       } else if (tweetText.contains("11a") && truck.getCategories().contains("Lunch")) {
         startTime = clock.currentDay().toDateTime(new LocalTime(11, 0), clock.zone());
         endTime = clock.currentDay().toDateTime(new LocalTime(13, 0), clock.zone());
@@ -189,6 +201,9 @@ public class TruckStopMatcher {
       } else {
         startTime = tweet.getTime().withTime(11, 30, 0, 0);
         endTime = null;
+      }
+      if (!morning && truck.getCategories().contains("Dessert")) {
+        confidence = confidence.up();
       }
     }
     TruckStopMatch.Builder matchBuilder = TruckStopMatch.builder();
@@ -206,8 +221,10 @@ public class TruckStopMatcher {
       }
     }
     return matchBuilder
-        .stop(TruckStop.builder().truck(truck).startTime(startTime).endTime(endTime).location(location).build())
+        .stop(TruckStop.builder().confidence(confidence)
+            .truck(truck).startTime(startTime).endTime(endTime).location(location).build())
         .text(tweetText)
+        .confidence(confidence)
         .tweetId(tweet.getId())
         .terminated(terminationTime != null)
         .build();

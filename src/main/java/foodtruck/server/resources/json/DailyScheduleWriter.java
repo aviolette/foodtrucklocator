@@ -79,7 +79,8 @@ public class DailyScheduleWriter implements MessageBodyWriter<DailySchedule>, JS
           .put("startTime", formatter.print(stop.getStartTime()))
           .put("startMillis", stop.getStartTime().getMillis())
           .put("endMillis", stop.getEndTime().getMillis())
-          .putOpt("fromBeacon", stop.isFromBeacon())
+          .put("notes", new JSONArray(stop.getNotes()))
+//          .putOpt("fromBeacon", stop.isFromBeacon())
           .put("endTime", formatter.print(stop.getEndTime()));
       schedules.put(truckStop);
     }

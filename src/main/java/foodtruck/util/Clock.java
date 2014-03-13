@@ -45,4 +45,10 @@ public interface Clock {
    * @return the time zone
    */
   DateTimeZone zone();
+
+  /**
+   * Returns the current time formatted as a string (w/o a date)
+   * @return
+   */
+  String nowFormattedAsTime();
 }

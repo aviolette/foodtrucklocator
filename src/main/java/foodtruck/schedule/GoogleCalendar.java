@@ -26,6 +26,7 @@ import com.google.inject.Inject;
 
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
+import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.geolocation.GeoLocator;
@@ -34,6 +35,8 @@ import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.monitoring.Monitored;
+import foodtruck.util.Clock;
+import foodtruck.util.FriendlyDateOnlyFormat;
 import static foodtruck.schedule.TimeUtils.toJoda;
 
 /**
@@ -50,17 +53,22 @@ public class GoogleCalendar implements ScheduleStrategy {
   private final GeoLocator geolocator;
   private final TruckDAO truckDAO;
   private final AddressExtractor addressExtractor;
+  private final DateTimeFormatter formatter;
+  private final Clock clock;
 
   @Inject
   public GoogleCalendar(CalendarService calendarService,
       CalendarQueryFactory queryFactory, DateTimeZone defaultZone, GeoLocator geolocator,
-      TruckDAO truckDAO, AddressExtractor addressExtractor) {
+      TruckDAO truckDAO, AddressExtractor addressExtractor, @FriendlyDateOnlyFormat DateTimeFormatter formatter,
+      Clock clock) {
     this.calendarService = calendarService;
     this.queryFactory = queryFactory;
     this.defaultZone = defaultZone;
     this.geolocator = geolocator;
     this.truckDAO = truckDAO;
     this.addressExtractor = addressExtractor;
+    this.formatter = formatter;
+    this.clock = clock;
   }
 
   // TODO: rewrite this...its awfully crappy
@@ -154,8 +162,12 @@ public class GoogleCalendar implements ScheduleStrategy {
           }
         }
         if (location != null && location.isResolved()) {
+          final String entered = enteredOn(entry);
+          String note = customCalendar ? "Stop added from vendor's calendar" :
+              "Entered manually " + (entered == null ? "" : "on ") + entered;
           final TruckStop truckStop = TruckStop.builder().truck(truck)
               .location(location)
+              .appendNote(note)
               .startTime(toJoda(time.getStartTime(), defaultZone))
               .endTime(toJoda(time.getEndTime(), defaultZone)).build();
           log.log(Level.INFO, "Loaded truckstop: {0}", truckStop);
@@ -172,6 +184,15 @@ public class GoogleCalendar implements ScheduleStrategy {
       throw new RuntimeException(e);
     }
     return builder.build();
+  }
+
+  private @Nullable String enteredOn(CalendarEventEntry entry) {
+    try {
+      return formatter.print(entry.getUpdated().getValue());
+    } catch (Exception e) {
+      log.log(Level.WARNING, e.getMessage(), e);
+      return clock.nowFormattedAsTime();
+    }
   }
 
   // TODO: make this generic and pull it out
