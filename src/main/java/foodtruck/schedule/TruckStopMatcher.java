@@ -180,18 +180,22 @@ public class TruckStopMatcher {
           if (startTime.getHourOfDay() == 0) {
             startTime = startTime.withHourOfDay(12);
           }
+          notes.add("Presence of start time in tweet increased confidence.");
+          confidence = confidence.up();
           endTime = startTime.plusHours(stopTime(truck));
         }
-        confidence = confidence.up();
         // This is a special case, since matching ranges like that will produce a lot of
         // false positives, but 11-1 is commonly used for lunch hour
       } else if (tweetText.contains("11-1")) {
         startTime = clock.currentDay().toDateTime(new LocalTime(11, 0), clock.zone());
         endTime = clock.currentDay().toDateTime(new LocalTime(13, 0), clock.zone());
+        notes.add("Presence of start time in tweet increased confidence.");
         confidence = confidence.up();
       } else if (tweetText.contains("11a") && truck.getCategories().contains("Lunch")) {
         startTime = clock.currentDay().toDateTime(new LocalTime(11, 0), clock.zone());
         endTime = clock.currentDay().toDateTime(new LocalTime(13, 0), clock.zone());
+        notes.add("Presence of start time in tweet increased confidence.");
+        confidence = confidence.up();
       }
     }
     if (startTime == null) {
@@ -208,7 +212,12 @@ public class TruckStopMatcher {
     }
     TruckStopMatch.Builder matchBuilder = TruckStopMatch.builder();
     if (endTime == null) {
-      endTime = terminationTime == null ? parseEndTime(tweetText, startTime) : terminationTime;
+      final DateTime parsedEndTime = parseEndTime(tweetText, startTime);
+      if (parsedEndTime != null) {
+        notes.add("Presence of end time in tweet increased confidence.");
+        confidence = confidence.up();
+      }
+      endTime = terminationTime == null ? parsedEndTime : terminationTime;
     }
     if (endTime == null) {
       matchBuilder.softEnding(true);
@@ -222,6 +231,7 @@ public class TruckStopMatcher {
     }
     return matchBuilder
         .stop(TruckStop.builder().confidence(confidence)
+            .notes(notes)
             .truck(truck).startTime(startTime).endTime(endTime).location(location).build())
         .text(tweetText)
         .confidence(confidence)
