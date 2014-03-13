@@ -349,17 +349,23 @@ public class TwitterServiceImpl implements TwitterService {
         deleteStops.add(stop);
         if (locationsSame) {
           if (match.isSoftEnding()) {
-            matchBuilder.appendNote("Changed end time to " + timeFormatter.print(stopEnd));
-            matchBuilder.endTime(stopEnd);
-            if (clock.now().isAfter(stopStart)) {
+            if (!stopEnd.equals(matchedStop.getEndTime())) {
+              matchBuilder.appendNote("Changed end time to " + timeFormatter.print(stopEnd));
+              matchBuilder.endTime(stopEnd);
+            }
+            if (clock.now().isAfter(stopStart) && !stopStart.equals(matchedStart)) {
+              matchBuilder.appendNote("Changed start time to " + timeFormatter.print(stopStart));
               matchBuilder.startTime(stopStart);
             }
             matchedStop = matchBuilder.build();
           } else {
+            if (!stopStart.equals(matchedStart)) {
+              matchBuilder.appendNote("Changing start time to " + timeFormatter.print(stopStart));
+            }
             matchedStop = matchBuilder.startTime(stopStart).build();
           }
         } else {
-          addStops.add(stop.withEndTime(matchedStart));
+          addStops.add(TruckStop.builder(stop).endTime(matchedStart).appendNote(String.format("Truncated stop based on tweet: '%s'", match.getText())).build());
         }
       } else {
         final DateTime matchedEnd = matchedStop.getEndTime();
@@ -372,8 +378,14 @@ public class TwitterServiceImpl implements TwitterService {
               (stopStart.getHourOfDay() == 11
                   && stopStart.getMinuteOfHour() == 30)) {
             deleteStops.add(stop);
+            if (!matchedEnd.equals(stopEnd)) {
+              matchBuilder.appendNote("Changed end time to " + timeFormatter.print(stopEnd));
+            }
             matchedStop = matchBuilder.endTime(stopEnd).build();
           } else {
+            if (!matchedStart.equals(stopStart)) {
+              matchBuilder.appendNote("Changed start time to " + timeFormatter.print(stopStart));
+            }
             matchedStop = matchBuilder.endTime(stopStart).build();
           }
         } else if ((stopStart.equals(matchedStart) ||
@@ -385,6 +397,9 @@ public class TwitterServiceImpl implements TwitterService {
             break;
           }
           deleteStops.add(stop);
+          if (!matchedStart.equals(stopStart)) {
+            matchBuilder.appendNote("Changed start time to " + timeFormatter.print(stopStart));
+          }
           matchedStop = matchBuilder.startTime(stopStart).build();
         }
       }
