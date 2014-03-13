@@ -165,8 +165,10 @@ public class GoogleCalendar implements ScheduleStrategy {
           final String entered = enteredOn(entry);
           String note = customCalendar ? "Stop added from vendor's calendar" :
               "Entered manually " + (entered == null ? "" : "on ") + entered;
+          Confidence confidence = customCalendar ? Confidence.HIGH : Confidence.MEDIUM;
           final TruckStop truckStop = TruckStop.builder().truck(truck)
               .location(location)
+              .confidence(confidence)
               .appendNote(note)
               .startTime(toJoda(time.getStartTime(), defaultZone))
               .endTime(toJoda(time.getEndTime(), defaultZone)).build();
