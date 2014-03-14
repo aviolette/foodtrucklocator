@@ -88,7 +88,7 @@ public class TrucksServlet extends FrontPageServlet {
 
   private List<DailySchedule> getSchedules(Truck truck, LocalDate firstDay) {
     return stops.findSchedules(truck.getId(), new Interval(firstDay.toDateTimeAtStartOfDay(zone),
-        firstDay.toDateTimeAtStartOfDay(zone).plusDays(7)));
+        firstDay.toDateTimeAtStartOfDay(zone).plusDays(8)));
   }
 
   private Iterable<String> daysOfWeek(LocalDate firstDay) {
