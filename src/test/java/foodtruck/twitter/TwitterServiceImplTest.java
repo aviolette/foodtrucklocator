@@ -11,6 +11,8 @@ import org.easymock.EasyMockSupport;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -103,11 +105,13 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     truckObserverDAO = createMock(TruckObserverDAO.class);
     notificationDAO = createMock(TwitterNotificationAccountDAO.class);
     expect(notificationDAO.findAll()).andStubReturn(ImmutableList.<TwitterNotificationAccount>of());
+    DateTimeFormatter timeFormatter = DateTimeFormat.longTime();
+    expect(clock.nowFormattedAsTime()).andStubReturn(timeFormatter.print(now));
     service = new TwitterServiceImpl(twitterFactory, tweetDAO, zone, matcher,
         truckStopDAO,
         clock, terminationDetector, new LocalCacheUpdater(), truckDAO,
         new LoggingTruckStopNotifier(), configDAO, emailNotifier, offTheRoadDetector, locator, truckObserverDAO,
-        notificationDAO, retweetDAO, null, null);
+        notificationDAO, retweetDAO, null, timeFormatter);
     loca = Location.builder().lat(1).lng(2).name("a").build();
     locb = Location.builder().lat(3).lng(4).name("b").build();
     basicTweet = new TweetSummary.Builder().time(now.minusHours(2)).text(

@@ -66,7 +66,7 @@ public class TruckStopMatcher {
       DateTimeZone defaultZone, Clock clock, ConfigurationDAO configDAO, EmailNotifier notifier) {
     this.addressExtractor = extractor;
     this.geoLocator = geoLocator;
-    this.atTimePattern = Pattern.compile("\\b(be at|ETA|arrive at|there at) (" + TIME_PATTERN_STRICT + ")");
+    this.atTimePattern = Pattern.compile("\\b(be at|ETA|open at|opening at|opens at|arrive at|there at) (" + TIME_PATTERN_STRICT + ")");
     this.endTimePattern = Pattern.compile("\\b(close at|until|til|till) (" + TIME_PATTERN + ")");
     this.timeRangePattern = Pattern.compile(TIME_RANGE_PATTERN);
     this.configDAO = configDAO;
