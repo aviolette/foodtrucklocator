@@ -16,6 +16,14 @@
     #listContainer {
       overflow-y: auto !important;
     }
+    .tooltip-inner {
+      text-align: left;
+      padding: 10px 0 10px 10px;
+    }
+    .tooltip-inner ul {
+      padding-left:10px;
+      margin:0;
+    }
   </style>
 </head>
 <body>

@@ -260,8 +260,8 @@ var FoodTruckLocator = function () {
       var toolTipId = "tooltip-" + idx,
           tooltipHtml = '';
       if (stop.stop.notes && stop.stop.notes.length > 0) {
-        tooltipHtml = " <a id='" + toolTipId + "' href='#' data-container='body' data-toggle='popover' " +
-        "data-placement='left' data-content=''><span class='glyphicon glyphicon-question-sign'></span></a>";
+        tooltipHtml = " <a id='" + toolTipId + "' href='#' data-toggle='tooltip' " +
+        "data-placement='top' data-content=''>[?]</a>";
       }
 
       $div.append($("<div class='media'><a class='pull-left truckLink' truck-id='" + stop.truck.id
@@ -271,10 +271,7 @@ var FoodTruckLocator = function () {
           +"</div><div>Confidence: " + stop.stop.confidence + tooltipHtml +"</div>"
           + "</div></div>"));
       if (stop.stop.notes && stop.stop.notes.length > 0) {
-        $("#"+ toolTipId).click(function(e) {
-          e.preventDefault();
-          $(e.target).popover({"html": true, "content" :  "<div class='small'>" + stop.stop.notes.join("<br/><br/>") + "</div>"});
-        });
+        $("#"+ toolTipId).tooltip({"html": true, "title" :  "<ul><li class='tooltip-li'>" + stop.stop.notes.join("</li><li class='tooltip-li'>") + "</li></ul>"});
       }
     });
     $("a.truckLink").each(function (idx, item) {
