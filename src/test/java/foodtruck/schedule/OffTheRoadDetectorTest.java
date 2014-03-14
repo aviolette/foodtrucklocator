@@ -26,6 +26,20 @@ public class OffTheRoadDetectorTest {
   }
 
   @Test
+  public void cancelStop_withDelivery() throws Exception {
+    final OffTheRoadResponse offTheRoadResponse = topic.offTheRoad("'Fraid we have to cancel our Ravenswood stop tonight. You can always warm up your night with delivery tho! Call 773.755.5411 min. 10 emps");
+    assertTrue(offTheRoadResponse.isOffTheRoad());
+    assertTrue(offTheRoadResponse.isConfidenceHigh());
+  }
+
+  @Test
+  public void cancelStop_withoutDelivery() throws Exception {
+    final OffTheRoadResponse offTheRoadResponse = topic.offTheRoad("'Fraid we have to cancel our Ravenswood stop tonight. ");
+    assertTrue(offTheRoadResponse.isOffTheRoad());
+    assertFalse(offTheRoadResponse.isConfidenceHigh());
+  }
+
+  @Test
   public void offTheRoad_stayingIn() throws Exception {
     final OffTheRoadResponse offTheRoadResponse = topic
         .offTheRoad("Looks like it's going to be a wet day today. Staying in. See you all tomorrow!");
