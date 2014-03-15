@@ -50,7 +50,8 @@ public class TruckResource {
 
   @GET
   @Produces({"application/json", "text/csv"})
-  public JResponse<Collection<Truck>> getTrucks(@PathParam("view") String view, @QueryParam("active") final String active) {
+  public JResponse<Collection<Truck>> getTrucks(@PathParam("view") String view, @QueryParam("active") final String active,
+      @QueryParam("tag") final String filteredBy) {
     MediaType mediaType = MediaType.APPLICATION_JSON_TYPE;
     if (".csv".equals(view)) {
       mediaType = new MediaType("text", "csv");
@@ -62,7 +63,9 @@ public class TruckResource {
         }
       }), mediaType).build();
     } else {
-      return JResponse.ok(truckDAO.findActiveTrucks(), mediaType).build();
+      final Collection<Truck> entity = Strings.isNullOrEmpty(filteredBy) ? truckDAO.findActiveTrucks() : truckDAO
+          .findByCategory(filteredBy);
+      return JResponse.ok(entity, mediaType).build();
     }
   }
 

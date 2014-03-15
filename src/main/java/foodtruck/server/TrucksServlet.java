@@ -1,7 +1,6 @@
 package foodtruck.server;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -71,13 +70,10 @@ public class TrucksServlet extends FrontPageServlet {
       req.setAttribute("title", truck.getName());
     } else {
       String tag = req.getParameter("tag");
-      final Collection<Truck> trucks = Strings.isNullOrEmpty(tag) ? truckDAO.findVisibleTrucks() :
-          truckDAO.findByCategory(tag);
       if (!Strings.isNullOrEmpty(tag)) {
         req.setAttribute("filteredBy", tag);
       }
       req.setAttribute("foodTruckRequestOn", configurationDAO.find().isFoodTruckRequestOn());
-      req.setAttribute("trucks", trucks);
       req.setAttribute("title", "Food Trucks in Chicago");
     }
 

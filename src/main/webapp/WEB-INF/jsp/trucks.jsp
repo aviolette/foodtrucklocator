@@ -5,7 +5,7 @@
   <a href="/request" class="btn btn-primary" role="button">Request a Truck</a>
 </c:if>
 
-<ul class="nav nav-tabs" id="navTabs" style="margin-top:20px">
+<ul class="nav nav-tabs<c:if test="${!empty(filteredBy)}"> hidden</c:if>" id="navTabs" style="margin-top:20px">
   <li class="active"><a href="#truckList" data-toggle="tab">Active Trucks</a></li>
   <li><a href="#inactiveTrucks" data-toggle="tab">Inactive Trucks</a></li>
 </ul>
@@ -22,7 +22,7 @@
   (function() {
     function loadTruckList(active, $truckList, prefix) {
       $.ajax({
-        url: '/services/trucks?active=' + active,
+        url: '/services/trucks?active=' + active<c:if test="${!empty(filteredBy)}"> + "&tag=${filteredBy}"</c:if>,
         success: function(data) {
           $truckList.empty();
           $.each(data, function(i, datum) {
