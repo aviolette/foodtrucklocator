@@ -257,7 +257,7 @@ var FoodTruckLocator = function () {
         $location.append($div);
         $items.append($location);
       }
-      var toolTipId = "tooltip-" + idx,
+      var toolTipId = "tooltip-" + $truckList.attr("id") +  idx,
           tooltipHtml = '';
       if (stop.stop.notes && stop.stop.notes.length > 0) {
         tooltipHtml = " <a id='" + toolTipId + "' href='#' data-toggle='tooltip' " +
