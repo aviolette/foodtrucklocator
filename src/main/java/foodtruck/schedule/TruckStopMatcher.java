@@ -24,6 +24,7 @@ import foodtruck.email.EmailNotifier;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
+import foodtruck.model.StopOrigin;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TweetSummary;
@@ -231,6 +232,7 @@ public class TruckStopMatcher {
     }
     return matchBuilder
         .stop(TruckStop.builder().confidence(confidence)
+            .origin(StopOrigin.TWITTER)
             .notes(notes)
             .truck(truck).startTime(startTime).endTime(endTime).location(location).build())
         .text(tweetText)

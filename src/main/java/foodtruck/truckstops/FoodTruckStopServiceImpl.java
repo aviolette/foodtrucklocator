@@ -32,6 +32,7 @@ import foodtruck.dao.TruckStopDAO;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.model.DailySchedule;
 import foodtruck.model.Location;
+import foodtruck.model.StopOrigin;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckLocationGroup;
 import foodtruck.model.TruckSchedule;
@@ -91,6 +92,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
       TruckStop stop = truckStopDAO.findById((Long) truckStop.getKey());
       truckStop = TruckStop.builder(truckStop)
           .notes(stop.getNotes())
+          .origin(stop.getOrigin())
           .appendNote("Changed manually at " + clock.nowFormattedAsTime()).build();
     }
     truckStopDAO.save(truckStop);
@@ -202,7 +204,8 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
         }
         matched = TruckStop.builder(matched).endTime(clock.now()).build();
         truckStopDAO.save(matched);
-        newStop = TruckStop.builder().truck(truck).startTime(clock.now()).endTime(endTime)
+        newStop = TruckStop.builder().origin(StopOrigin.BEACONNAISE)
+            .truck(truck).startTime(clock.now()).endTime(endTime)
             .location(locWithName).fromBeacon(clock.now()).build();
       }
     } else {
@@ -214,7 +217,9 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
       } catch (ServiceException se) {
         log.log(Level.WARNING, se.getMessage(), se);
       }
-      newStop = TruckStop.builder().truck(truck).startTime(startTime).endTime(endTime)
+      newStop = TruckStop.builder()
+          .origin(StopOrigin.BEACONNAISE)
+          .truck(truck).startTime(startTime).endTime(endTime)
           .location(locWithName).fromBeacon(clock.now()).build();
     }
     truckStopDAO.save(newStop);

@@ -26,6 +26,7 @@ import foodtruck.dao.TruckDAO;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
+import foodtruck.model.StopOrigin;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.util.Clock;
@@ -76,6 +77,7 @@ public class TruckStopReader implements MessageBodyReader<TruckStop> {
       DateTime endTime = format.parseDateTime(obj.getString("endTime").toUpperCase())
           .withDate(today.getYear(), today.getMonthOfYear(), today.getDayOfMonth());
       final JSONObject loc = obj.optJSONObject("location");
+      final String origin = obj.optString("origin", StopOrigin.MANUAL.toString());
       Location location;
       if (loc == null) {
         location = geolocator.locate(obj.getString("locationName"), GeolocationGranularity.NARROW);
@@ -87,7 +89,9 @@ public class TruckStopReader implements MessageBodyReader<TruckStop> {
       checkState(location != null && location.isResolved(), "Location is not resolved");
       long key = obj.optLong("id", 0);
       boolean locked = obj.optBoolean("locked", false);
-      return TruckStop.builder().truck(truck).startTime(startTime).endTime(endTime).location(location).key((key > 0) ? key : null).locked(locked).build();
+      return TruckStop.builder()
+          .origin(StopOrigin.valueOf(origin))
+          .truck(truck).startTime(startTime).endTime(endTime).location(location).key((key > 0) ? key : null).locked(locked).build();
     } catch (JSONException e) {
       throw Throwables.propagate(e);
     }

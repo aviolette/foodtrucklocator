@@ -30,6 +30,7 @@ public class TruckStop extends ModelEntity {
   private final @Nullable DateTime fromBeacon;
   private final Confidence matchConfidence;
   private final List<String> notes;
+  private final StopOrigin origin;
 
   private static final Logger log = Logger.getLogger(TruckStop.class.getName());
   private TruckStop(Builder builder) {
@@ -43,6 +44,11 @@ public class TruckStop extends ModelEntity {
     lastUpdated = builder.lastUpdated;
     matchConfidence = builder.matchConfidence;
     notes = ImmutableList.copyOf(builder.notes);
+    origin = builder.origin;
+  }
+
+  public StopOrigin getOrigin() {
+    return origin;
   }
 
   public List<String> getNotes() {
@@ -181,6 +187,7 @@ public class TruckStop extends ModelEntity {
     private @Nullable DateTime lastUpdated;
     private Confidence matchConfidence = Confidence.HIGH;
     private List<String> notes = Lists.newLinkedList();
+    private StopOrigin origin = StopOrigin.UNKNOWN;
     private Builder() {}
 
     private Builder(TruckStop stop) {
@@ -193,6 +200,12 @@ public class TruckStop extends ModelEntity {
       key = (Long) stop.getKey();
       lastUpdated = stop.getLastUpdated();
       notes = Lists.newLinkedList(stop.getNotes());
+      origin = stop.getOrigin();
+    }
+
+    public Builder origin(StopOrigin origin) {
+      this.origin = origin;
+      return this;
     }
 
     public Builder notes(List<String> notes) {

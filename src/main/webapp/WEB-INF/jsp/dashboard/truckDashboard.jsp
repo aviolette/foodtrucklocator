@@ -9,6 +9,7 @@
     <td>Start Time</td>
     <td>End Time</td>
     <td>Duration</td>
+    <td>Origin</td>
     <td>Location</td>
     <td>&nbsp;</td>
   </tr>
@@ -287,7 +288,7 @@
               "";
           labels += (stop.fromBeacon) ? "&nbsp;<span class=\"label important\">beacon</span>" : "";
           var buf = "<tr><td>" + stop.startTime + "</td><td>" + stop.endTime +
-              "</td><td>" + stop.duration + "</td><td><a href='/admin/locations?q=" + encodeURIComponent(stop.location.name) +
+              "</td><td>" + stop.duration + "</td><td>" + stop.origin + "</td><td><a href='/admin/locations?q=" + encodeURIComponent(stop.location.name) +
               "'>"
               + stop.location.name + "</a>" + labels + "</td><td>";
           if (!prevHadStart && now < stop.startTimeMillis) {

@@ -32,6 +32,7 @@ import foodtruck.dao.TruckDAO;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
+import foodtruck.model.StopOrigin;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.monitoring.Monitored;
@@ -167,6 +168,7 @@ public class GoogleCalendar implements ScheduleStrategy {
               "Entered manually " + (entered == null ? "" : "on ") + entered;
           Confidence confidence = customCalendar ? Confidence.HIGH : Confidence.MEDIUM;
           final TruckStop truckStop = TruckStop.builder().truck(truck)
+              .origin(customCalendar ? StopOrigin.VENDORCAL : StopOrigin.MANUAL)
               .location(location)
               .confidence(confidence)
               .appendNote(note)

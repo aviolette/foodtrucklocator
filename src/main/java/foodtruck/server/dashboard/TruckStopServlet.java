@@ -29,6 +29,7 @@ import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
 import foodtruck.model.ModelEntity;
+import foodtruck.model.StopOrigin;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.util.Clock;
@@ -77,7 +78,9 @@ public class TruckStopServlet extends HttpServlet {
         start = start.withTime(11, 30, 0, 0);
       }
       DateTime end = start.plusHours(2);
-      truckStop = TruckStop.builder().truck(truck).startTime(start).endTime(end).location(configDAO.find().getCenter()).build();
+      truckStop = TruckStop.builder()
+          .origin(StopOrigin.MANUAL)
+          .truck(truck).startTime(start).endTime(end).location(configDAO.find().getCenter()).build();
     }
     req.setAttribute("nav", "trucks");
     req.setAttribute("truckStop", truckStop);

@@ -41,6 +41,7 @@ import foodtruck.email.EmailNotifier;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
+import foodtruck.model.StopOrigin;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckObserver;
 import foodtruck.model.TruckStop;
@@ -267,7 +268,9 @@ public class TwitterServiceImpl implements TwitterService {
             List<TruckStop> trucks = truckStopDAO.findDuring(truck.getId(), today);
             if (trucks.isEmpty()) {
               truckStops.add(
-                  TruckStop.builder().truck(truck).startTime(now).endTime(now.plusHours(2)).location(uofc)
+                  TruckStop.builder().origin(StopOrigin.OBSERVER)
+                      .truck(truck).startTime(now).endTime(now.plusHours(2))
+                      .location(uofc)
                       .appendNote("Added by @" + observer.getTwitterHandle() + " at " +
                           clock.nowFormattedAsTime()
                           + " from tweet '" + tweet.getText() + "'")
