@@ -66,7 +66,8 @@
         </thead>
         <tbody id="scheduleTable">
         <tr>
-          <c:forEach items="${stops}" var="schedule">
+          <c:forEach items="${stops}" var="schedule" varStatus="scheduleStatus">
+            <c:if test="${scheduleStatus.index < 7}">
           <td style="min-height:200px">
             <c:choose>
               <c:when test="${schedule.hasStops}">
@@ -92,6 +93,7 @@
               </c:otherwise>
             </c:choose>
           </td>
+            </c:if>
           </c:forEach>
         </tr>
         </tbody>
