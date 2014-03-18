@@ -351,14 +351,16 @@ public class TwitterServiceImpl implements TwitterService {
         }
         deleteStops.add(stop);
         if (locationsSame) {
+          matchBuilder.prependNotes(stop.getNotes()).origin(stop.getOrigin());
           if (match.isSoftEnding()) {
             if (!stopEnd.equals(matchedStop.getEndTime())) {
-              matchBuilder.appendNote("Changed end time to " + timeFormatter.print(stopEnd));
-              matchBuilder.endTime(stopEnd);
+              matchBuilder.appendNote(String.format("Changed end time to %s from %s ", timeFormatter.print(stopEnd),
+                  timeFormatter.print(matchedStop.getEndTime())))
+                .endTime(stopEnd);
             }
             if (clock.now().isAfter(stopStart) && !stopStart.equals(matchedStart)) {
-              matchBuilder.appendNote("Changed start time to " + timeFormatter.print(stopStart));
-              matchBuilder.startTime(stopStart);
+              matchBuilder.appendNote("Changed start time to " + timeFormatter.print(stopStart))
+                  .startTime(stopStart);
             }
             matchedStop = matchBuilder.build();
           } else {
@@ -377,10 +379,10 @@ public class TwitterServiceImpl implements TwitterService {
             matchedStop = null;
             break;
           }
+          deleteStops.add(stop);
           if ((locationsSame && !match.isTerminated()) ||
               (stopStart.getHourOfDay() == 11
                   && stopStart.getMinuteOfHour() == 30)) {
-            deleteStops.add(stop);
             if (!matchedEnd.equals(stopEnd)) {
               matchBuilder.appendNote("Changed end time to " + timeFormatter.print(stopEnd));
             }

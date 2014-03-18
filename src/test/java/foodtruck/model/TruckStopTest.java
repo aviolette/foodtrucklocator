@@ -1,5 +1,7 @@
 package foodtruck.model;
 
+import com.google.common.collect.ImmutableList;
+
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -7,8 +9,11 @@ import org.joda.time.LocalTime;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.matchers.JUnitMatchers.hasItem;
 
 /**
  * @author aviolette@gmail.com
@@ -56,6 +61,20 @@ public class TruckStopTest {
   @Test
   public void testWithinDayLaterDay() {
     assertFalse(stop.within(new TimeRange(new LocalDate(2011, 8, 11), DateTimeZone.UTC)));
+  }
+
+  @Test
+  public void prependNotes() {
+    stop = TruckStop.builder(stop).appendNote("hello world").build();
+    assertThat(stop.getNotes(), hasItem("hello world"));
+    stop = TruckStop.builder(stop).prependNotes(ImmutableList.of("goodbye1", "goodbye2")).build();
+    assertEquals(ImmutableList.of("goodbye1", "goodbye2", "hello world"), stop.getNotes());
+  }
+
+  @Test
+  public void prependNotesWithNoExistingNotes() {
+    stop = TruckStop.builder(stop).prependNotes(ImmutableList.of("goodbye1", "goodbye2")).build();
+    assertEquals(ImmutableList.of("goodbye1", "goodbye2"), stop.getNotes());
   }
 
   private TruckStop createTruckStop(DateTime startTime, DateTime endTime) {

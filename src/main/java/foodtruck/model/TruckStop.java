@@ -1,5 +1,6 @@
 package foodtruck.model;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -265,6 +266,13 @@ public class TruckStop extends ModelEntity {
 
     public TruckStop build() {
       return new TruckStop(this);
+    }
+
+    public Builder prependNotes(List<String> notes) {
+      LinkedList<String> newNotes = Lists.newLinkedList(notes);
+      newNotes.addAll(this.notes);
+      this.notes = newNotes;
+      return this;
     }
   }
 }
