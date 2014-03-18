@@ -14,9 +14,12 @@ import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
+import com.google.common.escape.Escaper;
+import com.google.common.html.HtmlEscapers;
 import com.google.inject.Inject;
 
 import org.codehaus.jettison.json.JSONArray;
@@ -70,6 +73,7 @@ public class DailyScheduleWriter implements MessageBodyWriter<DailySchedule>, JS
         locationArr.put(locationWriter.writeLocation(stop.getLocation(), i, false));
       }
     }
+    final Escaper escaper = HtmlEscapers.htmlEscaper();
     JSONArray schedules = new JSONArray();
     for (TruckStop stop : schedule.getStops()) {
        JSONObject truckStop = new JSONObject()
@@ -79,8 +83,11 @@ public class DailyScheduleWriter implements MessageBodyWriter<DailySchedule>, JS
           .put("startTime", formatter.print(stop.getStartTime()))
           .put("startMillis", stop.getStartTime().getMillis())
           .put("endMillis", stop.getEndTime().getMillis())
-          .put("notes", new JSONArray(stop.getNotes()))
-//          .putOpt("fromBeacon", stop.isFromBeacon())
+          .put("notes", new JSONArray(Collections2.transform(stop.getNotes(), new Function<String, String>() {
+            @Override public String apply(String s) {
+              return escaper.escape(s);
+            }
+          })))
           .put("endTime", formatter.print(stop.getEndTime()));
       schedules.put(truckStop);
     }
