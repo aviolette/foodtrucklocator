@@ -4,6 +4,12 @@
   <div class="col-md-6">
     <h2>${location.name}</h2>
 
+    <c:if test="${isAdmin}">
+      <div>
+      <a class="btn btn-primary" href="/admin/locations/${location.key}">Edit</a>
+      </div>
+    </c:if>
+
     <c:if test="${!empty(location.description)}">
       <div>${location.description}</div>
     </c:if>

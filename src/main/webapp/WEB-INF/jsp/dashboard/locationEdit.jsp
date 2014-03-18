@@ -11,6 +11,7 @@
   <div class="span4">
     <div>
       <a id="locationSearchButton" href="#" class="btn">Search for a location</a>
+      <c:if test="${!empty(locationId)}"><a id="locationViewButton" href="/locations/${locationId}" class="btn">View</a> </c:if>
     </div>
     <ul id="searchLocations">
 

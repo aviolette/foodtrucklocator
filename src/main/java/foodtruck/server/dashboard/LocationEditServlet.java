@@ -56,6 +56,7 @@ public class LocationEditServlet extends HttpServlet {
     if (location != null) {
       try {
         req.setAttribute("location", writer.writeLocation(location, 0, true));
+        req.setAttribute("locationId", location.getKey());
       } catch (JSONException e) {
         throw new RuntimeException(e);
       }
