@@ -2,6 +2,8 @@
 
 <img src="${truck.iconUrl}"/>
 
+<a href="/trucks/${truckId}">View Public Page</a>
+
 <h2>Schedule</h2>
 <table class="table table-striped">
   <thead>

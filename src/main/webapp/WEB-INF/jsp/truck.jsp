@@ -4,6 +4,9 @@
 
 <div id="content" >
 
+  <c:if test="${isAdmin}">
+    <a href="/admin/trucks/${truck.id}">Edit on Admin Dashboard</a>
+  </c:if>
   <div class="row">
     <div class="span4">
       <h2>${truck.name}</h2>
