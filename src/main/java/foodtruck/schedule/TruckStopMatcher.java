@@ -128,7 +128,7 @@ public class TruckStopMatcher {
     List<String> notes = Lists.newLinkedList();
     // Some trucks, like Starfruit Cafe have configurable expressions (e.g. #KefirTruck) that
     // should be present in order to do a match
-    notes.add(String.format("Adding stop based on tweet: '%s'", tweetText));
+    notes.add(String.format("Tweet received for location: '%s'", tweetText));
     if (verifyMatchOnlyExpression(truck, tweetText)) {
       log.log(Level.INFO, "Didn't match '{0}' because it didn't contain match-only expression",
           tweetText);
