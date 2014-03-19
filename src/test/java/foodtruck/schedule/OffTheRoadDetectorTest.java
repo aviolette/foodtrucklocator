@@ -117,4 +117,28 @@ public class OffTheRoadDetectorTest {
     assertTrue(offTheRoadResponse.isOffTheRoad());
     assertTrue(offTheRoadResponse.isConfidenceHigh());
   }
+
+  @Test
+  public void noServiceToday() throws Exception {
+    final OffTheRoadResponse offTheRoadResponse = topic.offTheRoad(
+        "No service today due to the inclement weather");
+    assertTrue(offTheRoadResponse.isOffTheRoad());
+    assertTrue(offTheRoadResponse.isConfidenceHigh());
+  }
+
+  @Test
+  public void atTheShop() throws Exception {
+    final OffTheRoadResponse offTheRoadResponse = topic.offTheRoad(
+        "The tamale spaceship is at the shop this morning so NO <<Clark & Washington>> today we apologize");
+    assertTrue(offTheRoadResponse.isOffTheRoad());
+    assertTrue(offTheRoadResponse.isConfidenceHigh());
+  }
+
+  @Test
+  public void noTruckToday() throws Exception {
+    final OffTheRoadResponse offTheRoadResponse = topic.offTheRoad(
+        "No truck today guys. Repeat, no truck today. We're just as sad but look for us tomorrow at Clark and Monroe then river north at 2pm!");
+    assertTrue(offTheRoadResponse.isOffTheRoad());
+    assertTrue(offTheRoadResponse.isConfidenceHigh());
+  }
 }
