@@ -56,7 +56,7 @@
     <dependency>
       <groupId>org.twitter4j</groupId>
       <artifactId>twitter4j-core</artifactId>
-      <version>[3.0,)</version>
+      <version>3.0.6</version>
     </dependency>
     <dependency>
       <groupId>com.google</groupId>
