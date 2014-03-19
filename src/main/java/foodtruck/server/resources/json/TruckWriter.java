@@ -11,6 +11,8 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
+import com.google.inject.Inject;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -23,20 +25,19 @@ import foodtruck.server.resources.BadRequestException;
  */
 @Provider
 public class TruckWriter implements JSONWriter<Truck>, MessageBodyWriter<Truck> {
+  private final AbbreviatedTruckWriter truckWriter;
+
+  @Inject
+  public TruckWriter(AbbreviatedTruckWriter truckWriter) {
+    this.truckWriter = truckWriter;
+  }
+
   @Override public JSONObject asJSON(Truck truck) throws JSONException {
-    return new JSONObject()
-        .put("id", truck.getId())
-        .put("description", truck.getDescription())
-        .put("iconUrl", truck.getIconUrl())
-        .put("twitterHandle", truck.getTwitterHandle())
-        .put("facebook", truck.getFacebook())
-        .put("foursquare", truck.getFoursquareUrl())
-        .put("facebookPageId", truck.getFacebookPageId())
-        .put("name", truck.getName())
-        .put("previewIcon", truck.getPreviewIcon())
-        .put("inactive", truck.isInactive())
-        .put("yelp", truck.getYelpSlug())
-        .put("url", truck.getUrl());
+    JSONObject obj = truckWriter.asJSON(truck);
+    obj.put("description", truck.getDescription());
+    obj.put("previewIcon", truck.getPreviewIcon());
+    obj.put("inactive", truck.isInactive());
+    return obj;
   }
 
   @Override public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations,

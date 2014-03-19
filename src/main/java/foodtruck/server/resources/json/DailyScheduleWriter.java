@@ -44,12 +44,12 @@ import foodtruck.util.TimeOnlyFormatter;
 public class DailyScheduleWriter implements MessageBodyWriter<DailySchedule>, JSONWriter<DailySchedule> {
   private final LocationWriter locationWriter;
   private final DateTimeFormatter formatter;
-  private final TruckWriter truckWriter;
+  private final AbbreviatedTruckWriter truckWriter;
   private final DateTimeFormatter dateOnlyFormatter;
 
   @Inject
   public DailyScheduleWriter(LocationWriter locationWriter,@TimeOnlyFormatter DateTimeFormatter formatter,
-      TruckWriter truckWriter, @DateOnlyFormatter DateTimeFormatter dateOnlyFormatter) {
+      AbbreviatedTruckWriter truckWriter, @DateOnlyFormatter DateTimeFormatter dateOnlyFormatter) {
     this.locationWriter = locationWriter;
     this.formatter = formatter;
     this.truckWriter = truckWriter;
