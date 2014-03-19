@@ -16,6 +16,16 @@
     <ul id="searchLocations">
 
     </ul>
+
+    <div>
+      <h4>Current Aliases</h4>
+          <ul>
+            <c:forEach var="alias" items="${aliases}">
+              <li><a href="/admin/locations/${alias.key}">${alias.name}</a></li>
+            </c:forEach>
+          </ul>
+    </div>
+
   </div>
 </div>
 

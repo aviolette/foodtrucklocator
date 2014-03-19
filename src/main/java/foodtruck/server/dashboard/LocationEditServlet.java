@@ -57,6 +57,7 @@ public class LocationEditServlet extends HttpServlet {
       try {
         req.setAttribute("location", writer.writeLocation(location, 0, true));
         req.setAttribute("locationId", location.getKey());
+        req.setAttribute("aliases", locationDAO.findAliasesFor(location.getName()));
       } catch (JSONException e) {
         throw new RuntimeException(e);
       }
