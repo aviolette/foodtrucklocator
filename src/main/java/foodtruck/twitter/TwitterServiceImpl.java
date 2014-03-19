@@ -359,13 +359,13 @@ public class TwitterServiceImpl implements TwitterService {
                 .endTime(stopEnd);
             }
             if (clock.now().isAfter(stopStart) && !stopStart.equals(matchedStart)) {
-              matchBuilder.appendNote("Changed start time to " + timeFormatter.print(stopStart))
+              matchBuilder.appendNote("Setting start time to " + timeFormatter.print(stopStart))
                   .startTime(stopStart);
             }
             matchedStop = matchBuilder.build();
           } else {
             if (!stopStart.equals(matchedStart)) {
-              matchBuilder.appendNote("Changing start time to " + timeFormatter.print(stopStart));
+              matchBuilder.appendNote("Setting start time to: " + timeFormatter.print(stopStart));
             }
             matchedStop = matchBuilder.startTime(stopStart).build();
           }
@@ -389,7 +389,7 @@ public class TwitterServiceImpl implements TwitterService {
             matchedStop = matchBuilder.prependNotes(stop.getNotes()).endTime(stopEnd).build();
           } else {
             if (!matchedStart.equals(stopStart)) {
-              matchBuilder.appendNote("Changed end time to " + timeFormatter.print(stopStart));
+              matchBuilder.appendNote("Changing end time to " + timeFormatter.print(stopStart));
             }
             matchedStop = matchBuilder.endTime(stopStart).build();
           }
