@@ -186,7 +186,7 @@ public class TruckStop extends ModelEntity {
     private @Nullable DateTime fromBeacon;
     private @Nullable Long key;
     private @Nullable DateTime lastUpdated;
-    private Confidence matchConfidence = Confidence.HIGH;
+    private Confidence matchConfidence = Confidence.MEDIUM;
     private List<String> notes = Lists.newLinkedList();
     private StopOrigin origin = StopOrigin.UNKNOWN;
     private Builder() {}
