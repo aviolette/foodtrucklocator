@@ -22,6 +22,7 @@ import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.server.resources.json.LocationReader;
 import foodtruck.server.resources.json.LocationWriter;
 import foodtruck.truckstops.FoodTruckStopService;
+import foodtruck.util.Urls;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -49,7 +50,7 @@ public class LocationEditServlet extends HttpServlet {
   @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     final String jsp = "/WEB-INF/jsp/dashboard/locationEdit.jsp";
-    final String path = req.getRequestURI();
+    final String path = Urls.stripSessionId(req.getRequestURI());
     final String keyIndex = path.substring(path.lastIndexOf("/") + 1);
     req = new GuiceHackRequestWrapper(req, jsp);
     Location location = locationDAO.findById(Long.valueOf(keyIndex));

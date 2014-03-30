@@ -69,7 +69,7 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/admin/trucks/*").with(TruckServlet.class);
     serve("/admin/trucks").with(TruckListServlet.class);
     serve("/admin/locations/*").with(LocationEditServlet.class);
-    serve("/admin/locations").with(LocationListServlet.class);
+    serve("/admin/locations", "/admin/locations;*").with(LocationListServlet.class);
     serve("/admin/messages/*").with(MessageEditServlet.class);
     serve("/admin/messages").with(MessageListServlet.class);
     serve("/admin/stats").with(StatsServlet.class);
