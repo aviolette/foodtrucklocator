@@ -110,6 +110,7 @@ public class TruckStopServlet extends HttpServlet {
     }
     boolean locked = false;
     TruckStop stop = TruckStop.builder().truck(truck).startTime(startTime).endTime(endTime)
+        .origin(StopOrigin.MANUAL)
         .location(location).key(locationId).locked(locked).build();
     truckStopDAO.save(stop);
     resp.sendRedirect("/admin/trucks/" + truckID);
