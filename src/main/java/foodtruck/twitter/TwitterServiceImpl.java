@@ -523,6 +523,10 @@ public class TwitterServiceImpl implements TwitterService {
               new Object[] { truck.getId(), tweet.getText()} );
           truckStopService.cancelRemainingStops(truck.getId(), clock.now());
           emailNotifier.systemNotifyAutoCanceled(truck, tweet);
+          if (!truck.isUsingTwittalyzer()) {
+            ignoreTweets(ImmutableList.of(tweet));
+          }
+          return;
         } else {
           try {
             emailNotifier.systemNotifyOffTheRoad(truck, tweet);
