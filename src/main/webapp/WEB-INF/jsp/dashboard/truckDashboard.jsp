@@ -288,8 +288,9 @@
         $.each(schedule["stops"], function (truckIndex, stop) {
           var labels = (stop.locked) ? "&nbsp;<span class=\"label important\">locked</span>" :
               "";
+          var crazyDuration = stop.durationMillis < 0 || stop.durationMillis > 43200000;
           labels += (stop.fromBeacon) ? "&nbsp;<span class=\"label important\">beacon</span>" : "";
-          var buf = "<tr><td>" + stop.startTime + "</td><td>" + stop.endTime +
+          var buf = "<tr " + (crazyDuration ? " class='error'" : "") + "><td>" + stop.startTime + "</td><td>" + stop.endTime +
               "</td><td>" + stop.duration + "</td><td>" + stop.origin + "</td><td><a href='/admin/locations?q=" + encodeURIComponent(stop.location.name) +
               "'>"
               + stop.location.name + "</a>" + labels + "</td><td>";
