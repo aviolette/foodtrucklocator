@@ -48,6 +48,7 @@ import foodtruck.model.TruckStop;
 import foodtruck.model.TweetSummary;
 import foodtruck.model.TwitterNotificationAccount;
 import foodtruck.monitoring.Monitored;
+import foodtruck.schedule.Confidence;
 import foodtruck.schedule.OffTheRoadDetector;
 import foodtruck.schedule.OffTheRoadResponse;
 import foodtruck.schedule.TerminationDetector;
@@ -419,11 +420,21 @@ public class TwitterServiceImpl implements TwitterService {
       addStops.add(matchedStop);
       for (TruckStop stop : addStops) {
         checkForRetweet(stop, match);
+        checkIsWeird(stop, match);
         notifier.added(stop);
       }
       truckStopDAO.addStops(addStops);
     }
     compressAdjacentStops(truck.getId(), clock.currentDay());
+  }
+
+  private void checkIsWeird(TruckStop stop, TruckStopMatch match) {
+    if (stop.getOrigin() == StopOrigin.TWITTER &&
+        match.getConfidence() == Confidence.LOW &&
+        stop.getTruck().getCategories().contains("Lunch") &&
+        stop.getStartTime().isAfter(clock.timeAt(13, 30))) {
+      emailNotifier.systemNotifiyWeirdStopAdded(stop, match.getText());
+    }
   }
 
   private void checkForRetweet(TruckStop stop, TruckStopMatch match) {

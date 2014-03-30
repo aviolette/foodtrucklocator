@@ -112,7 +112,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .match();
     assertNotNull(match);
     assertEquals(Confidence.MEDIUM, match.getConfidence());
-    assertThat(match.getStop().getNotes(), hasItems("Adding stop based on tweet: 'Gold Coast, we have landed at Rush and Walton...here until 6 pm!'"));
+    assertThat(match.getStop().getNotes(), hasItems("Tweet received for location: 'Gold Coast, we have landed at Rush and Walton...here until 6 pm!'"));
     assertThat(match.getStop().getNotes(), hasItems("Presence of end time in tweet increased confidence."));
     assertEquals(tweetTime, match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getStop().getEndTime());
@@ -126,7 +126,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
         .match();
     assertNotNull(match);
     assertEquals(Confidence.MEDIUM, match.getConfidence());
-    assertThat(match.getStop().getNotes(), hasItems("Adding stop based on tweet: 'Gold Coast, we have landed at Rush and Walton...here til 6 pm!'"));
+    assertThat(match.getStop().getNotes(), hasItems("Tweet received for location: 'Gold Coast, we have landed at Rush and Walton...here til 6 pm!'"));
     assertThat(match.getStop().getNotes(), hasItems("Presence of end time in tweet increased confidence."));
     assertEquals(tweetTime, match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getStop().getEndTime());
@@ -139,7 +139,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
         .match();
     assertNotNull(match);
     assertEquals(Confidence.MEDIUM, match.getConfidence());
-    assertThat(match.getStop().getNotes(), hasItems("Adding stop based on tweet: 'Gold Coast, we have landed at Rush and Walton...here till 6 pm!'"));
+    assertThat(match.getStop().getNotes(), hasItems("Tweet received for location: 'Gold Coast, we have landed at Rush and Walton...here till 6 pm!'"));
     assertThat(match.getStop().getNotes(), hasItems("Presence of end time in tweet increased confidence."));
     assertEquals(tweetTime, match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getStop().getEndTime());

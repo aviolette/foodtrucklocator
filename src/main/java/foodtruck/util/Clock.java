@@ -51,4 +51,9 @@ public interface Clock {
    * @return
    */
   String nowFormattedAsTime();
+
+  /**
+   * Returns a time and the specified hour and minute on the current day
+   */
+  DateTime timeAt(int hour, int minute);
 }

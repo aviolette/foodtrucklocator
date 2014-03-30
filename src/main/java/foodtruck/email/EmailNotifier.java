@@ -5,6 +5,7 @@ import java.util.Map;
 import foodtruck.model.FoodTruckRequest;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
+import foodtruck.model.TruckStop;
 import foodtruck.model.TweetSummary;
 
 /**
@@ -43,5 +44,14 @@ public interface EmailNotifier {
    */
   boolean notifyFoodTrucksOfRequest(Iterable<String> addresses, FoodTruckRequest request);
 
+  /**
+   * Sends out a system notification when a stop is auto-canceled.
+   */
   void systemNotifyAutoCanceled(Truck truck, TweetSummary tweet);
+
+  /**
+   * Sends out a system notification when a stop is added after 1:30 for a lunch truck via the twittalyzer
+   */
+
+  void systemNotifiyWeirdStopAdded(TruckStop truckStop, String tweetText);
 }

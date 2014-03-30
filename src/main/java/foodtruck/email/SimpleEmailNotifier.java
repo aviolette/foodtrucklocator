@@ -30,8 +30,9 @@ import foodtruck.model.Configuration;
 import foodtruck.model.FoodTruckRequest;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
+import foodtruck.model.TruckStop;
 import foodtruck.model.TweetSummary;
-import foodtruck.util.FriendlyDateOnlyFormat;
+import foodtruck.util.TimeOnlyFormatter;
 
 /**
  * An email notifier that sends the email immediately.
@@ -42,14 +43,14 @@ public class SimpleEmailNotifier implements EmailNotifier {
   public static Logger log = Logger.getLogger(SimpleEmailNotifier.class.getName());
   private final ConfigurationDAO configDAO;
   private final MessageBuilder messageBuilder;
-  private final DateTimeFormatter dateOnlyFormatter;
+  private final DateTimeFormatter timeOnlyFormatter;
 
   @Inject
   public SimpleEmailNotifier(ConfigurationDAO configurationDAO, MessageBuilder messageBuilder,
-      @FriendlyDateOnlyFormat DateTimeFormatter dateOnlyFormat) {
+      @TimeOnlyFormatter DateTimeFormatter timeFormatter) {
     this.configDAO = configurationDAO;
     this.messageBuilder = messageBuilder;
-    this.dateOnlyFormatter = dateOnlyFormat;
+    this.timeOnlyFormatter = timeFormatter;
   }
 
   @Override public void systemNotifyOffTheRoad(Truck truck, TweetSummary tweet) {
@@ -119,7 +120,7 @@ public class SimpleEmailNotifier implements EmailNotifier {
       log.log(Level.INFO, "Message for request: {0} not sent 'cause there are no recipients", request.getKey());
       return false;
     }
-    log.log(Level.INFO, "Sending Request {0} to {1}", new Object[] { request.getKey(), Joiner.on(",").join(addresses) });
+    log.log(Level.INFO, "Sending Request {0} to {1}", new Object[]{request.getKey(), Joiner.on(",").join(addresses)});
     return sendMessage("Food Trucks Needed: " + request.getEventName(), ImmutableSet
         .of(configDAO.find().getNotificationSender()) ,
         buildRequest(request, new StringBuilder()).toString(), addresses, request.getEmail());
@@ -131,6 +132,15 @@ public class SimpleEmailNotifier implements EmailNotifier {
         "Because it was flagged as high-confidenced, all remaining stops were cancelled",
         truck.getName(), tweet.getText());
     sendSystemMessage("Stops auto-canceled for " + truck.getName(), msgBody);
+  }
+
+  @Override public void systemNotifiyWeirdStopAdded(TruckStop truckStop, String tweetText) {
+    sendSystemMessage("Strange afternoon stop added " + truckStop.getTruck().getName(),
+        MessageFormat.format("This tweet added a new stop for {0} after 1:30pm for a lunch truck: \"{1}\"\n\n" +
+          "Stop that was added: {2} from {3} to {4}\n\n Go here to modify: http://www.chicagofoodtruckfinder.com/admin/trucks/{5}\n\n",
+          truckStop.getTruck().getName(), tweetText,
+          truckStop.getLocation().getName(), timeOnlyFormatter.print(truckStop.getStartTime()),
+          timeOnlyFormatter.print(truckStop.getEndTime()), truckStop.getTruck().getId()));
   }
 
   private boolean sendMessage(String subject, Iterable<String> receivers, String msgBody, Iterable<String> bccs,
