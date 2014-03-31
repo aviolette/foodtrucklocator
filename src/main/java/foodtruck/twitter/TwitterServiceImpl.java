@@ -433,6 +433,7 @@ public class TwitterServiceImpl implements TwitterService {
         match.getConfidence() == Confidence.LOW &&
         stop.getTruck().getCategories().contains("Lunch") &&
         stop.getStartTime().isAfter(clock.timeAt(13, 30))) {
+      log.info("STOP TIME: " + stop.getStartTime() + ", FOO: " + clock.timeAt(13,30));
       emailNotifier.systemNotifiyWeirdStopAdded(stop, match.getText());
     }
   }

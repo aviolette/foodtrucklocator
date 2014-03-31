@@ -72,6 +72,6 @@ public class ClockImpl implements Clock {
   }
 
   @Override public DateTime timeAt(int hour, int minute) {
-    return currentDay().toDateTime(new LocalTime(hour, minute));
+    return now().withTimeAtStartOfDay().withHourOfDay(hour).withMinuteOfHour(minute);
   }
 }
