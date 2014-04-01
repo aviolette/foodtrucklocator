@@ -118,7 +118,20 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getStop().getEndTime());
   }
 
-
+  @Test
+  public void testMatch_shouldReturnHighConfidenceWhenLeavingAt() {
+    tweetTime = tweetTime.withHourOfDay(16).withMinuteOfHour(16);
+    TruckStopMatch match =
+        tweet("Our final stop tonight is Grand & McClurg. We'll be leaving at 5:30pm, so come soon!")
+            .withTime(tweetTime)
+            .match();
+    assertNotNull(match);
+    assertEquals(Confidence.MEDIUM, match.getConfidence());
+    assertThat(match.getStop().getNotes(), hasItems("Tweet received for location: 'Our final stop tonight is Grand & McClurg. We'll be leaving at 5:30pm, so come soon!'"));
+    assertThat(match.getStop().getNotes(), hasItems("Presence of end time in tweet increased confidence."));
+    assertEquals(tweetTime, match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(17, 30, 0, 0), match.getStop().getEndTime());
+  }
 
   @Test
   public void testMatch_shouldReturnHighConfidenceWhenAtLocationTil() {
