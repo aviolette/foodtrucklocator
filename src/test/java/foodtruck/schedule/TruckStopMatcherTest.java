@@ -134,6 +134,18 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
   @Test
+  public void testWithReturn() {
+    TruckStopMatch match = tweet("We are now open for business at 600 west Chicago! We will be serving until 8:30\n" +
+        "\n" +
+        "@600WestBuilding @Groupon @BellyChicago @BarryCallebaut")
+        .withTime(tweetTime.withTime(7, 0, 0, 0))
+        .withTruck(Truck.builder(truck).categories(ImmutableSet.of("Breakfast")).build())
+        .match();
+    assertNotNull(match);
+    assertEquals(tweetTime.withTime(8, 30, 0, 0), match.getStop().getEndTime());
+  }
+
+  @Test
   public void testMatch_shouldReturnHighConfidenceWhenAtLocationTil() {
     TruckStopMatch match = tweet("Gold Coast, we have landed at Rush and Walton...here til 6 pm!")
         .match();
@@ -566,6 +578,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     assertEquals(tweetTime.withTime(11, 0, 0, 0), match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(13, 0, 0, 0), match.getStop().getEndTime());
   }
+
   @Test
   public void testMatch_shouldMatchLunchHour2() {
     tweetTime = new DateTime(2011, 11, 7, 7, 0, 0, 0, DateTimeZone.UTC);
@@ -573,6 +586,15 @@ public class TruckStopMatcherTest extends EasyMockSupport {
         "Jerk. is at Wacker/Madison from 11-2p #lunch #chicago #foodtruck #jamaican #jerkchicken #bbq http://t.co/LdzNBUJXJu")
         .match();
     assertEquals(tweetTime.withTime(11, 0, 0, 0), match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getStop().getEndTime());
+  }
+
+  @Test
+  public void testMatch_shouldMatchLunchHour3() {
+    tweetTime = new DateTime(2011, 11, 7, 7, 0, 0, 0, DateTimeZone.UTC);
+    TruckStopMatch match = tweet("Lake and LaSalle 12-2 Northwestern Campus 3-7")
+        .match();
+    assertEquals(tweetTime.withTime(12, 0, 0, 0), match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getStop().getEndTime());
   }
 

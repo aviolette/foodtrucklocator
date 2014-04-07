@@ -365,6 +365,10 @@ public class TruckStopMatcher {
     if (suffix != null) {
     } else if (after != null) {
       // TODO: handle military time
+      tmpTime = tmpTime.trim();
+      if (tmpTime.length() == 3) {
+        tmpTime = "0" + tmpTime;
+      }
       int hour = Integer.parseInt(tmpTime.substring(0, 2));
       int min = Integer.parseInt(tmpTime.substring(2, 4));
       if (after.isAfter(date.toDateTime(new LocalTime(hour, min), clock.zone()))) {
@@ -374,7 +378,7 @@ public class TruckStopMatcher {
       }
     } else {
       int hour = Integer.parseInt(tmpTime.substring(0, 2));
-      suffix = (hour > 8) ? "am" : "pm";
+      suffix = (hour > 8 && hour < 12) ? "am" : "pm";
     }
     timeText = tmpTime + suffix;
     try {
