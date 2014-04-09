@@ -64,7 +64,7 @@ public class LocationEditServlet extends HttpServlet {
         req.setAttribute("locationId", location.getKey());
         req.setAttribute("aliases", locationDAO.findAliasesFor(location.getName()));
       } catch (JSONException e) {
-        throw new RuntimeException(e);
+        throw Throwables.propagate(e);
       }
     }
     List<String> locationNames = ImmutableList.copyOf(
