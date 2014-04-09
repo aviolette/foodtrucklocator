@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PropertyContainer;
+import com.google.appengine.api.datastore.Text;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
@@ -27,6 +28,14 @@ public class Attributes {
       return null;
     }
     return new DateTime(date, zone);
+  }
+
+  public static @Nullable String getTextProperty(Entity entity, String propertyName) {
+    Text text = (Text) entity.getProperty(propertyName);
+    if (text == null) {
+      return null;
+    }
+    return text.getValue();
   }
 
   public static String getStringProperty(Entity entity, String propertyName) {

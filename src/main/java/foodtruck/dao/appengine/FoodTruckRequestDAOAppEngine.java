@@ -3,6 +3,8 @@ package foodtruck.dao.appengine;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Text;
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 
@@ -15,6 +17,7 @@ import static foodtruck.dao.appengine.Attributes.getDateTime;
 import static foodtruck.dao.appengine.Attributes.getDoubleProperty;
 import static foodtruck.dao.appengine.Attributes.getIntProperty;
 import static foodtruck.dao.appengine.Attributes.getStringProperty;
+import static foodtruck.dao.appengine.Attributes.getTextProperty;
 
 /**
  * @author aviolette
@@ -32,7 +35,7 @@ public class FoodTruckRequestDAOAppEngine extends AppEngineDAO<Long, FoodTruckRe
   }
 
   @Override protected Entity toEntity(FoodTruckRequest obj, Entity entity) {
-    entity.setProperty("description", obj.getDescription());
+    entity.setProperty("description_text", new Text(obj.getDescription()));
     entity.setProperty("email", obj.getEmail());
     entity.setProperty("userId", obj.getUserId());
     entity.setProperty("latitude", obj.getLocation().getLatitude());
@@ -62,7 +65,8 @@ public class FoodTruckRequestDAOAppEngine extends AppEngineDAO<Long, FoodTruckRe
         .key(entity.getKey().getId())
         .eventName(getStringProperty(entity, "event_name"))
         .requester(getStringProperty(entity, "requester"))
-        .description(getStringProperty(entity, "description"))
+        .description(
+            Objects.firstNonNull(getStringProperty(entity, "description"), getTextProperty(entity, "description_text")))
         .email(getStringProperty(entity, "email"))
         .location(location)
         .submitted(getDateTime(entity, "submitted", zone))
