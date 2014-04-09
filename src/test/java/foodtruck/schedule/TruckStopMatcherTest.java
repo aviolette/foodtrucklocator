@@ -146,6 +146,17 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
   @Test
+  public void testWith12() {
+    TruckStopMatch match = tweet("Lake and LaSalle 12-2 Northwestern Campus 3-7")
+        .withTime(tweetTime.withTime(7, 0, 0, 0))
+        .withTruck(Truck.builder(truck).categories(ImmutableSet.of("Cupcakes")).build())
+        .match();
+    assertNotNull(match);
+    assertEquals(tweetTime.withTime(12, 0, 0, 0), match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getStop().getEndTime());
+  }
+
+  @Test
   public void testMatch_shouldReturnHighConfidenceWhenAtLocationTil() {
     TruckStopMatch match = tweet("Gold Coast, we have landed at Rush and Walton...here til 6 pm!")
         .match();

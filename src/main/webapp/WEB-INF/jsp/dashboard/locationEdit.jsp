@@ -55,6 +55,7 @@
       <label class="control-label" for="alias">Alias for</label>
       <div class="controls">
         <input id="alias" class="span6" type="text"/>
+        <a href="#" id="viewAlias">View</a>
       </div>
     </div>
     <div class="control-group">
@@ -88,6 +89,11 @@
 
 <script type="text/javascript">
   $(document).ready(function() {
+
+    $("#viewAlias").click(function(e) {
+      e.preventDefault();
+      location.href = '/admin/locations?q=' + encodeURIComponent($("#alias").val());
+    });
 
     var loc = ${location};
 
