@@ -1,6 +1,7 @@
 package foodtruck.server.dashboard;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -8,10 +9,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -63,6 +67,9 @@ public class LocationEditServlet extends HttpServlet {
         throw new RuntimeException(e);
       }
     }
+    List<String> locationNames = ImmutableList.copyOf(
+        Iterables.transform(locationDAO.findAutocompleteLocations(), Location.TO_NAME));
+    req.setAttribute("locations", new JSONArray(locationNames).toString());
     req.setAttribute("nav", "locations");
     req.getRequestDispatcher(jsp).forward(req, resp);
   }

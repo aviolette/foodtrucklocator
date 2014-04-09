@@ -54,7 +54,7 @@
     <div class="control-group">
       <label class="control-label" for="alias">Alias for</label>
       <div class="controls">
-        <input id="alias" class="span6" type="text"/>
+        <input id="alias" class="span6" type="text" data-provider="typeahead" data-items="4"/>
         <a href="#" id="viewAlias">View</a>
       </div>
     </div>
@@ -89,6 +89,8 @@
 
 <script type="text/javascript">
   $(document).ready(function() {
+
+    $("#alias").typeahead({source:${locations}});
 
     $("#viewAlias").click(function(e) {
       e.preventDefault();
