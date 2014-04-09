@@ -133,7 +133,8 @@ public class TruckStopMatcher {
       log.log(Level.INFO, "Didn't match '{0}' because it didn't contain match-only expression",
           tweetText);
       return null;
-    } else if (truck.getMatchOnlyIf() != null || lowerCaseTweet.contains("#ftf")) {
+    } else if (truck.getMatchOnlyIf() != null || lowerCaseTweet.contains("#ftf")
+        || lowerCaseTweet.contains("#foodtruckfinder")) {
       confidence = confidence.up();
       notes.add("Presense of #ftf in tweet increased confidence.");
     }
