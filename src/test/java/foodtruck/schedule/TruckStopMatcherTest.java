@@ -296,6 +296,20 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     assertEquals(match.getStop().getEndTime(), tweetTime.withHourOfDay(8).withMinuteOfHour(30));
   }
 
+  @Test
+  public void testMatch_shouldInterpretEndTimeAsMorning2() {
+    tweetTime = new DateTime(2011, 11, 12, 6, 45, 0, 0, DateTimeZone.UTC);
+    truck = Truck.builder().id("foobar").name("FOO").twitterHandle("bar")
+        .categories(ImmutableSet.of("Breakfast", "Lunch")).build();
+    TruckStopMatch match =
+        tweet("Something delicious is happening @ 600 W Chicago this fine mornin'. It's us making you a fluffy, buttermilk biscuit with fried chicken. Mmm.")
+            .withTruck(truck)
+            .match();
+    assertNotNull(match);
+    assertEquals(Confidence.LOW, match.getConfidence());
+    assertEquals(tweetTime, match.getStop().getStartTime());
+    assertEquals(tweetTime.plusHours(2), match.getStop().getEndTime());
+  }
 
   @Test
   public void testMatch_shouldNotDetectFutureLocationIfBreakfastAndLunchTruckWithBreakfast() {
