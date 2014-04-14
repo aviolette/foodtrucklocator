@@ -3,8 +3,12 @@ package foodtruck.model;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 import org.joda.time.DateTime;
+
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * @author aviolette
@@ -42,6 +46,16 @@ public class FoodTruckRequest extends ModelEntity {
     this.archived = builder.archived;
     this.submitted = builder.submitted;
     this.approved = builder.approved;
+  }
+
+  @Override public void validate() throws IllegalStateException {
+    super.validate();
+    checkState(startTime != null, "Start time cannot be null");
+    checkState(endTime != null && !endTime.isBefore(startTime), "End time cannot be before start time");
+    checkState(!Strings.isNullOrEmpty(requester), "Requester not specified.");
+    checkState(!Strings.isNullOrEmpty(description), "Description not specified.");
+    checkState(location != null, "Location not specified.");
+    checkState(!Strings.isNullOrEmpty(email), "Email not specified.");
   }
 
   public boolean isArchived() {

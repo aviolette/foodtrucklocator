@@ -9,6 +9,11 @@
     <p class="help-block hidden" id="eventNameHelp">Event name is required</p>
   </div>
   <div class="form-group">
+    <label for="email">Email</label>
+    <input type="email" placeholder="foo@bar.com" class="form-control" id="email" value="${email}"/>
+    <p class="help-block hidden" id="emailHelp">Email is required</p>
+  </div>
+  <div class="form-group">
     <label for="startDate">Start Date</label>
     <input type="text" placeholder="MM/dd/YYYY" name="startDate" class="form-control" id="startDate" value="<c:if test="${!empty(foodTruckRequest)}"><joda:format pattern="MM/dd/YYYY" value="${foodTruckRequest.startTime}"/></c:if>"/>
     <p class="help-block hidden" id="startDateHelp">Start date must be specified and in the form MM/dd/YYYY (e.g. 08/11/2014)</p>
@@ -24,12 +29,6 @@
     <input type="text" placeholder="Your first and last name" name="requester" class="form-control" id="requester" value="<c:if test="${!empty(foodTruckRequest)}">${foodTruckRequest.requester}</c:if>"/>
     <p class="help-block hidden" id="requesterHelp">Contact name is required</p>
   </div>
-  <c:if test="${useEmail}">
-    <div class="form-group">
-      <label for="requester">Contact Email</label>
-      <input type="email" name="email" class="form-control" id="email" value="<c:if test="${!empty(foodTruckRequest)}">${foodTruckRequest.email}</c:if>"/>
-    </div>
-  </c:if>
   <div class="form-group">
     <label for="expectedGuests">Expected number of guests</label>
     <input type="text" name="expectedGuests" id="expectedGuests" class="form-control" value="<c:if test="${!empty(foodTruckRequest)}">${foodTruckRequest.expectedGuests}</c:if>"/>

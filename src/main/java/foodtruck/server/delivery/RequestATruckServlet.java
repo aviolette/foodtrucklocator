@@ -80,6 +80,7 @@ public class RequestATruckServlet extends FrontPageServlet {
       }
     }
     req.setAttribute("title", "Request a Food Truck");
+    req.setAttribute("email", UserServiceFactory.getUserService().getCurrentUser().getEmail());
     req.getRequestDispatcher(JSP).forward(req, resp);
   }
 
@@ -144,6 +145,8 @@ public class RequestATruckServlet extends FrontPageServlet {
         .endTime(endTime)
         .location(location)
         .build();
+    // verify
+    request.validate();
     long key = foodTruckRequestDAO.save(request);
     notifier.notifyNewFoodTruckRequest(FoodTruckRequest.builder(request).key(key).build());
     resp.sendRedirect("/requests/view/" + key);
