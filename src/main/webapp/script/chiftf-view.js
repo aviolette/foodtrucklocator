@@ -235,6 +235,7 @@ var FoodTruckLocator = function () {
       if (stop.location.url) $locationDescription.append("<div><a href='" + stop.location.url + "'>" + stop.location.url + "</a></div>");
       if (stop.location.description) $locationDescription.append("<div>" + stop.location.description + " </div>");
       if (!isMobile()) {
+        if (stop.location.twitterHandle) $locationDescription.append("<div><small>Follow <a href='http://twitter.com/" + stop.location.twitterHandle + "'>@" + stop.location.twitterHandle + "</a> on twitter.</small></div>");
         if (stop.distance) $locationDescription.append("<div>(" + stop.distance + " miles from map center)</div>");
         if (lastIcon != stop.marker.icon) {
           $div = $("<div class='media-body'><h4><a href='/locations/" + stop.location.key + "'>" + formatLocation(stop.location.name) + "</a></h4></div>");

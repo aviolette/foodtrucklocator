@@ -45,7 +45,7 @@ public class LocationWriter implements JSONWriter<Location>, MessageBodyWriter<L
     if (location.getKey() == null) {
       Location loc = locationDAO.findByAddress(location.getName());
       if (loc != null) {
-        location = Location.builder(location).key(loc.getKey()).build();
+        location = Location.builder(loc).key(loc.getKey()).build();
       }
     }
     JSONObject obj = new JSONObject()
