@@ -10,7 +10,7 @@
   </div>
   <div class="form-group">
     <label for="email">Email</label>
-    <input type="email" placeholder="foo@bar.com" class="form-control" id="email" value="${email}"/>
+    <input type="email" placeholder="foo@bar.com" name="email" class="form-control" id="email" value="${email}"/>
     <p class="help-block hidden" id="emailHelp">Email is required</p>
   </div>
   <div class="form-group">
@@ -93,11 +93,13 @@
           endDate = parseDate($("#endDate").val()),
           contactName = $("#requester").val(),
           address = $("#address").val(),
-          eventName = $("#eventName").val();
+          eventName = $("#eventName").val(),
+          email = $("#email").val(),
           expectedGuests = $("#expectedGuests").val(),
           description = $("#description").val();
       errors = 0;
       assertCondition(startDate != null && (startDate.getTime() > yesterday), "startDate");
+      assertCondition(email.length > 0, "email");
       assertCondition(endDate != null && (endDate.getTime() >= startDate.getTime()), "endDate");
       assertCondition(contactName.length > 0, "requester");
       assertCondition(expectedGuests.length > 0 && !isNaN(parseInt(expectedGuests)), "expectedGuests");

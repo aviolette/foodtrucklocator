@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.common.base.Strings;
@@ -80,7 +81,11 @@ public class RequestATruckServlet extends FrontPageServlet {
       }
     }
     req.setAttribute("title", "Request a Food Truck");
-    req.setAttribute("email", UserServiceFactory.getUserService().getCurrentUser().getEmail());
+
+    final User currentUser = UserServiceFactory.getUserService().getCurrentUser();
+    if (currentUser != null) {
+      req.setAttribute("email", currentUser.getEmail());
+    }
     req.getRequestDispatcher(JSP).forward(req, resp);
   }
 
@@ -115,7 +120,6 @@ public class RequestATruckServlet extends FrontPageServlet {
       endTime = formatter.parseDateTime(req.getParameter("startDate"));
     final Escaper escaper = HtmlEscapers.htmlEscaper();
     String address = req.getParameter("address");
-    Location location = geoLocator.locate(escaper.escape(address), GeolocationGranularity.NARROW);
 
     String description = req.getParameter("description");
     if (Strings.isNullOrEmpty(description)) {
@@ -137,13 +141,12 @@ public class RequestATruckServlet extends FrontPageServlet {
         .eventName(escaper.escape(req.getParameter("eventName")))
         .expectedGuests(expected.intValue())
         .prepaid("prepaid".equals(req.getParameter("prepaid")))
-        .email(userService.getCurrentUser().getEmail())
-        .userId(userService.getCurrentUser().getUserId())
+        .email(escaper.escape(req.getParameter("email")))
         .requester(requester)
         .phone(escaper.escape(req.getParameter("phone")))
         .startTime(startTime)
         .endTime(endTime)
-        .location(location)
+        .location(Location.builder().name(escaper.escape(address)).build())
         .build();
     // verify
     request.validate();

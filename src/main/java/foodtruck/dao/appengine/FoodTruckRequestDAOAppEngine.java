@@ -49,6 +49,8 @@ public class FoodTruckRequestDAOAppEngine extends AppEngineDAO<Long, FoodTruckRe
     entity.setProperty("prepaid", obj.isPrepaid());
     entity.setProperty("event_name", obj.getEventName());
     entity.setProperty("archived", obj.isArchived());
+    entity.setProperty("auth_code", obj.getAuthCode());
+    Attributes.setDateProperty("verified", entity, obj.getVerified());
     Attributes.setDateProperty("submitted", entity, obj.getSubmitted());
     Attributes.setDateProperty("approved", entity, obj.getApproved());
 

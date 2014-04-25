@@ -51,8 +51,7 @@ public class ViewRequestATruckServlet extends FrontPageServlet {
   }
 
   private boolean canView(FoodTruckRequest request) {
-    UserService userService = UserServiceFactory.getUserService();
-    return userService.isUserAdmin() || request.getEmail().equalsIgnoreCase(userService.getCurrentUser().getEmail());
+    return true;
   }
 
 }

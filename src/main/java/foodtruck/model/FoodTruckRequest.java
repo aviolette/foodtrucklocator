@@ -29,6 +29,8 @@ public class FoodTruckRequest extends ModelEntity {
   private final boolean archived;
   private final DateTime submitted;
   private final @Nullable DateTime approved;
+  private final @Nullable DateTime verified;
+  private final String authCode;
 
   private FoodTruckRequest(Builder builder) {
     super(builder.key);
@@ -46,6 +48,8 @@ public class FoodTruckRequest extends ModelEntity {
     this.archived = builder.archived;
     this.submitted = builder.submitted;
     this.approved = builder.approved;
+    this.verified = builder.verified;
+    this.authCode = builder.authCode;
   }
 
   @Override public void validate() throws IllegalStateException {
@@ -56,6 +60,15 @@ public class FoodTruckRequest extends ModelEntity {
     checkState(!Strings.isNullOrEmpty(description), "Description not specified.");
     checkState(location != null, "Location not specified.");
     checkState(!Strings.isNullOrEmpty(email), "Email not specified.");
+    checkState(!Strings.isNullOrEmpty(authCode), "Authcode not specified.");
+  }
+
+  @Nullable public DateTime getVerified() {
+    return verified;
+  }
+
+  public String getAuthCode() {
+    return authCode;
   }
 
   public boolean isArchived() {
@@ -154,6 +167,8 @@ public class FoodTruckRequest extends ModelEntity {
     private boolean archived;
     private DateTime submitted;
     private @Nullable DateTime approved;
+    private @Nullable DateTime verified;
+    private String authCode;
 
 
     public Builder() {}
@@ -174,10 +189,22 @@ public class FoodTruckRequest extends ModelEntity {
       archived = request.archived;
       submitted = request.submitted;
       approved = request.approved;
+      verified = request.getVerified();
+      authCode = request.getAuthCode();
     }
 
     public Builder key(Object key) {
       this.key = key;
+      return this;
+    }
+
+    public Builder verified(@Nullable DateTime verified) {
+      this.verified = verified;
+      return this;
+    }
+
+    public Builder authCode(String authCode) {
+      this.authCode = authCode;
       return this;
     }
 
