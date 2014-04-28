@@ -79,7 +79,8 @@ public class Attributes {
 
   public static List<String> getListProperty(Entity entity, String name) {
     if (entity.hasProperty(name)) {
-      return (List<String>) entity.getProperty(name);
+      List<String> val = (List<String>) entity.getProperty(name);
+      return val == null ? ImmutableList.<String>of() : val;
     }
     return ImmutableList.of();
   }

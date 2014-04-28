@@ -35,12 +35,24 @@ public class TruckReader implements MessageBodyReader<Truck> {
       MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
       throws IOException, WebApplicationException {
     try {
-      JSONObject json = readJSON(entityStream);
-      // TODO: fill this out a bit more
-      return Truck.builder().id(json.getString("id")).name(json.getString("name"))
-          .twitterHandle(json.getString("twitterHandle")).build();
+      return asJSON(readJSON(entityStream));
     } catch (JSONException e) {
       throw new BadRequestException(e, MediaType.APPLICATION_JSON_TYPE);
     }
+  }
+
+  public Truck asJSON(JSONObject json) throws JSONException {
+    return Truck.builder()
+        .id(json.getString("id"))
+        .description(json.optString("description"))
+        .facebook(json.optString("facebook"))
+        .facebookPageId(json.optString("facebookPageId"))
+        .foursquareUrl(json.optString("foursquare"))
+        .iconUrl(json.optString("iconUrl"))
+        .previewIcon(json.optString("previewIcon"))
+        .yelpSlug(json.optString("yelp"))
+        .name(json.getString("name"))
+        .twitterHandle(json.getString("twitterHandle")).build();
+
   }
 }

@@ -57,6 +57,8 @@ public class ConfigurationServlet extends HttpServlet {
         .autoOffRoad("on".equals(req.getParameter("autoOffRoad")))
         .showPublicTruckGraphs("on".equals(req.getParameter("showPublicTruckGraphs")))
         .foodTruckRequestOn("on".equals(req.getParameter("foodTruckRequestOn")))
+        .syncUrl(req.getParameter("syncUrl"))
+        .syncAppKey(req.getParameter("syncAppKey"))
         .yahooGeolocationEnabled("on".equals(req.getParameter("yahooGeolocationEnabled")))
         .googleGeolocationEnabled("on".equals(req.getParameter("googleGeolocationEnabled")))
         .tweetUpdateServletEnabled("on".equals(req.getParameter("tweetUpdateServletEnabled")))

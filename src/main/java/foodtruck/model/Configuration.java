@@ -40,6 +40,8 @@ public class Configuration extends ModelEntity {
   private boolean showPublicTruckGraphs;
   private boolean autoOffRoad;
   private Confidence minimumConfidenceForDisplay;
+  private String syncUrl;
+  private String syncAppKey;
 
   public Configuration(Object key) {
     super(key);
@@ -70,6 +72,8 @@ public class Configuration extends ModelEntity {
     this.showPublicTruckGraphs = builder.showPublicTruckGraphs;
     this.autoOffRoad = builder.autoOffRoad;
     this.minimumConfidenceForDisplay = builder.minimumConfidenceForDisplay;
+    this.syncUrl = builder.syncUrl;
+    this.syncAppKey = builder.syncAppKey;
   }
 
   public Confidence getMinimumConfidenceForDisplay() {
@@ -184,6 +188,14 @@ public class Configuration extends ModelEntity {
     return retweetStopCreatingTweets;
   }
 
+  public String getSyncUrl() {
+    return syncUrl;
+  }
+
+  public String getSyncAppKey() {
+    return syncAppKey;
+  }
+
   public static class Builder {
     private boolean googleGeolocationEnabled = true;
     private boolean yahooGeolocationEnabled = false;
@@ -209,11 +221,15 @@ public class Configuration extends ModelEntity {
     public boolean showPublicTruckGraphs = true;
     public boolean autoOffRoad;
     public Confidence minimumConfidenceForDisplay = Confidence.HIGH;
+    public String syncAppKey;
+    public String syncUrl;
 
     public Builder() {
     }
 
     public Builder(Configuration config) {
+      this.syncUrl = config.syncUrl;
+      this.syncAppKey = config.syncAppKey;
       this.googleGeolocationEnabled = config.isGoogleGeolocationEnabled();
       this.yahooGeolocationEnabled = config.isYahooGeolocationEnabled();
       this.throttleGoogleUntil = config.throttleGoogleUntil;
@@ -235,6 +251,16 @@ public class Configuration extends ModelEntity {
       this.foodTruckRequestOn = config.foodTruckRequestOn;
       this.showPublicTruckGraphs = config.showPublicTruckGraphs;
       this.autoOffRoad = config.autoOffRoad;
+    }
+
+    public Builder syncAppKey(String syncAppKey) {
+      this.syncAppKey = syncAppKey;
+      return this;
+    }
+
+    public Builder syncUrl(String syncUrl) {
+      this.syncUrl = syncUrl;
+      return this;
     }
 
     public Builder autoOffRoad(boolean autoOffRoad) {

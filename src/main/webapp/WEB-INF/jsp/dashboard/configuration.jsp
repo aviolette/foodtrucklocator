@@ -63,6 +63,18 @@
     </div>
   </fieldset>
   <fieldset>
+    <legend>Sync</legend>
+    <p>These parameters should not be used in a production environment.</p>
+    <div class="clearfix">
+      <label for="syncUrl">Sync URL</label>
+      <input class="span6" type="text" value="${config.syncUrl}" name="syncUrl" id="syncUrl"/>
+    </div>
+    <div class="clearfix">
+      <label for="syncAppKey">Sync App Key</label>
+      <input class="span6" type="text" value="${config.syncAppKey}" name="syncAppKey" id="syncAppKey"/>
+    </div>
+  </fieldset>
+  <fieldset>
     <legend>Geolocation</legend>
     <div class="clearfix">
       <label for="calendarUrl">Yahoo App Key</label>

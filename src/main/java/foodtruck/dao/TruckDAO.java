@@ -62,4 +62,6 @@ public interface TruckDAO extends DAO<String, Truck> {
   Set<Truck> findByBeaconnaiseEmail(String email);
 
   Iterable<Truck> findTrucksWithEmail();
+
+  void deleteAll();
 }

@@ -11,7 +11,7 @@ import foodtruck.model.Truck;
  */
 public class AbbreviatedTruckWriter implements JSONWriter<Truck> {
   @Override public JSONObject asJSON(Truck truck) throws JSONException {
-    return new JSONObject()
+    JSONObject obj = new JSONObject()
         .put("id", truck.getId())
         .put("iconUrl", truck.getIconUrl())
         .put("twitterHandle", truck.getTwitterHandle())
@@ -21,5 +21,9 @@ public class AbbreviatedTruckWriter implements JSONWriter<Truck> {
         .put("name", truck.getName())
         .put("yelp", truck.getYelpSlug())
         .put("url", truck.getUrl());
+    if (truck.isDisplayEmailPublicly()) {
+      obj.put("email", truck.getEmail());
+    }
+    return obj;
   }
 }

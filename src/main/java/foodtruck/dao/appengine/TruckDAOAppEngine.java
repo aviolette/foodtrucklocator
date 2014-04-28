@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Text;
 import com.google.common.base.Strings;
@@ -226,6 +227,16 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     q.setFilter(Query.CompositeFilterOperator.and(new Query.FilterPredicate(TRUCK_EMAIL, Query.FilterOperator.NOT_EQUAL, null),
         new Query.FilterPredicate(TRUCK_ALLOW_SYSTEM_NOTIFICATIONS, Query.FilterOperator.EQUAL, true)));
     return executeQuery(dataStore, q);
+  }
+
+  @Override public void deleteAll() {
+    DatastoreService dataStore = provider.get();
+    Query q = new Query(getKind());
+    ImmutableList.Builder<Key> keys = ImmutableList.builder();
+    for (Entity entity : dataStore.prepare(q).asIterable()) {
+      keys.add(entity.getKey());
+    }
+    dataStore.delete(keys.build());
   }
 
   @Override public Set<Truck> findTrucksWithCalendars() {

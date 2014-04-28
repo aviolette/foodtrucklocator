@@ -14,7 +14,6 @@ import com.google.inject.Inject;
 import org.codehaus.jettison.json.JSONException;
 import org.joda.time.DateTime;
 
-import foodtruck.model.DailySchedule;
 import foodtruck.schedule.ScheduleCacher;
 import foodtruck.server.resources.json.DailyScheduleWriter;
 import foodtruck.truckstops.FoodTruckStopService;
