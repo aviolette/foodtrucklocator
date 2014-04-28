@@ -446,6 +446,7 @@ public class Truck extends ModelEntity {
       this.twittalyzer = truck.twittalyzer;
       this.defaultCity = truck.defaultCity;
       this.facebook = truck.facebook;
+      this.donotMatchIf = truck.donotMatchIf;
       this.matchOnlyIf = truck.matchOnlyIf;
       this.inactive = truck.inactive;
       this.calendarUrl = truck.calendarUrl;
