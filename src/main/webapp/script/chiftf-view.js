@@ -469,6 +469,9 @@ var FoodTruckLocator = function () {
       _trucks = new Trucks(model);
       refreshViewData();
     },
+    getModel: function() {
+      return _trucks;
+    },
     openTruck: function (truckId) {
       buildTruckDialog(_trucks.findTruck(truckId));
     },
