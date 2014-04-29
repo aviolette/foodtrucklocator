@@ -372,7 +372,7 @@ var FoodTruckLocator = function () {
   }
 
   function displayWarningIfMarkersNotVisible() {
-    if (!_trucks.hasActive()) {
+    if (_trucks == null || !_trucks.hasActive()) {
       flash("There are no food trucks on the road right now.");
     } else if (_trucks.allVisible()) {
       hideFlash();
