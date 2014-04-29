@@ -21,7 +21,6 @@ public interface TimeSeriesDAO extends DAO<Long, SystemStats>{
    */
   void updateCount(DateTime timestamp, String key);
 
-
   /**
    * Deletes all stats before the current day
    * @param localDate

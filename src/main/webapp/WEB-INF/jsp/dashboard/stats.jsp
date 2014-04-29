@@ -53,12 +53,6 @@
     <div id="dailySchedule"></div>
   </div>
 </div>
-<div class="row">
-  <div class="span6">
-    <h3>Schedule Service - /services/schedule/<code>truckId</code></h3>
-    <div id="scheduleService"></div>
-  </div>
-</div>
 
 <script type="text/javascript">
   function drawGraphs(statNames, containerId) {
@@ -71,7 +65,7 @@
 
   function drawGraph(statNames, containerId) {
     var series = [];
-    var colors = ["steelblue", "red", "green"];
+    var colors = ["steelblue", "red", "green", "yellow", "orange", "cyan", "darkgray", "lawngreen", "midnightblue", "cadetblue"];
     $.each(statNames, function(i, statName) {
       series.push({name : statName, color : colors[i]});
     });
@@ -113,11 +107,14 @@
     drawGraphs("foodtruck.schedule.GoogleCalendar_findForTime_total", "calendarCache");
     drawGraphs(["cacheLookup_total","cacheLookup_failed"], "databaseCache");
     drawGraphs(["foodtruck.server.api.FoodTruckScheduleServlet_doGet_total"], "scheduleService");
+    drawGraphs([<c:forEach items="${applications}" var="app" varStatus="idx">"${app}"<c:if test="${!idx.last}">,</c:if></c:forEach>], "dailySchedule");
+    /*
     drawGraphs(["foodtruck.server.resources.DailyScheduleResource_findForDay_total",
       "foodtruck.server.resources.DailyScheduleResource_findForDay_failed"], "dailySchedule");
     drawGraphs(["foodtruck.server.resources.LocationResource_findLocation_total",
       "foodtruck.server.resources.LocationResource_findLocation_failed"], "locationLookup");
     drawGraphs("trucksOnRoad", "trucksOnRoad");
+    */
   });
 </script>
 
