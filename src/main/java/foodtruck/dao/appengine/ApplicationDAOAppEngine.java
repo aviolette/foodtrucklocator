@@ -1,6 +1,10 @@
 package foodtruck.dao.appengine;
 
+import java.util.Collection;
+
+import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Query;
 import com.google.inject.Inject;
 
 import foodtruck.dao.ApplicationDAO;
@@ -35,5 +39,12 @@ public class ApplicationDAOAppEngine extends AppEngineDAO<String, Application> i
         .enabled(getBooleanProperty(entity, PROP_ENABLED, false))
         .appKey(entity.getKey().getName())
         .build();
+  }
+
+  @Override public Collection<Application> findActive() {
+    DatastoreService dataStore = provider.get();
+    Query q = new Query(getKind());
+    q.setFilter(new Query.FilterPredicate(PROP_ENABLED, Query.FilterOperator.EQUAL, true));
+    return executeQuery(dataStore, q);
   }
 }

@@ -45,16 +45,18 @@
 <h2>End Point Requests</h2>
 <div class="row">
   <div class="span6">
-    <h3>Location Lookup - /services/locations/<code>location</code></h3>
-    <div id="locationLookup"></div>
-  </div>
-  <div class="span6">
     <h3>Schedule Service - /services/daily_schedule</h3>
     <div id="dailySchedule"></div>
+  </div>
+  <div class="span6">
+    <h3>Location Lookup - /services/locations/<code>location</code></h3>
+    <div id="locationLookup"></div>
   </div>
 </div>
 
 <script type="text/javascript">
+  var colors = ["steelblue", "red", "green", "yellow", "orange", "cyan", "darkgray", "lawngreen", "midnightblue", "cadetblue"];
+
   function drawGraphs(statNames, containerId) {
     if (typeof(statNames) == "string") {
       drawGraph([statNames], containerId);
@@ -65,7 +67,6 @@
 
   function drawGraph(statNames, containerId) {
     var series = [];
-    var colors = ["steelblue", "red", "green", "yellow", "orange", "cyan", "darkgray", "lawngreen", "midnightblue", "cadetblue"];
     $.each(statNames, function(i, statName) {
       series.push({name : statName, color : colors[i]});
     });
@@ -113,8 +114,8 @@
       "foodtruck.server.resources.DailyScheduleResource_findForDay_failed"], "dailySchedule");
     drawGraphs(["foodtruck.server.resources.LocationResource_findLocation_total",
       "foodtruck.server.resources.LocationResource_findLocation_failed"], "locationLookup");
+     */
     drawGraphs("trucksOnRoad", "trucksOnRoad");
-    */
   });
 </script>
 

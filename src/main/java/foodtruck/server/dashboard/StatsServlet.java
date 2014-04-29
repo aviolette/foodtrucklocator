@@ -1,6 +1,7 @@
 package foodtruck.server.dashboard;
 
 import java.io.IOException;
+import java.util.Collection;
 
 import javax.annotation.Nullable;
 import javax.servlet.ServletException;
@@ -33,13 +34,21 @@ public class StatsServlet extends HttpServlet {
   @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     req.setAttribute("nav", "stats");
+    Collection<Application> apps = applicationDAO.findActive();
     req.setAttribute("applications",
-        FluentIterable.from(applicationDAO.findAll())
+        FluentIterable.from(apps)
             .transform(new Function<Application, String>() {
           @Nullable @Override public String apply(@Nullable Application application) {
             return "daily_schedule_request_" + application.getAppKey();
           }
         }).toList());
+    req.setAttribute("applicationNames",
+        FluentIterable.from(apps)
+            .transform(new Function<Application, String>() {
+              @Nullable @Override public String apply(@Nullable Application application) {
+                return application.getName();
+              }
+            }).toList());
     req.getRequestDispatcher("/WEB-INF/jsp/dashboard/stats.jsp").forward(req, resp);
   }
 }

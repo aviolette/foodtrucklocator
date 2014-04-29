@@ -1,5 +1,7 @@
 package foodtruck.dao;
 
+import java.util.Collection;
+
 import foodtruck.model.Application;
 
 /**
@@ -7,4 +9,5 @@ import foodtruck.model.Application;
  * @since 1/25/13
  */
 public interface ApplicationDAO extends DAO<String, Application> {
+  Collection<Application> findActive();
 }
