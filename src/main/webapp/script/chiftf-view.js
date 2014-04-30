@@ -353,7 +353,9 @@ var FoodTruckLocator = function () {
   }
 
   function updateDistanceFromCurrentLocation() {
-    _trucks.updateDistanceFrom(findLocation());
+    if (_trucks) {
+      _trucks.updateDistanceFrom(findLocation());
+    }
   }
 
   function sortByDistanceFromLocation(stops, location) {
