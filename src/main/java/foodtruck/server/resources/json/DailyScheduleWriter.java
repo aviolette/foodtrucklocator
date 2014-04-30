@@ -5,6 +5,8 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
@@ -14,6 +16,7 @@ import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
 import com.google.common.base.Function;
+import com.google.common.base.Throwables;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
@@ -42,6 +45,7 @@ import foodtruck.util.TimeOnlyFormatter;
  */
 @Provider @Produces(MediaType.APPLICATION_JSON)
 public class DailyScheduleWriter implements MessageBodyWriter<DailySchedule>, JSONWriter<DailySchedule> {
+  private static final Logger log = Logger.getLogger(DailyScheduleWriter.class.getName());
   private final LocationWriter locationWriter;
   private final DateTimeFormatter formatter;
   private final AbbreviatedTruckWriter truckWriter;
@@ -76,20 +80,25 @@ public class DailyScheduleWriter implements MessageBodyWriter<DailySchedule>, JS
     final Escaper escaper = HtmlEscapers.htmlEscaper();
     JSONArray schedules = new JSONArray();
     for (TruckStop stop : schedule.getStops()) {
-       JSONObject truckStop = new JSONObject()
-          .put("location", locations.get(stop.getLocation()))
-          .put("truckId", stop.getTruck().getId())
-          .put("confidence", stop.getConfidence())
-          .put("startTime", formatter.print(stop.getStartTime()))
-          .put("startMillis", stop.getStartTime().getMillis())
-          .put("endMillis", stop.getEndTime().getMillis())
-          .put("notes", new JSONArray(Collections2.transform(stop.getNotes(), new Function<String, String>() {
-            @Override public String apply(String s) {
-              return escaper.escape(s);
-            }
-          })))
-          .put("endTime", formatter.print(stop.getEndTime()));
-      schedules.put(truckStop);
+      try {
+         JSONObject truckStop = new JSONObject()
+            .put("location", locations.get(stop.getLocation()))
+            .put("truckId", stop.getTruck().getId())
+            .put("confidence", stop.getConfidence())
+            .put("startTime", formatter.print(stop.getStartTime()))
+            .put("startMillis", stop.getStartTime().getMillis())
+            .put("endMillis", stop.getEndTime().getMillis())
+            .put("notes", new JSONArray(Collections2.transform(stop.getNotes(), new Function<String, String>() {
+              @Override public String apply(String s) {
+                return escaper.escape(s);
+              }
+            })))
+            .put("endTime", formatter.print(stop.getEndTime()));
+        schedules.put(truckStop);
+      } catch (Exception e) {
+        log.log(Level.WARNING, "Stop {0} caused an error", stop);
+        Throwables.propagate(e);
+      }
     }
     payload.put("trucks", JSONSerializer.buildArray(ImmutableSet.copyOf(trucks), truckWriter));
     payload.put("locations", locationArr);

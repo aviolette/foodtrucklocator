@@ -18,10 +18,12 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.ConfigurationDAO;
+import foodtruck.dao.LocationDAO;
 import foodtruck.model.Configuration;
 import foodtruck.model.DailySchedule;
 import foodtruck.schedule.ScheduleCacher;
 import foodtruck.server.resources.json.DailyScheduleWriter;
+import foodtruck.server.resources.json.LocationCollectionWriter;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 import foodtruck.util.TimeFormatter;
@@ -40,11 +42,14 @@ public class FoodTruckServlet extends FrontPageServlet {
   private final FoodTruckStopService stopService;
   private final DailyScheduleWriter writer;
   private final ScheduleCacher scheduleCacher;
+  private final LocationDAO locationDAO;
+  private final LocationCollectionWriter locationCollectionWriter;
 
   @Inject
   public FoodTruckServlet(ConfigurationDAO configDAO,
       Clock clock, FoodTruckStopService service, DailyScheduleWriter writer, ScheduleCacher scheduleCacher,
-      @TimeFormatter DateTimeFormatter timeFormatter) {
+      @TimeFormatter DateTimeFormatter timeFormatter, LocationDAO locationDAO,
+      LocationCollectionWriter locationCollectionWriter) {
     super(configDAO);
     this.clock = clock;
     this.timeFormatter = timeFormatter;
@@ -52,6 +57,8 @@ public class FoodTruckServlet extends FrontPageServlet {
     this.stopService = service;
     this.writer = writer;
     this.scheduleCacher = scheduleCacher;
+    this.locationDAO = locationDAO;
+    this.locationCollectionWriter = locationCollectionWriter;
   }
 
   @Override
@@ -102,6 +109,12 @@ public class FoodTruckServlet extends FrontPageServlet {
       log.log(Level.INFO, "Loaded page from datastore");
     } else {
       log.log(Level.INFO, "Loaded payload from cache");
+    }
+    final boolean includeDesignatedStops = "true".equals(req.getParameter("designatedStops"));
+    if (includeDesignatedStops) {
+      req.setAttribute("designatedStops", locationCollectionWriter.asJSON(locationDAO.findDesignatedStops()).toString());
+    } else {
+      req.setAttribute("designatedStops", "[]");
     }
     final String mode = req.getParameter("mode");
     req.setAttribute("mobile", "mobile".equals(mode));

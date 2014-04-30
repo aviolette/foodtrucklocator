@@ -4,6 +4,7 @@ var FoodTruckLocator = function () {
       _trucks = null,
       _mobile = false,
       _markers = null,
+      _designatedStops = null,
       _center = null;
 
   function isMobile() {
@@ -22,9 +23,16 @@ var FoodTruckLocator = function () {
     updateDistanceFromCurrentLocation();
     if (!isMobile()) {
       updateMap();
+      displayDesignatedStops();
     }
     updateTruckLists();
     displayWarningIfMarkersNotVisible();
+  }
+
+  function displayDesignatedStops() {
+    $.each(_designatedStops, function(idx, item) {
+      _markers.addLocationMarker(item);
+    });
   }
 
   function setCookie(name, value, days) {
@@ -54,7 +62,7 @@ var FoodTruckLocator = function () {
   }
 
   var Markers = function () {
-    var markers = {}, lastLetter = 0, color = "";
+    var markers = {}, lastLetter = 0, color = "", locationMarkers = {};
 
     function buildIconURL(letter) {
       var code = letter.charCodeAt(0);
@@ -73,6 +81,25 @@ var FoodTruckLocator = function () {
         marker.setMap(null);
       });
       markers = {};
+      $.each(locationMarkers, function(key, marker) {
+        marker.setMap(null);
+      });
+      locationMarkers = {};
+    };
+
+    this.addLocationMarker = function(location) {
+      if (typeof locationMarkers[location.name] == "undefined") {
+        var position = new google.maps.LatLng(location.latitude, location.longitude);
+        location.marker = new google.maps.Marker({
+          map: _map,
+          icon: "http://www.google.com/mapfiles/marker_green.png",
+          position: position
+        });
+        locationMarkers[location.name] = location.marker;
+        this.bounds.extend(position);
+      } else {
+        location.marker = markers[location.name];
+      }
     };
 
     this.add = function (stop) {
@@ -504,10 +531,11 @@ var FoodTruckLocator = function () {
     extend: function () {
       _map.fitBounds(_markers.bounds);
     },
-    run: function (mobile, center, time, modelPayload, appKey) {
+    run: function (mobile, center, time, modelPayload, appKey, designatedStops) {
       var self = this;
       _appKey = appKey;
       _center = findCenter(center);
+      _designatedStops = designatedStops;
       resize();
       displayMessageOfTheDay(modelPayload);
       if (displayListOnly() || mobile) {

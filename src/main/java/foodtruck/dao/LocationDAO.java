@@ -1,5 +1,6 @@
 package foodtruck.dao;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -42,4 +43,8 @@ public interface LocationDAO extends DAO<Long, Location> {
    */
   List<Location> findAliasesFor(String locationName);
 
+  /**
+   * Finds all the locations marked as a designated stop
+   */
+  Collection<Location> findDesignatedStops();
 }

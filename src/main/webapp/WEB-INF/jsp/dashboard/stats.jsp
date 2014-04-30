@@ -112,9 +112,9 @@
     /*
     drawGraphs(["foodtruck.server.resources.DailyScheduleResource_findForDay_total",
       "foodtruck.server.resources.DailyScheduleResource_findForDay_failed"], "dailySchedule");
+*/
     drawGraphs(["foodtruck.server.resources.LocationResource_findLocation_total",
       "foodtruck.server.resources.LocationResource_findLocation_failed"], "locationLookup");
-     */
     drawGraphs("trucksOnRoad", "trucksOnRoad");
   });
 </script>

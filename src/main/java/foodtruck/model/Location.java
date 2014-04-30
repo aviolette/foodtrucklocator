@@ -32,6 +32,7 @@ public class Location extends ModelEntity {
   private final boolean autocomplete;
   private final @Nullable String alias;
   private final @Nullable String twitterHandle;
+  private final boolean designatedStop;
 
   public Location(Builder builder) {
     super(builder.key);
@@ -47,6 +48,11 @@ public class Location extends ModelEntity {
     autocomplete = builder.autocomplete;
     alias = builder.alias;
     twitterHandle = builder.twitterHandle;
+    designatedStop = builder.designatedStop;
+  }
+
+  public boolean isDesignatedStop() {
+    return designatedStop;
   }
 
   public boolean isPopular() {
@@ -190,6 +196,7 @@ public class Location extends ModelEntity {
     private boolean autocomplete;
     private @Nullable String alias;
     private @Nullable String twitterHandle;
+    private boolean designatedStop;
 
     public Builder(Location location) {
       key = location.getKey();
@@ -206,9 +213,15 @@ public class Location extends ModelEntity {
       autocomplete = location.autocomplete;
       alias = location.alias;
       twitterHandle = location.twitterHandle;
+      designatedStop = location.designatedStop;
     }
 
     public Builder() {
+    }
+
+    public Builder designatedStop(boolean designatedStop) {
+      this.designatedStop = designatedStop;
+      return this;
     }
 
     public Builder radius(double radius) {

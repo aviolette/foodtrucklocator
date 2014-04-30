@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Collection;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 
 /**
@@ -49,6 +51,14 @@ public abstract class CollectionWriter<E, D extends JSONWriter<E>> implements
       OutputStream outputStream) throws IOException, WebApplicationException {
     try {
       JSONSerializer.writeJSONCollection(es, writer, outputStream);
+    } catch (JSONException e) {
+      throw new WebApplicationException(e, 400);
+    }
+  }
+
+  public JSONArray asJSON(Collection<E> objs) {
+    try {
+      return JSONSerializer.buildArray(objs, writer);
     } catch (JSONException e) {
       throw new WebApplicationException(e, 400);
     }

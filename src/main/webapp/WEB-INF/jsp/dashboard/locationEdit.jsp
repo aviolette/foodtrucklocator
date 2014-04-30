@@ -79,6 +79,7 @@
     <div class="control-group">
       <div class="controls">
         <label><input id="invalidLoc" type="checkbox">&nbsp;Ignore in geolocation lookups</label>
+        <label><input id="designatedStop" type="checkbox">&nbsp;Designated food truck stop</label>
         <label><input id="popular" type="checkbox">&nbsp;Popular?</label>
         <label><input id="autocomplete" type="checkbox">&nbsp;Autocomplete?</label>
         <input id="submitButton" type="submit" class="btn primary" value="Save"/>&nbsp;
@@ -112,6 +113,7 @@
       $("#invalidLoc").attr("checked", !loc.valid);
       $("#description").attr("value", loc.description);
       $("#popular").attr("checked", loc.popular);
+      $("#designatedStop").attr("checked", loc.designatedStop);
       $("#autocomplete").attr("checked", loc.autocomplete);
       $("#url").attr("value", loc.url);
     }
@@ -216,6 +218,7 @@
       loc.description = $("#description").attr("value");
       loc.url = $("#url").attr("value");
       loc.popular = $("#popular").is(":checked");
+      loc.designatedStop = $("#designatedStop").is(":checked");
       loc.autocomplete = $("#autocomplete").is(":checked");
       e.preventDefault();
       $submitButton.addClass("disabled");

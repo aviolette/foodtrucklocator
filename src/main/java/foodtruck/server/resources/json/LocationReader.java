@@ -18,6 +18,7 @@ public class LocationReader {
         .alias(obj.optString("alias"))
         .twitterHandle(obj.optString("twitterHandle"))
         .popular(obj.optBoolean("popular", false))
+        .designatedStop(obj.optBoolean("designatedStop", false))
         .autocomplete(obj.optBoolean("autocomplete", false))
         .radius(obj.getDouble("radius"))
         .name(obj.getString("name")).key((key > 0) ? key : null)

@@ -1,5 +1,6 @@
 package foodtruck.dao.appengine;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -40,6 +41,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
   private static final String AUTOCOMPLETE = "autocomplete";
   private static final String ALIAS = "alias";
   private static final String TWITTERHANDLE = "twitter_handle";
+  private static final String DESIGNATED_STOP = "designated_stop";
 
   private static final Logger log = Logger.getLogger(LocationDAOAppEngine.class.getName());
   private final Clock clock;
@@ -93,6 +95,13 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
         .setFilter(new Query.FilterPredicate(ALIAS, Query.FilterOperator.EQUAL, locationName)));
   }
 
+  @Override public Collection<Location> findDesignatedStops() {
+    DatastoreService dataStore = provider.get();
+    Query q = new Query(LOCATION_KIND);
+    q.setFilter(new Query.FilterPredicate(DESIGNATED_STOP, Query.FilterOperator.EQUAL, true));
+    return ImmutableSet.copyOf(executeQuery(dataStore, q));
+  }
+
   private Query locationQuery(String keyword) {
     Query q = new Query(LOCATION_KIND);
     Query.Filter nameFilter = new Query.FilterPredicate(NAME_FIELD, Query.FilterOperator.EQUAL, keyword);
@@ -134,6 +143,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     entity.setProperty(AUTOCOMPLETE, location.isAutocomplete());
     entity.setProperty(ALIAS, location.getAlias());
     entity.setProperty(TWITTERHANDLE, location.getTwitterHandle());
+    entity.setProperty(DESIGNATED_STOP, location.isDesignatedStop());
     return entity;
   }
 
@@ -151,6 +161,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     builder.alias(getStringProperty(entity, ALIAS));
     builder.radius(Attributes.getDoubleProperty(entity, RADIAL_FIELD, 0.0));
     builder.twitterHandle(Attributes.getStringProperty(entity, TWITTERHANDLE));
+    builder.designatedStop(getBooleanProperty(entity, DESIGNATED_STOP, false));
     boolean isValid = valid == null || valid;
     if (lat == null || lng == null) {
       builder.valid(false);
