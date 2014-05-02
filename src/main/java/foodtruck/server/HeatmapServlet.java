@@ -2,7 +2,6 @@ package foodtruck.server;
 
 import java.io.IOException;
 
-import javax.annotation.Nullable;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,13 +14,11 @@ import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import org.codehaus.jettison.json.JSONArray;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.TruckStopDAO;
-import foodtruck.model.Location;
 import foodtruck.model.TruckStop;
 import foodtruck.util.Clock;
 
@@ -66,6 +63,7 @@ public class HeatmapServlet extends FrontPageServlet {
 
     req.setAttribute("locations", locations);
     req.setAttribute("center", configurationDAO.find().getCenter());
+    req.setAttribute("title", "Heatmap of Chicago Food Truck Stops");
     req.getRequestDispatcher(JSP).forward(req, resp);
   }
 }

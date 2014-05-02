@@ -35,23 +35,9 @@
     heatmap.setMap(map);
   }
 
-  function toggleHeatmap() {
-    heatmap.setMap(heatmap.getMap() ? null : map);
-  }
-
-  function changeRadius() {
-    heatmap.set('radius', heatmap.get('radius') ? null : 20);
-  }
-
-  function changeOpacity() {
-    heatmap.set('opacity', heatmap.get('opacity') ? null : 0.2);
-  }
-
   google.maps.event.addDomListener(window, 'load', initialize);
 
 </script>
-
-<h2>Heatmap</h2>
 
 <p>This heatmap represents the active food truck stops in the city and in the suburbs over a 3 month period.</p>
 
