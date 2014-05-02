@@ -99,6 +99,7 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/requests/view/*").with(ViewRequestATruckServlet.class);
     serve("/locations*").with(LocationServlet.class);
     serve("/events*").with(EventsServlet.class);
+    serve("/stats/heatmap").with(HeatmapServlet.class);
     serveRegex("/[\\w]*").with(FoodTruckServlet.class);
   }
 
