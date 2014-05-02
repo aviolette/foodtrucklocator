@@ -1,13 +1,13 @@
 <%@ include file="header.jsp" %>
 <style type="text/css">
   #map-canvas {
-    height: 400px;
     width: 100%;
     margin: 0px;
     padding: 0px
   }
 </style>
 
+<%@include file="include/core_js.jsp" %>
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=visualization"></script>
 
 <script type="text/javascript">
@@ -16,6 +16,7 @@
   var map, pointarray, heatmap;
 
   function initialize() {
+    $("#map-canvas").height($(window).height() - $("#topBar").height()-60);
     var mapOptions = {
       zoom: 9,
       center: new google.maps.LatLng(${center.latitude}, ${center.longitude}),
