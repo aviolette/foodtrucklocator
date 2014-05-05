@@ -7,26 +7,27 @@
       <label for="mapCenter">Map Center</label>
       <input class="span6" type="text" value="${config.center.name}" name="mapCenter" id="mapCenter"/>
     </div>
-    <div class="clearfix">
-      <label>
-        Minimum display confidence <select name="minimumConfidenceForDisplay">
-        <option value="HIGH" <c:if test="${config.minimumConfidenceForDisplay == 'HIGH'}">selected</c:if>>High</option>
-        <option value="MEDIUM" <c:if test="${config.minimumConfidenceForDisplay == 'MEDIUM'}">selected</c:if>>Medium</option>
-        <option value="LOW" <c:if test="${config.minimumConfidenceForDisplay == 'LOW'}">selected</c:if>>Low</option></select>
-      </label>
-    </div>
     <div>
       <div class="input">
         <ul class="unstyled">
           <li><label><input name="scheduleCachingOn"
                             <c:if test="${config.scheduleCachingOn}">checked="checked"</c:if>
-                            type="checkbox"/> <span>Enable Schedule Caching</span></label></li>
+                            type="checkbox"/> <span>Enable Schedule Caching in memcached for 5 minutes</span></label></li>
           <li><label><input name="showPublicTruckGraphs"
                             <c:if test="${config.showPublicTruckGraphs}">checked="checked"</c:if>
-                            type="checkbox"/> <span>Show public truck graphs</span></label></li>
+                            type="checkbox"/> <span>Show graphs on truck pages</span></label></li>
           <li><label><input name="autoOffRoad"
                             <c:if test="${config.autoOffRoad}">checked="checked"</c:if>
-                            type="checkbox"/> <span>Enable ability to take trucks off road automatically</span></label></li>
+                            type="checkbox"/> <span>Enable ability for twittalyzer to take trucks off road automatically</span></label></li>
+          <li><label><input name="foodTruckRequestOn"
+                            <c:if
+                                test="${config.foodTruckRequestOn}">checked="checked"</c:if>
+                            type="checkbox"/> <span>Show food truck request button on trucks page</span></label></li>
+          <li><label><input name="sendNotificationTweetWhenNoTrucks" <c:if test="${config.sendNotificationTweetWhenNoTrucks}">checked="checked"</c:if> type="checkbox"> <span>Send out notifications if no trucks at a stop.</span></label></li>
+          <li><label><input name="retweetStopCreatingTweets"
+                            <c:if test="${config.retweetStopCreatingTweets}">checked="checked"</c:if>
+                            type="checkbox"/> <span>Retweet Stop-creating Tweets</span></label></li>
+
         </ul>
       </div>
     </div>
@@ -46,14 +47,6 @@
       <label for="notificationReceivers">List of notification receivers</label>
       <input class="span6" type="text" value="${config.notificationReceivers}" name="notificationReceivers" id="notificationReceivers"/>
     </div>
-    <div class="input">
-      <ul class="unstyled">
-        <li><label><input name="foodTruckRequestOn"
-                          <c:if
-                              test="${config.foodTruckRequestOn}">checked="checked"</c:if>
-                          type="checkbox"/> <span>Enable food truck request support</span></label></li>
-      </ul>
-    </div>
   </fieldset>
   <fieldset>
     <legend>Google Calendar</legend>
@@ -64,7 +57,7 @@
   </fieldset>
   <fieldset>
     <legend>Sync</legend>
-    <p>These parameters should not be used in a production environment.</p>
+    <p>These parameters should not be used in a production environment.  They allow you to sync data from an up-stream food truck finder app.  You can use it to pull data from your production environment into a dev environment.</p>
     <div class="clearfix">
       <label for="syncUrl">Sync URL</label>
       <input class="span6" type="text" value="${config.syncUrl}" name="syncUrl" id="syncUrl"/>
@@ -76,19 +69,8 @@
   </fieldset>
   <fieldset>
     <legend>Geolocation</legend>
-    <div class="clearfix">
-      <label for="calendarUrl">Yahoo App Key</label>
-      <input class="span6" type="text" value="${config.yahooAppId}" name="yahooAppId" id="yahooAppId"/>
-    </div>
-    <div class="clearfix">
-      <label for="yahooConsumerKey">Yahoo Oauth Consumer Key</label>
-      <input class="span6" type="text" value="${config.yahooConsumerKey}" name="yahooConsumerKey" id="yahooConsumerKey"/>
-    </div>
-    <div class="clearfix">
-      <label for="yahooConsumerSecret">Yahoo OAuth Consumer Secret</label>
-      <input class="span6" type="text" value="${config.yahooConsumerSecret}" name="yahooConsumerSecret" id="yahooConsumerSecret"/>
-    </div>
     <div>
+      <p>You will need to have one of these checked. In Dev, it is ok to just have Google checked, but this doesn't always work in prod since AppEngine uses a shared IP pool and you will run into query limits, so it is suggested that you also use YQL Geolocation too.</p>
       <div class="input">
         <ul class="unstyled">
           <li><label><input name="googleGeolocationEnabled"
@@ -96,8 +78,13 @@
                             type="checkbox"/> <span>Enable Google Geolocation</span></label></li>
           <li><label><input name="yahooGeolocationEnabled"
                             <c:if test="${config.yahooGeolocationEnabled}">checked="checked"</c:if>
-                            type="checkbox"/> <span>Enable Yahoo Placefinder</span></label></li>
+                            type="checkbox"/> <span>Enable Yahoo YQL Geolocation</span></label></li>
         </ul>
+      </div>
+      <div class="clearfix">
+        <label for="calendarUrl">Yahoo App Key</label>
+        <p>Get a Yahoo App Key <a href="https://developer.yahoo.com/wsregapp/index.php">here</a></p>
+        <input class="span6" type="text" value="${config.yahooAppId}" name="yahooAppId" placeholder="Yahoo APP ID is required to use YQL" id="yahooAppId"/>
       </div>
     </div>
   </fieldset>
@@ -121,10 +108,6 @@
           <li><label><input name="remoteTwitterCachingEnabled"
                             <c:if test="${config.remoteTwitterCachingEnabled}">checked="checked"</c:if>
                             type="checkbox"/> <span>Enable Remote Twitter Caching</span></label></li>
-          <li><label><input name="sendNotificationTweetWhenNoTrucks" <c:if test="${config.sendNotificationTweetWhenNoTrucks}">checked="checked"</c:if> type="checkbox"> <span>Send out notifications if no trucks at a stop.</span></label></li>
-          <li><label><input name="retweetStopCreatingTweets"
-                            <c:if test="${config.retweetStopCreatingTweets}">checked="checked"</c:if>
-                            type="checkbox"/> <span>Retweet Stop Creating Tweets</span></label></li>
 
         </ul>
         <div class="clearfix">

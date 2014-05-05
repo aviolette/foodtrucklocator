@@ -28,8 +28,6 @@ public class Configuration extends ModelEntity {
   private @Nullable String yahooAppId;
   private @Nullable String primaryTwitterList;
   private @Nullable String googleCalendarAddress;
-  private @Nullable String yahooConsumerKey;
-  private @Nullable String yahooConsumerSecret;
   private List<String> systemNotificationList;
   private @Nullable String notificationSender;
   private @Nullable String frontDoorAppKey;
@@ -60,8 +58,6 @@ public class Configuration extends ModelEntity {
     this.yahooAppId = builder.yahooAppId;
     this.googleCalendarAddress = builder.googleCalendarAddress;
     this.primaryTwitterList = builder.primaryTwitterList;
-    this.yahooConsumerKey = builder.yahooConsumerKey;
-    this.yahooConsumerSecret = builder.yahooConsumerSecret;
     this.systemNotificationList = builder.systemNotificationList;
     this.notificationSender = builder.notificationSender;
     this.frontDoorAppKey = builder.frontDoorAppKey;
@@ -110,14 +106,6 @@ public class Configuration extends ModelEntity {
 
   public String getNotificationReceivers() {
     return Joiner.on(",").join(systemNotificationList).toString();
-  }
-
-  @Nullable public String getYahooConsumerKey() {
-    return yahooConsumerKey;
-  }
-
-  @Nullable public String getYahooConsumerSecret() {
-    return yahooConsumerSecret;
   }
 
   public @Nullable String getPrimaryTwitterList() {
@@ -209,8 +197,6 @@ public class Configuration extends ModelEntity {
     private @Nullable String yahooAppId;
     private @Nullable String primaryTwitterList;
     private @Nullable String googleCalendarAddress;
-    private @Nullable String yahooConsumerKey;
-    private @Nullable String yahooConsumerSecret;
     private List<String> systemNotificationList = ImmutableList.of();
     private @Nullable String notificationSender;
     private @Nullable String frontDoorAppKey;
@@ -241,8 +227,6 @@ public class Configuration extends ModelEntity {
       this.yahooAppId = config.yahooAppId;
       this.primaryTwitterList = config.primaryTwitterList;
       this.googleCalendarAddress = config.googleCalendarAddress;
-      this.yahooConsumerKey = config.yahooConsumerKey;
-      this.yahooConsumerSecret = config.yahooConsumerSecret;
       this.systemNotificationList = config.systemNotificationList;
       this.notificationSender = config.notificationSender;
       this.frontDoorAppKey = config.frontDoorAppKey;
@@ -330,16 +314,6 @@ public class Configuration extends ModelEntity {
 
     public Builder googleGeolocationEnabled(boolean enabled) {
       this.googleGeolocationEnabled = enabled;
-      return this;
-    }
-
-    public Builder yahooConsumerKey(String key) {
-      this.yahooConsumerKey = key;
-      return this;
-    }
-
-    public Builder yahooConsumerSecret(String secret) {
-      this.yahooConsumerSecret = secret;
       return this;
     }
 

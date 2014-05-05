@@ -69,8 +69,6 @@ public class ConfigurationDAOAppEngine extends
     entity.setProperty(PROP_REMOTE_CACHE_ADDRESS, config.getRemoteTwitterCacheAddress());
     entity.setProperty(PROP_GOOGLE_CALENDAR_ADDRESS, config.getGoogleCalendarAddress());
     entity.setProperty(PROP_PRIMARY_TWITTER_LIST, config.getPrimaryTwitterList());
-    entity.setProperty(PROP_YAHOO_CONSUMER_KEY, config.getYahooConsumerKey());
-    entity.setProperty(PROP_YAHOO_CONSUMER_SECRET, config.getYahooConsumerSecret());
     entity.setProperty(PROP_YAHOO_APP_ID, config.getYahooAppId());
     entity.setProperty(PROP_SYSTEM_NOTIFICATION_SENDER, config.getNotificationSender());
     entity.setProperty(PROP_SYSTEM_NOTIFICATION_EMAILS, config.getSystemNotificationList());
@@ -113,8 +111,6 @@ public class ConfigurationDAOAppEngine extends
         .primaryTwitterList((String) entity.getProperty(PROP_PRIMARY_TWITTER_LIST))
         .yahooAppId((String) entity.getProperty(PROP_YAHOO_APP_ID))
         .foodTruckRequestOn(getBooleanProperty(entity, PROP_FOOD_TRUCK_REQUEST_ON))
-        .yahooConsumerKey(getStringProperty(entity, PROP_YAHOO_CONSUMER_KEY))
-        .yahooConsumerSecret(getStringProperty(entity, PROP_YAHOO_CONSUMER_SECRET))
         .sendNotificationTweetWhenNoTrucks(getBooleanProperty(entity, PROP_SEND_NOTIFICATION_WHEN_NO_TRUCKS, true))
         .systemNotificationList(getListProperty(entity, PROP_SYSTEM_NOTIFICATION_EMAILS))
         .notificationSender(getStringProperty(entity, PROP_SYSTEM_NOTIFICATION_SENDER))

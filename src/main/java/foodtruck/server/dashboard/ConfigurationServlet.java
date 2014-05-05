@@ -53,7 +53,7 @@ public class ConfigurationServlet extends HttpServlet {
     Location mapCenter = geoLocator.locate(req.getParameter("mapCenter"), GeolocationGranularity.NARROW);
     // TODO: handle null map center
     config = Configuration.builder(config)
-        .minimumConfidenceForDisplay(Confidence.valueOf(req.getParameter("minimumConfidenceForDisplay")))
+        .minimumConfidenceForDisplay(Confidence.LOW)
         .autoOffRoad("on".equals(req.getParameter("autoOffRoad")))
         .showPublicTruckGraphs("on".equals(req.getParameter("showPublicTruckGraphs")))
         .foodTruckRequestOn("on".equals(req.getParameter("foodTruckRequestOn")))
@@ -70,8 +70,6 @@ public class ConfigurationServlet extends HttpServlet {
         .googleCalendarAddress(req.getParameter("googleCalendarAddress"))
         .yahooAppId(req.getParameter("yahooAppId"))
         .scheduleCachingOn("on".equals(req.getParameter("scheduleCachingOn")))
-        .yahooConsumerKey(req.getParameter("yahooConsumerKey"))
-        .yahooConsumerSecret(req.getParameter("yahooConsumerSecret"))
         .primaryTwitterList(req.getParameter("primaryTwitterList"))
         .notificationSender(req.getParameter("notificationSender"))
         .frontDoorAppKey(req.getParameter("frontDoorAppKey"))
