@@ -21,7 +21,7 @@ public class Configuration extends ModelEntity {
   private boolean googleGeolocationEnabled;
   private DateTime throttleGoogleUntil;
   private boolean tweetUpdateServletEnabled;
-  private Location center;
+  private @Nullable Location center;
   private boolean localTwitterCachingEnabled;
   private boolean remoteTwitterCachingEnabled;
   private @Nullable String remoteTwitterCacheAddress;
@@ -148,7 +148,7 @@ public class Configuration extends ModelEntity {
     return (throttleGoogleUntil != null && throttleGoogleUntil.isAfter(when));
   }
 
-  public Location getCenter() {
+  public @Nullable Location getCenter() {
     return center;
   }
 
@@ -332,7 +332,7 @@ public class Configuration extends ModelEntity {
       return this;
     }
 
-    public Builder center(Location location) {
+    public Builder center(@Nullable Location location) {
       this.center = location;
       return this;
     }
