@@ -71,6 +71,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
   private static final String TRUCK_PREVIEW_ICON = "truck_preview_icon";
   private static final String TRUCK_ALLOW_SYSTEM_NOTIFICATIONS = "allow_system_notifications";
   private static final String TRUCK_DISPLAY_EMAIL = "display_email";
+  private static final String TRUCK_INSTAGRAM = "instagram";
 
   private DateTimeZone zone;
 
@@ -122,6 +123,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
         .defaultCity((String) entity.getProperty(TRUCK_DEFAULT_CITY_FIELD))
         .description(t == null ? null : t.getValue())
         .hidden(getBooleanProperty(entity, TRUCK_HIDDEN, false))
+        .instagramId(getStringProperty(entity, TRUCK_INSTAGRAM))
         .facebook((String) entity.getProperty(TRUCK_FACEBOOK_FIELD))
         .foursquareUrl((String) entity.getProperty(TRUCK_FOURSQUARE_URL_FIELD))
         .iconUrl((String) entity.getProperty(TRUCK_ICON_URL))
@@ -274,6 +276,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     entity.setProperty(TRUCK_YELP_SLUG, truck.getYelpSlug());
     entity.setProperty(TRUCK_PHONE, truck.getPhone());
     entity.setProperty(TRUCK_HIDDEN, truck.isHidden());
+    entity.setProperty(TRUCK_INSTAGRAM, truck.getInstagramId());
     entity.setProperty(TRUCK_ALLOW_SYSTEM_NOTIFICATIONS, truck.isAllowSystemNotifications());
     entity.setProperty(TRUCK_FACEBOOK_PAGE_ID, truck.getFacebookPageId());
     entity.setProperty(TRUCK_TWITTER_GEOLOCATION, truck.isTwitterGeolocationDataValid());

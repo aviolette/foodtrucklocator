@@ -54,6 +54,13 @@
         </td>
       </tr>
       <tr>
+        <td>Instagram</td>
+        <td><c:choose><c:when test="${empty(truck.instagramId)}">none</c:when><c:otherwise><a
+            target="_blank"
+            href="http://instagram.com/${truck.instagramId}">http://instagram.com/${truck.instagramId}</a></c:otherwise></c:choose>
+        </td>
+      </tr>
+      <tr>
         <td>Twitter</td>
         <td><c:choose><c:when test="${empty(truck.twitterHandle)}">none</c:when><c:otherwise><a
             target="_blank"

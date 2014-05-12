@@ -48,6 +48,7 @@ public class Truck extends ModelEntity {
   private final @Nullable String previewIcon;
   private final boolean allowSystemNotifications;
   private final boolean displayEmailPublicly;
+  private final String instagramId;
 
   public static final Function<Truck, String> TO_ID = new Function<Truck, String>() {
     @Nullable @Override public String apply(@Nullable Truck truck) {
@@ -84,6 +85,11 @@ public class Truck extends ModelEntity {
     this.previewIcon = builder.previewIcon;
     this.allowSystemNotifications = builder.allowSystemNotifications;
     this.displayEmailPublicly = builder.displayEmailPublicly;
+    this.instagramId = builder.instagramId;
+  }
+
+  public @Nullable String getInstagramId() {
+    return instagramId;
   }
 
   public boolean isDisplayEmailPublicly() {
@@ -227,6 +233,7 @@ public class Truck extends ModelEntity {
         .add("facebook URI", facebook)
         .add("Yelp Slug", yelpSlug)
         .add("inactive", inactive)
+        .add("instagramId", instagramId)
         .add("muteUntil", muteUntil)
         .toString();
   }
@@ -430,6 +437,8 @@ public class Truck extends ModelEntity {
     public Set<String> beaconnaiseEmails = ImmutableSet.of();
     public boolean allowSystemNotifications;
     private boolean displayEmailPublicly;
+    private @Nullable String instagramId;
+
 
     public Builder() {
     }
@@ -462,10 +471,16 @@ public class Truck extends ModelEntity {
       this.beaconnaiseEmails = truck.beaconnaiseEmails;
       this.allowSystemNotifications = truck.allowSystemNotifications;
       this.displayEmailPublicly = truck.displayEmailPublicly;
+      this.instagramId = truck.instagramId;
     }
 
     public Builder id(String id) {
       this.id = id;
+      return this;
+    }
+
+    public Builder instagramId(@Nullable String instagramId) {
+      this.instagramId = instagramId;
       return this;
     }
 

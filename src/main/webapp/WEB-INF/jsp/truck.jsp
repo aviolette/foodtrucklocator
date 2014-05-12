@@ -24,6 +24,9 @@
         <c:if test="${!empty(truck.foursquareUrl)}"><a target="_blank"
                                                        href="http://foursquare.com/venue/${truck.foursquareUrl}"><img
             alt="Check in on foursquare" src="/img/foursquare32x32.png"></a></c:if>
+        <c:if test="${!empty(truck.instagramId)}"><a target="_blank"
+                                                       href="http://instagram.com/${truck.instagramId}"><img
+            alt="View on instagram" src="/img/instagram32x32.png"></a></c:if>
         <c:if test="${!empty(truck.yelpSlug)}"><a target="_blank"
                                                   href="http://yelp.com/biz/${truck.yelpSlug}"><img alt="Yelp"
                                                                                                     src="/img/yelp32x32.png"></a></c:if>

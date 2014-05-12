@@ -453,6 +453,11 @@ var FoodTruckLocator = function () {
           truck.foursquare +
           "'><img alt='Checkin on foursquare' src='/img/foursquare32x32.png'/></a> ");
     }
+    if (truck.instagram) {
+      $truckSocial.append("<a target='_blank' href='http://instagram.com/" +
+          truck.instagram +
+          "'><img alt='View instagram feed' src='/img/instagram32x32.png'/></a> ");
+    }
     if (truck.facebook) {
       $truckSocial.append("<a target='_blank' href='http://facebook.com" + truck.facebook +
           "'><img alt='" +

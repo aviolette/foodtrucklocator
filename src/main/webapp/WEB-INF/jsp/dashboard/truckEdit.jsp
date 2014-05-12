@@ -69,6 +69,14 @@
           </div>
         </div>
         <div class="clearfix">
+          <label for="instagramId">Instagram Id</label>
+
+          <div class="input">
+            <input type="text" class="input-xlarge" id="instagramId" name="instagramId"
+                   value="${truck.instagramId}"/>
+          </div>
+        </div>
+        <div class="clearfix">
           <label for="email">Email</label>
 
           <div class="input">

@@ -15,6 +15,7 @@ public class AbbreviatedTruckWriter implements JSONWriter<Truck> {
         .put("id", truck.getId())
         .put("iconUrl", truck.getIconUrl())
         .put("twitterHandle", truck.getTwitterHandle())
+        .put("instagram", truck.getInstagramId())
         .put("facebook", truck.getFacebook())
         .put("foursquare", truck.getFoursquareUrl())
         .put("facebookPageId", truck.getFacebookPageId())
