@@ -394,7 +394,7 @@ public class TruckStopMatcher {
   }
 
   private @Nullable DateTime parseEndTime(String tweetText, DateTime startTime) {
-    Matcher matcher = endTimePattern.matcher(tweetText);
+    Matcher matcher = endTimePattern.matcher(tweetText.toLowerCase());
     if (matcher.find()) {
       return parseTime(matcher.group(2), startTime.toLocalDate(), startTime);
     }

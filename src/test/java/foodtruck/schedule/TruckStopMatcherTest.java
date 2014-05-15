@@ -191,6 +191,16 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     assertEquals(tweetTime.withTime(20, 0, 0, 0), match.getStop().getEndTime());
   }
 
+  @Test
+  public void testMatch_yetAnotherUntil() {
+    TruckStopMatch match = tweet("Look For The Truck @UChicago This Afternoon Till 3 PM On Ellis! http://t.co/TD1aZ8OyHt")
+        .match();
+    assertNotNull(match);
+    assertEquals(Confidence.MEDIUM, match.getConfidence());
+    assertEquals(tweetTime, match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(15, 0, 0, 0), match.getStop().getEndTime());
+  }
+
 
   @Test
   public void testMatch_includesCurrentDayOfTheWeek() {
