@@ -1,6 +1,7 @@
 <%@ include file="header.jsp" %>
 
-<p>Submit this form to request a food truck.  Thanks!</p>
+<p>Please tell me more about your event.  I will review this information and forward it on to all the food trucks.
+  You will then get contacted directly by interested food trucks.  Thanks!</p>
 <form method="POST" action="">
   <c:if test="${!empty(foodTruckRequest)}"><input type="hidden" name="id" value="${foodTruckRequest.key}"/></c:if>
   <div class="form-group">
@@ -49,11 +50,11 @@
   </div>
 
   <div class="form-group">
-    <label for="address">Address</label>
+    <label for="address">Address of the Event</label>
     <input type="text" placeholder="123 Main Street, Chicago, IL" name="address" id="address" class="form-control"  <c:if test="${!empty(foodTruckRequest) and foodTruckRequest.location.resolved}">value="${foodTruckRequest.location.name}"</c:if>/>
   </div>
   <div class="form-group">
-    <label for="phone">Phone</label>
+    <label for="phone">Contact's Phone Number</label>
     <input type="text" placeholder="XXX-XXX-XXXX" name="phone" id="phone" class="form-control" <c:if test="${!empty(foodTruckRequest)}">value="${foodTruckRequest.phone}"</c:if>/>
   </div>
   <div class="form-group">
