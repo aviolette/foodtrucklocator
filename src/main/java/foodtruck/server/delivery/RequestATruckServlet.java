@@ -24,7 +24,6 @@ import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.FoodTruckRequestDAO;
 import foodtruck.email.EmailNotifier;
 import foodtruck.geolocation.GeoLocator;
-import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.FoodTruckRequest;
 import foodtruck.model.Location;
 import foodtruck.server.FrontPageServlet;
@@ -122,11 +121,7 @@ public class RequestATruckServlet extends FrontPageServlet {
     String address = req.getParameter("address");
 
     String description = req.getParameter("description");
-    if (Strings.isNullOrEmpty(description)) {
-      throw new ServletException("Description not specified");
-    }
-
-    description = escaper.escape(description);
+    description = escaper.escape(Strings.nullToEmpty(description));
     String requester = escaper.escape(req.getParameter("requester"));
 
     Number expected = 0;

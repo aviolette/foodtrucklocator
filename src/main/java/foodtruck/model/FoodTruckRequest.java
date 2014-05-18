@@ -3,7 +3,6 @@ package foodtruck.model;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 import org.joda.time.DateTime;
@@ -57,10 +56,8 @@ public class FoodTruckRequest extends ModelEntity {
     checkState(startTime != null, "Start time cannot be null");
     checkState(endTime != null && !endTime.isBefore(startTime), "End time cannot be before start time");
     checkState(!Strings.isNullOrEmpty(requester), "Requester not specified.");
-    checkState(!Strings.isNullOrEmpty(description), "Description not specified.");
     checkState(location != null, "Location not specified.");
     checkState(!Strings.isNullOrEmpty(email), "Email not specified.");
-    checkState(!Strings.isNullOrEmpty(authCode), "Authcode not specified.");
   }
 
   @Nullable public DateTime getVerified() {

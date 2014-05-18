@@ -146,6 +146,10 @@ public class SimpleEmailNotifier implements EmailNotifier {
   private boolean sendMessage(String subject, Iterable<String> receivers, String msgBody, Iterable<String> bccs,
       @Nullable String replyTo) {
     Configuration config = configDAO.find();
+    if (Iterables.isEmpty(receivers)) {
+      log.log(Level.INFO, "No email addresses specified in receiver list for message: {0}", msgBody);
+      return false;
+    }
     String sender = config.getNotificationSender();
     Properties props = new Properties();
     Session session = Session.getDefaultInstance(props, null);
