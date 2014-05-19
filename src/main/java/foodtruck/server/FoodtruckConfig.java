@@ -12,6 +12,7 @@ import foodtruck.geolocation.GeolocationModule;
 import foodtruck.monitoring.MonitoringModule;
 import foodtruck.notifications.NotificationModule;
 import foodtruck.schedule.ScheduleModule;
+import foodtruck.stats.StatsModule;
 import foodtruck.truckstops.ServiceModule;
 import foodtruck.twitter.TwitterModule;
 import foodtruck.util.UtilModule;
@@ -33,6 +34,7 @@ public class FoodtruckConfig extends GuiceServletContextListener {
         new ServiceModule(),
         new EmailModule(),
         new ScheduleModule(),
+        new StatsModule(),
         new UtilModule(),
         new TwitterModule(),
         new FacebookModule(),

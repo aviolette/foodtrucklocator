@@ -32,6 +32,7 @@ import foodtruck.server.dashboard.TruckStopServlet;
 import foodtruck.server.delivery.RequestATruckLandingServlet;
 import foodtruck.server.delivery.RequestATruckServlet;
 import foodtruck.server.delivery.ViewRequestATruckServlet;
+import foodtruck.server.job.BuildHeatmapServlet;
 import foodtruck.server.job.InvalidateScheduleCache;
 import foodtruck.server.job.MigrateTimeSeries;
 import foodtruck.server.job.PurgeStatsServlet;
@@ -60,6 +61,7 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/cron/statPurge").with(PurgeStatsServlet.class);
     serve("/cron/notifications").with(SendLunchNotificationsServlet.class);
     serve("/cron/facebookSync").with(SyncFacebookProfiles.class);
+    serve("/cron/build-heatmap").with(BuildHeatmapServlet.class);
     serve("/cron/updateTruckStats").with(UpdateTruckStats.class);
     serve("/cron/forcesavetruck").with(ForceSaveTruck.class);
     serve("/cron/migrateWeeklyStats").with(MigrateTimeSeries.class);
