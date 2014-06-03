@@ -500,7 +500,9 @@ public class TwitterServiceImpl implements TwitterService {
    * Ignore tweets so they are not matched in upcoming requests
    */
   private void ignoreTweets(List<TweetSummary> tweets) {
-    log.log(Level.INFO, "Marking {0} tweets ignored", tweets.size());
+    if (tweets.isEmpty()) {
+      return;
+    }
     List<TweetSummary> l = Lists.newLinkedList();
     for (TweetSummary tweet : tweets) {
       TweetSummary summary = new TweetSummary.Builder(tweet).ignoreInTwittalyzer(true).build();
