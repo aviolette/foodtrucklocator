@@ -314,7 +314,7 @@ public class TruckStopMatcher {
     List<String> addresses = addressExtractor.parse(tweet.getText(), truck);
     Location tweetLocation = tweet.getLocation();
     if (tweetLocation != null) {
-      log.info("Location data enabled for truck " + truck.getId());
+      log.info("Location data enabled for tweet from " + truck.getId());
     }
     for (String address : addresses) {
       Location loc = geoLocator.locate(address, GeolocationGranularity.NARROW);
