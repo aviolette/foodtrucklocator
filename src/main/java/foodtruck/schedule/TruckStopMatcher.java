@@ -318,7 +318,7 @@ public class TruckStopMatcher {
       // Currently not using this function...remove next line to re-enabled
       tweetLocation = null;
     }
-    log.log(Level.FINE, "Extracted these addresses: {0} from tweet: {1}", new Object[] {addresses, tweet.getText()});
+    log.log(Level.INFO, "Extracted these addresses: {0} from tweet: {1}", new Object[] {addresses, tweet.getText()});
     for (String address : addresses) {
       Location loc = geoLocator.locate(address, GeolocationGranularity.NARROW);
       if (loc != null && loc.isResolved()) {
