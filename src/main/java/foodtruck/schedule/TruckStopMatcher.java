@@ -315,7 +315,10 @@ public class TruckStopMatcher {
     Location tweetLocation = tweet.getLocation();
     if (tweetLocation != null) {
       log.info("Location data enabled for tweet from " + truck.getId());
+      // Currently not using this function...remove next line to re-enabled
+      tweetLocation = null;
     }
+    log.log(Level.FINE, "Extracted these addresses: {0} from tweet: {1}", new Object[] {addresses, tweet.getText()});
     for (String address : addresses) {
       Location loc = geoLocator.locate(address, GeolocationGranularity.NARROW);
       if (loc != null && loc.isResolved()) {

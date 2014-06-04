@@ -86,6 +86,7 @@ public class TweetSummary extends ModelEntity {
         .add("location", location)
         .add("id", id)
         .add("time", time)
+        .add("ignore", ignoreInTwittalyzer)
         .toString();
   }
 
