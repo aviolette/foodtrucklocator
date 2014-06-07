@@ -128,7 +128,8 @@
           <div class="panel-title">Last Seen</div>
         </div>
         <div class="panel-body">
-
+          <joda:format value="${truck.stats.lastSeen}" style="MS"/> <c:if test="${!empty(truck.stats.whereLastSeen.name)}">@ <br/>
+          <ftl:location location="${truck.stats.whereLastSeen}"/></c:if>
         </div>
       </div>
     </div>
@@ -148,7 +149,7 @@
           <div class="panel-title">Total Stops</div>
         </div>
         <div class="panel-body text-center" style="font-size:2em">
-          <strong>${truck.stats.stopsThisYear}</strong>
+          <strong>${truck.stats.totalStops}</strong>
         </div>
       </div>
     </div>
