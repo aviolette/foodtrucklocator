@@ -73,7 +73,10 @@
     <div class="control-group">
       <label for="twitterHandle" class="control-label">Twitter Handle</label>
       <div class="controls">
-        <input id="twitterHandle" class="span6" type="text"/>
+        <div class="input-prepend">
+          <span class="add-on">@</span>
+          <input id="twitterHandle" class="span5" type="text"/>
+        </div>
       </div>
     </div>
     <div class="control-group">
@@ -162,7 +165,7 @@
       var $locationSearchButton = $("#locationSearchButton");
       $locationSearchButton.click(function() {
 
-        var addr = prompt("Please enter an address or intersection", null);
+        var addr = prompt("Please enter an address or intersection", $("#name").val());
         if (!addr) {
           return;
         }
