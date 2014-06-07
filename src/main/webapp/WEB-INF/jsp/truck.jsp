@@ -8,8 +8,8 @@
     <a href="/admin/trucks/${truck.id}">Edit on Admin Dashboard</a>
   </c:if>
   <div class="row">
-    <div class="span4">
-      <h2>${truck.name}</h2>
+    <div class="col-md-6">
+      <h1>${truck.name}</h1>
 
       <c:if test="${truck.popupVendor}"><p><span class="badge badge-info">Popup Vendor</span></p></c:if>
 
@@ -108,28 +108,51 @@
   <div class="row">
     <h2>Days on the Road (by week)</h2>
     <div id="chart"></div>
-    <table class="table">
-      <tr>
-        <td>First seen</td>
-        <td><joda:format value="${truck.stats.firstSeen}" style="MS"/> <c:if test="${!empty(truck.stats.whereFirstSeen.name)}">@ <br/>
-          <ftl:location location="${truck.stats.whereFirstSeen}"/></c:if></td>
-      </tr>
-      <tr>
-        <td>Last seen</td>
-        <td><joda:format value="${truck.stats.lastSeen}" style="MS"/> <c:if test="${!empty(truck.stats.whereLastSeen.name)}">@ <br/>
-          <ftl:location location="${truck.stats.whereLastSeen}"/></c:if></td>
-      </tr>
-      <tr>
-        <td>Stops this year</td>
-        <td>${truck.stats.stopsThisYear}</td>
-      </tr>
-      <tr>
-        <td>Total stops</td>
-        <td>${truck.stats.totalStops}</td>
-      </tr>
-    </table>
   </div>
 
+  <div class="row" style="padding-top: 20px">
+    <div class="col-md-3">
+    <div class="panel panel-primary" >
+      <div class="panel-heading">
+        <div class="panel-title">First Seen</div>
+      </div>
+      <div class="panel-body">
+        <joda:format value="${truck.stats.firstSeen}" style="MS"/> <c:if test="${!empty(truck.stats.whereFirstSeen.name)}">@ <br/>
+        <ftl:location location="${truck.stats.whereFirstSeen}"/></c:if>
+      </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <div class="panel-title">Last Seen</div>
+        </div>
+        <div class="panel-body">
+
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <div class="panel-title">Stops This Year</div>
+        </div>
+        <div class="panel-body text-center" style="font-size:2em">
+          <strong>${truck.stats.stopsThisYear}</strong>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <div class="panel-title">Total Stops</div>
+        </div>
+        <div class="panel-body text-center" style="font-size:2em">
+          <strong>${truck.stats.stopsThisYear}</strong>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 </div>
