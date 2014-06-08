@@ -61,13 +61,13 @@ public class TruckResource {
     if (".csv".equals(view)) {
       mediaType = new MediaType("text", "csv");
     }
+    Collection<Truck> response;
     if ("false".equals(active)) {
-      return JResponse.ok(Collections2.filter(truckDAO.findInactiveTrucks(), NOT_HIDDEN), mediaType).build();
+      response = truckDAO.findInactiveTrucks();
     } else {
-      final Collection<Truck> entity = Strings.isNullOrEmpty(filteredBy) ?
-          Collections2.filter(truckDAO.findActiveTrucks(), NOT_HIDDEN) : truckDAO.findByCategory(filteredBy);
-      return JResponse.ok(entity, mediaType).build();
+      response = Strings.isNullOrEmpty(filteredBy) ? truckDAO.findActiveTrucks() : truckDAO.findByCategory(filteredBy);
     }
+    return JResponse.ok(Collections2.filter(response, NOT_HIDDEN), mediaType).build();
   }
 
   @GET @Produces("application/json") @Path("{truckId}")
