@@ -72,6 +72,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
   private static final String TRUCK_ALLOW_SYSTEM_NOTIFICATIONS = "allow_system_notifications";
   private static final String TRUCK_DISPLAY_EMAIL = "display_email";
   private static final String TRUCK_INSTAGRAM = "instagram";
+  private static final String TRUCK_FULL_SIZE = "fullsize_image";
 
   private DateTimeZone zone;
 
@@ -115,6 +116,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
 
     return builder.id(entity.getKey().getName())
         .stats(stats)
+        .fullsizeImage(getStringProperty(entity, TRUCK_FULL_SIZE))
         .displayEmailPublicly(getBooleanProperty(entity, TRUCK_DISPLAY_EMAIL, true))
         .allowSystemNotifications(getBooleanProperty(entity, TRUCK_ALLOW_SYSTEM_NOTIFICATIONS, false))
         .previewIcon(getStringProperty(entity, TRUCK_PREVIEW_ICON))
@@ -277,6 +279,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     entity.setProperty(TRUCK_PHONE, truck.getPhone());
     entity.setProperty(TRUCK_HIDDEN, truck.isHidden());
     entity.setProperty(TRUCK_INSTAGRAM, truck.getInstagramId());
+    entity.setProperty(TRUCK_FULL_SIZE, truck.getFullsizeImage());
     entity.setProperty(TRUCK_ALLOW_SYSTEM_NOTIFICATIONS, truck.isAllowSystemNotifications());
     entity.setProperty(TRUCK_FACEBOOK_PAGE_ID, truck.getFacebookPageId());
     entity.setProperty(TRUCK_TWITTER_GEOLOCATION, truck.isTwitterGeolocationDataValid());

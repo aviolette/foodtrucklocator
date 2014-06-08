@@ -54,6 +54,13 @@
         </table>
       </div>
     </div>
+    <div class="col-md-6">
+      <div id="truck-image-container">
+        <c:if test="${!empty(truck.fullsizeImage)}">
+          <img src="${truck.fullsizeImage}" class="img-rounded img-responsive"/>
+        </c:if>
+      </div>
+    </div>
    </div>
 
   <div class="row" style="padding-top: 20px">

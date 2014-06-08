@@ -193,6 +193,7 @@ public class TruckServlet extends HttpServlet {
         .description(request.getParameter("description"))
         .calendarUrl(request.getParameter("calendarUrl"))
         .previewIcon(request.getParameter("previewIcon"))
+        .fullsizeImage(request.getParameter("fullsizeImage"))
         .instagramId(request.getParameter("instagramId"))
         .facebook(request.getParameter("facebook"))
         .facebookPageId(request.getParameter("facebookPageId"))

@@ -49,6 +49,7 @@ public class Truck extends ModelEntity {
   private final boolean allowSystemNotifications;
   private final boolean displayEmailPublicly;
   private final String instagramId;
+  private final @Nullable String fullsizeImage;
 
   public static final Function<Truck, String> TO_ID = new Function<Truck, String>() {
     @Nullable @Override public String apply(@Nullable Truck truck) {
@@ -86,6 +87,11 @@ public class Truck extends ModelEntity {
     this.allowSystemNotifications = builder.allowSystemNotifications;
     this.displayEmailPublicly = builder.displayEmailPublicly;
     this.instagramId = builder.instagramId;
+    this.fullsizeImage = builder.fullsizeImage;
+  }
+
+  public @Nullable String getFullsizeImage() {
+    return fullsizeImage;
   }
 
   public @Nullable String getInstagramId() {
@@ -438,6 +444,7 @@ public class Truck extends ModelEntity {
     public boolean allowSystemNotifications;
     private boolean displayEmailPublicly;
     private @Nullable String instagramId;
+    private @Nullable String fullsizeImage;
 
 
     public Builder() {
@@ -472,10 +479,16 @@ public class Truck extends ModelEntity {
       this.allowSystemNotifications = truck.allowSystemNotifications;
       this.displayEmailPublicly = truck.displayEmailPublicly;
       this.instagramId = truck.instagramId;
+      this.fullsizeImage = truck.fullsizeImage;
     }
 
     public Builder id(String id) {
       this.id = id;
+      return this;
+    }
+
+    public Builder fullsizeImage(@Nullable String fullsizeImage) {
+      this.fullsizeImage = fullsizeImage;
       return this;
     }
 
