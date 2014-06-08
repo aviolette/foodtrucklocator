@@ -35,6 +35,11 @@ import static foodtruck.server.resources.Resources.requiresAdmin;
  */
 @Path("/trucks{view : (\\.[a-z]{3})?}")
 public class TruckResource {
+  public static final Predicate<Truck> NOT_HIDDEN = new Predicate<Truck>() {
+    @Override public boolean apply(@Nullable Truck truck) {
+      return !truck.isHidden();
+    }
+  };
   private final TruckDAO truckDAO;
   private final Clock clock;
   private final DateTimeZone zone;
@@ -57,14 +62,10 @@ public class TruckResource {
       mediaType = new MediaType("text", "csv");
     }
     if ("false".equals(active)) {
-      return JResponse.ok(Collections2.filter(truckDAO.findInactiveTrucks(), new Predicate<Truck>() {
-        @Override public boolean apply(@Nullable Truck truck) {
-          return !truck.isHidden();
-        }
-      }), mediaType).build();
+      return JResponse.ok(Collections2.filter(truckDAO.findInactiveTrucks(), NOT_HIDDEN), mediaType).build();
     } else {
-      final Collection<Truck> entity = Strings.isNullOrEmpty(filteredBy) ? truckDAO.findActiveTrucks() : truckDAO
-          .findByCategory(filteredBy);
+      final Collection<Truck> entity = Strings.isNullOrEmpty(filteredBy) ?
+          Collections2.filter(truckDAO.findActiveTrucks(), NOT_HIDDEN) : truckDAO.findByCategory(filteredBy);
       return JResponse.ok(entity, mediaType).build();
     }
   }
