@@ -121,7 +121,7 @@
     <div class="col-md-3">
     <div class="panel panel-primary" >
       <div class="panel-heading">
-        <div class="panel-title">First Seen</div>
+        <div class="panel-title text-center">First Seen</div>
       </div>
       <div class="panel-body">
         <joda:format value="${truck.stats.firstSeen}" style="MS"/> <c:if test="${!empty(truck.stats.whereFirstSeen.name)}">@ <br/>
@@ -132,7 +132,7 @@
     <div class="col-md-3">
       <div class="panel panel-primary">
         <div class="panel-heading">
-          <div class="panel-title">Last Seen</div>
+          <div class="panel-title text-center">Last Seen</div>
         </div>
         <div class="panel-body">
           <joda:format value="${truck.stats.lastSeen}" style="MS"/> <c:if test="${!empty(truck.stats.whereLastSeen.name)}">@ <br/>
@@ -143,7 +143,7 @@
     <div class="col-md-3">
       <div class="panel panel-primary">
         <div class="panel-heading">
-          <div class="panel-title">Stops This Year</div>
+          <div class="panel-title text-center">Stops This Year</div>
         </div>
         <div class="panel-body text-center" style="font-size:2em">
           <strong>${truck.stats.stopsThisYear}</strong>
@@ -153,7 +153,7 @@
     <div class="col-md-3">
       <div class="panel panel-primary">
         <div class="panel-heading">
-          <div class="panel-title">Total Stops</div>
+          <div class="panel-title text-center">Total Stops</div>
         </div>
         <div class="panel-body text-center" style="font-size:2em">
           <strong>${truck.stats.totalStops}</strong>
