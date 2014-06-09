@@ -567,6 +567,7 @@ var FoodTruckLocator = function () {
           maxZoom: 18,
           mapTypeId: google.maps.MapTypeId.ROADMAP
         });
+        var loading = true, manuallyMoved = false;
         google.maps.event.addListener(_map, 'center_changed', function () {
           saveCenter(_map.getCenter());
           displayWarningIfMarkersNotVisible();
@@ -576,16 +577,25 @@ var FoodTruckLocator = function () {
         });
 
         google.maps.event.addListener(_map, 'drag', function () {
+          if (loading) {
+            manuallyMoved = true;
+          }
           centerMarker.setMap(_map);
           centerMarker.setPosition(_map.getCenter());
         });
 
         google.maps.event.addListener(_map, 'dragend', function () {
+          if (loading) {
+            manuallyMoved = true;
+          }
           centerMarker.setMap(null);
           self.setModel(modelPayload);
         });
 
         google.maps.event.addListener(_map, 'zoom_changed', function () {
+          if (loading) {
+            manuallyMoved = true;
+          }
           saveZoom(_map.getZoom());
           self.setModel(modelPayload);
         });
@@ -601,6 +611,10 @@ var FoodTruckLocator = function () {
 
         if (Modernizr.geolocation) {
           navigator.geolocation.getCurrentPosition(function (position) {
+            if (manuallyMoved) {
+              return;
+            }
+            loading = false;
             var latLng = new google.maps.LatLng(position.coords.latitude,
                 position.coords.longitude),
                 distance = google.maps.geometry.spherical.computeDistanceBetween(center,
@@ -613,7 +627,10 @@ var FoodTruckLocator = function () {
               refreshViewData();
             }
           }, function () {
+            loading = false;
           });
+        } else {
+          loading = false;
         }
       }
       // reload the model every 5 minutes
