@@ -106,7 +106,7 @@
     </div>
     </c:if>
     <div class="row">
-      <div class="span14">
+      <div class="">
         <div class="alert" style="display:none" id="flash">&nbsp;</div>
 
 
