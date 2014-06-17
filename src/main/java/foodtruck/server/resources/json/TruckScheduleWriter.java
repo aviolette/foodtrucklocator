@@ -80,12 +80,20 @@ public class TruckScheduleWriter implements MessageBodyWriter<TruckSchedule> {
           .put("origin", stop.getOrigin())
           .put("startTimeMillis", stop.getStartTime().getMillis())
           .put("endTimeMillis", stop.getEndTime().getMillis())
-          .put("duration", p.getHours() + ":" + (p.getMinutes() < 10 ? "0" + p.getMinutes() : p.getMinutes()))
+          .put("duration", period(p))
           .put("durationMillis", new Duration(stop.getStartTime(), stop.getEndTime()).getMillis())
           .put("startTime", timeFormatter.print(stop.getStartTime()))
           .put("endTime", timeFormatter.print(stop.getEndTime()));
       arr.put(truckStop);
     }
     return obj.put("stops", arr);
+  }
+
+  private String period(Period p) {
+    String period = p.getHours() + ":" + (p.getMinutes() < 10 ? "0" + p.getMinutes() : p.getMinutes());
+    if (p.getDays() > 0) {
+      return p.getDays() + " days " + period;
+    }
+    return period;
   }
 }

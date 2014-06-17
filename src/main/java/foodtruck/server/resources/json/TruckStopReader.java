@@ -19,7 +19,6 @@ import com.google.inject.Inject;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.TruckDAO;
@@ -30,7 +29,7 @@ import foodtruck.model.StopOrigin;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.util.Clock;
-import foodtruck.util.TimeOnlyFormatter;
+import foodtruck.util.FriendlyDateTimeFormat;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
@@ -48,7 +47,7 @@ public class TruckStopReader implements MessageBodyReader<TruckStop> {
 
   @Inject
   public TruckStopReader(Clock clock, TruckDAO trucks, GeoLocator geolocator,
-      LocationReader locationReader, @TimeOnlyFormatter DateTimeFormatter formatter) {
+      LocationReader locationReader, @FriendlyDateTimeFormat DateTimeFormatter formatter) {
     this.truckDAO = trucks;
     this.clock = clock;
     this.format = formatter;
@@ -71,11 +70,8 @@ public class TruckStopReader implements MessageBodyReader<TruckStop> {
       JSONObject obj = new JSONObject(json);
       Truck truck = truckDAO.findById(obj.getString("truckId"));
       checkNotNull(truck);
-      LocalDate today = clock.currentDay();
-      DateTime startTime = format.parseDateTime(obj.getString("startTime").toUpperCase())
-          .withDate(today.getYear(), today.getMonthOfYear(), today.getDayOfMonth());
-      DateTime endTime = format.parseDateTime(obj.getString("endTime").toUpperCase())
-          .withDate(today.getYear(), today.getMonthOfYear(), today.getDayOfMonth());
+      DateTime startTime = format.parseDateTime(obj.getString("startTime").toUpperCase());
+      DateTime endTime = format.parseDateTime(obj.getString("endTime").toUpperCase());
       final JSONObject loc = obj.optJSONObject("location");
       final String origin = obj.optString("origin", StopOrigin.MANUAL.toString());
       Location location;

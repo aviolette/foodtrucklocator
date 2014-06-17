@@ -198,11 +198,17 @@
     <form class="form-horizontal">
       <fieldset>
         <div class="control-group">
-          <label class="control-label" for="startTimeInput">Start / End</label>
-
+          <label class="control-label" for="startTimeInput">Start</label>
           <div class="controls">
             <input class="timeentry span2" id="startTimeInput" type="text"/>
+            <input class="span2" id="startDateInput" type="text"/>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="endTimeInput">End</label>
+          <div class="controls">
             <input class="timeentry span2" id="endTimeInput" type="text"/>
+            <input class="span2" id="endDateInput" type="text"/>
           </div>
         </div>
         <div class="control-group">
@@ -246,7 +252,9 @@
   });
   function invokeEditDialog(stop, afterwards) {
     $("#startTimeInput").attr("value", stop.startTime);
+    $("#startDateInput").attr("value", stop.startDate);
     $("#endTimeInput").attr("value", stop.endTime);
+    $("#endDateInput").attr("value", stop.endDate);
     $("#locationInput").attr("value", stop.location.name);
     $("#lockStop").attr("checked", stop.locked);
     $("#edit-stop").modal({ show: true, keyboard: true, backdrop: true});
@@ -254,8 +262,8 @@
     $saveButton.unbind('click');
     $saveButton.click(function (e) {
       e.preventDefault();
-      stop.startTime = $("#startTimeInput").attr("value");
-      stop.endTime = $("#endTimeInput").attr("value");
+      stop.startTime = $("#startDateInput").attr("value") + " " + $("#startTimeInput").attr("value");
+      stop.endTime = $("#endDateInput").attr("value") + " " + $("#endTimeInput").attr("value");
       var locationName = $("#locationInput").attr("value");
       if (locationName != stop.location.name) {
         stop.locationName = locationName;
@@ -315,6 +323,8 @@
               "' class='btn '><i class='icon-trash'></i> Delete</button>&nbsp;<button class='btn' id='truckEdit" +
               truckIndex + "'><i class='icon-edit'></i> Edit</button></div></td></tr>");
           $("#truckEdit" + truckIndex).click(function (e) {
+            stop["startDate"] = toDate(new Date(stop["startTimeMillis"]));
+            stop["endDate"] = toDate(new Date(stop["endTimeMillis"]));
             invokeEditDialog(stop, refreshSchedule);
           });
 
@@ -361,11 +371,17 @@
       }
     })
   }
+  function toDate(d) {
+    return (d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
+  }
   $("#addButton").click(function (e) {
     if (Modernizr.touch) {
       location.href = "/admin/trucks/${truckId}/events/new";
     } else {
-      invokeEditDialog({truckId: "${truckId}", locationName: "", location: { name: ""}, startTime: "", endTime: ""},
+      var today = toDate(new Date());
+      invokeEditDialog({truckId: "${truckId}", locationName: "", location: { name: ""},
+            startDate: today, endDate: today,
+            startTime: "", endTime: ""},
           refreshSchedule);
     }
   });
