@@ -13,6 +13,7 @@ import com.google.inject.Singleton;
 import foodtruck.stats.HeatmapService;
 
 /**
+ * Builds the heatmap and caches the results in memcached
  * @author aviolette
  * @since 5/18/14
  */

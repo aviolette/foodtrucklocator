@@ -13,6 +13,7 @@ import com.google.inject.Singleton;
 import foodtruck.schedule.ScheduleCacher;
 
 /**
+ * Called to invalidate the schedule cache in memcached.
  * @author aviolette
  * @since 5/29/13
  */

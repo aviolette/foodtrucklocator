@@ -25,7 +25,6 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
-import foodtruck.util.ClockImpl;
 import foodtruck.util.Slots;
 import foodtruck.util.WeeklyRollup;
 
