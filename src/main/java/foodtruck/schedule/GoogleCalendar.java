@@ -139,6 +139,9 @@ public class GoogleCalendar implements ScheduleStrategy {
         String whereString = where.getValueString();
         Location location = null;
         if (!Strings.isNullOrEmpty(whereString)) {
+          if (whereString.endsWith(", United States")) {
+            whereString = whereString.substring(0, whereString.lastIndexOf(","));
+          }
           // HACK Alert, the address extractor doesn't handle non-Chicago addresses well, so
           // if it is a fully qualified address written by me, it will probably end in City, IL
           if (!whereString.endsWith(", IL")) {
