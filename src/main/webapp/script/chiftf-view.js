@@ -66,9 +66,10 @@ var FoodTruckLocator = function () {
 
     function buildIconURL(letter) {
       var code = letter.charCodeAt(0);
+      var color = "";
       if (code > 90) {
         code = code - 26;
-        color = "_orange"
+        color = "_orange";
       }
       letter = String.fromCharCode(code);
       return "http://www.google.com/mapfiles/marker" + color + letter + ".png"
@@ -104,12 +105,16 @@ var FoodTruckLocator = function () {
 
     this.add = function (stop) {
       if (markers[stop.location.name] == undefined) {
-        var letterId = String.fromCharCode(65 + lastLetter);
+        var letterId = String.fromCharCode(65 + lastLetter),color = "";
         stop.marker = new google.maps.Marker({
           map: _map,
           icon: buildIconURL(letterId),
           position: stop.position
         });
+        if (lastLetter > 25) {
+          color = "Orange";
+          letterId = String.fromCharCode(lastLetter - 26 + 65);
+        }
         stop.markerId = "marker" + color + letterId;
         markers[stop.location.name] = stop.marker;
         lastLetter++;
