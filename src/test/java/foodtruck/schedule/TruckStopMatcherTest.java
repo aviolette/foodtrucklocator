@@ -69,6 +69,51 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
   @Test
+  public void testMatch_whenHardEndWithSoftStart() {
+    tweetTime = tweetTime.withTime(7, 0, 0, 0);
+    TruckStopMatch match =
+        tweet("TheRoostTruck: Rise and shine, folks. The Roost is serving up the best damn chicken biscuits on wheels over at Madisin and Wacker till 9:00am.")
+            .withTime(tweetTime)
+            .match();
+    assertNotNull(match);
+    assertEquals(Confidence.MEDIUM, match.getConfidence());
+    assertEquals(tweetTime, match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(9, 0, 0, 0), match.getStop().getEndTime());
+  }
+
+  @Test
+  public void testMatch_biscuit() {
+    tweetTime = tweetTime.withTime(7, 0, 0, 0);
+    truck = Truck.builder().id("foobar").name("FOO").twitterHandle("bar")
+        .categories(ImmutableSet.of("Breakfast", "Lunch")).build();
+
+    TruckStopMatch match =
+        tweet("The Roost is serving up the best damn chicken biscuits on wheels over at Madisin and Wacker.")
+            .withTime(tweetTime)
+            .match();
+    assertNotNull(match);
+    assertEquals(Confidence.LOW, match.getConfidence());
+    assertEquals(tweetTime, match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(9, 0, 0, 0), match.getStop().getEndTime());
+  }
+
+  @Test
+  public void testMatch_riseAndShine() {
+    tweetTime = tweetTime.withTime(7, 0, 0, 0);
+    truck = Truck.builder().id("foobar").name("FOO").twitterHandle("bar")
+        .categories(ImmutableSet.of("Breakfast", "Lunch")).build();
+
+    TruckStopMatch match =
+        tweet("TheRoostTruck: Rise and shine, folks. The Roost is serving up the best damn chicken  on wheels over at Madisin and Wacker.")
+            .withTime(tweetTime)
+            .match();
+    assertNotNull(match);
+    assertEquals(Confidence.LOW, match.getConfidence());
+    assertEquals(tweetTime, match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(9, 0, 0, 0), match.getStop().getEndTime());
+  }
+
+  @Test
   public void testMatch_shouldReturnNullWhenNoAddress() {
     final String tweetText = "foobar";
     expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.<String>of());

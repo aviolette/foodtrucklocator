@@ -220,6 +220,9 @@ public class TruckStopMatcher {
         confidence = confidence.up();
       }
       endTime = terminationTime == null ? parsedEndTime : terminationTime;
+      if (startTime.isAfter(endTime) && endTime.isAfter(tweet.getTime())) {
+        startTime = tweet.getTime();
+      }
     }
     if (endTime == null) {
       matchBuilder.softEnding(true);
@@ -270,7 +273,8 @@ public class TruckStopMatcher {
     boolean breakfast = categories.contains("Breakfast");
     if (breakfast && categories.contains("Lunch")) {
       String lower = tweetText.toLowerCase();
-      return lower.matches(".*b\\w*fast.*") || lower.contains("open for b") || lower.contains("mornin");
+      return lower.matches(".*b\\w*fast.*") || lower.contains("open for b")
+          || lower.contains("mornin") || lower.contains("biscuit") || lower.matches(".*rise\\s*(&|and)\\s*shine.*");
     } else if (breakfast) {
       return true;
     }
