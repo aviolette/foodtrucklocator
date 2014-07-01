@@ -220,7 +220,7 @@ public class TruckStopMatcher {
         confidence = confidence.up();
       }
       endTime = terminationTime == null ? parsedEndTime : terminationTime;
-      if (startTime.isAfter(endTime) && endTime.isAfter(tweet.getTime())) {
+      if (endTime != null && startTime != null && (startTime.isAfter(endTime) && endTime.isAfter(tweet.getTime()))) {
         startTime = tweet.getTime();
       }
     }
