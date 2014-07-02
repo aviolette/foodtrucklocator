@@ -10,34 +10,41 @@
 <script src="/script/lib/d3.layout.min.js" type="text/javascript"></script>
 <script src="/script/lib/rickshaw.min.js" type="text/javascript"></script>
 
+<h2>Errors</h2>
+<div class="row">
+  <div class="span6">
+    <h3>System Errors</h3>
+    <div id="systemErrors"></div>
+  </div>
+</div>
 <h2>System Stats</h2>
 <div class="row">
   <div class="span6">
-    <h2>Trucks</h2>
+    <h3>Trucks</h3>
     <div id="trucksOnRoad"></div>
   </div>
   <div class="span6">
-    <h2>Database Cache Lookups</h2>
+    <h3>Database Cache Lookups</h3>
     <div id="databaseCache"></div>
   </div>
 </div>
 <div class="row">
   <div class="span6">
-    <h2>Google Geolocation Lookups</h2>
+    <h3>Google Geolocation Lookups</h3>
     <div id="googlelookups"></div>
   </div>
   <div class="span6">
-    <h2>Yahoo Geolocation Lookups</h2>
+    <h3>Yahoo Geolocation Lookups</h3>
     <div id="yahoolookups"></div>
   </div>
 </div>
 <div class="row">
   <div class="span6">
-    <h2>Twitter Connector</h2>
+    <h3>Twitter Connector</h3>
     <div id="twitterCache"></div>
   </div>
   <div class="span6">
-    <h2>Google Calendar Connector</h2>
+    <h3>Google Calendar Connector</h3>
     <div id="calendarCache"></div>
   </div>
 </div>
@@ -99,6 +106,7 @@
     });
   }
   $(document).ready(function() {
+    drawGraphs("app_error_count", "systemErrors")
     drawGraphs(["foodtruck.geolocation.GoogleGeolocator_locate_total",
       "foodtruck.geolocation.GoogleGeolocator_locate_failed"], "googlelookups");
     drawGraphs(["foodtruck.geolocation.YahooGeolocator_locate_total",

@@ -33,6 +33,7 @@ import foodtruck.server.delivery.RequestATruckLandingServlet;
 import foodtruck.server.delivery.RequestATruckServlet;
 import foodtruck.server.delivery.ViewRequestATruckServlet;
 import foodtruck.server.job.BuildHeatmapServlet;
+import foodtruck.server.job.ErrorCountServlet;
 import foodtruck.server.job.InvalidateScheduleCache;
 import foodtruck.server.job.MigrateTimeSeries;
 import foodtruck.server.job.PurgeStatsServlet;
@@ -66,6 +67,7 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/cron/forcesavetruck").with(ForceSaveTruck.class);
     serve("/cron/migrateWeeklyStats").with(MigrateTimeSeries.class);
     serve("/cron/invalidateCache").with(InvalidateScheduleCache.class);
+    serve("/cron/error_stats").with(ErrorCountServlet.class);
     serve("/admin").with(AdminDashboardServlet.class);
     serve("/admin/addresses").with(AddressRuleServlet.class);
     serveRegex("/admin/trucks/[\\S]*/events/[\\w]*").with(TruckStopServlet.class);
