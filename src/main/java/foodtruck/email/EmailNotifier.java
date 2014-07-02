@@ -54,4 +54,10 @@ public interface EmailNotifier {
    */
 
   void systemNotifiyWeirdStopAdded(TruckStop truckStop, String tweetText);
+
+  /**
+   * Sends out an email when an error occurs
+   * @param error the error
+   */
+  void systemNotifyWarnError(String error);
 }

@@ -143,6 +143,10 @@ public class SimpleEmailNotifier implements EmailNotifier {
           timeOnlyFormatter.print(truckStop.getEndTime()), truckStop.getTruck().getId()));
   }
 
+  @Override public void systemNotifyWarnError(String error) {
+    sendSystemMessage("Errors detected!", "Errors detected on the site:\n\n" + error);
+ }
+
   private boolean sendMessage(String subject, Iterable<String> receivers, String msgBody, Iterable<String> bccs,
       @Nullable String replyTo) {
     Configuration config = configDAO.find();
