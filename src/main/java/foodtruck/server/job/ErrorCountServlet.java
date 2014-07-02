@@ -16,6 +16,7 @@ import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import foodtruck.dao.DailyRollupDAO;
 import foodtruck.dao.FifteenMinuteRollupDAO;
 import foodtruck.util.Clock;
 
@@ -25,14 +26,17 @@ import foodtruck.util.Clock;
  */
 @Singleton
 public class ErrorCountServlet extends HttpServlet {
-  private final Clock clock;
-  private final FifteenMinuteRollupDAO dao;
   private static final Logger log = Logger.getLogger(ErrorCountServlet.class.getName());
+  public static final String APP_ERROR_COUNT = "app_error_count";
+  private final Clock clock;
+  private final FifteenMinuteRollupDAO fifteenMinuteRollupDAO;
+  private final DailyRollupDAO dailyRollupDAO;
 
   @Inject
-  public ErrorCountServlet(Clock clock, FifteenMinuteRollupDAO dao) {
+  public ErrorCountServlet(Clock clock, FifteenMinuteRollupDAO fifteenMinuteRollupDAO, DailyRollupDAO dailyRollupDAO) {
     this.clock = clock;
-    this.dao = dao;
+    this.fifteenMinuteRollupDAO = fifteenMinuteRollupDAO;
+    this.dailyRollupDAO = dailyRollupDAO;
   }
 
   @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -43,6 +47,7 @@ public class ErrorCountServlet extends HttpServlet {
     query.minLogLevel(LogService.LogLevel.ERROR);
     int count = Iterables.size(LogServiceFactory.getLogService().fetch(query));
     log.log(Level.INFO, "There were {0} errors in the last 15 minutes", count);
-    dao.updateCount(clock.now(), "app_error_count", count);
+    fifteenMinuteRollupDAO.updateCount(clock.now(), APP_ERROR_COUNT, count);
+    dailyRollupDAO.updateCount(clock.now(), APP_ERROR_COUNT, count);
   }
 }

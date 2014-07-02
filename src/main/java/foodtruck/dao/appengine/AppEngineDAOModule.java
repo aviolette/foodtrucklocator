@@ -5,6 +5,7 @@ import com.google.inject.AbstractModule;
 import foodtruck.dao.AddressRuleScriptDAO;
 import foodtruck.dao.ApplicationDAO;
 import foodtruck.dao.ConfigurationDAO;
+import foodtruck.dao.DailyRollupDAO;
 import foodtruck.dao.EventDAO;
 import foodtruck.dao.FifteenMinuteRollupDAO;
 import foodtruck.dao.FoodTruckRequestDAO;
@@ -40,5 +41,6 @@ public class AppEngineDAOModule extends AbstractModule {
     bind(TwitterNotificationAccountDAO.class).to(TwitterNotificationAccountDAOAppEngine.class);
     bind(FoodTruckRequestDAO.class).to(FoodTruckRequestDAOAppEngine.class);
     bind(WeeklyRollupDAO.class).to(WeeklyRollupDAOAppEngine.class);
+    bind(DailyRollupDAO.class).to(DailyRollupDAOAppEngine.class);
   }
 }

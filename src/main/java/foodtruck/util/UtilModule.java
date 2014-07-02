@@ -52,6 +52,11 @@ public class UtilModule extends AbstractModule {
     return new Slots(1000 * 60 * 60 * 24 * 7);
   }
 
+  @DailyRollup @Provides
+  public Slots provideDailyRollup() {
+    return new Slots(1000 * 60 * 60 * 24);
+  }
+
   @FifteenMinuteRollup @Provides
   public Slots provideFifteenMinuteRollup() {
     return new Slots(1000 * 60 * 15);
