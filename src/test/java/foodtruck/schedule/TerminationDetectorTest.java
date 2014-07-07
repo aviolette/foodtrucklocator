@@ -31,6 +31,11 @@ public class TerminationDetectorTest {
   }
 
   @Test
+  public void testBeeNTea() {
+    assertTweet(tweetTime, "Buzzing to our next spot");
+  }
+
+  @Test
   public void testFalseIfReply() {
     assertEquals(null, detector.detect(tweetBuilder.text("@GettaPolpetta thanks for the heads up!").build()));
   }
