@@ -455,7 +455,7 @@ public class TwitterServiceImpl implements TwitterService {
               twitter.retweetStatus(match.getTweetId());
             }
           } catch (TwitterException e) {
-            log.log(Level.WARNING, e.getMessage(), e);
+            log.log(Level.SEVERE, e.getMessage(), e);
           }
         } else {
           log.log(Level.INFO, "{0} not contained within radius of {1}",
