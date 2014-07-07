@@ -202,6 +202,18 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
   @Test
+  public void testWithLaterRange() {
+    TruckStopMatch match = tweet("Come to Walton and Dearborn for a Steak & Cheese! 815- 930 ")
+        .withTime(tweetTime.withTime(20, 18, 0, 0))
+        .withTruck(Truck.builder(truck).categories(ImmutableSet.of("Cupcakes")).build())
+        .match();
+    assertNotNull(match);
+    assertEquals(tweetTime.withTime(20, 15, 0, 0), match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(21, 30, 0, 0), match.getStop().getEndTime());
+  }
+
+
+  @Test
   public void testMatch_shouldReturnHighConfidenceWhenAtLocationTil() {
     TruckStopMatch match = tweet("Gold Coast, we have landed at Rush and Walton...here til 6 pm!")
         .match();

@@ -162,7 +162,7 @@ public class TruckStopMatcher {
     if (m.find()) {
       final LocalDate date = tweet.getTime().toLocalDate();
       startTime = parseTime(m.group(1), date, null);
-      endTime = parseTime(m.group(5), date, endTime);
+      endTime = parseTime(m.group(5), date, startTime);
       if (endTime != null && terminationTime != null && endTime.isAfter(terminationTime)) {
         endTime = terminationTime;
       } else if (startTime != null && endTime != null && terminationTime == null &&
