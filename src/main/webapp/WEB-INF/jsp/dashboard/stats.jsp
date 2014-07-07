@@ -106,7 +106,7 @@
     });
   }
   $(document).ready(function() {
-    drawGraphs("app_error_count", "systemErrors")
+    drawGraphs("app_error_count", "systemErrors");
     drawGraphs(["foodtruck.geolocation.GoogleGeolocator_locate_total",
       "foodtruck.geolocation.GoogleGeolocator_locate_failed"], "googlelookups");
     drawGraphs(["foodtruck.geolocation.YahooGeolocator_locate_total",

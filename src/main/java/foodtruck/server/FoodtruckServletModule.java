@@ -33,6 +33,7 @@ import foodtruck.server.delivery.RequestATruckLandingServlet;
 import foodtruck.server.delivery.RequestATruckServlet;
 import foodtruck.server.delivery.ViewRequestATruckServlet;
 import foodtruck.server.job.BuildHeatmapServlet;
+import foodtruck.server.job.CreateError;
 import foodtruck.server.job.ErrorCountServlet;
 import foodtruck.server.job.InvalidateScheduleCache;
 import foodtruck.server.job.MigrateTimeSeries;
@@ -56,6 +57,7 @@ public class FoodtruckServletModule extends ServletModule {
     // This allows for us to backup the app-engine datastore locally
     bind(com.google.apphosting.utils.remoteapi.RemoteApiServlet.class).in(Singleton.class);
     serve("/remote_api").with(com.google.apphosting.utils.remoteapi.RemoteApiServlet.class);
+    serve("/cron/create_error").with(CreateError.class);
     serve("/cron/recache").with(RecacheServlet.class);
     serve("/cron/tweets").with(TweetCacheUpdateServlet.class);
     serve("/cron/tweetPurge").with(TwitterCachePurgeServlet.class);
