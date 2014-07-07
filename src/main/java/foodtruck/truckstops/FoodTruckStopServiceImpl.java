@@ -239,13 +239,16 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     truckDAO.save(t);
   }
 
-  @Override public void cancelRemainingStops(String truckId, DateTime after) {
+  @Override public int cancelRemainingStops(String truckId, DateTime after) {
     TruckSchedule stops = findStopsForDay(truckId, clock.currentDay());
+    int count = 0;
     for (TruckStop stop : stops.getStops()) {
       if (stop.activeDuring(after)) {
         update(stop.withEndTime(after));
+        count++;
       } else if (stop.getEndTime().isAfter(after)) {
         delete((Long) stop.getKey());
+        count++;
       }
     }
     Truck t = truckDAO.findById(truckId);
@@ -254,6 +257,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
             .toDateMidnight(clock.zone()).toDateTime().plusDays(1))
         .build();
     truckDAO.save(t);
+    return count;
   }
 
   @Override public TruckStop findFirstStop(Truck truck) {

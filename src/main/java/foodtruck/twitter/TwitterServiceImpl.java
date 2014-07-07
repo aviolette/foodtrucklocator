@@ -536,8 +536,12 @@ public class TwitterServiceImpl implements TwitterService {
         if (offTheRoadResponse.isConfidenceHigh() && configDAO.find().isAutoOffRoad()) {
           log.log(Level.INFO, "Auto canceling stops for truck {0} based on tweet: {1}",
               new Object[] { truck.getId(), tweet.getText()} );
-          truckStopService.cancelRemainingStops(truck.getId(), clock.now());
-          emailNotifier.systemNotifyAutoCanceled(truck, tweet);
+          int count = truckStopService.cancelRemainingStops(truck.getId(), clock.now());
+          if (count > 0) {
+            emailNotifier.systemNotifyAutoCanceled(truck, tweet);
+          } else {
+            log.log(Level.INFO, "No stops to actually cancel");
+          }
           if (!truck.isUsingTwittalyzer()) {
             ignoreTweets(ImmutableList.of(tweet));
           }

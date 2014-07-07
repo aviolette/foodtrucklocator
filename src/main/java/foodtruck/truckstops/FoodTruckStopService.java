@@ -150,8 +150,9 @@ public interface FoodTruckStopService {
    * active at the specified time.
    * @param truckId
    * @param after
+   * @return the number of stops removed
    */
-  void cancelRemainingStops(String truckId, DateTime after);
+  int cancelRemainingStops(String truckId, DateTime after);
 
   TruckStop findFirstStop(Truck truck);
 }
