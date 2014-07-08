@@ -15,6 +15,7 @@ import foodtruck.model.TruckSchedule;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 import static foodtruck.server.resources.Resources.noCache;
+import static foodtruck.server.resources.Resources.requiresAdmin;
 
 /**
  * @author aviolette@gmail.com
@@ -36,6 +37,7 @@ public class TruckScheduleResource {
 
   @GET @Path("{truckId}")
   public JResponse<TruckSchedule> findSchedule(@PathParam("truckId") String truckId) {
+    requiresAdmin();
     try {
       return noCache(JResponse.ok(stopService.findStopsForDay(truckId, clock.currentDay()))).build();
     } catch (IllegalStateException ise) {
