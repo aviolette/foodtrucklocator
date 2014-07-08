@@ -79,12 +79,8 @@ public class DailyScheduleWriter implements MessageBodyWriter<DailySchedule>, JS
     }
     final Escaper escaper = HtmlEscapers.htmlEscaper();
     JSONArray schedules = new JSONArray();
-    log.info("TRUCKS: " + trucks);
     for (TruckStop stop : schedule.getStops()) {
       try {
-        log.info("TRUCK: " + stop.getTruck());
-        log.info("LOCATION: " + stop.getLocation());
-
          JSONObject truckStop = new JSONObject()
             .put("location", locations.get(stop.getLocation()))
             .put("truckId", stop.getTruck().getId())
