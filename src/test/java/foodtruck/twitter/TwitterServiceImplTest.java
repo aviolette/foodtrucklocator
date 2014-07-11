@@ -315,8 +315,8 @@ public class TwitterServiceImplTest extends EasyMockSupport {
         new TruckObserver("mdw2mnl", uchicago, ImmutableList.of("breakfast", "lunch"))));
     TweetSummary tweet1 = new TweetSummary.Builder().userId("uchinomgo").ignoreInTwittalyzer(false)
         .text("For lunch we have these #foodtrucks: @CaponiesExp @threejsbbq @somethingelse").build();
-    truck1 = Truck.builder(truck1).twitterHandle("caponiesexp").id("caponiesexp").build();
-    truck2 = Truck.builder(truck1).twitterHandle("threejsbbq").id("threejsbbq").build();
+    truck1 = Truck.builder(truck1).categories(ImmutableSet.of("Breakfast")).twitterHandle("caponiesexp").id("caponiesexp").build();
+    truck2 = Truck.builder(truck1).categories(ImmutableSet.of("Breakfast")).twitterHandle("threejsbbq").id("threejsbbq").build();
     expect(tweetDAO.findTweetsAfter(now.minusHours(6), "uchinomgo", false))
         .andReturn(ImmutableList.<TweetSummary>of(tweet1));
     expect(tweetDAO.findTweetsAfter(now.minusHours(6), "mdw2mnl", false)).andReturn(ImmutableList.<TweetSummary>of());
@@ -343,8 +343,8 @@ public class TwitterServiceImplTest extends EasyMockSupport {
         .text("For lunch we have these #foodtrucks: @CaponiesExp @threejsbbq @somethingelse").build();
     TweetSummary tweet2 = new TweetSummary.Builder().userId("mdw2mnl").ignoreInTwittalyzer(false)
         .text("For lunch we have these #foodtrucks: @CaponiesExp").build();
-    truck1 = Truck.builder(truck1).twitterHandle("caponiesexp").id("caponiesexp").build();
-    truck2 = Truck.builder(truck1).twitterHandle("threejsbbq").id("threejsbbq").build();
+    truck1 = Truck.builder(truck1).categories(ImmutableSet.of("Breakfast")).twitterHandle("caponiesexp").id("caponiesexp").build();
+    truck2 = Truck.builder(truck1).categories(ImmutableSet.of("Breakfast")).twitterHandle("threejsbbq").id("threejsbbq").build();
     expect(tweetDAO.findTweetsAfter(now.minusHours(6), "uchinomgo", false))
         .andReturn(ImmutableList.<TweetSummary>of(tweet1));
     expect(tweetDAO.findTweetsAfter(now.minusHours(6), "mdw2mnl", false))

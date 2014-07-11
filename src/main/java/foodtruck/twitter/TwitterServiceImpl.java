@@ -268,9 +268,13 @@ public class TwitterServiceImpl implements TwitterService {
             }
             List<TruckStop> trucks = truckStopDAO.findDuring(truck.getId(), today);
             if (trucks.isEmpty()) {
+              DateTime startTime = now;
+              if (now.getHourOfDay() < 11 && !truck.getCategories().contains("Breakfast")) {
+                startTime = now.withTime(11, 0, 0, 0);
+              }
               truckStops.add(
                   TruckStop.builder().origin(StopOrigin.OBSERVER)
-                      .truck(truck).startTime(now).endTime(now.plusHours(2))
+                      .truck(truck).startTime(startTime).endTime(startTime.plusHours(2))
                       .location(uofc)
                       .appendNote("Added by @" + observer.getTwitterHandle() + " at " +
                           clock.nowFormattedAsTime()
