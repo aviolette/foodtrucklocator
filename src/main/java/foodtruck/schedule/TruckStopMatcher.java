@@ -378,8 +378,8 @@ public class TruckStopMatcher {
       if (tmpTime.length() == 3) {
         tmpTime = "0" + tmpTime;
       }
-      int hour = Integer.parseInt(tmpTime.substring(0, 2));
-      int min = Integer.parseInt(tmpTime.substring(2, 4));
+      int hour = Integer.parseInt(tmpTime.substring(0, 2).trim());
+      int min = Integer.parseInt(tmpTime.substring(2, 4).trim());
       if (after.isAfter(date.toDateTime(new LocalTime(hour, min), clock.zone()))) {
         suffix = "pm";
       } else {

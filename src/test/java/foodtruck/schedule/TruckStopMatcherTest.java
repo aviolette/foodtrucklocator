@@ -114,6 +114,15 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
   @Test
+  public void testMatch_carriageReturn() {
+    TruckStopMatch match = tweet("1815 S. Meyers Road, Chicago, IL] from tweet: Corporate Lakes III, 2200 Cabot Drive, Lisle 1:30-3\n" +
+        "\n" +
+        "Oakbrook Terrace Corporate Center III, 1815 S. Meyers Road 3:15-4:30")
+        .match();
+    assertNotNull(match);
+  }
+
+  @Test
   public void testMatch_shouldReturnNullWhenNoAddress() {
     final String tweetText = "foobar";
     expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.<String>of());
