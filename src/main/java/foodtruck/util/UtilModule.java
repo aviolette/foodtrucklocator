@@ -34,7 +34,7 @@ public class UtilModule extends AbstractModule {
 
   @HtmlDateFormatter @Provides
   public DateTimeFormatter providesDateTimeFormatterForHtml(DateTimeZone zone) {
-    return DateTimeFormat.forPattern("YYYY-MM-dd'T'HH:mm");
+    return DateTimeFormat.forPattern("YYYY-MM-dd'T'HH:mm").withZone(zone);
   }
 
   @FriendlyDateTimeFormat @Provides
