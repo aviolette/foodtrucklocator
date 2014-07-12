@@ -345,6 +345,10 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     WeeklySchedule.Builder scheduleBuilder = new WeeklySchedule.Builder();
     scheduleBuilder.start(startDate);
     for (TruckStop stop : stops) {
+      if (stop.getTruck() == null) {
+        // this will happen if I deleted a truck that was referenced in a stop
+        continue;
+      }
       if (locationMap.containsKey(stop.getLocation().getName())) {
         scheduleBuilder.addStop(stop);
       } else {
