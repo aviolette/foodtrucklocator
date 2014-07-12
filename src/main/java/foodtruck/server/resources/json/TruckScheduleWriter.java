@@ -24,6 +24,7 @@ import org.joda.time.format.DateTimeFormatter;
 import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStop;
 import foodtruck.server.resources.BadRequestException;
+import foodtruck.util.HtmlDateFormatter;
 import foodtruck.util.TimeOnlyFormatter;
 
 /**
@@ -35,14 +36,15 @@ public class TruckScheduleWriter implements MessageBodyWriter<TruckSchedule> {
   private final LocationWriter locationWriter;
   private final TruckWriter truckWriter;
   private final DateTimeFormatter timeFormatter;
+  private final DateTimeFormatter htmlDateFormatter;
 
   @Inject
   public TruckScheduleWriter(TruckWriter truckWriter, LocationWriter locationWriter,
-      @TimeOnlyFormatter DateTimeFormatter formatter) {
+      @TimeOnlyFormatter DateTimeFormatter formatter, @HtmlDateFormatter DateTimeFormatter htmlDateFormatter) {
     this.truckWriter = truckWriter;
     this.locationWriter = locationWriter;
     this.timeFormatter = formatter;
-
+    this.htmlDateFormatter = htmlDateFormatter;
   }
 
   @Override public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations,
@@ -82,6 +84,8 @@ public class TruckScheduleWriter implements MessageBodyWriter<TruckSchedule> {
           .put("endTimeMillis", stop.getEndTime().getMillis())
           .put("duration", period(p))
           .put("durationMillis", new Duration(stop.getStartTime(), stop.getEndTime()).getMillis())
+          .put("startTimeH", htmlDateFormatter.print(stop.getStartTime()))
+          .put("endTimeH", htmlDateFormatter.print(stop.getEndTime()))
           .put("startTime", timeFormatter.print(stop.getStartTime()))
           .put("endTime", timeFormatter.print(stop.getEndTime()));
       arr.put(truckStop);

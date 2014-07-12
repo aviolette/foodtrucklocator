@@ -200,15 +200,13 @@
         <div class="control-group">
           <label class="control-label" for="startTimeInput">Start</label>
           <div class="controls">
-            <input class="timeentry span2" id="startTimeInput" type="text"/>
-            <input class="span2" id="startDateInput" type="text"/>
+            <input class="timeentry" id="startTimeInput" type="datetime-local"/>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label" for="endTimeInput">End</label>
           <div class="controls">
-            <input class="timeentry span2" id="endTimeInput" type="text"/>
-            <input class="span2" id="endDateInput" type="text"/>
+            <input class="timeentry" id="endTimeInput" type="datetime-local"/>
           </div>
         </div>
         <div class="control-group">
@@ -251,10 +249,8 @@
     $("#startTimeInput").focus();
   });
   function invokeEditDialog(stop, afterwards) {
-    $("#startTimeInput").attr("value", stop.startTime);
-    $("#startDateInput").attr("value", stop.startDate);
-    $("#endTimeInput").attr("value", stop.endTime);
-    $("#endDateInput").attr("value", stop.endDate);
+    $("#startTimeInput").attr("value", stop.startTimeH);
+    $("#endTimeInput").attr("value", stop.endTimeH);
     $("#locationInput").attr("value", stop.location.name);
     $("#lockStop").attr("checked", stop.locked);
     $("#edit-stop").modal({ show: true, keyboard: true, backdrop: true});
@@ -262,8 +258,8 @@
     $saveButton.unbind('click');
     $saveButton.click(function (e) {
       e.preventDefault();
-      stop.startTime = $("#startDateInput").attr("value") + " " + $("#startTimeInput").attr("value");
-      stop.endTime = $("#endDateInput").attr("value") + " " + $("#endTimeInput").attr("value");
+      stop.startTime =  $("#startTimeInput").attr("value");
+      stop.endTime =  $("#endTimeInput").attr("value");
       var locationName = $("#locationInput").attr("value");
       if (locationName != stop.location.name) {
         stop.locationName = locationName;
@@ -289,6 +285,20 @@
       $("#edit-stop").modal('hide');
     });
   }
+
+
+  function pad(t) {
+    t = String(t)
+    if (t.length == 1) {
+      return "0" + t;
+    }
+    return t;
+  }
+
+  function toDate(d) {
+    return (d.getFullYear()) + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate()) + "T" + pad(d.getHours()) + ":" + pad(d.getMinutes());
+  }
+
   function refreshSchedule() {
     var scheduleTable = $("#scheduleTable");
     scheduleTable.empty();
@@ -331,18 +341,12 @@
           function timeUpdateMaker(useStart) {
             return function (e) {
               e.preventDefault();
-              var now = new Date();
-              var hour = now.getHours();
-              var ampm = "AM";
-              if (hour > 12) {
-                ampm = "PM";
-                hour = hour - 12;
-              }
-              var theTime = hour + ":" + now.getMinutes() + " " + ampm;
               if (useStart) {
-                stop.startTime = theTime;
+                stop.startTime = toDate(new Date());
+                stop["endTime"] = toDate(new Date(stop["endTimeMillis"]));
               } else {
-                stop.endTime = theTime;
+                stop.startTime = toDate(new Date(stop["startTimeMillis"]));
+                stop.endTime = toDate(new Date());
               }
               stop.truckId = "${truckId}";
               $.ajax({
@@ -371,17 +375,14 @@
       }
     })
   }
-  function toDate(d) {
-    return (d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
-  }
+
   $("#addButton").click(function (e) {
     if (Modernizr.touch) {
       location.href = "/admin/trucks/${truckId}/events/new";
     } else {
-      var today = toDate(new Date());
+      var today = toDate(new Date()), later = toDate(new Date(new Date().getTime() + (2*60*60*1000)));
       invokeEditDialog({truckId: "${truckId}", locationName: "", location: { name: ""},
-            startDate: today, endDate: today,
-            startTime: "", endTime: ""},
+            startTimeH: today, endTimeH: later },
           refreshSchedule);
     }
   });

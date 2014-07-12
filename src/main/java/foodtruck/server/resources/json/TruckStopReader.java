@@ -29,7 +29,7 @@ import foodtruck.model.StopOrigin;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.util.Clock;
-import foodtruck.util.FriendlyDateTimeFormat;
+import foodtruck.util.HtmlDateFormatter;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
@@ -47,7 +47,7 @@ public class TruckStopReader implements MessageBodyReader<TruckStop> {
 
   @Inject
   public TruckStopReader(Clock clock, TruckDAO trucks, GeoLocator geolocator,
-      LocationReader locationReader, @FriendlyDateTimeFormat DateTimeFormatter formatter) {
+      LocationReader locationReader, @HtmlDateFormatter DateTimeFormatter formatter) {
     this.truckDAO = trucks;
     this.clock = clock;
     this.format = formatter;
