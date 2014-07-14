@@ -90,7 +90,7 @@ public abstract class VendorServletSupport extends HttpServlet {
 
   private Set<Truck> associatedTrucks(HttpServletRequest req) {
     if (req.getUserPrincipal() != null) {
-      return truckDAO.findByBeaconnaiseEmail(req.getUserPrincipal().getName());
+      return truckDAO.findByBeaconnaiseEmail(req.getUserPrincipal().getName().toLowerCase());
     }
     return ImmutableSet.of();
   }
