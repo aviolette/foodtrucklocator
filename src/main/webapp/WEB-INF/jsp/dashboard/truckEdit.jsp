@@ -201,9 +201,18 @@
   <input type="submit" class="btn btn-primary" value="Update"/> &nbsp;
 </form>
 
+<button id="updateStats" class="btn btn-warning">Update Stats</button>
 <button id="deleteTruck" class="btn btn-danger">DELETE THIS TRUCK</button>
 
 <script>
+  $("#updateStats").click(function() {
+    $.ajax({
+       url: '/cron/updateTruckStats?truckId=${truck.id}&force=true',
+       complete: function() {
+         location.href='/trucks/${truck.id}';
+       }
+    });
+  })
   $("#deleteTruck").click(function () {
     if (confirm("ARE YOU SURE?")) {
       $.ajax({
