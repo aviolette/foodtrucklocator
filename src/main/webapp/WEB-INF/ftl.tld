@@ -17,6 +17,11 @@
     <body-content>empty</body-content>
     <description>Format locations for display</description>
     <attribute>
+      <name>at</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
       <name>location</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>

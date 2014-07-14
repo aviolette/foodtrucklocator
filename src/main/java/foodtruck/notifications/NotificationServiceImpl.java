@@ -33,7 +33,6 @@ public class NotificationServiceImpl implements NotificationService {
   private final FoodTruckStopService truckService;
   private final Clock clock;
   private final TwitterNotificationAccountDAO notificationAccountDAO;
-  private final RetweetsDAO retweetsDAO;
   private final ConfigurationDAO configurationDAO;
 
   @Inject
@@ -43,7 +42,6 @@ public class NotificationServiceImpl implements NotificationService {
     this.truckService = truckService;
     this.clock = clock;
     this.notificationAccountDAO = notificationAccountDAO;
-    this.retweetsDAO = retweetsDAO;
     this.configurationDAO = configurationDAO;
   }
 
@@ -61,9 +59,6 @@ public class NotificationServiceImpl implements NotificationService {
             updateStatus(account, String.format("No trucks at %s today", account.getName()));
           }
         } else {
-          for (Truck truck : trucks) {
-            retweetsDAO.markRetweeted(truck.getId(), account.getTwitterHandle());
-          }
           Joiner joiner = Joiner.on(" ");
           Iterable<String> twitterHandles = Iterables.transform(trucks, new Function<Truck, String>(){
             @Override public String apply(Truck input) {

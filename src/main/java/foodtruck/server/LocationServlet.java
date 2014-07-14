@@ -64,7 +64,11 @@ public class LocationServlet extends FrontPageServlet {
     } else {
       location = geoLocator.locate(query, GeolocationGranularity.NARROW);
       if (location != null && location.isResolved()) {
-        resp.sendRedirect("/locations/" + location.getKey());
+        String date = req.getParameter("date"), dateString="";
+        if (!Strings.isNullOrEmpty(date)) {
+          dateString = "?date=" + date;
+        }
+        resp.sendRedirect("/locations/" + location.getKey() + dateString);
         return;
       }
     }

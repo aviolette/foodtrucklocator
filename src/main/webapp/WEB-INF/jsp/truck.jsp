@@ -85,7 +85,7 @@
                   <c:forEach items="${schedule.stops}" var="stop">
                     <li style="padding-bottom:10px">
                     <joda:format value="${stop.startTime}" style="-S"/>
-                    <ftl:location location="${stop.location}"/>
+                    <ftl:location at="${stop.startTime}" location="${stop.location}"/>
                     </li>
                   </c:forEach>
 
@@ -125,7 +125,7 @@
       </div>
       <div class="panel-body">
         <joda:format value="${truck.stats.firstSeen}" style="MS"/> <c:if test="${!empty(truck.stats.whereFirstSeen.name)}">@ <br/>
-        <ftl:location location="${truck.stats.whereFirstSeen}"/></c:if>
+        <ftl:location at="${truck.stats.firstSeen}" location="${truck.stats.whereFirstSeen}"/></c:if>
       </div>
       </div>
     </div>
@@ -136,7 +136,7 @@
         </div>
         <div class="panel-body">
           <joda:format value="${truck.stats.lastSeen}" style="MS"/> <c:if test="${!empty(truck.stats.whereLastSeen.name)}">@ <br/>
-          <ftl:location location="${truck.stats.whereLastSeen}"/></c:if>
+          <ftl:location at="${truck.stats.lastSeen}" location="${truck.stats.whereLastSeen}"/></c:if>
         </div>
       </div>
     </div>
