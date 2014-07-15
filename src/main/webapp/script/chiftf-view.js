@@ -481,7 +481,7 @@ var FoodTruckLocator = function () {
     $.each(_trucks.findStopsForTruck(truck.id), function (idx, stop) {
       var $tr = $("<tr></tr>");
       $tr.append("<td>" + stop.stop.startTime + "</td>");
-      $tr.append("<td>" + stop.location.name + "</td>")
+      $tr.append("<td><a href='/locations/" + stop.location.key + "'>" + stop.location.name + "</a></td>")
       $truckSchedule.append($tr);
     });
     $("#truckTitle").html(truck.name);
