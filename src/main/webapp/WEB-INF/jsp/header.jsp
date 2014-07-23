@@ -27,9 +27,17 @@
   </style>
 </head>
 <body>
-<nav id="topBar" class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+<div class="container cftf-main-container">
+
+<div id="topBar" class="navbar navbar-fixed-top navbar-inverse" role="navigation">
   <div class="container">
     <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
       <a class="navbar-brand" href="/">Chicago Food Truck Finder</a>
     </div>
     <div class="collapse navbar-collapse">
@@ -45,23 +53,22 @@
         </li>
         <li><a href="http://blog.chicagofoodtruckfinder.com/">Blog</a></li>
         <c:if test="${isAdmin}">
-        <li><a href="/admin">Admin</a></li>
+          <li><a href="/admin">Admin</a></li>
         </c:if>
       </ul>
       <ul class="nav navbar-right navbar-nav">
         <li><a style="padding: 10px 0 0 0" href="http://twitter.com/chifoodtruckz"><img src="/img/twitter02_dark.png"/></a></li>
         <li><a style="padding: 10px 0 0 0" href="http://facebook.com/chicagofoodtruckfinder"><img src="/img/facebook_dark.png"/></a></li>
         <c:if test="${!empty(user)}">
-<%--          <li><a href="#">${user}</a></li> --%>
+          <%--          <li><a href="#">${user}</a></li> --%>
           <li><a href="${signoutUrl}">Logout</a></li>
         </c:if>
 
       </ul>
     </div>
   </div>
-</nav>
+</div>
 
-<div class="container cftf-main-container">
   <noscript>
     <div class="alert alert-error">
       Javascript is required for this site to function properly.
