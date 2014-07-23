@@ -554,13 +554,16 @@ var FoodTruckLocator = function () {
         _mobile = true;
         $("#map_wrapper").css("display", "none");
         if (Modernizr.geolocation) {
+          flash("Looking up location...");
           navigator.geolocation.getCurrentPosition(function (position) {
             _center = new google.maps.LatLng(position.coords.latitude,
                 position.coords.longitude);
+            hideFlash();
             self.setModel(modelPayload);
           }, function () {
+            hideFlash();
             self.setModel(modelPayload);
-          });
+          }, {timeout: 4000});
         } else {
           self.setModel(modelPayload);
         }
