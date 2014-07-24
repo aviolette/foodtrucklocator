@@ -16,9 +16,20 @@
     background-color: blue;
     color: white;
   }
+  td.graph a {
+    display:block;
+    width:100%;
+    color:white;
+  }
+  td.graph a.visited {
+    color:white;
+    text-decoration:none;
+  }
 </style>
 
 <h2>Truck Timeline</h2>
+
+<p>This graph represents the relative start and end time of food trucks as they were first and last seen on my site. Most recent trucks to appear, are on top whereas oldest trucks are on the bottom.</p>
 
 <table id="timeline">
   <tbody id="timelineBody">
@@ -33,6 +44,17 @@
         now = new Date().getTime(),
         total = now - sep15;
 
+    function dateFormat(d) {
+      return (d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
+    }
+
+    function truckLink(truck) {
+      var first = dateFormat(new Date(truck.firstSeen)),
+          last = dateFormat(new Date(truck.lastSeen)),
+          title = "First seen on " + first + "; last seen: " + last;
+      return "<a title='" + title +"' href='/trucks/" + truck.id + "'>" + truck.name + "</a>";
+    }
+
     function buildGraph(truck) {
       var first = truck.firstSeen - sep15;
       if (first < 0) {
@@ -45,9 +67,9 @@
         firstText = "&nbsp;",
         graphText = "&nbsp;";
       if (firstPercent > graphPercent) {
-        firstText = truck.name;
+        firstText = truckLink(truck);
       } else {
-        graphText = truck.name;
+        graphText = truckLink(truck);
       }
       return "<table class='graph'><tr><td style='width:" + firstPercent + "%' class='firstCell'>" + firstText + "</td><td style='width:" + graphPercent + "%' class='graph'>" + graphText + "</td><td style='width:" + lastPercent +"%'>&nbsp;</td></tr></table>";
     }
