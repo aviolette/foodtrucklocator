@@ -106,6 +106,7 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/locations*").with(LocationServlet.class);
     serve("/events*").with(EventsServlet.class);
     serve("/stats/heatmap").with(HeatmapServlet.class);
+    serve("/stats/timeline").with(TruckTimelineServlet.class);
     serveRegex("/[\\w]*").with(FoodTruckServlet.class);
   }
 
