@@ -41,6 +41,7 @@
       var last = truck.lastSeen - truck.firstSeen,
         firstPercent = Math.floor((first / total) * 100),
         graphPercent = Math.floor(last / total * 100) + 1,
+        lastPercent = Math.floor(Math.max(0, 100 - firstPercent - graphPercent)),
         firstText = "&nbsp;",
         graphText = "&nbsp;";
       if (firstPercent > graphPercent) {
@@ -48,7 +49,7 @@
       } else {
         graphText = truck.name;
       }
-      return "<table class='graph'><tr><td style='width:" + firstPercent + "%' class='firstCell'>" + firstText + "</td><td style='width:" + graphPercent + "%' class='graph'>" + graphText + "</td><td class='third'>&nbsp;</td></tr></table>";
+      return "<table class='graph'><tr><td style='width:" + firstPercent + "%' class='firstCell'>" + firstText + "</td><td style='width:" + graphPercent + "%' class='graph'>" + graphText + "</td><td style='width:" + lastPercent +"%'>&nbsp;</td></tr></table>";
     }
 
     $.each(trucks.sort(function(a, b) {
