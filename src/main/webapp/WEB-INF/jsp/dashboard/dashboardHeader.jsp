@@ -21,9 +21,6 @@
       padding-top: 50px
     }
 
-    tr.muted {
-      display: none;
-    }
     td.gutter {
       width: 2px;
     }

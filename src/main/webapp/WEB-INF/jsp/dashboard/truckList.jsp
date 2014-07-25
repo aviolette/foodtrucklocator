@@ -7,7 +7,7 @@
   </div>
   <div class="btn-group toggle-visibility" >
     <button id="inactiveButton" type="button" class="btn active">Inactive</button>
-    <button id="muteButton" type="button" class="btn active">Muted</button>
+    <button id="muteButton" type="button" class="btn">Muted</button>
   </div>
   <div class="btn-group">
     <a href="#" class="btn" id="newTruck">New Truck</a>&nbsp;
