@@ -49,6 +49,7 @@
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Stats <b class="caret"></b></a>
           <ul class="dropdown-menu">
             <li><a href="/stats/heatmap">Heatmap</a></li>
+            <li><a href="/stats/timeline">Timeline</a></li>
           </ul>
         </li>
         <li><a href="http://blog.chicagofoodtruckfinder.com/">Blog</a></li>
