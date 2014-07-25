@@ -1,3 +1,12 @@
+thead tr {
+  background-color: lightgrey;
+  border-color: lightgrey;
+}
+
+thead tr th {
+  border-color: lightgray;
+}
+
 .cftf-header {
   background-color: #333;
   color: #f2f2f2;
