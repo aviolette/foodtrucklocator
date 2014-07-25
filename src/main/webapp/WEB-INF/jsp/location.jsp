@@ -2,13 +2,10 @@
 
 <div class="row" >
   <div class="col-md-6">
-    <h2>${location.name}</h2>
+    <h2>${location.name}<c:if test="${isAdmin}">
+      <a class="btn btn-small btn-default" href="/admin/locations/${location.key}"> <span class="glyphicon glyphicon-pencil"></span> Edit</a>
+    </c:if></h2>
 
-    <c:if test="${isAdmin}">
-      <div>
-      <a class="btn btn-primary" href="/admin/locations/${location.key}">Edit</a>
-      </div>
-    </c:if>
 
     <c:if test="${!empty(location.description)}">
       <div>${location.description}</div>
@@ -21,7 +18,7 @@
     </c:if>
       <c:forEach items="${stops}" var="stop" varStatus="status">
         <c:if test="${status.index == 0}">
-          <h3>Schedule for <joda:format value="${thedate}" pattern="MMM dd, YYYY"/></h3>
+          <h3><a href="/locations/${location.key}?date=<joda:format value="${thedate}" pattern="YYYYMMdd"/>">Schedule for <joda:format value="${thedate}" pattern="MMM dd, YYYY"/></a></h3>
         </c:if>
         <div class="media">
           <a class="pull-left" href="/trucks/${stop.truck.id}">
