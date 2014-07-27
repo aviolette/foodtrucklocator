@@ -1,12 +1,22 @@
 package foodtruck.twitter;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
+import com.google.common.base.Throwables;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 
+import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
+import twitter4j.conf.Configuration;
+import twitter4j.conf.ConfigurationBuilder;
+import twitter4j.conf.PropertyConfiguration;
 
 /**
  * @author aviolette@gmail.com
@@ -24,10 +34,19 @@ public class TwitterModule extends AbstractModule {
       bind(TweetCacheUpdater.class).to(RemoteCacheUpdater.class);
     }
   }
-
   @Provides @Singleton
   public TwitterFactoryWrapper provideTwitterFactory() {
-    return new TwitterFactoryWrapper(new TwitterFactory());
+    Properties properties = new Properties();
+    InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("twitter4j.properties");
+    try {
+      properties.load(in);
+      in.close();
+    } catch (IOException e) {
+      throw Throwables.propagate(e);
+    }
+    properties.remove(PropertyConfiguration.OAUTH_ACCESS_TOKEN);
+    properties.remove(PropertyConfiguration.OAUTH_ACCESS_TOKEN_SECRET);
+    return new TwitterFactoryWrapper(new TwitterFactory(), new TwitterFactory(new PropertyConfiguration(properties)));
   }
 
   @FoodtruckLocatorEndpoint @Provides @Singleton

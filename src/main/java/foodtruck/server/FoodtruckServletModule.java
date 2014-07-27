@@ -45,6 +45,10 @@ import foodtruck.server.job.TweetCacheUpdateServlet;
 import foodtruck.server.job.TwitterCachePurgeServlet;
 import foodtruck.server.job.UpdateTruckStats;
 import foodtruck.server.migrations.ForceSaveTruck;
+import foodtruck.server.petitions.PetitionEmailInterstitialServlet;
+import foodtruck.server.petitions.PetitionServlet;
+import foodtruck.server.petitions.PetitionThanksServlet;
+import foodtruck.server.petitions.PetitionVerificationServlet;
 
 /**
  * Wires all the endpoints for the application.
@@ -105,6 +109,10 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/requests/view/*").with(ViewRequestATruckServlet.class);
     serve("/locations*").with(LocationServlet.class);
     serve("/events*").with(EventsServlet.class);
+    serve("/petitions/600w").with(PetitionServlet.class);
+    serve("/petitions/600w/not_finished").with(PetitionEmailInterstitialServlet.class);
+    serve("/petitions/600w/verify/*").with(PetitionVerificationServlet.class);
+    serve("/petitions/600w/thanks").with(PetitionThanksServlet.class);
     serve("/stats/heatmap").with(HeatmapServlet.class);
     serve("/stats/timeline").with(TruckTimelineServlet.class);
     serveRegex("/[\\w]*").with(FoodTruckServlet.class);

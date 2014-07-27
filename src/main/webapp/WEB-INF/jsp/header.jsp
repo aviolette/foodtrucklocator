@@ -9,7 +9,14 @@
   <meta name="description"
         content="Find food trucks on the streets of Chicago by time and location.  Results are updated in real-time throughout the day."/>
   <title>${title}</title>
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+  <c:choose>
+    <c:when test="${localFrameworks}">
+      <link rel="stylesheet" href="/bootstrap3.0.3/css/bootstrap.min.css"/>
+    </c:when>
+    <c:otherwise>
+      <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    </c:otherwise>
+  </c:choose>
   <link href="/css/main.css?ver=7" rel="stylesheet"/>
   <script src="/script/lib/modernizr-1.7.min.js"></script>
   <style type="text/css">

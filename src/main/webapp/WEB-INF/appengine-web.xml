@@ -10,4 +10,7 @@
     <include path="/img/**" expiration="100d"/>
     <include path="/script/**" expiration="100d"/>
   </static-files>
+  <system-properties>
+    <property name="use.local.frameworks" value="true"/>
+  </system-properties>
 </appengine-web-app>

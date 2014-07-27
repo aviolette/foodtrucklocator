@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
+import org.joda.time.DateTime;
+
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.model.Location;
 
@@ -29,11 +31,16 @@ public abstract class FrontPageServlet extends HttpServlet {
   @Override protected final void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     UserService userService = UserServiceFactory.getUserService();
+    req.setAttribute("localFrameworks", "true".equals(System.getProperty("use.local.frameworks", "false")));
     req.setAttribute("isAdmin", userService.isUserLoggedIn() && userService.isUserAdmin());
     req.setAttribute("title", System.getProperty("foodtrucklocator.title", "Chicago Food Truck Finder"));
     req.setAttribute("signoutUrl", userService.isUserLoggedIn() ? userService.createLogoutURL("/") : null);
     req.setAttribute("user", userService.getCurrentUser());
     doGetProtected(req, resp);
+  }
+
+  protected final void flashError(String error, HttpServletResponse resp) {
+    resp.setHeader("Set-Cookie", "flash=" + error + ";Path=/");
   }
 
   protected abstract void doGetProtected(HttpServletRequest req, HttpServletResponse resp)

@@ -4,6 +4,7 @@ import java.util.Map;
 
 import foodtruck.model.FoodTruckRequest;
 import foodtruck.model.Location;
+import foodtruck.model.PetitionSignature;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TweetSummary;
@@ -60,4 +61,8 @@ public interface EmailNotifier {
    * @param error the error
    */
   void systemNotifyWarnError(String error);
+
+  void notifyVerifyPetitionSignature(PetitionSignature sig);
+
+  void notifyThanksForSigningPetition(PetitionSignature sig);
 }

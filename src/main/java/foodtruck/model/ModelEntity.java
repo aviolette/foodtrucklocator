@@ -1,5 +1,9 @@
 package foodtruck.model;
 
+import com.google.common.base.Strings;
+
+import static com.google.common.base.Preconditions.checkState;
+
 /**
  * Provides an object's key to be used in a DB.
  * @author aviolette@gmail.com

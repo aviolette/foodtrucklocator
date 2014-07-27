@@ -121,6 +121,18 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
     return kind;
   }
 
+  public @Nullable T findSingleItemByAttribute(String attributeName, String attributeValue) {
+    return findSingleItemByFilter(new Query.FilterPredicate(attributeName, Query.FilterOperator.EQUAL, attributeValue));
+  }
+
+  protected @Nullable T findSingleItemByFilter(Query.Filter filter) {
+    DatastoreService dataStore = provider.get();
+    Query q = new Query(getKind());
+    q.setFilter(filter);
+    Entity entity = dataStore.prepare(q).asSingleEntity();
+    return (entity == null) ? null : fromEntity(entity);
+  }
+
   public @Nullable T findById(Long id) {
     DatastoreService dataStore = provider.get();
     Key key = KeyFactory.createKey(getKind(), id);

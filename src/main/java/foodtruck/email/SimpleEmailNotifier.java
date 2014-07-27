@@ -29,6 +29,7 @@ import foodtruck.dao.ConfigurationDAO;
 import foodtruck.model.Configuration;
 import foodtruck.model.FoodTruckRequest;
 import foodtruck.model.Location;
+import foodtruck.model.PetitionSignature;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TweetSummary;
@@ -146,6 +147,22 @@ public class SimpleEmailNotifier implements EmailNotifier {
   @Override public void systemNotifyWarnError(String error) {
     sendSystemMessage("Errors detected!", "Errors detected on the site:\n\n" + error);
  }
+
+  @Override public void notifyVerifyPetitionSignature(PetitionSignature sig) {
+    String msgBody = MessageFormat.format("Thank you for signing our petition to bring back the food truck stands at" +
+        " 600 W. Chicago.  Please click on this URL to verify your email http://www.chicagofoodtruckfinder.com/petitions/600w/verify/{0}", sig.getSignature());
+    log.log(Level.FINE, "Petition signature {0}", sig);
+    sendMessage("Petition Signature Needs Verification", ImmutableList.of(sig.getEmail()),
+        msgBody,
+        ImmutableList.<String>of(), "no-reply@chicagofoodtruckfinder.com");
+  }
+
+  @Override public void notifyThanksForSigningPetition(PetitionSignature sig) {
+    String msgBody = MessageFormat.format("Thank you for signing our petition to bring back the food truck stands at" +
+        " 600 W. Chicago.", sig.getSignature());
+    sendMessage("Thank you very much!", ImmutableList.of(sig.getEmail()), msgBody, ImmutableList.<String>of(),
+        "no-reply@chicagofoodtruckfinder.com");
+  }
 
   private boolean sendMessage(String subject, Iterable<String> receivers, String msgBody, Iterable<String> bccs,
       @Nullable String replyTo) {
