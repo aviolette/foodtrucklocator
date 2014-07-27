@@ -310,7 +310,7 @@ var FoodTruckLocator = function () {
     $("a.truckLink").each(function (idx, item) {
       var $item = $(item), truckId = $item.attr("truck-id");
       if (isMobile()) {
-        $item.attr("href", "http://twitter.com/" + _trucks.findTruck(truckId).twitterHandle);
+        $item.attr("href", "/trucks/" + truckId);
       } else {
         $item.off('click');
         $item.click(function (e) {
@@ -563,7 +563,7 @@ var FoodTruckLocator = function () {
           }, function () {
             hideFlash();
             self.setModel(modelPayload);
-          }, {timeout: 4000});
+          }, {timeout: 2000});
         } else {
           self.setModel(modelPayload);
         }
