@@ -23,7 +23,9 @@ import static foodtruck.dao.appengine.Attributes.setDateProperty;
 public class PetitionSignatureDAOAppEngine extends AppEngineDAO<Long, PetitionSignature> implements
     PetitionSignatureDAO {
 
-  private static final String NAME_FIELD = "name";
+  private static final String LAST_NAME_FIELD = "last_name";
+  private static final String FIRST_NAME_FIELD = "first_name";
+  private static final String IN_WARD_FIELD = "in_ward";
   private static final String EMAIL_FIELD = "email";
   private static final String CREATED_FIELD = "created";
   private static final String SIGNED_FIELD = "signed";
@@ -40,7 +42,9 @@ public class PetitionSignatureDAOAppEngine extends AppEngineDAO<Long, PetitionSi
   }
 
   @Override protected Entity toEntity(PetitionSignature obj, Entity entity) {
-    entity.setProperty(NAME_FIELD, obj.getName());
+    entity.setProperty(LAST_NAME_FIELD, obj.getLastName());
+    entity.setProperty(FIRST_NAME_FIELD, obj.getFirstName());
+    entity.setProperty(IN_WARD_FIELD, obj.isInWard());
     entity.setProperty(EMAIL_FIELD,obj.getEmail());
     setDateProperty(CREATED_FIELD, entity, obj.getCreated());
     setDateProperty(SIGNED_FIELD, entity, obj.getSigned());
@@ -53,7 +57,9 @@ public class PetitionSignatureDAOAppEngine extends AppEngineDAO<Long, PetitionSi
   @Override protected PetitionSignature fromEntity(Entity entity) {
     return PetitionSignature.builder()
         .key(entity.getKey().getId())
-        .name(getStringProperty(entity, NAME_FIELD))
+        .lastName(getStringProperty(entity, LAST_NAME_FIELD))
+        .firstName(getStringProperty(entity, FIRST_NAME_FIELD))
+        .inWard(getBooleanProperty(entity, IN_WARD_FIELD, false))
         .email(getStringProperty(entity, EMAIL_FIELD))
         .created(getDateTime(entity, CREATED_FIELD, zone))
         .signed(getDateTime(entity, SIGNED_FIELD, zone))

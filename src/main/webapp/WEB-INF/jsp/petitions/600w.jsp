@@ -1,46 +1,25 @@
 <%@ include file="../header.jsp" %>
 
-
-<h2>Save the Food Trucks at 600 West Chicago Avenue!</h2>
-
 <div class="row">
 
-  <div class="col-md-9">
+  <div class="col-md-8">
     <div class="alert alert-danger hidden">
       <span id="flash"></span>
     </div>
 
-    <p>Tell 27th ward Alderman Walter Burnett Jr. not to kill small business by removing Chicago's most profitable food truck stand!
+    <h3>Alderman Walter Burnett Jr., Save Chicago Food Trucks by reinstating and expanding the 600 W Chicago Food Truck Stand.</h3>
 
-    <p>Chicago Food trucks have been selling delicious street food successfully in front of the 600 w. Building
-    (829 n. Larabee) for breakfast, lunch, and dinner over the past 5 years. During that period many have built
-    a solid base of regular customers who also work/live in the area and love frequenting the food trucks on a daily basis.
-    At its peak more than 6 food trucks would regularly park in front of the building during a weekday lunch,
-    all with long lines of happy customers.</p>
-
-    <p>The successful balance of consumers demanding delicious food, and food trucks willing to supply it, was quashed
-      this July 2014 thanks to 27th ward Alderman Walter Burnett Jr. This was because two brick and mortar restaurants
-      inside the 600 w. Chicago building and their respective ownership began complaining to the Alderman about food trucks
-      taking away their lunch business. His solution was to permanently remove the stand, without discussion or warning
-      to the dozens of food trucks that rely on that stand to make a living.
-
-    <p>So why not park there without a designated food truck stand you might ask? That’s because Chicago’s food trucks are subject
-      to a 200 foot rule where no truck can operate within 200 feet of any brick and mortar business that
-      could be construed as competition or else they will be issued a $2,000 ticket. Because of this rule and
-      the crippling fine, food trucks by and large are very limited in where they can operate legally within
-      downtown Chicago. Without the designated stand granting permission the whole area surrounding the
-      600 w. Chicago building will become off limits to food trucks. And while the stand in front of the 600
-      west Chicago building was arguably the most popular and profitable stand in all of Chicago, it will no
-      longer exist. With new food trucks coming into the market, and space at the existing stands already
-      limited, in order for Chicago’s food truck community to continue to grow we need to add more food
-      trucks stands in profitable locations, not remove one of the few ones that we have. If not it is almost
-      certain that several current food trucks within the community will begin to fail and go under, and more
-      trucks will soon follow. Keep Chicago’s food truck community growing by signing this petition asking for
-      the reinstatement of the 600 w. Chicago (829 n. Larabee) food truck stand.</p>
+    <p>Chicago Food trucks have been selling delicious street food successfully in
+      front of the 600 W. Building (829 N. Larabee) for breakfast, lunch, and
+      dinner over the past 5 years. During that period many have built a solid
+      base of regular customers who also work/live in the area and love
+      frequenting the food trucks on a daily basis.  We ask that you keep
+      Chicago's food truck small business community growing by reinstating and
+      expanding the 600 W. Chicago (829 N. Larrabee) food truck stand. </p>
 
     <p>Thank you!</p>
   </div>
-  <div class="col-md-3">
+  <div class="col-md-4">
 
     <div class="panel panel-default">
       <div class="panel-body">
@@ -51,10 +30,14 @@
       <h3>Sign here!</h3>
       <form method="POST"  role="form">
         <div class="form-group">
-          <label for="name">Name</label>
-          <input type="text" placeholder="First-name Last-name" id="name" name="name" class="form-control"/>
-          <p class="help-block hidden" id="nameHelp">Name is required</p>
-
+          <label for="firstName">First Name</label>
+          <input type="text" placeholder="" id="firstName" name="firstName" class="form-control"/>
+          <p class="help-block hidden" id="firstNameHelp">First Name is required</p>
+        </div>
+        <div class="form-group">
+          <label for="lastName">Last Name</label>
+          <input type="text" placeholder="" id="lastName" name="lastName" class="form-control"/>
+          <p class="help-block hidden" id="lastNameHelp">Last Name is required</p>
         </div>
         <div class="form-group">
           <label for="email">Email</label>
@@ -67,6 +50,12 @@
           <input type="zipcode" placeholder="XXXXX" name="zipcode" id="zipcode" class="form-control"/>
           <p class="help-block hidden" id="zipcodeHelp">zip code is required</p>
 
+        </div>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="inWard">
+            Are you a resident of Ward 27?
+          </label>
         </div>
         <button title="Your finger is on the button. Push the button" type="submit" id="submitButton" class="btn btn-primary">Submit</button>
       </form>
@@ -130,11 +119,13 @@
       e.preventDefault();
       var email = $("#email").val(),
           zipcode = $("#zipcode").val(),
-          name = $("#name").val();
+          firstName = $("#firstName").val(),
+          lastName = $("#lastName").val();
       errors = 0;
       var at = email.indexOf('@');
       assertCondition(email.length > 3 && at > 1 && at < (email.length - 1), "email");
-      assertCondition(name.length > 0, "name");
+      assertCondition(firstName.length > 0, "firstName");
+      assertCondition(firstName.length > 0, "lastName");
       assertCondition(/^\d{5}(-\d{4})?$/.exec(zipcode) != null, "zipcode");
       if (errors == 0) {
         $("form").submit();

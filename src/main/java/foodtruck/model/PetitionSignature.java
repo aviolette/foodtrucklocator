@@ -18,7 +18,9 @@ public class PetitionSignature extends ModelEntity {
   private final DateTime created;
   private final @Nullable DateTime signed;
   private final String signature;
-  private final String name;
+  private final String firstName;
+  private final String lastName;
+  private final boolean inWard;
   private final String email;
   private final String zipcode;
 
@@ -28,9 +30,23 @@ public class PetitionSignature extends ModelEntity {
     this.created = builder.created;
     this.signed = builder.signed;
     this.signature = builder.signature;
-    this.name = builder.name;
+    this.firstName = builder.firstName;
+    this.lastName = builder.lastName;
+    this.inWard = builder.inWard;
     this.email = builder.email;
     this.zipcode = builder.zipcode;
+  }
+
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public boolean isInWard() {
+    return inWard;
   }
 
   public String getPetitionId() {
@@ -47,10 +63,6 @@ public class PetitionSignature extends ModelEntity {
 
   public String getSignature() {
     return signature;
-  }
-
-  public String getName() {
-    return name;
   }
 
   public String getEmail() {
@@ -71,8 +83,10 @@ public class PetitionSignature extends ModelEntity {
         .add("created", created)
         .add("signed", signed)
         .add("signature", signature)
-        .add("name", name)
+        .add("first name", firstName)
+        .add("last name", lastName)
         .add("email", email)
+        .add("in ward", inWard)
         .add("zipcode", zipcode)
         .toString();
   }
@@ -83,7 +97,8 @@ public class PetitionSignature extends ModelEntity {
 
   @Override public void validate() throws IllegalStateException {
     super.validate();
-    checkState(!Strings.isNullOrEmpty(name), "Name is not specified");
+    checkState(!Strings.isNullOrEmpty(firstName), "First name is not specified");
+    checkState(!Strings.isNullOrEmpty(lastName), "Last name is not specified");
     checkState(!Strings.isNullOrEmpty(petitionId), "Petition ID is not specified");
     checkState(!Strings.isNullOrEmpty(signature), "Signature is not specified");
     checkState(!Strings.isNullOrEmpty(email), "Email is not specified");
@@ -96,9 +111,11 @@ public class PetitionSignature extends ModelEntity {
     private DateTime created;
     private @Nullable DateTime signed;
     private String signature;
-    private String name;
+    private String firstName;
+    private String lastName;
     private String email;
     private String zipcode;
+    private boolean inWard;
 
     public Builder() {}
 
@@ -107,10 +124,17 @@ public class PetitionSignature extends ModelEntity {
       created = sig.created;
       signature = sig.signature;
       signed = sig.signed;
-      name = sig.name;
+      firstName = sig.lastName;
+      lastName = sig.lastName;
       email = sig.email;
       key = sig.key;
       zipcode = sig.zipcode;
+      inWard = sig.inWard;
+    }
+
+    public Builder inWard(boolean inWard) {
+      this.inWard = inWard;
+      return this;
     }
 
     public Builder zipcode(String zipcode) {
@@ -143,8 +167,13 @@ public class PetitionSignature extends ModelEntity {
       return this;
     }
 
-    public Builder name(String name) {
-      this.name = name;
+    public Builder firstName(String name) {
+      this.firstName = name;
+      return this;
+    }
+
+    public Builder lastName(String name) {
+      this.lastName = name;
       return this;
     }
 
