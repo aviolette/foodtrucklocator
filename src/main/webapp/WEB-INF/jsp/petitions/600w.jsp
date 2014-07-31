@@ -9,7 +9,7 @@
 
     <h3>Alderman Walter Burnett Jr., Save Chicago Food Trucks by reinstating and expanding the 600 W Chicago Food Truck Stand.</h3>
 
-    <p>Chicago Food trucks have been selling delicious street food successfully in
+    <p class="lead">Chicago Food trucks have been selling delicious street food successfully in
       front of the 600 W. Building (829 N. Larabee) for breakfast, lunch, and
       dinner over the past 5 years. During that period many have built a solid
       base of regular customers who also work/live in the area and love
@@ -17,7 +17,7 @@
       Chicago's food truck small business community growing by reinstating and
       expanding the 600 W. Chicago (829 N. Larrabee) food truck stand. </p>
 
-    <p>Thank you!</p>
+    <p class="lead">Thank you!</p>
   </div>
   <div class="col-md-4">
 
