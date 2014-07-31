@@ -54,7 +54,7 @@
         <div class="checkbox">
           <label>
             <input type="checkbox" name="inWard">
-            Are you a resident of Ward 27?
+            Check this if you are a resident of Ward 27
           </label>
         </div>
         <button title="Your finger is on the button. Push the button" type="submit" id="submitButton" class="btn btn-primary">Submit</button>
@@ -125,7 +125,7 @@
       var at = email.indexOf('@');
       assertCondition(email.length > 3 && at > 1 && at < (email.length - 1), "email");
       assertCondition(firstName.length > 0, "firstName");
-      assertCondition(firstName.length > 0, "lastName");
+      assertCondition(lastName.length > 0, "lastName");
       assertCondition(/^\d{5}(-\d{4})?$/.exec(zipcode) != null, "zipcode");
       if (errors == 0) {
         $("form").submit();

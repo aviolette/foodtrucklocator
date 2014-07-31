@@ -124,7 +124,7 @@ public class PetitionSignature extends ModelEntity {
       created = sig.created;
       signature = sig.signature;
       signed = sig.signed;
-      firstName = sig.lastName;
+      firstName = sig.firstName;
       lastName = sig.lastName;
       email = sig.email;
       key = sig.key;
