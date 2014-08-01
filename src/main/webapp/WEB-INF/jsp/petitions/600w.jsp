@@ -22,10 +22,18 @@
   <div class="col-md-4">
 
     <div class="panel panel-default">
+      <div class="panel-heading">
+        Goal: 1000 Signatures
+      </div>
       <div class="panel-body">
-        ${numSignatures} <c:choose><c:when test="${numSignatures == 1}">person has</c:when><c:otherwise>people have</c:otherwise></c:choose> signed this petition
+        <div class="progress">
+          <div class="progress-bar" role="progressbar" aria-valuenow="${signaturePercentages}" aria-valuemin="0" aria-valuemax="100" style="width: ${signaturePercentages}%;">
+            ${numSignatures} signatures
+          </div>
+        </div>
       </div>
     </div>
+
     <div>
       <h3>Sign here!</h3>
       <form method="POST"  role="form">

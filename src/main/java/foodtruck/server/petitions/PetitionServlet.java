@@ -27,6 +27,7 @@ import foodtruck.util.Clock;
  */
 @Singleton
 public class PetitionServlet extends FrontPageServlet {
+  private static final double GOAL = 1000;
   private static final String JSP = "/WEB-INF/jsp/petitions/600w.jsp";
   private final PetitionSignatureDAO petitionDAO;
   private final Clock clock;
@@ -46,6 +47,14 @@ public class PetitionServlet extends FrontPageServlet {
       throws ServletException, IOException {
     long totalSignatures = petitionDAO.findSigned("600w");
     req.setAttribute("numSignatures", totalSignatures);
+    double percentage = Math.floor(((double)totalSignatures / GOAL) * 100);
+    if (percentage > 100) {
+      percentage = 100;
+    }
+    if (percentage < 5) {
+      percentage = 5;
+    }
+    req.setAttribute("signaturePercentages", (int)Math.floor(percentage));
     req.setAttribute("title", "Petition for Food Truck Stands at 600 West Chicago");
     req.getRequestDispatcher(JSP).forward(req, resp);
   }
