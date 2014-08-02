@@ -236,14 +236,9 @@
   $(".timeentry").typeahead({source: generateTimes()});
   $("#startTimeInput").blur(function() {
     var $endTime = $("#endTimeInput");
-    if (!$endTime.attr("value")) {
-      var startTimeVal = $("#startTimeInput").attr("value");
-      if (startTimeVal == "11:00 AM") {
-        $endTime.attr("value", "1:00 PM");
-      } else if (startTimeVal == "11:30 AM") {
-        $endTime.attr("value", "1:30 PM");
-      }
-    }
+    var startTimeVal = $("#startTimeInput").val();
+    var end = new Date(new Date(startTimeVal).getTime() + 7200000 ).toISOString();
+    $endTime.attr("value", end.substring(0, end.lastIndexOf(":")));
   });
   $("#edit-stop").on("shown", function() {
     $("#startTimeInput").focus();
@@ -377,14 +372,10 @@
   }
 
   $("#addButton").click(function (e) {
-    if (Modernizr.touch) {
-      location.href = "/admin/trucks/${truckId}/events/new";
-    } else {
-      var today = toDate(new Date()), later = toDate(new Date(new Date().getTime() + (2*60*60*1000)));
-      invokeEditDialog({truckId: "${truckId}", locationName: "", location: { name: ""},
+    var today = toDate(new Date()), later = toDate(new Date(new Date().getTime() + (2*60*60*1000)));
+    invokeEditDialog({truckId: "${truckId}", locationName: "", location: { name: ""},
             startTimeH: today, endTimeH: later },
           refreshSchedule);
-    }
   });
   refreshSchedule();
   var $offTheRoadButton = $("#offRoadButton");
