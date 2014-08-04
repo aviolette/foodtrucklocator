@@ -22,7 +22,7 @@ function drawGraph(statNames, containerId) {
       "&end=" + end.getTime();
   new Rickshaw.Graph.Ajax({
     element: document.getElementById(containerId),
-    width: 1140,
+    width: $("#" + containerId).width() - 20,
     height: 200,
     renderer: 'area',
     stroke: true,

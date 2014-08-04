@@ -58,3 +58,21 @@ address.locationName {
 .whitelink {
   color: white !important;
 }
+
+@media (max-width: 599px) {
+  #scheduleTableView {
+    display:none;
+  }
+  #scheduleList {
+    display:block;
+  }
+}
+
+@media (min-width: 600px) {
+  #scheduleTableView {
+    display:block;
+  }
+  #scheduleList {
+    display:none;
+  }
+}

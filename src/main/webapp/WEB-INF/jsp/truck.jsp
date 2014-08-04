@@ -66,7 +66,7 @@
   <div class="row" style="padding-top: 20px">
     <div class="span9">
       <h2>This Week's Schedule</h2>
-      <table class="table table-bordered">
+      <table class="table table-bordered" id="scheduleTableView">
         <thead>
         <tr>
           <c:forEach items="${daysOfWeek}" var="day">
@@ -109,7 +109,24 @@
         </tbody>
       </table>
     </div>
-  </div>
+
+    <dl id="scheduleList">
+    <c:forEach items="${stops}" var="schedule" varStatus="scheduleStatus">
+
+      <c:forEach items="${schedule.stops}" var="stop" varStatus="stopStatus">
+        <c:if test="${stopStatus.first}">
+          <dt><joda:format value="${stop.startTime}" pattern="EEEE MM/dd"/>
+          </dt>
+        </c:if>
+        <dd>                    <joda:format value="${stop.startTime}" style="-S"/> -
+          <ftl:location at="${stop.startTime}" location="${stop.location}"/>
+        </dd>
+      </c:forEach>
+
+    </c:forEach>
+    </dl>
+
+</div>
 
 
   <div class="row">
@@ -170,9 +187,20 @@
 <script src="/script/lib/rickshaw.min.js" type="text/javascript"></script>
 <script src="/script/graph.js"></script>
 <script>
-  <c:if test="${enableGraphs}">
-    drawGraphs(["count.${truck.id}"], "chart");
-  </c:if>
+  (function() {
+    <c:if test="${enableGraphs}">
+    var loopId;
+    function resize() {
+      $("#chart").empty();
+      drawGraphs(["count.${truck.id}"], "chart");
+    }
+    $(window).resize(function () {
+      clearTimeout(loopId);
+      loopId = setTimeout(resize, 500);
+    });
+    resize();
+    </c:if>
+  })();
 </script>
 
 
