@@ -64,7 +64,7 @@
    </div>
 
   <div class="row" style="padding-top: 20px">
-    <div class="span9">
+    <div class="col-md-12">
       <h2>This Week's Schedule</h2>
       <table class="table table-bordered" id="scheduleTableView">
         <thead>
@@ -108,7 +108,6 @@
         </tr>
         </tbody>
       </table>
-    </div>
 
     <dl id="scheduleList">
     <c:forEach items="${stops}" var="schedule" varStatus="scheduleStatus">
@@ -125,13 +124,16 @@
 
     </c:forEach>
     </dl>
+  </div>
 
 </div>
 
 
   <div class="row">
-    <h2>Days on the Road (by week)</h2>
-    <div id="chart"></div>
+    <div class="col-md-12">
+      <h2>Days on the Road (by week)</h2>
+      <div id="chart"></div>
+    </div>
   </div>
 
   <div class="row" style="padding-top: 20px">
