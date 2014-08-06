@@ -260,36 +260,28 @@ var FoodTruckLocator = function () {
   function buildTruckList($truckList, stops) {
     $truckList.empty();
     var $items = $("<ul class='media-list'></ul>"), lastIcon = null, now = Clock.now(),
-        $location, $div, markerIds =[], lastMarkerGroup;
+        $location, $div, markerIds =[], lastMarkerGroup, lastLocation = null;
     $items.appendTo($truckList);
     $.each(stops, function (idx, stop) {
       var $locationDescription = $("<div></div>");
       if (stop.location.url) $locationDescription.append("<div><a href='" + stop.location.url + "'>" + stop.location.url + "</a></div>");
       if (stop.location.description) $locationDescription.append("<div>" + stop.location.description + " </div>");
-      if (!isMobile()) {
-        if (stop.location.twitterHandle) $locationDescription.append("<div><small>Follow <a href='http://twitter.com/" + stop.location.twitterHandle + "'>@" + stop.location.twitterHandle + "</a> on twitter.</small></div>");
-        if (stop.distance) $locationDescription.append("<div>(" + stop.distance + " miles from map center)</div>");
-        if (lastIcon != stop.marker.icon) {
+      if (stop.location.twitterHandle) $locationDescription.append("<div><small>Follow <a href='http://twitter.com/" + stop.location.twitterHandle + "'>@" + stop.location.twitterHandle + "</a> on twitter.</small></div>");
+      if (stop.distance) $locationDescription.append("<div>(" + stop.distance + " miles from map center)</div>");
+      if (lastLocation != stop.location.name) {
           $div = $("<div class='media-body'><h4><a href='/locations/" + stop.location.key + "'>" + formatLocation(stop.location.name) + "</a></h4></div>");
           $div.append($locationDescription);
-          $location = $("<li class='media'><a class='pull-left' href='#'><img id='" + stop.markerId + "' class='media-object' src='"
-              + stop.marker.icon +"'/></a></li>");
+          var linkBody = isMobile() ? "" : "<a class='pull-left' href='#'><img id='" + stop.markerId + "' class='media-object' src='"
+              + stop.marker.icon +"'/></a>";
+          $location = $("<li class='media'>" + linkBody + "</li>");
           $location.append($div);
           $items.append($location);
           lastMarkerGroup = {marker: stop.marker, id: stop.markerId, stops: [stop]};
           markerIds.push(lastMarkerGroup);
-        } else {
-          lastMarkerGroup["stops"].push(stop);
-        }
-        lastIcon = stop.marker.icon;
       } else {
-        if (stop.distance) $locationDescription.append("<div>(" + stop.distance + " miles away)</div>");
-        $div = $("<div class='media-body'><h4><a href='/locations/" + stop.location.key + "'>" + formatLocation(stop.location.name) + "</a></h4></div>");
-        $div.append($locationDescription);
-        $location = $("<li class='media'></li>");
-        $location.append($div);
-        $items.append($location);
+        lastMarkerGroup["stops"].push(stop);
       }
+      lastLocation = stop.location.name;
       var toolTipId = "tooltip-" + $truckList.attr("id") +  idx,
           tooltipHtml = '';
       if (stop.stop.notes && stop.stop.notes.length > 0) {
@@ -554,6 +546,7 @@ var FoodTruckLocator = function () {
         _mobile = true;
         $("#map_wrapper").css("display", "none");
         if (Modernizr.geolocation) {
+          self.setModel(modelPayload);
           flash("Looking up location...");
           navigator.geolocation.getCurrentPosition(function (position) {
             _center = new google.maps.LatLng(position.coords.latitude,
@@ -563,7 +556,7 @@ var FoodTruckLocator = function () {
           }, function () {
             hideFlash();
             self.setModel(modelPayload);
-          }, {timeout: 2000});
+          }, {timeout: 5000 });
         } else {
           self.setModel(modelPayload);
         }
