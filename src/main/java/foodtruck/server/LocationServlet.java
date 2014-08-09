@@ -21,6 +21,7 @@ import foodtruck.model.Location;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 import foodtruck.util.DateOnlyFormatter;
+import foodtruck.util.FriendlyDateOnlyFormat;
 
 /**
  * @author aviolette
@@ -34,16 +35,21 @@ public class LocationServlet extends FrontPageServlet {
   private final DateTimeFormatter dateFormatter;
   private final FoodTruckStopService truckStopService;
   private final GeoLocator geoLocator;
+  private final DateTimeFormatter friendlyFormatter;
 
   @Inject
   public LocationServlet(ConfigurationDAO configDAO, LocationDAO locationDAO, Clock clock,
-      @DateOnlyFormatter DateTimeFormatter dateFormatter, FoodTruckStopService truckStopService, GeoLocator geoLocator) {
+      @DateOnlyFormatter DateTimeFormatter dateFormatter,
+      FoodTruckStopService truckStopService,
+      GeoLocator geoLocator,
+      @FriendlyDateOnlyFormat DateTimeFormatter friendlyFormatter) {
     super(configDAO);
     this.locationDAO = locationDAO;
     this.clock = clock;
     this.dateFormatter = dateFormatter;
     this.truckStopService = truckStopService;
     this.geoLocator = geoLocator;
+    this.friendlyFormatter = friendlyFormatter;
   }
 
   @Override protected void doGetProtected(HttpServletRequest req, HttpServletResponse resp)
@@ -78,9 +84,11 @@ public class LocationServlet extends FrontPageServlet {
     }
     final String timeRequest = req.getParameter("date");
     DateTime dateTime = null;
+    String onDate = "";
     if (!Strings.isNullOrEmpty(timeRequest)) {
       try {
         dateTime = dateFormatter.parseDateTime(timeRequest);
+        onDate = " on " + friendlyFormatter.print(dateTime);
       } catch (IllegalArgumentException ignored) {
       }
     }
@@ -90,7 +98,7 @@ public class LocationServlet extends FrontPageServlet {
     req.setAttribute("stops", truckStopService.findStopsNearALocation(location, dateTime.toLocalDate()));
     req.setAttribute("thedate", dateTime);
     req.setAttribute("location", location);
-    req.setAttribute("title", location.getName());
+    req.setAttribute("title", location.getName() + onDate);
     String jsp = "/WEB-INF/jsp/location.jsp";
     req = new GuiceHackRequestWrapper(req, jsp);
     req.setAttribute("containerType", "fixed");
