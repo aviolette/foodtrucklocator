@@ -36,6 +36,7 @@ public class TruckTimelineServlet extends FrontPageServlet {
   @Override protected void doGetProtected(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     List<Truck> trucks = truckDAO.findVisibleTrucks();
+    req.setAttribute("title", "Truck Timeline");
     req.setAttribute("trucks", trucksWriter.asJSON(trucks).toString());
     req.getRequestDispatcher(JSP).forward(req, resp);
   }
