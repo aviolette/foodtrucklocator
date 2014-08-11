@@ -17,7 +17,7 @@
       <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
     </c:otherwise>
   </c:choose>
-  <link href="/css/main.css?ver=8" rel="stylesheet"/>
+  <link href="/css/main.css?ver=11" rel="stylesheet"/>
   <script src="/script/lib/modernizr-1.7.min.js"></script>
   <style type="text/css">
     #listContainer {

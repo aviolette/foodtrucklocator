@@ -378,9 +378,9 @@ var FoodTruckLocator = function () {
   }
 
   function resize() {
-    $("#map_canvas").height($(window).height() - $("#topBar").height()-20);
-    $("#sidebar").height($(window).height() - $("#topBar").height()-20);
-    $("#listContainer").height($(window).height() - $("#topBar").height()-20);
+    $("#map_canvas").height($(window).height() - $("#topBar").height()-60);
+    $("#sidebar").height($(window).height() - $("#topBar").height()-60);
+    $("#listContainer").height($(window).height() - $("#topBar").height()-60);
   }
 
   function setupGlobalEventHandlers() {
@@ -544,6 +544,7 @@ var FoodTruckLocator = function () {
       displayMessageOfTheDay(modelPayload);
       if (displayListOnly() || mobile) {
         _mobile = true;
+        $("body").css("background", "white");
         $("#map_wrapper").css("display", "none");
         if (Modernizr.geolocation) {
           self.setModel(modelPayload);
