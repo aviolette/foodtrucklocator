@@ -284,10 +284,12 @@ var FoodTruckLocator = function () {
       lastLocation = stop.location.name;
       var toolTipId = "tooltip-" + $truckList.attr("id") +  idx,
           tooltipHtml = '';
+      /*
       if (stop.stop.notes && stop.stop.notes.length > 0) {
         tooltipHtml = " <a id='" + toolTipId + "' href='#' data-toggle='tooltip' " +
         "data-placement='top' data-content=''>[?]</a>";
       }
+      */
 
       $div.append($("<div class='media'><a class='pull-left truckLink' truck-id='" + stop.truck.id
           +"' href='#'><img class='media-object' src='"
