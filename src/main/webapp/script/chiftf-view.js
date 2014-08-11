@@ -251,7 +251,7 @@ var FoodTruckLocator = function () {
 
   function buildTimeRange(stop, time) {
     if (stop.startMillis < time && stop.endMillis > time) {
-      return "Estimated departure time: " + stop.endTime;
+      return "Est. departure time: " + stop.endTime;
     } else {
       return stop.startTime + " - " + stop.endTime;
     }
@@ -291,10 +291,11 @@ var FoodTruckLocator = function () {
 
       $div.append($("<div class='media'><a class='pull-left truckLink' truck-id='" + stop.truck.id
           +"' href='#'><img class='media-object' src='"
-          + stop.truck.iconUrl +"'/></a><div class='media-body'><strong>" + stop.truck.name + "</strong><div>"
+          + stop.truck.iconUrl +"'/></a><div class='media-body'><a class='truckLink' href='#' truck-id='" + stop.truck.id
+          +"'><strong>" + stop.truck.name + "</strong><div>"
           + buildTimeRange(stop.stop, now)
           +"</div><div>Confidence: " + stop.stop.confidence + tooltipHtml +"</div>"
-          + "</div></div>"));
+          + "</a></div></div>"));
       if (stop.stop.notes && stop.stop.notes.length > 0) {
         $("#"+ toolTipId).tooltip({"html": true, "title" :  "<ul><li class='tooltip-li'>" + stop.stop.notes.join("</li><li class='tooltip-li'>") + "</li></ul>"});
       }

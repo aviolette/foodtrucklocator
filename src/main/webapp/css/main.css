@@ -54,6 +54,16 @@ address.locationName {
     margin-left: 50px;
 }
 
+.truckLink {
+  text-decoration:none;
+  display:block;
+  color: inherit;
+}
+
+.truckLink:hover {
+  background-color: #eee;
+  text-decoration:inherit;
+}
 
 .infoWindowContent {
  margin: 10px;

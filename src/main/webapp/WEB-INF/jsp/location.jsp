@@ -25,8 +25,10 @@
             <img class="media-object" src="${stop.truck.iconUrl}" alt="${stop.truck.name} icon"/>
           </a>
           <div class="media-body">
+            <a href="/trucks/${stop.truck.id}" class="truckLink">
             <h4 class="media-heading">${stop.truck.name}</h4>
             <joda:format value="${stop.startTime}" style="-S"/> - <joda:format value="${stop.endTime}" style="-S"/>
+            </a>
           </div>
         </div>
       </c:forEach>
