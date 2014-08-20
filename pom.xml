@@ -61,7 +61,7 @@
     <dependency>
       <groupId>com.google</groupId>
       <artifactId>appengine-local-runtime-shared</artifactId>
-      <version>1.8.6</version>
+      <version>1.9.8</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
