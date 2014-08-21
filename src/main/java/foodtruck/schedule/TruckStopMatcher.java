@@ -136,7 +136,7 @@ public class TruckStopMatcher {
     } else if (truck.getMatchOnlyIf() != null || lowerCaseTweet.contains("#ftf")
         || lowerCaseTweet.contains("#foodtruckfinder")) {
       confidence = confidence.up();
-      notes.add("Presense of #ftf in tweet increased confidence.");
+      notes.add("Presense of specific hash tag in tweet increased confidence.");
     }
 
     Location location = extractLocation(tweet, truck);
@@ -168,6 +168,9 @@ public class TruckStopMatcher {
       } else if (startTime != null && endTime != null && terminationTime == null &&
           startTime.getHourOfDay() > 12 && endTime.getHourOfDay() < 12) {
           startTime = startTime.minusHours(12);
+      } else if (endTime != null && startTime != null && endTime.isBefore(tweet.getTime())) {
+        startTime = startTime.plusHours(12);
+        endTime = endTime.plusHours(12);
       }
       notes.add("Presence of time range in tweet increased confidence.");
       confidence = confidence.up();
