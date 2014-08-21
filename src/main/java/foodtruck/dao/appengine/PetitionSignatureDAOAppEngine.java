@@ -54,6 +54,10 @@ public class PetitionSignatureDAOAppEngine extends AppEngineDAO<Long, PetitionSi
     return entity;
   }
 
+  @Override protected void modifyFindAllQuery(Query q) {
+    q.addSort(LAST_NAME_FIELD, Query.SortDirection.ASCENDING);
+  }
+
   @Override protected PetitionSignature fromEntity(Entity entity) {
     return PetitionSignature.builder()
         .key(entity.getKey().getId())

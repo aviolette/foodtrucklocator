@@ -51,6 +51,9 @@ public class PetitionResource {
     CSVWriter writer = new CSVWriter(stringWriter);
     writer.writeNext(HEADER);
     for (PetitionSignature signature : signatures) {
+      if (!signature.isValid()) {
+        continue;
+      }
       writer.writeNext(petitionEntry(signature));
     }
     writer.close();

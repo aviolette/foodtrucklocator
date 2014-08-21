@@ -105,6 +105,14 @@ public class PetitionSignature extends ModelEntity {
     checkState(!Strings.isNullOrEmpty(zipcode), "Zip code is not specified");
   }
 
+  public boolean isValid() {
+    return signed != null &&
+        !Strings.isNullOrEmpty(firstName) &&
+        !Strings.isNullOrEmpty(lastName) &&
+        !Strings.isNullOrEmpty(email) &&
+        !firstName.equalsIgnoreCase(lastName);
+  }
+
   public static class Builder {
     private @Nullable Object key;
     private String petitionId;
