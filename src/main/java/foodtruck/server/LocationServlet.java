@@ -99,6 +99,7 @@ public class LocationServlet extends FrontPageServlet {
     req.setAttribute("thedate", dateTime);
     req.setAttribute("location", location);
     req.setAttribute("title", location.getName() + onDate);
+    req.setAttribute("description", Strings.isNullOrEmpty(location.getDescription()) ? location.getName() : location.getDescription());
     String jsp = "/WEB-INF/jsp/location.jsp";
     req = new GuiceHackRequestWrapper(req, jsp);
     req.setAttribute("containerType", "fixed");

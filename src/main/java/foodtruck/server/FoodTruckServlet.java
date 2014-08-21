@@ -124,6 +124,7 @@ public class FoodTruckServlet extends FrontPageServlet {
     req.setAttribute("tab", "map");
     req.setAttribute("appKey", configuration.getFrontDoorAppKey());
     req.setAttribute("title", "Chicago Food Truck Finder");
+    req.setAttribute("description", "Find food trucks on the streets of Chicago by time and location.  Results are updated in real-time throughout the day.");
     resp.setHeader("Cache-Control", "no-cache");
     resp.setHeader("Pragma", "no-cache");
     resp.setHeader("Expires", "Thu, 01 Jan 1970 00:00:00 GMT");

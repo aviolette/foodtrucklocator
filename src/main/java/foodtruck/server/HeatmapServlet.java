@@ -32,6 +32,7 @@ public class HeatmapServlet extends FrontPageServlet {
     req.setAttribute("locations", heatmapService.get());
     req.setAttribute("center", configurationDAO.find().getCenter());
     req.setAttribute("title", "Heatmap of Chicago Food Truck Stops");
+    req.setAttribute("description", "Heatmap showing popular food truck stops in Chicago-land.");
     req.getRequestDispatcher(JSP).forward(req, resp);
   }
 }

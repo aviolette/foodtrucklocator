@@ -68,12 +68,14 @@ public class TrucksServlet extends FrontPageServlet {
       req.setAttribute("daysOfWeek", daysOfWeek(firstDay));
       req.setAttribute("enableGraphs", configurationDAO.find().isShowPublicTruckGraphs());
       req.setAttribute("title", truck.getName());
+      req.setAttribute("description", Strings.isNullOrEmpty(truck.getDescription()) ? truck.getName() : truck.getDescription());
     } else {
       String tag = req.getParameter("tag");
       if (!Strings.isNullOrEmpty(tag)) {
         req.setAttribute("filteredBy", tag);
       }
       req.setAttribute("foodTruckRequestOn", configurationDAO.find().isFoodTruckRequestOn());
+      req.setAttribute("description", "Catalogue of all the food trucks in Chicago-land");
       req.setAttribute("title", "Food Trucks in Chicago");
     }
 
