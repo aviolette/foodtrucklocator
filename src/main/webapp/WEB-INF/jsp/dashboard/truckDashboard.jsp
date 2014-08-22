@@ -231,7 +231,7 @@
   </div>
 </div>
 <script type="text/javascript">
-  var locations = ${locations};
+  var locations = ${locations}, lastStop;
   $("#locationInput").typeahead({source: locations});
   $(".timeentry").typeahead({source: generateTimes()});
   $("#startTimeInput").blur(function() {
@@ -297,6 +297,7 @@
   function refreshSchedule() {
     var scheduleTable = $("#scheduleTable");
     scheduleTable.empty();
+    lastStop = null;
     $.ajax({
       url: '/services/schedule/${truckId}',
       type: 'GET',
@@ -306,6 +307,7 @@
         var numStops = schedule["stops"].length;
         var prevHadStart = false;
         $.each(schedule["stops"], function (truckIndex, stop) {
+          lastStop = stop;
           var labels = (stop.locked) ? "&nbsp;<span class=\"label important\">locked</span>" :
               "";
           var crazyDuration = stop.durationMillis < 0 || stop.durationMillis > 43200000;
@@ -371,8 +373,34 @@
     })
   }
 
+  function numStops() {
+    return $("#scheduleTable").children().length;
+  }
+
+  function hasCategory(category) {
+    var categories = [<c:forEach var="category" varStatus="categoryIndex" items="${truck.categories}">"${category}"<c:if test="${!categoryIndex.last}">,</c:if></c:forEach>];
+    return categories.indexOf(category) >= 0;
+  }
   $("#addButton").click(function (e) {
-    var today = toDate(new Date()), later = toDate(new Date(new Date().getTime() + (2*60*60*1000)));
+    var now = new Date();
+    if ((!hasCategory("Breakfast") && numStops() == 0) && now.getHours() < 10 ) {
+      now.setHours(11);
+      now.setMinutes(0);
+    }
+    if (numStops() > 0 && lastStop != null) {
+      now = new Date(lastStop["endTimeMillis"] + 60000)
+    }
+    var minutes = now.getMinutes();
+    if (minutes != 0) {
+      minutes = Math.ceil(minutes / 15) * 15;
+      if (minutes <= 45) {
+        now.setMinutes(minutes);
+      } else {
+        now = new Date(now.getTime() + (60 * 60 * 1000));
+        now.setMinutes(0);
+      }
+    }
+    var today = toDate(now), later = toDate(new Date(now.getTime() + (2*60*60*1000)));
     invokeEditDialog({truckId: "${truckId}", locationName: "", location: { name: ""},
             startTimeH: today, endTimeH: later },
           refreshSchedule);
