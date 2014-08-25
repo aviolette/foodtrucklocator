@@ -81,25 +81,27 @@ public class GoogleCalendar implements ScheduleStrategy {
     List<TruckStop> stops = performTruckSearch(range, searchTruck, query, false);
     stops = Lists.newLinkedList(stops);
     if (searchTruck != null && !Strings.isNullOrEmpty(searchTruck.getCalendarUrl())) {
-      customCalendarSearch(range, searchTruck, stops, searchTruck);
+      customCalendarSearch(range, searchTruck, stops);
     } else if (searchTruck == null) {
       for (Truck truck : truckDAO.findTrucksWithCalendars()) {
-        customCalendarSearch(range, truck, stops, truck);
+        customCalendarSearch(range, truck, stops);
       }
     }
     return stops;
   }
 
-  private void customCalendarSearch(Interval range, Truck searchTruck, List<TruckStop> stops,
-      Truck truck) {
+  private void customCalendarSearch(Interval range, Truck truck, List<TruckStop> stops) {
     try {
       final String calendarUrl = truck.getCalendarUrl();
       if (calendarUrl == null || !calendarUrl.startsWith("http")) {
         return;
       }
       log.info("Custom calendar search: " + calendarUrl);
-      stops.addAll(performTruckSearch(range, searchTruck,
+      stops.addAll(performTruckSearch(range, truck,
           queryFactory.create(new URL(calendarUrl)), true));
+    } catch (RuntimeException rte) {
+      log.info("Search truck: " + truck.getId());
+      log.severe(rte.getMessage());
     } catch (MalformedURLException e) {
       log.warning(e.getMessage());
     }
