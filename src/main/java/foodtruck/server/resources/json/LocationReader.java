@@ -16,6 +16,7 @@ public class LocationReader {
         .lat(obj.getDouble("latitude"))
         .lng(obj.getDouble("longitude"))
         .alias(obj.optString("alias"))
+        .hasBooze(obj.optBoolean("hasBooze"))
         .twitterHandle(obj.optString("twitterHandle"))
         .popular(obj.optBoolean("popular", false))
         .designatedStop(obj.optBoolean("designatedStop", false))

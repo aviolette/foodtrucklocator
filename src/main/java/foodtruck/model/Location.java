@@ -33,6 +33,7 @@ public class Location extends ModelEntity {
   private final @Nullable String alias;
   private final @Nullable String twitterHandle;
   private final boolean designatedStop;
+  private final boolean hasBooze;
 
   public Location(Builder builder) {
     super(builder.key);
@@ -49,6 +50,11 @@ public class Location extends ModelEntity {
     alias = builder.alias;
     twitterHandle = builder.twitterHandle;
     designatedStop = builder.designatedStop;
+    hasBooze = builder.hasBooze;
+  }
+
+  public boolean isHasBooze() {
+    return hasBooze;
   }
 
   public boolean isDesignatedStop() {
@@ -197,6 +203,7 @@ public class Location extends ModelEntity {
     private @Nullable String alias;
     private @Nullable String twitterHandle;
     private boolean designatedStop;
+    public boolean hasBooze;
 
     public Builder(Location location) {
       key = location.getKey();
@@ -214,9 +221,15 @@ public class Location extends ModelEntity {
       alias = location.alias;
       twitterHandle = location.twitterHandle;
       designatedStop = location.designatedStop;
+      hasBooze = location.hasBooze;
     }
 
     public Builder() {
+    }
+
+    public Builder hasBooze(boolean hasBooze) {
+      this.hasBooze = hasBooze;
+      return this;
     }
 
     public Builder designatedStop(boolean designatedStop) {
