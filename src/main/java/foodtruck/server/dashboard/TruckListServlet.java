@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.base.Objects;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -32,6 +33,7 @@ public class TruckListServlet extends HttpServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     req.setAttribute("nav", "trucks");
+    req.setAttribute("tab", Objects.firstNonNull(req.getParameter("tab"), "home"));
     req.setAttribute("trucks", stopService.findCurrentAndPreviousStop(clock.currentDay()));
     req.getRequestDispatcher("/WEB-INF/jsp/dashboard/truckList.jsp").forward(req, resp);
   }

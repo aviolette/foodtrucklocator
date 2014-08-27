@@ -1,131 +1,135 @@
-<%@ include file="dashboardHeader.jsp" %>
+<%@ include file="dashboardHeaderBS3.jsp" %>
 
-<div class="btn-toolbar">
+<div class="btn-toolbar" style="margin-bottom:20px">
   <div class="btn-group">
-    <a href="/cron/tweets" class="btn" id="twitterButton"><i class="icon-refresh"></i>&nbsp;Refresh all tweets</a>
-    <a href="/cron/invalidateCache" class="btn" id="invalidateButton"><i class="icon-ban-circle"></i>&nbsp;Invalidate cache</a>
-  </div>
-  <div class="btn-group toggle-visibility" >
-    <button id="inactiveButton" type="button" class="btn active">Inactive</button>
-    <button id="muteButton" type="button" class="btn">Muted</button>
-  </div>
-  <div class="btn-group">
-    <a href="#" class="btn" id="newTruck">New Truck</a>&nbsp;
+    <a href="#" class="btn btn-primary" id="newTruck"><span class="glyphicon glyphicon-plus"></span> New Truck</a>&nbsp;
   </div>
 </div>
-<h3>Active Trucks</h3>
-<table class="table table-striped active-trucks">
-  <thead>
-  <tr>
-    <th class="gutter">&nbsp;</th>
-    <th>Truck</th>
-    <th>Current Location</th>
-    <th>Last Updated</th>
-    <th>Ends At</th>
-    <th>Starts At</th>
-    <th>Next Location</th>
-    <th>Twittalyzer</th>
-  </tr>
-  </thead>
-  <tbody>
-  <c:forEach var="truckStops" varStatus="truckStopsStatus" items="${trucks}">
-    <c:if test="${truckStops.active}">
 
-      <tr class="rowItem">
-        <td class="gutter">&nbsp;</td>
-        <td><a class="truckLink" href="/admin/trucks/${truckStops.truck.id}">${truckStops.truck.name}</a></td>
-        <td>
-          <c:choose>
-          <c:when
-              test="${!empty(truckStops.currentStop)}">
-          <c:url value="/admin/locations"
-                 var="locationUrl">
-            <c:param name="q" value="${truckStops.currentStop.location.name}"/>
-          </c:url> <a
-            href="${locationUrl}">${truckStops.currentStop.location.name}</a></td>
-        <td><joda:format value="${truckStops.currentStop.lastUpdated}" style="-S"/></td>
-        <td><joda:format value="${truckStops.currentStop.endTime}" style="-S"/></c:when><c:otherwise>
-          Not Active
-        </td><td>&nbsp;</td>
-        <td>&nbsp;</c:otherwise>
-          </c:choose>
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" role="tablist">
+  <li <c:if test="${tab == 'home'}">class="active"</c:if>><a href="#home" role="tab" data-toggle="tab">Trucks with Stops</a></li>
+  <li <c:if test="${tab == 'noStops'}">class="active"</c:if>><a href="#noStops" role="tab" data-toggle="tab">Trucks with No stops</a></li>
+  <li <c:if test="${tab == 'inactiveTrucks'}">class="active"</c:if>><a href="#inactiveTrucks" role="tab" data-toggle="tab">Inactive</a></li>
+</ul>
 
-        </td>
-        <td>
-          <c:choose>
-          <c:when
-              test="${!empty(truckStops.nextStop)}">
-          <c:url value="/admin/locations" var="locationUrl">
-            <c:param name="q" value="${truckStops.nextStop.location.name}"/>
-          </c:url> <joda:format value="${truckStops.nextStop.startTime}" style="-S"/></td>
-        <td><a
-            href="${locationUrl}">${truckStops.nextStop.location.name}</a></c:when>
-          <c:otherwise></td><td>None</c:otherwise>
-          </c:choose>
-        </td>
-        <td><c:choose><c:when
-            test="${truckStops.truck.usingTwittalyzer}"></c:when><c:otherwise><span
-            class="label warning">off</span></c:otherwise></c:choose></td>
+<div class="tab-content">
+  <div class="tab-pane <c:if test="${tab == 'home'}">active</c:if>" id="home">
+    <table class="table table-striped active-trucks">
+      <thead>
+      <tr>
+        <th class="gutter">&nbsp;</th>
+        <th>Truck</th>
+        <th>Current Location</th>
+        <th>Last Updated</th>
+        <th>Ends At</th>
+        <th>Starts At</th>
+        <th>Next Location</th>
+        <th>Twittalyzer</th>
       </tr>
-    </c:if>
-  </c:forEach>
-  </tbody>
-</table>
-<h3>Trucks That Are Inactive Today</h3>
-<table class="table table-striped inactive-trucks">
-  <thead>
-  <tr>
-    <th></th>
-    <th>Truck</th>
-    <th>Categories</th>
-    <th>Twittalyzer</th>
-    <th>&nbsp;</th>
-  </tr>
-  </thead>
-  <tbody>
-  <c:forEach var="truckStops" items="${trucks}">
-    <c:if test="${!truckStops.active && !truckStops.truck.inactive}">
-      <tr <c:choose><c:when test="${truckStops.truck.muted}">class="muted rowItem"</c:when><c:otherwise>class="rowItem"</c:otherwise></c:choose>>
-        <td class="gutter"></td>
-        <td><a class="truckLink" href="/admin/trucks/${truckStops.truck.id}">${truckStops.truck.name}</a></td>
-        <td>${truckStops.truck.categoryList}</td>
-        <td><c:choose><c:when
-            test="${truckStops.truck.usingTwittalyzer}"></c:when><c:otherwise><span
-            class="label warning">off</span></c:otherwise></c:choose></td>
-        <td>
-          <button class="btn mute-button" for-truck="${truckStops.truck.id}"><c:choose><c:when
-              test="${truckStops.truck.muted}">Unmute</c:when><c:otherwise>Mute</c:otherwise></c:choose></button>
-          <button class="btn mute-until-button" for-truck="${truckStops.truck.id}">Mute until...</button>
-        </td>
+      </thead>
+      <tbody>
+      <c:forEach var="truckStops" varStatus="truckStopsStatus" items="${trucks}">
+        <c:if test="${truckStops.active}">
+
+          <tr class="rowItem">
+            <td class="gutter">&nbsp;</td>
+            <td><a class="truckLink" href="/admin/trucks/${truckStops.truck.id}">${truckStops.truck.name}</a></td>
+            <td>
+              <c:choose>
+              <c:when
+                  test="${!empty(truckStops.currentStop)}">
+              <c:url value="/admin/locations"
+                     var="locationUrl">
+                <c:param name="q" value="${truckStops.currentStop.location.name}"/>
+              </c:url> <a
+                href="${locationUrl}">${truckStops.currentStop.location.name}</a></td>
+            <td><joda:format value="${truckStops.currentStop.lastUpdated}" style="-S"/></td>
+            <td><joda:format value="${truckStops.currentStop.endTime}" style="-S"/></c:when><c:otherwise>
+              Not Active
+            </td><td>&nbsp;</td>
+            <td>&nbsp;</c:otherwise>
+              </c:choose>
+
+            </td>
+            <td>
+              <c:choose>
+              <c:when
+                  test="${!empty(truckStops.nextStop)}">
+              <c:url value="/admin/locations" var="locationUrl">
+                <c:param name="q" value="${truckStops.nextStop.location.name}"/>
+              </c:url> <joda:format value="${truckStops.nextStop.startTime}" style="-S"/></td>
+            <td><a
+                href="${locationUrl}">${truckStops.nextStop.location.name}</a></c:when>
+              <c:otherwise></td><td>None</c:otherwise>
+            </c:choose>
+          </td>
+            <td><c:choose><c:when
+                test="${truckStops.truck.usingTwittalyzer}"></c:when><c:otherwise><span
+                class="label warning">off</span></c:otherwise></c:choose></td>
+          </tr>
+        </c:if>
+      </c:forEach>
+      </tbody>
+    </table>
+  </div>
+  <div class="tab-pane <c:if test="${tab == 'noStops'}">active</c:if>" id="noStops">
+    <table class="table table-striped inactive-trucks">
+      <thead>
+      <tr>
+        <th></th>
+        <th>Truck</th>
+        <th>Categories</th>
+        <th>Twittalyzer</th>
+        <th>&nbsp;</th>
       </tr>
-    </c:if>
-  </c:forEach>
-  </tbody>
-</table>
-<div id="inactiveTrucks" style="display:none">
-  <h3>Inactive Trucks</h3>
-  <table class="table table-striped">
-    <thead>
-    <tr>
-      <th>Truck</th>
-      <th>Twittalyzer</th>
-    </tr>
-    </thead>
-    <tbody>
-    <c:forEach var="truckStops" items="${trucks}">
-      <c:if test="${!truckStops.active && truckStops.truck.inactive}">
-        <tr class="rowItem">
-          <td><a href="/admin/trucks/${truckStops.truck.id}">${truckStops.truck.name}</a></td>
-          <td>${truckStops.truck.categoryList}</td>
-          <td><c:choose><c:when
-              test="${truckStops.truck.usingTwittalyzer}"></c:when><c:otherwise><span
-              class="label warning">off</span></c:otherwise></c:choose></td>
-        </tr>
-      </c:if>
-    </c:forEach>
-    </tbody>
-  </table>
-</div>
+      </thead>
+      <tbody>
+      <c:forEach var="truckStops" items="${trucks}">
+        <c:if test="${!truckStops.active && !truckStops.truck.inactive}">
+          <tr <c:choose><c:when test="${truckStops.truck.muted}">class="muted rowItem"</c:when><c:otherwise>class="rowItem"</c:otherwise></c:choose>>
+            <td class="gutter"></td>
+            <td><a class="truckLink" href="/admin/trucks/${truckStops.truck.id}">${truckStops.truck.name}</a></td>
+            <td>${truckStops.truck.categoryList}</td>
+            <td><c:choose><c:when
+                test="${truckStops.truck.usingTwittalyzer}"></c:when><c:otherwise><span
+                class="label warning">off</span></c:otherwise></c:choose></td>
+            <td>
+              <button class="btn mute-button" for-truck="${truckStops.truck.id}"><c:choose><c:when
+                  test="${truckStops.truck.muted}">Unmute</c:when><c:otherwise>Mute</c:otherwise></c:choose></button>
+              <button class="btn mute-until-button" for-truck="${truckStops.truck.id}">Mute until...</button>
+            </td>
+          </tr>
+        </c:if>
+      </c:forEach>
+      </tbody>
+    </table>
+  </div>
+  <div class="tab-pane  <c:if test="${tab == 'noStops'}">inactiveTrucks</c:if>" id="inactiveTrucks">
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>Truck</th>
+        <th>Twittalyzer</th>
+      </tr>
+      </thead>
+      <tbody>
+      <c:forEach var="truckStops" items="${trucks}">
+        <c:if test="${!truckStops.active && truckStops.truck.inactive}">
+          <tr class="rowItem">
+            <td><a href="/admin/trucks/${truckStops.truck.id}">${truckStops.truck.name}</a></td>
+            <td>${truckStops.truck.categoryList}</td>
+            <td><c:choose><c:when
+                test="${truckStops.truck.usingTwittalyzer}"></c:when><c:otherwise><span
+                class="label warning">off</span></c:otherwise></c:choose></td>
+          </tr>
+        </c:if>
+      </c:forEach>
+      </tbody>
+    </table>
+  </div>
+ </div>
+
 <script type="text/javascript">
   (function() {
 
@@ -268,26 +272,7 @@
         muteButtonClick($(e.target), date);
       }
     });
-    function bindAjaxCallToButton(button, url) {
-      var link = $("#" + button);
-      link.click(function(evt) {
-        evt.preventDefault();
-        link.addClass("disabled");
-        $.ajax({
-          context: document.body,
-          url: url,
-          complete : function() {
-            link.removeClass("disabled");
-          },
-          success: function() {
-            window.location.reload();
-          }
-        });
-      });
-    }
 
-    bindAjaxCallToButton("twitterButton", "/cron/tweets");
-    bindAjaxCallToButton("invalidateButton", "/cron/invalidateCache");
     function newTruckDialog() {
       var truckId = prompt("Enter truck ID:");
       if (!truckId) {
@@ -312,4 +297,4 @@
   })();
 </script>
 
-<%@ include file="dashboardFooter.jsp" %>
+<%@ include file="dashboardFooterBS3.jsp" %>

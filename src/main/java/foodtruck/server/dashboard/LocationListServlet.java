@@ -42,6 +42,8 @@ public class LocationListServlet extends HttpServlet {
       throws ServletException, IOException {
     final String jsp = "/WEB-INF/jsp/dashboard/locationDashboard.jsp";
     req = new GuiceHackRequestWrapper(req, jsp);
+    req.setAttribute("localFrameworks", "true".equals(System.getProperty("use.local.frameworks", "false")));
+
     String searchField = req.getParameter("q");
     if (!Strings.isNullOrEmpty(searchField)) {
       Location location = locator.locate(searchField, GeolocationGranularity.BROAD);

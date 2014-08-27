@@ -21,12 +21,6 @@
       padding-top: 50px
     }
 
-    td.gutter {
-      width: 2px;
-    }
-    tr.selected td.gutter {
-      background-color: #be9a3f !important;
-    }
   </style>
 
   <style type="text/css" media="screen">

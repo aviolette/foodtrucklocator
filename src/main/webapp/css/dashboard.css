@@ -1,0 +1,6 @@
+td.gutter {
+  width: 2px;
+}
+tr.selected td.gutter {
+  background-color: #be9a3f !important;
+}
