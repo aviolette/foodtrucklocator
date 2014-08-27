@@ -9,11 +9,13 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
@@ -262,6 +264,21 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
 
   @Override public TruckStop findFirstStop(Truck truck) {
     return truckStopDAO.findFirstStop(truck.getId());
+  }
+
+  @Override public List<TruckStop> findBoozeStopsForWeek(LocalDate startDate) {
+    final Map<String, Location> locations = Maps.newHashMap();
+    for (Location loc : locationDAO.findBoozyLocations()) {
+      locations.put(loc.getName(), loc);
+    }
+    return FluentIterable.from(truckStopDAO.findOverRange(null, new Interval(startDate.toDateTimeAtStartOfDay(),
+        startDate.plusDays(7).toDateTimeAtStartOfDay())))
+        .filter(new Predicate<TruckStop>() {
+          @Override public boolean apply(@Nullable TruckStop truckStop) {
+            return locations.containsKey(truckStop.getLocation().getName());
+          }
+        })
+        .toList();
   }
 
   private DateTime lesserOf(DateTime dateTime1, DateTime dateTime2) {

@@ -103,6 +103,14 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     return ImmutableSet.copyOf(executeQuery(dataStore, q));
   }
 
+  @Override public Iterable<Location> findBoozyLocations() {
+    DatastoreService dataStore = provider.get();
+    Query q = new Query(LOCATION_KIND);
+    Query.Filter popularFilter = new Query.FilterPredicate(HAS_BOOZE, Query.FilterOperator.EQUAL, true);
+    q.setFilter(popularFilter);
+    return ImmutableSet.copyOf(executeQuery(dataStore, q));
+  }
+
   private Query locationQuery(String keyword) {
     Query q = new Query(LOCATION_KIND);
     Query.Filter nameFilter = new Query.FilterPredicate(NAME_FIELD, Query.FilterOperator.EQUAL, keyword);

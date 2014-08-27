@@ -155,4 +155,6 @@ public interface FoodTruckStopService {
   int cancelRemainingStops(String truckId, DateTime after);
 
   TruckStop findFirstStop(Truck truck);
+
+  List<TruckStop> findBoozeStopsForWeek(LocalDate localDate);
 }

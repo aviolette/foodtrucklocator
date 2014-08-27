@@ -47,4 +47,6 @@ public interface LocationDAO extends DAO<Long, Location> {
    * Finds all the locations marked as a designated stop
    */
   Collection<Location> findDesignatedStops();
+
+  Iterable<Location> findBoozyLocations();
 }
