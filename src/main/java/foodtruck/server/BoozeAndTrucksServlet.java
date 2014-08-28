@@ -57,16 +57,16 @@ public class BoozeAndTrucksServlet extends FrontPageServlet {
     LocalDate currentDay = null;
     Map<String, TruckStopGroup> tsgs = Maps.newHashMap();
     for (TruckStop stop : stopService.findBoozeStopsForWeek(clock.firstDayOfWeek())) {
+      if (currentDay != null && !stop.getStartTime().toLocalDate().equals(currentDay) && !tsgs.isEmpty()) {
+        schedules.add(new ScheduleForDay(currentDay, ImmutableList.copyOf(tsgs.values())));
+        tsgs = Maps.newHashMap();
+      }
       TruckStopGroup tsg = tsgs.get(stop.getLocation().getName());
       if (tsg == null) {
         tsg = new TruckStopGroup(stop.getLocation());
         tsgs.put(stop.getLocation().getName(), tsg);
       }
       tsg.addStop(stop);
-      if (currentDay != null && !stop.getStartTime().toLocalDate().equals(currentDay) && !tsgs.isEmpty()) {
-        schedules.add(new ScheduleForDay(currentDay, ImmutableList.copyOf(tsgs.values())));
-        tsgs = Maps.newHashMap();
-      }
       currentDay = stop.getStartTime().toLocalDate();
     }
     if (!tsgs.isEmpty()) {
