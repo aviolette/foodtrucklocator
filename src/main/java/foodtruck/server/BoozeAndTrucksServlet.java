@@ -65,6 +65,7 @@ public class BoozeAndTrucksServlet extends FrontPageServlet {
       tsg.addStop(stop);
       if (currentDay != null && !stop.getStartTime().toLocalDate().equals(currentDay) && !tsgs.isEmpty()) {
         schedules.add(new ScheduleForDay(currentDay, ImmutableList.copyOf(tsgs.values())));
+        tsgs = Maps.newHashMap();
       }
       currentDay = stop.getStartTime().toLocalDate();
     }
