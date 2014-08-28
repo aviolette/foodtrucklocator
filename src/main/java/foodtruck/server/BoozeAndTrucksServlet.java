@@ -5,27 +5,22 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import org.codehaus.jettison.json.JSONException;
 import org.joda.time.LocalDate;
 
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.LocationDAO;
-import foodtruck.model.DailySchedule;
 import foodtruck.model.Location;
 import foodtruck.model.TruckStop;
 import foodtruck.server.resources.json.DailyScheduleWriter;
-import foodtruck.server.resources.json.JSONSerializer;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 
@@ -56,7 +51,7 @@ public class BoozeAndTrucksServlet extends FrontPageServlet {
     ImmutableList.Builder<ScheduleForDay> schedules = ImmutableList.builder();
     LocalDate currentDay = null;
     Map<String, TruckStopGroup> tsgs = Maps.newHashMap();
-    for (TruckStop stop : stopService.findBoozeStopsForWeek(clock.firstDayOfWeek())) {
+    for (TruckStop stop : stopService.findUpcomingBoozyStops(clock.currentDay())) {
       if (currentDay != null && !stop.getStartTime().toLocalDate().equals(currentDay) && !tsgs.isEmpty()) {
         schedules.add(new ScheduleForDay(currentDay, ImmutableList.copyOf(tsgs.values())));
         tsgs = Maps.newHashMap();
@@ -73,6 +68,9 @@ public class BoozeAndTrucksServlet extends FrontPageServlet {
       schedules.add(new ScheduleForDay(currentDay, ImmutableList.copyOf(tsgs.values())));
     }
     req.setAttribute("daySchedules", schedules.build());
+    req.setAttribute("tab", "booze");
+    req.setAttribute("title", "Upcoming Boozy Events");
+    req.setAttribute("description", "Lists upcoming events that combine food trucks and booze.")
     req.getRequestDispatcher(JSP).forward(req, resp);
   }
 

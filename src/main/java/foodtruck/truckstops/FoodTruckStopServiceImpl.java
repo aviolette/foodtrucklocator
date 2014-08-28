@@ -266,7 +266,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     return truckStopDAO.findFirstStop(truck.getId());
   }
 
-  @Override public List<TruckStop> findBoozeStopsForWeek(LocalDate startDate) {
+  @Override public List<TruckStop> findUpcomingBoozyStops(LocalDate startDate) {
     final Map<String, Location> locations = Maps.newHashMap();
     for (Location loc : locationDAO.findBoozyLocations()) {
       locations.put(loc.getName(), loc);
