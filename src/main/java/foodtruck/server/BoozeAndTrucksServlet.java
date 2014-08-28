@@ -70,7 +70,7 @@ public class BoozeAndTrucksServlet extends FrontPageServlet {
     req.setAttribute("daySchedules", schedules.build());
     req.setAttribute("tab", "booze");
     req.setAttribute("title", "Upcoming Boozy Events");
-    req.setAttribute("description", "Lists upcoming events that combine food trucks and booze.")
+    req.setAttribute("description", "Lists upcoming events that combine food trucks and booze.");
     req.getRequestDispatcher(JSP).forward(req, resp);
   }
 
