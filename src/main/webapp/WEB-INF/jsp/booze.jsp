@@ -27,4 +27,6 @@
   </c:forEach>
 </c:forEach>
 
+<%@include file="include/core_js.jsp" %>
+
 <%@ include file="footer.jsp" %>
