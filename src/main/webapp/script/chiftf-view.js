@@ -277,7 +277,11 @@ var FoodTruckLocator = function () {
           $location.append($div);
           $items.append($location);
           var foundItems = $.grep(markers, function(item) {
-            return item.marker.icon == stop.marker.icon;
+            if (typeof(item.marker) == 'object') {
+              return item.marker.icon == stop.marker.icon;
+            } else {
+              return item.stops[0].location.name == stop.location.name;
+            }
           });
           if (foundItems.length == 0) {
             lastMarkerGroup = {marker: stop.marker, id: stop.markerId, stops: [stop]};
