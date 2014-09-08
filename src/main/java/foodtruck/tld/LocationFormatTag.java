@@ -8,6 +8,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import com.google.common.html.HtmlEscapers;
 import com.google.common.net.UrlEscapers;
 
 import org.joda.time.DateTime;
@@ -50,7 +51,12 @@ public class LocationFormatTag extends TagSupport {
     }
     try {
       if (location != null) {
-        out.println("<a href='/locations?q=" + UrlEscapers.urlPathSegmentEscaper().escape(location.getName()) + dateString + "'>" + location.getName() + "</a>");
+        String locationName = HtmlEscapers.htmlEscaper().escape(location.getName());
+        if (location.getKey() != null) {
+          out.println("<a href='/locations/" + location.getKey() + "'>" + locationName + "</a>");
+        } else {
+          out.println("<a href='/locations?q=" + locationName + dateString + "'>" + locationName + "</a>");
+        }
       }
     } catch (Exception e) {
       if (location != null) {

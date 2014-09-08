@@ -230,8 +230,8 @@ var FoodTruckLocator = function () {
   }
 
   function buildInfoWindow(marker, stops) {
-    var contentString = "<div class='infoWindowContent'><address class='locationName'>" +
-        stops[0].location.name + "</address>";
+    var contentString = "<div class='infoWindowContent'><h4><a href='/locations/" + stops[0].location.key + "'>" +
+        stops[0].location.name + "</a></h4>";
     if (stops.distance != null) {
       contentString += "<p>" + stops[0].distance + " miles from your location</p>"
     }
@@ -257,10 +257,10 @@ var FoodTruckLocator = function () {
     }
   }
 
-  function buildTruckList($truckList, stops) {
+  function buildTruckList($truckList, stops, markers) {
     $truckList.empty();
     var $items = $("<ul class='media-list'></ul>"), lastIcon = null, now = Clock.now(),
-        $location, $div, markerIds =[], lastMarkerGroup, lastLocation = null;
+        $location, $div, lastMarkerGroup, lastLocation = null;
     $items.appendTo($truckList);
     $.each(stops, function (idx, stop) {
       var $locationDescription = $("<div></div>");
@@ -276,8 +276,16 @@ var FoodTruckLocator = function () {
           $location = $("<li class='media'>" + linkBody + "</li>");
           $location.append($div);
           $items.append($location);
-          lastMarkerGroup = {marker: stop.marker, id: stop.markerId, stops: [stop]};
-          markerIds.push(lastMarkerGroup);
+          var foundItems = $.grep(markers, function(item) {
+            return item.marker.icon == stop.marker.icon;
+          });
+          if (foundItems.length == 0) {
+            lastMarkerGroup = {marker: stop.marker, id: stop.markerId, stops: [stop]};
+          } else {
+            lastMarkerGroup = foundItems[0];
+            lastMarkerGroup["stops"].push(stop);
+          }
+          markers.push(lastMarkerGroup);
       } else {
         lastMarkerGroup["stops"].push(stop);
       }
@@ -315,22 +323,6 @@ var FoodTruckLocator = function () {
         })
       }
     });
-    if (!isMobile()) {
-      $.each(markerIds, function (idx, markerAndId) {
-        if (markerAndId.marker.getAnimation() != null) {
-          return;
-        }
-        buildInfoWindow(markerAndId.marker, markerAndId.stops);
-        $("#" + markerAndId.id).click(function (e) {
-          e.preventDefault();
-          markerAndId.marker.setAnimation(google.maps.Animation.BOUNCE);
-          setTimeout(function () {
-            markerAndId.marker.setAnimation(null);
-          }, 3000);
-        });
-
-      });
-    }
   }
 
   function updateTruckLists() {
@@ -344,8 +336,25 @@ var FoodTruckLocator = function () {
     } else {
       $(".trucksListHeader").css("display", "block");
       $("#navTabs").css("display", "block");
-      buildTruckList($("#nowTrucks"), nowTrucks);
-      buildTruckList($("#laterTrucks"), laterTrucks);
+      var markers = [];
+      buildTruckList($("#nowTrucks"), nowTrucks, markers);
+      buildTruckList($("#laterTrucks"), laterTrucks, markers);
+      if (!isMobile()) {
+        $.each(markers, function (idx, markerAndId) {
+          if (markerAndId.marker.getAnimation() != null) {
+            return;
+          }
+          buildInfoWindow(markerAndId.marker, markerAndId.stops);
+          $("#" + markerAndId.id).click(function (e) {
+            e.preventDefault();
+            markerAndId.marker.setAnimation(google.maps.Animation.BOUNCE);
+            setTimeout(function () {
+              markerAndId.marker.setAnimation(null);
+            }, 3000);
+          });
+
+        });
+      }
       if (nowTrucks.length == 0) {
         $('a[href="#laterTrucks"]').tab('show');
       }
