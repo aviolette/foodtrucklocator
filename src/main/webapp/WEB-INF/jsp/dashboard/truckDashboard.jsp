@@ -240,7 +240,7 @@
     var account = prompt("With what account?");
     if (account) {
       var payload = {
-        tweetId : parseInt(id),
+        tweetId : id,
         account: account
       };
       $.ajax({

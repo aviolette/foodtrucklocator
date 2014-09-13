@@ -1,5 +1,7 @@
 package foodtruck.server.resources;
 
+import java.util.logging.Logger;
+
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -26,7 +28,7 @@ import twitter4j.TwitterFactory;
 @Path("/tweets")
 @Produces("application/json")
 public class TweetsResource {
-
+  private static final Logger log = Logger.getLogger(TweetsResource.class.getName());
   private final TwitterNotificationAccountDAO notificationAccountDAO;
   private final TwitterFactoryWrapper twitterFactoryWrapper;
 
@@ -45,7 +47,9 @@ public class TweetsResource {
         throw new WebApplicationException(Response.status(400).entity("Account not found: " + accountName).build());
       }
       Twitter twitter = new TwitterFactory(account.twitterCredentials()).getInstance();
-      twitter.retweetStatus(payload.getLong("tweetId"));
+      final long tweetId = Long.parseLong(payload.getString("tweetId"));
+      log.fine("Retweeting " + tweetId + " from " + accountName);
+      twitter.retweetStatus(tweetId);
     } catch (TwitterException e) {
       throw Throwables.propagate(e);
     } catch (JSONException e) {
