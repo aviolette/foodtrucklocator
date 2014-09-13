@@ -14,4 +14,6 @@ public interface TwitterNotificationAccountDAO extends DAO<Long, TwitterNotifica
    * @param name the address
    */
   @Nullable TwitterNotificationAccount findByLocationName(String name);
+
+  @Nullable TwitterNotificationAccount findByTwitterHandle(String twitterHandle);
 }

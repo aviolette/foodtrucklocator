@@ -172,6 +172,7 @@
   <tr>
     <td style="width: 100px">Time</td>
     <td>Location</td>
+    <td>&nbsp;</td>
     <td>Text</td>
   </tr>
   </thead>
@@ -180,6 +181,7 @@
     <tr>
       <td style="width:100px !important"><joda:format value="${tweet.time}" style="-S"/></td>
       <td><ftl:location location="${tweet.location}"/>&nbsp;</td>
+      <td><a class="btn btn-default retweet-button" id="retweet-${tweet.id}" href="#">Retweet...</a></td>
       <td><ftl:tweetformat>${tweet.text}</ftl:tweetformat></td>
     </tr>
   </c:forEach>
@@ -232,6 +234,28 @@
 </div>
 <script type="text/javascript">
   var locations = ${locations}, lastStop;
+  $(".retweet-button").click(function(e) {
+    e.preventDefault();
+    var id = $(e.target).attr('id').substring(8);
+    var account = prompt("With what account?");
+    if (account) {
+      var payload = {
+        tweetId : parseInt(id),
+        account: account
+      };
+      $.ajax({
+        url: "/services/tweets/retweets",
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(payload),
+        complete: function () {
+        },
+        success: function() {
+
+        }
+      });
+    }
+  });
   $("#locationInput").typeahead({source: locations});
   $(".timeentry").typeahead({source: generateTimes()});
   $("#startTimeInput").blur(function() {

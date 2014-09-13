@@ -80,4 +80,15 @@ public class TwitterNotificationAccountDAOAppEngine extends AppEngineDAO<Long, T
     }
     return fromEntity(e);
   }
+
+  @Nullable @Override public TwitterNotificationAccount findByTwitterHandle(String twitterHandle) {
+    DatastoreService dataStore = provider.get();
+    Query q = new Query(getKind());
+    q.setFilter(new Query.FilterPredicate(PROP_TWITTER_HANDLE, Query.FilterOperator.EQUAL, twitterHandle));
+    Entity e = dataStore.prepare(q).asSingleEntity();
+    if (e == null) {
+      return null;
+    }
+    return fromEntity(e);
+  }
 }
