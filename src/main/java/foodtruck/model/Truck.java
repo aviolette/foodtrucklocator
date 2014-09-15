@@ -1,6 +1,7 @@
 package foodtruck.model;
 
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
@@ -285,6 +286,20 @@ public class Truck extends ModelEntity {
 
   public @Nullable Stats getStats() {
     return stats;
+  }
+
+  public boolean match(String tweet) {
+    Pattern p = getMatchOnlyIf();
+    if (p != null) {
+      Matcher m = p.matcher(tweet.toLowerCase());
+      return m.find();
+    }
+    p = getDonotMatchIf();
+    if (p != null) {
+      Matcher m = p.matcher(tweet.toLowerCase());
+      return !m.find();
+    }
+    return true;
   }
 
   public static class Stats {

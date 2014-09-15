@@ -571,11 +571,13 @@ public class TwitterServiceImpl implements TwitterService {
       if (tweet.getIgnoreInTwittalyzer()) {
         continue;
       }
-      DateTime terminationTime = terminationDetector.detect(tweet);
-      if (terminationTime != null) {
-        log.log(Level.INFO, "Detected termination for truck: {0} with tweet: {1}",
-            new Object[]{truck.getId(), tweet.getText()});
-        return terminationTime;
+      if (truck.match(tweet.getText())) {
+        DateTime terminationTime = terminationDetector.detect(tweet);
+        if (terminationTime != null) {
+          log.log(Level.INFO, "Detected termination for truck: {0} with tweet: {1}",
+              new Object[]{truck.getId(), tweet.getText()});
+          return terminationTime;
+        }
       }
     }
     return null;
