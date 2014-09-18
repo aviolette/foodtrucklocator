@@ -4,6 +4,7 @@ var FoodTruckLocator = function () {
       _trucks = null,
       _mobile = false,
       _markers = null,
+      _showDesignated = false,
       _designatedStops = null,
       _center = null;
 
@@ -23,7 +24,9 @@ var FoodTruckLocator = function () {
     updateDistanceFromCurrentLocation();
     if (!isMobile()) {
       updateMap();
-      displayDesignatedStops();
+      if (_showDesignated) {
+        displayDesignatedStops();
+      }
     }
     updateTruckLists();
     displayWarningIfMarkersNotVisible();
@@ -88,6 +91,13 @@ var FoodTruckLocator = function () {
       locationMarkers = {};
     };
 
+    this.clearLocationMarkers = function() {
+      $.each(locationMarkers, function(key, marker) {
+        marker.setMap(null);
+      });
+      locationMarkers = {};
+    }
+
     this.addLocationMarker = function(location) {
       if (typeof locationMarkers[location.name] == "undefined") {
         var position = new google.maps.LatLng(location.latitude, location.longitude);
@@ -97,6 +107,7 @@ var FoodTruckLocator = function () {
           position: position
         });
         locationMarkers[location.name] = location.marker;
+        buildDesignatedStopInfoWindow(location.marker, location);
         this.bounds.extend(position);
       } else {
         location.marker = markers[location.name];
@@ -240,6 +251,20 @@ var FoodTruckLocator = function () {
       contentString += buildGroupTableRow(stop);
     });
     contentString = contentString + "</div></div>";
+    var infowindow = new google.maps.InfoWindow({
+      content: contentString
+    });
+
+    google.maps.event.addListener(marker, 'click', function () {
+      infowindow.open(_map, marker);
+    });
+  }
+
+  function buildDesignatedStopInfoWindow(marker, location) {
+    var contentString = "<div style='margin-bottom:25px' class='infoWindowContent'><h4><a href='/locations/" + location.key + "'>" +
+        location.name + "</a></h4>";
+    contentString = contentString + "</div>";
+
     var infowindow = new google.maps.InfoWindow({
       content: contentString
     });
@@ -511,6 +536,68 @@ var FoodTruckLocator = function () {
     }
   }
 
+  function toggleDesignatedStopDisplay() {
+    if (_showDesignated) {
+      displayDesignatedStops();
+    } else {
+      _markers.clearLocationMarkers();
+    }
+  }
+
+  function toggleDesignatedStops() {
+    var toggleDiv = document.createElement("div");
+    toggleDiv.index = 1;
+
+    // Setting padding to 5 px will offset the control
+    // from the edge of the map
+    toggleDiv.style.padding = '5px';
+
+    // Set CSS for the control border
+    var controlUI = document.createElement('div');
+    controlUI.style.backgroundColor = 'white';
+    controlUI.style.borderStyle = 'none';
+    controlUI.style.borderWidth = '0px';
+    controlUI.style.cursor = 'pointer';
+    controlUI.style.textAlign = 'center';
+    controlUI.title = '';
+    toggleDiv.appendChild(controlUI);
+
+    // Set CSS for the control interior
+    var controlText = document.createElement('div');
+    controlText.style.fontFamily = 'Arial,sans-serif';
+    controlText.style.fontSize = '12px';
+    controlText.style.paddingLeft = '4px';
+    controlText.style.paddingRight = '4px';
+    controlText.innerHTML = '<b><input type="checkbox" id="designatedStopsCB">&nbsp;<label for="designatedStopsCB">Show designated stops</label></b>';
+    controlUI.appendChild(controlText);
+
+    google.maps.event.addDomListener(controlUI, 'click', function() {
+      _showDesignated = $("#designatedStopsCB").is(":checked");
+      if (!_showDesignated || (_designatedStops && _designatedStops.length > 0)) {
+        toggleDesignatedStopDisplay();
+      } else {
+        $.ajax({
+          url: '/services/locations/designated?appKey=' + _appKey,
+          dataType: 'json',
+          cache: false,
+          error: function () {
+            try {
+              console.log("Failed to retrieve designated stops " + (new Date()));
+            } catch (e) {}
+          },
+          success: function (data) {
+            try {
+              console.log("Successfully designated stops at " + (new Date()));
+            } catch (e) {}
+            _designatedStops = data;
+            toggleDesignatedStopDisplay();
+          }
+        });
+      }
+    });
+    return toggleDiv;
+  }
+
   return {
     setModel: function (model) {
       _trucks = new Trucks(model);
@@ -579,6 +666,7 @@ var FoodTruckLocator = function () {
         }
       } else {
         _markers = new Markers();
+        _trucks = new Trucks(modelPayload);
         _map = new google.maps.Map(document.getElementById("map_canvas"), {
           zoom: findZoom(11),
           center: _center,
@@ -590,9 +678,12 @@ var FoodTruckLocator = function () {
           saveCenter(_map.getCenter());
           displayWarningIfMarkersNotVisible();
         });
+
         var centerMarker = new google.maps.Marker({
           icon: "http://maps.google.com/mapfiles/arrow.png"
         });
+
+        _map.controls[google.maps.ControlPosition.TOP_RIGHT].push(toggleDesignatedStops());
 
         google.maps.event.addListener(_map, 'drag', function () {
           if (loading) {

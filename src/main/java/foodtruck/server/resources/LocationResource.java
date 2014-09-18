@@ -1,5 +1,7 @@
 package foodtruck.server.resources;
 
+import java.util.Collection;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -11,6 +13,7 @@ import javax.ws.rs.core.Response;
 import com.google.inject.Inject;
 import com.sun.jersey.api.JResponse;
 
+import foodtruck.dao.LocationDAO;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
@@ -25,11 +28,19 @@ import foodtruck.util.ServiceException;
 public class LocationResource {
   private final GeoLocator locator;
   private final AuthorizationChecker authorizationChecker;
+  private final LocationDAO locationDAO;
 
   @Inject
-  public LocationResource(GeoLocator locator, AuthorizationChecker checker) {
+  public LocationResource(GeoLocator locator, AuthorizationChecker checker, LocationDAO locationDAO) {
     this.locator = locator;
     this.authorizationChecker = checker;
+    this.locationDAO = locationDAO;
+  }
+
+  @GET @Path("designated")
+  public Collection<Location> findStops(@QueryParam("appKey") String appKey) {
+    authorizationChecker.requireAppKey(appKey);
+    return locationDAO.findDesignatedStops();
   }
 
   @GET @Path("{location}") @Monitored

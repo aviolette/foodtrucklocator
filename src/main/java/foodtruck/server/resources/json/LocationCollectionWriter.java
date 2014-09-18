@@ -1,5 +1,7 @@
 package foodtruck.server.resources.json;
 
+import javax.ws.rs.ext.Provider;
+
 import com.google.inject.Inject;
 
 import foodtruck.model.Location;
@@ -8,6 +10,7 @@ import foodtruck.model.Location;
  * @author aviolette
  * @since 4/30/14
  */
+@Provider
 public class LocationCollectionWriter extends CollectionWriter<Location, LocationWriter> {
   /**
    * Constructs the collection writer
