@@ -3,6 +3,7 @@ var FoodTruckLocator = function () {
       _appKey = null,
       _trucks = null,
       _mobile = false,
+      _mode = null,
       _markers = null,
       _showDesignated = false,
       _designatedStops = null,
@@ -522,7 +523,7 @@ var FoodTruckLocator = function () {
   }
 
   function displayListOnly() {
-    return (Modernizr.touch && window.screen.width < 1024);
+    return (_mode != "desktop" && Modernizr.touch && window.screen.width < 1024);
   }
 
   function displayMessageOfTheDay(model) {
@@ -638,9 +639,12 @@ var FoodTruckLocator = function () {
     extend: function () {
       _map.fitBounds(_markers.bounds);
     },
-    run: function (mobile, center, time, modelPayload, appKey, designatedStops) {
+    run: function (mode, center, time, modelPayload, appKey, designatedStops) {
       var self = this;
+      var mobile = "mobile" == mode;
       _appKey = appKey;
+      _mode = mode;
+
       _center = findCenter(center);
       _designatedStops = designatedStops;
       resize();

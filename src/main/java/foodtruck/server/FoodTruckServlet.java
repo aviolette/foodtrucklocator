@@ -118,6 +118,7 @@ public class FoodTruckServlet extends FrontPageServlet {
     }
     final String mode = req.getParameter("mode");
     req.setAttribute("mobile", "mobile".equals(mode));
+    req.setAttribute("mode", mode);
     req.setAttribute("requestDate", dateFormatter.print(dateTime));
     req.setAttribute("requestTime", timeFormatter.print(dateTime));
     req.setAttribute("requestTimeInMillis", dateTime.getMillis());
