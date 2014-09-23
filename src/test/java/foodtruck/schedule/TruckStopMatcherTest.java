@@ -304,6 +304,23 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
   @Test
+  public void testMatch_matchExtendedTime() {
+    truck = Truck.builder(truck).categories(ImmutableSet.of("Breakfast", "MorningSquatter")).build();
+    tweetTime = tweetTime.withTime(7, 5, 0, 0);
+    TruckStopMatch match =
+        tweet("It's a beautiful day for some food truck grub. Breakfast and Lunch at 125 S. Clark! Get hungry for Poblano  Chicken ")
+            .geolocatorReturns(Location.builder().lat(41.889973).lng(-87.634024).name("Michigan and Ohio").build())
+            .match();
+    assertNotNull(match);
+    assertEquals(Confidence.LOW, match.getConfidence());
+    assertEquals(match.getStop().getStartTime(), tweetTime);
+    assertEquals(match.getStop().getEndTime(), tweetTime.withTime(13, 5, 0, 0));
+    assertEquals("Michigan and Ohio", match.getStop().getLocation().getName());
+    verifyAll();
+  }
+
+
+  @Test
   public void testMatchThatIsGreaterThan50MilesAway_shouldFail() {
     TruckStopMatch match =
         tweet("Oh yea oh yea beautiful night in the Chi. " +

@@ -187,7 +187,7 @@ public class TruckStopMatcher {
           }
           notes.add("Presence of start time in tweet increased confidence.");
           confidence = confidence.up();
-          endTime = startTime.plusHours(stopTime(truck));
+          endTime = startTime.plusHours(stopTime(truck, startTime));
         }
         // This is a special case, since matching ranges like that will produce a lot of
         // false positives, but 11-1 is commonly used for lunch hour
@@ -234,7 +234,7 @@ public class TruckStopMatcher {
           && truck.getCategoryList().contains("Lunch")) {
         endTime = startTime.withTime(13, 0, 0, 0);
       } else {
-        endTime = startTime.plusHours(stopTime(truck));
+        endTime = startTime.plusHours(stopTime(truck, startTime));
       }
     }
     return matchBuilder
@@ -264,7 +264,10 @@ public class TruckStopMatcher {
     return schedulePattern.matcher(tweetText).find();
   }
 
-  private int stopTime(Truck truck) {
+  private int stopTime(Truck truck, DateTime startTime) {
+    if (startTime.getHourOfDay() < 11 && truck.getCategories().contains("MorningSquatter")) {
+      return Math.max(13 - startTime.getHourOfDay(), DEFAULT_STOP_LENGTH_IN_HOURS);
+    }
     return truck.getCategories().contains("1HRStops") ? 1 : DEFAULT_STOP_LENGTH_IN_HOURS;
   }
 
