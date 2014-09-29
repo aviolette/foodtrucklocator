@@ -303,9 +303,10 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
     Query q = new Query(STOP_KIND);
     List<Query.Filter> filters = trucksOverRange(truckId, range);
     q.setFilter(Query.CompositeFilterOperator.and(filters));
+
     q.addSort(START_TIME_FIELD, Query.SortDirection.ASCENDING);
     ImmutableList.Builder<TruckStop> stops = ImmutableList.builder();
-    for (Entity entity : dataStore.prepare(q).asIterable()) {
+    for (Entity entity : dataStore.prepare(q).asIterable(FetchOptions.Builder.withChunkSize(100))) {
       stops.add(toTruckStop(entity));
     }
     return stops.build();

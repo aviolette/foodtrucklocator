@@ -23,5 +23,6 @@
 </dl>
 </p>
 
+<%@include file="include/core_js.jsp" %>
 
 <%@ include file="footer.jsp" %>
