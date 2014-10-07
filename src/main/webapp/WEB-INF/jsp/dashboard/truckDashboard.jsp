@@ -266,7 +266,7 @@
   });
   $("#locationInput").typeahead({source: locations});
   $(".timeentry").typeahead({source: generateTimes()});
-  $("#startTimeInput").blur(function() {
+  $("#startTimeInput").change(function() {
     var $endTime = $("#endTimeInput");
     var startTimeVal = $("#startTimeInput").val();
     var end = new Date(new Date(startTimeVal).getTime() + 7200000 ).toISOString();
