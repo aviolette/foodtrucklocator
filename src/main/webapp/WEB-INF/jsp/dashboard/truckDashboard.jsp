@@ -228,12 +228,20 @@
     </form>
   </div>
   <div class="modal-footer">
-    <a id="saveButton" href="#" class="btn primary">Save</a>
-    <a id="cancelButton" href="#" class="btn secondary">Cancel</a>
+    <a id="cancelButton" href="#" class="btn btn-default">Cancel</a>
+    <a id="saveButton" href="#" class="btn btn-primary">Save</a>
   </div>
 </div>
 <script type="text/javascript">
   var locations = ${locations}, lastStop;
+
+  $("#edit-stop").keypress(function(e) {
+    if (e.which == 13) {
+      e.preventDefault();
+      $("#saveButton").click();
+    }
+  });
+
   $(".retweet-button").click(function(e) {
     e.preventDefault();
     var id = $(e.target).attr('id').substring(8);
