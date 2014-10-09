@@ -1,4 +1,4 @@
-<%@ include file="dashboardHeader.jsp" %>
+<%@ include file="dashboardHeaderBS3.jsp" %>
 
 
 <form action="" method="POST">
@@ -226,4 +226,4 @@
   });
 </script>
 
-<%@ include file="dashboardFooter.jsp" %>
+<%@ include file="dashboardFooterBS3.jsp" %>

@@ -129,6 +129,7 @@ public class TruckServlet extends HttpServlet {
     req.setAttribute("truckId", truckId);
     req.setAttribute("truck", truck);
     req.setAttribute("nav", "trucks");
+    req.setAttribute("localFrameworks", "true".equals(System.getProperty("use.local.frameworks", "false")));
     req.setAttribute("breadcrumbs", ImmutableList.of(new Link("Trucks", "/admin/trucks"),
         new Link(name, "/admin/trucks" + truckId)));
 

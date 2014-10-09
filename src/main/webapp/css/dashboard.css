@@ -4,3 +4,15 @@ td.gutter {
 tr.selected td.gutter {
   background-color: #be9a3f !important;
 }
+
+.twitter-typeahead, .tt-hint {
+  padding-top:5px;
+}
+
+.twitter-typeahead {
+  width:526px;
+}
+
+.tt-hint {
+  margin-top:5px;
+}

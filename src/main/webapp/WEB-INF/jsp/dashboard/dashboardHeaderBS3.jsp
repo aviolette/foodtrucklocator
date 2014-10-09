@@ -20,6 +20,7 @@
   <script src="/script/lib/modernizr-1.7.min.js"></script>
   <%@include file="../include/core_js.jsp" %>
   <script src="/script/dashboard.js" type="text/javascript"></script>
+  <script src="/script/lib/typeahead.bundle.js"></script>
 </head>
 <body>
 <div class="container  cftf-main-container">
