@@ -39,6 +39,28 @@
         <ul class="nav navbar-nav">
           <li class="<c:if test="${nav == 'trucks'}">active</c:if>"><a href="/admin/trucks">Trucks</a></li>
           <li<c:if test="${nav == 'locations'}"> class="active"</c:if>><a href="/admin/locations">Locations</a></li>
+
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              Settings
+              <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+              <li class="visible-desktop<c:if test="${nav == 'addresses'}"> active</c:if>"><a
+                  href="/admin/addresses">Addresses</a>
+              </li>
+              <li class="hidden-phone<c:if test="${nav == 'applications'}"> active</c:if>"><a href="/admin/applications">Applications</a>
+              </li>
+              <li class="visible-desktop<c:if test="${nav == 'notifications'}"> active</c:if>"><a href="/admin/notifications">Notifications</a>
+              </li>
+              <li<c:if test="${nav == 'settings'}"> class="active"</c:if>><a href="/admin/configuration">Global Settings</a>
+              </li>
+              <li class="<c:if test="${nav == 'lookouts'}"> active</c:if>"><a href="/admin/lookouts">Lookouts</a>
+              </li>
+            </ul>
+          </li>
+          <li class="<c:if test="${nav == 'lookouts'}"> active</c:if>"><a href="/admin/messages">Messages</a>
+          </li>
         </ul>
         <ul class="nav navbar-nav pull-right button-group-xs">
           <button class="btn btn-default btn-xs" style="margin: 10px 0 0 0" id="twitterButton"><span class="glyphicon glyphicon-refresh"></span> Refresh</button>
