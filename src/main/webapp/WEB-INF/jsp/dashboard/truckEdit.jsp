@@ -1,216 +1,151 @@
 <%@ include file="dashboardHeaderBS3.jsp" %>
 
 
-<form action="" method="POST">
-  <fieldset title="Truck Information">
-    <legend>Truck Information</legend>
-    <div class="row">
-      <div class="span6">
-        <div class="clearfix">
-          <label for="truckName">Name:</label>
-
-          <div class="input">
-            <input type="text" class="input-xlarge" id="truckName" name="name" value="${truck.name}"/>
-          </div>
-        </div>
-        <div class="clearfix">
-          <label for="twitterHandle">Twitter Handle:</label>
-
-          <div class="input">
-            <input type="text" class="input-xlarge" id="twitterHandle" name="twitterHandle"
-                   value="${truck.twitterHandle}"/>
-          </div>
-        </div>
-        <div class="clearfix">
-          <label for="url">Url:</label>
-
-          <div class="input">
-            <input type="text" class="input-xlarge" id="url" name="url" value="${truck.url}"/>
-          </div>
-        </div>
-        <div class="clearfix">
-          <label for="description">Description</label>
-
-          <div class="input">
-            <input type="text" class="input-xlarge" id="description" name="description"
-                   value="${truck.description}"/>
-          </div>
-        </div>
-        <div class="clearfix">
-          <label for="foursquareUrl">Foursquare ID</label>
-
-          <div class="input">
-            <input type="text" class="input-xlarge" id="foursquareUrl" name="foursquareUrl"
-                   value="${truck.foursquareUrl}"/>
-          </div>
-        </div>
-        <div class="clearfix">
-          <label for="yelp">Yelp Slug</label>
-
-          <div class="input">
-            <input type="text" class="input-xlarge" id="yelp" name="yelp"
-                   value="${truck.yelpSlug}"/>
-          </div>
-        </div>
-        <div class="clearfix">
-          <label for="facebook">Facebook URI</label>
-
-          <div class="input">
-            <input type="text" class="input-xlarge" id="facebook" name="facebook"
-                   value="${truck.facebook}"/>
-          </div>
-        </div>
-        <div class="clearfix">
-          <label for="facebookPageId">Facebook PageId</label>
-
-          <div class="input">
-            <input type="text" class="input-xlarge" id="facebookPageId" name="facebookPageId"
-                   value="${truck.facebookPageId}"/>
-          </div>
-        </div>
-        <div class="clearfix">
-          <label for="instagramId">Instagram Id</label>
-
-          <div class="input">
-            <input type="text" class="input-xlarge" id="instagramId" name="instagramId"
-                   value="${truck.instagramId}"/>
-          </div>
-        </div>
-        <div class="clearfix">
-          <label for="email">Email</label>
-
-          <div class="input">
-            <input type="text" class="input-xlarge" id="email" name="email" value="${truck.email}"/>
-          </div>
-        </div>
-        <div class="clearfix">
-          <label for="phone">Phone</label>
-
-          <div class="input">
-            <input type="text" class="input-xlarge" id="phone" name="phone" value="${truck.phone}"/>
-          </div>
-        </div>
-  </fieldset>
+<form action="" method="POST" id="theForm">
+  <div class="form-group">
+    <label for="truckName">Name:</label>
+    <input type="text" class="form-control" id="truckName" name="name" value="${truck.name}"/>
   </div>
-  <div class="span6">
-    <fieldset title="Internal Display and Matching Information">
-      <legend>Internal Display and Matching Information</legend>
-      <div class="clearfix">
-        <label for="iconUrl">Icon URL:</label>
-
-        <div class="input">
-          <input type="text" class="input-xlarge span5" class="input-xlarge" id="iconUrl" name="iconUrl"
-                 value="${truck.iconUrl}"/>
-        </div>
-      </div>
-      <div class="clearfix">
-        <label for="iconUrl">Preview Image URL:</label>
-
-        <div class="input">
-          <input type="text" class="input-xlarge span5" class="input-xlarge" id="previewIcon" name="previewIcon"
-                 value="${truck.previewIcon}"/>
-        </div>
-      </div>
-      <div class="clearfix">
-        <label for="iconUrl">Fullsize Image URL:</label>
-
-        <div class="input">
-          <input type="text" class="input-xlarge span5" class="input-xlarge" id="fullsizeImage" name="fullsizeImage"
-                 value="${truck.fullsizeImage}"/>
-        </div>
-      </div>
-      <div class="clearfix">
-        <label for="calendarUrl">Calendar URL</label>
-
-        <div class="input">
-          <input type="text" class="input-xlarge span5" id="calendarUrl" name="calendarUrl"
-                 value="${truck.calendarUrl}"/>
-        </div>
-      </div>
-      <div class="clearfix">
-        <label for="defaultCity">Default City</label>
-
-        <div class="input">
-          <input type="text" class="input-xlarge" id="defaultCity" name="defaultCity"
-                 value="${truck.defaultCity}"/>
-        </div>
-      </div>
-      <div class="clearfix">
-        <label for="matchOnlyIf">Match-only Regex</label>
-
-        <div class="input">
-          <input type="text" class="input-xlarge" id="matchOnlyIf" name="matchOnlyIf"
-                 value="${truck.matchOnlyIfString}"/>
-        </div>
-      </div>
-      <div class="clearfix">
-        <label for="donotMatchIf">Donot Match Regex</label>
-
-        <div class="input">
-          <input type="text" class="input-xlarge" id="donotMatchIf" name="donotMatchIf"
-                 value="${truck.donotMatchIfString}"/>
-        </div>
-      </div>
-      <div class="clearfix">
-        <label for="categories">Categories</label>
-
-        <div class="input">
-          <input type="text" class="input-xlarge" id="categories" name="categories"
-                 value="${truck.categoryList}"/>
-        </div>
-      </div>
-      <div class="clearfix">
-        <label for="beaconnaiseEmails">Beaconnaise Emails</label>
-
-        <div class="input">
-          <input type="text" class="input-xlarge" id="beaconnaiseEmails" name="beaconnaiseEmails"
-                 value="${truck.beaconnaiseList}"/>
-        </div>
-      </div>
-      <div class="clearfix">
-        <label id="options">Options</label>
-
-        <div class="input">
-          <ul class="unstyled">
-            <li><label><input type="checkbox" name="options"
-                              value="twittalyzer" ${truck.usingTwittalyzer ? "checked='checked'" : ""}/>
-              <span>Use twittalyzer</span></label></li>
-            <li><label><input type="checkbox" name="options"
-                              value="systemNotifications" ${truck.allowSystemNotifications ? "checked='checked'" : ""}/>
-              <span>Allow System Notifications</span></label></li>
-            <li><label><input type="checkbox" name="options"
-                              value="displayEmailPublicly" ${truck.displayEmailPublicly ? "checked='checked'" : ""}/>
-              <span>Display email publicly</span></label></li>
-            <li><label><input type="checkbox" name="options"
-                              value="twitterGeolocation" ${truck.twitterGeolocationDataValid ? "checked='checked'" : ""}/>
-              <span>Can Use Twitter Geolocation Data</span></label>
-            <li><label><input type="checkbox" name="options"
-                              value="inactive" ${truck.inactive ? "checked='checked'" : ""}/>
-              <span>Inactive</span></label>
-            </li>
-            <li><label><input type="checkbox" name="options"
-                              value="hidden" ${truck.hidden ? "checked='checked'" : ""}/>
-              <span>Truck is hidden from public listings</span></label>
-          </ul>
-        </div>
-      </div>
-    </fieldset>
+  <div class="form-group">
+    <label for="twitterHandle">Twitter Handle:</label>
+    <input type="text" class="form-control" id="twitterHandle" name="twitterHandle"
+           value="${truck.twitterHandle}"/>
   </div>
+  <div class="form-group">
+    <label for="url">Url:</label>
+    <input type="text" class="form-control" id="url" name="url" value="${truck.url}"/>
+  </div>
+  <div class="form-group">
+    <label for="description">Description</label>
+    <input type="text" class="form-control" id="description" name="description"
+           value="${truck.description}"/>
+  </div>
+  <div class="form-group">
+    <label for="foursquareUrl">Foursquare ID</label>
+    <input type="text" class="form-control" id="foursquareUrl" name="foursquareUrl"
+           value="${truck.foursquareUrl}"/>
+  </div>
+  <div class="form-group">
+    <label for="yelp">Yelp Slug</label>
+    <input type="text" class="form-control" id="yelp" name="yelp"
+           value="${truck.yelpSlug}"/>
+  </div>
+  <div class="form-group">
+    <label for="facebook">Facebook URI</label>
+    <input type="text" class="form-control" id="facebook" name="facebook"
+           value="${truck.facebook}"/>
+  </div>
+  <div class="form-group">
+    <label for="facebookPageId">Facebook PageId</label>
+    <input type="text" class="form-control" id="facebookPageId" name="facebookPageId"
+           value="${truck.facebookPageId}"/>
+  </div>
+  <div class="form-group">
+    <label for="instagramId">Instagram Id</label>
+    <input type="text" class="form-control" id="instagramId" name="instagramId"
+           value="${truck.instagramId}"/>
+  </div>
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input type="text" class="form-control" id="email" name="email" value="${truck.email}"/>
+  </div>
+  <div class="form-group">
+    <label for="phone">Phone</label>
+    <input type="text" class="form-control" id="phone" name="phone" value="${truck.phone}"/>
+  </div>
+  <div class="form-group">
+    <label for="iconUrl">Icon URL:</label>
+    <input type="text" class="form-control" id="iconUrl" name="iconUrl"
+           value="${truck.iconUrl}"/>
+  </div>
+  <div class="form-group">
+    <label for="iconUrl">Preview Image URL:</label>
+    <input type="text" class="form-control" id="previewIcon" name="previewIcon"
+           value="${truck.previewIcon}"/>
+  </div>
+  <div class="form-group">
+    <label for="iconUrl">Fullsize Image URL:</label>
+    <input type="text" class="form-control" id="fullsizeImage" name="fullsizeImage"
+           value="${truck.fullsizeImage}"/>
+  </div>
+  <div class="form-group">
+    <label for="calendarUrl">Calendar URL</label>
+    <input type="text" class="form-control" id="calendarUrl" name="calendarUrl"
+           value="${truck.calendarUrl}"/>
+  </div>
+  <div class="form-group">
+    <label for="defaultCity">Default City</label>
+    <input type="text" class="form-control" id="defaultCity" name="defaultCity"
+           value="${truck.defaultCity}"/>
+  </div>
+  <div class="form-group">
+    <label for="matchOnlyIf">Match-only Regex</label>
+    <input type="text" class="form-control" id="matchOnlyIf" name="matchOnlyIf"
+           value="${truck.matchOnlyIfString}"/>
+  </div>
+  <div class="form-group">
+    <label for="donotMatchIf">Donot Match Regex</label>
+    <input type="text" class="form-control" id="donotMatchIf" name="donotMatchIf"
+           value="${truck.donotMatchIfString}"/>
+  </div>
+  <div class="form-group">
+    <label for="categories">Categories</label>
+    <input type="text" class="form-control" id="categories" name="categories"
+           value="${truck.categoryList}"/>
+  </div>
+  <div class="form-group">
+    <label for="beaconnaiseEmails">Beaconnaise Emails</label>
+    <input type="text" class="form-control" id="beaconnaiseEmails" name="beaconnaiseEmails"
+           value="${truck.beaconnaiseList}"/>
   </div>
 
-  <input type="submit" class="btn btn-primary" value="Update"/> &nbsp;
+  <div class="checkbox">
+    <label><input type="checkbox" name="options"
+                  value="twittalyzer" ${truck.usingTwittalyzer ? "checked='checked'" : ""}/> Use twittalyzer</label>
+  </div>
+  <div class="checkbox">
+    <label><input type="checkbox" name="options"
+                  value="systemNotifications" ${truck.allowSystemNotifications ? "checked='checked'" : ""}/> Allow System Notifications</label>
+  </div>
+  <div class="checkbox">
+    <label><input type="checkbox" name="options"
+                  value="displayEmailPublicly" ${truck.displayEmailPublicly ? "checked='checked'" : ""}/>
+      Display email publicly</label>
+  </div>
+  <div class="checkbox">
+    <label><input type="checkbox" name="options"
+                  value="twitterGeolocation" ${truck.twitterGeolocationDataValid ? "checked='checked'" : ""}/>
+      Can Use Twitter Geolocation Data</label>
+  </div>
+  <div class="checkbox">
+    <label><input type="checkbox" name="options"
+                  value="inactive" ${truck.inactive ? "checked='checked'" : ""}/>
+      Inactive</label>
+  </div>
+  <div class="checkbox">
+    <label><input type="checkbox" name="options"
+                  value="hidden" ${truck.hidden ? "checked='checked'" : ""}/>
+      Truck is hidden from public listings</label>
+
+
+  </div>
+
 </form>
-
+<button id="submitButton" class="btn btn-primary">Save</button>
 <button id="updateStats" class="btn btn-warning">Update Stats</button>
 <button id="deleteTruck" class="btn btn-danger">DELETE THIS TRUCK</button>
 
 <script>
-  $("#updateStats").click(function() {
+  $("#submitButton").click(function(e) {
+    $("#theForm").submit();
+  });
+  $("#updateStats").click(function(e) {
+    e.preventDefault();
     $.ajax({
-       url: '/cron/updateTruckStats?truckId=${truck.id}&force=true',
-       complete: function() {
-         location.href='/trucks/${truck.id}';
-       }
+      url: '/cron/updateTruckStats?truckId=${truck.id}&force=true',
+      complete: function() {
+        location.href='/trucks/${truck.id}';
+      }
     });
   })
   $("#deleteTruck").click(function () {
