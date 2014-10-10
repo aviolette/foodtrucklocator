@@ -176,15 +176,29 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   public void testMatch_shouldReturnHighConfidenceWhenLeavingAt() {
     tweetTime = tweetTime.withHourOfDay(16).withMinuteOfHour(16);
     TruckStopMatch match =
-        tweet("Our final stop tonight is Grand & McClurg. We'll be leaving at 5:30pm, so come soon!")
+        tweet("Our final stop is Grand & McClurg. We'll be leaving at 5:30pm, so come soon!")
             .withTime(tweetTime)
             .match();
     assertNotNull(match);
     assertEquals(Confidence.MEDIUM, match.getConfidence());
-    assertThat(match.getStop().getNotes(), hasItems("Tweet received for location: 'Our final stop tonight is Grand & McClurg. We'll be leaving at 5:30pm, so come soon!'"));
+    assertThat(match.getStop().getNotes(), hasItems("Tweet received for location: 'Our final stop is Grand & McClurg. We'll be leaving at 5:30pm, so come soon!'"));
     assertThat(match.getStop().getNotes(), hasItems("Presence of end time in tweet increased confidence."));
     assertEquals(tweetTime, match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(17, 30, 0, 0), match.getStop().getEndTime());
+  }
+
+  @Test
+  public void testMatch_tonightHandling() {
+    tweetTime = tweetTime.withHourOfDay(13).withMinuteOfHour(16);
+    truck = Truck.builder().categories(ImmutableSet.of("Breakfast", "MorningSquatter", "HasNightStops")).build();
+    TruckStopMatch match =
+        tweet("#Vaultvan needs a break! See you tonight at #greenstreetsmokedmeats")
+            .withTime(tweetTime)
+            .withTruck(truck)
+            .match();
+    assertNotNull(match);
+    assertEquals(tweetTime.withTime(17, 30, 0, 0), match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(19, 30, 0, 0), match.getStop().getEndTime());
   }
 
   @Test

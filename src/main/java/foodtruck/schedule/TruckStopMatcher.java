@@ -201,6 +201,9 @@ public class TruckStopMatcher {
         endTime = clock.currentDay().toDateTime(new LocalTime(13, 0), clock.zone());
         notes.add("Presence of start time in tweet increased confidence.");
         confidence = confidence.up();
+      } else if (tweet.getTime().getHourOfDay() > 12 && tweet.getTime().getHourOfDay() < 17 &&
+          (tweetText.contains("tonight") || tweetText.contains("tonite"))) {
+        startTime = clock.currentDay().toDateTime(new LocalTime(17, 30), clock.zone());
       }
     }
     if (startTime == null) {
