@@ -243,11 +243,11 @@ var FoodTruckLocator = function () {
 
   function buildInfoWindow(marker, stops) {
     var contentString = "<div class='infoWindowContent'><h4><a href='/locations/" + stops[0].location.key + "'>" +
-        stops[0].location.name + "</a></h4>";
+        formatLocation(stops[0].location.name) + "</a></h4>";
     if (stops.distance != null) {
       contentString += "<p>" + stops[0].distance + " miles from your location</p>"
     }
-    contentString = contentString + "<div class='media-list'>"
+    contentString = contentString + "<div class='media-list' style='margin:10px'>"
     $.each(stops, function (idx, stop) {
       contentString += buildGroupTableRow(stop);
     });
