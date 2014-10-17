@@ -196,6 +196,10 @@ var FoodTruckLocator = function () {
         return true;
       }
       var bounds = _map.getBounds(), visible = true;
+      if (!bounds) {
+        return false;
+      }
+      // TODO: not efficient (looping)
       $.each(this.stops, function (idx, stop) {
         if (!bounds.contains(stop.position)) {
           visible = false;
@@ -209,9 +213,9 @@ var FoodTruckLocator = function () {
     };
 
     this.openNow = function () {
-      var now = Clock.now(), items = [];
+      var now = Clock.now(), items = [], bounds = _map.getBounds();
       $.each(self.stops, function (idx, item) {
-        if (item.stop["startMillis"] <= now && item.stop["endMillis"] > now && (isMobile() || _map.getBounds().contains(item.position))) {
+        if (item.stop["startMillis"] <= now && item.stop["endMillis"] > now && (isMobile() || (bounds && bounds.contains(item.position)))) {
           items.push(item);
         }
       });
@@ -219,9 +223,9 @@ var FoodTruckLocator = function () {
     };
 
     this.openLater = function () {
-      var now = Clock.now(), items = [];
+      var now = Clock.now(), items = [], bounds = _map.getBounds();
       $.each(self.stops, function (idx, item) {
-        if (item.stop["startMillis"] > now && (isMobile() || _map.getBounds().contains(item.position))) {
+        if (item.stop["startMillis"] > now && (isMobile() || (bounds && bounds.contains(item.position)))) {
           items.push(item);
         }
       });
@@ -402,7 +406,13 @@ var FoodTruckLocator = function () {
       if (typeof a.distance == "undefined" || a.distance == null) {
         return 0;
       }
-      return a.distance > b.distance ? 1 : ((a.distance == b.distance) ? 0 : -1);
+      if (a.distance > b.distance) {
+        return 1;
+      } else if (a.distance < b.distance) {
+        return -1;
+      } else {
+        return a.location.name.localeCompare(b.location.name);
+      }
     });
   }
 
@@ -702,7 +712,7 @@ var FoodTruckLocator = function () {
             manuallyMoved = true;
           }
           centerMarker.setMap(null);
-          self.setModel(modelPayload);
+          refreshViewData();
         });
 
         google.maps.event.addListener(_map, 'zoom_changed', function () {
@@ -710,12 +720,12 @@ var FoodTruckLocator = function () {
             manuallyMoved = true;
           }
           saveZoom(_map.getZoom());
-          self.setModel(modelPayload);
+          refreshViewData();
         });
         var listener = null;
         // just want to invoke this once, for when the map first loads
         listener = google.maps.event.addListener(_map, 'bounds_changed', function () {
-          self.setModel(modelPayload);
+          refreshViewData();
           if (listener) {
             google.maps.event.removeListener(listener);
           }
