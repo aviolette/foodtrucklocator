@@ -195,7 +195,7 @@ var FoodTruckLocator = function () {
       if (isMobile()) {
         return true;
       }
-      var bounds = _map.getBounds(), visible = true;
+      var bounds = isMobile() ? null : _map.getBounds(), visible = true;
       if (!bounds) {
         return false;
       }
@@ -213,7 +213,7 @@ var FoodTruckLocator = function () {
     };
 
     this.openNow = function () {
-      var now = Clock.now(), items = [], bounds = _map.getBounds();
+      var now = Clock.now(), items = [], bounds = isMobile() ? null : _map.getBounds();
       $.each(self.stops, function (idx, item) {
         if (item.stop["startMillis"] <= now && item.stop["endMillis"] > now && (isMobile() || (bounds && bounds.contains(item.position)))) {
           items.push(item);
@@ -223,7 +223,7 @@ var FoodTruckLocator = function () {
     };
 
     this.openLater = function () {
-      var now = Clock.now(), items = [], bounds = _map.getBounds();
+      var now = Clock.now(), items = [], bounds = isMobile() ? null : _map.getBounds();
       $.each(self.stops, function (idx, item) {
         if (item.stop["startMillis"] > now && (isMobile() || (bounds && bounds.contains(item.position)))) {
           items.push(item);
