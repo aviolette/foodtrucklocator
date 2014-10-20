@@ -143,6 +143,9 @@ public class GoogleCalendar implements ScheduleStrategy {
         if (!Strings.isNullOrEmpty(whereString)) {
           if (whereString.endsWith(", United States")) {
             whereString = whereString.substring(0, whereString.lastIndexOf(","));
+          // Fixes how google calendar normalizes fully-qualified addresses with a state, zip and country code
+          } else if (whereString.lastIndexOf(", IL ") != -1) {
+            whereString = whereString.substring(0, whereString.lastIndexOf(", IL ")) + ", IL";
           }
           // HACK Alert, the address extractor doesn't handle non-Chicago addresses well, so
           // if it is a fully qualified address written by me, it will probably end in City, IL
