@@ -88,6 +88,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     Query.Filter popularFilter = new Query.FilterPredicate(POPULAR_FIELD, Query.FilterOperator.EQUAL, true);
     Query.Filter autoCompleteFilter = new Query.FilterPredicate(AUTOCOMPLETE, Query.FilterOperator.EQUAL, true);
     q.setFilter(Query.CompositeFilterOperator.or(popularFilter, autoCompleteFilter));
+    q.addSort(NAME_FIELD);
     return executeQuery(dataStore, q);
   }
 

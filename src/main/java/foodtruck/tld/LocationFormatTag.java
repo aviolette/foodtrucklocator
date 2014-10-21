@@ -9,7 +9,6 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
 import com.google.common.html.HtmlEscapers;
-import com.google.common.net.UrlEscapers;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -25,7 +24,12 @@ public class LocationFormatTag extends TagSupport {
   private Location location;
   private static final Logger log = Logger.getLogger(LocationFormatTag.class.getName());
   private DateTime when;
+  private boolean admin;
   private final DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYYMMdd");
+
+  public void setAdmin(boolean admin) {
+    this.admin = admin;
+  }
 
   public void setAt(DateTime dateTime) {
     when = dateTime;
@@ -52,8 +56,9 @@ public class LocationFormatTag extends TagSupport {
     try {
       if (location != null) {
         String locationName = HtmlEscapers.htmlEscaper().escape(location.getName());
+        String aString = admin ? "/admin" : "";
         if (location.getKey() != null) {
-          out.println("<a href='/locations/" + location.getKey() + "'>" + locationName + "</a>");
+          out.println("<a href='" + aString + "/locations/" + location.getKey() + "'>" + locationName + "</a>");
         } else {
           out.println("<a href='/locations?q=" + locationName + dateString + "'>" + locationName + "</a>");
         }

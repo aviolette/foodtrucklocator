@@ -56,9 +56,11 @@ public class LocationListServlet extends HttpServlet {
       }
       // TODO: add error message if we get here
     }
+    final List<Location> autocompleteLocations = locationDAO.findAutocompleteLocations();
     List<String> locationNames = ImmutableList.copyOf(
-        Iterables.transform(locationDAO.findAutocompleteLocations(), Location.TO_NAME));
+        Iterables.transform(autocompleteLocations, Location.TO_NAME));
     req.setAttribute("locations", new JSONArray(locationNames).toString());
+    req.setAttribute("allLocations", autocompleteLocations);
     req.setAttribute("nav", "locations");
     req.getRequestDispatcher(jsp).forward(req, resp);
   }

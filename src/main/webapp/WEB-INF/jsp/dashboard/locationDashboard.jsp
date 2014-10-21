@@ -16,6 +16,12 @@
     </div>
   </fieldset>
 </form>
+
+<ul class="unstyled">
+<c:forEach var="loc" items="${allLocations}">
+  <li><ftl:location admin="true" location="${loc}"/></li>
+</c:forEach>
+</ul>
 <script type="text/javascript">
   $("#locationSearch").typeahead({source:${locations}});
 </script>
