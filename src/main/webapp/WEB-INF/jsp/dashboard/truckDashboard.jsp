@@ -225,6 +225,7 @@
 <script type="text/javascript">
   var locations = ${locations}, lastStop;
 
+
   $("#edit-stop").keypress(function(e) {
     if (e.which == 13) {
       e.preventDefault();
@@ -432,7 +433,8 @@
     var categories = [<c:forEach var="category" varStatus="categoryIndex" items="${truck.categories}">"${category}"<c:if test="${!categoryIndex.last}">,</c:if></c:forEach>];
     return categories.indexOf(category) >= 0;
   }
-  $("#addButton").click(function (e) {
+
+  function newStop() {
     var now = new Date();
     if ((!hasCategory("Breakfast") && numStops() == 0) && now.getHours() < 10 ) {
       now.setHours(11);
@@ -453,9 +455,21 @@
     }
     var today = toDate(now), later = toDate(new Date(now.getTime() + (2*60*60*1000)));
     invokeEditDialog({truckId: "${truckId}", locationName: "", location: { name: ""},
-            startTimeH: today, endTimeH: later },
-          refreshSchedule);
+          startTimeH: today, endTimeH: later },
+        refreshSchedule);
+  }
+
+  $("#addButton").click(function (e) {
+    newStop();
   });
+
+  $(document).keypress(function(e) {
+    if (e.which == 110) {
+      e.preventDefault();
+      newStop();
+    }
+  });
+
   refreshSchedule();
   var $offTheRoadButton = $("#offRoadButton");
   $offTheRoadButton.click(function (evt) {
