@@ -1,5 +1,6 @@
 <%@include file="dashboardHeaderBS3.jsp" %>
-
+<style type="text/css">
+</style>
 <h1>${truck.name}</h1>
 <a href="/trucks/${truckId}">View Public Page</a>
 
@@ -176,7 +177,7 @@
   <tbody>
   <c:forEach var="tweet" items="${tweets}">
     <tr>
-      <td style="width:100px !important"><joda:format value="${tweet.time}" style="-S"/></td>
+      <td style="width:100px !important"><a target="_blank" href="http://twitter.com/${tweet.screenName}/status/${tweet.id}"><joda:format value="${tweet.time}" style="-S"/></a></td>
       <td><ftl:location location="${tweet.location}"/>&nbsp;</td>
       <td><a class="btn btn-default retweet-button" id="retweet-${tweet.id}" href="#"><span class="glyphicon glyphicon-retweet"></span> Retweet</a></td>
       <td><ftl:tweetformat>${tweet.text}</ftl:tweetformat></td>
@@ -191,14 +192,13 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h3>Edit Stop</h3>
       </div>
       <div class="modal-body">
         <form role="form" class="form-horizontal">
           <div class="form-group">
             <label class="control-label" for="startTimeInput">Start</label>
-            <input class="timeentry form-control" id="startTimeInput" type="datetime-local"/>
+            <input class="timeentry form-control" id="startTimeInput" type="datetime-local" autofocus/>
           </div>
           <div class="form-group">
             <label class="control-label" for="endTimeInput">End</label>
@@ -223,10 +223,9 @@
 </div>
 
 <script type="text/javascript">
-  var locations = ${locations}, lastStop;
+  var locations = ${locations}, lastStop, $editStop = $("#edit-stop");
 
-
-  $("#edit-stop").keypress(function(e) {
+  $editStop.keypress(function(e) {
     if (e.which == 13) {
       e.preventDefault();
       $("#saveButton").click();
@@ -286,13 +285,8 @@
     minLength: 1
   },{ name: 'locations', displayKey: 'value', source: substringMatcher(locations)});
 
-  $("#startTimeInput").change(function() {
-    var $endTime = $("#endTimeInput");
-    var startTimeVal = $("#startTimeInput").val();
-    var end = new Date(new Date(startTimeVal).getTime() + 7200000 ).toISOString();
-    $endTime.attr("value", end.substring(0, end.lastIndexOf(":")));
-  });
-  $("#edit-stop").on("shown", function() {
+
+  $editStop.on("shown.bs.modal", function() {
     $("#startTimeInput").focus();
   });
   function invokeEditDialog(stop, afterwards) {
@@ -464,7 +458,7 @@
   });
 
   $(document).keypress(function(e) {
-    if (e.which == 110) {
+    if (e.which == 110 && $editStop.css("display") == 'none') {
       e.preventDefault();
       newStop();
     }
