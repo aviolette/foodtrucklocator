@@ -23,11 +23,9 @@ import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TweetSummary;
 import foodtruck.util.Clock;
+
 import static org.easymock.EasyMock.expect;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.junit.matchers.JUnitMatchers.hasItems;
 
 /**
@@ -70,6 +68,8 @@ public class TruckStopMatcherTest extends EasyMockSupport {
 
   @Test
   public void testMatch_whenHardEndWithSoftStart() {
+    truck = Truck.builder().id("foobar").name("FOO").twitterHandle("bar")
+        .categories(ImmutableSet.of("Breakfast", "Lunch")).build();
     tweetTime = tweetTime.withTime(7, 0, 0, 0);
     TruckStopMatch match =
         tweet("TheRoostTruck: Rise and shine, folks. The Roost is serving up the best damn chicken biscuits on wheels over at Madisin and Wacker till 9:00am.")
@@ -111,6 +111,22 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     assertEquals(Confidence.LOW, match.getConfidence());
     assertEquals(tweetTime, match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(9, 0, 0, 0), match.getStop().getEndTime());
+  }
+
+  @Test
+  public void testMatch_morningTweet1230() {
+    tweetTime = tweetTime.withTime(7, 0, 0, 0);
+    truck = Truck.builder().id("foobar").name("FOO").twitterHandle("bar")
+        .categories(ImmutableSet.of("Breakfast")).build();
+
+    TruckStopMatch match =
+        tweet("We're in the West Loop at Sangamon and Monroe until 12:30!")
+            .withTime(tweetTime)
+            .match();
+    assertNotNull(match);
+    assertEquals(Confidence.MEDIUM, match.getConfidence());
+    assertEquals(tweetTime, match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(12, 30, 0, 0), match.getStop().getEndTime());
   }
 
   @Test

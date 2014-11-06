@@ -412,7 +412,14 @@ public class TruckStopMatcher {
   private @Nullable DateTime parseEndTime(String tweetText, DateTime startTime) {
     Matcher matcher = endTimePattern.matcher(tweetText.toLowerCase());
     if (matcher.find()) {
-      return parseTime(matcher.group(2), startTime.toLocalDate(), startTime);
+      DateTime dt = parseTime(matcher.group(2), startTime.toLocalDate(), startTime);
+      if (dt == null) {
+        return null;
+      }
+      if (startTime.isAfter(dt)) {
+        return dt.plusHours(12);
+      }
+      return dt;
     }
     return null;
   }
