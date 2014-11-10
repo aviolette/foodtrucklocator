@@ -159,7 +159,8 @@ public interface FoodTruckStopService {
   /**
    * Find upcoming events that blend food trucks and booze.
    * @param localDate the start date
+   * @param daysOut
    * @return the upcoming boozy events
    */
-  List<TruckStop> findUpcomingBoozyStops(LocalDate localDate);
+  List<TruckStop> findUpcomingBoozyStops(LocalDate localDate, int daysOut);
 }
