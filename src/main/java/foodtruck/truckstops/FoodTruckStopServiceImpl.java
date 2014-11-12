@@ -269,8 +269,8 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     for (Location loc : locationDAO.findBoozyLocations()) {
       locations.put(loc.getName(), loc);
     }
-    return FluentIterable.from(truckStopDAO.findOverRange(null, new Interval(startDate.toDateTimeAtStartOfDay(),
-        startDate.plusDays(daysOut).toDateTimeAtStartOfDay())))
+    return FluentIterable.from(truckStopDAO.findOverRange(null, new Interval(startDate.toDateTimeAtStartOfDay(clock.zone()),
+        startDate.plusDays(daysOut).toDateTimeAtStartOfDay(clock.zone()))))
         .filter(new Predicate<TruckStop>() {
           public boolean apply(TruckStop truckStop) {
             return locations.containsKey(truckStop.getLocation().getName());

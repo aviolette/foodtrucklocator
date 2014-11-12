@@ -73,8 +73,6 @@ public class BoozeAndTrucksServlet extends FrontPageServlet {
       } catch (IllegalArgumentException iae) {
       }
     }
-    log.info("DATE: " + date);
-    log.info("DATE2: " + date.toDateTimeAtStartOfDay());
     for (TruckStop stop : stopService.findUpcomingBoozyStops(date, daysOut)) {
       if (currentDay != null && !stop.getStartTime().toLocalDate().equals(currentDay) && !tsgs.isEmpty()) {
         schedules.add(new ScheduleForDay(currentDay, ImmutableList.copyOf(tsgs.values())));
