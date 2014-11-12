@@ -272,7 +272,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     return FluentIterable.from(truckStopDAO.findOverRange(null, new Interval(startDate.toDateTimeAtStartOfDay(),
         startDate.plusDays(daysOut).toDateTimeAtStartOfDay())))
         .filter(new Predicate<TruckStop>() {
-          @Override public boolean apply(@Nullable TruckStop truckStop) {
+          public boolean apply(TruckStop truckStop) {
             return locations.containsKey(truckStop.getLocation().getName());
           }
         })

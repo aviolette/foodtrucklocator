@@ -3,6 +3,7 @@ package foodtruck.server;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +36,7 @@ import foodtruck.util.FriendlyDateOnlyFormat;
 @Singleton
 public class BoozeAndTrucksServlet extends FrontPageServlet {
   private static final String JSP = "/WEB-INF/jsp/booze.jsp";
+  private static final Logger log = Logger.getLogger(BoozeAndTrucksServlet.class.getName());
   private final Clock clock;
   private final FoodTruckStopService stopService;
   private final DailyScheduleWriter dailyScheduleWriter;
@@ -71,6 +73,8 @@ public class BoozeAndTrucksServlet extends FrontPageServlet {
       } catch (IllegalArgumentException iae) {
       }
     }
+    log.fine("DATE: " + date);
+    log.fine("DATE2: " + date.toDateTimeAtStartOfDay());
     for (TruckStop stop : stopService.findUpcomingBoozyStops(date, daysOut)) {
       if (currentDay != null && !stop.getStartTime().toLocalDate().equals(currentDay) && !tsgs.isEmpty()) {
         schedules.add(new ScheduleForDay(currentDay, ImmutableList.copyOf(tsgs.values())));
