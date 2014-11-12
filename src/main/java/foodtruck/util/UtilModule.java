@@ -44,12 +44,12 @@ public class UtilModule extends AbstractModule {
 
   @FriendlyDateOnlyFormat @Provides
   public DateTimeFormatter providesFriendlyDateFormat(DateTimeZone zone) {
-    return DateTimeFormat.forPattern("MM/dd/YYYY");
+    return DateTimeFormat.forPattern("MM/dd/YYYY").withZone(zone);
   }
 
   @DateOnlyFormatter @Provides
   public DateTimeFormatter providesDateOnlyFormat(DateTimeZone zone) {
-    return DateTimeFormat.forPattern("YYYYMMdd");
+    return DateTimeFormat.forPattern("YYYYMMdd").withZone(zone);
   }
 
   @WeeklyRollup @Provides
