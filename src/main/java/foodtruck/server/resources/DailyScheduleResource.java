@@ -15,7 +15,6 @@ import com.google.inject.Inject;
 import org.codehaus.jettison.json.JSONException;
 import org.joda.time.DateTime;
 
-import foodtruck.dao.FifteenMinuteRollupDAO;
 import foodtruck.schedule.ScheduleCacher;
 import foodtruck.server.resources.json.DailyScheduleWriter;
 import foodtruck.truckstops.FoodTruckStopService;
@@ -33,28 +32,20 @@ public class DailyScheduleResource {
   private final ScheduleCacher scheduleCacher;
   private final DailyScheduleWriter dailyScheduleWriter;
   private static final Logger log = Logger.getLogger(DailyScheduleResource.class.getName());
-  private final FifteenMinuteRollupDAO rollupDAO;
 
   @Inject
   public DailyScheduleResource(FoodTruckStopService foodTruckService, Clock clock, AuthorizationChecker checker,
-      ScheduleCacher scheduleCacher, DailyScheduleWriter writer, FifteenMinuteRollupDAO rollupDAO) {
+      ScheduleCacher scheduleCacher, DailyScheduleWriter writer) {
     this.truckService = foodTruckService;
     this.clock = clock;
     this.checker = checker;
     this.scheduleCacher = scheduleCacher;
     this.dailyScheduleWriter = writer;
-    this.rollupDAO = rollupDAO;
   }
 
   @GET @Produces("application/json")
   public String findForDay(@QueryParam("appKey") final String appKey, @QueryParam("from") final long from) {
-    try {
-      rollupDAO.updateCount(clock.now(), "daily_schedule_request_" + Strings.nullToEmpty(appKey));
-    } catch (Exception e) {
-
-    }
     checker.requireAppKey(appKey);
-
     if (from > 0) {
       try {
         return dailyScheduleWriter.asJSON(truckService.findStopsForDayAfter(new DateTime(from, clock.zone()))).toString();
