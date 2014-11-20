@@ -10,6 +10,9 @@
     <div>
       <div class="input">
         <ul class="unstyled">
+          <li><label><input name="recachingEnabled"
+                            <c:if test="${config.recachingEnabled}">checked="checked"</c:if>
+                            type="checkbox"/> <span>Enable Schedule sync from google calendar</span></label></li>
           <li><label><input name="scheduleCachingOn"
                             <c:if test="${config.scheduleCachingOn}">checked="checked"</c:if>
                             type="checkbox"/> <span>Enable Schedule Caching in memcached for 5 minutes</span></label></li>

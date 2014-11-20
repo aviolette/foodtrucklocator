@@ -94,6 +94,7 @@ public class ConfigurationServlet extends HttpServlet {
         .foodTruckRequestOn("on".equals(req.getParameter("foodTruckRequestOn")))
         .syncUrl(req.getParameter("syncUrl"))
         .syncAppKey(req.getParameter("syncAppKey"))
+        .globalRecachingEnabled("on".equals(req.getParameter("recachingEnabled")))
         .yahooGeolocationEnabled("on".equals(req.getParameter("yahooGeolocationEnabled")))
         .googleGeolocationEnabled("on".equals(req.getParameter("googleGeolocationEnabled")))
         .tweetUpdateServletEnabled("on".equals(req.getParameter("tweetUpdateServletEnabled")))

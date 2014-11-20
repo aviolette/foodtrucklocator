@@ -20,6 +20,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.RetweetsDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.truckstops.FoodTruckStopService;
@@ -40,9 +41,10 @@ public class RecacheServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(RecacheServlet.class.getName());
   private final DateTimeZone zone;
   private final RetweetsDAO retweetsDAO;
+  private final ConfigurationDAO configurationDAO;
 
   @Inject
-  public RecacheServlet(FoodTruckStopService service, Clock clock,
+  public RecacheServlet(FoodTruckStopService service, Clock clock, ConfigurationDAO configurationDAO,
       TwitterService twitterService, TruckDAO truckDAO, DateTimeZone zone, RetweetsDAO retweetsDAO) {
     this.twitterService = twitterService;
     this.service = service;
@@ -51,6 +53,7 @@ public class RecacheServlet extends HttpServlet {
     this.timeFormatter = DateTimeFormat.forPattern("YYYYMMdd").withZone(zone);
     this.zone = zone;
     this.retweetsDAO = retweetsDAO;
+    this.configurationDAO = configurationDAO;
   }
 
   @Override
@@ -64,7 +67,9 @@ public class RecacheServlet extends HttpServlet {
     if (!Strings.isNullOrEmpty(truck)) {
       service.updateStopsForTruck(instant, truckDAO.findById(truck));
     } else {
-      service.updateStopsFor(instant);
+      if (configurationDAO.find().isRecachingEnabled()) {
+        service.updateStopsFor(instant);
+      }
     }
     twitterService.twittalyze();
     retweetsDAO.deleteAll();

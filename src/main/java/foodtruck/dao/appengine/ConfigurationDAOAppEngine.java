@@ -10,9 +10,8 @@ import foodtruck.dao.ConfigurationDAO;
 import foodtruck.model.Configuration;
 import foodtruck.model.Location;
 import foodtruck.schedule.Confidence;
-import static foodtruck.dao.appengine.Attributes.getBooleanProperty;
-import static foodtruck.dao.appengine.Attributes.getListProperty;
-import static foodtruck.dao.appengine.Attributes.getStringProperty;
+
+import static foodtruck.dao.appengine.Attributes.*;
 
 /**
  * @author aviolette@gmail.com
@@ -49,6 +48,7 @@ public class ConfigurationDAOAppEngine extends
   private static final String MINIMUM_CONFIDENCE_FOR_DISPLAY = "minimum_display_confidence";
   private static final String SYNC_URL = "sync_url";
   private static final String SYNC_APPKEY = "sync_appkey";
+  private static final String PROP_RECACHE_ENABLED = "recache_enabled";
 
   @Inject
   public ConfigurationDAOAppEngine(DatastoreServiceProvider provider, DateTimeZone defaultZone) {
@@ -82,6 +82,7 @@ public class ConfigurationDAOAppEngine extends
     entity.setProperty(MINIMUM_CONFIDENCE_FOR_DISPLAY, config.getMinimumConfidenceForDisplay().toString());
     entity.setProperty(SYNC_URL, config.getSyncUrl());
     entity.setProperty(SYNC_APPKEY, config.getSyncAppKey());
+    entity.setProperty(PROP_RECACHE_ENABLED, config.isRecachingEnabled());
     return entity;
   }
 
@@ -95,6 +96,7 @@ public class ConfigurationDAOAppEngine extends
     String minimumDisplayConfidence = getStringProperty(entity, MINIMUM_CONFIDENCE_FOR_DISPLAY);
     Confidence confidence = Strings.isNullOrEmpty(minimumDisplayConfidence) ? Confidence.HIGH : Confidence.valueOf(minimumDisplayConfidence);
     return Configuration.builder()
+        .globalRecachingEnabled(getBooleanProperty(entity, PROP_RECACHE_ENABLED, true))
         .syncUrl(getStringProperty(entity, SYNC_URL))
         .syncAppKey(getStringProperty(entity, SYNC_APPKEY))
         .minimumConfidenceForDisplay(confidence)

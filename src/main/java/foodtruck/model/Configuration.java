@@ -40,6 +40,7 @@ public class Configuration extends ModelEntity {
   private Confidence minimumConfidenceForDisplay;
   private String syncUrl;
   private String syncAppKey;
+  private boolean globalRecachingEnabled;
 
   public Configuration(Object key) {
     super(key);
@@ -70,6 +71,11 @@ public class Configuration extends ModelEntity {
     this.minimumConfidenceForDisplay = builder.minimumConfidenceForDisplay;
     this.syncUrl = builder.syncUrl;
     this.syncAppKey = builder.syncAppKey;
+    this.globalRecachingEnabled = builder.globalRecachingEnabled;
+  }
+
+  public boolean isRecachingEnabled() {
+    return globalRecachingEnabled;
   }
 
   public Confidence getMinimumConfidenceForDisplay() {
@@ -202,13 +208,14 @@ public class Configuration extends ModelEntity {
     private @Nullable String frontDoorAppKey;
     private boolean scheduleCachingOn;
     private boolean retweetStopCreatingTweets;
-    public boolean sendNotificationTweetWhenNoTrucks;
-    public boolean foodTruckRequestOn = true;
-    public boolean showPublicTruckGraphs = true;
-    public boolean autoOffRoad;
-    public Confidence minimumConfidenceForDisplay = Confidence.HIGH;
-    public String syncAppKey;
-    public String syncUrl;
+    private boolean sendNotificationTweetWhenNoTrucks;
+    private boolean foodTruckRequestOn = true;
+    private boolean showPublicTruckGraphs = true;
+    private boolean autoOffRoad;
+    private Confidence minimumConfidenceForDisplay = Confidence.HIGH;
+    private String syncAppKey;
+    private String syncUrl;
+    private boolean globalRecachingEnabled;
 
     public Builder() {
     }
@@ -235,6 +242,12 @@ public class Configuration extends ModelEntity {
       this.foodTruckRequestOn = config.foodTruckRequestOn;
       this.showPublicTruckGraphs = config.showPublicTruckGraphs;
       this.autoOffRoad = config.autoOffRoad;
+      this.globalRecachingEnabled = config.globalRecachingEnabled;
+    }
+
+    public Builder globalRecachingEnabled(boolean enabled) {
+      globalRecachingEnabled = enabled;
+      return this;
     }
 
     public Builder syncAppKey(String syncAppKey) {
