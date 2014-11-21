@@ -113,7 +113,6 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
           String where = event.getLocation();
           if (where == null) {
             log.log(Level.WARNING, "Could not find a location for {0}", new Object[] { event.getHtmlLink() });
-            continue;
           }
           Location location = null;
           if (!Strings.isNullOrEmpty(where)) {
