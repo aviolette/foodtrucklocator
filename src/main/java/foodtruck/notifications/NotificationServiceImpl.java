@@ -7,9 +7,9 @@ import java.util.logging.Logger;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import com.google.gdata.util.common.base.Joiner;
 import com.google.inject.Inject;
 
 import foodtruck.dao.ConfigurationDAO;
