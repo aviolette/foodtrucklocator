@@ -77,7 +77,7 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
   private void customCalendarSearch(Interval range, Truck truck, List<TruckStop> stops) {
     try {
       final String calendarUrl = truck.getCalendarUrl();
-      if (calendarUrl == null || !calendarUrl.startsWith("http")) {
+      if (Strings.isNullOrEmpty(calendarUrl)) {
         return;
       }
       log.info("Custom calendar search: " + calendarUrl);
@@ -91,15 +91,15 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
   private List<TruckStop> performTruckSearch(Interval range, @Nullable Truck searchTruck, boolean customCalendar) {
     ImmutableList.Builder<TruckStop> builder = ImmutableList.builder();
     try {
-      final String calendarId = configDAO.find().getGoogleCalendarAddress();
+      final String calendarId = customCalendar ? searchTruck.getCalendarUrl() : configDAO.find().getGoogleCalendarAddress();
       String pageToken = null;
       do {
-        Events events = calendarClient.events().list(calendarId)
-            .setSingleEvents(true)
-            .setTimeMin(toGoogleDateTime(range.getStart()))
-            .setTimeMax(toGoogleDateTime(range.getEnd()))
-            .setPageToken(pageToken)
-            .execute();
+        Calendar.Events.List query = calendarClient.events().list(calendarId).setSingleEvents(true).setTimeMin(
+            toGoogleDateTime(range.getStart())).setTimeMax(toGoogleDateTime(range.getEnd())).setPageToken(pageToken);
+        if (searchTruck != null && !customCalendar) {
+          query.setQ(searchTruck.getId());
+        }
+        Events events = query.execute();
         List<Event> items = events.getItems();
         for (Event event : items) {
           final String titleText = event.getSummary();
