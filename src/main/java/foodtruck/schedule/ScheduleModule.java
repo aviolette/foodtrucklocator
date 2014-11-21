@@ -22,7 +22,7 @@ public class ScheduleModule extends AbstractModule {
     // TODO: use assisted inject
     bind(CalendarQueryFactory.class).to(CalendarQueryFactoryImpl.class);
     bind(AddressExtractor.class).to(JavascriptAddressExtractor.class);
-    bind(ScheduleStrategy.class).to(GoogleCalendar.class);
+    bind(ScheduleStrategy.class).to(GoogleCalendarV3Consumer.class);
     bind(ScheduleCacher.class).to(MemcacheScheduleCacher.class);
   }
 

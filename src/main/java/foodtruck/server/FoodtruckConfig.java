@@ -9,6 +9,7 @@ import foodtruck.dao.appengine.AppEngineDAOModule;
 import foodtruck.email.EmailModule;
 import foodtruck.facebook.FacebookModule;
 import foodtruck.geolocation.GeolocationModule;
+import foodtruck.googleapi.GoogleApiModule;
 import foodtruck.monitoring.MonitoringModule;
 import foodtruck.notifications.NotificationModule;
 import foodtruck.schedule.ScheduleModule;
@@ -29,6 +30,7 @@ public class FoodtruckConfig extends GuiceServletContextListener {
 
   private Module[] modules() {
     return new Module[] {
+        new GoogleApiModule(),
         new AppEngineDAOModule(),
         new GeolocationModule(),
         new ServiceModule(),
