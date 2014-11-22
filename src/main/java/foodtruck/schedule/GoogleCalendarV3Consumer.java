@@ -134,15 +134,16 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
           if ((location == null || !location.isResolved()) && customCalendar) {
             // Sometimes the location is in the title - try that too
             log.info("Trying title text: " + titleText);
-            final List<String> parsed =
-                addressExtractor.parse(titleText, searchTruck);
-            String locString = Iterables.getFirst(parsed, null);
-            if (locString == null) {
-              log.info("Failed to parse titletext for address, trying whole thing: " + titleText);
-              locString = titleText;
-            }
-            if (locString != null) {
-              location = geoLocator.locate(locString, GeolocationGranularity.NARROW);
+            if (!Strings.isNullOrEmpty(titleText)) {
+              final List<String> parsed = addressExtractor.parse(titleText, searchTruck);
+              String locString = Iterables.getFirst(parsed, null);
+              if (locString == null) {
+                log.info("Failed to parse titletext for address, trying whole thing: " + titleText);
+                locString = titleText;
+              }
+              if (locString != null) {
+                location = geoLocator.locate(locString, GeolocationGranularity.NARROW);
+              }
             }
           }
           if (location != null && location.isResolved()) {

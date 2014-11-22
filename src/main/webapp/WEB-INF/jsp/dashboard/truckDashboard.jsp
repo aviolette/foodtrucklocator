@@ -113,7 +113,6 @@
   </div>
 </div>
 
-
 <h2>Weekly Overview</h2>
 <table class="table table-striped">
   <thead>

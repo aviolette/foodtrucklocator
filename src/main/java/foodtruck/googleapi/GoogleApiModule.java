@@ -78,6 +78,4 @@ public class GoogleApiModule extends PrivateModule {
     return new com.google.api.services.calendar.Calendar.Builder(
         httpTransport, jsonFactory, credential).setApplicationName(applicationName).build();
   }
-
-
 }
