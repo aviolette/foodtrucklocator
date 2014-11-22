@@ -1,6 +1,5 @@
 #!/bin/sh
 
-
 mvn install:install-file -Dfile=vendor/google/guice-2.0.jar \
     -DgroupId=com.google.code.guice \
     -DartifactId=guice \
@@ -23,12 +22,6 @@ mvn install:install-file -Dfile=vendor/google/gdata-core-1.0.jar \
     -DgroupId=com.google.gdata \
     -DartifactId=gdata-core \
     -Dversion=1.0 \
-    -Dpackaging=jar 
-
-mvn install:install-file -Dfile=vendor/google/gdata-calendar-2.0.jar \
-    -DgroupId=com.google.gdata \
-    -DartifactId=gdata-calendar \
-    -Dversion=2.0 \
     -Dpackaging=jar 
 
 mvn install:install-file -Dfile=$APPENGINE_HOME/lib/shared/appengine-local-runtime-shared.jar \
