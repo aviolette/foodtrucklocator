@@ -103,17 +103,12 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
         List<Event> items = events.getItems();
         for (Event event : items) {
           final String titleText = event.getSummary();
-          if (Strings.isNullOrEmpty(titleText) && searchTruck == null) {
-            log.log(Level.WARNING, "Could not find title text for {0}", new Object[] { event.getHtmlLink() });
-          }
           Truck truck = (searchTruck != null || Strings.isNullOrEmpty(titleText)) ? searchTruck : truckDAO.findById(titleText);
           if (truck == null) {
+            log.log(Level.WARNING, "Could not find title text for {0}", new Object[] { event.getHtmlLink() });
             continue;
           }
           String where = event.getLocation();
-          if (where == null) {
-            log.log(Level.WARNING, "Could not find a location for {0}", new Object[] { event.getHtmlLink() });
-          }
           Location location = null;
           if (!Strings.isNullOrEmpty(where)) {
             if (where.endsWith(", United States")) {
@@ -133,8 +128,9 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
           }
           if ((location == null || !location.isResolved()) && customCalendar) {
             // Sometimes the location is in the title - try that too
-            log.info("Trying title text: " + titleText);
             if (!Strings.isNullOrEmpty(titleText)) {
+              where = titleText;
+              log.info("Trying title text: " + titleText);
               final List<String> parsed = addressExtractor.parse(titleText, searchTruck);
               String locString = Iterables.getFirst(parsed, null);
               if (locString == null) {
@@ -162,8 +158,8 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
             log.log(Level.INFO, "Loaded truckstop: {0}", truckStop);
             builder.add(truckStop);
           } else {
-            log.log(Level.WARNING, "Location could not be resolved for {0}, {1} between {2} and {3}",
-                new Object[] {truck.getId(), where, range.getStart(), range.getEnd()});
+            log.log(Level.WARNING, "Location could not be resolved for {0}, {1} between {2} and {3}. Link: {4}",
+                new Object[] {truck.getId(), where, range.getStart(), range.getEnd(), event.getHtmlLink()});
           }
         }
         pageToken = events.getNextPageToken();
