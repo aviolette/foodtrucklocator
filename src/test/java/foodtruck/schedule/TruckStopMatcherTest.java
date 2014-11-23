@@ -11,6 +11,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import foodtruck.dao.ConfigurationDAO;
@@ -201,6 +202,46 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     assertThat(match.getStop().getNotes(), hasItems("Presence of end time in tweet increased confidence."));
     assertEquals(tweetTime, match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(17, 30, 0, 0), match.getStop().getEndTime());
+  }
+
+  @Test @Ignore("This should work, but ignoring for now")
+  public void testMatch_latetNight() {
+    tweetTime = tweetTime.withHourOfDay(0).withMinuteOfHour(37);
+    TruckStopMatch match =
+        tweet("late Late Dinner 680 N Franklin 12-2 @chifoodtruckz @YBar @Spybar @CuveeChicago #LateNight ")
+            .withTime(tweetTime)
+            .match();
+    assertNotNull(match);
+    assertEquals(Confidence.MEDIUM, match.getConfidence());
+    assertEquals(tweetTime, match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(2, 0, 0, 0), match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(2, 0, 0, 0), match.getStop().getEndTime());
+  }
+
+  @Test
+  public void testMatch_latetNight2() {
+    tweetTime = tweetTime.withHourOfDay(0).withMinuteOfHour(37);
+    TruckStopMatch match =
+        tweet("late Late Dinner 680 N Franklin 12:00am-2:00am @chifoodtruckz @YBar @Spybar @CuveeChicago #LateNight ")
+            .withTime(tweetTime)
+            .match();
+    assertNotNull(match);
+    assertEquals(Confidence.MEDIUM, match.getConfidence());
+    assertEquals(tweetTime.withTime(0, 0, 0, 0), match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(2, 0, 0, 0), match.getStop().getEndTime());
+  }
+
+  @Test
+  public void testMatch_latetNight3() {
+    tweetTime = tweetTime.withHourOfDay(0).withMinuteOfHour(37);
+    TruckStopMatch match =
+        tweet("late Late Dinner 680 N Franklin until 2:00am @chifoodtruckz @YBar @Spybar @CuveeChicago #LateNight ")
+            .withTime(tweetTime)
+            .match();
+    assertNotNull(match);
+    assertEquals(Confidence.MEDIUM, match.getConfidence());
+    assertEquals(tweetTime, match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(2, 0, 0, 0), match.getStop().getEndTime());
   }
 
   @Test
