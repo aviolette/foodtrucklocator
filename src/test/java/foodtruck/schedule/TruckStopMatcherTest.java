@@ -487,6 +487,36 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
   @Test
+  public void testMatch_shouldInterpretStartTimeAsMorning() {
+    tweetTime = new DateTime(2011, 11, 12, 6, 45, 0, 0, DateTimeZone.UTC);
+    truck = Truck.builder().id("foobar").name("FOO").twitterHandle("bar")
+        .categories(ImmutableSet.of("Breakfast", "Lunch")).build();
+    TruckStopMatch match =
+        tweet("Serving brunch at Southport & Addison until 1 PM!")
+            .withTruck(truck)
+            .match();
+    assertNotNull(match);
+    assertEquals(Confidence.MEDIUM, match.getConfidence());
+    assertEquals("Start time should be same as tweet time", tweetTime, match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(13,0,0, 0), match.getStop().getEndTime());
+  }
+
+  @Test
+  public void testMatch_shouldInterpretStartTimeAsMorning2() {
+    tweetTime = new DateTime(2011, 11, 12, 6, 45, 0, 0, DateTimeZone.UTC);
+    truck = Truck.builder().id("foobar").name("FOO").twitterHandle("bar")
+        .categories(ImmutableSet.of("Breakfast", "Lunch")).build();
+    TruckStopMatch match =
+        tweet("Check out the truck for b'fast at Clark & Monroe and you might receive total consciousness.So you'll have that goin for ya, which is nice.")
+            .withTruck(truck)
+            .match();
+    assertNotNull(match);
+    assertEquals(Confidence.LOW, match.getConfidence());
+    assertEquals("Start time should be same as tweet time", tweetTime, match.getStop().getStartTime());
+    assertEquals(tweetTime.plusHours(2), match.getStop().getEndTime());
+  }
+
+  @Test
   public void testMatch_shouldNotDetectFutureLocationIfBreakfastAndLunchTruckWithBreakfast() {
     tweetTime = new DateTime(2011, 11, 12, 7, 0, 0, 0, DateTimeZone.UTC);
     truck = Truck.builder().id("foobar").name("FOO").twitterHandle("bar")
