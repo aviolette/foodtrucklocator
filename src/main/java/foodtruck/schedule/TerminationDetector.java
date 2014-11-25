@@ -27,6 +27,11 @@ public class TerminationDetector {
     if (tweetText.contains("thanksgiving")) {
       return null;
     }
+
+    if (tweetText.contains("thanks") && tweetText.contains("cash")) {
+      return null;
+    }
+    
     if (tweetText.contains("sold out") || tweetText.contains("good-bye") ||
         tweetText.contains("good night") || tweetText.contains("good bye")
         || tweetText.contains("leaving")

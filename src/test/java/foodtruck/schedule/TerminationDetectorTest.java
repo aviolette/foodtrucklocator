@@ -36,6 +36,16 @@ public class TerminationDetectorTest {
   }
 
   @Test
+  public void testFalseIfCashOrCredit() {
+    assertEquals(null, detector.detect(tweetBuilder.text("Landed at 600 W Chicago - in the lot - cash or card please #ThanksForTheTwerk").build()));
+  }
+
+  @Test
+  public void testFalseIfCashOrCredit2() {
+    assertEquals(null, detector.detect(tweetBuilder.text("I'm at 125 S. Clark selling baked empanadas from a light blue truck. Cash or card is accepted. Thanks for your time & consideration. Chow.").build()));
+  }
+
+  @Test
   public void testFalseIfReply() {
     assertEquals(null, detector.detect(tweetBuilder.text("@GettaPolpetta thanks for the heads up!").build()));
   }
