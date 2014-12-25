@@ -38,10 +38,4 @@ public class TruckListServlet extends HttpServlet {
     req.setAttribute("trucks", stopService.findCurrentAndPreviousStop(clock.currentDay()));
     req.getRequestDispatcher("/WEB-INF/jsp/dashboard/truckList.jsp").forward(req, resp);
   }
-
-  @Override
-  protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
-    super.doPost(req, resp);
-  }
 }
