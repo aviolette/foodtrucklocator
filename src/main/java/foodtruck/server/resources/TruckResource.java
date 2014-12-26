@@ -1,6 +1,8 @@
 package foodtruck.server.resources;
 
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.Consumes;
@@ -16,6 +18,7 @@ import javax.ws.rs.core.MediaType;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 import com.sun.jersey.api.JResponse;
 
@@ -25,8 +28,14 @@ import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
+import foodtruck.twitter.TwitterFactoryWrapper;
 import foodtruck.util.Clock;
 import foodtruck.util.DateOnlyFormatter;
+import twitter4j.ResponseList;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.User;
+
 import static foodtruck.server.resources.Resources.requiresAdmin;
 
 /**
@@ -35,6 +44,7 @@ import static foodtruck.server.resources.Resources.requiresAdmin;
  */
 @Path("/trucks{view : (\\.[a-z]{3})?}")
 public class TruckResource {
+  private static final Logger log = Logger.getLogger(TruckResource.class.getName());
   public static final Predicate<Truck> NOT_HIDDEN = new Predicate<Truck>() {
     @Override public boolean apply(@Nullable Truck truck) {
       return !truck.isHidden();
@@ -44,13 +54,16 @@ public class TruckResource {
   private final Clock clock;
   private final DateTimeZone zone;
   private final DateTimeFormatter formatter;
+  private final TwitterFactoryWrapper twitterFactory;
 
   @Inject
-  public TruckResource(TruckDAO truckDAO, Clock clock, DateTimeZone zone, @DateOnlyFormatter DateTimeFormatter formatter) {
+  public TruckResource(TruckDAO truckDAO, Clock clock, DateTimeZone zone, @DateOnlyFormatter DateTimeFormatter formatter,
+      TwitterFactoryWrapper twitterFactory) {
     this.truckDAO = truckDAO;
     this.clock = clock;
     this.zone = zone;
     this.formatter = formatter;
+    this.twitterFactory = twitterFactory;
   }
 
   @GET
@@ -107,6 +120,20 @@ public class TruckResource {
     Resources.requiresAdmin();
     if (truckDAO.findById(truck.getId()) != null) {
       throw new BadRequestException("POST can only be used , for creating objects");
+    }
+
+    Twitter twitter = twitterFactory.create();
+    try {
+      ResponseList<User> lookup = twitter.users().lookupUsers(new String[]{truck.getTwitterHandle()});
+      User user = Iterables.getFirst(lookup, null);
+      if (user != null) {
+        truck = Truck.builder(truck)
+            .name(user.getName())
+            .iconUrl(user.getProfileImageURL())
+            .build();
+      }
+    } catch (TwitterException e) {
+      log.log(Level.WARNING, "Error contacting twitter", e.getMessage());
     }
 
     truckDAO.save(truck);
