@@ -1,5 +1,7 @@
 package foodtruck.server.resources;
 
+import java.util.logging.Logger;
+
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
@@ -15,6 +17,7 @@ import foodtruck.model.Application;
  * @since 3/6/13
  */
 public class AuthorizationChecker {
+  private static final Logger log = Logger.getLogger(AuthorizationChecker.class.getName());
   private final ApplicationDAO applicationDAO;
 
   @Inject
@@ -26,6 +29,7 @@ public class AuthorizationChecker {
     if (!Strings.isNullOrEmpty(appKey)) {
       Application app = applicationDAO.findById(appKey);
       if (app != null && app.isEnabled()) {
+        log.info("Requesting application: " + app.getName());
         return;
       }
     }
