@@ -141,7 +141,7 @@ public class TruckResource {
         try {
           String extension = url.substring(url.lastIndexOf(".")),
               fileName = truck.getTwitterHandle() + extension;
-          GcsFilename gcsFilename = new GcsFilename("/gcs/truck_icons", fileName);
+          GcsFilename gcsFilename = new GcsFilename("truckicons", fileName);
           GcsOutputChannel channel = cloudStorage.createOrReplace(gcsFilename,
               GcsFileOptions.getDefaultInstance());
           URL iconUrl = new URL(url);

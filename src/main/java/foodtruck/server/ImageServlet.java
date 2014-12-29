@@ -49,6 +49,6 @@ public class ImageServlet extends HttpServlet {
 
   private GcsFilename getFileName(HttpServletRequest req) {
     String[] splits = req.getRequestURI().split("/");
-    return new GcsFilename("/gcs/truck_icons", splits[3]);
+    return new GcsFilename("truckicons", splits[3]);
   }
 }
