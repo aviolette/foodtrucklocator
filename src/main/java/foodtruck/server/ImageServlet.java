@@ -2,6 +2,7 @@ package foodtruck.server;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.channels.Channels;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,7 +38,17 @@ public class ImageServlet extends HttpServlet {
     GcsFilename fileName = getFileName(req);
     try {
       GcsInputChannel readChannel = cloudStorage.openPrefetchingReadChannel(fileName, 0, 2097152);
-      ByteStreams.copy(Channels.newInputStream(readChannel), resp.getOutputStream());
+      InputStream in = Channels.newInputStream(readChannel);
+      try {
+        ByteStreams.copy(Channels.newInputStream(readChannel), resp.getOutputStream());
+      } finally {
+        in.close();
+      }
+      if (fileName.getObjectName().matches("png")) {
+        resp.setHeader("Content-Type", "image/png");
+      } else {
+        resp.setHeader("Content-Type", "image/jpeg");
+      }
     } catch (FileNotFoundException fnfe) {
       log.log(Level.FINE, fnfe.getMessage());
       resp.sendError(404, "Not found: " + req.getRequestURI());

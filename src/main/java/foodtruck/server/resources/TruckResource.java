@@ -1,6 +1,8 @@
 package foodtruck.server.resources;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.util.Collection;
@@ -145,7 +147,14 @@ public class TruckResource {
           GcsOutputChannel channel = cloudStorage.createOrReplace(gcsFilename,
               GcsFileOptions.getDefaultInstance());
           URL iconUrl = new URL(url);
-          ByteStreams.copy(iconUrl.openStream(), Channels.newOutputStream(channel));
+          InputStream in = iconUrl.openStream();
+          OutputStream out = Channels.newOutputStream(channel);
+          try {
+            ByteStreams.copy(in, out);
+          } finally {
+            in.close();
+            out.close();
+          }
         } catch (IOException io) {
           log.log(Level.WARNING, io.getMessage(), io);
         }
