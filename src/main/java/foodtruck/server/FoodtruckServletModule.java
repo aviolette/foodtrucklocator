@@ -111,6 +111,7 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/about").with(AboutServlet.class);
     serve("/locations*").with(LocationServlet.class);
     serve("/events*").with(EventsServlet.class);
+    serve("/images/*").with(ImageServlet.class);
     serve("/petitions/600w").with(PetitionServlet.class);
     serve("/petitions/600w/not_finished").with(PetitionEmailInterstitialServlet.class);
     serve("/petitions/600w/verify/*").with(PetitionVerificationServlet.class);

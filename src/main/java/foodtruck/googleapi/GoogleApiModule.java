@@ -16,6 +16,9 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.repackaged.com.google.common.base.Throwables;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
 import com.google.appengine.api.utils.SystemProperty;
+import com.google.appengine.tools.cloudstorage.GcsService;
+import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
+import com.google.appengine.tools.cloudstorage.RetryParams;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Exposed;
 import com.google.inject.PrivateModule;
@@ -68,6 +71,16 @@ public class GoogleApiModule extends PrivateModule {
     }
     log.info("Using production credentials for Google APIs");
     return new AppIdentityCredential(ImmutableList.of("https://www.googleapis.com/auth/calendar.readonly"));
+  }
+
+  @Exposed @Singleton @Provides
+  public GcsService providesGoogleCloudStorage() {
+    return GcsServiceFactory.createGcsService(
+        new RetryParams.Builder()
+            .initialRetryDelayMillis(10)
+            .retryMaxAttempts(10)
+            .totalRetryPeriodMillis(15000)
+            .build());
   }
 
   @Exposed @Singleton @Provides

@@ -1,5 +1,8 @@
 package foodtruck.server.resources;
 
+import java.io.IOException;
+import java.net.URL;
+import java.nio.channels.Channels;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,6 +18,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.google.api.client.util.ByteStreams;
+import com.google.appengine.tools.cloudstorage.GcsFileOptions;
+import com.google.appengine.tools.cloudstorage.GcsFilename;
+import com.google.appengine.tools.cloudstorage.GcsOutputChannel;
+import com.google.appengine.tools.cloudstorage.GcsService;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
@@ -55,15 +63,17 @@ public class TruckResource {
   private final DateTimeZone zone;
   private final DateTimeFormatter formatter;
   private final TwitterFactoryWrapper twitterFactory;
+  private final GcsService cloudStorage;
 
   @Inject
   public TruckResource(TruckDAO truckDAO, Clock clock, DateTimeZone zone, @DateOnlyFormatter DateTimeFormatter formatter,
-      TwitterFactoryWrapper twitterFactory) {
+      TwitterFactoryWrapper twitterFactory, GcsService cloudStorage) {
     this.truckDAO = truckDAO;
     this.clock = clock;
     this.zone = zone;
     this.formatter = formatter;
     this.twitterFactory = twitterFactory;
+    this.cloudStorage = cloudStorage;
   }
 
   @GET
@@ -127,15 +137,26 @@ public class TruckResource {
       ResponseList<User> lookup = twitter.users().lookupUsers(new String[]{truck.getTwitterHandle()});
       User user = Iterables.getFirst(lookup, null);
       if (user != null) {
+        String url = user.getProfileImageURL();
+        try {
+          String extension = url.substring(url.lastIndexOf(".")),
+              fileName = truck.getTwitterHandle() + extension;
+          GcsFilename gcsFilename = new GcsFilename("/gcs/truck_icons", fileName);
+          GcsOutputChannel channel = cloudStorage.createOrReplace(gcsFilename,
+              GcsFileOptions.getDefaultInstance());
+          URL iconUrl = new URL(url);
+          ByteStreams.copy(iconUrl.openStream(), Channels.newOutputStream(channel));
+        } catch (IOException io) {
+          log.log(Level.WARNING, io.getMessage(), io);
+        }
         truck = Truck.builder(truck)
             .name(user.getName())
-            .iconUrl(user.getProfileImageURL())
+            .iconUrl(url)
             .build();
       }
     } catch (TwitterException e) {
       log.log(Level.WARNING, "Error contacting twitter", e.getMessage());
     }
-
     truckDAO.save(truck);
     return JResponse.ok(truck).build();
   }
