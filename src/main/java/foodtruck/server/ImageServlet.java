@@ -12,12 +12,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.tools.cloudstorage.GcsFileMetadata;
 import com.google.appengine.tools.cloudstorage.GcsFilename;
 import com.google.appengine.tools.cloudstorage.GcsInputChannel;
 import com.google.appengine.tools.cloudstorage.GcsService;
 import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+
+import foodtruck.util.HttpHeaderFormat;
 
 /**
  * @author aviolette
@@ -27,10 +33,12 @@ import com.google.inject.Singleton;
 public class ImageServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(ImageServlet.class.getName());
   private final GcsService cloudStorage;
+  private final DateTimeFormatter dateFormatter;
 
   @Inject
-  public ImageServlet(GcsService cloudStorage) {
+  public ImageServlet(GcsService cloudStorage, @HttpHeaderFormat DateTimeFormatter formatter) {
     this.cloudStorage = cloudStorage;
+    this.dateFormatter = formatter;
   }
 
   @Override
@@ -44,11 +52,11 @@ public class ImageServlet extends HttpServlet {
       } finally {
         in.close();
       }
-      if (fileName.getObjectName().matches("png")) {
-        resp.setHeader("Content-Type", "image/png");
-      } else {
-        resp.setHeader("Content-Type", "image/jpeg");
-      }
+      GcsFileMetadata metaData = cloudStorage.getMetadata(fileName);
+      resp.setHeader("ETag", metaData.getEtag());
+      resp.setHeader("Cache-Control", "no-transform,public,max-age=300,s-max-age=900");
+      resp.setHeader("Last-Modified", dateFormatter.print(new DateTime(metaData.getLastModified().getTime())));
+      resp.setContentType(metaData.getOptions().getMimeType());
     } catch (FileNotFoundException fnfe) {
       log.log(Level.FINE, fnfe.getMessage());
       resp.sendError(404, "Not found: " + req.getRequestURI());

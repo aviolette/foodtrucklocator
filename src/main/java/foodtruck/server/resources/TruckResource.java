@@ -1,12 +1,6 @@
 package foodtruck.server.resources;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.nio.channels.Channels;
 import java.util.Collection;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
@@ -20,15 +14,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.google.api.client.util.ByteStreams;
-import com.google.appengine.tools.cloudstorage.GcsFileOptions;
-import com.google.appengine.tools.cloudstorage.GcsFilename;
-import com.google.appengine.tools.cloudstorage.GcsOutputChannel;
-import com.google.appengine.tools.cloudstorage.GcsService;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 import com.sun.jersey.api.JResponse;
 
@@ -38,13 +26,9 @@ import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
-import foodtruck.twitter.TwitterFactoryWrapper;
+import foodtruck.twitter.ProfileSyncService;
 import foodtruck.util.Clock;
 import foodtruck.util.DateOnlyFormatter;
-import twitter4j.ResponseList;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.User;
 
 import static foodtruck.server.resources.Resources.requiresAdmin;
 
@@ -64,18 +48,16 @@ public class TruckResource {
   private final Clock clock;
   private final DateTimeZone zone;
   private final DateTimeFormatter formatter;
-  private final TwitterFactoryWrapper twitterFactory;
-  private final GcsService cloudStorage;
+  private final ProfileSyncService profileSyncService;
 
   @Inject
   public TruckResource(TruckDAO truckDAO, Clock clock, DateTimeZone zone, @DateOnlyFormatter DateTimeFormatter formatter,
-      TwitterFactoryWrapper twitterFactory, GcsService cloudStorage) {
+      ProfileSyncService profileSyncService) {
     this.truckDAO = truckDAO;
     this.clock = clock;
     this.zone = zone;
     this.formatter = formatter;
-    this.twitterFactory = twitterFactory;
-    this.cloudStorage = cloudStorage;
+    this.profileSyncService = profileSyncService;
   }
 
   @GET
@@ -133,40 +115,6 @@ public class TruckResource {
     if (truckDAO.findById(truck.getId()) != null) {
       throw new BadRequestException("POST can only be used , for creating objects");
     }
-
-    Twitter twitter = twitterFactory.create();
-    try {
-      ResponseList<User> lookup = twitter.users().lookupUsers(new String[]{truck.getTwitterHandle()});
-      User user = Iterables.getFirst(lookup, null);
-      if (user != null) {
-        String url = user.getProfileImageURL();
-        try {
-          String extension = url.substring(url.lastIndexOf(".")),
-              fileName = truck.getTwitterHandle() + extension;
-          GcsFilename gcsFilename = new GcsFilename("truckicons", fileName);
-          GcsOutputChannel channel = cloudStorage.createOrReplace(gcsFilename,
-              GcsFileOptions.getDefaultInstance());
-          URL iconUrl = new URL(url);
-          InputStream in = iconUrl.openStream();
-          OutputStream out = Channels.newOutputStream(channel);
-          try {
-            ByteStreams.copy(in, out);
-          } finally {
-            in.close();
-            out.close();
-          }
-        } catch (IOException io) {
-          log.log(Level.WARNING, io.getMessage(), io);
-        }
-        truck = Truck.builder(truck)
-            .name(user.getName())
-            .iconUrl(url)
-            .build();
-      }
-    } catch (TwitterException e) {
-      log.log(Level.WARNING, "Error contacting twitter", e.getMessage());
-    }
-    truckDAO.save(truck);
-    return JResponse.ok(truck).build();
+    return JResponse.ok(profileSyncService.createFromTwitter(truck)).build();
   }
 }

@@ -11,7 +11,9 @@ import foodtruck.model.Configuration;
 import foodtruck.model.Location;
 import foodtruck.schedule.Confidence;
 
-import static foodtruck.dao.appengine.Attributes.*;
+import static foodtruck.dao.appengine.Attributes.getBooleanProperty;
+import static foodtruck.dao.appengine.Attributes.getListProperty;
+import static foodtruck.dao.appengine.Attributes.getStringProperty;
 
 /**
  * @author aviolette@gmail.com
@@ -49,6 +51,7 @@ public class ConfigurationDAOAppEngine extends
   private static final String SYNC_URL = "sync_url";
   private static final String SYNC_APPKEY = "sync_appkey";
   private static final String PROP_RECACHE_ENABLED = "recache_enabled";
+  private static final String BASE_URL = "base_url";
 
   @Inject
   public ConfigurationDAOAppEngine(DatastoreServiceProvider provider, DateTimeZone defaultZone) {
@@ -83,6 +86,7 @@ public class ConfigurationDAOAppEngine extends
     entity.setProperty(SYNC_URL, config.getSyncUrl());
     entity.setProperty(SYNC_APPKEY, config.getSyncAppKey());
     entity.setProperty(PROP_RECACHE_ENABLED, config.isRecachingEnabled());
+    entity.setProperty(BASE_URL, config.getBaseUrl());
     return entity;
   }
 
@@ -100,6 +104,7 @@ public class ConfigurationDAOAppEngine extends
         .syncUrl(getStringProperty(entity, SYNC_URL))
         .syncAppKey(getStringProperty(entity, SYNC_APPKEY))
         .minimumConfidenceForDisplay(confidence)
+        .baseUrl(getStringProperty(entity, BASE_URL))
         .autoOffRoad(getBooleanProperty(entity, PROP_AUTO_OFF_ROAD))
         .showPublicTruckGraphs(getBooleanProperty(entity, PROP_SHOW_PUBLIC_TRUCK_GRAPHS, true))
         .googleGeolocationEnabled((Boolean) entity.getProperty(PROP_GOOGLE_GEOLOCATION_ENABLED))

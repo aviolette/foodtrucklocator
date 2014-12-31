@@ -8,14 +8,10 @@ import com.google.common.base.Throwables;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 
-import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
-import twitter4j.conf.Configuration;
-import twitter4j.conf.ConfigurationBuilder;
 import twitter4j.conf.PropertyConfiguration;
 
 /**
@@ -33,6 +29,7 @@ public class TwitterModule extends AbstractModule {
     } else {
       bind(TweetCacheUpdater.class).to(RemoteCacheUpdater.class);
     }
+    bind(ProfileSyncService.class).to(ProfileSyncServiceImpl.class);
   }
   @Provides @Singleton
   public TwitterFactoryWrapper provideTwitterFactory() {

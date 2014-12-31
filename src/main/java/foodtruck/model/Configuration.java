@@ -41,6 +41,7 @@ public class Configuration extends ModelEntity {
   private String syncUrl;
   private String syncAppKey;
   private boolean globalRecachingEnabled;
+  private String baseUrl;
 
   public Configuration(Object key) {
     super(key);
@@ -72,6 +73,7 @@ public class Configuration extends ModelEntity {
     this.syncUrl = builder.syncUrl;
     this.syncAppKey = builder.syncAppKey;
     this.globalRecachingEnabled = builder.globalRecachingEnabled;
+    this.baseUrl = builder.baseUrl;
   }
 
   public boolean isRecachingEnabled() {
@@ -190,6 +192,10 @@ public class Configuration extends ModelEntity {
     return syncAppKey;
   }
 
+  public String getBaseUrl() {
+    return baseUrl;
+  }
+
   public static class Builder {
     private boolean googleGeolocationEnabled = true;
     private boolean yahooGeolocationEnabled = false;
@@ -216,6 +222,7 @@ public class Configuration extends ModelEntity {
     private String syncAppKey;
     private String syncUrl;
     private boolean globalRecachingEnabled;
+    private String baseUrl;
 
     public Builder() {
     }
@@ -243,6 +250,7 @@ public class Configuration extends ModelEntity {
       this.showPublicTruckGraphs = config.showPublicTruckGraphs;
       this.autoOffRoad = config.autoOffRoad;
       this.globalRecachingEnabled = config.globalRecachingEnabled;
+      this.baseUrl = config.baseUrl;
     }
 
     public Builder globalRecachingEnabled(boolean enabled) {
@@ -366,6 +374,11 @@ public class Configuration extends ModelEntity {
 
     public Builder retweetStopCreatingTweets(boolean retweet) {
       this.retweetStopCreatingTweets = retweet;
+      return this;
+    }
+
+    public Builder baseUrl(String baseUrl) {
+      this.baseUrl = baseUrl;
       return this;
     }
 

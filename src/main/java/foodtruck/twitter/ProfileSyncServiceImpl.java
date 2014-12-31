@@ -1,0 +1,89 @@
+package foodtruck.twitter;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.google.api.client.util.ByteStreams;
+import com.google.appengine.tools.cloudstorage.GcsFileOptions;
+import com.google.appengine.tools.cloudstorage.GcsFilename;
+import com.google.appengine.tools.cloudstorage.GcsOutputChannel;
+import com.google.appengine.tools.cloudstorage.GcsService;
+import com.google.common.collect.Iterables;
+import com.google.inject.Inject;
+
+import foodtruck.dao.ConfigurationDAO;
+import foodtruck.dao.TruckDAO;
+import foodtruck.model.Truck;
+import twitter4j.ResponseList;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.User;
+
+/**
+ * @author aviolette
+ * @since 12/30/14
+ */
+public class ProfileSyncServiceImpl implements ProfileSyncService {
+  private static final Logger log = Logger.getLogger(ProfileSyncServiceImpl.class.getName());
+  private final TwitterFactoryWrapper twitterFactory;
+  private final GcsService cloudStorage;
+  private final TruckDAO truckDAO;
+  private final ConfigurationDAO configurationDAO;
+
+  @Inject
+  public ProfileSyncServiceImpl(TwitterFactoryWrapper twitterFactory, GcsService cloudStorage, TruckDAO truckDAO,
+      ConfigurationDAO configDAO) {
+    this.twitterFactory = twitterFactory;
+    this.cloudStorage = cloudStorage;
+    this.truckDAO = truckDAO;
+    this.configurationDAO = configDAO;
+  }
+
+  @Override
+  public Truck createFromTwitter(Truck truck) {
+    Twitter twitter = twitterFactory.create();
+    try {
+      ResponseList<User> lookup = twitter.users().lookupUsers(new String[]{truck.getTwitterHandle()});
+      User user = Iterables.getFirst(lookup, null);
+      if (user != null) {
+        String url = user.getProfileImageURL();
+        try {
+          // If the twitter profile exists, then get the icon URL
+          String extension = url.substring(url.lastIndexOf(".")),
+              fileName = truck.getTwitterHandle() + extension;
+          // copy icon to google cloud storage
+          GcsFilename gcsFilename = new GcsFilename("truckicons", fileName);
+          GcsOutputChannel channel = cloudStorage.createOrReplace(gcsFilename,
+              new GcsFileOptions.Builder()
+                  .mimeType(fileName.matches("png") ? "image/png" : "image/jpeg")
+                  .build());
+          URL iconUrl = new URL(url);
+          InputStream in = iconUrl.openStream();
+          OutputStream out = Channels.newOutputStream(channel);
+          try {
+            ByteStreams.copy(in, out);
+          } finally {
+            in.close();
+            out.close();
+          }
+          url = configurationDAO.find().getBaseUrl() + "/images/truckicons/" + fileName;
+        } catch (IOException io) {
+          log.log(Level.WARNING, io.getMessage(), io);
+        }
+        truck = Truck.builder(truck)
+            .name(user.getName())
+            .iconUrl(url)
+            .build();
+      }
+    } catch (TwitterException e) {
+      log.log(Level.WARNING, "Error contacting twitter", e.getMessage());
+    }
+    truckDAO.save(truck);
+    return truck;
+  }
+}

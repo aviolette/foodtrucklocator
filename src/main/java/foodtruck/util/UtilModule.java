@@ -52,6 +52,11 @@ public class UtilModule extends AbstractModule {
     return DateTimeFormat.forPattern("YYYYMMdd").withZone(zone);
   }
 
+  @HttpHeaderFormat @Provides
+  public DateTimeFormatter providesHttpHeaderFormat(DateTimeZone zone) {
+    return DateTimeFormat.forPattern("EEE, dd MMM YYYY hh:mm:ss a").withZone(zone);
+  }
+
   @WeeklyRollup @Provides
   public Slots provideWeeklyRollup() {
     return new Slots(1000 * 60 * 60 * 24 * 7);

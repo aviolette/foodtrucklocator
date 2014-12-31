@@ -7,6 +7,10 @@
       <label for="mapCenter">Map Center</label>
       <input class="span6" type="text" value="${config.center.name}" name="mapCenter" id="mapCenter"/>
     </div>
+      <div class="clearfix">
+        <label for="baseUrl">Base URL</label>
+        <input class="span6" type="text" value="${config.baseUrl}" name="baseUrl" id="baseUrl"/>
+      </div>
     <div>
       <div class="input">
         <ul class="unstyled">
