@@ -92,6 +92,10 @@ public class UpdateTruckStats extends HttpServlet {
       lastSeen = stats.getLastSeen();
       stopsThisYear = (lastUpdate.getYear() == year) ? stats.getStopsThisYear() : 0;
     }
+    String statName = "count." + truck.getId();
+    if (forceUpdate) {
+      rollupDAO.deleteStat(statName);
+    }
     Set<Long> timestamps = Sets.newHashSet();
     for (TruckStop stop : stopService.findStopsForTruckSince(lastUpdate, truck.getId())) {
       final DateTime endTime = stop.getEndTime();
@@ -106,7 +110,7 @@ public class UpdateTruckStats extends HttpServlet {
       totalStops++;
     }
     for (Long timestamp : timestamps) {
-      rollupDAO.updateCount(new DateTime(timestamp, clock.zone()), "count." + truck.getId() , 1);
+      rollupDAO.updateCount(new DateTime(timestamp, clock.zone()), statName, 1);
     }
     Truck.Stats.Builder builder = stats == null ? Truck.Stats.builder() : Truck.Stats.builder(stats);
     // fix a bug where this was getting trashed

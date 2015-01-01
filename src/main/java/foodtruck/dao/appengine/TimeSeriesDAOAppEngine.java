@@ -98,6 +98,16 @@ public abstract class TimeSeriesDAOAppEngine extends AppEngineDAO<Long, SystemSt
     }
   }
 
+  @Override
+  public void deleteStat(String statName) {
+    Query q = new Query(getKind());
+    DatastoreService dataStore = provider.get();
+    for (Entity e : dataStore.prepare(q).asIterable()) {
+      e.setProperty(statName, 0);
+      dataStore.put(e);
+    }
+  }
+
   private @Nullable Entity findBySlot(long slot, DatastoreService dataStore) {
     Query q = new Query(getKind());
     q.setFilter(new Query.FilterPredicate(PARAM_TIMESTAMP, Query.FilterOperator.EQUAL, slot));
