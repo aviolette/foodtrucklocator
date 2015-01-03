@@ -121,11 +121,11 @@ public class ConfigurationServlet extends HttpServlet {
         .center(mapCenter)
         .build();
 
+    configDAO.save(config);
     long count = truckDAO.count();
     if (count == 0 && !Strings.isNullOrEmpty(config.getPrimaryTwitterList())) {
       profileSyncService.syncFromTwitterList(config.getPrimaryTwitterList());
     }
-    configDAO.save(config);
     resp.sendRedirect("/admin/configuration");
   }
 }
