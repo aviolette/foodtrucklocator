@@ -26,6 +26,7 @@ public class ConfigurationDAOAppEngine extends
   private static final String PROP_YAHOO_GEOLOCATION_ENABLED = "yahoo_geolocation";
   private static final String PROP_GOOGLE_THROTTLE = "google_throttle_until";
   private static final String PROP_GOOGLE_TWEET_UPLOADING_ENABLED = "tweet_uploading";
+  private static final String PROP_TRUCK_ICON_BUCKET = "truck_icon_bucket";
   private final DateTimeZone defaultZone;
   private static final String PROP_CENTER_LATITUDE = "center_latitude";
   private static final String PROP_CENTER_LONGITUDE = "center_longitude";
@@ -87,6 +88,7 @@ public class ConfigurationDAOAppEngine extends
     entity.setProperty(SYNC_APPKEY, config.getSyncAppKey());
     entity.setProperty(PROP_RECACHE_ENABLED, config.isRecachingEnabled());
     entity.setProperty(BASE_URL, config.getBaseUrl());
+    entity.setProperty(PROP_TRUCK_ICON_BUCKET, config.getTruckIconsBucket());
     return entity;
   }
 
@@ -105,6 +107,7 @@ public class ConfigurationDAOAppEngine extends
         .syncAppKey(getStringProperty(entity, SYNC_APPKEY))
         .minimumConfidenceForDisplay(confidence)
         .baseUrl(getStringProperty(entity, BASE_URL))
+        .truckIconsBucket(getStringProperty(entity, PROP_TRUCK_ICON_BUCKET))
         .autoOffRoad(getBooleanProperty(entity, PROP_AUTO_OFF_ROAD))
         .showPublicTruckGraphs(getBooleanProperty(entity, PROP_SHOW_PUBLIC_TRUCK_GRAPHS, true))
         .googleGeolocationEnabled((Boolean) entity.getProperty(PROP_GOOGLE_GEOLOCATION_ENABLED))

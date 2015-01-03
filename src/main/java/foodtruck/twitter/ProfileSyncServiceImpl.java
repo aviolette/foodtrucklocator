@@ -55,7 +55,9 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
       ResponseList<User> lookup = twitter.users().lookupUsers(new String[]{truck.getTwitterHandle()});
       User user = Iterables.getFirst(lookup, null);
       if (user != null) {
-        String url = syncToGoogleStorage(user.getScreenName(),  user.getProfileImageURL(), configurationDAO.find().getBaseUrl());
+        Configuration configuration = configurationDAO.find();
+        String url = syncToGoogleStorage(user.getScreenName(), user.getProfileImageURL(),
+            configuration.getBaseUrl(), configuration.getTruckIconsBucket());
         truck = Truck.builder(truck)
             .name(user.getName())
             .iconUrl(url)
@@ -68,17 +70,17 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
     return truck;
   }
 
-  private String syncToGoogleStorage(String twitterHandle, String url, String baseUrl) {
+  private String syncToGoogleStorage(String twitterHandle, String ogIconUrl, String baseUrl, String bucket) {
     try {
       // If the twitter profile exists, then get the icon URL
-      String extension = url.substring(url.lastIndexOf(".")),
+      String extension = ogIconUrl.substring(ogIconUrl.lastIndexOf(".")),
           fileName = twitterHandle + extension;
       // copy icon to google cloud storage
       GcsFilename gcsFilename = new GcsFilename("truckicons", fileName);
       GcsOutputChannel channel = cloudStorage.createOrReplace(gcsFilename,
           new GcsFileOptions.Builder().mimeType(fileName.matches("png") ? "image/png" : "image/jpeg")
               .build());
-      URL iconUrl = new URL(url);
+      URL iconUrl = new URL(ogIconUrl);
       InputStream in = iconUrl.openStream();
       OutputStream out = Channels.newOutputStream(channel);
       try {
@@ -87,11 +89,11 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
         in.close();
         out.close();
       }
-      url = baseUrl + "/images/truckicons/" + fileName;
+      ogIconUrl = baseUrl + "/images/truckicons/" + fileName;
     } catch (IOException io) {
       log.log(Level.WARNING, io.getMessage(), io);
     }
-    return url;
+    return ogIconUrl;
   }
 
   @Override
@@ -106,7 +108,8 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
       do {
         result = twitter.list().getUserListMembers(twitterListId, cursor);
         for (User user : result) {
-          String url = syncToGoogleStorage(user.getScreenName(), user.getProfileImageURL(), baseUrl);
+          String url = syncToGoogleStorage(user.getScreenName(), user.getProfileImageURL(), baseUrl,
+              configuration.getTruckIconsBucket());
           truckDAO.save(Truck.builder()
                   .id(user.getScreenName())
                   .name(user.getName())

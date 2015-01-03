@@ -11,6 +11,10 @@
         <label for="baseUrl">Base URL</label>
         <input class="span6" type="text" value="${config.baseUrl}" name="baseUrl" id="baseUrl"/>
       </div>
+      <div class="clearfix">
+        <label for="truckIconsBucket">Truck Icon Bucket</label>
+        <input class="span6" type="text" value="${config.truckIconsBucket}" name="truckIconsBucket" id="truckIconsBucket"/>
+      </div>
     <div>
       <div class="input">
         <ul class="unstyled">

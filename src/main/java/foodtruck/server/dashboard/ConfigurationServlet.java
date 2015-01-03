@@ -102,6 +102,7 @@ public class ConfigurationServlet extends HttpServlet {
         .syncUrl(req.getParameter("syncUrl"))
         .syncAppKey(req.getParameter("syncAppKey"))
         .baseUrl(req.getParameter("baseUrl"))
+        .truckIconsBucket(req.getParameter("truckIconsBucket"))
         .globalRecachingEnabled("on".equals(req.getParameter("recachingEnabled")))
         .yahooGeolocationEnabled("on".equals(req.getParameter("yahooGeolocationEnabled")))
         .googleGeolocationEnabled("on".equals(req.getParameter("googleGeolocationEnabled")))

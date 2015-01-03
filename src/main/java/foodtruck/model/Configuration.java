@@ -42,6 +42,7 @@ public class Configuration extends ModelEntity {
   private String syncAppKey;
   private boolean globalRecachingEnabled;
   private String baseUrl;
+  private String truckIconsBucket;
 
   public Configuration(Object key) {
     super(key);
@@ -74,6 +75,11 @@ public class Configuration extends ModelEntity {
     this.syncAppKey = builder.syncAppKey;
     this.globalRecachingEnabled = builder.globalRecachingEnabled;
     this.baseUrl = builder.baseUrl;
+    this.truckIconsBucket = builder.truckIconsBucket;
+  }
+
+  public String getTruckIconsBucket() {
+    return truckIconsBucket;
   }
 
   public boolean isRecachingEnabled() {
@@ -223,6 +229,7 @@ public class Configuration extends ModelEntity {
     private String syncUrl;
     private boolean globalRecachingEnabled;
     private String baseUrl;
+    private String truckIconsBucket;
 
     public Builder() {
     }
@@ -251,6 +258,12 @@ public class Configuration extends ModelEntity {
       this.autoOffRoad = config.autoOffRoad;
       this.globalRecachingEnabled = config.globalRecachingEnabled;
       this.baseUrl = config.baseUrl;
+      this.truckIconsBucket = config.truckIconsBucket;
+    }
+
+    public Builder truckIconsBucket(String bucket) {
+      this.truckIconsBucket = bucket;
+      return this;
     }
 
     public Builder globalRecachingEnabled(boolean enabled) {
