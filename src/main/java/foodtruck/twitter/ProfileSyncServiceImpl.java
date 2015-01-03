@@ -1,6 +1,5 @@
 package foodtruck.twitter;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
@@ -112,12 +111,13 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
           String url = syncToGoogleStorage(twitterHandle, user.getProfileImageURL(), baseUrl,
               configuration.getTruckIconsBucket());
           truckDAO.save(Truck.builder()
-                  .id(user.getScreenName())
+                  .id(twitterHandle)
                   .name(user.getName())
                   .twitterHandle(twitterHandle)
                   .iconUrl(url)
                   .build());
         }
+        cursor = result.getNextCursor();
       } while (!result.isEmpty());
     } catch (TwitterException e) {
       throw Throwables.propagate(e);
