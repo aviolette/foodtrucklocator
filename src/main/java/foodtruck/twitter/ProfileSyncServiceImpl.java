@@ -90,7 +90,7 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
         out.close();
       }
       ogIconUrl = baseUrl + "/images/truckicons/" + fileName;
-    } catch (IOException io) {
+    } catch (Exception io) {
       log.log(Level.WARNING, io.getMessage(), io);
     }
     return ogIconUrl;
@@ -108,12 +108,13 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
       do {
         result = twitter.list().getUserListMembers(twitterListId, cursor);
         for (User user : result) {
-          String url = syncToGoogleStorage(user.getScreenName(), user.getProfileImageURL(), baseUrl,
+          String twitterHandle = user.getScreenName().toLowerCase();
+          String url = syncToGoogleStorage(twitterHandle, user.getProfileImageURL(), baseUrl,
               configuration.getTruckIconsBucket());
           truckDAO.save(Truck.builder()
                   .id(user.getScreenName())
                   .name(user.getName())
-                  .twitterHandle(user.getScreenName().toLowerCase())
+                  .twitterHandle(twitterHandle)
                   .iconUrl(url)
                   .build());
         }
