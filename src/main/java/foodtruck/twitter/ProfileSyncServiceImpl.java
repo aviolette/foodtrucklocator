@@ -76,7 +76,7 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
       String extension = ogIconUrl.substring(ogIconUrl.lastIndexOf(".")),
           fileName = twitterHandle + extension;
       // copy icon to google cloud storage
-      GcsFilename gcsFilename = new GcsFilename("truckicons", fileName);
+      GcsFilename gcsFilename = new GcsFilename(bucket, fileName);
       GcsOutputChannel channel = cloudStorage.createOrReplace(gcsFilename,
           new GcsFileOptions.Builder().mimeType(fileName.matches("png") ? "image/png" : "image/jpeg")
               .build());
