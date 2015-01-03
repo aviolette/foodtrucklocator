@@ -23,6 +23,7 @@ import com.google.inject.Singleton;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 
+import foodtruck.dao.ConfigurationDAO;
 import foodtruck.util.HttpHeaderFormat;
 
 /**
@@ -34,11 +35,13 @@ public class ImageServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(ImageServlet.class.getName());
   private final GcsService cloudStorage;
   private final DateTimeFormatter dateFormatter;
+  private final ConfigurationDAO configDAO;
 
   @Inject
-  public ImageServlet(GcsService cloudStorage, @HttpHeaderFormat DateTimeFormatter formatter) {
+  public ImageServlet(GcsService cloudStorage, @HttpHeaderFormat DateTimeFormatter formatter, ConfigurationDAO configDAO) {
     this.cloudStorage = cloudStorage;
     this.dateFormatter = formatter;
+    this.configDAO = configDAO;
   }
 
   @Override
@@ -68,6 +71,6 @@ public class ImageServlet extends HttpServlet {
 
   private GcsFilename getFileName(HttpServletRequest req) {
     String[] splits = req.getRequestURI().split("/");
-    return new GcsFilename("truckicons", splits[3]);
+    return new GcsFilename(configDAO.find().getTruckIconsBucket(), splits[3]);
   }
 }
