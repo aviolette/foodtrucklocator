@@ -16,12 +16,14 @@ import com.google.inject.Singleton;
 
 import foodtruck.dao.ApplicationDAO;
 import foodtruck.dao.ConfigurationDAO;
+import foodtruck.dao.TruckDAO;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Application;
 import foodtruck.model.Configuration;
 import foodtruck.model.Location;
 import foodtruck.schedule.Confidence;
+import foodtruck.twitter.ProfileSyncService;
 import foodtruck.util.RandomString;
 
 /**
@@ -34,12 +36,17 @@ public class ConfigurationServlet extends HttpServlet {
   private final ConfigurationDAO configDAO;
   private final GeoLocator geoLocator;
   private final ApplicationDAO applicationDAO;
+  private final TruckDAO truckDAO;
+  private final ProfileSyncService profileSyncService;
 
   @Inject
-  public ConfigurationServlet(ConfigurationDAO configDAO, GeoLocator geoLocator, ApplicationDAO applicationDAO) {
+  public ConfigurationServlet(ConfigurationDAO configDAO, GeoLocator geoLocator, ApplicationDAO applicationDAO,
+      TruckDAO truckDAO, ProfileSyncService syncService) {
     this.configDAO = configDAO;
     this.geoLocator = geoLocator;
     this.applicationDAO = applicationDAO;
+    this.truckDAO = truckDAO;
+    this.profileSyncService = syncService;
   }
 
   @Override
@@ -113,6 +120,11 @@ public class ConfigurationServlet extends HttpServlet {
         .systemNotificationList(notificationReceivers)
         .center(mapCenter)
         .build();
+
+    long count = truckDAO.count();
+    if (count == 0 && !Strings.isNullOrEmpty(config.getPrimaryTwitterList())) {
+      profileSyncService.syncFromTwitterList(config.getPrimaryTwitterList());
+    }
     configDAO.save(config);
     resp.sendRedirect("/admin/configuration");
   }

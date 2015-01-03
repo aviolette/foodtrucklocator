@@ -35,4 +35,6 @@ public interface DAO<K, T extends ModelEntity> {
    * @param id the ID
    */
   void delete(K id);
+
+  long count();
 }

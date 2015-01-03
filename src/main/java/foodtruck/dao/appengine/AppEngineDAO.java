@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
@@ -60,6 +61,14 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
     obj.validate();
     DatastoreService dataStore = provider.get();
     return save(obj, dataStore);
+  }
+
+  @Override
+  public long count() {
+    DatastoreService dataStore = provider.get();
+    FetchOptions options = FetchOptions.Builder.withDefaults();
+    // TODO: this won't work properly, but works for my existing use case.
+    return dataStore.prepare(new Query(getKind())).countEntities(options);
   }
 
   protected long save(T obj, DatastoreService dataStore) {

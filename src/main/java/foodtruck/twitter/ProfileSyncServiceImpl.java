@@ -13,12 +13,16 @@ import com.google.appengine.tools.cloudstorage.GcsFileOptions;
 import com.google.appengine.tools.cloudstorage.GcsFilename;
 import com.google.appengine.tools.cloudstorage.GcsOutputChannel;
 import com.google.appengine.tools.cloudstorage.GcsService;
+import com.google.common.base.Strings;
+import com.google.common.base.Throwables;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.TruckDAO;
+import foodtruck.model.Configuration;
 import foodtruck.model.Truck;
+import twitter4j.PagableResponseList;
 import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -51,30 +55,7 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
       ResponseList<User> lookup = twitter.users().lookupUsers(new String[]{truck.getTwitterHandle()});
       User user = Iterables.getFirst(lookup, null);
       if (user != null) {
-        String url = user.getProfileImageURL();
-        try {
-          // If the twitter profile exists, then get the icon URL
-          String extension = url.substring(url.lastIndexOf(".")),
-              fileName = truck.getTwitterHandle() + extension;
-          // copy icon to google cloud storage
-          GcsFilename gcsFilename = new GcsFilename("truckicons", fileName);
-          GcsOutputChannel channel = cloudStorage.createOrReplace(gcsFilename,
-              new GcsFileOptions.Builder()
-                  .mimeType(fileName.matches("png") ? "image/png" : "image/jpeg")
-                  .build());
-          URL iconUrl = new URL(url);
-          InputStream in = iconUrl.openStream();
-          OutputStream out = Channels.newOutputStream(channel);
-          try {
-            ByteStreams.copy(in, out);
-          } finally {
-            in.close();
-            out.close();
-          }
-          url = configurationDAO.find().getBaseUrl() + "/images/truckicons/" + fileName;
-        } catch (IOException io) {
-          log.log(Level.WARNING, io.getMessage(), io);
-        }
+        String url = syncToGoogleStorage(user.getScreenName(),  user.getProfileImageURL(), configurationDAO.find().getBaseUrl());
         truck = Truck.builder(truck)
             .name(user.getName())
             .iconUrl(url)
@@ -86,4 +67,55 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
     truckDAO.save(truck);
     return truck;
   }
-}
+
+  private String syncToGoogleStorage(String twitterHandle, String url, String baseUrl) {
+    try {
+      // If the twitter profile exists, then get the icon URL
+      String extension = url.substring(url.lastIndexOf(".")),
+          fileName = twitterHandle + extension;
+      // copy icon to google cloud storage
+      GcsFilename gcsFilename = new GcsFilename("truckicons", fileName);
+      GcsOutputChannel channel = cloudStorage.createOrReplace(gcsFilename,
+          new GcsFileOptions.Builder().mimeType(fileName.matches("png") ? "image/png" : "image/jpeg")
+              .build());
+      URL iconUrl = new URL(url);
+      InputStream in = iconUrl.openStream();
+      OutputStream out = Channels.newOutputStream(channel);
+      try {
+        ByteStreams.copy(in, out);
+      } finally {
+        in.close();
+        out.close();
+      }
+      url = baseUrl + "/images/truckicons/" + fileName;
+    } catch (IOException io) {
+      log.log(Level.WARNING, io.getMessage(), io);
+    }
+    return url;
+  }
+
+  @Override
+  public void syncFromTwitterList(String primaryTwitterList) {
+    Twitter twitter = twitterFactory.create();
+    Configuration configuration = configurationDAO.find();
+    String baseUrl = configurationDAO.find().getBaseUrl();
+    int twitterListId = Integer.parseInt(Strings.nullToEmpty(configuration.getPrimaryTwitterList()));
+    long cursor = -1;
+    try {
+      PagableResponseList<User> result;
+      do {
+        result = twitter.list().getUserListMembers(twitterListId, cursor);
+        for (User user : result) {
+          String url = syncToGoogleStorage(user.getScreenName(), user.getProfileImageURL(), baseUrl);
+          truckDAO.save(Truck.builder()
+                  .id(user.getScreenName())
+                  .name(user.getName())
+                  .twitterHandle(user.getScreenName().toLowerCase())
+                  .iconUrl(url)
+                  .build());
+        }
+      } while (!result.isEmpty());
+    } catch (TwitterException e) {
+      throw Throwables.propagate(e);
+    }
+  }}
