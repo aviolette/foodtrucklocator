@@ -44,15 +44,21 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="/">Chicago Food Truck Finder</a>
+      <a class="navbar-brand" href="/">${brandTitle}</a>
     </div>
     <div class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
         <li <c:if test="${tab == 'map'}"> class="active"</c:if>><a href="/">Map</a></li>
         <li <c:if test="${tab == 'trucks'}"> class="active"</c:if>><a href="/trucks">Trucks</a></li>
-        <li <c:if test="${tab == 'weekly'}"> class="active"</c:if>><a href="/weekly-schedule">Weekly Schedule</a></li>
-        <li <c:if test="${tab == 'booze'}"> class="active"</c:if>><a href="/booze">Boozy Events</a></li>
-        <li <c:if test="${tab == 'about'}"> class="active"</c:if>><a href="/about">About</a></li>
+        <c:if test="${showWeekly}">
+          <li <c:if test="${tab == 'weekly'}"> class="active"</c:if>><a href="/weekly-schedule">Weekly Schedule</a></li>
+        </c:if>
+        <c:if test="${showBoozy}">
+          <li <c:if test="${tab == 'booze'}"> class="active"</c:if>><a href="/booze">Boozy Events</a></li>
+        </c:if>
+        <c:if test="${showAbout}">
+          <li <c:if test="${tab == 'about'}"> class="active"</c:if>><a href="/about">About</a></li>
+        </c:if>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Stats <b class="caret"></b></a>
           <ul class="dropdown-menu">

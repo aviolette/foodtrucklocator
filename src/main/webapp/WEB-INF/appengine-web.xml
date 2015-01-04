@@ -12,5 +12,7 @@
   </static-files>
   <system-properties>
     <property name="use.local.frameworks" value="true"/>
+    <property name="foodtrucklocator.title" value="Orlando Food Truck Finder"/>
+    <property name="foodtrucklocator.showBoozy" value="false"/>
   </system-properties>
 </appengine-web-app>

@@ -33,7 +33,12 @@ public abstract class FrontPageServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     req.setAttribute("localFrameworks", "true".equals(System.getProperty("use.local.frameworks", "false")));
     req.setAttribute("isAdmin", userService.isUserLoggedIn() && userService.isUserAdmin());
-    req.setAttribute("title", System.getProperty("foodtrucklocator.title", "Chicago Food Truck Finder"));
+    String title = System.getProperty("foodtrucklocator.title", "Chicago Food Truck Finder");
+    req.setAttribute("title", title);
+    req.setAttribute("brandTitle", title);
+    req.setAttribute("showBoozy", !"false".equals(System.getProperty("foodtrucklocator.showBoozy")));
+    req.setAttribute("showWeekly", !"false".equals(System.getProperty("foodtrucklocator.showWeekly")));
+    req.setAttribute("showAbout", !"false".equals(System.getProperty("foodtrucklocator.showAbout")));
     req.setAttribute("signoutUrl", userService.isUserLoggedIn() ? userService.createLogoutURL("/") : null);
     req.setAttribute("user", userService.getCurrentUser());
     doGetProtected(req, resp);
