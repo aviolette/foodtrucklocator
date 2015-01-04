@@ -19,7 +19,7 @@ public class UtilModule extends AbstractModule {
 
   @Provides
   public DateTimeZone provideDefaultZone() {
-    return DateTimeZone.forID("America/Chicago");
+    return DateTimeZone.forID(System.getProperty("foodtrucklocator.timezone", "America/Chicago"));
   }
 
   @TimeFormatter @Provides
