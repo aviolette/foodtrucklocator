@@ -26,6 +26,7 @@ import foodtruck.email.EmailNotifier;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.model.FoodTruckRequest;
 import foodtruck.model.Location;
+import foodtruck.model.StaticConfig;
 import foodtruck.server.FrontPageServlet;
 import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.util.Clock;
@@ -47,8 +48,8 @@ public class RequestATruckServlet extends FrontPageServlet {
   @Inject
   public RequestATruckServlet(ConfigurationDAO configDAO, FoodTruckRequestDAO foodTruckRequestDAO,
       GeoLocator geoLocator, @FriendlyDateOnlyFormat DateTimeFormatter formatter, Clock clock,
-      EmailNotifier emailNotifier) {
-    super(configDAO);
+      EmailNotifier emailNotifier, StaticConfig staticConfig) {
+    super(configDAO, staticConfig);
     this.foodTruckRequestDAO = foodTruckRequestDAO;
     this.geoLocator = geoLocator;
     this.formatter = formatter;

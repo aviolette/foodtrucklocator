@@ -14,5 +14,6 @@
     <property name="use.local.frameworks" value="true"/>
     <property name="foodtrucklocator.title" value="Orlando Food Truck Finder"/>
     <property name="foodtrucklocator.showBoozy" value="false"/>
+    <property name="foodtrucklocator.signal.id" value="zIOrUTR"/>
   </system-properties>
 </appengine-web-app>

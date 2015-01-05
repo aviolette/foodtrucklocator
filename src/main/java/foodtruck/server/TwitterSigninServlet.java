@@ -13,6 +13,7 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import foodtruck.dao.ConfigurationDAO;
+import foodtruck.model.StaticConfig;
 import foodtruck.twitter.TwitterFactoryWrapper;
 import foodtruck.util.Session;
 import twitter4j.Twitter;
@@ -31,8 +32,8 @@ public class TwitterSigninServlet extends FrontPageServlet {
 
   @Inject
   public TwitterSigninServlet(ConfigurationDAO configDAO, TwitterFactoryWrapper twitterFactory,
-      Provider<Session> sessionProvider) {
-    super(configDAO);
+      Provider<Session> sessionProvider, StaticConfig staticConfig) {
+    super(configDAO, staticConfig);
     this.twitterFactory = twitterFactory;
     this.sessionProvider = sessionProvider;
   }

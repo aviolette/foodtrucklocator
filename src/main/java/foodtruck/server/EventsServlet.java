@@ -14,6 +14,7 @@ import org.joda.time.DateTimeZone;
 
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.EventDAO;
+import foodtruck.model.StaticConfig;
 import foodtruck.util.Clock;
 
 /**
@@ -27,8 +28,9 @@ public class EventsServlet extends FrontPageServlet {
   private final EventDAO eventDAO;
 
   @Inject
-  public EventsServlet(ConfigurationDAO configurationDAO, EventDAO dao, Clock clock, DateTimeZone zone) {
-    super(configurationDAO);
+  public EventsServlet(ConfigurationDAO configurationDAO, EventDAO dao, Clock clock, DateTimeZone zone,
+      StaticConfig staticConfig) {
+    super(configurationDAO, staticConfig);
     this.eventDAO = dao;
     this.clock = clock;
     this.zone = zone;

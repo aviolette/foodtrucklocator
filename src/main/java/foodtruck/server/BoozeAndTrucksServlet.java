@@ -22,6 +22,7 @@ import org.joda.time.format.DateTimeFormatter;
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.model.Location;
+import foodtruck.model.StaticConfig;
 import foodtruck.model.TruckStop;
 import foodtruck.server.resources.json.DailyScheduleWriter;
 import foodtruck.truckstops.FoodTruckStopService;
@@ -48,8 +49,8 @@ public class BoozeAndTrucksServlet extends FrontPageServlet {
   public BoozeAndTrucksServlet(ConfigurationDAO configDAO, FoodTruckStopService stopService, Clock clock,
                                @DateOnlyFormatter DateTimeFormatter dateFormatter,
                                @FriendlyDateOnlyFormat DateTimeFormatter friendlyFormatter,
-                               DailyScheduleWriter scheduleWriter, LocationDAO locationDAO) {
-    super(configDAO);
+                               DailyScheduleWriter scheduleWriter, LocationDAO locationDAO, StaticConfig staticConfig) {
+    super(configDAO, staticConfig);
     this.stopService = stopService;
     this.clock = clock;
     this.dailyScheduleWriter = scheduleWriter;

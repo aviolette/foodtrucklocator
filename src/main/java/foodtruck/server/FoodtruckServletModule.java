@@ -124,4 +124,9 @@ public class FoodtruckServletModule extends ServletModule {
   public boolean provideIsTweetUpdateEnabled() {
     return "true".equals(System.getProperty("remote.tweet.update"));
   }
+
+  @Provides @Named("foodtrucklocator.signal.id")
+  public String provideFoodTruckLocatorSignalId() {
+    return System.getProperty("foodtrucklocator.signal.id");
+  }
 }

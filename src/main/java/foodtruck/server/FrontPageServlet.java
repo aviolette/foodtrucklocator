@@ -12,10 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
-import org.joda.time.DateTime;
-
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.model.Location;
+import foodtruck.model.StaticConfig;
 
 /**
  * @author aviolette
@@ -23,9 +22,11 @@ import foodtruck.model.Location;
  */
 public abstract class FrontPageServlet extends HttpServlet {
   protected final ConfigurationDAO configurationDAO;
+  private final StaticConfig staticConfig;
 
-  public FrontPageServlet(ConfigurationDAO configDAO) {
+  public FrontPageServlet(ConfigurationDAO configDAO, StaticConfig staticConfig) {
     this.configurationDAO = configDAO;
+    this.staticConfig = staticConfig;
   }
 
   @Override protected final void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -41,6 +42,7 @@ public abstract class FrontPageServlet extends HttpServlet {
     req.setAttribute("showAbout", !"false".equals(System.getProperty("foodtrucklocator.showAbout")));
     req.setAttribute("signoutUrl", userService.isUserLoggedIn() ? userService.createLogoutURL("/") : null);
     req.setAttribute("user", userService.getCurrentUser());
+    req.setAttribute("signalId", staticConfig.getSignalId());
     doGetProtected(req, resp);
   }
 

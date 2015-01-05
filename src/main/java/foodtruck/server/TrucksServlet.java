@@ -21,6 +21,7 @@ import org.joda.time.format.DateTimeFormatter;
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.DailySchedule;
+import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
@@ -39,8 +40,8 @@ public class TrucksServlet extends FrontPageServlet {
 
   @Inject
   public TrucksServlet(ConfigurationDAO configurationDAO, TruckDAO trucks, FoodTruckStopService stops,
-      Clock clock, DateTimeZone zone) {
-    super(configurationDAO);
+      Clock clock, DateTimeZone zone, StaticConfig staticConfig) {
+    super(configurationDAO, staticConfig);
     this.truckDAO = trucks;
     this.stops = stops;
     this.clock = clock;

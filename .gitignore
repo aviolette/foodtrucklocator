@@ -8,5 +8,6 @@ src/main/resources/twitter4j.properties
 foodtrucklocator.*
 output
 npm-debug.log
+src/main/resources
 
 

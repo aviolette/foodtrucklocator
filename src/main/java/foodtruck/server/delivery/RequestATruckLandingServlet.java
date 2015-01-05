@@ -11,6 +11,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import foodtruck.dao.ConfigurationDAO;
+import foodtruck.model.StaticConfig;
 import foodtruck.server.FrontPageServlet;
 import foodtruck.server.GuiceHackRequestWrapper;
 
@@ -23,8 +24,8 @@ public class RequestATruckLandingServlet extends FrontPageServlet {
   private static final String LANDING_JSP = "/WEB-INF/jsp/requestATruckLanding.jsp";
 
   @Inject
-  public RequestATruckLandingServlet(ConfigurationDAO configDAO) {
-    super(configDAO);
+  public RequestATruckLandingServlet(ConfigurationDAO configDAO, StaticConfig staticConfig) {
+    super(configDAO, staticConfig);
   }
 
   @Override protected void doGetProtected(HttpServletRequest req, HttpServletResponse resp)

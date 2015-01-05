@@ -14,6 +14,7 @@ import com.google.inject.Singleton;
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.FoodTruckRequestDAO;
 import foodtruck.model.FoodTruckRequest;
+import foodtruck.model.StaticConfig;
 import foodtruck.server.FrontPageServlet;
 import foodtruck.server.GuiceHackRequestWrapper;
 
@@ -26,8 +27,9 @@ public class ViewRequestATruckServlet extends FrontPageServlet {
   private final FoodTruckRequestDAO foodTruckRequestDAO;
 
   @Inject
-  public ViewRequestATruckServlet(ConfigurationDAO configDAO, FoodTruckRequestDAO requestDAO) {
-    super(configDAO);
+  public ViewRequestATruckServlet(ConfigurationDAO configDAO, FoodTruckRequestDAO requestDAO,
+      StaticConfig staticConfig) {
+    super(configDAO, staticConfig);
     this.foodTruckRequestDAO = requestDAO;
   }
 

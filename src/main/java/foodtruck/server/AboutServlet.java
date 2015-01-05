@@ -10,6 +10,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import foodtruck.dao.ConfigurationDAO;
+import foodtruck.model.StaticConfig;
 
 /**
  * @author aviolette
@@ -19,8 +20,8 @@ import foodtruck.dao.ConfigurationDAO;
 public class AboutServlet extends FrontPageServlet {
 
   @Inject
-  public AboutServlet(ConfigurationDAO configDAO) {
-    super(configDAO);
+  public AboutServlet(ConfigurationDAO configDAO, StaticConfig staticConfig) {
+    super(configDAO, staticConfig);
   }
 
   @Override protected void doGetProtected(HttpServletRequest req, HttpServletResponse resp)

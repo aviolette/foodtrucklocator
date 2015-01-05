@@ -13,6 +13,7 @@ import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.PetitionSignatureDAO;
 import foodtruck.email.EmailNotifier;
 import foodtruck.model.PetitionSignature;
+import foodtruck.model.StaticConfig;
 import foodtruck.server.FrontPageServlet;
 import foodtruck.util.Clock;
 
@@ -28,8 +29,8 @@ public class PetitionVerificationServlet extends FrontPageServlet {
 
   @Inject
   public PetitionVerificationServlet(ConfigurationDAO configDAO, PetitionSignatureDAO petitionSignatureDAO,
-      Clock clock, EmailNotifier notifier) {
-    super(configDAO);
+      Clock clock, EmailNotifier notifier, StaticConfig staticConfig) {
+    super(configDAO, staticConfig);
     this.petitionSignatureDAO = petitionSignatureDAO;
     this.clock = clock;
     this.notifier = notifier;

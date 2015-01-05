@@ -21,6 +21,7 @@ import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.model.Configuration;
 import foodtruck.model.DailySchedule;
+import foodtruck.model.StaticConfig;
 import foodtruck.schedule.ScheduleCacher;
 import foodtruck.server.resources.json.DailyScheduleWriter;
 import foodtruck.server.resources.json.LocationCollectionWriter;
@@ -49,8 +50,8 @@ public class FoodTruckServlet extends FrontPageServlet {
   public FoodTruckServlet(ConfigurationDAO configDAO,
       Clock clock, FoodTruckStopService service, DailyScheduleWriter writer, ScheduleCacher scheduleCacher,
       @TimeFormatter DateTimeFormatter timeFormatter, LocationDAO locationDAO,
-      LocationCollectionWriter locationCollectionWriter) {
-    super(configDAO);
+      LocationCollectionWriter locationCollectionWriter, StaticConfig staticConfig) {
+    super(configDAO, staticConfig);
     this.clock = clock;
     this.timeFormatter = timeFormatter;
     this.dateFormatter = DateTimeFormat.forPattern("EEE MMM dd, YYYY");
@@ -66,8 +67,7 @@ public class FoodTruckServlet extends FrontPageServlet {
       throws ServletException, IOException {
     final String path = req.getRequestURI();
     final String serverName = req.getServerName();
-    if (serverName.contains("chifoodtruckz.com") ||
-        serverName.equals("chicagofoodtrucklocator.appspot.com")) {
+    if (serverName.equals("chicagofoodtrucklocator.appspot.com")) {
       resp.setStatus(301);
       resp.setHeader("Location", "http://www.chicagofoodtruckfinder.com" + path);
       return;
@@ -89,11 +89,6 @@ public class FoodTruckServlet extends FrontPageServlet {
     }
     final Configuration configuration = configurationDAO.find();
     req.setAttribute("center", getCenter(req.getCookies()));
-    String googleAnalytics = System.getProperty("foodtruck.google.analytics", null);
-    if (googleAnalytics != null) {
-      req.setAttribute("google_analytics_ua", googleAnalytics);
-    }
-
     String payload = timeSpecified ? null : scheduleCacher.findSchedule();
     if (payload == null || !configuration.isScheduleCachingOn()) {
       DailySchedule schedule = stopService.findStopsForDayAfter(dateTime);

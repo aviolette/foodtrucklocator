@@ -18,6 +18,7 @@ import foodtruck.dao.LocationDAO;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
+import foodtruck.model.StaticConfig;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 import foodtruck.util.DateOnlyFormatter;
@@ -42,8 +43,8 @@ public class LocationServlet extends FrontPageServlet {
       @DateOnlyFormatter DateTimeFormatter dateFormatter,
       FoodTruckStopService truckStopService,
       GeoLocator geoLocator,
-      @FriendlyDateOnlyFormat DateTimeFormatter friendlyFormatter) {
-    super(configDAO);
+      @FriendlyDateOnlyFormat DateTimeFormatter friendlyFormatter, StaticConfig staticConfig) {
+    super(configDAO, staticConfig);
     this.locationDAO = locationDAO;
     this.clock = clock;
     this.dateFormatter = dateFormatter;

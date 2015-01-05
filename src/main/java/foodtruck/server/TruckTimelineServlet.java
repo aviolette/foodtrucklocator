@@ -12,6 +12,7 @@ import com.google.inject.Singleton;
 
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.TruckDAO;
+import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
 import foodtruck.server.resources.json.TruckCollectionWriter;
 
@@ -27,8 +28,9 @@ public class TruckTimelineServlet extends FrontPageServlet {
   private final TruckCollectionWriter trucksWriter;
 
   @Inject
-  public TruckTimelineServlet(ConfigurationDAO configDAO, TruckDAO truckDAO, TruckCollectionWriter trucksWriter) {
-    super(configDAO);
+  public TruckTimelineServlet(ConfigurationDAO configDAO, TruckDAO truckDAO, TruckCollectionWriter trucksWriter,
+      StaticConfig staticConfig) {
+    super(configDAO, staticConfig);
     this.truckDAO = truckDAO;
     this.trucksWriter = trucksWriter;
   }

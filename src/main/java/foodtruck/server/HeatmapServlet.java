@@ -10,6 +10,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import foodtruck.dao.ConfigurationDAO;
+import foodtruck.model.StaticConfig;
 import foodtruck.stats.HeatmapService;
 
 /**
@@ -22,8 +23,8 @@ public class HeatmapServlet extends FrontPageServlet {
   private final HeatmapService heatmapService;
 
   @Inject
-  public HeatmapServlet(HeatmapService heatmapService, ConfigurationDAO configDAO) {
-    super(configDAO);
+  public HeatmapServlet(HeatmapService heatmapService, ConfigurationDAO configDAO, StaticConfig staticConfig) {
+    super(configDAO, staticConfig);
     this.heatmapService = heatmapService;
   }
 
