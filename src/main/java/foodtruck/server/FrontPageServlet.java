@@ -40,6 +40,8 @@ public abstract class FrontPageServlet extends HttpServlet {
     req.setAttribute("showBoozy", !"false".equals(System.getProperty("foodtrucklocator.showBoozy")));
     req.setAttribute("showWeekly", !"false".equals(System.getProperty("foodtrucklocator.showWeekly")));
     req.setAttribute("showAbout", !"false".equals(System.getProperty("foodtrucklocator.showAbout")));
+    req.setAttribute("showStats", !"false".equals(System.getProperty("foodtrucklocator.showStats")));
+    req.setAttribute("showBlog", !"false".equals(System.getProperty("foodtrucklocator.showBlog")));
     req.setAttribute("signoutUrl", userService.isUserLoggedIn() ? userService.createLogoutURL("/") : null);
     req.setAttribute("user", userService.getCurrentUser());
     req.setAttribute("signalId", staticConfig.getSignalId());

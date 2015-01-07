@@ -59,13 +59,17 @@
         <c:if test="${showAbout}">
           <li <c:if test="${tab == 'about'}"> class="active"</c:if>><a href="/about">About</a></li>
         </c:if>
+        <c:if test="${showStats}">
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Stats <b class="caret"></b></a>
           <ul class="dropdown-menu">
             <li><a href="/stats/timeline">Timeline</a></li>
           </ul>
         </li>
+        </c:if>
+        <c:if test="${showBlog}">
         <li><a href="http://blog.chicagofoodtruckfinder.com/">Blog</a></li>
+        </c:if>
         <c:if test="${isAdmin}">
           <li><a href="/admin">Admin</a></li>
         </c:if>
