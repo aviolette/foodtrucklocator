@@ -649,7 +649,7 @@ var FoodTruckLocator = function () {
     extend: function () {
       _map.fitBounds(_markers.bounds);
     },
-    run: function (mode, center, time, modelPayload, appKey, designatedStops) {
+    run: function (mode, center, time, modelPayload, appKey, designatedStops, removeDesignatedStops) {
       var self = this;
       var mobile = "mobile" == mode;
       _appKey = appKey;
@@ -696,8 +696,9 @@ var FoodTruckLocator = function () {
         var centerMarker = new google.maps.Marker({
           icon: "http://maps.google.com/mapfiles/arrow.png"
         });
-
-        _map.controls[google.maps.ControlPosition.TOP_RIGHT].push(toggleDesignatedStops());
+        if (!removeDesignatedStops) {
+          _map.controls[google.maps.ControlPosition.TOP_RIGHT].push(toggleDesignatedStops());
+        }
 
         google.maps.event.addListener(_map, 'drag', function () {
           if (loading) {
