@@ -12,6 +12,7 @@ import org.joda.time.LocalDate;
 
 import foodtruck.dao.MessageDAO;
 import foodtruck.model.Message;
+
 import static foodtruck.dao.appengine.Attributes.getDateTime;
 import static foodtruck.dao.appengine.Attributes.setDateProperty;
 

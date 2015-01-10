@@ -9,6 +9,7 @@ import com.google.inject.Inject;
 import foodtruck.dao.TruckObserverDAO;
 import foodtruck.model.Location;
 import foodtruck.model.TruckObserver;
+
 import static foodtruck.dao.appengine.Attributes.getDoubleProperty;
 import static foodtruck.dao.appengine.Attributes.getStringProperty;
 

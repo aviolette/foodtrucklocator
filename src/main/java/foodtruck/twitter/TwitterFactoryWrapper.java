@@ -1,11 +1,8 @@
 package foodtruck.twitter;
 
-import com.google.inject.name.Named;
-
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
-import twitter4j.conf.ConfigurationBuilder;
 
 /**
  * Had to create this so I could mock out TwitterFactory (which is marked as final and I don't want

@@ -3,7 +3,6 @@ package foodtruck.server.resources;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 
 import com.google.inject.Inject;
 
@@ -12,7 +11,6 @@ import org.joda.time.Interval;
 
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.TruckStop;
-import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 
 import static foodtruck.server.resources.Resources.requiresAdmin;

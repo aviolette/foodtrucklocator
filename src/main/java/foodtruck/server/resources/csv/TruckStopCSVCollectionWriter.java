@@ -19,11 +19,9 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
-import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import au.com.bytecode.opencsv.CSVWriter;
-import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.server.resources.json.JSONSerializer;
 import foodtruck.util.FriendlyDateTimeFormat;

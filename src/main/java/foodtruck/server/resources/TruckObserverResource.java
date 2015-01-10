@@ -14,6 +14,7 @@ import com.google.inject.Inject;
 
 import foodtruck.dao.TruckObserverDAO;
 import foodtruck.model.TruckObserver;
+
 import static foodtruck.server.resources.Resources.requiresAdmin;
 
 /**

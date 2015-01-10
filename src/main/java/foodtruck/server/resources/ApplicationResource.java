@@ -16,6 +16,7 @@ import com.google.inject.Inject;
 import foodtruck.dao.ApplicationDAO;
 import foodtruck.model.Application;
 import foodtruck.util.RandomString;
+
 import static foodtruck.server.resources.Resources.requiresAdmin;
 
 /**

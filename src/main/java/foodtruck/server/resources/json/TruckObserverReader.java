@@ -26,6 +26,7 @@ import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
 import foodtruck.model.TruckObserver;
+
 import static foodtruck.server.resources.json.JSONSerializer.readJSON;
 
 /**

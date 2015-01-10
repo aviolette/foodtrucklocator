@@ -11,6 +11,7 @@ import org.joda.time.DateTimeZone;
 
 import foodtruck.dao.PetitionSignatureDAO;
 import foodtruck.model.PetitionSignature;
+
 import static com.google.appengine.api.datastore.FetchOptions.Builder.withDefaults;
 import static foodtruck.dao.appengine.Attributes.getDateTime;
 import static foodtruck.dao.appengine.Attributes.getStringProperty;

@@ -15,9 +15,9 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.inject.Inject;
 
-import foodtruck.dao.TruckDAO;
 import foodtruck.beaconnaise.BeaconResponse;
 import foodtruck.beaconnaise.BeaconSignal;
+import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.truckstops.FoodTruckStopService;

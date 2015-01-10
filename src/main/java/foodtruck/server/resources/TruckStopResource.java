@@ -20,10 +20,11 @@ import org.joda.time.DateTime;
 
 import foodtruck.model.TruckLocationGroup;
 import foodtruck.model.TruckStop;
-import static foodtruck.server.resources.Resources.noCache;
-import static foodtruck.server.resources.Resources.requiresAdmin;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
+
+import static foodtruck.server.resources.Resources.noCache;
+import static foodtruck.server.resources.Resources.requiresAdmin;
 
 /**
  * @author aviolette@gmail.com

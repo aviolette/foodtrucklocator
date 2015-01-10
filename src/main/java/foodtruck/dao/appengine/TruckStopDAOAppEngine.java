@@ -36,6 +36,7 @@ import foodtruck.model.Location;
 import foodtruck.model.StopOrigin;
 import foodtruck.model.TruckStop;
 import foodtruck.schedule.Confidence;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static foodtruck.dao.appengine.Attributes.getDateTime;
 import static foodtruck.dao.appengine.Attributes.getDoubleProperty;

@@ -18,6 +18,7 @@ import org.codehaus.jettison.json.JSONObject;
 import foodtruck.beaconnaise.BeaconSignal;
 import foodtruck.model.Location;
 import foodtruck.server.resources.BadRequestException;
+
 import static foodtruck.server.resources.json.JSONSerializer.readJSON;
 
 /**

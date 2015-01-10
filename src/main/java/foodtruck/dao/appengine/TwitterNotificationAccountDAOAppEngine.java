@@ -10,6 +10,7 @@ import com.google.inject.Inject;
 import foodtruck.dao.TwitterNotificationAccountDAO;
 import foodtruck.model.Location;
 import foodtruck.model.TwitterNotificationAccount;
+
 import static foodtruck.dao.appengine.Attributes.getDoubleProperty;
 import static foodtruck.dao.appengine.Attributes.getStringProperty;
 

@@ -18,6 +18,7 @@ import foodtruck.dao.EventDAO;
 import foodtruck.model.Event;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
+
 import static foodtruck.dao.appengine.Attributes.getDateTime;
 import static foodtruck.dao.appengine.Attributes.getDoubleProperty;
 import static foodtruck.dao.appengine.Attributes.getStringProperty;

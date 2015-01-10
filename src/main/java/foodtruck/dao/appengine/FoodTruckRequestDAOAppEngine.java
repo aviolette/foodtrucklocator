@@ -13,6 +13,7 @@ import org.joda.time.DateTimeZone;
 import foodtruck.dao.FoodTruckRequestDAO;
 import foodtruck.model.FoodTruckRequest;
 import foodtruck.model.Location;
+
 import static foodtruck.dao.appengine.Attributes.getDateTime;
 import static foodtruck.dao.appengine.Attributes.getDoubleProperty;
 import static foodtruck.dao.appengine.Attributes.getIntProperty;

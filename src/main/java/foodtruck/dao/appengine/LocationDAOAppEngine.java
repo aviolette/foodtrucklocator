@@ -20,6 +20,7 @@ import com.google.inject.Inject;
 import foodtruck.dao.LocationDAO;
 import foodtruck.model.Location;
 import foodtruck.util.Clock;
+
 import static foodtruck.dao.appengine.Attributes.getStringProperty;
 
 /**

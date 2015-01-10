@@ -7,7 +7,6 @@ import com.google.inject.name.Named;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
-import com.sun.tools.javac.code.Attribute;
 
 import foodtruck.server.api.TweetUpdateServlet;
 import foodtruck.server.dashboard.AddressRuleServlet;
@@ -15,8 +14,6 @@ import foodtruck.server.dashboard.AdminDashboardServlet;
 import foodtruck.server.dashboard.ApplicationServlet;
 import foodtruck.server.dashboard.CompoundEventServlet;
 import foodtruck.server.dashboard.ConfigurationServlet;
-import foodtruck.server.dashboard.EventListServlet;
-import foodtruck.server.dashboard.EventServlet;
 import foodtruck.server.dashboard.LocationEditServlet;
 import foodtruck.server.dashboard.LocationListServlet;
 import foodtruck.server.dashboard.MessageEditServlet;
