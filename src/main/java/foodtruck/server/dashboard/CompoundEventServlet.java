@@ -58,8 +58,8 @@ public class CompoundEventServlet extends HttpServlet {
       return;
     }
     LocalDate now = clock.currentDay();
-    DateTime startTime = now.toDateTime(timeFormatter.parseLocalTime(startTimeParam)),
-        endTime = now.toDateTime(timeFormatter.parseLocalTime(endTimeParam));
+    DateTime startTime = now.toDateTime(timeFormatter.parseLocalTime(startTimeParam), clock.zone()),
+        endTime = now.toDateTime(timeFormatter.parseLocalTime(endTimeParam), clock.zone());
     for (String truckId : trucks) {
       TruckStop stop = TruckStop.builder()
           .location(location)
