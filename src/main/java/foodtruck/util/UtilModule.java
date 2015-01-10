@@ -32,6 +32,11 @@ public class UtilModule extends AbstractModule {
     return DateTimeFormat.forPattern("hh:mm a").withZone(zone);
   }
 
+  @MilitaryTimeOnlyFormatter @Provides
+  public DateTimeFormatter providesMilitaryTimeOnlyFormat(DateTimeZone zone) {
+    return DateTimeFormat.forPattern("HH:mm").withZone(zone);
+  }
+
   @HtmlDateFormatter @Provides
   public DateTimeFormatter providesDateTimeFormatterForHtml(DateTimeZone zone) {
     return DateTimeFormat.forPattern("YYYY-MM-dd'T'HH:mm").withZone(zone);

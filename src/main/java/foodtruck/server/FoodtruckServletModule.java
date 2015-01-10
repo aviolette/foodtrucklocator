@@ -7,11 +7,13 @@ import com.google.inject.name.Named;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
+import com.sun.tools.javac.code.Attribute;
 
 import foodtruck.server.api.TweetUpdateServlet;
 import foodtruck.server.dashboard.AddressRuleServlet;
 import foodtruck.server.dashboard.AdminDashboardServlet;
 import foodtruck.server.dashboard.ApplicationServlet;
+import foodtruck.server.dashboard.CompoundEventServlet;
 import foodtruck.server.dashboard.ConfigurationServlet;
 import foodtruck.server.dashboard.EventListServlet;
 import foodtruck.server.dashboard.EventServlet;
@@ -90,8 +92,7 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/admin/applications").with(ApplicationServlet.class);
     serve("/admin/lookouts").with(ObserverServlet.class);
     serve("/admin/notificationTest").with(TestNotificationServlet.class);
-    serve("/admin/events").with(EventListServlet.class);
-    serve("/admin/events/*").with(EventServlet.class);
+    serve("/admin/event_at/*").with(CompoundEventServlet.class);
     serve("/admin/requests/edit/*").with(TruckRequestServlet.class);
     serve("/admin/requests/promote").with(PromoteServlet.class);
     serve("/vendor").with(VendorServlet.class);
@@ -110,7 +111,6 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/requests/view/*").with(ViewRequestATruckServlet.class);
     serve("/about").with(AboutServlet.class);
     serve("/locations*").with(LocationServlet.class);
-    serve("/events*").with(EventsServlet.class);
     serve("/images/*").with(ImageServlet.class);
     serve("/petitions/600w").with(PetitionServlet.class);
     serve("/petitions/600w/not_finished").with(PetitionEmailInterstitialServlet.class);
