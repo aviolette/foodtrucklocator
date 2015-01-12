@@ -51,10 +51,13 @@
         <li <c:if test="${tab == 'map'}"> class="active"</c:if>><a href="/">Map</a></li>
         <li <c:if test="${tab == 'trucks'}"> class="active"</c:if>><a href="/trucks">Trucks</a></li>
         <c:if test="${showWeekly}">
-          <li <c:if test="${tab == 'weekly'}"> class="active"</c:if>><a href="/weekly-schedule">Weekly Schedule</a></li>
-        </c:if>
-        <c:if test="${showBoozy}">
-          <li <c:if test="${tab == 'booze'}"> class="active"</c:if>><a href="/booze">Boozy Events</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Schedule <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="/weekly-schedule">Popular Spots</a></li>
+              <li><a href="/booze">Boozy Spots</a></li>
+            </ul>
+          </li>
         </c:if>
         <c:if test="${showAbout}">
           <li <c:if test="${tab == 'about'}"> class="active"</c:if>><a href="/about">About</a></li>
@@ -65,8 +68,15 @@
           <ul class="dropdown-menu">
             <li><a href="/stats/timeline">Timeline</a></li>
           </ul>
-        </li>
+        </li>`
         </c:if>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cities <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><a href="http://www.chicagofoodtruckfinder.com">Chicago</a></li>
+            <li><a href="http://www.orlandofoodtruckfinder.com">Orlando</a></li>
+          </ul>
+        </li>
         <c:if test="${showBlog}">
         <li><a href="http://blog.chicagofoodtruckfinder.com/">Blog</a></li>
         </c:if>
