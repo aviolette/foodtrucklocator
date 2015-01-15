@@ -57,8 +57,10 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
         Configuration configuration = configurationDAO.find();
         String url = syncToGoogleStorage(user.getScreenName(), user.getProfileImageURL(),
             configuration.getBaseUrl(), configuration.getTruckIconsBucket());
+        String website = user.getURLEntity().getExpandedURL();
         truck = Truck.builder(truck)
             .name(user.getName())
+            .url(website)
             .iconUrl(url)
             .build();
       }
