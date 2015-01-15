@@ -8,9 +8,9 @@
 
 <!-- Nav tabs -->
 <ul class="nav nav-tabs" role="tablist">
-  <li <c:if test="${tab == 'home'}">class="active"</c:if>><a href="#home" role="tab" data-toggle="tab">Trucks with Stops</a></li>
-  <li <c:if test="${tab == 'noStops'}">class="active"</c:if>><a href="#noStops" role="tab" data-toggle="tab">Trucks with No stops</a></li>
-  <li <c:if test="${tab == 'inactiveTrucks'}">class="active"</c:if>><a href="#inactiveTrucks" role="tab" data-toggle="tab">Inactive</a></li>
+  <li <c:if test="${tab == 'home'}">class="active"</c:if>><a href="/admin/trucks" role="tab">Trucks with Stops</a></li>
+  <li <c:if test="${tab == 'noStops'}">class="active"</c:if>><a href="/admin/trucks?tab=noStops" role="tab">Trucks with No stops</a></li>
+  <li <c:if test="${tab == 'inactiveTrucks'}">class="active"</c:if>><a href="/admin/trucks?tab=inactiveTrucks" role="tab" >Inactive</a></li>
 </ul>
 
 <div class="tab-content">
