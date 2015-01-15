@@ -47,7 +47,7 @@
       <a class="navbar-brand" href="/">${brandTitle}</a>
     </div>
     <div class="collapse navbar-collapse">
-      <ul class="nav navbar-nav">
+      <ul class="nav navbar-nav" style="min-width: 550px">
         <li <c:if test="${tab == 'map'}"> class="active"</c:if>><a href="/">Map</a></li>
         <li <c:if test="${tab == 'trucks'}"> class="active"</c:if>><a href="/trucks">Trucks</a></li>
         <c:if test="${showWeekly}">
