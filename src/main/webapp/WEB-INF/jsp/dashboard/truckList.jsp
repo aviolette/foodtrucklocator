@@ -1,5 +1,9 @@
 <%@ include file="dashboardHeaderBS3.jsp" %>
-
+<style type="text/css">
+  tr.muted {
+    display:none;
+  }
+</style>
 <div class="btn-toolbar" style="margin-bottom:20px">
   <div class="btn-group">
     <a href="#" class="btn btn-primary" id="newTruck"><span class="glyphicon glyphicon-plus"></span> New Truck</a>&nbsp;
@@ -74,6 +78,7 @@
     </table>
   </div>
   <div class="tab-pane <c:if test="${tab == 'noStops'}">active</c:if>" id="noStops">
+    <label>Show muted <input type="checkbox" id="showMuted"></label>
     <table class="table table-striped inactive-trucks">
       <thead>
       <tr>
@@ -147,6 +152,9 @@
         }
         self.$currentSelection.addClass("selected");
       },
+      advanceIfInvisible : function() {
+        self.next();
+      },
       next : function() {
         var $item = this.$currentSelection;
         while (true) {
@@ -197,9 +205,14 @@
     };
 
     function toggleMuted($muteButton) {
-      var displayValue = $muteButton.hasClass("active") ? "table-row" : "none";
+      var displayValue = $muteButton.is(":checked") ? "table-row" : "none";
       $(".muted").css("display", displayValue);
     }
+
+    $("#showMuted").click(function(e) {
+      toggleMuted($(e.target));
+      Cursor.advanceIfInvisible();
+    });
 
     Cursor.init();
     $(document).keypress(function(e) {
@@ -228,12 +241,12 @@
       }
     });
     $('.toggle-visibility button').click(function(e) {
-      var $target = $(e.target);
+      var $target = $(e.target), displayValue;
       if ($target.attr("id") == 'inactiveButton') {
-        var displayValue = $target.hasClass("active") ? "block" : "none";
+        displayValue = $target.hasClass("active") ? "block" : "none";
         $("#inactiveTrucks").css("display", displayValue);
       } else {
-        var displayValue = $target.hasClass("active") ? "table-row" : "none";
+        displayValue = $target.hasClass("active") ? "table-row" : "none";
         $(".muted").css("display", displayValue);
       }
       if ($target.hasClass("active")) {
@@ -253,12 +266,14 @@
         type: "POST",
         success : function() {
           $button.html(verb == "mute" ? "Unmute" : "Mute");
+          var displayValue;
           if (verb == "mute") {
             $button.parent().parent().addClass("muted");
+            displayValue = "none";
           } else {
             $button.parent().parent().removeClass("muted");
+            displayValue = "table-row";
           }
-          var displayValue = $("#muteButton").hasClass("active") ? "none" : "table-row";
           $(".muted").css("display", displayValue);
         }
       });
