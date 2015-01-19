@@ -16,5 +16,7 @@
     <property name="foodtrucklocator.showBoozy" value="true"/>
     <property name="foodtrucklocator.showStats" value="true"/>
     <property name="foodtrucklocator.signal.id" value="zIOrUTR"/>
+    <property name="foodtrucklocator.state" value="IL"/>
+    <property name="foodtrucklocator.city" value="Schaumburg"/>
   </system-properties>
 </appengine-web-app>

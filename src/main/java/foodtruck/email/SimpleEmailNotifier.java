@@ -30,6 +30,7 @@ import foodtruck.model.Configuration;
 import foodtruck.model.FoodTruckRequest;
 import foodtruck.model.Location;
 import foodtruck.model.PetitionSignature;
+import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TweetSummary;
@@ -45,13 +46,15 @@ public class SimpleEmailNotifier implements EmailNotifier {
   private final ConfigurationDAO configDAO;
   private final MessageBuilder messageBuilder;
   private final DateTimeFormatter timeOnlyFormatter;
+  private final StaticConfig staticConfig;
 
   @Inject
   public SimpleEmailNotifier(ConfigurationDAO configurationDAO, MessageBuilder messageBuilder,
-      @TimeOnlyFormatter DateTimeFormatter timeFormatter) {
+      @TimeOnlyFormatter DateTimeFormatter timeFormatter, StaticConfig staticConfig) {
     this.configDAO = configurationDAO;
     this.messageBuilder = messageBuilder;
     this.timeOnlyFormatter = timeFormatter;
+    this.staticConfig = staticConfig;
   }
 
   @Override public void systemNotifyOffTheRoad(Truck truck, TweetSummary tweet) {
@@ -145,7 +148,7 @@ public class SimpleEmailNotifier implements EmailNotifier {
   }
 
   @Override public void systemNotifyWarnError(String error) {
-    sendSystemMessage("Errors detected!", "Errors detected on the site:\n\n" + error);
+    sendSystemMessage("Errors detected! (" + staticConfig.getCityState() + ")", "Errors detected on the site:\n\n" + error);
  }
 
   @Override public void notifyVerifyPetitionSignature(PetitionSignature sig) {

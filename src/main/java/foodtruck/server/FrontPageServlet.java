@@ -22,7 +22,7 @@ import foodtruck.model.StaticConfig;
  */
 public abstract class FrontPageServlet extends HttpServlet {
   protected final ConfigurationDAO configurationDAO;
-  private final StaticConfig staticConfig;
+  protected final StaticConfig staticConfig;
 
   public FrontPageServlet(ConfigurationDAO configDAO, StaticConfig staticConfig) {
     this.configurationDAO = configDAO;

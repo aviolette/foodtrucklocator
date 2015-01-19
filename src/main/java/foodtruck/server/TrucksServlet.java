@@ -76,8 +76,8 @@ public class TrucksServlet extends FrontPageServlet {
         req.setAttribute("filteredBy", tag);
       }
       req.setAttribute("foodTruckRequestOn", configurationDAO.find().isFoodTruckRequestOn());
-      req.setAttribute("description", "Catalogue of all the food trucks in Chicago-land");
-      req.setAttribute("title", "Food Trucks in Chicago");
+      req.setAttribute("description", "Catalogue of all the food trucks in " + staticConfig.getCity());
+      req.setAttribute("title", "Food Trucks in " + staticConfig.getCity());
     }
 
     req = new GuiceHackRequestWrapper(req, jsp);
