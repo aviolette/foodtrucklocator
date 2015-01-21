@@ -120,6 +120,7 @@ public class FoodTruckServlet extends FrontPageServlet {
     req.setAttribute("removeDesignatedStops", "false".equals(System.getProperty("foodtrucklocator.designatedStops", "true")));
     req.setAttribute("tab", "map");
     req.setAttribute("appKey", configuration.getFrontDoorAppKey());
+    req.setAttribute("defaultCity", staticConfig.getCityState());
     req.setAttribute("description", "Find food trucks on the streets of " + staticConfig.getCity() +
         " by time and location.  Results are updated in real-time throughout the day.");
     resp.setHeader("Cache-Control", "no-cache");

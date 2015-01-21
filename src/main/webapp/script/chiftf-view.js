@@ -5,6 +5,8 @@ var FoodTruckLocator = function () {
       _mobile = false,
       _mode = null,
       _markers = null,
+      _defaultCityRegex = null,
+      _defaultCityLength = 0,
       _showDesignated = false,
       _designatedStops = null,
       _center = null;
@@ -234,8 +236,8 @@ var FoodTruckLocator = function () {
   };
 
   function formatLocation(location) {
-    if (/, Chicago, IL$/i.test(location)) {
-      location = location.substring(0, location.length - 13);
+    if (_defaultCityRegex.test(location)) {
+      location = location.substring(0, location.length - _defaultCityLength - 2);
     }
     return location;
   }
@@ -649,12 +651,13 @@ var FoodTruckLocator = function () {
     extend: function () {
       _map.fitBounds(_markers.bounds);
     },
-    run: function (mode, center, time, modelPayload, appKey, designatedStops, removeDesignatedStops) {
+    run: function (mode, center, time, modelPayload, appKey, designatedStops, removeDesignatedStops, defaultCity) {
       var self = this;
       var mobile = "mobile" == mode;
       _appKey = appKey;
       _mode = mode;
-
+      _defaultCityRegex = new RegExp(", " + defaultCity + "$");
+      _defaultCityLength = defaultCity.length;
       _center = findCenter(center);
       _designatedStops = designatedStops;
       resize();
