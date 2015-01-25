@@ -26,7 +26,10 @@ import foodtruck.model.TweetSummary;
 import foodtruck.util.Clock;
 
 import static org.easymock.EasyMock.expect;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.hasItems;
 
 /**
@@ -279,6 +282,28 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     assertNotNull(match);
     assertEquals(tweetTime.withTime(21, 0, 0, 0), match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(23, 0, 0, 0), match.getStop().getEndTime());
+  }
+
+  @Test
+  public void testNightTimeRangeWithDayBoundary() {
+    TruckStopMatch match = tweet("Serving steak & cheese at 1030-1230 draft bar 8221 w Irving park rd")
+        .withTime(tweetTime.withTime(22, 10, 0, 0))
+        .withTruck(Truck.builder(truck).categories(ImmutableSet.of("Lunch")).build())
+        .match();
+    assertNotNull(match);
+    assertEquals(tweetTime.withTime(22, 30, 0, 0), match.getStop().getStartTime());
+    assertEquals(match.getStop().getStartTime().plusHours(2), match.getStop().getEndTime());
+  }
+
+  @Test
+  public void testNightTimeRangeWithDayBoundary2() {
+    TruckStopMatch match = tweet("Serving steak & cheese at 1030-130 draft bar 8221 w Irving park rd")
+        .withTime(tweetTime.withTime(22, 10, 0, 0))
+        .withTruck(Truck.builder(truck).categories(ImmutableSet.of("Lunch")).build())
+        .match();
+    assertNotNull(match);
+    assertEquals(tweetTime.withTime(22, 30, 0, 0), match.getStop().getStartTime());
+    assertEquals(match.getStop().getStartTime().plusHours(3), match.getStop().getEndTime());
   }
 
   @Test

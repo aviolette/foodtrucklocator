@@ -14,6 +14,7 @@ import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
@@ -169,8 +170,9 @@ public class TruckStopMatcher {
           startTime.getHourOfDay() > 12 && endTime.getHourOfDay() < 12) {
           startTime = startTime.minusHours(12);
       } else if (endTime != null && startTime != null && endTime.isBefore(tweet.getTime())) {
+        Duration duration = new Duration(startTime.toInstant(), endTime.toInstant());
         startTime = startTime.plusHours(12);
-        endTime = endTime.plusHours(12);
+        endTime = startTime.plus(duration);
       }
       notes.add("Presence of time range in tweet increased confidence.");
       confidence = confidence.up();
@@ -353,6 +355,7 @@ public class TruckStopMatcher {
   }
 
   private @Nullable DateTime parseTime(String timeText, LocalDate date, @Nullable DateTime after) {
+    int plusDay = 0;
     if (timeText.toLowerCase().equals("noon")) {
       timeText = "12:00p.m.";
     }
@@ -391,6 +394,13 @@ public class TruckStopMatcher {
       int min = Integer.parseInt(tmpTime.substring(2, 4).trim());
       if (after.isAfter(date.toDateTime(new LocalTime(hour, min), clock.zone()))) {
         suffix = "pm";
+      } else if (hour == 12) {
+        if (after.getHourOfDay() < 13) {
+          suffix = "pm";
+        } else {
+          suffix = "am";
+          plusDay++;
+        }
       } else {
         suffix = "am";
       }
@@ -401,7 +411,7 @@ public class TruckStopMatcher {
     timeText = tmpTime + suffix;
     try {
       return formatter.parseDateTime(timeText).withDate(date.getYear(), date.getMonthOfYear(),
-          date.getDayOfMonth());
+          date.getDayOfMonth()).plusDays(plusDay);
     } catch (IllegalArgumentException iae) {
 
       log.log(Level.WARNING, iae.getMessage(), iae);
