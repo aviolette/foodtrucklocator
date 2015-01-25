@@ -38,6 +38,7 @@ public class TerminationDetector {
         || tweetText.contains("see you next week")
         || tweetText.contains("see u next week")
         || tweetText.contains("apologies")
+        || tweetText.contains("truck is closed")
         || tweetText.contains("buzzing")
         || tweetText.contains("thx")
         || tweetText.contains("muchas gracias")

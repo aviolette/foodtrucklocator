@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import foodtruck.model.TweetSummary;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -43,6 +44,11 @@ public class TerminationDetectorTest {
   @Test
   public void testFalseIfCashOrCredit2() {
     assertEquals(null, detector.detect(tweetBuilder.text("I'm at 125 S. Clark selling baked empanadas from a light blue truck. Cash or card is accepted. Thanks for your time & consideration. Chow.").build()));
+  }
+
+  @Test
+  public void testRoostsNewFormat() {
+    assertEquals(tweetTime, detector.detect(tweetBuilder.text("Truck is closed for breakfast. Back at Adams & Wacker for lunch.").build()));
   }
 
   @Test
