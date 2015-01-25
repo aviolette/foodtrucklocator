@@ -84,7 +84,7 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
       stops.addAll(performTruckSearch(range, truck, true));
     } catch (RuntimeException rte) {
       log.info("Search truck: " + truck.getId());
-      log.severe(rte.getMessage());
+      log.log(Level.SEVERE, rte.getMessage(), rte);
     }
   }
 
