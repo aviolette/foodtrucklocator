@@ -70,7 +70,7 @@ public class GoogleApiModule extends PrivateModule {
       }
     }
     log.info("Using production credentials for Google APIs");
-    return new AppIdentityCredential(ImmutableList.of("https://www.googleapis.com/auth/calendar.readonly"));
+    return new AppIdentityCredential(ImmutableList.of("https://www.googleapis.com/auth/calendar"));
   }
 
   @Exposed @Singleton @Provides
