@@ -17,7 +17,6 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.ConfigurationDAO;
@@ -28,7 +27,7 @@ import foodtruck.model.Location;
 import foodtruck.model.TruckStop;
 import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.util.Clock;
-import foodtruck.util.MilitaryTimeOnlyFormatter;
+import foodtruck.util.HtmlDateFormatter;
 
 /**
  * @author aviolette
@@ -48,7 +47,7 @@ public class CompoundEventServlet extends HttpServlet {
 
   @Inject
   public CompoundEventServlet(TruckDAO truckDAO, LocationDAO locationDAO, ConfigurationDAO configDAO,
-      @MilitaryTimeOnlyFormatter DateTimeFormatter formatter, Clock clock, TruckStopDAO truckStopDAO, Provider<Calendar> calendarProvider) {
+      @HtmlDateFormatter DateTimeFormatter formatter, Clock clock, TruckStopDAO truckStopDAO, Provider<Calendar> calendarProvider) {
     this.truckDAO = truckDAO;
     this.locationDAO = locationDAO;
     this.timeFormatter = formatter;
@@ -69,9 +68,8 @@ public class CompoundEventServlet extends HttpServlet {
       resp.sendError(404);
       return;
     }
-    LocalDate now = clock.currentDay();
-    DateTime startTime = now.toDateTime(timeFormatter.parseLocalTime(startTimeParam), clock.zone()),
-        endTime = now.toDateTime(timeFormatter.parseLocalTime(endTimeParam), clock.zone());
+    DateTime startTime = timeFormatter.parseDateTime(startTimeParam),
+        endTime = timeFormatter.parseDateTime(endTimeParam);
     Calendar calendar = calendarProvider.get();
     String calendarID = configDAO.find().getGoogleCalendarAddress();
     for (String truckId : trucks) {
@@ -109,6 +107,8 @@ public class CompoundEventServlet extends HttpServlet {
       resp.sendError(404);
       return;
     }
+    req.setAttribute("startTime", timeFormatter.print(clock.now()));
+    req.setAttribute("endTime", timeFormatter.print(clock.now().plusHours(2)));
     req.setAttribute("location", location);
     req.setAttribute("trucks", truckDAO.findActiveTrucks());
     req.setAttribute("nav", "location");

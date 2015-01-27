@@ -5,11 +5,11 @@
 <form role="form" action="" method="post">
     <div class="form-group">
         <label class="control-label" for="startTimeInput">Start</label>
-        <input name="startTime" class="timeentry form-control" id="startTimeInput" type="time" autofocus/>
+        <input name="startTime" class="timeentry form-control" id="startTimeInput" value="${startTime}" type="datetime-local" autofocus/>
     </div>
     <div class="form-group">
         <label class="control-label" for="endTimeInput">End</label>
-        <input name="endTime" class="timeentry form-control" id="endTimeInput" type="time"/>
+        <input name="endTime" class="timeentry form-control" id="endTimeInput" value="${endTime}" type="datetime-local"/>
     </div>
     <div class="form-group">
         <label class="control-label" for="truckList">Trucks</label>
