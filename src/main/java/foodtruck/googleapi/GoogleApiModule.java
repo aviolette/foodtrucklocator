@@ -61,7 +61,7 @@ public class GoogleApiModule extends PrivateModule {
             .setTransport(new NetHttpTransport())
             .setJsonFactory(jsonFactory)
             .setServiceAccountId("891347525506-0ktp2j5ll7ifbt766ii64p207q67vjm7@developer.gserviceaccount.com")
-            .setServiceAccountScopes(ImmutableList.of("https://www.googleapis.com/auth/calendar.readonly"))
+            .setServiceAccountScopes(ImmutableList.of("https://www.googleapis.com/auth/calendar"))
             .setServiceAccountPrivateKeyFromP12File(
                 new File("/Users/andrew" + File.separator + ".store" + File.separator + "/google_auth.p12"))
             .build();
