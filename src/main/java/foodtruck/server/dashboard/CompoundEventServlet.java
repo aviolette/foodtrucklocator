@@ -20,6 +20,7 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 
+import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
@@ -43,9 +44,10 @@ public class CompoundEventServlet extends HttpServlet {
   private final Clock clock;
   private final TruckStopDAO truckStopDAO;
   private final Provider<Calendar> calendarProvider;
+  private final ConfigurationDAO configDAO;
 
   @Inject
-  public CompoundEventServlet(TruckDAO truckDAO, LocationDAO locationDAO,
+  public CompoundEventServlet(TruckDAO truckDAO, LocationDAO locationDAO, ConfigurationDAO configDAO,
       @MilitaryTimeOnlyFormatter DateTimeFormatter formatter, Clock clock, TruckStopDAO truckStopDAO, Provider<Calendar> calendarProvider) {
     this.truckDAO = truckDAO;
     this.locationDAO = locationDAO;
@@ -53,6 +55,7 @@ public class CompoundEventServlet extends HttpServlet {
     this.clock = clock;
     this.truckStopDAO = truckStopDAO;
     this.calendarProvider = calendarProvider;
+    this.configDAO = configDAO;
   }
 
   @Override
@@ -70,6 +73,7 @@ public class CompoundEventServlet extends HttpServlet {
     DateTime startTime = now.toDateTime(timeFormatter.parseLocalTime(startTimeParam), clock.zone()),
         endTime = now.toDateTime(timeFormatter.parseLocalTime(endTimeParam), clock.zone());
     Calendar calendar = calendarProvider.get();
+    String calendarID = configDAO.find().getGoogleCalendarAddress();
     for (String truckId : trucks) {
       TruckStop stop = TruckStop.builder()
           .location(location)
@@ -88,7 +92,7 @@ public class CompoundEventServlet extends HttpServlet {
         dt = new EventDateTime();
         dt.setDateTime(new com.google.api.client.util.DateTime(endTime.getMillis()));
         event.setEnd(dt);
-        Event createdEvent = calendar.events().insert(truckId, event).execute();
+        Event createdEvent = calendar.events().insert(calendarID, event).execute();
         log.log(Level.FINE, "Created event {}", createdEvent.getId());
       } catch (Exception e) {
         log.log(Level.WARNING, e.getMessage(), e);
