@@ -523,7 +523,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     assertNotNull(match);
     assertEquals(Confidence.MEDIUM, match.getConfidence());
     assertEquals("Start time should be same as tweet time", tweetTime, match.getStop().getStartTime());
-    assertEquals(tweetTime.withTime(13,0,0, 0), match.getStop().getEndTime());
+    assertEquals(tweetTime.withTime(13, 0, 0, 0), match.getStop().getEndTime());
   }
 
   @Test
@@ -592,8 +592,8 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   @Test
   public void testMatch_shouldntMatchDayOfWeek3() {
     TruckStopMatch match =
-        tweet("We are having maintenance done this week. We will be at U of C on Weds, " +
-            "but that is it. See ya then! ")
+        tweet(
+            "We are having maintenance done this week. We will be at U of C on Weds, " + "but that is it. See ya then! ")
             .match();
     assertNull(match);
   }
@@ -697,6 +697,24 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     tweetTime = new DateTime(2011, 11, 12, 9, 0, 0, 0, DateTimeZone.UTC);
     TruckStopMatch match =
         tweet("We hope you having a great weekend, see you on Monday <<Wells & Monroe>>")
+            .match();
+    assertNull(match);
+  }
+
+  @Test
+  public void testMatch_shouldntMatchDate() {
+    tweetTime = new DateTime(2011, 11, 12, 9, 0, 0, 0, DateTimeZone.UTC);
+    TruckStopMatch match =
+        tweet("MonstaLobsta: 1/29 Lunch 11 til 1:30p at Bank of America 390 N Orange Ave. Let's Roll!!!")
+            .match();
+    assertNull(match);
+  }
+
+  @Test
+  public void testMatch_shouldMatchDate() {
+    tweetTime = new DateTime(2015, 1, 29, 9, 0, 0, 0, DateTimeZone.UTC);
+    TruckStopMatch match =
+        tweet("MonstaLobsta: 1/29 Lunch 11 til 1:30p at Bank of America 390 N Orange Ave. Let's Roll!!!")
             .match();
     assertNull(match);
   }

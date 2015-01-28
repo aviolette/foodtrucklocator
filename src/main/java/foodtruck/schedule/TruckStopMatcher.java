@@ -62,6 +62,7 @@ public class TruckStopMatcher {
   private final Pattern schedulePattern = Pattern.compile(".*M:.+(\\b|\\n)T:.+(\\b|\\n)W:.+");
   private final ConfigurationDAO configDAO;
   private final EmailNotifier notifier;
+  private final Pattern simpleDateParser;
 
   @Inject
   public TruckStopMatcher(AddressExtractor extractor, GeoLocator geoLocator,
@@ -72,6 +73,7 @@ public class TruckStopMatcher {
     this.endTimePattern = Pattern.compile("\\b(close at|leaving at|until|til|till) (" + TIME_PATTERN + ")");
     this.timeRangePattern = Pattern.compile(TIME_RANGE_PATTERN);
     this.configDAO = configDAO;
+    this.simpleDateParser = Pattern.compile("(\\d{1,2})/(\\d{1,2})");
     this.monPattern = Pattern.compile(
         "\\b(TUE|Tu|WED|Weds|THU|Th|FRI|SAT|Sa|SUN|Su|tuesday|wednesday|thursday|friday|saturday|sunday|tues|thurs|" +
             TOMORROW + ")\\b",
@@ -307,6 +309,16 @@ public class TruckStopMatcher {
   }
 
   private boolean matchesOtherDay(String tweetText) {
+    Matcher matcher = simpleDateParser.matcher(tweetText);
+    if (matcher.find()) {
+      LocalDate date = clock.currentDay();
+      String first = matcher.group(1);
+      String second = matcher.group(2);
+      if (Integer.parseInt(first) != date.getMonthOfYear() || Integer.parseInt(second) != date.getDayOfMonth()) {
+        return true;
+      }
+    }
+
     switch (clock.dayOfWeek()) {
       case monday:
         return monPattern.matcher(tweetText).find();
