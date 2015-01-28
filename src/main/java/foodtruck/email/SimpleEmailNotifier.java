@@ -60,8 +60,8 @@ public class SimpleEmailNotifier implements EmailNotifier {
   @Override public void systemNotifyOffTheRoad(Truck truck, TweetSummary tweet) {
     String msgBody = MessageFormat.format("This tweet might indicate that {0} is off the road:\n" +
         "\n \"{1}\"\n\n" +
-        "Click here to take the truck off the road: " +
-        "http://www.chicagofoodtruckfinder.com/admin/trucks/{2}/offtheroad", truck.getName(), tweet.getText(),
+        "Click here to take the truck off the road: " + staticConfig.getBaseUrl() +
+        "/admin/trucks/{2}/offtheroad", truck.getName(), tweet.getText(),
         truck.getId());
     sendSystemMessage(truck.getName() + " might be off the road", msgBody);
   }
@@ -78,7 +78,8 @@ public class SimpleEmailNotifier implements EmailNotifier {
   @Override public void systemNotifyTrucksAddedByObserver(Map<Truck, TweetSummary> trucksAdded) {
     StringBuilder builder = new StringBuilder("The following trucks were added: \n\n");
     for (Map.Entry<Truck, TweetSummary> entry : trucksAdded.entrySet()) {
-      builder.append(entry.getKey().getName()).append(" http://www.chicagofoodtruckfinder.com/admin/trucks/")
+      builder.append(entry.getKey().getName()).append(" ").append(staticConfig.getBaseUrl())
+          .append("/admin/trucks/")
           .append(entry.getKey().getId()).append(" => @").append(entry.getValue().getScreenName())
           .append(" '").append(entry.getValue().getText()).append("'\n\n");
     }
@@ -93,7 +94,9 @@ public class SimpleEmailNotifier implements EmailNotifier {
     try {
       StringBuilder builder = new StringBuilder("The following request was added: \n\n");
       buildRequest(request,builder);
-      builder.append("\n\nClick here to promote: http://www.chicagofoodtruckfinder.com/admin/requests/promote?id=")
+      builder.append("\n\nClick here to promote: ")
+          .append(staticConfig.getBaseUrl())
+          .append("/admin/requests/promote?id=")
           .append(request.getKey()).append("\n\n");
       sendSystemMessage("New food truck request", builder.toString());
     } catch (Exception e) {
@@ -141,10 +144,10 @@ public class SimpleEmailNotifier implements EmailNotifier {
   @Override public void systemNotifiyWeirdStopAdded(TruckStop truckStop, String tweetText) {
     sendSystemMessage("Strange afternoon stop added " + truckStop.getTruck().getName(),
         MessageFormat.format("This tweet added a new stop for {0} after 1:30pm for a lunch truck: \"{1}\"\n\n" +
-          "Stop that was added: {2} from {3} to {4}\n\n Go here to modify: http://www.chicagofoodtruckfinder.com/admin/trucks/{5}\n\n",
+          "Stop that was added: {2} from {3} to {4}\n\n Go here to modify: {6}/admin/trucks/{5}\n\n",
           truckStop.getTruck().getName(), tweetText,
           truckStop.getLocation().getName(), timeOnlyFormatter.print(truckStop.getStartTime()),
-          timeOnlyFormatter.print(truckStop.getEndTime()), truckStop.getTruck().getId()));
+          timeOnlyFormatter.print(truckStop.getEndTime()), truckStop.getTruck().getId(), staticConfig.getBaseUrl()));
   }
 
   @Override public void systemNotifyWarnError(String error) {

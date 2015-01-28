@@ -20,4 +20,8 @@ public class StaticConfig {
   public String getCityState() {
     return getCity() + ", " + getState();
   }
+
+  public String getBaseUrl() {
+    return System.getProperty("foodtrucklocator.baseUrl", "http://www.chicagofoodtruckfinder.com");
+  }
 }

@@ -18,5 +18,6 @@
     <property name="foodtrucklocator.signal.id" value="zIOrUTR"/>
     <property name="foodtrucklocator.state" value="IL"/>
     <property name="foodtrucklocator.city" value="Schaumburg"/>
+    <property name="foodtrucklocator.baseUrl" value="http://localhost:8080"/>
   </system-properties>
 </appengine-web-app>

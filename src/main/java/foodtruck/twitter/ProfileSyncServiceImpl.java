@@ -20,6 +20,7 @@ import com.google.inject.Inject;
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Configuration;
+import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
 import twitter4j.PagableResponseList;
 import twitter4j.ResponseList;
@@ -37,14 +38,16 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
   private final GcsService cloudStorage;
   private final TruckDAO truckDAO;
   private final ConfigurationDAO configurationDAO;
+  private final StaticConfig staticConfig;
 
   @Inject
   public ProfileSyncServiceImpl(TwitterFactoryWrapper twitterFactory, GcsService cloudStorage, TruckDAO truckDAO,
-      ConfigurationDAO configDAO) {
+      ConfigurationDAO configDAO, StaticConfig staticConfig) {
     this.twitterFactory = twitterFactory;
     this.cloudStorage = cloudStorage;
     this.truckDAO = truckDAO;
     this.configurationDAO = configDAO;
+    this.staticConfig = staticConfig;
   }
 
   @Override
@@ -101,7 +104,7 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
   public void syncFromTwitterList(String primaryTwitterList) {
     Twitter twitter = twitterFactory.create();
     Configuration configuration = configurationDAO.find();
-    String baseUrl = configurationDAO.find().getBaseUrl();
+    String baseUrl = staticConfig.getBaseUrl();
     int twitterListId = Integer.parseInt(Strings.nullToEmpty(configuration.getPrimaryTwitterList()));
     long cursor = -1;
     try {
