@@ -878,7 +878,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     tweetTime = tweetTime.withHourOfDay(7);
     TruckStopMatch match = tweet("\n" +
         "Jerk. is at Madison/Wacker today 11a #jerkchicken #foodtruck #jamaican #chicago #lunch #foodie http://t.co/jWVAaz2BxR\n" +
-        "2/19/14 9:05 AM")
+        " 9:05 AM")
         .match();
     assertEquals(tweetTime.withTime(11, 0, 0, 0), match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(13, 0, 0, 0), match.getStop().getEndTime());
