@@ -2,12 +2,15 @@ package foodtruck.server;
 
 import java.io.IOException;
 import java.util.Comparator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicates;
 import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -25,6 +28,7 @@ import foodtruck.model.Truck;
  */
 @Singleton
 public class TruckBusinessesServlet extends FrontPageServlet {
+  private static final Logger log = Logger.getLogger(TruckBusinessesServlet.class.getName());
   private final LocationDAO locationDAO;
   private final TruckDAO truckDAO;
 
@@ -41,9 +45,18 @@ public class TruckBusinessesServlet extends FrontPageServlet {
     req.setAttribute("locations", FluentIterable.from(locationDAO.findLocationsOwnedByFoodTrucks())
         .transform(new Function<Location, LocationWithTruck>() {
           public LocationWithTruck apply(Location location) {
-            return new LocationWithTruck(truckDAO.findById(location.getOwnedBy()), location);
+            //TODO: this shouldn't happen, but not sure what's up yet
+            try {
+              return new LocationWithTruck(truckDAO.findById(location.getOwnedBy()), location);
+            } catch (Exception e) {
+              log.log(Level.WARNING, "Problem with location {0}", location);
+              return null;
+            }
           }
-        }).toSortedList(new Comparator<LocationWithTruck>() {
+
+        })
+        .filter(Predicates.notNull())
+        .toSortedList(new Comparator<LocationWithTruck>() {
           public int compare(LocationWithTruck o1, LocationWithTruck o2) {
             return o1.getLocation().getName().compareTo(o2.getLocation().getName());
           }

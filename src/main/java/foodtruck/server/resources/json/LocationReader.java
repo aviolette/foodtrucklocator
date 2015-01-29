@@ -1,5 +1,7 @@
 package foodtruck.server.resources.json;
 
+import com.google.common.base.Strings;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -24,7 +26,7 @@ public class LocationReader {
         .radius(obj.getDouble("radius"))
         .name(obj.getString("name")).key((key > 0) ? key : null)
         .url(obj.optString("url"))
-        .ownedBy(obj.optString("ownedBy"))
+        .ownedBy(Strings.emptyToNull(obj.optString("ownedBy")))
         .description(obj.optString("description"))
         .valid(obj.optBoolean("valid", true)).build();
   }
