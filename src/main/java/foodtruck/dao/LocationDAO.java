@@ -38,6 +38,8 @@ public interface LocationDAO extends DAO<Long, Location> {
    */
   List<Location> findAutocompleteLocations();
 
+  List<Location> findLocationsOwnedByFoodTrucks();
+
   /**
    * Finds all alias for a specified location, sorted by name (ascending)
    */

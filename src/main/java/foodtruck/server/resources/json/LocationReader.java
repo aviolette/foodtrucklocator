@@ -24,6 +24,7 @@ public class LocationReader {
         .radius(obj.getDouble("radius"))
         .name(obj.getString("name")).key((key > 0) ? key : null)
         .url(obj.optString("url"))
+        .ownedBy(obj.optString("ownedBy"))
         .description(obj.optString("description"))
         .valid(obj.optBoolean("valid", true)).build();
   }

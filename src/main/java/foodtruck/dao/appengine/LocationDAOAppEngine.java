@@ -44,6 +44,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
   private static final String TWITTERHANDLE = "twitter_handle";
   private static final String DESIGNATED_STOP = "designated_stop";
   private static final String HAS_BOOZE = "has_booze";
+  private static final String OWNED_BY = "owned_by";
 
   private static final Logger log = Logger.getLogger(LocationDAOAppEngine.class.getName());
   private final Clock clock;
@@ -90,6 +91,14 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     Query.Filter autoCompleteFilter = new Query.FilterPredicate(AUTOCOMPLETE, Query.FilterOperator.EQUAL, true);
     q.setFilter(Query.CompositeFilterOperator.or(popularFilter, autoCompleteFilter));
     q.addSort(NAME_FIELD);
+    return executeQuery(dataStore, q);
+  }
+
+  @Override
+  public List<Location> findLocationsOwnedByFoodTrucks() {
+    DatastoreService dataStore = provider.get();
+    Query q = new Query(LOCATION_KIND);
+    q.setFilter(new Query.FilterPredicate(OWNED_BY, Query.FilterOperator.NOT_EQUAL, null));
     return executeQuery(dataStore, q);
   }
 
@@ -155,6 +164,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     entity.setProperty(ALIAS, location.getAlias());
     entity.setProperty(TWITTERHANDLE, location.getTwitterHandle());
     entity.setProperty(DESIGNATED_STOP, location.isDesignatedStop());
+    entity.setProperty(OWNED_BY, location.getOwnedBy());
     entity.setProperty(HAS_BOOZE, location.isHasBooze());
     return entity;
   }
@@ -173,6 +183,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     builder.alias(getStringProperty(entity, ALIAS));
     builder.radius(Attributes.getDoubleProperty(entity, RADIAL_FIELD, 0.0));
     builder.twitterHandle(Attributes.getStringProperty(entity, TWITTERHANDLE));
+    builder.ownedBy(getStringProperty(entity, OWNED_BY));
     builder.designatedStop(getBooleanProperty(entity, DESIGNATED_STOP, false));
     builder.hasBooze(getBooleanProperty(entity, HAS_BOOZE, false));
     boolean isValid = valid == null || valid;

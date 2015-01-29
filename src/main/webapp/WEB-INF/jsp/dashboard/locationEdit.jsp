@@ -59,6 +59,12 @@
       </div>
     </div>
     <div class="control-group">
+      <label class="control-label" for="ownedBy">Owned By</label>
+      <div class="controls">
+        <input id="ownedBy" type="text"/>
+      </div>
+    </div>
+    <div class="control-group">
       <label for="description" class="control-label">Description</label>
       <div class="controls">
         <textarea class="span6" id="description" rows="5" cols="80"></textarea>
@@ -121,6 +127,7 @@
       $("#designatedStop").attr("checked", loc.designatedStop);
       $("#autocomplete").attr("checked", loc.autocomplete);
       $("#url").attr("value", loc.url);
+      $("#ownedBy").attr("value", loc.ownedBy);
     }
 
     loadLocation(loc);
@@ -226,6 +233,7 @@
       loc.hasBooze = $("#hasBooze").is(":checked");
       loc.designatedStop = $("#designatedStop").is(":checked");
       loc.autocomplete = $("#autocomplete").is(":checked");
+      loc.ownedBy = $("#ownedBy").attr("value");
       e.preventDefault();
       $submitButton.addClass("disabled");
       $.ajax({

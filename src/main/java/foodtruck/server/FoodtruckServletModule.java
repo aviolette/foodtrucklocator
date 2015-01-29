@@ -59,6 +59,7 @@ public class FoodtruckServletModule extends ServletModule {
   protected void configureServlets() {
     // This allows for us to backup the app-engine datastore locally
     bind(com.google.apphosting.utils.remoteapi.RemoteApiServlet.class).in(Singleton.class);
+    serve("/businesses").with(TruckBusinessesServlet.class);
     serve("/remote_api").with(com.google.apphosting.utils.remoteapi.RemoteApiServlet.class);
     serve("/cron/create_error").with(CreateError.class);
     serve("/cron/recache").with(RecacheServlet.class);

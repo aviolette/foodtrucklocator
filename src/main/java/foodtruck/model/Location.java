@@ -3,7 +3,7 @@ package foodtruck.model;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Function;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.javadocmd.simplelatlng.LatLng;
 import com.javadocmd.simplelatlng.LatLngTool;
 import com.javadocmd.simplelatlng.util.LengthUnit;
@@ -34,6 +34,7 @@ public class Location extends ModelEntity {
   private final @Nullable String twitterHandle;
   private final boolean designatedStop;
   private final boolean hasBooze;
+  private final @Nullable String ownedBy;
 
   public Location(Builder builder) {
     super(builder.key);
@@ -51,6 +52,7 @@ public class Location extends ModelEntity {
     twitterHandle = builder.twitterHandle;
     designatedStop = builder.designatedStop;
     hasBooze = builder.hasBooze;
+    ownedBy = builder.ownedBy;
   }
 
   public boolean isHasBooze() {
@@ -109,6 +111,14 @@ public class Location extends ModelEntity {
     return url;
   }
 
+  /**
+   * Return the truck that owns this location (i.e. a restaurant)
+   * @return the truck that owns this location or null if it's not owned
+   */
+  public @Nullable String getOwnedBy() {
+    return ownedBy;
+  }
+
   // TODO: this probably should be refactored out of here
 
   /**
@@ -131,11 +141,12 @@ public class Location extends ModelEntity {
 
   @Override
   public String toString() {
-    return Objects.toStringHelper(this)
+    return MoreObjects.toStringHelper(this)
         .add("Lat/Lng", latLng)
         .add("Name", name)
         // appengine throws Method undefined errors 'cause of this...not sure why
         .add("Radius", String.valueOf(radius))
+        .add("Owned by", ownedBy)
         .toString();
   }
 
@@ -196,14 +207,15 @@ public class Location extends ModelEntity {
     private @Nullable String description;
     private boolean eventSpecific;
     private @Nullable String url;
-    public double radius = 0d;
+    private double radius = 0d;
     private boolean popular;
     private boolean justResolved;
     private boolean autocomplete;
     private @Nullable String alias;
     private @Nullable String twitterHandle;
     private boolean designatedStop;
-    public boolean hasBooze;
+    private boolean hasBooze;
+    private @Nullable String ownedBy;
 
     public Builder(Location location) {
       key = location.getKey();
@@ -222,9 +234,15 @@ public class Location extends ModelEntity {
       twitterHandle = location.twitterHandle;
       designatedStop = location.designatedStop;
       hasBooze = location.hasBooze;
+      ownedBy = location.ownedBy;
     }
 
     public Builder() {
+    }
+
+    public Builder ownedBy(String ownedBy) {
+      this.ownedBy = ownedBy;
+      return this;
     }
 
     public Builder hasBooze(boolean hasBooze) {
