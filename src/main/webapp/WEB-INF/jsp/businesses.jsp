@@ -19,7 +19,7 @@
             <div><a href='${venue.location.url}'>${venue.location.url}</a></div>
         </c:if>
         <c:if test="${!empty(venue.location.twitterHandle)}">
-            <div><a href="http://twitter.com/${location.location.twitterHandle}">@${venue.location.twitterHandle}</a></div>
+            <div><a href="http://twitter.com/${venue.location.twitterHandle}">@${venue.location.twitterHandle}</a></div>
         </c:if>
     </li>
 </c:forEach>

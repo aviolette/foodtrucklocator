@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
+import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -70,7 +71,13 @@ public class TruckBusinessesServlet extends FrontPageServlet {
 
     public LocationWithTruck(Truck truck, Location location) {
       this.truck = truck;
-      this.location = location;
+      this.location = Location.builder(location)
+          .description(sanitize(location.getDescription()))
+          .url(Strings.nullToEmpty(location.getUrl())).build();
+    }
+
+    private String sanitize(String description) {
+      return description.replaceAll("\n", "<br/>");
     }
 
     public Truck getTruck() {
