@@ -9,6 +9,9 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
+import com.google.api.services.calendar.Calendar;
+import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.EventDateTime;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.FluentIterable;
@@ -19,12 +22,14 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
 import foodtruck.beaconnaise.BeaconSignal;
+import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.MessageDAO;
 import foodtruck.dao.TruckDAO;
@@ -56,10 +61,12 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   private final LocationDAO locationDAO;
   private final GeoLocator geolocator;
   private final MessageDAO messageDAO;
+  private final ConfigurationDAO configurationDAO;
+  private final Provider<Calendar> calendarProvider;
 
   @Inject
-  public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, ScheduleStrategy googleCalendar,
-      Clock clock, TruckDAO truckDAO, LocationDAO locationDAO, GeoLocator geoLocator, MessageDAO messageDAO) {
+  public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, ScheduleStrategy googleCalendar, Clock clock, TruckDAO truckDAO, LocationDAO locationDAO, GeoLocator geoLocator, MessageDAO messageDAO,
+      ConfigurationDAO configurationDAO, Provider<Calendar> calendarProvider) {
     this.truckStopDAO = truckStopDAO;
     this.scheduleStrategy = googleCalendar;
     this.clock = clock;
@@ -67,6 +74,8 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     this.locationDAO = locationDAO;
     this.geolocator = geoLocator;
     this.messageDAO = messageDAO;
+    this.configurationDAO = configurationDAO;
+    this.calendarProvider = calendarProvider;
   }
 
   @Override
@@ -95,12 +104,33 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
           .origin(stop.getOrigin())
           .appendNote("Changed manually at " + clock.nowFormattedAsTime()).build();
     }
-    truckStopDAO.save(truckStop);
+    saveWithBackingStop(truckStop, calendarProvider.get(), configurationDAO.find().getGoogleCalendarAddress());
   }
 
   @Override
   public void updateStopsFor(Interval instant) {
     pullTruckSchedule(instant);
+  }
+
+  @Override
+  public void saveWithBackingStop(TruckStop stop, Calendar calendar, String calendarID) {
+    truckStopDAO.save(stop);
+    try {
+      Event event = new Event();
+      event.setLocation(stop.getLocation()
+          .getName());
+      event.setSummary(stop.getTruck().getId());
+      EventDateTime dt = new EventDateTime();
+      dt.setDateTime(new com.google.api.client.util.DateTime(stop.getStartTime().getMillis()));
+      event.setStart(dt);
+      dt = new EventDateTime();
+      dt.setDateTime(new com.google.api.client.util.DateTime(stop.getEndTime().getMillis()));
+      event.setEnd(dt);
+      Event createdEvent = calendar.events().insert(calendarID, event).execute();
+      log.log(Level.FINE, "Created event {}", createdEvent.getId());
+    } catch (Exception e) {
+      log.log(Level.WARNING, e.getMessage(), e);
+    }
   }
 
   private void pullTruckSchedule(Interval theDay) {

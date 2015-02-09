@@ -1,7 +1,6 @@
 package foodtruck.server.dashboard;
 
 import java.io.IOException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -10,8 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.api.services.calendar.Calendar;
-import com.google.api.services.calendar.model.Event;
-import com.google.api.services.calendar.model.EventDateTime;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -22,10 +19,10 @@ import org.joda.time.format.DateTimeFormatter;
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
-import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.Location;
 import foodtruck.model.TruckStop;
 import foodtruck.server.GuiceHackRequestWrapper;
+import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 import foodtruck.util.HtmlDateFormatter;
 
@@ -41,18 +38,19 @@ public class CompoundEventServlet extends HttpServlet {
   private final LocationDAO locationDAO;
   private final DateTimeFormatter timeFormatter;
   private final Clock clock;
-  private final TruckStopDAO truckStopDAO;
   private final Provider<Calendar> calendarProvider;
   private final ConfigurationDAO configDAO;
+  private final FoodTruckStopService service;
 
   @Inject
   public CompoundEventServlet(TruckDAO truckDAO, LocationDAO locationDAO, ConfigurationDAO configDAO,
-      @HtmlDateFormatter DateTimeFormatter formatter, Clock clock, TruckStopDAO truckStopDAO, Provider<Calendar> calendarProvider) {
+      @HtmlDateFormatter DateTimeFormatter formatter, Clock clock, Provider<Calendar> calendarProvider,
+      FoodTruckStopService service) {
     this.truckDAO = truckDAO;
     this.locationDAO = locationDAO;
     this.timeFormatter = formatter;
     this.clock = clock;
-    this.truckStopDAO = truckStopDAO;
+    this.service = service;
     this.calendarProvider = calendarProvider;
     this.configDAO = configDAO;
   }
@@ -79,22 +77,7 @@ public class CompoundEventServlet extends HttpServlet {
           .endTime(endTime)
           .truck(truckDAO.findById(truckId))
           .build();
-      truckStopDAO.save(stop);
-      try {
-        Event event = new Event();
-        event.setLocation(location.getName());
-        event.setSummary(truckId);
-        EventDateTime dt = new EventDateTime();
-        dt.setDateTime(new com.google.api.client.util.DateTime(startTime.getMillis()));
-        event.setStart(dt);
-        dt = new EventDateTime();
-        dt.setDateTime(new com.google.api.client.util.DateTime(endTime.getMillis()));
-        event.setEnd(dt);
-        Event createdEvent = calendar.events().insert(calendarID, event).execute();
-        log.log(Level.FINE, "Created event {}", createdEvent.getId());
-      } catch (Exception e) {
-        log.log(Level.WARNING, e.getMessage(), e);
-      }
+      service.saveWithBackingStop(stop, calendar, calendarID);
     }
     resp.sendRedirect("/admin/trucks");
   }
