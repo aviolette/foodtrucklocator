@@ -17,4 +17,6 @@ public interface ProfileSyncService {
   Truck createFromTwitter(Truck truck);
 
   void syncFromTwitterList(String primaryTwitterList);
+
+  void syncProfile(String truckId);
 }

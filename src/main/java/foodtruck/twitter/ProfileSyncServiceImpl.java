@@ -1,11 +1,17 @@
 package foodtruck.twitter;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.google.api.client.util.ByteStreams;
 import com.google.appengine.tools.cloudstorage.GcsFileOptions;
@@ -16,9 +22,14 @@ import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
+import com.sun.jersey.api.client.WebResource;
+
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.TruckDAO;
+import foodtruck.facebook.FacebookEndpoint;
 import foodtruck.model.Configuration;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
@@ -39,15 +50,19 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
   private final TruckDAO truckDAO;
   private final ConfigurationDAO configurationDAO;
   private final StaticConfig staticConfig;
+  private final Pattern pageUrlPattern = Pattern.compile("/pages/(.*)/(\\d+)");
+  private final WebResource facebookResource;
+
 
   @Inject
   public ProfileSyncServiceImpl(TwitterFactoryWrapper twitterFactory, GcsService cloudStorage, TruckDAO truckDAO,
-      ConfigurationDAO configDAO, StaticConfig staticConfig) {
+      ConfigurationDAO configDAO, StaticConfig staticConfig,  @FacebookEndpoint WebResource facebookResource) {
     this.twitterFactory = twitterFactory;
     this.cloudStorage = cloudStorage;
     this.truckDAO = truckDAO;
     this.configurationDAO = configDAO;
     this.staticConfig = staticConfig;
+    this.facebookResource = facebookResource;
   }
 
   @Override
@@ -127,4 +142,86 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
     } catch (TwitterException e) {
       throw Throwables.propagate(e);
     }
-  }}
+  }
+
+  @Override
+  public void syncProfile(String truckId) {
+    Truck truck = truckDAO.findById(truckId);
+    if (!Strings.isNullOrEmpty(truck.getTwitterHandle()) && Strings.isNullOrEmpty(truck.getIconUrl())) {
+      truck = syncFromTwitter(truck);
+    }
+    if (!Strings.isNullOrEmpty(truck.getFacebook())) {
+      truck = syncFromFacebookGraph(truck);
+    }
+    truckDAO.save(truck);
+  }
+
+  private Truck syncFromFacebookGraph(Truck truck) {
+    String uri = truck.getFacebook();
+    Matcher m = pageUrlPattern.matcher(uri);
+    Configuration config = configurationDAO.find();
+    if (m.find()) {
+      uri = "/" + m.group(2);
+    }
+    log.log(Level.FINE, "Syncing truck: {0}", truck.getId());
+    String response = facebookResource.uri(URI.create(uri))
+        .get(String.class);
+    JSONObject responseObj = null;
+    try {
+      responseObj = new JSONObject(response);
+    } catch (JSONException e) {
+      return truck;
+    }
+    Truck.Builder builder = null;
+    try {
+      builder = Truck.builder(truck)
+          .facebookPageId(responseObj.getString("id"));
+    } catch (JSONException e) {
+      return truck;
+    }
+    // http://graph.facebook.com/overrice.foodtruck/picture?height=400&width=400
+    if (Strings.isNullOrEmpty(truck.getPreviewIcon())) {
+      try {
+        URL iconUrl = new URL("http", "graph.facebook.com", 80, uri + "/picture?width=180&height=180");
+        log.log(Level.INFO, "Syncing from URL {0}", iconUrl.toString());
+        builder.previewIcon(copyUrlToStorage(iconUrl, config.getBaseUrl(), config.getTruckIconsBucket(), truck.getId() + "_preview"));
+      } catch (MalformedURLException e) {
+        return truck;
+      }
+    }
+    return builder.build();
+  }
+
+  private String copyUrlToStorage(URL iconUrl, String baseUrl, String truckIconsBucket, String baseName) {
+    try {
+      // If the twitter profile exists, then get the icon URL
+      // copy icon to google cloud storage
+      URLConnection connection = iconUrl.openConnection();
+      String mimeType = connection.getContentType();
+      InputStream in = connection.getInputStream();
+      String extension = mimeType.contains("jpeg") ? "jpg" : "png", fileName = baseName + "." + extension;
+
+      GcsFilename gcsFilename = new GcsFilename(truckIconsBucket, fileName);
+      GcsOutputChannel channel = cloudStorage.createOrReplace(gcsFilename,
+          new GcsFileOptions.Builder().mimeType(mimeType)
+              .build());
+      OutputStream out = Channels.newOutputStream(channel);
+      try {
+        ByteStreams.copy(in, out);
+      } finally {
+        in.close();
+        out.close();
+      }
+      return baseUrl + "/images/truckicons/" + fileName;
+    } catch (Exception io) {
+      log.log(Level.WARNING, io.getMessage(), io);
+      throw Throwables.propagate(io);
+    }
+  }
+
+  private Truck syncFromTwitter(Truck truck) {
+    return truck;
+  }
+
+
+}

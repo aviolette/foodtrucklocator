@@ -133,6 +133,7 @@
 </form>
 <button id="submitButton" class="btn btn-primary">Save</button>
 <button id="updateStats" class="btn btn-warning">Update Stats</button>
+<button id="syncProfile" class="btn btn-warning">Sync Profile</button>
 <button id="deleteTruck" class="btn btn-danger">DELETE THIS TRUCK</button>
 
 <script>
@@ -147,7 +148,17 @@
         location.href='/trucks/${truck.id}';
       }
     });
-  })
+  });
+  $("#syncProfile").click(function(e) {
+    e.preventDefault();
+    $.ajax({
+      url: '/cron/profileSync?truckId=${truck.id }',
+      type: 'POST',
+      complete: function() {
+        location.href='/trucks/${truck.id}';
+      }
+    });
+  });
   $("#deleteTruck").click(function () {
     if (confirm("ARE YOU SURE?")) {
       $.ajax({
