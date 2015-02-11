@@ -168,7 +168,11 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
   @Override
   public void syncAllProfiles() {
     for (Truck truck : truckDAO.findAll()) {
-      syncProfile(truck);
+      try {
+        syncProfile(truck);
+      } catch (Exception e) {
+        log.warning(e.getMessage());
+      }
     }
   }
 
@@ -239,6 +243,4 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
   private Truck syncFromTwitter(Truck truck) {
     return truck;
   }
-
-
 }
