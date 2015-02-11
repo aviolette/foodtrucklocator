@@ -1,6 +1,5 @@
 package foodtruck.twitter;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
@@ -147,13 +146,30 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
   @Override
   public void syncProfile(String truckId) {
     Truck truck = truckDAO.findById(truckId);
+    syncProfile(truck);
+  }
+
+  private void syncProfile(Truck truck) {
+    log.log(Level.INFO, "Syncing truck {0}", truck.getId());
+    boolean changed = false;
     if (!Strings.isNullOrEmpty(truck.getTwitterHandle()) && Strings.isNullOrEmpty(truck.getIconUrl())) {
       truck = syncFromTwitter(truck);
+      changed = true;
     }
     if (!Strings.isNullOrEmpty(truck.getFacebook())) {
       truck = syncFromFacebookGraph(truck);
+      changed = true;
     }
-    truckDAO.save(truck);
+    if (changed) {
+      truckDAO.save(truck);
+    }
+  }
+
+  @Override
+  public void syncAllProfiles() {
+    for (Truck truck : truckDAO.findAll()) {
+      syncProfile(truck);
+    }
   }
 
   private Truck syncFromFacebookGraph(Truck truck) {
@@ -184,7 +200,8 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
       try {
         URL iconUrl = new URL("http", "graph.facebook.com", 80, uri + "/picture?width=180&height=180");
         log.log(Level.INFO, "Syncing from URL {0}", iconUrl.toString());
-        builder.previewIcon(copyUrlToStorage(iconUrl, config.getBaseUrl(), config.getTruckIconsBucket(), truck.getId() + "_preview"));
+        builder.previewIcon(
+            copyUrlToStorage(iconUrl, config.getBaseUrl(), config.getTruckIconsBucket(), truck.getId() + "_preview"));
       } catch (MalformedURLException e) {
         return truck;
       }

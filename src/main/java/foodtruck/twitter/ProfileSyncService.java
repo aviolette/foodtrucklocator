@@ -19,4 +19,6 @@ public interface ProfileSyncService {
   void syncFromTwitterList(String primaryTwitterList);
 
   void syncProfile(String truckId);
+
+  void syncAllProfiles();
 }

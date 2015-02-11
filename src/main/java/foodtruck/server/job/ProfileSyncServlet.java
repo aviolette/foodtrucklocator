@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.api.client.util.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -28,6 +29,10 @@ public class ProfileSyncServlet extends HttpServlet {
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     String truckId = req.getParameter("truckId");
-    service.syncProfile(truckId);
+    if (Strings.isNullOrEmpty(truckId)) {
+      service.syncAllProfiles();
+    } else {
+      service.syncProfile(truckId);
+    }
   }
 }

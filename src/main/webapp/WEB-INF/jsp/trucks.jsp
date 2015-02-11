@@ -33,7 +33,7 @@
             $section.append($thumbnail);
             $truckList.append($section);
             if (icon) {
-              $thumbnail.append("<img src='" + icon + "'/>")
+              $thumbnail.append("<img width='180' height='180' src='" + icon + "'/>")
             } else {
               Holder.add_image("/script/holder.js/180x180/sky/text:Truck Image", "#" + thumbnailId).run();
             }
