@@ -152,12 +152,13 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
   private void syncProfile(Truck truck) {
     log.log(Level.INFO, "Syncing truck {0}", truck.getId());
     boolean changed = false;
-    if (!Strings.isNullOrEmpty(truck.getTwitterHandle()) && Strings.isNullOrEmpty(truck.getIconUrl())) {
-      truck = syncFromTwitter(truck);
+    Configuration config = configurationDAO.find();
+    if (!Strings.isNullOrEmpty(truck.getTwitterHandle())) {
+      truck = syncFromTwitter(truck, config, staticConfig.getBaseUrl());
       changed = true;
     }
     if (!Strings.isNullOrEmpty(truck.getFacebook())) {
-      truck = syncFromFacebookGraph(truck);
+      truck = syncFromFacebookGraph(truck, config);
       changed = true;
     }
     if (changed) {
@@ -176,10 +177,9 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
     }
   }
 
-  private Truck syncFromFacebookGraph(Truck truck) {
+  private Truck syncFromFacebookGraph(Truck truck, Configuration config) {
     String uri = truck.getFacebook();
     Matcher m = pageUrlPattern.matcher(uri);
-    Configuration config = configurationDAO.find();
     if (m.find()) {
       uri = "/" + m.group(2);
     }
@@ -221,7 +221,6 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
       String mimeType = connection.getContentType();
       InputStream in = connection.getInputStream();
       String extension = mimeType.contains("jpeg") ? "jpg" : "png", fileName = baseName + "." + extension;
-
       GcsFilename gcsFilename = new GcsFilename(truckIconsBucket, fileName);
       GcsOutputChannel channel = cloudStorage.createOrReplace(gcsFilename,
           new GcsFileOptions.Builder().mimeType(mimeType)
@@ -233,6 +232,7 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
         in.close();
         out.close();
       }
+      log.log(Level.INFO, "Created file {0} in bucket {1}", new Object[] {fileName, truckIconsBucket});
       return baseUrl + "/images/truckicons/" + fileName;
     } catch (Exception io) {
       log.log(Level.WARNING, io.getMessage(), io);
@@ -240,7 +240,31 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
     }
   }
 
-  private Truck syncFromTwitter(Truck truck) {
+  private Truck syncFromTwitter(Truck truck, Configuration configuration, String baseUrl) {
+    Twitter twitter = twitterFactory.create();
+    try {
+      ResponseList<User> response = twitter.users()
+          .lookupUsers(new String[]{truck.getTwitterHandle()});
+      User user = Iterables.getFirst(response, null);
+      if (user != null) {
+        String twitterHandle = user.getScreenName().toLowerCase();
+        Truck.Builder builder = Truck.builder(truck);
+        if (Strings.isNullOrEmpty(truck.getIconUrl())) {
+          String url = syncToGoogleStorage(twitterHandle, user.getProfileImageURL(), baseUrl,
+              configuration.getTruckIconsBucket());
+          builder.url(url);
+        }
+        if (Strings.isNullOrEmpty(truck.getPreviewIcon())) {
+          URL iconUrl = new URL(user.getProfileImageURL().replaceAll("_normal", "_400x400"));
+          builder.previewIcon(copyUrlToStorage(iconUrl, baseUrl, configuration.getTruckIconsBucket(), truck.getId() + "_preview"));
+        }
+        return builder.build();
+      }
+    } catch (TwitterException e) {
+      throw Throwables.propagate(e);
+    } catch (MalformedURLException e) {
+      throw Throwables.propagate(e);
+    }
     return truck;
   }
 }
