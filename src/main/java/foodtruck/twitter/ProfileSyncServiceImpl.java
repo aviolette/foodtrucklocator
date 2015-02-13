@@ -158,8 +158,12 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
       changed = true;
     }
     if (!Strings.isNullOrEmpty(truck.getFacebook())) {
-      truck = syncFromFacebookGraph(truck, config);
-      changed = true;
+      try {
+        truck = syncFromFacebookGraph(truck, config);
+        changed = true;
+      } catch (Exception e) {
+        log.log(Level.WARNING, e.getMessage());
+      }
     }
     if (changed) {
       truckDAO.save(truck);

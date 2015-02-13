@@ -12,10 +12,14 @@ public interface ProfileSyncService {
    * is saved and returned. If there is no matching twitter profile, the input truck profile is just saved.  The
    * icon image in the twitter profile will be copied out to google cloud storage.
    * @param truck the truck parameter
-   * @return
+   * @return the truck that is created
    */
   Truck createFromTwitter(Truck truck);
 
+  /**
+   * Creates an initial list of trucks based on a twitter list ID
+   * @param primaryTwitterList
+   */
   void syncFromTwitterList(String primaryTwitterList);
 
   void syncProfile(String truckId);
