@@ -39,7 +39,6 @@ public class Configuration extends ModelEntity {
   private Confidence minimumConfidenceForDisplay;
   private String syncUrl;
   private String syncAppKey;
-  private boolean globalRecachingEnabled;
 
   public Configuration(Object key) {
     super(key);
@@ -47,7 +46,6 @@ public class Configuration extends ModelEntity {
 
   private Configuration(Builder builder) {
     this(builder.key);
-    this.googleGeolocationEnabled = builder.googleGeolocationEnabled;
     this.yahooGeolocationEnabled = builder.yahooGeolocationEnabled;
     this.throttleGoogleUntil = builder.throttleGoogleUntil;
     this.tweetUpdateServletEnabled = builder.tweetUpdateServletEnabled;
@@ -69,11 +67,6 @@ public class Configuration extends ModelEntity {
     this.minimumConfidenceForDisplay = builder.minimumConfidenceForDisplay;
     this.syncUrl = builder.syncUrl;
     this.syncAppKey = builder.syncAppKey;
-    this.globalRecachingEnabled = builder.globalRecachingEnabled;
-  }
-
-  public boolean isRecachingEnabled() {
-    return globalRecachingEnabled;
   }
 
   public Confidence getMinimumConfidenceForDisplay() {
@@ -208,7 +201,6 @@ public class Configuration extends ModelEntity {
     private Confidence minimumConfidenceForDisplay = Confidence.HIGH;
     private String syncAppKey;
     private String syncUrl;
-    private boolean globalRecachingEnabled;
 
     public Builder() {
     }
@@ -216,7 +208,6 @@ public class Configuration extends ModelEntity {
     public Builder(Configuration config) {
       this.syncUrl = config.syncUrl;
       this.syncAppKey = config.syncAppKey;
-      this.googleGeolocationEnabled = config.isGoogleGeolocationEnabled();
       this.yahooGeolocationEnabled = config.isYahooGeolocationEnabled();
       this.throttleGoogleUntil = config.throttleGoogleUntil;
       this.key = (Key) config.getKey();
@@ -234,12 +225,6 @@ public class Configuration extends ModelEntity {
       this.foodTruckRequestOn = config.foodTruckRequestOn;
       this.showPublicTruckGraphs = config.showPublicTruckGraphs;
       this.autoOffRoad = config.autoOffRoad;
-      this.globalRecachingEnabled = config.globalRecachingEnabled;
-    }
-
-    public Builder globalRecachingEnabled(boolean enabled) {
-      globalRecachingEnabled = enabled;
-      return this;
     }
 
     public Builder syncAppKey(String syncAppKey) {

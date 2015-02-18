@@ -20,9 +20,9 @@ import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.RetweetsDAO;
 import foodtruck.dao.TruckDAO;
+import foodtruck.model.StaticConfig;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.twitter.TwitterService;
 import foodtruck.util.Clock;
@@ -41,10 +41,10 @@ public class RecacheServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(RecacheServlet.class.getName());
   private final DateTimeZone zone;
   private final RetweetsDAO retweetsDAO;
-  private final ConfigurationDAO configurationDAO;
+  private final StaticConfig staticConfig;
 
   @Inject
-  public RecacheServlet(FoodTruckStopService service, Clock clock, ConfigurationDAO configurationDAO,
+  public RecacheServlet(FoodTruckStopService service, Clock clock, StaticConfig staticConfig,
       TwitterService twitterService, TruckDAO truckDAO, DateTimeZone zone, RetweetsDAO retweetsDAO) {
     this.twitterService = twitterService;
     this.service = service;
@@ -53,7 +53,7 @@ public class RecacheServlet extends HttpServlet {
     this.timeFormatter = DateTimeFormat.forPattern("YYYYMMdd").withZone(zone);
     this.zone = zone;
     this.retweetsDAO = retweetsDAO;
-    this.configurationDAO = configurationDAO;
+    this.staticConfig = staticConfig;
   }
 
   @Override
@@ -65,10 +65,14 @@ public class RecacheServlet extends HttpServlet {
     LocalDate when = parseDate(date);
     final Interval instant = when.toInterval(zone).withEnd(when.plusDays(7).toDateMidnight());
     if (!Strings.isNullOrEmpty(truck)) {
+      log.info("Recaching truck: " + truck);
       service.updateStopsForTruck(instant, truckDAO.findById(truck));
     } else {
-      if (configurationDAO.find().isRecachingEnabled()) {
+      if (staticConfig.isRecachingEnabled()) {
+        log.info("Recaching all trucks");
         service.updateStopsFor(instant);
+      } else {
+        log.info("Recaching disabled");
       }
     }
     twitterService.twittalyze();

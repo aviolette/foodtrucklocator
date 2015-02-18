@@ -5,6 +5,10 @@ package foodtruck.model;
  * @since 1/5/15
  */
 public class StaticConfig {
+  public boolean isRecachingEnabled() {
+    return "true".equals(System.getProperty("foodtrucklocator.recache.enabled", "true"));
+  }
+
   public String getSignalId() {
     return System.getProperty("foodtrucklocator.signal.id");
   }
