@@ -34,11 +34,8 @@ public class ConfigurationDAOAppEngine extends
   private static final String PROP_LOCAL_CACHE_ENABLED = "local_twitter_cache_enabled";
   private static final String PROP_REMOTE_CACHE_ENABLED = "remote_twitter_cache_enabled";
   private static final String PROP_REMOTE_CACHE_ADDRESS = "remote_twitter_cache_address";
-  private static final String PROP_PRIMARY_TWITTER_LIST = "primary_twitter_list";
   private static final String PROP_GOOGLE_CALENDAR_ADDRESS = "google_calendar_address";
   private static final String PROP_YAHOO_APP_ID = "yahoo_app_id";
-  private static final String PROP_YAHOO_CONSUMER_KEY = "yahoo_consumer_key";
-  private static final String PROP_YAHOO_CONSUMER_SECRET = "yahoo_consumer_secret";
   private static final String PROP_SYSTEM_NOTIFICATION_EMAILS = "system_notification_receivers";
   private static final String PROP_SYSTEM_NOTIFICATION_SENDER = "system_notification_sender";
   private static final String PROP_FRONT_DOOR_APP_KEY = "front_door_app_key";
@@ -52,7 +49,6 @@ public class ConfigurationDAOAppEngine extends
   private static final String SYNC_URL = "sync_url";
   private static final String SYNC_APPKEY = "sync_appkey";
   private static final String PROP_RECACHE_ENABLED = "recache_enabled";
-  private static final String BASE_URL = "base_url";
 
   @Inject
   public ConfigurationDAOAppEngine(DatastoreServiceProvider provider, DateTimeZone defaultZone) {
@@ -72,7 +68,6 @@ public class ConfigurationDAOAppEngine extends
     entity.setProperty(PROP_REMOTE_CACHE_ENABLED, config.isRemoteTwitterCachingEnabled());
     entity.setProperty(PROP_REMOTE_CACHE_ADDRESS, config.getRemoteTwitterCacheAddress());
     entity.setProperty(PROP_GOOGLE_CALENDAR_ADDRESS, config.getGoogleCalendarAddress());
-    entity.setProperty(PROP_PRIMARY_TWITTER_LIST, config.getPrimaryTwitterList());
     entity.setProperty(PROP_YAHOO_APP_ID, config.getYahooAppId());
     entity.setProperty(PROP_SYSTEM_NOTIFICATION_SENDER, config.getNotificationSender());
     entity.setProperty(PROP_SYSTEM_NOTIFICATION_EMAILS, config.getSystemNotificationList());
@@ -87,8 +82,6 @@ public class ConfigurationDAOAppEngine extends
     entity.setProperty(SYNC_URL, config.getSyncUrl());
     entity.setProperty(SYNC_APPKEY, config.getSyncAppKey());
     entity.setProperty(PROP_RECACHE_ENABLED, config.isRecachingEnabled());
-    entity.setProperty(BASE_URL, config.getBaseUrl());
-    entity.setProperty(PROP_TRUCK_ICON_BUCKET, config.getTruckIconsBucket());
     return entity;
   }
 
@@ -106,8 +99,6 @@ public class ConfigurationDAOAppEngine extends
         .syncUrl(getStringProperty(entity, SYNC_URL))
         .syncAppKey(getStringProperty(entity, SYNC_APPKEY))
         .minimumConfidenceForDisplay(confidence)
-        .baseUrl(getStringProperty(entity, BASE_URL))
-        .truckIconsBucket(getStringProperty(entity, PROP_TRUCK_ICON_BUCKET))
         .autoOffRoad(getBooleanProperty(entity, PROP_AUTO_OFF_ROAD))
         .showPublicTruckGraphs(getBooleanProperty(entity, PROP_SHOW_PUBLIC_TRUCK_GRAPHS, true))
         .googleGeolocationEnabled((Boolean) entity.getProperty(PROP_GOOGLE_GEOLOCATION_ENABLED))
@@ -118,7 +109,6 @@ public class ConfigurationDAOAppEngine extends
         .remoteTwitterCachingEnabled(getBooleanProperty(entity, PROP_REMOTE_CACHE_ENABLED, false))
         .remoteTwitterCacheAddress((String) entity.getProperty(PROP_REMOTE_CACHE_ADDRESS))
         .googleCalendarAddress((String) entity.getProperty(PROP_GOOGLE_CALENDAR_ADDRESS))
-        .primaryTwitterList((String) entity.getProperty(PROP_PRIMARY_TWITTER_LIST))
         .yahooAppId((String) entity.getProperty(PROP_YAHOO_APP_ID))
         .foodTruckRequestOn(getBooleanProperty(entity, PROP_FOOD_TRUCK_REQUEST_ON))
         .sendNotificationTweetWhenNoTrucks(getBooleanProperty(entity, PROP_SEND_NOTIFICATION_WHEN_NO_TRUCKS, true))

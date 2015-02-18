@@ -24,4 +24,12 @@ public class StaticConfig {
   public String getBaseUrl() {
     return System.getProperty("foodtrucklocator.baseUrl", "http://www.chicagofoodtruckfinder.com");
   }
+
+  public String getIconBucket() {
+    return System.getProperty("foodtrucklocator.icon.bucket", "");
+  }
+
+  public String getPrimaryTwitterList() {
+    return System.getProperty("foodtrucklocator.twitter.list.id");
+  }
 }

@@ -16,14 +16,12 @@ import com.google.inject.Singleton;
 
 import foodtruck.dao.ApplicationDAO;
 import foodtruck.dao.ConfigurationDAO;
-import foodtruck.dao.TruckDAO;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Application;
 import foodtruck.model.Configuration;
 import foodtruck.model.Location;
 import foodtruck.schedule.Confidence;
-import foodtruck.twitter.ProfileSyncService;
 import foodtruck.util.RandomString;
 
 /**
@@ -36,17 +34,12 @@ public class ConfigurationServlet extends HttpServlet {
   private final ConfigurationDAO configDAO;
   private final GeoLocator geoLocator;
   private final ApplicationDAO applicationDAO;
-  private final TruckDAO truckDAO;
-  private final ProfileSyncService profileSyncService;
 
   @Inject
-  public ConfigurationServlet(ConfigurationDAO configDAO, GeoLocator geoLocator, ApplicationDAO applicationDAO,
-      TruckDAO truckDAO, ProfileSyncService syncService) {
+  public ConfigurationServlet(ConfigurationDAO configDAO, GeoLocator geoLocator, ApplicationDAO applicationDAO) {
     this.configDAO = configDAO;
     this.geoLocator = geoLocator;
     this.applicationDAO = applicationDAO;
-    this.truckDAO = truckDAO;
-    this.profileSyncService = syncService;
   }
 
   @Override
@@ -101,8 +94,6 @@ public class ConfigurationServlet extends HttpServlet {
         .foodTruckRequestOn("on".equals(req.getParameter("foodTruckRequestOn")))
         .syncUrl(req.getParameter("syncUrl"))
         .syncAppKey(req.getParameter("syncAppKey"))
-        .baseUrl(req.getParameter("baseUrl"))
-        .truckIconsBucket(req.getParameter("truckIconsBucket"))
         .globalRecachingEnabled("on".equals(req.getParameter("recachingEnabled")))
         .yahooGeolocationEnabled("on".equals(req.getParameter("yahooGeolocationEnabled")))
         .googleGeolocationEnabled("on".equals(req.getParameter("googleGeolocationEnabled")))
@@ -115,7 +106,6 @@ public class ConfigurationServlet extends HttpServlet {
         .googleCalendarAddress(req.getParameter("googleCalendarAddress"))
         .yahooAppId(req.getParameter("yahooAppId"))
         .scheduleCachingOn("on".equals(req.getParameter("scheduleCachingOn")))
-        .primaryTwitterList(req.getParameter("primaryTwitterList"))
         .notificationSender(req.getParameter("notificationSender"))
         .frontDoorAppKey(req.getParameter("frontDoorAppKey"))
         .systemNotificationList(notificationReceivers)
@@ -123,10 +113,6 @@ public class ConfigurationServlet extends HttpServlet {
         .build();
 
     configDAO.save(config);
-    long count = truckDAO.count();
-    if (count == 0 && !Strings.isNullOrEmpty(config.getPrimaryTwitterList())) {
-      profileSyncService.syncFromTwitterList(config.getPrimaryTwitterList());
-    }
     resp.sendRedirect("/admin/configuration");
   }
 }

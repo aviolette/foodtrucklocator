@@ -26,10 +26,8 @@ import com.sun.jersey.api.client.WebResource;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.facebook.FacebookEndpoint;
-import foodtruck.model.Configuration;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
 import twitter4j.PagableResponseList;
@@ -47,7 +45,6 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
   private final TwitterFactoryWrapper twitterFactory;
   private final GcsService cloudStorage;
   private final TruckDAO truckDAO;
-  private final ConfigurationDAO configurationDAO;
   private final StaticConfig staticConfig;
   private final Pattern pageUrlPattern = Pattern.compile("/pages/(.*)/(\\d+)");
   private final WebResource facebookResource;
@@ -55,11 +52,10 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
 
   @Inject
   public ProfileSyncServiceImpl(TwitterFactoryWrapper twitterFactory, GcsService cloudStorage, TruckDAO truckDAO,
-      ConfigurationDAO configDAO, StaticConfig staticConfig,  @FacebookEndpoint WebResource facebookResource) {
+      StaticConfig staticConfig,  @FacebookEndpoint WebResource facebookResource) {
     this.twitterFactory = twitterFactory;
     this.cloudStorage = cloudStorage;
     this.truckDAO = truckDAO;
-    this.configurationDAO = configDAO;
     this.staticConfig = staticConfig;
     this.facebookResource = facebookResource;
   }
@@ -71,9 +67,8 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
       ResponseList<User> lookup = twitter.users().lookupUsers(new String[]{truck.getTwitterHandle()});
       User user = Iterables.getFirst(lookup, null);
       if (user != null) {
-        Configuration configuration = configurationDAO.find();
         String url = syncToGoogleStorage(user.getScreenName(), user.getProfileImageURL(),
-            configuration.getBaseUrl(), configuration.getTruckIconsBucket());
+            staticConfig.getBaseUrl(), staticConfig.getIconBucket());
         String website = user.getURLEntity().getExpandedURL();
         truck = Truck.builder(truck)
             .name(user.getName())
@@ -117,9 +112,8 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
   @Override
   public void syncFromTwitterList(String primaryTwitterList) {
     Twitter twitter = twitterFactory.create();
-    Configuration configuration = configurationDAO.find();
     String baseUrl = staticConfig.getBaseUrl();
-    int twitterListId = Integer.parseInt(Strings.nullToEmpty(configuration.getPrimaryTwitterList()));
+    int twitterListId = Integer.parseInt(Strings.nullToEmpty(staticConfig.getPrimaryTwitterList()));
     long cursor = -1;
     try {
       PagableResponseList<User> result;
@@ -128,7 +122,7 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
         for (User user : result) {
           String twitterHandle = user.getScreenName().toLowerCase();
           String url = syncToGoogleStorage(twitterHandle, user.getProfileImageURL(), baseUrl,
-              configuration.getTruckIconsBucket());
+              staticConfig.getIconBucket());
           truckDAO.save(Truck.builder()
                   .id(twitterHandle)
                   .name(user.getName())
@@ -152,14 +146,13 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
   private void syncProfile(Truck truck) {
     log.log(Level.INFO, "Syncing truck {0}", truck.getId());
     boolean changed = false;
-    Configuration config = configurationDAO.find();
     if (!Strings.isNullOrEmpty(truck.getTwitterHandle())) {
-      truck = syncFromTwitter(truck, config, staticConfig.getBaseUrl());
+      truck = syncFromTwitter(truck, staticConfig.getBaseUrl());
       changed = true;
     }
     if (!Strings.isNullOrEmpty(truck.getFacebook())) {
       try {
-        truck = syncFromFacebookGraph(truck, config);
+        truck = syncFromFacebookGraph(truck);
         changed = true;
       } catch (Exception e) {
         log.log(Level.WARNING, e.getMessage());
@@ -181,7 +174,7 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
     }
   }
 
-  private Truck syncFromFacebookGraph(Truck truck, Configuration config) {
+  private Truck syncFromFacebookGraph(Truck truck) {
     String uri = truck.getFacebook();
     Matcher m = pageUrlPattern.matcher(uri);
     if (m.find()) {
@@ -209,7 +202,8 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
         URL iconUrl = new URL("http", "graph.facebook.com", 80, uri + "/picture?width=180&height=180");
         log.log(Level.INFO, "Syncing from URL {0}", iconUrl.toString());
         builder.previewIcon(
-            copyUrlToStorage(iconUrl, config.getBaseUrl(), config.getTruckIconsBucket(), truck.getId() + "_preview"));
+            copyUrlToStorage(iconUrl, staticConfig.getBaseUrl(), staticConfig.getIconBucket(),
+                truck.getId() + "_preview"));
       } catch (MalformedURLException e) {
         return truck;
       }
@@ -244,7 +238,7 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
     }
   }
 
-  private Truck syncFromTwitter(Truck truck, Configuration configuration, String baseUrl) {
+  private Truck syncFromTwitter(Truck truck, String baseUrl) {
     Twitter twitter = twitterFactory.create();
     try {
       ResponseList<User> response = twitter.users()
@@ -255,12 +249,12 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
         Truck.Builder builder = Truck.builder(truck);
         if (Strings.isNullOrEmpty(truck.getIconUrl())) {
           String url = syncToGoogleStorage(twitterHandle, user.getProfileImageURL(), baseUrl,
-              configuration.getTruckIconsBucket());
+              staticConfig.getIconBucket());
           builder.url(url);
         }
         if (Strings.isNullOrEmpty(truck.getPreviewIcon())) {
           URL iconUrl = new URL(user.getProfileImageURL().replaceAll("_normal", "_400x400"));
-          builder.previewIcon(copyUrlToStorage(iconUrl, baseUrl, configuration.getTruckIconsBucket(), truck.getId() + "_preview"));
+          builder.previewIcon(copyUrlToStorage(iconUrl, baseUrl, staticConfig.getIconBucket(), truck.getId() + "_preview"));
         }
         return builder.build();
       }

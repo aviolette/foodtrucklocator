@@ -26,7 +26,6 @@ public class Configuration extends ModelEntity {
   private boolean remoteTwitterCachingEnabled;
   private @Nullable String remoteTwitterCacheAddress;
   private @Nullable String yahooAppId;
-  private @Nullable String primaryTwitterList;
   private @Nullable String googleCalendarAddress;
   private List<String> systemNotificationList;
   private @Nullable String notificationSender;
@@ -41,8 +40,6 @@ public class Configuration extends ModelEntity {
   private String syncUrl;
   private String syncAppKey;
   private boolean globalRecachingEnabled;
-  private String baseUrl;
-  private String truckIconsBucket;
 
   public Configuration(Object key) {
     super(key);
@@ -60,7 +57,6 @@ public class Configuration extends ModelEntity {
     this.remoteTwitterCachingEnabled = builder.remoteTwitterCachingEnabled;
     this.yahooAppId = builder.yahooAppId;
     this.googleCalendarAddress = builder.googleCalendarAddress;
-    this.primaryTwitterList = builder.primaryTwitterList;
     this.systemNotificationList = builder.systemNotificationList;
     this.notificationSender = builder.notificationSender;
     this.frontDoorAppKey = builder.frontDoorAppKey;
@@ -74,12 +70,6 @@ public class Configuration extends ModelEntity {
     this.syncUrl = builder.syncUrl;
     this.syncAppKey = builder.syncAppKey;
     this.globalRecachingEnabled = builder.globalRecachingEnabled;
-    this.baseUrl = builder.baseUrl;
-    this.truckIconsBucket = builder.truckIconsBucket;
-  }
-
-  public String getTruckIconsBucket() {
-    return truckIconsBucket;
   }
 
   public boolean isRecachingEnabled() {
@@ -119,11 +109,7 @@ public class Configuration extends ModelEntity {
   }
 
   public String getNotificationReceivers() {
-    return Joiner.on(",").join(systemNotificationList).toString();
-  }
-
-  public @Nullable String getPrimaryTwitterList() {
-    return primaryTwitterList;
+    return Joiner.on(",").join(systemNotificationList);
   }
 
   public @Nullable String getGoogleCalendarAddress() {
@@ -198,10 +184,6 @@ public class Configuration extends ModelEntity {
     return syncAppKey;
   }
 
-  public String getBaseUrl() {
-    return baseUrl;
-  }
-
   public static class Builder {
     private boolean googleGeolocationEnabled = true;
     private boolean yahooGeolocationEnabled = false;
@@ -213,7 +195,6 @@ public class Configuration extends ModelEntity {
     private @Nullable String remoteTwitterCacheAddress;
     private boolean remoteTwitterCachingEnabled;
     private @Nullable String yahooAppId;
-    private @Nullable String primaryTwitterList;
     private @Nullable String googleCalendarAddress;
     private List<String> systemNotificationList = ImmutableList.of();
     private @Nullable String notificationSender;
@@ -228,8 +209,6 @@ public class Configuration extends ModelEntity {
     private String syncAppKey;
     private String syncUrl;
     private boolean globalRecachingEnabled;
-    private String baseUrl;
-    private String truckIconsBucket;
 
     public Builder() {
     }
@@ -246,7 +225,6 @@ public class Configuration extends ModelEntity {
       this.remoteTwitterCacheAddress = config.remoteTwitterCacheAddress;
       this.remoteTwitterCachingEnabled = config.remoteTwitterCachingEnabled;
       this.yahooAppId = config.yahooAppId;
-      this.primaryTwitterList = config.primaryTwitterList;
       this.googleCalendarAddress = config.googleCalendarAddress;
       this.systemNotificationList = config.systemNotificationList;
       this.notificationSender = config.notificationSender;
@@ -257,13 +235,6 @@ public class Configuration extends ModelEntity {
       this.showPublicTruckGraphs = config.showPublicTruckGraphs;
       this.autoOffRoad = config.autoOffRoad;
       this.globalRecachingEnabled = config.globalRecachingEnabled;
-      this.baseUrl = config.baseUrl;
-      this.truckIconsBucket = config.truckIconsBucket;
-    }
-
-    public Builder truckIconsBucket(String bucket) {
-      this.truckIconsBucket = bucket;
-      return this;
     }
 
     public Builder globalRecachingEnabled(boolean enabled) {
@@ -318,11 +289,6 @@ public class Configuration extends ModelEntity {
 
     public Builder googleCalendarAddress(String address) {
       this.googleCalendarAddress = address;
-      return this;
-    }
-
-    public Builder primaryTwitterList(String list) {
-      this.primaryTwitterList = list;
       return this;
     }
 
@@ -387,11 +353,6 @@ public class Configuration extends ModelEntity {
 
     public Builder retweetStopCreatingTweets(boolean retweet) {
       this.retweetStopCreatingTweets = retweet;
-      return this;
-    }
-
-    public Builder baseUrl(String baseUrl) {
-      this.baseUrl = baseUrl;
       return this;
     }
 

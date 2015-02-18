@@ -27,6 +27,7 @@ import foodtruck.email.EmailNotifier;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
+import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckObserver;
 import foodtruck.model.TruckStop;
@@ -39,6 +40,7 @@ import foodtruck.schedule.TruckStopMatch;
 import foodtruck.schedule.TruckStopMatcher;
 import foodtruck.truckstops.LoggingTruckStopNotifier;
 import foodtruck.util.Clock;
+
 import static org.easymock.EasyMock.expect;
 
 /**
@@ -111,7 +113,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
         truckStopDAO,
         clock, terminationDetector, new LocalCacheUpdater(), truckDAO,
         new LoggingTruckStopNotifier(), configDAO, emailNotifier, offTheRoadDetector, locator, truckObserverDAO,
-        notificationDAO, retweetDAO, null, timeFormatter);
+        notificationDAO, retweetDAO, null, timeFormatter, new StaticConfig());
     loca = Location.builder().lat(1).lng(2).name("a").build();
     locb = Location.builder().lat(3).lng(4).name("b").build();
     basicTweet = new TweetSummary.Builder().time(now.minusHours(2)).text(

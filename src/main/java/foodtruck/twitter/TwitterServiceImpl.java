@@ -41,6 +41,7 @@ import foodtruck.email.EmailNotifier;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
+import foodtruck.model.StaticConfig;
 import foodtruck.model.StopOrigin;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckObserver;
@@ -94,6 +95,7 @@ public class TwitterServiceImpl implements TwitterService {
   private final RetweetsDAO retweetsDAO;
   private final FoodTruckStopService truckStopService;
   private final DateTimeFormatter timeFormatter;
+  private final StaticConfig staticConfig;
 
   @Inject
   public TwitterServiceImpl(TwitterFactoryWrapper twitter, TweetCacheDAO tweetDAO,
@@ -104,7 +106,7 @@ public class TwitterServiceImpl implements TwitterService {
       EmailNotifier notifier, OffTheRoadDetector offTheRoadDetector, GeoLocator locator,
       TruckObserverDAO truckObserverDAO, TwitterNotificationAccountDAO notificationAccountDAO,
       RetweetsDAO retweetsDAO, FoodTruckStopService truckStopService,
-      @TimeOnlyFormatter DateTimeFormatter timeFormatter) {
+      @TimeOnlyFormatter DateTimeFormatter timeFormatter, StaticConfig staticConfig) {
     this.tweetDAO = tweetDAO;
     this.twitterFactory = twitter;
     this.defaultZone = zone;
@@ -124,6 +126,7 @@ public class TwitterServiceImpl implements TwitterService {
     this.retweetsDAO = retweetsDAO;
     this.truckStopService = truckStopService;
     this.timeFormatter = timeFormatter;
+    this.staticConfig = staticConfig;
   }
 
   @Override @Monitored
@@ -166,7 +169,7 @@ public class TwitterServiceImpl implements TwitterService {
     Twitter twitter = twitterFactory.create();
     try {
       Paging paging = determinePaging();
-      int twitterListId = Integer.parseInt(configDAO.find().getPrimaryTwitterList());
+      int twitterListId = Integer.parseInt(staticConfig.getPrimaryTwitterList());
       List<Status> statuses = twitter.getUserListStatuses(twitterListId, paging);
       boolean first = true;
       List<TweetSummary> summaries = Lists.newLinkedList();

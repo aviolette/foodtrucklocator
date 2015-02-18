@@ -7,14 +7,6 @@
       <label for="mapCenter">Map Center</label>
       <input class="span6" type="text" value="${config.center.name}" name="mapCenter" id="mapCenter"/>
     </div>
-      <div class="clearfix">
-        <label for="baseUrl">Base URL</label>
-        <input class="span6" type="text" value="${config.baseUrl}" name="baseUrl" id="baseUrl"/>
-      </div>
-      <div class="clearfix">
-        <label for="truckIconsBucket">Truck Icon Bucket</label>
-        <input class="span6" type="text" value="${config.truckIconsBucket}" name="truckIconsBucket" id="truckIconsBucket"/>
-      </div>
     <div>
       <div class="input">
         <ul class="unstyled">
@@ -101,11 +93,6 @@
   </fieldset>
   <fieldset>
     <legend>Twitter</legend>
-    <div class="clearfix">
-      <label for="twitterList">Primary Twitter List Id</label>
-      <input class="span4" type="text" value="${config.primaryTwitterList}" name="primaryTwitterList" id="twitterList"/>
-    </div>
-
     <div>
       <div class="input">
         <ul class="unstyled">
