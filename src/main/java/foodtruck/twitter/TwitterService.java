@@ -54,9 +54,4 @@ public interface TwitterService {
    * @param summary the tweet summary
    */
   void save(TweetSummary summary);
-
-  /**
-   * Puts tweets in the local cache from a remote cache.
-   */
-  void updateFromRemoteCache();
 }

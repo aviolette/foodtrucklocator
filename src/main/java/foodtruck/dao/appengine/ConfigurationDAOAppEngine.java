@@ -60,9 +60,6 @@ public class ConfigurationDAOAppEngine extends
     entity.setProperty(PROP_CENTER_NAME, config.getCenter().getName());
     entity.setProperty(PROP_CENTER_LATITUDE, config.getCenter().getLatitude());
     entity.setProperty(PROP_CENTER_LONGITUDE, config.getCenter().getLongitude());
-    entity.setProperty(PROP_LOCAL_CACHE_ENABLED, config.isLocalTwitterCachingEnabled());
-    entity.setProperty(PROP_REMOTE_CACHE_ENABLED, config.isRemoteTwitterCachingEnabled());
-    entity.setProperty(PROP_REMOTE_CACHE_ADDRESS, config.getRemoteTwitterCacheAddress());
     entity.setProperty(PROP_GOOGLE_CALENDAR_ADDRESS, config.getGoogleCalendarAddress());
     entity.setProperty(PROP_YAHOO_APP_ID, config.getYahooAppId());
     entity.setProperty(PROP_SYSTEM_NOTIFICATION_SENDER, config.getNotificationSender());
@@ -98,9 +95,6 @@ public class ConfigurationDAOAppEngine extends
         .googleGeolocationEnabled((Boolean) entity.getProperty(PROP_GOOGLE_GEOLOCATION_ENABLED))
         .yahooGeolocationEnabled((Boolean) entity.getProperty(PROP_YAHOO_GEOLOCATION_ENABLED))
         .throttleGoogleGeocoding(Attributes.getDateTime(entity, PROP_GOOGLE_THROTTLE, defaultZone))
-        .localTwitterCachingEnabled(getBooleanProperty(entity, PROP_LOCAL_CACHE_ENABLED, true))
-        .remoteTwitterCachingEnabled(getBooleanProperty(entity, PROP_REMOTE_CACHE_ENABLED, false))
-        .remoteTwitterCacheAddress((String) entity.getProperty(PROP_REMOTE_CACHE_ADDRESS))
         .googleCalendarAddress((String) entity.getProperty(PROP_GOOGLE_CALENDAR_ADDRESS))
         .yahooAppId((String) entity.getProperty(PROP_YAHOO_APP_ID))
         .foodTruckRequestOn(getBooleanProperty(entity, PROP_FOOD_TRUCK_REQUEST_ON))

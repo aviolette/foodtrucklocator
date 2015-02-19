@@ -13,18 +13,12 @@ import javax.annotation.Nullable;
 import com.google.appengine.repackaged.com.google.common.collect.ImmutableList;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
 
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -128,41 +122,6 @@ public class TwitterServiceImpl implements TwitterService {
     this.timeFormatter = timeFormatter;
     this.staticConfig = staticConfig;
   }
-
-  @Override @Monitored
-  public void updateFromRemoteCache() {
-    // This is expensive
-    Client client = Client.create();
-    WebResource resource = client.resource(configDAO.find().getRemoteTwitterCacheAddress() + "/services/tweets/" +
-        tweetDAO.getLastTweetId());
-    JSONArray arr = resource.get(JSONArray.class);
-    boolean first = true;
-    ImmutableList.Builder<TweetSummary> summaries = ImmutableList.builder();
-    for (int i = 0; i < arr.length(); i++) {
-      try {
-        JSONObject tweetObj = arr.getJSONObject(i);
-        TweetSummary.Builder builder = new TweetSummary.Builder()
-            .id(tweetObj.getLong("id"))
-            .text(tweetObj.getString("text"))
-            .userId(tweetObj.getString("user"))
-            .time(new DateTime(tweetObj.getLong("time"), defaultZone));
-        JSONObject locationObj = tweetObj.optJSONObject("location");
-        if (locationObj != null) {
-          builder.location(Location.builder().lat(tweetObj.getDouble("lat")).lng(tweetObj.getDouble("lng")).build());
-        }
-        TweetSummary tweetSummary = builder.build();
-        if (first) {
-          tweetDAO.setLastTweetId(tweetSummary.getId());
-          first = false;
-        }
-        summaries.add(tweetSummary);
-      } catch (JSONException e) {
-        throw Throwables.propagate(e);
-      }
-    }
-    tweetDAO.save(summaries.build());
-  }
-
 
   @Override @Monitored
   public void updateTwitterCache() {

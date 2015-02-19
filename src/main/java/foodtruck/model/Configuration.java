@@ -21,9 +21,6 @@ public class Configuration extends ModelEntity {
   private boolean googleGeolocationEnabled;
   private DateTime throttleGoogleUntil;
   private @Nullable Location center;
-  private boolean localTwitterCachingEnabled;
-  private boolean remoteTwitterCachingEnabled;
-  private @Nullable String remoteTwitterCacheAddress;
   private @Nullable String yahooAppId;
   private @Nullable String googleCalendarAddress;
   private List<String> systemNotificationList;
@@ -48,9 +45,6 @@ public class Configuration extends ModelEntity {
     this.yahooGeolocationEnabled = builder.yahooGeolocationEnabled;
     this.throttleGoogleUntil = builder.throttleGoogleUntil;
     this.center = builder.center;
-    this.localTwitterCachingEnabled = builder.localTwitterCachingEnabled;
-    this.remoteTwitterCacheAddress = builder.remoteTwitterCacheAddress;
-    this.remoteTwitterCachingEnabled = builder.remoteTwitterCachingEnabled;
     this.yahooAppId = builder.yahooAppId;
     this.googleCalendarAddress = builder.googleCalendarAddress;
     this.systemNotificationList = builder.systemNotificationList;
@@ -65,6 +59,7 @@ public class Configuration extends ModelEntity {
     this.minimumConfidenceForDisplay = builder.minimumConfidenceForDisplay;
     this.syncUrl = builder.syncUrl;
     this.syncAppKey = builder.syncAppKey;
+    this.googleGeolocationEnabled = builder.googleGeolocationEnabled;
   }
 
   public Confidence getMinimumConfidenceForDisplay() {
@@ -109,18 +104,6 @@ public class Configuration extends ModelEntity {
 
   public @Nullable String getYahooAppId() {
     return this.yahooAppId;
-  }
-
-  public boolean isLocalTwitterCachingEnabled() {
-    return localTwitterCachingEnabled;
-  }
-
-  public boolean isRemoteTwitterCachingEnabled() {
-    return remoteTwitterCachingEnabled;
-  }
-
-  public @Nullable String getRemoteTwitterCacheAddress() {
-    return remoteTwitterCacheAddress;
   }
 
   public boolean isYahooGeolocationEnabled() {
@@ -176,11 +159,7 @@ public class Configuration extends ModelEntity {
     private boolean yahooGeolocationEnabled = false;
     private Key key;
     private @Nullable DateTime throttleGoogleUntil;
-    private boolean tweetUpdateServletEnabled;
     private Location center;
-    private boolean localTwitterCachingEnabled;
-    private @Nullable String remoteTwitterCacheAddress;
-    private boolean remoteTwitterCachingEnabled;
     private @Nullable String yahooAppId;
     private @Nullable String googleCalendarAddress;
     private List<String> systemNotificationList = ImmutableList.of();
@@ -205,9 +184,6 @@ public class Configuration extends ModelEntity {
       this.yahooGeolocationEnabled = config.isYahooGeolocationEnabled();
       this.throttleGoogleUntil = config.throttleGoogleUntil;
       this.key = (Key) config.getKey();
-      this.localTwitterCachingEnabled = config.localTwitterCachingEnabled;
-      this.remoteTwitterCacheAddress = config.remoteTwitterCacheAddress;
-      this.remoteTwitterCachingEnabled = config.remoteTwitterCachingEnabled;
       this.yahooAppId = config.yahooAppId;
       this.googleCalendarAddress = config.googleCalendarAddress;
       this.systemNotificationList = config.systemNotificationList;
@@ -275,21 +251,6 @@ public class Configuration extends ModelEntity {
       return this;
     }
 
-    public Builder localTwitterCachingEnabled(boolean enabled) {
-      this.localTwitterCachingEnabled = enabled;
-      return this;
-    }
-
-    public Builder remoteTwitterCachingEnabled(boolean enabled) {
-      this.remoteTwitterCachingEnabled = enabled;
-      return this;
-    }
-
-    public Builder remoteTwitterCacheAddress(@Nullable String twitterCacheAddress) {
-      this.remoteTwitterCacheAddress = twitterCacheAddress;
-      return this;
-    }
-
     public Builder googleGeolocationEnabled(boolean enabled) {
       this.googleGeolocationEnabled = enabled;
       return this;
@@ -297,11 +258,6 @@ public class Configuration extends ModelEntity {
 
     public Builder yahooGeolocationEnabled(boolean enabled) {
       this.yahooGeolocationEnabled = enabled;
-      return this;
-    }
-
-    public Builder tweetUpdateServletEnabled(boolean enabled) {
-      this.tweetUpdateServletEnabled = enabled;
       return this;
     }
 

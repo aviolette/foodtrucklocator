@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import foodtruck.dao.ConfigurationDAO;
-import foodtruck.model.Configuration;
 import foodtruck.twitter.TwitterService;
 
 /**
@@ -24,12 +22,10 @@ import foodtruck.twitter.TwitterService;
 public class TweetCacheUpdateServlet extends HttpServlet implements Runnable {
   private static final Logger log = Logger.getLogger(TweetCacheUpdateServlet.class.getName());
   private final TwitterService service;
-  private final ConfigurationDAO configDAO;
 
   @Inject
-  public TweetCacheUpdateServlet(TwitterService service, ConfigurationDAO configDAO) {
+  public TweetCacheUpdateServlet(TwitterService service) {
     this.service = service;
-    this.configDAO = configDAO;
   }
 
   @Override
@@ -40,18 +36,10 @@ public class TweetCacheUpdateServlet extends HttpServlet implements Runnable {
 
   @Override
   public void run() {
-    Configuration configuration = configDAO.find();
-    if (configuration.isLocalTwitterCachingEnabled()) {
-      try {
-        service.updateTwitterCache();
-      } catch (Exception e) {
-        log.log(Level.WARNING, "Error updating twitter cache", e);
-      }
-    } else {
-      log.info("Local twitter caching disabled");
-    }
-    if (configuration.isRemoteTwitterCachingEnabled()) {
-      service.updateFromRemoteCache();
+    try {
+      service.updateTwitterCache();
+    } catch (Exception e) {
+      log.log(Level.WARNING, "Error updating twitter cache", e);
     }
     service.twittalyze();
     service.observerTwittalyze();
