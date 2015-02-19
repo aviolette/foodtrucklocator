@@ -25,7 +25,6 @@ public class ConfigurationDAOAppEngine extends
   private static final String PROP_GOOGLE_GEOLOCATION_ENABLED = "google_geolcation";
   private static final String PROP_YAHOO_GEOLOCATION_ENABLED = "yahoo_geolocation";
   private static final String PROP_GOOGLE_THROTTLE = "google_throttle_until";
-  private static final String PROP_GOOGLE_TWEET_UPLOADING_ENABLED = "tweet_uploading";
   private final DateTimeZone defaultZone;
   private static final String PROP_CENTER_LATITUDE = "center_latitude";
   private static final String PROP_CENTER_LONGITUDE = "center_longitude";
@@ -57,7 +56,6 @@ public class ConfigurationDAOAppEngine extends
   @Override protected Entity toEntity(Entity entity, Configuration config) {
     entity.setProperty(PROP_GOOGLE_GEOLOCATION_ENABLED, config.isGoogleGeolocationEnabled());
     entity.setProperty(PROP_YAHOO_GEOLOCATION_ENABLED, config.isYahooGeolocationEnabled());
-    entity.setProperty(PROP_GOOGLE_TWEET_UPLOADING_ENABLED, config.isTweetUpdateServletEnabled());
     Attributes.setDateProperty(PROP_GOOGLE_THROTTLE, entity, config.getThrottleGoogleUntil());
     entity.setProperty(PROP_CENTER_NAME, config.getCenter().getName());
     entity.setProperty(PROP_CENTER_LATITUDE, config.getCenter().getLatitude());
@@ -99,7 +97,6 @@ public class ConfigurationDAOAppEngine extends
         .showPublicTruckGraphs(getBooleanProperty(entity, PROP_SHOW_PUBLIC_TRUCK_GRAPHS, true))
         .googleGeolocationEnabled((Boolean) entity.getProperty(PROP_GOOGLE_GEOLOCATION_ENABLED))
         .yahooGeolocationEnabled((Boolean) entity.getProperty(PROP_YAHOO_GEOLOCATION_ENABLED))
-        .tweetUpdateServletEnabled(getBooleanProperty(entity, PROP_GOOGLE_TWEET_UPLOADING_ENABLED))
         .throttleGoogleGeocoding(Attributes.getDateTime(entity, PROP_GOOGLE_THROTTLE, defaultZone))
         .localTwitterCachingEnabled(getBooleanProperty(entity, PROP_LOCAL_CACHE_ENABLED, true))
         .remoteTwitterCachingEnabled(getBooleanProperty(entity, PROP_REMOTE_CACHE_ENABLED, false))

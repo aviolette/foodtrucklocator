@@ -20,7 +20,6 @@ public class Configuration extends ModelEntity {
   private boolean yahooGeolocationEnabled;
   private boolean googleGeolocationEnabled;
   private DateTime throttleGoogleUntil;
-  private boolean tweetUpdateServletEnabled;
   private @Nullable Location center;
   private boolean localTwitterCachingEnabled;
   private boolean remoteTwitterCachingEnabled;
@@ -48,7 +47,6 @@ public class Configuration extends ModelEntity {
     this(builder.key);
     this.yahooGeolocationEnabled = builder.yahooGeolocationEnabled;
     this.throttleGoogleUntil = builder.throttleGoogleUntil;
-    this.tweetUpdateServletEnabled = builder.tweetUpdateServletEnabled;
     this.center = builder.center;
     this.localTwitterCachingEnabled = builder.localTwitterCachingEnabled;
     this.remoteTwitterCacheAddress = builder.remoteTwitterCacheAddress;
@@ -133,10 +131,6 @@ public class Configuration extends ModelEntity {
     return googleGeolocationEnabled;
   }
 
-  public boolean isTweetUpdateServletEnabled() {
-    return tweetUpdateServletEnabled;
-  }
-
   public boolean isGoogleThrottled(DateTime when) {
     return (throttleGoogleUntil != null && throttleGoogleUntil.isAfter(when));
   }
@@ -211,7 +205,6 @@ public class Configuration extends ModelEntity {
       this.yahooGeolocationEnabled = config.isYahooGeolocationEnabled();
       this.throttleGoogleUntil = config.throttleGoogleUntil;
       this.key = (Key) config.getKey();
-      this.tweetUpdateServletEnabled = config.tweetUpdateServletEnabled;
       this.localTwitterCachingEnabled = config.localTwitterCachingEnabled;
       this.remoteTwitterCacheAddress = config.remoteTwitterCacheAddress;
       this.remoteTwitterCachingEnabled = config.remoteTwitterCachingEnabled;
