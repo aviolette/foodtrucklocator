@@ -67,7 +67,7 @@ public class TrucksServlet extends FrontPageServlet {
       LocalDate firstDay = clock.firstDayOfWeek();
       req.setAttribute("stops", getSchedules(truck, firstDay));
       req.setAttribute("daysOfWeek", daysOfWeek(firstDay));
-      req.setAttribute("enableGraphs", configurationDAO.find().isShowPublicTruckGraphs());
+      req.setAttribute("enableGraphs", staticConfig.getShowTruckGraphs());
       req.setAttribute("title", truck.getName());
       req.setAttribute("description", Strings.isNullOrEmpty(truck.getDescription()) ? truck.getName() : truck.getDescription());
     } else {
@@ -75,7 +75,7 @@ public class TrucksServlet extends FrontPageServlet {
       if (!Strings.isNullOrEmpty(tag)) {
         req.setAttribute("filteredBy", tag);
       }
-      req.setAttribute("foodTruckRequestOn", configurationDAO.find().isFoodTruckRequestOn());
+      req.setAttribute("foodTruckRequestOn", false);
       req.setAttribute("description", "Catalogue of all the food trucks in " + staticConfig.getCity());
       req.setAttribute("title", "Food Trucks in " + staticConfig.getCity());
     }

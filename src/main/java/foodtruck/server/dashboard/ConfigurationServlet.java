@@ -90,7 +90,6 @@ public class ConfigurationServlet extends HttpServlet {
     config = Configuration.builder(config)
         .minimumConfidenceForDisplay(Confidence.LOW)
         .autoOffRoad("on".equals(req.getParameter("autoOffRoad")))
-        .showPublicTruckGraphs("on".equals(req.getParameter("showPublicTruckGraphs")))
         .foodTruckRequestOn("on".equals(req.getParameter("foodTruckRequestOn")))
         .syncUrl(req.getParameter("syncUrl"))
         .syncAppKey(req.getParameter("syncAppKey"))

@@ -30,7 +30,6 @@ public class Configuration extends ModelEntity {
   private boolean retweetStopCreatingTweets;
   private boolean sendNotificationTweetWhenNoTrucks;
   private boolean foodTruckRequestOn;
-  private boolean showPublicTruckGraphs;
   private boolean autoOffRoad;
   private Confidence minimumConfidenceForDisplay;
   private String syncUrl;
@@ -54,7 +53,6 @@ public class Configuration extends ModelEntity {
     this.retweetStopCreatingTweets = builder.retweetStopCreatingTweets;
     this.sendNotificationTweetWhenNoTrucks = builder.sendNotificationTweetWhenNoTrucks;
     this.foodTruckRequestOn = builder.foodTruckRequestOn;
-    this.showPublicTruckGraphs = builder.showPublicTruckGraphs;
     this.autoOffRoad = builder.autoOffRoad;
     this.minimumConfidenceForDisplay = builder.minimumConfidenceForDisplay;
     this.syncUrl = builder.syncUrl;
@@ -72,10 +70,6 @@ public class Configuration extends ModelEntity {
 
   public boolean isAutoOffRoad() {
     return autoOffRoad;
-  }
-
-  public boolean isShowPublicTruckGraphs() {
-    return this.showPublicTruckGraphs;
   }
 
   public boolean isSendNotificationTweetWhenNoTrucks() {
@@ -169,7 +163,6 @@ public class Configuration extends ModelEntity {
     private boolean retweetStopCreatingTweets;
     private boolean sendNotificationTweetWhenNoTrucks;
     private boolean foodTruckRequestOn = true;
-    private boolean showPublicTruckGraphs = true;
     private boolean autoOffRoad;
     private Confidence minimumConfidenceForDisplay = Confidence.HIGH;
     private String syncAppKey;
@@ -192,7 +185,6 @@ public class Configuration extends ModelEntity {
       this.scheduleCachingOn = config.scheduleCachingOn;
       this.sendNotificationTweetWhenNoTrucks = config.sendNotificationTweetWhenNoTrucks;
       this.foodTruckRequestOn = config.foodTruckRequestOn;
-      this.showPublicTruckGraphs = config.showPublicTruckGraphs;
       this.autoOffRoad = config.autoOffRoad;
     }
 
@@ -208,11 +200,6 @@ public class Configuration extends ModelEntity {
 
     public Builder autoOffRoad(boolean autoOffRoad) {
       this.autoOffRoad = autoOffRoad;
-      return this;
-    }
-
-    public Builder showPublicTruckGraphs(boolean showPublicTruckGraphs) {
-      this.showPublicTruckGraphs = showPublicTruckGraphs;
       return this;
     }
 

@@ -36,4 +36,8 @@ public class StaticConfig {
   public String getPrimaryTwitterList() {
     return System.getProperty("foodtrucklocator.twitter.list.id");
   }
+
+  public boolean getShowTruckGraphs() {
+    return "true".equals(System.getProperty("foodtrucklocator.show.truck.graphs", "true"));
+  }
 }

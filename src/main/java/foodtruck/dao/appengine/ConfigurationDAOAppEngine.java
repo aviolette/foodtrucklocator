@@ -29,9 +29,6 @@ public class ConfigurationDAOAppEngine extends
   private static final String PROP_CENTER_LATITUDE = "center_latitude";
   private static final String PROP_CENTER_LONGITUDE = "center_longitude";
   private static final String PROP_CENTER_NAME = "center_name";
-  private static final String PROP_LOCAL_CACHE_ENABLED = "local_twitter_cache_enabled";
-  private static final String PROP_REMOTE_CACHE_ENABLED = "remote_twitter_cache_enabled";
-  private static final String PROP_REMOTE_CACHE_ADDRESS = "remote_twitter_cache_address";
   private static final String PROP_GOOGLE_CALENDAR_ADDRESS = "google_calendar_address";
   private static final String PROP_YAHOO_APP_ID = "yahoo_app_id";
   private static final String PROP_SYSTEM_NOTIFICATION_EMAILS = "system_notification_receivers";
@@ -41,7 +38,6 @@ public class ConfigurationDAOAppEngine extends
   private static final String PROP_RETWEET_STOP_CREATING_TWEETS = "retweet_stop_creation";
   private static final String PROP_SEND_NOTIFICATION_WHEN_NO_TRUCKS = "send_when_no_trucks";
   private static final String PROP_FOOD_TRUCK_REQUEST_ON = "food_truck_request_on";
-  private static final String PROP_SHOW_PUBLIC_TRUCK_GRAPHS = "show_public_truck_graphs";
   private static final String PROP_AUTO_OFF_ROAD = "auto_off_road";
   private static final String MINIMUM_CONFIDENCE_FOR_DISPLAY = "minimum_display_confidence";
   private static final String SYNC_URL = "sync_url";
@@ -69,7 +65,6 @@ public class ConfigurationDAOAppEngine extends
     entity.setProperty(PROP_RETWEET_STOP_CREATING_TWEETS, config.isRetweetStopCreatingTweets());
     entity.setProperty(PROP_SEND_NOTIFICATION_WHEN_NO_TRUCKS, config.isSendNotificationTweetWhenNoTrucks());
     entity.setProperty(PROP_FOOD_TRUCK_REQUEST_ON, config.isFoodTruckRequestOn());
-    entity.setProperty(PROP_SHOW_PUBLIC_TRUCK_GRAPHS, config.isShowPublicTruckGraphs());
     entity.setProperty(PROP_AUTO_OFF_ROAD, config.isAutoOffRoad());
     entity.setProperty(MINIMUM_CONFIDENCE_FOR_DISPLAY, config.getMinimumConfidenceForDisplay().toString());
     entity.setProperty(SYNC_URL, config.getSyncUrl());
@@ -91,7 +86,6 @@ public class ConfigurationDAOAppEngine extends
         .syncAppKey(getStringProperty(entity, SYNC_APPKEY))
         .minimumConfidenceForDisplay(confidence)
         .autoOffRoad(getBooleanProperty(entity, PROP_AUTO_OFF_ROAD))
-        .showPublicTruckGraphs(getBooleanProperty(entity, PROP_SHOW_PUBLIC_TRUCK_GRAPHS, true))
         .googleGeolocationEnabled((Boolean) entity.getProperty(PROP_GOOGLE_GEOLOCATION_ENABLED))
         .yahooGeolocationEnabled((Boolean) entity.getProperty(PROP_YAHOO_GEOLOCATION_ENABLED))
         .throttleGoogleGeocoding(Attributes.getDateTime(entity, PROP_GOOGLE_THROTTLE, defaultZone))

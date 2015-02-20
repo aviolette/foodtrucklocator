@@ -13,9 +13,6 @@
           <li><label><input name="scheduleCachingOn"
                             <c:if test="${config.scheduleCachingOn}">checked="checked"</c:if>
                             type="checkbox"/> <span>Enable Schedule Caching in memcached for 5 minutes</span></label></li>
-          <li><label><input name="showPublicTruckGraphs"
-                            <c:if test="${config.showPublicTruckGraphs}">checked="checked"</c:if>
-                            type="checkbox"/> <span>Show graphs on truck pages</span></label></li>
           <li><label><input name="autoOffRoad"
                             <c:if test="${config.autoOffRoad}">checked="checked"</c:if>
                             type="checkbox"/> <span>Enable ability for twittalyzer to take trucks off road automatically</span></label></li>
