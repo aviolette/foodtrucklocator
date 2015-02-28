@@ -26,11 +26,6 @@ public class Configuration extends ModelEntity {
   private List<String> systemNotificationList;
   private @Nullable String notificationSender;
   private @Nullable String frontDoorAppKey;
-  private boolean scheduleCachingOn;
-  private boolean retweetStopCreatingTweets;
-  private boolean sendNotificationTweetWhenNoTrucks;
-  private boolean foodTruckRequestOn;
-  private boolean autoOffRoad;
   private Confidence minimumConfidenceForDisplay;
   private String syncUrl;
   private String syncAppKey;
@@ -49,11 +44,6 @@ public class Configuration extends ModelEntity {
     this.systemNotificationList = builder.systemNotificationList;
     this.notificationSender = builder.notificationSender;
     this.frontDoorAppKey = builder.frontDoorAppKey;
-    this.scheduleCachingOn = builder.scheduleCachingOn;
-    this.retweetStopCreatingTweets = builder.retweetStopCreatingTweets;
-    this.sendNotificationTweetWhenNoTrucks = builder.sendNotificationTweetWhenNoTrucks;
-    this.foodTruckRequestOn = builder.foodTruckRequestOn;
-    this.autoOffRoad = builder.autoOffRoad;
     this.minimumConfidenceForDisplay = builder.minimumConfidenceForDisplay;
     this.syncUrl = builder.syncUrl;
     this.syncAppKey = builder.syncAppKey;
@@ -66,18 +56,6 @@ public class Configuration extends ModelEntity {
 
   public String getDisplayConfidenceMinimum() {
     return minimumConfidenceForDisplay.toString();
-  }
-
-  public boolean isAutoOffRoad() {
-    return autoOffRoad;
-  }
-
-  public boolean isSendNotificationTweetWhenNoTrucks() {
-    return this.sendNotificationTweetWhenNoTrucks;
-  }
-
-  public boolean isFoodTruckRequestOn() {
-    return this.foodTruckRequestOn;
   }
 
   @Nullable public String getFrontDoorAppKey() {
@@ -132,14 +110,6 @@ public class Configuration extends ModelEntity {
     return new Builder(config);
   }
 
-  public boolean isScheduleCachingOn() {
-    return scheduleCachingOn;
-  }
-
-  public boolean isRetweetStopCreatingTweets() {
-    return retweetStopCreatingTweets;
-  }
-
   public String getSyncUrl() {
     return syncUrl;
   }
@@ -159,11 +129,6 @@ public class Configuration extends ModelEntity {
     private List<String> systemNotificationList = ImmutableList.of();
     private @Nullable String notificationSender;
     private @Nullable String frontDoorAppKey;
-    private boolean scheduleCachingOn;
-    private boolean retweetStopCreatingTweets;
-    private boolean sendNotificationTweetWhenNoTrucks;
-    private boolean foodTruckRequestOn = true;
-    private boolean autoOffRoad;
     private Confidence minimumConfidenceForDisplay = Confidence.HIGH;
     private String syncAppKey;
     private String syncUrl;
@@ -182,10 +147,6 @@ public class Configuration extends ModelEntity {
       this.systemNotificationList = config.systemNotificationList;
       this.notificationSender = config.notificationSender;
       this.frontDoorAppKey = config.frontDoorAppKey;
-      this.scheduleCachingOn = config.scheduleCachingOn;
-      this.sendNotificationTweetWhenNoTrucks = config.sendNotificationTweetWhenNoTrucks;
-      this.foodTruckRequestOn = config.foodTruckRequestOn;
-      this.autoOffRoad = config.autoOffRoad;
     }
 
     public Builder syncAppKey(String syncAppKey) {
@@ -195,26 +156,6 @@ public class Configuration extends ModelEntity {
 
     public Builder syncUrl(String syncUrl) {
       this.syncUrl = syncUrl;
-      return this;
-    }
-
-    public Builder autoOffRoad(boolean autoOffRoad) {
-      this.autoOffRoad = autoOffRoad;
-      return this;
-    }
-
-    public Builder foodTruckRequestOn(boolean foodTruckRequestOn) {
-      this.foodTruckRequestOn = foodTruckRequestOn;
-      return this;
-    }
-
-    public Builder sendNotificationTweetWhenNoTrucks(boolean sendNotification) {
-      this.sendNotificationTweetWhenNoTrucks = sendNotification;
-      return this;
-    }
-
-    public Builder scheduleCachingOn(boolean scheduleCachingOn) {
-      this.scheduleCachingOn = scheduleCachingOn;
       return this;
     }
 
@@ -269,11 +210,6 @@ public class Configuration extends ModelEntity {
 
     public Builder throttleGoogleGeocoding(DateTime dateTime) {
       this.throttleGoogleUntil = dateTime;
-      return this;
-    }
-
-    public Builder retweetStopCreatingTweets(boolean retweet) {
-      this.retweetStopCreatingTweets = retweet;
       return this;
     }
 

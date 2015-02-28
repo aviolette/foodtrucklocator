@@ -2,7 +2,6 @@ package foodtruck.server;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Provides;
-import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.api.core.PackagesResourceConfig;
@@ -19,17 +18,12 @@ import foodtruck.server.dashboard.MessageEditServlet;
 import foodtruck.server.dashboard.MessageListServlet;
 import foodtruck.server.dashboard.NotificationServlet;
 import foodtruck.server.dashboard.ObserverServlet;
-import foodtruck.server.dashboard.PromoteServlet;
 import foodtruck.server.dashboard.StatsServlet;
 import foodtruck.server.dashboard.SyncServlet;
 import foodtruck.server.dashboard.TestNotificationServlet;
 import foodtruck.server.dashboard.TruckListServlet;
-import foodtruck.server.dashboard.TruckRequestServlet;
 import foodtruck.server.dashboard.TruckServlet;
 import foodtruck.server.dashboard.TruckStopServlet;
-import foodtruck.server.delivery.RequestATruckLandingServlet;
-import foodtruck.server.delivery.RequestATruckServlet;
-import foodtruck.server.delivery.ViewRequestATruckServlet;
 import foodtruck.server.job.ErrorCountServlet;
 import foodtruck.server.job.InvalidateScheduleCache;
 import foodtruck.server.job.MigrateTimeSeries;
@@ -41,10 +35,6 @@ import foodtruck.server.job.TweetCacheUpdateServlet;
 import foodtruck.server.job.TwitterCachePurgeServlet;
 import foodtruck.server.job.UpdateTruckStats;
 import foodtruck.server.migrations.ForceSaveTruck;
-import foodtruck.server.petitions.PetitionEmailInterstitialServlet;
-import foodtruck.server.petitions.PetitionServlet;
-import foodtruck.server.petitions.PetitionThanksServlet;
-import foodtruck.server.petitions.PetitionVerificationServlet;
 
 /**
  * Wires all the endpoints for the application.
@@ -54,10 +44,7 @@ import foodtruck.server.petitions.PetitionVerificationServlet;
 public class FoodtruckServletModule extends ServletModule {
   @Override
   protected void configureServlets() {
-    // This allows for us to backup the app-engine datastore locally
-    bind(com.google.apphosting.utils.remoteapi.RemoteApiServlet.class).in(Singleton.class);
-    serve("/businesses").with(TruckBusinessesServlet.class);
-    serve("/remote_api").with(com.google.apphosting.utils.remoteapi.RemoteApiServlet.class);
+    // Offline endpoints called via cron-jobs
     serve("/cron/recache").with(RecacheServlet.class);
     serve("/cron/tweets").with(TweetCacheUpdateServlet.class);
     serve("/cron/tweetPurge").with(TwitterCachePurgeServlet.class);
@@ -69,6 +56,10 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/cron/migrateWeeklyStats").with(MigrateTimeSeries.class);
     serve("/cron/invalidateCache").with(InvalidateScheduleCache.class);
     serve("/cron/error_stats").with(ErrorCountServlet.class);
+    serve("/services/*").with(GuiceContainer.class,
+        ImmutableMap.of(PackagesResourceConfig.PROPERTY_PACKAGES, "foodtruck.server.resources"));
+
+    // Dashboard endpoints
     serve("/admin").with(AdminDashboardServlet.class);
     serve("/admin/addresses").with(AddressRuleServlet.class);
     serveRegex("/admin/trucks/[\\S]*/events/[\\w]*").with(TruckStopServlet.class);
@@ -86,28 +77,22 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/admin/lookouts").with(ObserverServlet.class);
     serve("/admin/notificationTest").with(TestNotificationServlet.class);
     serve("/admin/event_at/*").with(CompoundEventServlet.class);
-    serve("/admin/requests/edit/*").with(TruckRequestServlet.class);
-    serve("/admin/requests/promote").with(PromoteServlet.class);
+
+    // Vendor dashboard endpoints
     serve("/vendor").with(VendorServlet.class);
     serve("/vendor/recache/*").with(VendorRecacheServlet.class);
     serve("/vendor/offtheroad/*").with(VendorOffTheRoadServlet.class);
     serve("/vendor/settings/*").with(VendorSettingsServlet.class);
-    serve("/services/*").with(GuiceContainer.class,
-        ImmutableMap.of(PackagesResourceConfig.PROPERTY_PACKAGES, "foodtruck.server.resources"));
+
+    // Front-page endpoints
     serve("/weekly-schedule").with(WeeklyScheduleServlet.class);
+    serve("/businesses").with(TruckBusinessesServlet.class);
     serve("/booze").with(BoozeAndTrucksServlet.class);
     serve("/vendor/beaconnaise").with(BeaconnaiseServlet.class);
     serve("/trucks*").with(TrucksServlet.class);
-    serve("/request").with(RequestATruckLandingServlet.class);
-    serve("/requests/edit/*").with(RequestATruckServlet.class);
-    serve("/requests/view/*").with(ViewRequestATruckServlet.class);
     serve("/about").with(AboutServlet.class);
     serve("/locations*").with(LocationServlet.class);
     serve("/images/*").with(ImageServlet.class);
-    serve("/petitions/600w").with(PetitionServlet.class);
-    serve("/petitions/600w/not_finished").with(PetitionEmailInterstitialServlet.class);
-    serve("/petitions/600w/verify/*").with(PetitionVerificationServlet.class);
-    serve("/petitions/600w/thanks").with(PetitionThanksServlet.class);
     serve("/stats/timeline").with(TruckTimelineServlet.class);
     serveRegex("/[\\w]*").with(FoodTruckServlet.class);
   }

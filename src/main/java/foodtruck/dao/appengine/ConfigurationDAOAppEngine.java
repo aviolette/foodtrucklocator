@@ -11,7 +11,6 @@ import foodtruck.model.Configuration;
 import foodtruck.model.Location;
 import foodtruck.schedule.Confidence;
 
-import static foodtruck.dao.appengine.Attributes.getBooleanProperty;
 import static foodtruck.dao.appengine.Attributes.getListProperty;
 import static foodtruck.dao.appengine.Attributes.getStringProperty;
 
@@ -34,11 +33,6 @@ public class ConfigurationDAOAppEngine extends
   private static final String PROP_SYSTEM_NOTIFICATION_EMAILS = "system_notification_receivers";
   private static final String PROP_SYSTEM_NOTIFICATION_SENDER = "system_notification_sender";
   private static final String PROP_FRONT_DOOR_APP_KEY = "front_door_app_key";
-  private static final String PROP_SCHEDULE_CACHING = "schedule_caching";
-  private static final String PROP_RETWEET_STOP_CREATING_TWEETS = "retweet_stop_creation";
-  private static final String PROP_SEND_NOTIFICATION_WHEN_NO_TRUCKS = "send_when_no_trucks";
-  private static final String PROP_FOOD_TRUCK_REQUEST_ON = "food_truck_request_on";
-  private static final String PROP_AUTO_OFF_ROAD = "auto_off_road";
   private static final String MINIMUM_CONFIDENCE_FOR_DISPLAY = "minimum_display_confidence";
   private static final String SYNC_URL = "sync_url";
   private static final String SYNC_APPKEY = "sync_appkey";
@@ -61,11 +55,6 @@ public class ConfigurationDAOAppEngine extends
     entity.setProperty(PROP_SYSTEM_NOTIFICATION_SENDER, config.getNotificationSender());
     entity.setProperty(PROP_SYSTEM_NOTIFICATION_EMAILS, config.getSystemNotificationList());
     entity.setProperty(PROP_FRONT_DOOR_APP_KEY, config.getFrontDoorAppKey());
-    entity.setProperty(PROP_SCHEDULE_CACHING, config.isScheduleCachingOn());
-    entity.setProperty(PROP_RETWEET_STOP_CREATING_TWEETS, config.isRetweetStopCreatingTweets());
-    entity.setProperty(PROP_SEND_NOTIFICATION_WHEN_NO_TRUCKS, config.isSendNotificationTweetWhenNoTrucks());
-    entity.setProperty(PROP_FOOD_TRUCK_REQUEST_ON, config.isFoodTruckRequestOn());
-    entity.setProperty(PROP_AUTO_OFF_ROAD, config.isAutoOffRoad());
     entity.setProperty(MINIMUM_CONFIDENCE_FOR_DISPLAY, config.getMinimumConfidenceForDisplay().toString());
     entity.setProperty(SYNC_URL, config.getSyncUrl());
     entity.setProperty(SYNC_APPKEY, config.getSyncAppKey());
@@ -85,19 +74,14 @@ public class ConfigurationDAOAppEngine extends
         .syncUrl(getStringProperty(entity, SYNC_URL))
         .syncAppKey(getStringProperty(entity, SYNC_APPKEY))
         .minimumConfidenceForDisplay(confidence)
-        .autoOffRoad(getBooleanProperty(entity, PROP_AUTO_OFF_ROAD))
         .googleGeolocationEnabled((Boolean) entity.getProperty(PROP_GOOGLE_GEOLOCATION_ENABLED))
         .yahooGeolocationEnabled((Boolean) entity.getProperty(PROP_YAHOO_GEOLOCATION_ENABLED))
         .throttleGoogleGeocoding(Attributes.getDateTime(entity, PROP_GOOGLE_THROTTLE, defaultZone))
         .googleCalendarAddress((String) entity.getProperty(PROP_GOOGLE_CALENDAR_ADDRESS))
         .yahooAppId((String) entity.getProperty(PROP_YAHOO_APP_ID))
-        .foodTruckRequestOn(getBooleanProperty(entity, PROP_FOOD_TRUCK_REQUEST_ON))
-        .sendNotificationTweetWhenNoTrucks(getBooleanProperty(entity, PROP_SEND_NOTIFICATION_WHEN_NO_TRUCKS, true))
         .systemNotificationList(getListProperty(entity, PROP_SYSTEM_NOTIFICATION_EMAILS))
         .notificationSender(getStringProperty(entity, PROP_SYSTEM_NOTIFICATION_SENDER))
         .frontDoorAppKey(getStringProperty(entity, PROP_FRONT_DOOR_APP_KEY))
-        .retweetStopCreatingTweets(getBooleanProperty(entity, PROP_RETWEET_STOP_CREATING_TWEETS, false))
-        .scheduleCachingOn(getBooleanProperty(entity, PROP_SCHEDULE_CACHING))
         .center(center)
         .key(entity.getKey())
         .build();

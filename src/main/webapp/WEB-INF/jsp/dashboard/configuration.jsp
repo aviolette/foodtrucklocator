@@ -8,25 +8,6 @@
       <input class="span6" type="text" value="${config.center.name}" name="mapCenter" id="mapCenter"/>
     </div>
     <div>
-      <div class="input">
-        <ul class="unstyled">
-          <li><label><input name="scheduleCachingOn"
-                            <c:if test="${config.scheduleCachingOn}">checked="checked"</c:if>
-                            type="checkbox"/> <span>Enable Schedule Caching in memcached for 5 minutes</span></label></li>
-          <li><label><input name="autoOffRoad"
-                            <c:if test="${config.autoOffRoad}">checked="checked"</c:if>
-                            type="checkbox"/> <span>Enable ability for twittalyzer to take trucks off road automatically</span></label></li>
-          <li><label><input name="foodTruckRequestOn"
-                            <c:if
-                                test="${config.foodTruckRequestOn}">checked="checked"</c:if>
-                            type="checkbox"/> <span>Show food truck request button on trucks page</span></label></li>
-          <li><label><input name="sendNotificationTweetWhenNoTrucks" <c:if test="${config.sendNotificationTweetWhenNoTrucks}">checked="checked"</c:if> type="checkbox"> <span>Send out notifications if no trucks at a stop.</span></label></li>
-          <li><label><input name="retweetStopCreatingTweets"
-                            <c:if test="${config.retweetStopCreatingTweets}">checked="checked"</c:if>
-                            type="checkbox"/> <span>Retweet Stop-creating Tweets</span></label></li>
-
-        </ul>
-      </div>
     </div>
     <legend>Front Door App Key</legend>
     <div class="clearfix">

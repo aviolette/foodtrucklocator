@@ -28,6 +28,7 @@ import foodtruck.twitter.TwitterService;
 import foodtruck.util.Clock;
 
 /**
+ * Reloads the external calendars into the internal schedule cache.
  * @author aviolette@gmail.com
  * @since Jul 13, 2011
  */

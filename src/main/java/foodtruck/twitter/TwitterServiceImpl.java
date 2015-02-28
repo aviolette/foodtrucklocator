@@ -24,7 +24,6 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 
-import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.RetweetsDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckObserverDAO;
@@ -80,7 +79,6 @@ public class TwitterServiceImpl implements TwitterService {
   private final TweetCacheUpdater remoteUpdater;
   private final TruckDAO truckDAO;
   private final TruckStopNotifier notifier;
-  private final ConfigurationDAO configDAO;
   private final EmailNotifier emailNotifier;
   private final OffTheRoadDetector offTheRoadDetector;
   private final GeoLocator locator;
@@ -92,15 +90,11 @@ public class TwitterServiceImpl implements TwitterService {
   private final StaticConfig staticConfig;
 
   @Inject
-  public TwitterServiceImpl(TwitterFactoryWrapper twitter, TweetCacheDAO tweetDAO,
-      DateTimeZone zone,
-      TruckStopMatcher matcher, TruckStopDAO truckStopDAO, Clock clock,
-      TerminationDetector detector, TweetCacheUpdater updater, TruckDAO truckDAO,
-      TruckStopNotifier truckStopNotifier, ConfigurationDAO configDAO,
-      EmailNotifier notifier, OffTheRoadDetector offTheRoadDetector, GeoLocator locator,
-      TruckObserverDAO truckObserverDAO, TwitterNotificationAccountDAO notificationAccountDAO,
-      RetweetsDAO retweetsDAO, FoodTruckStopService truckStopService,
-      @TimeOnlyFormatter DateTimeFormatter timeFormatter, StaticConfig staticConfig) {
+  public TwitterServiceImpl(TwitterFactoryWrapper twitter, TweetCacheDAO tweetDAO, DateTimeZone zone,
+      TruckStopMatcher matcher, TruckStopDAO truckStopDAO, Clock clock, TerminationDetector detector, TweetCacheUpdater updater, TruckDAO truckDAO,
+      TruckStopNotifier truckStopNotifier, EmailNotifier notifier, OffTheRoadDetector offTheRoadDetector, GeoLocator locator,
+      TruckObserverDAO truckObserverDAO, TwitterNotificationAccountDAO notificationAccountDAO, RetweetsDAO retweetsDAO,
+      FoodTruckStopService truckStopService, @TimeOnlyFormatter DateTimeFormatter timeFormatter, StaticConfig staticConfig) {
     this.tweetDAO = tweetDAO;
     this.twitterFactory = twitter;
     this.defaultZone = zone;
@@ -111,7 +105,6 @@ public class TwitterServiceImpl implements TwitterService {
     this.remoteUpdater = updater;
     this.truckDAO = truckDAO;
     this.notifier = truckStopNotifier;
-    this.configDAO = configDAO;
     this.emailNotifier = notifier;
     this.offTheRoadDetector = offTheRoadDetector;
     this.locator = locator;
@@ -416,10 +409,8 @@ public class TwitterServiceImpl implements TwitterService {
           Twitter twitter = new TwitterFactory(account.twitterCredentials()).getInstance();
           try {
             log.log(Level.INFO, "RETWEETING:" + match.getText());
-            if (configDAO.find().isRetweetStopCreatingTweets()) {
-              retweetsDAO.markRetweeted(stop.getTruck().getId(), account.getTwitterHandle());
-              twitter.retweetStatus(match.getTweetId());
-            }
+            retweetsDAO.markRetweeted(stop.getTruck().getId(), account.getTwitterHandle());
+            twitter.retweetStatus(match.getTweetId());
           } catch (TwitterException e) {
             log.log(Level.SEVERE, e.getMessage(), e);
           }
@@ -499,7 +490,7 @@ public class TwitterServiceImpl implements TwitterService {
       }
       final OffTheRoadResponse offTheRoadResponse = offTheRoadDetector.offTheRoad(tweet.getText());
       if (offTheRoadResponse.isOffTheRoad()) {
-        if (offTheRoadResponse.isConfidenceHigh() && configDAO.find().isAutoOffRoad()) {
+        if (offTheRoadResponse.isConfidenceHigh() && staticConfig.isAutoOffRoad()) {
           log.log(Level.INFO, "Auto canceling stops for truck {0} based on tweet: {1}",
               new Object[] { truck.getId(), tweet.getText()} );
           int count = truckStopService.cancelRemainingStops(truck.getId(), clock.now());

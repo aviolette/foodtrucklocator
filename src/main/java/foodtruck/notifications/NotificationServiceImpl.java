@@ -12,8 +12,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 
-import foodtruck.dao.ConfigurationDAO;
-import foodtruck.dao.RetweetsDAO;
 import foodtruck.dao.TwitterNotificationAccountDAO;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
@@ -33,20 +31,16 @@ public class NotificationServiceImpl implements NotificationService {
   private final FoodTruckStopService truckService;
   private final Clock clock;
   private final TwitterNotificationAccountDAO notificationAccountDAO;
-  private final ConfigurationDAO configurationDAO;
 
   @Inject
   public NotificationServiceImpl(FoodTruckStopService truckService, Clock clock,
-      TwitterNotificationAccountDAO notificationAccountDAO, RetweetsDAO retweetsDAO,
-      ConfigurationDAO configurationDAO) {
+      TwitterNotificationAccountDAO notificationAccountDAO) {
     this.truckService = truckService;
     this.clock = clock;
     this.notificationAccountDAO = notificationAccountDAO;
-    this.configurationDAO = configurationDAO;
   }
 
   @Override public void sendNotifications() {
-    boolean updateIfNoneFound = configurationDAO.find().isSendNotificationTweetWhenNoTrucks();
     for (TwitterNotificationAccount account : findTwitterNotificationAccounts()) {
       if (!account.isActive()) {
         log.log(Level.INFO, "Skipping notifications for {0} because it is not active", account.getName());
@@ -54,11 +48,7 @@ public class NotificationServiceImpl implements NotificationService {
       }
       try {
         Set<Truck> trucks = truckService.findTrucksNearLocation(account.getLocation(), clock.now());
-        if (trucks.isEmpty()) {
-          if (updateIfNoneFound) {
-            updateStatus(account, String.format("No trucks at %s today", account.getName()));
-          }
-        } else {
+        if (!trucks.isEmpty()) {
           Joiner joiner = Joiner.on(" ");
           Iterable<String> twitterHandles = Iterables.transform(trucks, new Function<Truck, String>(){
             @Override public String apply(Truck input) {

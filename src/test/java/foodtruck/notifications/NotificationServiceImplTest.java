@@ -5,11 +5,10 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import foodtruck.dao.ConfigurationDAO;
-import foodtruck.dao.RetweetsDAO;
 import foodtruck.dao.TwitterNotificationAccountDAO;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
+
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -22,14 +21,11 @@ public class NotificationServiceImplTest  {
   private Clock clock;
   private FoodTruckStopService truckService;
   private NotificationServiceImpl service;
-  private RetweetsDAO retweetsDAO;
-  private ConfigurationDAO configurationDAO;
 
   @Before
   public void before() {
-    truckService = null; clock = null; notificationDAO = null; retweetsDAO = null;
-    configurationDAO = null;
-    service = new NotificationServiceImpl(truckService, clock, notificationDAO, retweetsDAO, configurationDAO);
+    truckService = null; clock = null; notificationDAO = null;
+    service = new NotificationServiceImpl(truckService, clock, notificationDAO);
   }
 
   @Test

@@ -15,6 +15,7 @@ import com.google.inject.Singleton;
 import foodtruck.twitter.TwitterService;
 
 /**
+ * Loads the tweets since the last time this was run.  Analyzes the tweets for potential new stops.
  * @author aviolette@gmail.com
  * @since 10/11/11
  */

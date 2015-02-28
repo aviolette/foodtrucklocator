@@ -40,4 +40,12 @@ public class StaticConfig {
   public boolean getShowTruckGraphs() {
     return "true".equals(System.getProperty("foodtrucklocator.show.truck.graphs", "true"));
   }
+
+  public boolean isScheduleCachingOn() {
+    return "true".equals(System.getProperty("foodtrucklocator.schedule.caching", "true"));
+  }
+
+  public boolean isAutoOffRoad() {
+    return "true".equals(System.getProperty("foodtrucklocator.auto.off.road", "true"));
+  }
 }

@@ -90,7 +90,7 @@ public class FoodTruckServlet extends FrontPageServlet {
     final Configuration configuration = configurationDAO.find();
     req.setAttribute("center", getCenter(req.getCookies()));
     String payload = timeSpecified ? null : scheduleCacher.findSchedule();
-    if (payload == null || !configuration.isScheduleCachingOn()) {
+    if (payload == null || !staticConfig.isScheduleCachingOn()) {
       DailySchedule schedule = stopService.findStopsForDayAfter(dateTime);
       try {
         payload = writer.asJSON(schedule).toString();
