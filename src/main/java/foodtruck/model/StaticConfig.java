@@ -48,4 +48,20 @@ public class StaticConfig {
   public boolean isAutoOffRoad() {
     return "true".equals(System.getProperty("foodtrucklocator.auto.off.road", "true"));
   }
+
+  public String getCalendarAddress() {
+    return System.getProperty("foodtrucklocator.calendar.address");
+  }
+
+  public boolean isGoogleGeolocationEnabled() {
+    return "true".equals(System.getProperty("foodtrucklocator.google.geolocation", "true"));
+  }
+
+  public boolean isYahooGeolocationEnabled() {
+    return "true".equals(System.getProperty("foodtrucklocator.yahoo.geolocation", "true"));
+  }
+
+  public String getYahooAppId() {
+    return System.getProperty("foodtrucklocator.yahoo.key");
+  }
 }

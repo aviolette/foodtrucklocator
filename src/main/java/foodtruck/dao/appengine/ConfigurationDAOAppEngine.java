@@ -21,15 +21,11 @@ import static foodtruck.dao.appengine.Attributes.getStringProperty;
 public class ConfigurationDAOAppEngine extends
     SingletonDAOAppEngine<Configuration> implements ConfigurationDAO {
   private final static String CONFIGURATION_KIND = "Configuration";
-  private static final String PROP_GOOGLE_GEOLOCATION_ENABLED = "google_geolcation";
-  private static final String PROP_YAHOO_GEOLOCATION_ENABLED = "yahoo_geolocation";
   private static final String PROP_GOOGLE_THROTTLE = "google_throttle_until";
   private final DateTimeZone defaultZone;
   private static final String PROP_CENTER_LATITUDE = "center_latitude";
   private static final String PROP_CENTER_LONGITUDE = "center_longitude";
   private static final String PROP_CENTER_NAME = "center_name";
-  private static final String PROP_GOOGLE_CALENDAR_ADDRESS = "google_calendar_address";
-  private static final String PROP_YAHOO_APP_ID = "yahoo_app_id";
   private static final String PROP_SYSTEM_NOTIFICATION_EMAILS = "system_notification_receivers";
   private static final String PROP_SYSTEM_NOTIFICATION_SENDER = "system_notification_sender";
   private static final String PROP_FRONT_DOOR_APP_KEY = "front_door_app_key";
@@ -44,14 +40,10 @@ public class ConfigurationDAOAppEngine extends
   }
 
   @Override protected Entity toEntity(Entity entity, Configuration config) {
-    entity.setProperty(PROP_GOOGLE_GEOLOCATION_ENABLED, config.isGoogleGeolocationEnabled());
-    entity.setProperty(PROP_YAHOO_GEOLOCATION_ENABLED, config.isYahooGeolocationEnabled());
     Attributes.setDateProperty(PROP_GOOGLE_THROTTLE, entity, config.getThrottleGoogleUntil());
     entity.setProperty(PROP_CENTER_NAME, config.getCenter().getName());
     entity.setProperty(PROP_CENTER_LATITUDE, config.getCenter().getLatitude());
     entity.setProperty(PROP_CENTER_LONGITUDE, config.getCenter().getLongitude());
-    entity.setProperty(PROP_GOOGLE_CALENDAR_ADDRESS, config.getGoogleCalendarAddress());
-    entity.setProperty(PROP_YAHOO_APP_ID, config.getYahooAppId());
     entity.setProperty(PROP_SYSTEM_NOTIFICATION_SENDER, config.getNotificationSender());
     entity.setProperty(PROP_SYSTEM_NOTIFICATION_EMAILS, config.getSystemNotificationList());
     entity.setProperty(PROP_FRONT_DOOR_APP_KEY, config.getFrontDoorAppKey());
@@ -74,11 +66,7 @@ public class ConfigurationDAOAppEngine extends
         .syncUrl(getStringProperty(entity, SYNC_URL))
         .syncAppKey(getStringProperty(entity, SYNC_APPKEY))
         .minimumConfidenceForDisplay(confidence)
-        .googleGeolocationEnabled((Boolean) entity.getProperty(PROP_GOOGLE_GEOLOCATION_ENABLED))
-        .yahooGeolocationEnabled((Boolean) entity.getProperty(PROP_YAHOO_GEOLOCATION_ENABLED))
         .throttleGoogleGeocoding(Attributes.getDateTime(entity, PROP_GOOGLE_THROTTLE, defaultZone))
-        .googleCalendarAddress((String) entity.getProperty(PROP_GOOGLE_CALENDAR_ADDRESS))
-        .yahooAppId((String) entity.getProperty(PROP_YAHOO_APP_ID))
         .systemNotificationList(getListProperty(entity, PROP_SYSTEM_NOTIFICATION_EMAILS))
         .notificationSender(getStringProperty(entity, PROP_SYSTEM_NOTIFICATION_SENDER))
         .frontDoorAppKey(getStringProperty(entity, PROP_FRONT_DOOR_APP_KEY))

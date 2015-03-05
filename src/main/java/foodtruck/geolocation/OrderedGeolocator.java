@@ -10,6 +10,7 @@ import com.google.inject.Inject;
 import foodtruck.dao.ConfigurationDAO;
 import foodtruck.model.Configuration;
 import foodtruck.model.Location;
+import foodtruck.model.StaticConfig;
 import foodtruck.util.Clock;
 import foodtruck.util.ServiceException;
 
@@ -18,25 +19,28 @@ import foodtruck.util.ServiceException;
  * @since 4/11/12
  */
 public class OrderedGeolocator implements GeoLocator {
-  private GoogleGeolocator googleGeolocator;
-  private YQLGeolocator yahooGeolocator;
-  private ConfigurationDAO configurationDAO;
   private static final Logger log = Logger.getLogger(OrderedGeolocator.class.getName());
+  private final StaticConfig staticConfig;
+  private final GoogleGeolocator googleGeolocator;
+  private final YQLGeolocator yahooGeolocator;
+  private final ConfigurationDAO configurationDAO;
   private final Clock clock;
 
   @Inject
   public OrderedGeolocator(GoogleGeolocator googleGeolocator, YQLGeolocator yahooGeolocator,
-      ConfigurationDAO configurationDAO, Clock clock) {
+      ConfigurationDAO configurationDAO, Clock clock, StaticConfig staticConfig) {
     this.googleGeolocator = googleGeolocator;
     this.yahooGeolocator = yahooGeolocator;
     this.configurationDAO = configurationDAO;
     this.clock = clock;
+    this.staticConfig = staticConfig;
   }
 
   @Override
   public Location locate(String location, GeolocationGranularity granularity) {
     Configuration config = configurationDAO.find();
-    if (config.isGoogleGeolocationEnabled() && !config.isGoogleThrottled(clock.now())) {
+    // TODO: is throttling even necessary? If so, pull it out of config
+    if (staticConfig.isGoogleGeolocationEnabled() && !config.isGoogleThrottled(clock.now())) {
       try {
         Location loc = googleGeolocator.locate(location, granularity);
         if (loc != null) {
@@ -49,7 +53,7 @@ public class OrderedGeolocator implements GeoLocator {
       log.log(Level.INFO, "Skipping google for geolocation. Throttle value: {0}",
           config.getThrottleGoogleUntil());
     }
-    if (config.isYahooGeolocationEnabled()) {
+    if (staticConfig.isYahooGeolocationEnabled()) {
       return yahooGeolocator.locate(location, granularity);
     }
     return null;
@@ -57,7 +61,7 @@ public class OrderedGeolocator implements GeoLocator {
 
   @Override public @Nullable Location reverseLookup(Location location) {
     Configuration config = configurationDAO.find();
-    if (config.isGoogleGeolocationEnabled() && !config.isGoogleThrottled(clock.now())) {
+    if (staticConfig.isGoogleGeolocationEnabled() && !config.isGoogleThrottled(clock.now())) {
       log.log(Level.INFO, "Looking up location: {0}", location);
       try {
         Location loc = googleGeolocator.reverseLookup(location);
@@ -68,7 +72,7 @@ public class OrderedGeolocator implements GeoLocator {
         log.log(Level.WARNING, e.getMessage(), e);
       }
     }
-    if (config.isYahooGeolocationEnabled()) {
+    if (staticConfig.isYahooGeolocationEnabled()) {
       return yahooGeolocator.reverseLookup(location);
     }
     return null;

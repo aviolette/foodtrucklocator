@@ -16,10 +16,10 @@ import com.google.inject.Singleton;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 
-import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Location;
+import foodtruck.model.StaticConfig;
 import foodtruck.model.TruckStop;
 import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.truckstops.FoodTruckStopService;
@@ -39,20 +39,20 @@ public class CompoundEventServlet extends HttpServlet {
   private final DateTimeFormatter timeFormatter;
   private final Clock clock;
   private final Provider<Calendar> calendarProvider;
-  private final ConfigurationDAO configDAO;
   private final FoodTruckStopService service;
+  private final StaticConfig staticConfig;
 
   @Inject
-  public CompoundEventServlet(TruckDAO truckDAO, LocationDAO locationDAO, ConfigurationDAO configDAO,
+  public CompoundEventServlet(TruckDAO truckDAO, LocationDAO locationDAO,
       @HtmlDateFormatter DateTimeFormatter formatter, Clock clock, Provider<Calendar> calendarProvider,
-      FoodTruckStopService service) {
+      FoodTruckStopService service, StaticConfig staticConfig) {
     this.truckDAO = truckDAO;
     this.locationDAO = locationDAO;
     this.timeFormatter = formatter;
     this.clock = clock;
     this.service = service;
     this.calendarProvider = calendarProvider;
-    this.configDAO = configDAO;
+    this.staticConfig = staticConfig;
   }
 
   @Override
@@ -69,7 +69,7 @@ public class CompoundEventServlet extends HttpServlet {
     DateTime startTime = timeFormatter.parseDateTime(startTimeParam),
         endTime = timeFormatter.parseDateTime(endTimeParam);
     Calendar calendar = calendarProvider.get();
-    String calendarID = configDAO.find().getGoogleCalendarAddress();
+    String calendarID = staticConfig.getCalendarAddress();
     for (String truckId : trucks) {
       TruckStop stop = TruckStop.builder()
           .location(location)

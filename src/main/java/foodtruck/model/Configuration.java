@@ -17,12 +17,8 @@ import foodtruck.schedule.Confidence;
  * @since 4/10/12
  */
 public class Configuration extends ModelEntity {
-  private boolean yahooGeolocationEnabled;
-  private boolean googleGeolocationEnabled;
   private DateTime throttleGoogleUntil;
   private @Nullable Location center;
-  private @Nullable String yahooAppId;
-  private @Nullable String googleCalendarAddress;
   private List<String> systemNotificationList;
   private @Nullable String notificationSender;
   private @Nullable String frontDoorAppKey;
@@ -36,18 +32,14 @@ public class Configuration extends ModelEntity {
 
   private Configuration(Builder builder) {
     this(builder.key);
-    this.yahooGeolocationEnabled = builder.yahooGeolocationEnabled;
     this.throttleGoogleUntil = builder.throttleGoogleUntil;
     this.center = builder.center;
-    this.yahooAppId = builder.yahooAppId;
-    this.googleCalendarAddress = builder.googleCalendarAddress;
     this.systemNotificationList = builder.systemNotificationList;
     this.notificationSender = builder.notificationSender;
     this.frontDoorAppKey = builder.frontDoorAppKey;
     this.minimumConfidenceForDisplay = builder.minimumConfidenceForDisplay;
     this.syncUrl = builder.syncUrl;
     this.syncAppKey = builder.syncAppKey;
-    this.googleGeolocationEnabled = builder.googleGeolocationEnabled;
   }
 
   public Confidence getMinimumConfidenceForDisplay() {
@@ -68,22 +60,6 @@ public class Configuration extends ModelEntity {
 
   public String getNotificationReceivers() {
     return Joiner.on(",").join(systemNotificationList);
-  }
-
-  public @Nullable String getGoogleCalendarAddress() {
-    return this.googleCalendarAddress;
-  }
-
-  public @Nullable String getYahooAppId() {
-    return this.yahooAppId;
-  }
-
-  public boolean isYahooGeolocationEnabled() {
-    return yahooGeolocationEnabled;
-  }
-
-  public boolean isGoogleGeolocationEnabled() {
-    return googleGeolocationEnabled;
   }
 
   public boolean isGoogleThrottled(DateTime when) {
@@ -119,13 +95,9 @@ public class Configuration extends ModelEntity {
   }
 
   public static class Builder {
-    private boolean googleGeolocationEnabled = true;
-    private boolean yahooGeolocationEnabled = false;
     private Key key;
     private @Nullable DateTime throttleGoogleUntil;
     private Location center;
-    private @Nullable String yahooAppId;
-    private @Nullable String googleCalendarAddress;
     private List<String> systemNotificationList = ImmutableList.of();
     private @Nullable String notificationSender;
     private @Nullable String frontDoorAppKey;
@@ -139,11 +111,8 @@ public class Configuration extends ModelEntity {
     public Builder(Configuration config) {
       this.syncUrl = config.syncUrl;
       this.syncAppKey = config.syncAppKey;
-      this.yahooGeolocationEnabled = config.isYahooGeolocationEnabled();
       this.throttleGoogleUntil = config.throttleGoogleUntil;
       this.key = (Key) config.getKey();
-      this.yahooAppId = config.yahooAppId;
-      this.googleCalendarAddress = config.googleCalendarAddress;
       this.systemNotificationList = config.systemNotificationList;
       this.notificationSender = config.notificationSender;
       this.frontDoorAppKey = config.frontDoorAppKey;
@@ -166,26 +135,6 @@ public class Configuration extends ModelEntity {
 
     public Builder notificationSender(String notificationSender) {
       this.notificationSender = notificationSender;
-      return this;
-    }
-
-    public Builder googleCalendarAddress(String address) {
-      this.googleCalendarAddress = address;
-      return this;
-    }
-
-    public Builder yahooAppId(String yahooAppId) {
-      this.yahooAppId = yahooAppId;
-      return this;
-    }
-
-    public Builder googleGeolocationEnabled(boolean enabled) {
-      this.googleGeolocationEnabled = enabled;
-      return this;
-    }
-
-    public Builder yahooGeolocationEnabled(boolean enabled) {
-      this.yahooGeolocationEnabled = enabled;
       return this;
     }
 

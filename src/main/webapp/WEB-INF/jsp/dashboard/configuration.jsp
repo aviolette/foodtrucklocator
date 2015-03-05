@@ -27,13 +27,6 @@
     </div>
   </fieldset>
   <fieldset>
-    <legend>Google Calendar</legend>
-    <div class="clearfix">
-      <label for="calendarUrl">Google Calendar URL</label>
-      <input class="span6" type="text" value="${config.googleCalendarAddress}" name="googleCalendarAddress" id="calendarUrl"/>
-    </div>
-  </fieldset>
-  <fieldset>
     <legend>Sync</legend>
     <p>These parameters should not be used in a production environment.  They allow you to sync data from an up-stream food truck finder app.  You can use it to pull data from your production environment into a dev environment.</p>
     <div class="clearfix">
@@ -43,27 +36,6 @@
     <div class="clearfix">
       <label for="syncAppKey">Sync App Key</label>
       <input class="span6" type="text" value="${config.syncAppKey}" name="syncAppKey" id="syncAppKey"/>
-    </div>
-  </fieldset>
-  <fieldset>
-    <legend>Geolocation</legend>
-    <div>
-      <p>You will need to have one of these checked. In Dev, it is ok to just have Google checked, but this doesn't always work in prod since AppEngine uses a shared IP pool and you will run into query limits, so it is suggested that you also use YQL Geolocation too.</p>
-      <div class="input">
-        <ul class="unstyled">
-          <li><label><input name="googleGeolocationEnabled"
-                            <c:if test="${config.googleGeolocationEnabled}">checked="checked"</c:if>
-                            type="checkbox"/> <span>Enable Google Geolocation</span></label></li>
-          <li><label><input name="yahooGeolocationEnabled"
-                            <c:if test="${config.yahooGeolocationEnabled}">checked="checked"</c:if>
-                            type="checkbox"/> <span>Enable Yahoo YQL Geolocation</span></label></li>
-        </ul>
-      </div>
-      <div class="clearfix">
-        <label for="calendarUrl">Yahoo App Key</label>
-        <p>Get a Yahoo App Key <a href="https://developer.yahoo.com/wsregapp/index.php">here</a></p>
-        <input class="span6" type="text" value="${config.yahooAppId}" name="yahooAppId" placeholder="Yahoo APP ID is required to use YQL" id="yahooAppId"/>
-      </div>
     </div>
   </fieldset>
   <input type="submit" class="btn primary" value="Save"/>

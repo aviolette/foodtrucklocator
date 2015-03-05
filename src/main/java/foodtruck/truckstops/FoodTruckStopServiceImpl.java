@@ -29,7 +29,6 @@ import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
 import foodtruck.beaconnaise.BeaconSignal;
-import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.MessageDAO;
 import foodtruck.dao.TruckDAO;
@@ -37,6 +36,7 @@ import foodtruck.dao.TruckStopDAO;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.model.DailySchedule;
 import foodtruck.model.Location;
+import foodtruck.model.StaticConfig;
 import foodtruck.model.StopOrigin;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckLocationGroup;
@@ -61,12 +61,12 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   private final LocationDAO locationDAO;
   private final GeoLocator geolocator;
   private final MessageDAO messageDAO;
-  private final ConfigurationDAO configurationDAO;
   private final Provider<Calendar> calendarProvider;
+  private final StaticConfig staticConfig;
 
   @Inject
   public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, ScheduleStrategy googleCalendar, Clock clock, TruckDAO truckDAO, LocationDAO locationDAO, GeoLocator geoLocator, MessageDAO messageDAO,
-      ConfigurationDAO configurationDAO, Provider<Calendar> calendarProvider) {
+      Provider<Calendar> calendarProvider, StaticConfig staticConfig) {
     this.truckStopDAO = truckStopDAO;
     this.scheduleStrategy = googleCalendar;
     this.clock = clock;
@@ -74,8 +74,8 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     this.locationDAO = locationDAO;
     this.geolocator = geoLocator;
     this.messageDAO = messageDAO;
-    this.configurationDAO = configurationDAO;
     this.calendarProvider = calendarProvider;
+    this.staticConfig = staticConfig;
   }
 
   @Override
@@ -104,7 +104,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
           .origin(stop.getOrigin())
           .appendNote("Changed manually at " + clock.nowFormattedAsTime()).build();
     }
-    saveWithBackingStop(truckStop, calendarProvider.get(), configurationDAO.find().getGoogleCalendarAddress());
+    saveWithBackingStop(truckStop, calendarProvider.get(), staticConfig.getCalendarAddress());
   }
 
   @Override

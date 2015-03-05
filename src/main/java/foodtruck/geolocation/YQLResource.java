@@ -5,7 +5,7 @@ import com.sun.jersey.api.client.WebResource;
 
 import org.codehaus.jettison.json.JSONObject;
 
-import foodtruck.dao.ConfigurationDAO;
+import foodtruck.model.StaticConfig;
 import foodtruck.util.ServiceException;
 
 /**
@@ -14,12 +14,12 @@ import foodtruck.util.ServiceException;
  */
 public class YQLResource {
   private final WebResource resource;
-  private final ConfigurationDAO configDAO;
+  private final StaticConfig config;
 
   @Inject
-  public YQLResource(@YQLEndPoint WebResource resource, ConfigurationDAO configDAO) {
-    this.configDAO = configDAO;
+  public YQLResource(@YQLEndPoint WebResource resource, StaticConfig staticConfig) {
     this.resource = resource;
+    this.config = staticConfig;
   }
 
   public JSONObject findLocation(String location, boolean reverse) {
@@ -31,7 +31,7 @@ public class YQLResource {
               // limit results to the specified locale
           .queryParam("gflags", "L")
           .queryParam("locale", "en_US")
-          .queryParam("appid", configDAO.find().getYahooAppId());
+          .queryParam("appid", config.getYahooAppId());
       if (reverse) {
         r = r.queryParam("gflags", "R");
       }

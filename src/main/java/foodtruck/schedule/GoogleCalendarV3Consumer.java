@@ -20,11 +20,11 @@ import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.joda.time.format.DateTimeFormatter;
 
-import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
+import foodtruck.model.StaticConfig;
 import foodtruck.model.StopOrigin;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
@@ -36,26 +36,26 @@ import foodtruck.util.FriendlyDateOnlyFormat;
  * @since 11/20/14
  */
 public class GoogleCalendarV3Consumer implements ScheduleStrategy {
-  private final Calendar calendarClient;
   private static final Logger log = Logger.getLogger(GoogleCalendarV3Consumer.class.getName());
-  private final ConfigurationDAO configDAO;
+  private final Calendar calendarClient;
   private final TruckDAO truckDAO;
   private final AddressExtractor addressExtractor;
   private final GeoLocator geoLocator;
   private final Clock clock;
   private final DateTimeFormatter formatter;
+  private final StaticConfig staticConfig;
 
   @Inject
   public GoogleCalendarV3Consumer(AddressExtractor addressExtractor, Calendar calendarClient,
-      ConfigurationDAO configDAO, TruckDAO truckDAO, GeoLocator geoLocator, Clock clock,
-      @FriendlyDateOnlyFormat DateTimeFormatter formatter) {
+      TruckDAO truckDAO, GeoLocator geoLocator, Clock clock,
+      @FriendlyDateOnlyFormat DateTimeFormatter formatter, StaticConfig staticConfig) {
     this.calendarClient = calendarClient;
-    this.configDAO = configDAO;
     this.truckDAO = truckDAO;
     this.addressExtractor = addressExtractor;
     this.geoLocator = geoLocator;
     this.clock = clock;
     this.formatter = formatter;
+    this.staticConfig = staticConfig;
   }
 
   @Override
@@ -91,7 +91,7 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
   private List<TruckStop> performTruckSearch(Interval range, @Nullable Truck searchTruck, boolean customCalendar) {
     ImmutableList.Builder<TruckStop> builder = ImmutableList.builder();
     try {
-      final String calendarId = customCalendar ? searchTruck.getCalendarUrl() : configDAO.find().getGoogleCalendarAddress();
+      final String calendarId = customCalendar ? searchTruck.getCalendarUrl() : staticConfig.getCalendarAddress();
       String pageToken = null;
       do {
         Calendar.Events.List query = calendarClient.events().list(calendarId).setSingleEvents(true).setTimeMin(
