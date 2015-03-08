@@ -14,11 +14,9 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import foodtruck.dao.ConfigurationDAO;
 import foodtruck.email.EmailNotifier;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
-import foodtruck.model.Configuration;
 import foodtruck.model.DayOfWeek;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
@@ -44,7 +42,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   private DateTime tweetTime;
   private Clock clock;
   private Location mapCenter;
-  private ConfigurationDAO configDAO;
   private EmailNotifier notifier;
 
   @Before
@@ -55,9 +52,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     notifier = createMock(EmailNotifier.class);
     mapCenter = Location.builder().lat(41.8807438).lng(-87.6293867).build();
     expect(clock.dayOfWeek()).andStubReturn(DayOfWeek.sunday);
-    Configuration config = Configuration.builder().center(mapCenter).build();
-    configDAO = createMock(ConfigurationDAO.class);
-    expect(configDAO.find()).andStubReturn(config);
     topic = new TruckStopMatcher(extractor, geolocator, DateTimeZone.UTC, clock, notifier, mapCenter);
     truck = Truck.builder().id("foobar").build();
     expect(clock.zone()).andStubReturn(DateTimeZone.UTC);

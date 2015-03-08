@@ -16,11 +16,8 @@ import com.google.inject.Singleton;
 
 import foodtruck.dao.ApplicationDAO;
 import foodtruck.dao.ConfigurationDAO;
-import foodtruck.geolocation.GeoLocator;
-import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Application;
 import foodtruck.model.Configuration;
-import foodtruck.model.Location;
 import foodtruck.schedule.Confidence;
 import foodtruck.util.RandomString;
 
@@ -32,13 +29,11 @@ import foodtruck.util.RandomString;
 public class ConfigurationServlet extends HttpServlet {
   private static final String JSP_PATH = "/WEB-INF/jsp/dashboard/configuration.jsp";
   private final ConfigurationDAO configDAO;
-  private final GeoLocator geoLocator;
   private final ApplicationDAO applicationDAO;
 
   @Inject
-  public ConfigurationServlet(ConfigurationDAO configDAO, GeoLocator geoLocator, ApplicationDAO applicationDAO) {
+  public ConfigurationServlet(ConfigurationDAO configDAO, ApplicationDAO applicationDAO) {
     this.configDAO = configDAO;
-    this.geoLocator = geoLocator;
     this.applicationDAO = applicationDAO;
   }
 
@@ -54,10 +49,6 @@ public class ConfigurationServlet extends HttpServlet {
 
   private Configuration initialSetup(Configuration config) {
     Configuration.Builder builder = null;
-    if (config.getCenter() == null) {
-      builder = Configuration.builder(config);
-      builder.center(Location.builder().name("Clark and Monroe, Chicago, IL").lat(41.889973).lng(-87.634024).build());
-    }
     if (Strings.isNullOrEmpty(config.getFrontDoorAppKey())) {
       if (builder == null) {
         builder = Configuration.builder(config);
@@ -83,10 +74,11 @@ public class ConfigurationServlet extends HttpServlet {
   @Override protected void doPost(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     Configuration config = configDAO.find();
-    List<String> notificationReceivers = ImmutableList.copyOf(
-        Splitter.on(",").trimResults().omitEmptyStrings().split(req.getParameter("notificationReceivers")).iterator());
-    Location mapCenter = geoLocator.locate(req.getParameter("mapCenter"), GeolocationGranularity.NARROW);
-    // TODO: handle null map center
+    List<String> notificationReceivers = ImmutableList.copyOf(Splitter.on(",")
+        .trimResults()
+        .omitEmptyStrings()
+        .split(req.getParameter("notificationReceivers"))
+        .iterator());
     config = Configuration.builder(config)
         .minimumConfidenceForDisplay(Confidence.LOW)
         .syncUrl(req.getParameter("syncUrl"))
@@ -94,7 +86,6 @@ public class ConfigurationServlet extends HttpServlet {
         .notificationSender(req.getParameter("notificationSender"))
         .frontDoorAppKey(req.getParameter("frontDoorAppKey"))
         .systemNotificationList(notificationReceivers)
-        .center(mapCenter)
         .build();
 
     configDAO.save(config);

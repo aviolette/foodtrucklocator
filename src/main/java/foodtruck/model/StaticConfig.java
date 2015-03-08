@@ -76,10 +76,11 @@ public class StaticConfig {
         .lat(41.880187)
         .lng(-87.63083499999999);
     try {
-      Iterable<String> items = Splitter.on(",")
+      Iterable<String> items = Splitter.on(";")
           .trimResults()
-          .split(System.getProperty("foodtrucklocator.center", "41.880187, -87.63083499999999"));
+          .split(System.getProperty("foodtrucklocator.center", "Clark and Monroe, Chicago, IL; 41.880187; -87.63083499999999"));
       Iterator<String> it = items.iterator();
+      builder.name(it.next());
       builder.lat(Double.parseDouble(it.next()));
       builder.lng(Double.parseDouble(it.next()));
     } catch (Exception e) {

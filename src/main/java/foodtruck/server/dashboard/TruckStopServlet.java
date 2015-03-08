@@ -14,6 +14,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.joda.time.DateTime;
@@ -21,7 +22,6 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormatter;
 
-import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
@@ -44,22 +44,22 @@ public class TruckStopServlet extends HttpServlet {
   private final TruckStopDAO truckStopDAO;
   private final TruckDAO truckDAO;
   private final Clock clock;
-  private final ConfigurationDAO configDAO;
+  private final Location center;
   private final DateTimeFormatter timeFormatter;
   private final GeoLocator geolocator;
   private final LocationDAO locationDAO;
 
   @Inject
   public TruckStopServlet(TruckDAO truckDAO, TruckStopDAO truckStopDAO, Clock clock,
-      ConfigurationDAO configDAO, LocationDAO locationDAO,
+      @Named("center") Location center, LocationDAO locationDAO,
       @TimeOnlyFormatter DateTimeFormatter timeFormatter, GeoLocator geolocator) {
     this.truckDAO = truckDAO;
     this.truckStopDAO = truckStopDAO;
     this.clock = clock;
-    this.configDAO = configDAO;
     this.timeFormatter = timeFormatter;
     this.geolocator = geolocator;
     this.locationDAO = locationDAO;
+    this.center = center;
   }
 
   @Override
@@ -80,7 +80,7 @@ public class TruckStopServlet extends HttpServlet {
       DateTime end = start.plusHours(2);
       truckStop = TruckStop.builder()
           .origin(StopOrigin.MANUAL)
-          .truck(truck).startTime(start).endTime(end).location(configDAO.find().getCenter()).build();
+          .truck(truck).startTime(start).endTime(end).location(center).build();
     }
     req.setAttribute("nav", "trucks");
     req.setAttribute("truckStop", truckStop);

@@ -18,7 +18,6 @@ import foodtruck.schedule.Confidence;
  */
 public class Configuration extends ModelEntity {
   private DateTime throttleGoogleUntil;
-  private @Nullable Location center;
   private List<String> systemNotificationList;
   private @Nullable String notificationSender;
   private @Nullable String frontDoorAppKey;
@@ -33,7 +32,6 @@ public class Configuration extends ModelEntity {
   private Configuration(Builder builder) {
     this(builder.key);
     this.throttleGoogleUntil = builder.throttleGoogleUntil;
-    this.center = builder.center;
     this.systemNotificationList = builder.systemNotificationList;
     this.notificationSender = builder.notificationSender;
     this.frontDoorAppKey = builder.frontDoorAppKey;
@@ -66,10 +64,6 @@ public class Configuration extends ModelEntity {
     return (throttleGoogleUntil != null && throttleGoogleUntil.isAfter(when));
   }
 
-  public @Nullable Location getCenter() {
-    return center;
-  }
-
   public @Nullable DateTime getThrottleGoogleUntil() {
     return throttleGoogleUntil;
   }
@@ -97,7 +91,6 @@ public class Configuration extends ModelEntity {
   public static class Builder {
     private Key key;
     private @Nullable DateTime throttleGoogleUntil;
-    private Location center;
     private List<String> systemNotificationList = ImmutableList.of();
     private @Nullable String notificationSender;
     private @Nullable String frontDoorAppKey;
@@ -140,11 +133,6 @@ public class Configuration extends ModelEntity {
 
     public Builder systemNotificationList(List<String> systemNotificationList) {
       this.systemNotificationList = ImmutableList.copyOf(systemNotificationList);
-      return this;
-    }
-
-    public Builder center(@Nullable Location location) {
-      this.center = location;
       return this;
     }
 
