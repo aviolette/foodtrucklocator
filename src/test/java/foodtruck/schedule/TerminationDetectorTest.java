@@ -79,6 +79,15 @@ public class TerminationDetectorTest {
         detector.detect(tweetBuilder.text("Thanx u of c love ya").build()));
   }
 
+  @Test
+  public void testTilNextWeek() {
+    assertEquals(tweetTime, detector.detect(tweetBuilder.text("Til next Week Oz Park! Great seeing y'all").build()));
+  }
+
+  @Test
+  public void testTillNextWeek() {
+    assertEquals(tweetTime, detector.detect(tweetBuilder.text("Till next Week Oz Park! Great seeing y'all").build()));
+  }
 
   @Test
   public void testApologies() {
