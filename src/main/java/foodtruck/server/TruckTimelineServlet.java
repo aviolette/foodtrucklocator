@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
@@ -28,9 +27,9 @@ public class TruckTimelineServlet extends FrontPageServlet {
   private final TruckCollectionWriter trucksWriter;
 
   @Inject
-  public TruckTimelineServlet(ConfigurationDAO configDAO, TruckDAO truckDAO, TruckCollectionWriter trucksWriter,
+  public TruckTimelineServlet(TruckDAO truckDAO, TruckCollectionWriter trucksWriter,
       StaticConfig staticConfig) {
-    super(configDAO, staticConfig);
+    super(staticConfig);
     this.truckDAO = truckDAO;
     this.trucksWriter = trucksWriter;
   }

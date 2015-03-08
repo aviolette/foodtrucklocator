@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import foodtruck.dao.ConfigurationDAO;
 import foodtruck.model.StaticConfig;
 
 /**
@@ -20,8 +19,8 @@ import foodtruck.model.StaticConfig;
 public class AboutServlet extends FrontPageServlet {
 
   @Inject
-  public AboutServlet(ConfigurationDAO configDAO, StaticConfig staticConfig) {
-    super(configDAO, staticConfig);
+  public AboutServlet(StaticConfig staticConfig) {
+    super(staticConfig);
   }
 
   @Override protected void doGetProtected(HttpServletRequest req, HttpServletResponse resp)

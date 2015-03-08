@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.PetitionSignatureDAO;
 import foodtruck.email.EmailNotifier;
 import foodtruck.model.PetitionSignature;
@@ -28,9 +27,9 @@ public class PetitionVerificationServlet extends FrontPageServlet {
   private final EmailNotifier notifier;
 
   @Inject
-  public PetitionVerificationServlet(ConfigurationDAO configDAO, PetitionSignatureDAO petitionSignatureDAO,
+  public PetitionVerificationServlet(PetitionSignatureDAO petitionSignatureDAO,
       Clock clock, EmailNotifier notifier, StaticConfig staticConfig) {
-    super(configDAO, staticConfig);
+    super(staticConfig);
     this.petitionSignatureDAO = petitionSignatureDAO;
     this.clock = clock;
     this.notifier = notifier;

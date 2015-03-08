@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -20,7 +21,6 @@ import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import foodtruck.dao.ConfigurationDAO;
 import foodtruck.email.EmailNotifier;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
@@ -60,19 +60,19 @@ public class TruckStopMatcher {
   private final Pattern sunPattern;
   private final Pattern atTimePattern;
   private final Pattern schedulePattern = Pattern.compile(".*M:.+(\\b|\\n)T:.+(\\b|\\n)W:.+");
-  private final ConfigurationDAO configDAO;
   private final EmailNotifier notifier;
   private final Pattern simpleDateParser;
+  private final Location center;
 
   @Inject
-  public TruckStopMatcher(AddressExtractor extractor, GeoLocator geoLocator,
-      DateTimeZone defaultZone, Clock clock, ConfigurationDAO configDAO, EmailNotifier notifier) {
+  public TruckStopMatcher(AddressExtractor extractor, GeoLocator geoLocator, DateTimeZone defaultZone, Clock clock,
+      EmailNotifier notifier, @Named("center") Location center) {
     this.addressExtractor = extractor;
     this.geoLocator = geoLocator;
+    this.center = center;
     this.atTimePattern = Pattern.compile("\\b(be at|ETA|open at|opening at|opens at|arrive at|there at) (" + TIME_PATTERN_STRICT + ")");
     this.endTimePattern = Pattern.compile("\\b(close at|leaving at|until|til|till) (" + TIME_PATTERN + ")");
     this.timeRangePattern = Pattern.compile(TIME_RANGE_PATTERN);
-    this.configDAO = configDAO;
     this.simpleDateParser = Pattern.compile("(\\d{1,2})/(\\d{1,2})");
     this.monPattern = Pattern.compile(
         "\\b(TUE|Tu|WED|Weds|THU|Th|FRI|SAT|Sa|SUN|Su|tuesday|wednesday|thursday|friday|saturday|sunday|tues|thurs|" +
@@ -108,7 +108,7 @@ public class TruckStopMatcher {
   }
 
   public Location getMapCenter() {
-    return configDAO.find().getCenter();
+    return center;
   }
 
   /**

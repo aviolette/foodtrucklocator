@@ -10,6 +10,10 @@ import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
+
+import foodtruck.model.Location;
+import foodtruck.model.StaticConfig;
 
 /**
  * @author aviolette@gmail.com
@@ -34,6 +38,11 @@ public class ScheduleModule extends AbstractModule {
   @Provides
   public ScriptEngineManager provideScriptEngineManager() {
     return new ScriptEngineManager();
+  }
+
+  @Provides @Named("center")
+  public Location providesMapCenter(StaticConfig config) {
+    return config.getCenter();
   }
 }
 

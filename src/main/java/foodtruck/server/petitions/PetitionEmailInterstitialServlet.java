@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import foodtruck.dao.ConfigurationDAO;
 import foodtruck.model.StaticConfig;
 import foodtruck.server.FrontPageServlet;
 
@@ -22,8 +21,8 @@ public class PetitionEmailInterstitialServlet extends FrontPageServlet {
   private static final String JSP = "/WEB-INF/jsp/petitions/600winterstitial.jsp";
 
   @Inject
-  public PetitionEmailInterstitialServlet(ConfigurationDAO configDAO, StaticConfig staticConfig)  {
-    super(configDAO, staticConfig);
+  public PetitionEmailInterstitialServlet(StaticConfig staticConfig)  {
+    super(staticConfig);
   }
 
   @Override protected void doGetProtected(HttpServletRequest req, HttpServletResponse resp)

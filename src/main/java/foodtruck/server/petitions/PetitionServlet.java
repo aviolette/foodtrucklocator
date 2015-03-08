@@ -14,7 +14,6 @@ import com.google.common.html.HtmlEscapers;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.PetitionSignatureDAO;
 import foodtruck.email.EmailNotifier;
 import foodtruck.model.PetitionSignature;
@@ -36,9 +35,9 @@ public class PetitionServlet extends FrontPageServlet {
   private SecureRandom random = new SecureRandom();
 
   @Inject
-  public PetitionServlet(ConfigurationDAO configDAO, PetitionSignatureDAO petitionDAO, Clock clock,
+  public PetitionServlet(PetitionSignatureDAO petitionDAO, Clock clock,
       EmailNotifier notifier, StaticConfig staticConfig) {
-    super(configDAO, staticConfig);
+    super(staticConfig);
     this.petitionDAO = petitionDAO;
     this.clock = clock;
     this.notifier = notifier;

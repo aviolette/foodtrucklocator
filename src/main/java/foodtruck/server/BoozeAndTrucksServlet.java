@@ -3,7 +3,6 @@ package foodtruck.server;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -19,12 +18,9 @@ import com.google.inject.Singleton;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 
-import foodtruck.dao.ConfigurationDAO;
-import foodtruck.dao.LocationDAO;
 import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.TruckStop;
-import foodtruck.server.resources.json.DailyScheduleWriter;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 import foodtruck.util.DateOnlyFormatter;
@@ -37,24 +33,18 @@ import foodtruck.util.FriendlyDateOnlyFormat;
 @Singleton
 public class BoozeAndTrucksServlet extends FrontPageServlet {
   private static final String JSP = "/WEB-INF/jsp/booze.jsp";
-  private static final Logger log = Logger.getLogger(BoozeAndTrucksServlet.class.getName());
   private final Clock clock;
   private final FoodTruckStopService stopService;
-  private final DailyScheduleWriter dailyScheduleWriter;
-  private final LocationDAO locationDAO;
   private final DateTimeFormatter dateFormatter;
   private final DateTimeFormatter friendlyFormatter;
 
   @Inject
-  public BoozeAndTrucksServlet(ConfigurationDAO configDAO, FoodTruckStopService stopService, Clock clock,
+  public BoozeAndTrucksServlet(FoodTruckStopService stopService, Clock clock,
                                @DateOnlyFormatter DateTimeFormatter dateFormatter,
-                               @FriendlyDateOnlyFormat DateTimeFormatter friendlyFormatter,
-                               DailyScheduleWriter scheduleWriter, LocationDAO locationDAO, StaticConfig staticConfig) {
-    super(configDAO, staticConfig);
+                               @FriendlyDateOnlyFormat DateTimeFormatter friendlyFormatter, StaticConfig staticConfig) {
+    super(staticConfig);
     this.stopService = stopService;
     this.clock = clock;
-    this.dailyScheduleWriter = scheduleWriter;
-    this.locationDAO = locationDAO;
     this.dateFormatter = dateFormatter;
     this.friendlyFormatter = friendlyFormatter;
   }

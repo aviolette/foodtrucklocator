@@ -18,7 +18,6 @@ import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.DailySchedule;
 import foodtruck.model.StaticConfig;
@@ -39,9 +38,9 @@ public class TrucksServlet extends FrontPageServlet {
   private final DateTimeZone zone;
 
   @Inject
-  public TrucksServlet(ConfigurationDAO configurationDAO, TruckDAO trucks, FoodTruckStopService stops,
+  public TrucksServlet(TruckDAO trucks, FoodTruckStopService stops,
       Clock clock, DateTimeZone zone, StaticConfig staticConfig) {
-    super(configurationDAO, staticConfig);
+    super(staticConfig);
     this.truckDAO = trucks;
     this.stops = stops;
     this.clock = clock;

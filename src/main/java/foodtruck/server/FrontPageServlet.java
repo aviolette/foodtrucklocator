@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
-import foodtruck.dao.ConfigurationDAO;
 import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
 
@@ -21,11 +20,9 @@ import foodtruck.model.StaticConfig;
  * @since 5/8/13
  */
 public abstract class FrontPageServlet extends HttpServlet {
-  protected final ConfigurationDAO configurationDAO;
   protected final StaticConfig staticConfig;
 
-  public FrontPageServlet(ConfigurationDAO configDAO, StaticConfig staticConfig) {
-    this.configurationDAO = configDAO;
+  public FrontPageServlet(StaticConfig staticConfig) {
     this.staticConfig = staticConfig;
   }
 
@@ -60,7 +57,7 @@ public abstract class FrontPageServlet extends HttpServlet {
   protected Location getCenter(@Nullable Cookie[] cookies) {
     double lat = 0, lng = 0;
     if (cookies == null) {
-      return configurationDAO.find().getCenter();
+      return staticConfig.getCenter();
     }
     for (int i = 0; i < cookies.length; i++) {
       if ("latitude".equals(cookies[i].getName())) {
@@ -72,7 +69,7 @@ public abstract class FrontPageServlet extends HttpServlet {
     if (lat != 0 && lng != 0) {
       return Location.builder().lat(lat).lng(lng).build();
     }
-    return configurationDAO.find().getCenter();
+    return staticConfig.getCenter();
   }
 
 }

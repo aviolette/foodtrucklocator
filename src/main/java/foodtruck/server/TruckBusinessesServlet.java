@@ -16,7 +16,6 @@ import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Location;
@@ -34,9 +33,9 @@ public class TruckBusinessesServlet extends FrontPageServlet {
   private final TruckDAO truckDAO;
 
   @Inject
-  public TruckBusinessesServlet(ConfigurationDAO configDAO, StaticConfig staticConfig, LocationDAO locationDAO,
+  public TruckBusinessesServlet(StaticConfig staticConfig, LocationDAO locationDAO,
       TruckDAO truckDAO) {
-    super(configDAO, staticConfig);
+    super(staticConfig);
     this.locationDAO = locationDAO;
     this.truckDAO = truckDAO;
   }

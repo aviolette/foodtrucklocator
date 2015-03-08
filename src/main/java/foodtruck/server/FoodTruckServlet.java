@@ -17,9 +17,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.LocationDAO;
-import foodtruck.model.Configuration;
 import foodtruck.model.DailySchedule;
 import foodtruck.model.StaticConfig;
 import foodtruck.schedule.ScheduleCacher;
@@ -47,11 +45,9 @@ public class FoodTruckServlet extends FrontPageServlet {
   private final LocationCollectionWriter locationCollectionWriter;
 
   @Inject
-  public FoodTruckServlet(ConfigurationDAO configDAO,
-      Clock clock, FoodTruckStopService service, DailyScheduleWriter writer, ScheduleCacher scheduleCacher,
-      @TimeFormatter DateTimeFormatter timeFormatter, LocationDAO locationDAO,
-      LocationCollectionWriter locationCollectionWriter, StaticConfig staticConfig) {
-    super(configDAO, staticConfig);
+  public FoodTruckServlet(Clock clock, FoodTruckStopService service, DailyScheduleWriter writer, ScheduleCacher scheduleCacher,
+      @TimeFormatter DateTimeFormatter timeFormatter, LocationDAO locationDAO, LocationCollectionWriter locationCollectionWriter, StaticConfig staticConfig) {
+    super(staticConfig);
     this.clock = clock;
     this.timeFormatter = timeFormatter;
     this.dateFormatter = DateTimeFormat.forPattern("EEE MMM dd, YYYY");
@@ -87,7 +83,6 @@ public class FoodTruckServlet extends FrontPageServlet {
     if (dateTime == null) {
       dateTime = clock.now();
     }
-    final Configuration configuration = configurationDAO.find();
     req.setAttribute("center", getCenter(req.getCookies()));
     String payload = timeSpecified ? null : scheduleCacher.findSchedule();
     if (payload == null || !staticConfig.isScheduleCachingOn()) {
@@ -119,7 +114,7 @@ public class FoodTruckServlet extends FrontPageServlet {
     req.setAttribute("requestTimeInMillis", dateTime.getMillis());
     req.setAttribute("removeDesignatedStops", "false".equals(System.getProperty("foodtrucklocator.designatedStops", "true")));
     req.setAttribute("tab", "map");
-    req.setAttribute("appKey", configuration.getFrontDoorAppKey());
+    req.setAttribute("appKey", staticConfig.getFrontDoorAppKey());
     req.setAttribute("defaultCity", staticConfig.getCityState());
     req.setAttribute("description", "Find food trucks on the streets of " + staticConfig.getCity() +
         " by time and location.  Results are updated in real-time throughout the day.");

@@ -14,7 +14,6 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 
-import foodtruck.dao.ConfigurationDAO;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.WeeklySchedule;
 import foodtruck.truckstops.FoodTruckStopService;
@@ -33,8 +32,8 @@ public class WeeklyScheduleServlet extends FrontPageServlet {
 
   @Inject
   public WeeklyScheduleServlet(FoodTruckStopService stopService, Clock clock,
-      ConfigurationDAO configDAO, @DateOnlyFormatter DateTimeFormatter formatter, StaticConfig staticConfig) {
-    super(configDAO, staticConfig);
+      @DateOnlyFormatter DateTimeFormatter formatter, StaticConfig staticConfig) {
+    super(staticConfig);
     this.stopService = stopService;
     this.clock = clock;
     this.formatter = formatter;

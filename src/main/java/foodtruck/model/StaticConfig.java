@@ -1,10 +1,16 @@
 package foodtruck.model;
 
+import java.util.Iterator;
+
+import com.google.common.base.Splitter;
+
 /**
  * @author aviolette
  * @since 1/5/15
  */
 public class StaticConfig {
+  private Location center;
+
   public boolean isRecachingEnabled() {
     return "true".equals(System.getProperty("foodtrucklocator.recache.enabled", "true"));
   }
@@ -63,5 +69,25 @@ public class StaticConfig {
 
   public String getYahooAppId() {
     return System.getProperty("foodtrucklocator.yahoo.key");
+  }
+
+  public Location getCenter() {
+    Location.Builder builder = Location.builder().name("Unnamed")
+        .lat(41.880187)
+        .lng(-87.63083499999999);
+    try {
+      Iterable<String> items = Splitter.on(",")
+          .trimResults()
+          .split(System.getProperty("foodtrucklocator.center", "41.880187, -87.63083499999999"));
+      Iterator<String> it = items.iterator();
+      builder.lat(Double.parseDouble(it.next()));
+      builder.lng(Double.parseDouble(it.next()));
+    } catch (Exception e) {
+    }
+    return builder.build();
+  }
+
+  public String getFrontDoorAppKey() {
+    return System.getProperty("foodtrucklocator.frontdoor.app.key", "");
   }
 }

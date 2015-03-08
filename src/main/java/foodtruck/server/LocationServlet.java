@@ -13,7 +13,6 @@ import com.google.inject.Singleton;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 
-import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
@@ -39,12 +38,12 @@ public class LocationServlet extends FrontPageServlet {
   private final DateTimeFormatter friendlyFormatter;
 
   @Inject
-  public LocationServlet(ConfigurationDAO configDAO, LocationDAO locationDAO, Clock clock,
+  public LocationServlet(LocationDAO locationDAO, Clock clock,
       @DateOnlyFormatter DateTimeFormatter dateFormatter,
       FoodTruckStopService truckStopService,
       GeoLocator geoLocator,
       @FriendlyDateOnlyFormat DateTimeFormatter friendlyFormatter, StaticConfig staticConfig) {
-    super(configDAO, staticConfig);
+    super(staticConfig);
     this.locationDAO = locationDAO;
     this.clock = clock;
     this.dateFormatter = dateFormatter;
