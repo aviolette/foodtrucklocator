@@ -94,12 +94,14 @@ public class UpdateLocationStats extends HttpServlet {
           }
           stats.put(slot, stat);
         }
+        log.log(Level.INFO, "Updating {} for location {}", new Object[] { slot, location.getName()});
         stat.updateCount("count.location." + location.getKey(), 1);
       } catch (Exception e) {
         log.log(Level.WARNING, e.getMessage(), e);
       }
     }
     for (SystemStats sysStats : stats.values()) {
+      log.log(Level.INFO, "Saving {}...", sysStats);
       rollupDAO.save(sysStats);
     }
     log.info("Finished updating stats");
