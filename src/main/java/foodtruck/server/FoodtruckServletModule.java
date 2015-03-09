@@ -33,6 +33,7 @@ import foodtruck.server.job.RecacheServlet;
 import foodtruck.server.job.SendLunchNotificationsServlet;
 import foodtruck.server.job.TweetCacheUpdateServlet;
 import foodtruck.server.job.TwitterCachePurgeServlet;
+import foodtruck.server.job.UpdateLocationStats;
 import foodtruck.server.job.UpdateTruckStats;
 import foodtruck.server.migrations.ForceSaveTruck;
 
@@ -52,6 +53,7 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/cron/notifications").with(SendLunchNotificationsServlet.class);
     serve("/cron/profileSync").with(ProfileSyncServlet.class);
     serve("/cron/updateTruckStats").with(UpdateTruckStats.class);
+    serve("/cron/updateLocationStats").with(UpdateLocationStats.class);
     serve("/cron/forcesavetruck").with(ForceSaveTruck.class);
     serve("/cron/migrateWeeklyStats").with(MigrateTimeSeries.class);
     serve("/cron/invalidateCache").with(InvalidateScheduleCache.class);

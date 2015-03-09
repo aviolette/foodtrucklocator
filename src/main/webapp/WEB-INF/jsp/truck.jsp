@@ -184,10 +184,7 @@
 
 </div>
 <%@include file="include/core_js.jsp" %>
-<script src="/script/lib/d3.min.js" type="text/javascript"></script>
-<script src="/script/lib/d3.layout.min.js" type="text/javascript"></script>
-<script src="/script/lib/rickshaw.min.js" type="text/javascript"></script>
-<script src="/script/graph.js"></script>
+<%@include file="include/graph_libraries.jsp" %>
 <script>
   (function() {
     <c:if test="${enableGraphs}">

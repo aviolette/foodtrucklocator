@@ -97,6 +97,7 @@ public class LocationServlet extends FrontPageServlet {
     }
     req.setAttribute("stops", truckStopService.findStopsNearALocation(location, dateTime.toLocalDate()));
     req.setAttribute("thedate", dateTime);
+    req.setAttribute("hasPopularityStats", staticConfig.showLocationGraphs());
     req.setAttribute("location", location);
     req.setAttribute("title", location.getName() + onDate);
     req.setAttribute("description", Strings.isNullOrEmpty(location.getDescription()) ? location.getName() : location.getDescription());

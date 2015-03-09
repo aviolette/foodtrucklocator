@@ -91,4 +91,8 @@ public class StaticConfig {
   public String getFrontDoorAppKey() {
     return System.getProperty("foodtrucklocator.frontdoor.app.key", "");
   }
+
+  public boolean showLocationGraphs() {
+    return "true".equals(System.getProperty("foodtrucklocator.show.location.graphs", "true"));
+  }
 }

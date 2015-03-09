@@ -1,4 +1,5 @@
 <%@ include file="header.jsp" %>
+<link href="/css/rickshaw/rickshaw.min.css" rel="stylesheet">
 
 <div class="row" >
   <div class="col-md-6">
@@ -40,29 +41,53 @@
   </div>
 </div>
 
+<c:if test="${hasPopularityStats}">
+<div class="row">
+  <div class="col-md-12">
+    <h2>Popularity of this spot (by week)</h2>
+    <div id="chart"></div>
+  </div>
+</div>
+</c:if>
+
 <%@ include file="include/core_js.jsp" %>
 <script type="text/javascript"
         src="http://maps.google.com/maps/api/js?sensor=false&libraries=geometry"></script>
+<%@include file="include/graph_libraries.jsp" %>
 
 <script type="text/javascript">
-  $(document).ready(function () {
-    var lat = ${location.latitude}, lng = ${location.longitude};
-    if (!(typeof google == "undefined")) {
-      var markerLat = new google.maps.LatLng(lat, lng);
-      var myOptions = {
-        center: markerLat,
-        zoom: 14,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-      };
-      var map = new google.maps.Map(document.getElementById("map_canvas"),
-          myOptions);
+  (function() {
+    $(document).ready(function () {
+      var lat = ${location.latitude}, lng = ${location.longitude};
+      if (!(typeof google == "undefined")) {
+        var markerLat = new google.maps.LatLng(lat, lng);
+        var myOptions = {
+          center: markerLat,
+          zoom: 14,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var map = new google.maps.Map(document.getElementById("map_canvas"),
+            myOptions);
 
-      var marker = new google.maps.Marker({
-        draggable: false,
-        position: markerLat,
-        map: map
+        var marker = new google.maps.Marker({
+          draggable: false,
+          position: markerLat,
+          map: map
+        });
+      }
+      <c:if test="${hasPopularityStats}">
+      var loopId;
+      function resize() {
+        $("#chart").empty();
+        drawGraphs(["count.location.${location.key}"], "chart");
+      }
+      $(window).resize(function () {
+        clearTimeout(loopId);
+        loopId = setTimeout(resize, 500);
       });
-    }
-  });
+      resize();
+      </c:if>
+    });
+  })();
 </script>
 <%@ include file="footer.jsp" %>
