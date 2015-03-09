@@ -1,7 +1,7 @@
 package foodtruck.server.job;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -11,11 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.api.client.util.Strings;
-import com.google.common.base.Splitter;
-import com.google.common.base.Throwables;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -27,9 +27,12 @@ import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.dao.WeeklyRollupDAO;
 import foodtruck.model.Location;
+import foodtruck.model.SystemStats;
 import foodtruck.model.TruckStop;
 import foodtruck.util.Clock;
 import foodtruck.util.DateOnlyFormatter;
+import foodtruck.util.Slots;
+import foodtruck.util.WeeklyRollup;
 
 /**
  * @author aviolette
@@ -43,15 +46,17 @@ public class UpdateLocationStats extends HttpServlet {
   private final WeeklyRollupDAO rollupDAO;
   private final LocationDAO locationDAO;
   private final DateTimeFormatter formatter;
+  private final Slots slotter;
 
   @Inject
   public UpdateLocationStats(TruckStopDAO truckStopDAO, Clock clock, LocationDAO locationDAO,
-      WeeklyRollupDAO rollupDAO, @DateOnlyFormatter DateTimeFormatter formatter) {
+      WeeklyRollupDAO rollupDAO, @DateOnlyFormatter DateTimeFormatter formatter, @WeeklyRollup Slots slotter) {
     this.clock = clock;
     this.locationDAO = locationDAO;
     this.rollupDAO = rollupDAO;
     this.truckStopDAO = truckStopDAO;
     this.formatter = formatter;
+    this.slotter = slotter;
   }
 
   @Override
@@ -65,6 +70,7 @@ public class UpdateLocationStats extends HttpServlet {
             return locationDAO.findByAddress(locationName);
           }
         });
+    Map<Long, SystemStats> stats = Maps.newHashMap();
     Interval range = determineRange(req);
     log.info("Updating location stats over range: " + range);
     for (TruckStop stop : truckStopDAO.findOverRange(null, range)) {
@@ -79,10 +85,22 @@ public class UpdateLocationStats extends HttpServlet {
         if (!location.getName().equals(name)) {
           log.log(Level.INFO, "Corrected location {0} to {1}", new Object[] {name, location.getName()});
         }
-        rollupDAO.updateCount(stop.getStartTime(), "count.location." + location.getKey(), 1);
+        long slot = slotter.getSlot(stop.getStartTime().getMillis());
+        SystemStats stat = stats.get(slot);
+        if (stat == null) {
+          stat = rollupDAO.findBySlot(slot);
+          if (stat == null) {
+            stat = new SystemStats(0, slot, ImmutableMap.<String, Long>of());
+          }
+          stats.put(slot, stat);
+        }
+        stat.updateCount("count.location." + location.getKey(), 1);
       } catch (Exception e) {
         log.log(Level.WARNING, e.getMessage(), e);
       }
+    }
+    for (SystemStats sysStats : stats.values()) {
+      rollupDAO.save(sysStats);
     }
     log.info("Finished updating stats");
   }

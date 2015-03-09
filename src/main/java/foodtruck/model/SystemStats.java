@@ -2,6 +2,7 @@ package foodtruck.model;
 
 import java.util.Map;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -35,8 +36,9 @@ public class SystemStats extends ModelEntity {
     return 0L;
   }
 
-  @Override public String toString() {
-    return Objects.toStringHelper(this)
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
         .add("timeStamp", timeStamp)
         .add("attributes", attributes)
         .toString();
@@ -44,12 +46,16 @@ public class SystemStats extends ModelEntity {
 
   public SystemStats merge(SystemStats prev) {
     for (Map.Entry<String, Long> attr : prev.getAttributes().entrySet()) {
-      if (attributes.containsKey(attr.getKey())) {
-        attributes.put(attr.getKey(), attributes.get(attr.getKey()) + attr.getValue());
-      } else {
-        attributes.put(attr.getKey(), attr.getValue());
-      }
+      updateCount(attr.getKey(), attr.getValue());
     }
     return this;
+  }
+
+  public void updateCount(String key, long value) {
+    if (attributes.containsKey(key)) {
+      attributes.put(key, attributes.get(key) + value);
+    } else {
+      attributes.put(key, value);
+    }
   }
 }

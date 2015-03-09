@@ -32,4 +32,6 @@ public interface TimeSeriesDAO extends DAO<Long, SystemStats>{
   void updateCount(long timestamp, String statName, long by);
 
   void deleteStat(String statName);
+
+  SystemStats findBySlot(long slot);
 }

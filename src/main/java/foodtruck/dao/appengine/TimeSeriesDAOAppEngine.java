@@ -108,6 +108,15 @@ public abstract class TimeSeriesDAOAppEngine extends AppEngineDAO<Long, SystemSt
     }
   }
 
+  @Override
+  public @Nullable SystemStats findBySlot(long slot) {
+    Entity entity = findBySlot(slot, provider.get());
+    if (entity == null) {
+      return null;
+    }
+    return fromEntity(entity);
+  }
+
   private @Nullable Entity findBySlot(long slot, DatastoreService dataStore) {
     Query q = new Query(getKind());
     q.setFilter(new Query.FilterPredicate(PARAM_TIMESTAMP, Query.FilterOperator.EQUAL, slot));
