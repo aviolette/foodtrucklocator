@@ -1,6 +1,8 @@
 package foodtruck.server.resources;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -34,6 +36,7 @@ import foodtruck.util.WeeklyRollup;
  */
 @Path("/stats")
 public class StatsResource {
+  private static final Logger log = Logger.getLogger(StatsResource.class.getName());
   private final FifteenMinuteRollupDAO fifteenMinuteRollupDAO;
   private final TruckStopDAO truckStopDAO;
   private final Slots fifteenMinuteRollups;
@@ -75,6 +78,7 @@ public class StatsResource {
       return trucksOnRoad(startTime, endTime, slots);
     }
     List<SystemStats> stats = dao(interval).findWithinRange(startTime, endTime, statList);
+    log.log(Level.INFO, "Stats {0}", stats);
     ImmutableList.Builder<StatVector> builder = ImmutableList.builder();
     for (String statName : statList) {
       builder.add(slots.fillIn(stats, statName, startTime, endTime));
