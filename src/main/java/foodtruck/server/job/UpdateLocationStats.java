@@ -74,13 +74,14 @@ public class UpdateLocationStats extends HttpServlet {
           // not sure if this is possible, but it might be true for older stops
           continue;
         }
-        Location location = cache.get(stop.getLocation().getName());
+        Location location = cache.get(stop.getLocation()
+              .getName());
         if (!location.getName().equals(name)) {
           log.log(Level.INFO, "Corrected location {0} to {1}", new Object[] {name, location.getName()});
         }
         rollupDAO.updateCount(stop.getStartTime(), "count.location." + location.getKey(), 1);
-      } catch (ExecutionException e) {
-        throw Throwables.propagate(e);
+      } catch (Exception e) {
+        log.log(Level.WARNING, e.getMessage(), e);
       }
     }
     log.info("Finished updating stats");
