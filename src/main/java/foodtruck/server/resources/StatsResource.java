@@ -77,6 +77,7 @@ public class StatsResource {
     if (statList.length > 0 && statList[0].equals("trucksOnRoad")) {
       return trucksOnRoad(startTime, endTime, slots);
     }
+    log.log(Level.INFO, "Requested stats: {0}", ImmutableList.copyOf(statList));
     List<SystemStats> stats = dao(interval).findWithinRange(startTime, endTime, statList);
     log.log(Level.INFO, "Stats {0}", stats);
     ImmutableList.Builder<StatVector> builder = ImmutableList.builder();
