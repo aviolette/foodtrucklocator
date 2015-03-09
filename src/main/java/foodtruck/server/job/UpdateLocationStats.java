@@ -25,6 +25,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckStopDAO;
+import foodtruck.dao.WeeklyLocationStatsRollupDAO;
 import foodtruck.dao.WeeklyRollupDAO;
 import foodtruck.model.Location;
 import foodtruck.model.SystemStats;
@@ -43,14 +44,14 @@ public class UpdateLocationStats extends HttpServlet {
   private static final Logger log = Logger.getLogger(UpdateLocationStats.class.getName());
   private final TruckStopDAO truckStopDAO;
   private final Clock clock;
-  private final WeeklyRollupDAO rollupDAO;
+  private final WeeklyLocationStatsRollupDAO rollupDAO;
   private final LocationDAO locationDAO;
   private final DateTimeFormatter formatter;
   private final Slots slotter;
 
   @Inject
   public UpdateLocationStats(TruckStopDAO truckStopDAO, Clock clock, LocationDAO locationDAO,
-      WeeklyRollupDAO rollupDAO, @DateOnlyFormatter DateTimeFormatter formatter, @WeeklyRollup Slots slotter) {
+      WeeklyLocationStatsRollupDAO rollupDAO, @DateOnlyFormatter DateTimeFormatter formatter, @WeeklyRollup Slots slotter) {
     this.clock = clock;
     this.locationDAO = locationDAO;
     this.rollupDAO = rollupDAO;

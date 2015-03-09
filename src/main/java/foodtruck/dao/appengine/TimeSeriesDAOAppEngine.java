@@ -45,11 +45,6 @@ public abstract class TimeSeriesDAOAppEngine extends AppEngineDAO<Long, SystemSt
             new Query.FilterPredicate(PARAM_TIMESTAMP, Query.FilterOperator.GREATER_THAN_OR_EQUAL, startTime),
             new Query.FilterPredicate(PARAM_TIMESTAMP, Query.FilterOperator.LESS_THAN, endTime)))
         .addSort(PARAM_TIMESTAMP, Query.SortDirection.ASCENDING);
-    if (statList.length > 0) {
-      for (String stat : statList) {
-        q.addProjection(new PropertyProjection(stat, Long.class));
-      }
-    }
     return executeQuery(dataStore, q);
   }
 

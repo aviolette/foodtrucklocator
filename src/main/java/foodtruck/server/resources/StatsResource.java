@@ -21,6 +21,7 @@ import org.joda.time.Interval;
 import foodtruck.dao.FifteenMinuteRollupDAO;
 import foodtruck.dao.TimeSeriesDAO;
 import foodtruck.dao.TruckStopDAO;
+import foodtruck.dao.WeeklyLocationStatsRollupDAO;
 import foodtruck.dao.WeeklyRollupDAO;
 import foodtruck.model.StatVector;
 import foodtruck.model.SystemStats;
@@ -42,10 +43,12 @@ public class StatsResource {
   private final Slots fifteenMinuteRollups;
   private final Slots weeklyRollups;
   private final WeeklyRollupDAO weeklyRollupDAO;
+  private final WeeklyLocationStatsRollupDAO weeklyLocationStatsRollupDAO;
 
   @Inject
   public StatsResource(FifteenMinuteRollupDAO fifteenMinuteRollupDAO, TruckStopDAO truckStopDAO,
       WeeklyRollupDAO weeklyRollupDAO,
+      WeeklyLocationStatsRollupDAO weeklyLocationStatsRollupDAO,
       @FifteenMinuteRollup Slots fifteenMinuteRollups,
       @WeeklyRollup Slots weeklyRollups) {
     this.fifteenMinuteRollupDAO = fifteenMinuteRollupDAO;
@@ -53,12 +56,13 @@ public class StatsResource {
     this.fifteenMinuteRollups = fifteenMinuteRollups;
     this.weeklyRollups = weeklyRollups;
     this.weeklyRollupDAO = weeklyRollupDAO;
+    this.weeklyLocationStatsRollupDAO = weeklyLocationStatsRollupDAO;
   }
 
-  private TimeSeriesDAO dao(long interval) {
+  private TimeSeriesDAO dao(long interval, boolean location) {
     // TODO: this is a really stupid way to do it
     if (interval == 604800000L) {
-      return weeklyRollupDAO;
+      return location ? weeklyLocationStatsRollupDAO : weeklyRollupDAO;
     } else {
       return fifteenMinuteRollupDAO;
     }
@@ -74,11 +78,14 @@ public class StatsResource {
       @QueryParam("interval") final long interval) {
     String[] statList = statNames.split(",");
     Slots slots = slots(interval);
+    boolean location = false;
     if (statList.length > 0 && statList[0].equals("trucksOnRoad")) {
       return trucksOnRoad(startTime, endTime, slots);
+    } else if (statList.length > 0 && statList[0].contains("location")) {
+      location = true;
     }
     log.log(Level.INFO, "Requested stats: {0}", ImmutableList.copyOf(statList));
-    List<SystemStats> stats = dao(interval).findWithinRange(startTime, endTime, statList);
+    List<SystemStats> stats = dao(interval, location).findWithinRange(startTime, endTime, statList);
     log.log(Level.INFO, "Stats {0}", stats);
     ImmutableList.Builder<StatVector> builder = ImmutableList.builder();
     for (String statName : statList) {
