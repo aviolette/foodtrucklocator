@@ -13,6 +13,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
@@ -120,6 +121,19 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     Query.Filter popularFilter = new Query.FilterPredicate(HAS_BOOZE, Query.FilterOperator.EQUAL, true);
     q.setFilter(popularFilter);
     return ImmutableSet.copyOf(executeQuery(dataStore, q));
+  }
+
+  @Override
+  public @Nullable Location findByAlias(String location) {
+    // max of three marches up the alias-tree
+    for (int i=0; i < 3; i++) {
+      Location loc = findByAddress(location);
+      if (loc == null || Strings.isNullOrEmpty(loc.getAlias())) {
+        return loc;
+      }
+      location = loc.getAlias();
+    }
+    return null;
   }
 
   private Query locationQuery(String keyword) {

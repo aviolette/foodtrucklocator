@@ -65,10 +65,10 @@ public class UpdateLocationStats extends HttpServlet {
     // cache is used since the name stored in the stop collection might not be the canonical name (i.e. the name
     // at the top-level of the alias tree)
     LoadingCache<String, Location> cache = CacheBuilder.newBuilder()
-        .maximumSize(1000)
+        .maximumSize(2000)
         .build(new CacheLoader<String, Location>() {
           public Location load(String locationName) throws Exception {
-            return locationDAO.findByAddress(locationName);
+            return locationDAO.findByAlias(locationName);
           }
         });
     Map<Long, SystemStats> stats = Maps.newHashMap();
@@ -97,6 +97,7 @@ public class UpdateLocationStats extends HttpServlet {
         }
         log.log(Level.INFO, "Updating {0} for location {1}", new Object[] { slot, location.getName()});
         stat.updateCount("count.location." + location.getKey(), 1);
+        stat.updateCount("count.location.total", 1);
       } catch (Exception e) {
         log.log(Level.WARNING, e.getMessage(), e);
       }

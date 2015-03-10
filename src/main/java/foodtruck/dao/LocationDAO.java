@@ -51,4 +51,6 @@ public interface LocationDAO extends DAO<Long, Location> {
   Collection<Location> findDesignatedStops();
 
   Iterable<Location> findBoozyLocations();
+
+  Location findByAlias(String location);
 }
