@@ -1,12 +1,14 @@
 package foodtruck.model;
 
+import java.io.Serializable;
+
 import com.google.common.base.Objects;
 
 /**
  * @author aviolette@gmail.com
  * @since 7/6/12
  */
-public class TimeValue {
+public class TimeValue implements Serializable {
   private final long timestamp;
   private long count;
 

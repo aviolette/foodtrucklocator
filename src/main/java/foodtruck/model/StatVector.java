@@ -1,5 +1,6 @@
 package foodtruck.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.google.common.base.Objects;
@@ -9,7 +10,7 @@ import com.google.common.base.Objects;
  * @author aviolette@gmail.com
  * @since 7/6/12
  */
-public class StatVector {
+public class StatVector implements Serializable {
   private String name;
   private List<TimeValue> dataPoints;
 

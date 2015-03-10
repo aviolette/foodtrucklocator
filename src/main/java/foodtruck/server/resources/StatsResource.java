@@ -11,6 +11,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.google.appengine.api.memcache.Expiration;
+import com.google.appengine.api.memcache.MemcacheService;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.sun.jersey.api.JResponse;
@@ -44,19 +46,21 @@ public class StatsResource {
   private final Slots weeklyRollups;
   private final WeeklyRollupDAO weeklyRollupDAO;
   private final WeeklyLocationStatsRollupDAO weeklyLocationStatsRollupDAO;
+  private final MemcacheService cache;
 
   @Inject
   public StatsResource(FifteenMinuteRollupDAO fifteenMinuteRollupDAO, TruckStopDAO truckStopDAO,
       WeeklyRollupDAO weeklyRollupDAO,
       WeeklyLocationStatsRollupDAO weeklyLocationStatsRollupDAO,
       @FifteenMinuteRollup Slots fifteenMinuteRollups,
-      @WeeklyRollup Slots weeklyRollups) {
+      @WeeklyRollup Slots weeklyRollups, MemcacheService cache) {
     this.fifteenMinuteRollupDAO = fifteenMinuteRollupDAO;
     this.truckStopDAO = truckStopDAO;
     this.fifteenMinuteRollups = fifteenMinuteRollups;
     this.weeklyRollups = weeklyRollups;
     this.weeklyRollupDAO = weeklyRollupDAO;
     this.weeklyLocationStatsRollupDAO = weeklyLocationStatsRollupDAO;
+    this.cache = cache;
   }
 
   private TimeSeriesDAO dao(long interval, boolean location) {
@@ -84,14 +88,25 @@ public class StatsResource {
     } else if (statList.length > 0 && statList[0].contains("location")) {
       location = true;
     }
+    if (statList.length  == 1) {
+      List<StatVector> vectors = (List<StatVector>) cache.get(statList[0]);
+      if (vectors != null) {
+        log.log(Level.INFO, "Stats for {0} retrieved from cache", statList[0]);
+        return JResponse.ok(vectors)
+            .build();
+      }
+    }
     log.log(Level.INFO, "Requested stats: {0}", ImmutableList.copyOf(statList));
     List<SystemStats> stats = dao(interval, location).findWithinRange(startTime, endTime, statList);
-    log.log(Level.INFO, "Stats {0}", stats);
     ImmutableList.Builder<StatVector> builder = ImmutableList.builder();
     for (String statName : statList) {
       builder.add(slots.fillIn(stats, statName, startTime, endTime));
     }
     List<StatVector> statVectors = builder.build();
+    if (statList.length == 1) {
+      log.log(Level.INFO, "Stats for {0} stored in cache", statList[0]);
+      cache.put(statList[0], statVectors, Expiration.byDeltaSeconds(86400));
+    }
     return JResponse.ok(statVectors).build();
   }
 
