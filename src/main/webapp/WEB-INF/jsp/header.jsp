@@ -52,10 +52,11 @@
         <li <c:if test="${tab == 'trucks'}"> class="active"</c:if>><a href="/trucks">Trucks</a></li>
         <c:if test="${showWeekly}">
           <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Schedule <b class="caret"></b></a>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Locations <b class="caret"></b></a>
             <ul class="dropdown-menu">
               <li><a href="/weekly-schedule">Popular Spots</a></li>
               <li><a href="/booze">Boozy Spots</a></li>
+              <li><a href="/businesses">Food Truck Owned Businesses</a></li>
             </ul>
           </li>
         </c:if>
