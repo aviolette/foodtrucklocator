@@ -26,7 +26,6 @@ import org.joda.time.format.DateTimeFormatter;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.dao.WeeklyLocationStatsRollupDAO;
-import foodtruck.dao.WeeklyRollupDAO;
 import foodtruck.model.Location;
 import foodtruck.model.SystemStats;
 import foodtruck.model.TruckStop;
