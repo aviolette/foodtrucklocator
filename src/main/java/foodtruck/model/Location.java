@@ -1,5 +1,7 @@
 package foodtruck.model;
 
+import java.io.Serializable;
+
 import javax.annotation.Nullable;
 
 import com.google.common.base.Function;
@@ -14,27 +16,31 @@ import com.javadocmd.simplelatlng.util.LengthUnit;
  * @author aviolette@gmail.com
  * @since Jul 12, 2011
  */
-public class Location extends ModelEntity {
+public class Location extends ModelEntity implements Serializable {
   public static final Function<Location, String> TO_NAME = new Function<Location, String> () {
     @Override public String apply(@Nullable Location input) {
       return input.getName();
     }
   };
   private LatLng latLng;
-  private final String name;
-  private final boolean valid;
-  private final @Nullable String description;
-  private final @Nullable String url;
-  private final boolean eventSpecific;
-  private final double radius;
-  private final boolean popular;
-  private final boolean justResolved;
-  private final boolean autocomplete;
-  private final @Nullable String alias;
-  private final @Nullable String twitterHandle;
-  private final boolean designatedStop;
-  private final boolean hasBooze;
-  private final @Nullable String ownedBy;
+  private String name;
+  private boolean valid;
+  private @Nullable String description;
+  private @Nullable String url;
+  private boolean eventSpecific;
+  private double radius;
+  private boolean popular;
+  private boolean justResolved;
+  private boolean autocomplete;
+  private @Nullable String alias;
+  private @Nullable String twitterHandle;
+  private boolean designatedStop;
+  private boolean hasBooze;
+  private @Nullable String ownedBy;
+
+  // For serializable
+  public Location() {
+  }
 
   public Location(Builder builder) {
     super(builder.key);

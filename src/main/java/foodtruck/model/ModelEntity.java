@@ -7,7 +7,11 @@ package foodtruck.model;
  */
 public abstract class ModelEntity {
   public static final long UNINITIALIZED = -1;
-  protected final Object key;
+  protected Object key;
+
+  // for serialization
+  public ModelEntity() {
+  }
 
   public ModelEntity(Object key) {
     this.key = key;

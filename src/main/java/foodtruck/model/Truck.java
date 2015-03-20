@@ -1,5 +1,6 @@
 package foodtruck.model;
 
+import java.io.Serializable;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,42 +22,46 @@ import static com.google.common.base.Preconditions.checkState;
  * @author aviolette@gmail.com
  * @since Jul 12, 2011
  */
-public class Truck extends ModelEntity {
-  private final String id;
-  private final String name;
-  private final String twitterHandle;
-  private final String url;
-  private final String iconUrl;
-  private final Set<String> categories;
-  private final String description;
-  private final String foursquareUrl;
-  private final boolean twittalyzer;
-  private final String defaultCity;
-  private final String facebook;
-  private final Pattern matchOnlyIf;
-  private final Pattern donotMatchIf;
-  private final boolean inactive;
-  private @Nullable final String calendarUrl;
-  private final @Nullable String email;
-  private final @Nullable String phone;
-  private final boolean twitterGeolocationDataValid;
-  private final @Nullable DateTime muteUntil;
-  private final String yelpSlug;
-  private final @Nullable String facebookPageId;
-  private final @Nullable Stats stats;
-  private final boolean hidden;
-  private final Set<String> beaconnaiseEmails;
-  private final @Nullable String previewIcon;
-  private final boolean allowSystemNotifications;
-  private final boolean displayEmailPublicly;
-  private final String instagramId;
-  private final @Nullable String fullsizeImage;
+public class Truck extends ModelEntity implements Serializable {
+  private String id;
+  private String name;
+  private String twitterHandle;
+  private String url;
+  private String iconUrl;
+  private ImmutableSet<String> categories;
+  private String description;
+  private String foursquareUrl;
+  private boolean twittalyzer;
+  private String defaultCity;
+  private String facebook;
+  private Pattern matchOnlyIf;
+  private Pattern donotMatchIf;
+  private boolean inactive;
+  private @Nullable String calendarUrl;
+  private @Nullable String email;
+  private @Nullable String phone;
+  private boolean twitterGeolocationDataValid;
+  private @Nullable DateTime muteUntil;
+  private String yelpSlug;
+  private @Nullable String facebookPageId;
+  private @Nullable Stats stats;
+  private boolean hidden;
+  private ImmutableSet<String> beaconnaiseEmails;
+  private @Nullable String previewIcon;
+  private boolean allowSystemNotifications;
+  private boolean displayEmailPublicly;
+  private String instagramId;
+  private @Nullable String fullsizeImage;
 
   public static final Function<Truck, String> TO_ID = new Function<Truck, String>() {
     @Nullable @Override public String apply(@Nullable Truck truck) {
       return truck.getId();
     }
   };
+
+  // For serialization
+  private Truck() {
+  }
 
   private Truck(Builder builder) {
     super(builder.id);
@@ -65,7 +70,7 @@ public class Truck extends ModelEntity {
     this.twitterHandle = builder.twitter;
     this.url = builder.url;
     this.iconUrl = builder.iconUrl;
-    this.categories = builder.categories;
+    this.categories = ImmutableSet.copyOf(builder.categories);
     this.description = builder.description;
     this.foursquareUrl = builder.foursquareUrl;
     this.twittalyzer = builder.twittalyzer;
@@ -83,7 +88,7 @@ public class Truck extends ModelEntity {
     this.yelpSlug = builder.yelpSlug;
     this.stats = builder.stats;
     this.hidden = builder.hidden;
-    this.beaconnaiseEmails = builder.beaconnaiseEmails;
+    this.beaconnaiseEmails = ImmutableSet.copyOf(builder.beaconnaiseEmails);
     this.previewIcon = builder.previewIcon;
     this.allowSystemNotifications = builder.allowSystemNotifications;
     this.displayEmailPublicly = builder.displayEmailPublicly;
@@ -302,7 +307,7 @@ public class Truck extends ModelEntity {
     return true;
   }
 
-  public static class Stats {
+  public static class Stats implements Serializable {
     private DateTime lastUpdated;
     private DateTime lastSeen;
     private DateTime firstSeen;

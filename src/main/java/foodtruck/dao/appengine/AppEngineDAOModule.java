@@ -20,6 +20,7 @@ import foodtruck.dao.TweetCacheDAO;
 import foodtruck.dao.TwitterNotificationAccountDAO;
 import foodtruck.dao.WeeklyLocationStatsRollupDAO;
 import foodtruck.dao.WeeklyRollupDAO;
+import foodtruck.util.Secondary;
 
 /**
  * @author aviolette@gmail.com
@@ -36,7 +37,7 @@ public class AppEngineDAOModule extends AbstractModule {
     bind(MessageDAO.class).to(MessageDAOAppEngine.class);
     bind(RetweetsDAO.class).to(RetweetDAOAppEngine.class);
     bind(FifteenMinuteRollupDAO.class).to(FifteenMinuteRollupDAOAppEngine.class);
-    bind(TruckDAO.class).to(TruckDAOAppEngine.class);
+    bind(TruckDAO.class).annotatedWith(Secondary.class).to(TruckDAOAppEngine.class);
     bind(TruckObserverDAO.class).to(TruckObserverDAOAppEngine.class);
     bind(TweetCacheDAO.class).to(TweetCacheAppEngineDAO.class);
     bind(TruckStopDAO.class).to(TruckStopDAOAppEngine.class);
