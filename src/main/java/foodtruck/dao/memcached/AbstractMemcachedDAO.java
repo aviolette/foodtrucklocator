@@ -3,7 +3,6 @@ package foodtruck.dao.memcached;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.appengine.api.memcache.Expiration;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.common.base.Function;
 import com.google.common.collect.ForwardingObject;
@@ -49,7 +48,7 @@ public abstract class AbstractMemcachedDAO<T> extends ForwardingObject {
     log.log(Level.INFO, "Retrieving {0} from DB", fullName);
     rc = func.apply(delegate());
     try {
-      memcacheService.put(fullName, rc, Expiration.byDeltaSeconds(86400));
+      memcacheService.put(fullName, rc);
     } catch (Exception e) {
       log.log(Level.SEVERE, "Couldn't store in memcached " + fullName, e);
     }
