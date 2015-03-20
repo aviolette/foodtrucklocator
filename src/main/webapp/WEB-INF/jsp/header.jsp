@@ -7,6 +7,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="author" content="Andrew Violette, @aviolette/@chifoodtruckz on twitter"/>
   <meta name="description" content="${description}"/>
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/img/apple-touch-icon-iphone-retina.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/img/apple-touch-icon-ipad-retina.png">
   <title>${title}</title>
   <c:choose>
     <c:when test="${localFrameworks}">
