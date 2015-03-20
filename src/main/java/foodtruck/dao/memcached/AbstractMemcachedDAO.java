@@ -42,10 +42,10 @@ public abstract class AbstractMemcachedDAO<T> extends ForwardingObject {
     String fullName = keyName(name);
     M rc = (M)memcacheService.get(fullName);
     if (rc != null) {
-      log.log(Level.INFO, "Retrieved {0} from cache", fullName);
+      log.log(Level.FINE, "Retrieved {0} from cache", fullName);
       return rc;
     }
-    log.log(Level.INFO, "Retrieving {0} from DB", fullName);
+    log.log(Level.FINE, "Retrieving {0} from DB", fullName);
     rc = func.apply(delegate());
     try {
       memcacheService.put(fullName, rc);
