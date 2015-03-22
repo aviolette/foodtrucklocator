@@ -36,7 +36,7 @@ var FoodTruckLocator = function () {
   }
 
   function displayDesignatedStops() {
-    $.each(_designatedStops, function(idx, item) {
+    $.each(_designatedStops, function (idx, item) {
       _markers.addLocationMarker(item);
     });
   }
@@ -88,20 +88,20 @@ var FoodTruckLocator = function () {
         marker.setMap(null);
       });
       markers = {};
-      $.each(locationMarkers, function(key, marker) {
+      $.each(locationMarkers, function (key, marker) {
         marker.setMap(null);
       });
       locationMarkers = {};
     };
 
-    this.clearLocationMarkers = function() {
-      $.each(locationMarkers, function(key, marker) {
+    this.clearLocationMarkers = function () {
+      $.each(locationMarkers, function (key, marker) {
         marker.setMap(null);
       });
       locationMarkers = {};
     }
 
-    this.addLocationMarker = function(location) {
+    this.addLocationMarker = function (location) {
       if (typeof locationMarkers[location.name] == "undefined") {
         var position = new google.maps.LatLng(location.latitude, location.longitude);
         location.marker = new google.maps.Marker({
@@ -119,7 +119,7 @@ var FoodTruckLocator = function () {
 
     this.add = function (stop) {
       if (markers[stop.location.name] == undefined) {
-        var letterId = String.fromCharCode(65 + lastLetter),color = "";
+        var letterId = String.fromCharCode(65 + lastLetter), color = "";
         stop.marker = new google.maps.Marker({
           map: _map,
           icon: buildIconURL(letterId),
@@ -210,7 +210,7 @@ var FoodTruckLocator = function () {
       return visible;
     };
 
-    this.hasActive = function() {
+    this.hasActive = function () {
       return self.stops.length > 0;
     };
 
@@ -301,49 +301,52 @@ var FoodTruckLocator = function () {
       if (stop.location.twitterHandle) $locationDescription.append("<div><small>Follow <a href='http://twitter.com/" + stop.location.twitterHandle + "'>@" + stop.location.twitterHandle + "</a> on twitter.</small></div>");
       if (stop.distance) $locationDescription.append("<div>(" + stop.distance + " miles from map center)</div>");
       if (lastLocation != stop.location.name) {
-          $div = $("<div class='media-body'><h4><a href='/locations/" + stop.location.key + "'>" + formatLocation(stop.location.name) + "</a></h4></div>");
-          $div.append($locationDescription);
-          var linkBody = isMobile() ? "" : "<a class='pull-left' href='#'><img id='" + stop.markerId + "' class='media-object' src='"
-              + stop.marker.icon +"'/></a>";
-          $location = $("<li class='media'>" + linkBody + "</li>");
-          $location.append($div);
-          $items.append($location);
-          var foundItems = $.grep(markers, function(item) {
-            if (typeof(item.marker) == 'object') {
-              return item.marker.icon == stop.marker.icon;
-            } else {
-              return item.stops[0].location.name == stop.location.name;
-            }
-          });
-          if (foundItems.length == 0) {
-            lastMarkerGroup = {marker: stop.marker, id: stop.markerId, stops: [stop]};
+        $div = $("<div class='media-body'><h4><a href='/locations/" + stop.location.key + "'>" + formatLocation(stop.location.name) + "</a></h4></div>");
+        $div.append($locationDescription);
+        var linkBody = isMobile() ? "" : "<a class='pull-left' href='#'><img id='" + stop.markerId + "' class='media-object' src='"
+        + stop.marker.icon + "'/></a>";
+        $location = $("<li class='media'>" + linkBody + "</li>");
+        $location.append($div);
+        $items.append($location);
+        var foundItems = $.grep(markers, function (item) {
+          if (typeof(item.marker) == 'object') {
+            return item.marker.icon == stop.marker.icon;
           } else {
-            lastMarkerGroup = foundItems[0];
-            lastMarkerGroup["stops"].push(stop);
+            return item.stops[0].location.name == stop.location.name;
           }
-          markers.push(lastMarkerGroup);
+        });
+        if (foundItems.length == 0) {
+          lastMarkerGroup = {marker: stop.marker, id: stop.markerId, stops: [stop]};
+        } else {
+          lastMarkerGroup = foundItems[0];
+          lastMarkerGroup["stops"].push(stop);
+        }
+        markers.push(lastMarkerGroup);
       } else {
         lastMarkerGroup["stops"].push(stop);
       }
       lastLocation = stop.location.name;
-      var toolTipId = "tooltip-" + $truckList.attr("id") +  idx,
+      var toolTipId = "tooltip-" + $truckList.attr("id") + idx,
           tooltipHtml = '';
       /*
-      if (stop.stop.notes && stop.stop.notes.length > 0) {
-        tooltipHtml = " <a id='" + toolTipId + "' href='#' data-toggle='tooltip' " +
-        "data-placement='top' data-content=''>[?]</a>";
-      }
-      */
+       if (stop.stop.notes && stop.stop.notes.length > 0) {
+       tooltipHtml = " <a id='" + toolTipId + "' href='#' data-toggle='tooltip' " +
+       "data-placement='top' data-content=''>[?]</a>";
+       }
+       */
 
       $div.append($("<div class='media'><a class='pull-left truckLink' truck-id='" + stop.truck.id
-          +"' href='#'><img class='media-object' src='"
-          + stop.truck.iconUrl +"'/></a><div class='media-body'><a class='truckLink' href='#' truck-id='" + stop.truck.id
-          +"'><strong>" + stop.truck.name + "</strong><div>"
-          + buildTimeRange(stop.stop, now)
-          +"</div><div>Confidence: " + stop.stop.confidence + tooltipHtml +"</div>"
-          + "</a></div></div>"));
+      + "' href='#'><img class='media-object' src='"
+      + stop.truck.iconUrl + "'/></a><div class='media-body'><a class='truckLink' href='#' truck-id='" + stop.truck.id
+      + "'><strong>" + stop.truck.name + "</strong><div>"
+      + buildTimeRange(stop.stop, now)
+      + "</div><div>Confidence: " + stop.stop.confidence + tooltipHtml + "</div>"
+      + "</a></div></div>"));
       if (stop.stop.notes && stop.stop.notes.length > 0) {
-        $("#"+ toolTipId).tooltip({"html": true, "title" :  "<ul><li class='tooltip-li'>" + stop.stop.notes.join("</li><li class='tooltip-li'>") + "</li></ul>"});
+        $("#" + toolTipId).tooltip({
+          "html": true,
+          "title": "<ul><li class='tooltip-li'>" + stop.stop.notes.join("</li><li class='tooltip-li'>") + "</li></ul>"
+        });
       }
     });
     $("a.truckLink").each(function (idx, item) {
@@ -432,9 +435,9 @@ var FoodTruckLocator = function () {
   }
 
   function resize() {
-    $("#map_canvas").height($(window).height() - $("#topBar").height()-60);
-    $("#sidebar").height($(window).height() - $("#topBar").height()-60);
-    $("#listContainer").height($(window).height() - $("#topBar").height()-60);
+    $("#map_canvas").height($(window).height() - $("#topBar").height() - 60);
+    $("#sidebar").height($(window).height() - $("#topBar").height() - 60);
+    $("#listContainer").height($(window).height() - $("#topBar").height() - 60);
   }
 
   function setupGlobalEventHandlers() {
@@ -496,29 +499,29 @@ var FoodTruckLocator = function () {
     $("#truckInfoLink").attr("href", "/trucks/" + truck.id);
     if (truck.twitterHandle) {
       $truckSocial.append("<a target='_blank' href='http://twitter.com/" + truck.twitterHandle +
-          "'><img alt='@" +
-          truck.twitterHandle + "' src='/img/twitter32x32.png'/></a> ");
+      "'><img alt='@" +
+      truck.twitterHandle + "' src='http://storage.googleapis.com/ftf_static/img/twitter32x32.png'/></a> ");
     }
     if (truck.foursquare) {
       $truckSocial.append("<a target='_blank' href='http://foursquare.com/venue/" +
-          truck.foursquare +
-          "'><img alt='Checkin on foursquare' src='/img/foursquare32x32.png'/></a> ");
+      truck.foursquare +
+      "'><img alt='Checkin on foursquare' src='http://storage.googleapis.com/ftf_static/img/foursquare32x32.png'/></a> ");
     }
     if (truck.instagram) {
       $truckSocial.append("<a target='_blank' href='http://instagram.com/" +
-          truck.instagram +
-          "'><img alt='View instagram feed' src='/img/instagram32x32.png'/></a> ");
+      truck.instagram +
+      "'><img alt='View instagram feed' src='http://storage.googleapis.com/ftf_static/img/instagram32x32.png'/></a> ");
     }
     if (truck.facebook) {
       $truckSocial.append("<a target='_blank' href='http://facebook.com" + truck.facebook +
-          "'><img alt='" +
-          truck.facebook + "' src='/img/facebook32x32.png'/></a> ");
+      "'><img alt='" +
+      truck.facebook + "' src='http://storage.googleapis.com/ftf_static/img/facebook32x32.png'/></a> ");
     }
     var $truckInfo = $("#truckInfo");
     $truckInfo.empty();
     if (truck.url) {
       $("#truck-url").append("<a class='whitelink' target='_blank' href='" + truck.url + "'>" +
-          truck.url + "</a>").removeClass("hidden");
+      truck.url + "</a>").removeClass("hidden");
     } else {
       $("#truck-url").addClass("hidden");
     }
@@ -531,7 +534,7 @@ var FoodTruckLocator = function () {
       $truckSchedule.append($tr);
     });
     $("#truckTitle").html(truck.name);
-    $truckDialog.modal({ show: true, keyboard: true, backdrop: true});
+    $truckDialog.modal({show: true, keyboard: true, backdrop: true});
   }
 
   function displayListOnly() {
@@ -584,7 +587,7 @@ var FoodTruckLocator = function () {
     controlText.innerHTML = '<b><input type="checkbox" id="designatedStopsCB">&nbsp;<label for="designatedStopsCB">Show designated stops</label></b>';
     controlUI.appendChild(controlText);
 
-    google.maps.event.addDomListener(controlUI, 'click', function() {
+    google.maps.event.addDomListener(controlUI, 'click', function () {
       _showDesignated = $("#designatedStopsCB").is(":checked");
       if (!_showDesignated || (_designatedStops && _designatedStops.length > 0)) {
         toggleDesignatedStopDisplay();
@@ -596,12 +599,14 @@ var FoodTruckLocator = function () {
           error: function () {
             try {
               console.log("Failed to retrieve designated stops " + (new Date()));
-            } catch (e) {}
+            } catch (e) {
+            }
           },
           success: function (data) {
             try {
               console.log("Successfully designated stops at " + (new Date()));
-            } catch (e) {}
+            } catch (e) {
+            }
             _designatedStops = data;
             toggleDesignatedStopDisplay();
           }
@@ -616,7 +621,7 @@ var FoodTruckLocator = function () {
       _trucks = new Trucks(model);
       refreshViewData();
     },
-    getModel: function() {
+    getModel: function () {
       return _trucks;
     },
     openTruck: function (truckId) {
@@ -626,26 +631,28 @@ var FoodTruckLocator = function () {
       console.log("Reloading model...")
       var self = this;
       $.ajax({
-        url: '/services/daily_schedule?appKey=' + _appKey + '&from=' + Clock.now(),
+        url: '/services/daily_schedule?appKey=' + _appKey,
         dataType: 'json',
         cache: false,
         error: function () {
           try {
             console.log("Failed to reload model at " + (new Date()));
-          } catch (e) {}
+          } catch (e) {
+          }
         },
         success: function (data) {
           try {
             console.log("Successfully loaded model at " + (new Date()));
-          } catch (e) {}
+          } catch (e) {
+          }
           self.setModel(data);
         }
       });
     },
-    hideFlash: function() {
+    hideFlash: function () {
       hideFlash();
     },
-    flash: function(msg, type) {
+    flash: function (msg, type) {
       flash(msg, type);
     },
     extend: function () {
@@ -677,7 +684,7 @@ var FoodTruckLocator = function () {
           }, function () {
             hideFlash();
             self.setModel(modelPayload);
-          }, {timeout: 5000 });
+          }, {timeout: 5000});
         } else {
           self.setModel(modelPayload);
         }
@@ -743,9 +750,9 @@ var FoodTruckLocator = function () {
             }
             loading = false;
             var latLng = new google.maps.LatLng(position.coords.latitude,
-                position.coords.longitude),
+                    position.coords.longitude),
                 distance = google.maps.geometry.spherical.computeDistanceBetween(center,
-                latLng, 3959);
+                    latLng, 3959);
             // sanity check.  Don't pan beyond 60 miles from default center
             if (distance < 60) {
               saveCenter(latLng);

@@ -17,19 +17,19 @@
 
       <div>
         <c:if test="${!empty(truck.facebook)}"><a target="_blank" href="http://facebook.com${truck.facebook}"><img
-            alt="Facebook" src="/img/facebook32x32.png"></a></c:if>
+            alt="Facebook" src="http://storage.googleapis.com/ftf_static/img/facebook32x32.png"></a></c:if>
         <c:if test="${!empty(truck.twitterHandle)}"><a target="_blank"
                                                        href="http://twitter.com/${truck.twitterHandle}"><img
-            alt="@${truck.twitterHandle} on twitter" src="/img/twitter32x32.png"></a></c:if>
+            alt="@${truck.twitterHandle} on twitter" src="http://storage.googleapis.com/ftf_static/img/twitter32x32.png"></a></c:if>
         <c:if test="${!empty(truck.foursquareUrl)}"><a target="_blank"
                                                        href="http://foursquare.com/venue/${truck.foursquareUrl}"><img
-            alt="Check in on foursquare" src="/img/foursquare32x32.png"></a></c:if>
+            alt="Check in on foursquare" src="http://storage.googleapis.com/ftf_static/img/foursquare32x32.png"></a></c:if>
         <c:if test="${!empty(truck.instagramId)}"><a target="_blank"
                                                        href="http://instagram.com/${truck.instagramId}"><img
-            alt="View on instagram" src="/img/instagram32x32.png"></a></c:if>
+            alt="View on instagram" src="http://storage.googleapis.com/ftf_static/img/instagram32x32.png"></a></c:if>
         <c:if test="${!empty(truck.yelpSlug)}"><a target="_blank"
                                                   href="http://yelp.com/biz/${truck.yelpSlug}"><img alt="Yelp"
-                                                                                                    src="/img/yelp32x32.png"></a></c:if>
+                                                                                                    src="http://storage.googleapis.com/ftf_static/img/yelp32x32.png"></a></c:if>
       </div>
       <div style="padding-top:20px">
         <table class="table">
