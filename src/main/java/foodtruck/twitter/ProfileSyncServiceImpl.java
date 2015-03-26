@@ -183,19 +183,28 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
     log.log(Level.FINE, "Syncing truck: {0}", truck.getId());
     String response = facebookResource.uri(URI.create(uri))
         .get(String.class);
-    JSONObject responseObj = null;
+    JSONObject responseObj;
     try {
       responseObj = new JSONObject(response);
     } catch (JSONException e) {
       return truck;
     }
-    Truck.Builder builder = null;
+    Truck.Builder builder;
     try {
       builder = Truck.builder(truck)
           .facebookPageId(responseObj.getString("id"));
     } catch (JSONException e) {
       return truck;
     }
+      try {
+        if (Strings.isNullOrEmpty(truck.getUrl())) {
+          builder.url(responseObj.getString("website"));
+        }
+        if (Strings.isNullOrEmpty(truck.getPhone())) {
+          builder.phone(responseObj.getString("phone"));
+        }
+      } catch (JSONException e) {
+      }
     // http://graph.facebook.com/overrice.foodtruck/picture?height=400&width=400
     if (Strings.isNullOrEmpty(truck.getPreviewIcon())) {
       try {
@@ -247,10 +256,10 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
       if (user != null) {
         String twitterHandle = user.getScreenName().toLowerCase();
         Truck.Builder builder = Truck.builder(truck);
-        if (Strings.isNullOrEmpty(truck.getIconUrl())) {
+        if (Strings.isNullOrEmpty(truck.getIconUrl()) || truck.getIconUrl().contains("pbs.")) {
           String url = syncToGoogleStorage(twitterHandle, user.getProfileImageURL(), baseUrl,
               staticConfig.getIconBucket());
-          builder.url(url);
+          builder.iconUrl(url);
         }
         if (Strings.isNullOrEmpty(truck.getPreviewIcon())) {
           URL iconUrl = new URL(user.getProfileImageURL().replaceAll("_normal", "_400x400"));
