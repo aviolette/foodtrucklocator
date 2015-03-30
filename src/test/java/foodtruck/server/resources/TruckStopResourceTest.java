@@ -12,8 +12,10 @@ import org.junit.Test;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckLocationGroup;
+import foodtruck.server.security.SecurityChecker;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
+
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
 
@@ -27,15 +29,17 @@ public class TruckStopResourceTest extends EasyMockSupport {
   private TruckStopResource truckStopResource;
   private TruckLocationGroup truckStopGroup1;
   private TruckLocationGroup truckStopGroup2;
+  private SecurityChecker checker;
 
   @Before
   public void setup() {
     service = createMock(FoodTruckStopService.class);
     clock = createMock(Clock.class);
+    checker = createMock(SecurityChecker.class);
     truckStopGroup1 = new TruckLocationGroup(null, Sets.<Truck>newHashSet());
     truckStopGroup2 = new TruckLocationGroup(new Location.Builder().name("foo").build(),
         Sets.<Truck>newHashSet());
-    truckStopResource = new TruckStopResource(service, clock);
+    truckStopResource = new TruckStopResource(service, clock, checker);
   }
 
   @Test

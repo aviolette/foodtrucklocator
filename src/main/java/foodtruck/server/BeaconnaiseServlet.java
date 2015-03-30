@@ -11,6 +11,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import foodtruck.dao.TruckDAO;
+import foodtruck.model.Truck;
 
 /**
  * @author aviolette
@@ -25,7 +26,7 @@ public class BeaconnaiseServlet extends VendorServletSupport {
     super(truckDAO);
   }
 
-  @Override protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable String truckId)
+  @Override protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable Truck truck)
       throws ServletException, IOException {
     req.getRequestDispatcher(JSP).forward(req, resp);
   }

@@ -14,6 +14,7 @@ import foodtruck.googleapi.GoogleApiModule;
 import foodtruck.monitoring.MonitoringModule;
 import foodtruck.notifications.NotificationModule;
 import foodtruck.schedule.ScheduleModule;
+import foodtruck.server.security.SecurityModule;
 import foodtruck.stats.StatsModule;
 import foodtruck.truckstops.ServiceModule;
 import foodtruck.twitter.TwitterModule;
@@ -37,6 +38,7 @@ public class FoodtruckConfig extends GuiceServletContextListener {
         new GeolocationModule(),
         new ServiceModule(),
         new EmailModule(),
+        new SecurityModule(),
         new ScheduleModule(),
         new StatsModule(),
         new UtilModule(),

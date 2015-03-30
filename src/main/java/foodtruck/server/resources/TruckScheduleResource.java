@@ -12,11 +12,11 @@ import com.sun.jersey.api.JResponse;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.TruckSchedule;
+import foodtruck.server.security.SecurityChecker;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 
 import static foodtruck.server.resources.Resources.noCache;
-import static foodtruck.server.resources.Resources.requiresAdmin;
 
 /**
  * @author aviolette@gmail.com
@@ -24,21 +24,22 @@ import static foodtruck.server.resources.Resources.requiresAdmin;
  */
 @Path("/schedule")
 public class TruckScheduleResource {
+  private static final Logger log = Logger.getLogger(TruckScheduleResource.class.getName());
   private final FoodTruckStopService stopService;
   private final Clock clock;
-  private final TruckDAO dao;
-  private static final Logger log = Logger.getLogger(TruckScheduleResource.class.getName());
+  private final SecurityChecker securityChecker;
 
   @Inject
-  public TruckScheduleResource(FoodTruckStopService stopService, Clock clock, TruckDAO dao) {
+  public TruckScheduleResource(FoodTruckStopService stopService, Clock clock, TruckDAO dao,
+      SecurityChecker securityChecker) {
     this.stopService = stopService;
     this.clock = clock;
-    this.dao = dao;
+    this.securityChecker = securityChecker;
   }
 
   @GET @Path("{truckId}")
   public JResponse<TruckSchedule> findSchedule(@PathParam("truckId") String truckId) {
-    requiresAdmin();
+    securityChecker.requiresLoggedInAs(truckId);
     try {
       return noCache(JResponse.ok(stopService.findStopsForDay(truckId, clock.currentDay()))).build();
     } catch (IllegalStateException ise) {

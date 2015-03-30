@@ -30,7 +30,7 @@ public class VendorSettingsServlet extends VendorServletSupport {
     super(dao);
   }
 
-  @Override protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable String truckId)
+  @Override protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable Truck truck)
       throws ServletException, IOException {
     req = new GuiceHackRequestWrapper(req, JSP);
     req.setAttribute("tab", "trucksettings");

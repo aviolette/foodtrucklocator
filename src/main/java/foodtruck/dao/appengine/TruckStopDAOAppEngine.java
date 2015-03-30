@@ -326,6 +326,23 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
     return null;
   }
 
+  @Override
+  public List<TruckStop> findAfter(String truckId, DateTime endTime) {
+    List<Query.Filter> filters = Lists.newLinkedList();
+    filters.add(new Query.FilterPredicate(START_TIME_FIELD,
+        Query.FilterOperator.GREATER_THAN_OR_EQUAL, endTime.toDate()));
+    filters.add(new Query.FilterPredicate(TRUCK_ID_FIELD, Query.FilterOperator.EQUAL, truckId));
+    DatastoreService dataStore = serviceProvider.get();
+    Query q = new Query(STOP_KIND);
+    q.setFilter(Query.CompositeFilterOperator.and(filters));
+    q.addSort(START_TIME_FIELD, Query.SortDirection.ASCENDING);
+    ImmutableList.Builder<TruckStop> stops = ImmutableList.builder();
+    for (Entity entity : dataStore.prepare(q).asIterable(FetchOptions.Builder.withChunkSize(100))) {
+      stops.add(toTruckStop(entity));
+    }
+    return stops.build();
+  }
+
   private List<Query.Filter> trucksOverRange(@Nullable String truckId, Interval range) {
     List<Query.Filter> filters = Lists.newLinkedList();
     filters.add(new Query.FilterPredicate(START_TIME_FIELD,

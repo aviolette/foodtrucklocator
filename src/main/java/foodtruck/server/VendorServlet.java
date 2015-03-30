@@ -1,19 +1,24 @@
 package foodtruck.server;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.annotation.Nullable;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import org.codehaus.jettison.json.JSONArray;
+
+import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
-import foodtruck.model.TruckSchedule;
-import foodtruck.truckstops.FoodTruckStopService;
-import foodtruck.util.Clock;
+import foodtruck.model.Location;
+import foodtruck.model.Truck;
 
 /**
  * @author aviolette
@@ -22,21 +27,22 @@ import foodtruck.util.Clock;
 @Singleton
 public class VendorServlet extends VendorServletSupport {
   private static final String JSP = "/WEB-INF/jsp/vendor/vendordash.jsp";
-  private final FoodTruckStopService truckStopService;
-  private final Clock clock;
+  private final LocationDAO locationDAO;
 
   @Inject
-  public VendorServlet(TruckDAO dao, FoodTruckStopService truckStopService, Clock clock) {
+  public VendorServlet(TruckDAO dao, LocationDAO locationDAO) {
     super(dao);
-    this.truckStopService = truckStopService;
-    this.clock = clock;
+    this.locationDAO = locationDAO;
   }
 
-  @Override protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable String truckId)
+  @Override protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable Truck truck)
       throws ServletException, IOException {
-    final TruckSchedule stopsForDay = truckStopService.findStopsForDay(truckId, clock.currentDay());
-    req.setAttribute("schedule", stopsForDay);
-    req.setAttribute("hasStops", !stopsForDay.getStops().isEmpty());
+    if (truck != null) {
+      req.setAttribute("categories", new JSONArray(truck.getCategories()));
+    }
+    final List<Location> autocompleteLocations = locationDAO.findAutocompleteLocations();
+    List<String> locationNames = ImmutableList.copyOf(Iterables.transform(autocompleteLocations, Location.TO_NAME));
+    req.setAttribute("locations", new JSONArray(locationNames).toString());
     req.setAttribute("tab", "vendorhome");
     req.getRequestDispatcher(JSP).forward(req, resp);
   }

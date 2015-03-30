@@ -11,6 +11,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import foodtruck.dao.TruckDAO;
+import foodtruck.model.Truck;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 
@@ -30,11 +31,8 @@ public class VendorOffTheRoadServlet extends VendorServletSupport {
     this.clock = clock;
   }
 
-  @Override protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable String truckId)
+  @Override protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable Truck truck)
       throws ServletException, IOException {
-  }
-
-  @Override protected void dispatchPost(HttpServletRequest req, HttpServletResponse resp, String truckId) {
-    stopService.offRoad(truckId, clock.currentDay());
+    stopService.offRoad(truck.getId(), clock.currentDay());
   }
 }

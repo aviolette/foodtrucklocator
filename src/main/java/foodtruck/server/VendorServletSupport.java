@@ -57,7 +57,7 @@ public abstract class VendorServletSupport extends HttpServlet {
     } else if (trucks.size() == 1) {
         Truck truck = Iterables.getFirst(trucks, null);
         req.setAttribute("truck", truck);
-        dispatchGet(req, resp, truck.getId());
+        dispatchGet(req, resp, truck);
     } else {
         // TODO: implement
         // goto truck selection page
@@ -95,7 +95,7 @@ public abstract class VendorServletSupport extends HttpServlet {
     return ImmutableSet.of();
   }
 
-  protected abstract void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable String truckId)
+  protected abstract void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable Truck truck)
       throws ServletException, IOException;
 
   private void vendorError(String title, String message, HttpServletRequest request, HttpServletResponse response)

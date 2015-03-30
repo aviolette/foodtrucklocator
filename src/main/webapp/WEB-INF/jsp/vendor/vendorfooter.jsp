@@ -1,4 +1,5 @@
 </div>
+</div>
 <%-- brighttag script --%>
 <script src="//s.btstatic.com/tag.js">{
   site: "zIOrUTR"

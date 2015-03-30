@@ -14,6 +14,7 @@ import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
 import foodtruck.dao.TruckDAO;
+import foodtruck.model.Truck;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 
@@ -33,13 +34,11 @@ public class VendorRecacheServlet extends VendorServletSupport {
     this.clock = clock;
   }
 
-  @Override protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable String truckId)
+  @Override protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable Truck truck)
       throws ServletException, IOException {
-  }
-
-  @Override protected void dispatchPost(HttpServletRequest req, HttpServletResponse resp, String truckId) {
     LocalDate when = clock.currentDay();
     final Interval interval = when.toInterval(clock.zone()).withEnd(when.plusDays(7).toDateMidnight());
-    foodTruckStopService.updateStopsForTruck(interval, truckDAO.findById(truckId));
+    foodTruckStopService.updateStopsForTruck(interval, truck);
   }
+
 }

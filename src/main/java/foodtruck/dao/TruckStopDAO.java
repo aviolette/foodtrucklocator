@@ -72,4 +72,6 @@ public interface TruckStopDAO {
   List<TruckStop> findOverRange(@Nullable String truckId, Interval range);
 
   TruckStop findFirstStop(String id);
+
+  List<TruckStop> findAfter(String truckId, DateTime startTime);
 }

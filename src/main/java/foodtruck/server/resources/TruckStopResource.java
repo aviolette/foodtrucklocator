@@ -20,11 +20,11 @@ import org.joda.time.DateTime;
 
 import foodtruck.model.TruckLocationGroup;
 import foodtruck.model.TruckStop;
+import foodtruck.server.security.SecurityChecker;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 
 import static foodtruck.server.resources.Resources.noCache;
-import static foodtruck.server.resources.Resources.requiresAdmin;
 
 /**
  * @author aviolette@gmail.com
@@ -34,24 +34,32 @@ import static foodtruck.server.resources.Resources.requiresAdmin;
 public class TruckStopResource {
   private final FoodTruckStopService foodTruckService;
   private final Clock clock;
+  private final SecurityChecker checker;
 
   @Inject
-  public TruckStopResource(FoodTruckStopService service, Clock clock) {
+  public TruckStopResource(FoodTruckStopService service, Clock clock, SecurityChecker checker) {
     this.foodTruckService = service;
     this.clock = clock;
+    this.checker = checker;
   }
 
   @DELETE @Path("{stopId: \\d+}")
   public void delete(@PathParam("stopId") final long stopId)
       throws ServletException, IOException {
-    requiresAdmin();
+    if (!checker.isAdmin()) {
+      TruckStop stop = foodTruckService.findById(stopId);
+      if (stop == null) {
+        return;
+      }
+      checker.requiresLoggedInAs(stop.getTruck().getId());
+    }
     foodTruckService.delete(stopId);
   }
 
   @PUT
   public void save(TruckStop truckStop)
       throws ServletException, IOException {
-    requiresAdmin();
+    checker.requiresLoggedInAs(truckStop.getTruck().getId());
     foodTruckService.update(truckStop);
   }
 
