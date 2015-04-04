@@ -12,6 +12,7 @@ runEditWidget = function(truckId, locations, categories, options) {
     }
   });
 
+  // Type-ahead related stuff
   var substringMatcher = function(strs) {
     return function findMatches(q, cb) {
       var matches, substrRegex;
@@ -46,11 +47,14 @@ runEditWidget = function(truckId, locations, categories, options) {
   $editStop.on("shown.bs.modal", function() {
     $("#startTimeInput").focus();
   });
+
   function invokeEditDialog(stop, afterwards) {
     $("#startTimeInput").val(stop.startTimeH);
     $("#endTimeInput").val( stop.endTimeH);
     $("#locationInput").val(stop.location.name);
     $("#lockStop").val( stop.locked);
+    $("#locationInputGroup").removeClass("has-error");
+    $("#truck-schedule-alert").addClass("hidden");
     $("#edit-stop").modal({ show: true, keyboard: true, backdrop: true});
     var $saveButton = $("#saveButton");
     $saveButton.unbind('click');
@@ -59,22 +63,45 @@ runEditWidget = function(truckId, locations, categories, options) {
       stop.startTime =  $("#startTimeInput").val();
       stop.endTime =  $("#endTimeInput").val();
       var locationName = $("#locationInput").val();
+      var oldLocation = stop.location;
       if (locationName != stop.location.name) {
         stop.locationName = locationName;
         delete stop.location;
       }
       stop.truckId = truckId;
       stop.locked = $("#lockStop").is(":checked");
-      $.ajax({
-        url: "/services/stops",
-        type: 'PUT',
-        contentType: 'application/json',
-        data: JSON.stringify(stop),
-        complete: function () {
-          $("#edit-stop").modal('hide');
-        },
-        success: afterwards
-      });
+      if(locationName.length == 0) {
+        $("#locationInputGroup").addClass("has-error");
+        $("#truck-schedule-error").html("No location specified");
+      } else {
+        $.ajax({
+          url: "/services/v2/stops",
+          type: 'PUT',
+          contentType: 'application/json',
+          data: JSON.stringify(stop),
+          complete: function () {
+          },
+          error: function(e) {
+            var obj = JSON.parse(e.responseText);
+            $("#truck-schedule-error").html(obj.error);
+            $("#truck-schedule-alert").removeClass("hidden");
+            if (/location/i.exec(obj.error)) {
+              $("#locationInputGroup").addClass("has-error");
+            }
+            if (/start time/i.exec(obj.error)) {
+              $("#startTimeInputGroup").addClass("has-error");
+            }
+            if (/end time/i.exec(obj.error)) {
+              $("#endTimeInputGroup").addClass("has-error");
+            }
+            stop.location = oldLocation;
+          },
+          success: function() {
+            $("#edit-stop").modal('hide');
+            afterwards();
+          }
+        });
+      }
     });
     var $cancelButton = $("#cancelButton");
     $cancelButton.unbind("click");
@@ -101,21 +128,20 @@ runEditWidget = function(truckId, locations, categories, options) {
     scheduleTable.empty();
     lastStop = null;
     $.ajax({
-      url: '/services/schedule/' + truckId,
+      url: '/services/v2/stops?truck=' + truckId,
       type: 'GET',
       dataType: 'json',
       success: function (schedule) {
-        var now = new Date().getTime();
-        var numStops = schedule["stops"].length;
+        var now = new Date().getTime(), numStops = schedule.length;
         var prevHadStart = false;
-        $.each(schedule["stops"], function (truckIndex, stop) {
+        $.each(schedule, function (truckIndex, stop) {
           lastStop = stop;
           var labels = (stop.locked) ? "&nbsp;<span class=\"label important\">locked</span>" :
               "";
           var crazyDuration = stop.durationMillis < 0 || stop.durationMillis > 43200000;
           labels += (stop.fromBeacon) ? "&nbsp;<span class=\"label important\">beacon</span>" : "";
-          var buf = "<tr " + (crazyDuration ? " class='error'" : "") + "><td>" + stop.startTime + "</td><td>" + stop.endTime +
-              "</td><td>" + stop.duration + "</td><td>" + stop.origin + "</td><td><a href='/admin/locations?q=" + encodeURIComponent(stop.location.name) +
+          var buf = "<tr " + (crazyDuration ? " class='error'" : "") + "><td>" + stop.startDate + "</td><td>" + stop.startTime + "</td><td>" + stop.endTime +
+              "</td><td>" + stop.duration + "</td><td class=\"origin\">" + stop.origin + "</td><td><a href='/admin/locations?q=" + encodeURIComponent(stop.location.name) +
               "'>"
               + stop.location.name + "</a>" + labels + "</td><td>";
           if (!prevHadStart && now < stop.startTimeMillis) {
@@ -132,8 +158,8 @@ runEditWidget = function(truckId, locations, categories, options) {
           "' class='btn '><span class='glyphicon glyphicon-remove'></span> Delete</button>&nbsp;<button class='btn btn-default' id='truckEdit" +
           truckIndex + "'><span class='glyphicon glyphicon-pencil'></span> Edit</button></div></td></tr>");
           $("#truckEdit" + truckIndex).click(function (e) {
-            stop["startDate"] = toDate(new Date(stop["startTimeMillis"]));
-            stop["endDate"] = toDate(new Date(stop["endTimeMillis"]));
+            stop["startDate"] = toDate(new Date(stop["startMillis"]));
+            stop["endDate"] = toDate(new Date(stop["endMillis"]));
             invokeEditDialog(stop, refreshSchedule);
           });
 
@@ -142,9 +168,9 @@ runEditWidget = function(truckId, locations, categories, options) {
               e.preventDefault();
               if (useStart) {
                 stop.startTime = toDate(new Date());
-                stop["endTime"] = toDate(new Date(stop["endTimeMillis"]));
+                stop["endTime"] = toDate(new Date(stop["endMillis"]));
               } else {
-                stop.startTime = toDate(new Date(stop["startTimeMillis"]));
+                stop.startTime = toDate(new Date(stop["startMillis"]));
                 stop.endTime = toDate(new Date());
               }
               stop.truckId = truckId;
@@ -163,7 +189,7 @@ runEditWidget = function(truckId, locations, categories, options) {
           $("#truckDelete" + truckIndex).click(function (e) {
             e.preventDefault();
             $.ajax({
-              url: "/services/stops/" + stop.id,
+              url: "/services/v2/stops/" + stop.id,
               type: 'DELETE',
               complete: function () {
                 refreshSchedule();
@@ -190,7 +216,7 @@ runEditWidget = function(truckId, locations, categories, options) {
       now.setMinutes(0);
     }
     if (numStops() > 0 && lastStop != null) {
-      now = new Date(lastStop["endTimeMillis"] + 60000)
+      now = new Date(lastStop["endMillis"] + 60000)
     }
     var minutes = now.getMinutes();
     if (minutes != 0) {
@@ -221,6 +247,9 @@ runEditWidget = function(truckId, locations, categories, options) {
 
   refreshSchedule();
   var $offTheRoadButton = $("#offRoadButton");
+  if (options["vendorEndpoints"]) {
+    $offTheRoadButton.css("display", "none");
+  }
   $offTheRoadButton.click(function (evt) {
     $.ajax({
       url: "/admin/trucks/" + truckId + "/offtheroad",

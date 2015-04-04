@@ -1,8 +1,8 @@
 <%@ include file="vendorheader.jsp" %>
 
-<div class="alert alert-block alert-error">
+<div class="alert alert-danger" role="alert">
   <h4>Title</h4>
-  ${errorMessage}
+  <span>${errorMessage}</span>
 </div>
 
 <%@ include file="vendorfooter.jsp" %>

@@ -12,12 +12,16 @@
   </static-files>
   <system-properties>
     <property name="use.local.frameworks" value="true"/>
-    <property name="foodtrucklocator.title" value="Orlando Food Truck Finder"/>
-    <property name="foodtrucklocator.showBoozy" value="true"/>
-    <property name="foodtrucklocator.showStats" value="true"/>
+    <property name="foodtrucklocator.title" value="Chicago Food Truck Finder"/>
     <property name="foodtrucklocator.signal.id" value="zIOrUTR"/>
-    <property name="foodtrucklocator.state" value="IL"/>
-    <property name="foodtrucklocator.city" value="Schaumburg"/>
-    <property name="foodtrucklocator.baseUrl" value="http://localhost:8080"/>
+    <property name="foodtrucklocator.calendar.address" value="98sam1fn8hv7bi3kucpon14muo@group.calendar.google.com"/>
+    <property name="foodtrucklocator.icon.bucket" value="truckicons"/>
+    <property name="foodtrucklocator.twitter.list.id" value="56683487"/>
+    <property name="foodtrucklocator.google.geolocation" value="true"/>
+    <property name="foodtrucklocator.yahoo.geolocation" value="true"/>
+    <property name="foodtrucklocator.yahoo.key" value="MyPMPm3e"/>
+    <property name="foodtrucklocator.showStats" value="false"/>
+    <property name="foodtrucklocator.map.center" value="Clark and Monroe, Chicago, IL; 41.880187; -87.63083499999999"/>
+    <property name="foodtrucklocator.frontdoor.app.key" value="bGbTMbbb"/>
   </system-properties>
 </appengine-web-app>

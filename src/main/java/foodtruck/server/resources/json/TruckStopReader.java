@@ -28,11 +28,9 @@ import foodtruck.model.Location;
 import foodtruck.model.StopOrigin;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
+import foodtruck.server.resources.BadRequestException;
 import foodtruck.util.Clock;
 import foodtruck.util.HtmlDateFormatter;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 
 /**
  * @author aviolette@gmail.com
@@ -70,20 +68,37 @@ public class TruckStopReader implements MessageBodyReader<TruckStop> {
     try {
       JSONObject obj = new JSONObject(json);
       Truck truck = truckDAO.findById(obj.getString("truckId"));
-      checkNotNull(truck);
-      DateTime startTime = format.parseDateTime(obj.getString("startTime").toUpperCase());
-      DateTime endTime = format.parseDateTime(obj.getString("endTime").toUpperCase());
+      if (truck == null) {
+        throw new BadRequestException("No truck specified");
+      }
+      DateTime startTime, endTime;
+      try {
+        startTime = format.parseDateTime(obj.getString("startTime").toUpperCase());
+      } catch (IllegalArgumentException iae) {
+        throw new BadRequestException("Start time incorrect or unspecified");
+      }
+      try {
+        endTime = format.parseDateTime(obj.getString("endTime").toUpperCase());
+      } catch (IllegalArgumentException iae) {
+        throw new BadRequestException("Could not parse end time");
+      }
+      if (startTime.isAfter(endTime)) {
+        throw new BadRequestException("End time is before start time");
+      }
       final JSONObject loc = obj.optJSONObject("location");
       final String origin = obj.optString("origin", StopOrigin.MANUAL.toString());
       Location location;
       if (loc == null) {
         location = geolocator.locate(obj.getString("locationName"), GeolocationGranularity.NARROW);
-        checkNotNull(location, "Location couldn't be resolved");
       } else {
         location = locationReader.toLocation(loc);
-        checkNotNull(location, "Location is unparsable");
       }
-      checkState(location != null && location.isResolved(), "Location is not resolved");
+      if (location == null) {
+        throw new BadRequestException("Location couldn't be resolved");
+      }
+      if (!location.isResolved()) {
+        throw new BadRequestException("Location is not resolved");
+      }
       long key = obj.optLong("id", 0);
       boolean locked = obj.optBoolean("locked", false);
       return TruckStop.builder()

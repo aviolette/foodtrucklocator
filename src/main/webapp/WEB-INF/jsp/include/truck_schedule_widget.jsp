@@ -3,10 +3,11 @@
 <table class="table table-striped">
     <thead>
     <tr>
+        <td>Date</td>
         <td>Start Time</td>
         <td>End Time</td>
         <td>Duration</td>
-        <td>Origin</td>
+        <td class="origin">Origin</td>
         <td>Location</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
@@ -28,16 +29,20 @@
                 <h3>Edit Stop</h3>
             </div>
             <div class="modal-body">
+                <div id="truck-schedule-alert" class="alert alert-danger hidden" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <span class="sr-only">Error:</span><span id="truck-schedule-error"></span>
+                </div>
                 <form role="form" class="form-horizontal">
-                    <div class="form-group">
+                    <div class="form-group" id="startTimeInputGroup">
                         <label class="control-label" for="startTimeInput">Start</label>
                         <input class="timeentry form-control" id="startTimeInput" type="datetime-local" autofocus/>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" id="endTimeInputGroup">
                         <label class="control-label" for="endTimeInput">End</label>
                         <input class="timeentry form-control" id="endTimeInput" type="datetime-local"/>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" id="locationInputGroup">
                         <label class="control-label" for="locationInput">Location</label>
                         <input class="form-control" id="locationInput" type="text" data-provide="typeahead" data-items="4"/>
                     </div>
