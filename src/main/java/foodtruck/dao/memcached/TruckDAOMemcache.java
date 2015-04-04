@@ -84,7 +84,7 @@ public class TruckDAOMemcache extends AbstractMemcachedDAO<TruckDAO> implements 
   public Truck findFirst() {
     return delegateIf(FIND_FIRST, new Function<TruckDAO, Truck>() {
       public Truck apply(TruckDAO truckDAO) {
-        return findFirst();
+        return truckDAO.findFirst();
       }
     });
   }
