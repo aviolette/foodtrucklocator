@@ -136,7 +136,9 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   private void pullTruckSchedule(Interval theDay) {
     try {
       List<TruckStop> stops = scheduleStrategy.findForTime(theDay, null);
-      truckStopDAO.deleteStops(truckStopDAO.findVendorStopsAfter(theDay.getStart(), null));
+      List<TruckStop> vendorStopsAfter = truckStopDAO.findVendorStopsAfter(theDay.getStart());
+      log.log(Level.INFO, "Removing stops: " + vendorStopsAfter.size());
+      truckStopDAO.deleteStops(vendorStopsAfter);
       truckStopDAO.addStops(stops);
     } catch (Exception e) {
       log.log(Level.WARNING, "Exception thrown while refreshing trucks", e);

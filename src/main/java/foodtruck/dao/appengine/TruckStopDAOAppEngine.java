@@ -68,6 +68,11 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
   private static final String MATCH_CONFIDENCE = "match_confidence";
   private static final String NOTES = "notes";
   private static final String ORIGIN = "origin";
+  public static final Predicate<TruckStop> VENDOR_STOP_PREDICATE = new Predicate<TruckStop>() {
+    public boolean apply(TruckStop truckStop) {
+      return truckStop.getOrigin() == StopOrigin.VENDORCAL;
+    }
+  };
 
   private final DatastoreServiceProvider serviceProvider;
   private final DateTimeZone zone;
@@ -346,6 +351,11 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
   }
 
   @Override
+  public List<TruckStop> findAfter(DateTime startTime) {
+    return findOverRange(null, new Interval(startTime, startTime.plusYears(1)));
+  }
+
+  @Override
   public List<TruckStop> findVendorStopsAfter(DateTime start, String truckId) {
     return FluentIterable.from(findAfter(truckId, start))
         .filter(new Predicate<TruckStop>() {
@@ -353,6 +363,13 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
             return truckStop.getOrigin() == StopOrigin.VENDORCAL;
           }
         })
+        .toList();
+  }
+
+  @Override
+  public List<TruckStop> findVendorStopsAfter(DateTime start) {
+    return FluentIterable.from(findAfter(start))
+        .filter(VENDOR_STOP_PREDICATE)
         .toList();
   }
 

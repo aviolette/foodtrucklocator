@@ -75,5 +75,9 @@ public interface TruckStopDAO {
 
   List<TruckStop> findAfter(String truckId, DateTime startTime);
 
+  List<TruckStop> findAfter(DateTime startTime);
+
   List<TruckStop> findVendorStopsAfter(DateTime start, String truckId);
+
+  List<TruckStop> findVendorStopsAfter(DateTime start);
 }
