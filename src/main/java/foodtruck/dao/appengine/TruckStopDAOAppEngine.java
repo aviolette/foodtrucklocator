@@ -17,7 +17,9 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PropertyContainer;
 import com.google.appengine.api.datastore.Query;
+import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
@@ -341,6 +343,17 @@ public class TruckStopDAOAppEngine implements TruckStopDAO {
       stops.add(toTruckStop(entity));
     }
     return stops.build();
+  }
+
+  @Override
+  public List<TruckStop> findVendorStopsAfter(DateTime start, String truckId) {
+    return FluentIterable.from(findAfter(truckId, start))
+        .filter(new Predicate<TruckStop>() {
+          public boolean apply(TruckStop truckStop) {
+            return truckStop.getOrigin() == StopOrigin.VENDORCAL;
+          }
+        })
+        .toList();
   }
 
   private List<Query.Filter> trucksOverRange(@Nullable String truckId, Interval range) {

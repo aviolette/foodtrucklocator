@@ -24,7 +24,6 @@ import foodtruck.dao.TruckDAO;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
-import foodtruck.model.StaticConfig;
 import foodtruck.model.StopOrigin;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
@@ -43,27 +42,23 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
   private final GeoLocator geoLocator;
   private final Clock clock;
   private final DateTimeFormatter formatter;
-  private final StaticConfig staticConfig;
 
   @Inject
-  public GoogleCalendarV3Consumer(AddressExtractor addressExtractor, Calendar calendarClient,
-      TruckDAO truckDAO, GeoLocator geoLocator, Clock clock,
-      @FriendlyDateOnlyFormat DateTimeFormatter formatter, StaticConfig staticConfig) {
+  public GoogleCalendarV3Consumer(AddressExtractor addressExtractor, Calendar calendarClient, TruckDAO truckDAO,
+      GeoLocator geoLocator, Clock clock, @FriendlyDateOnlyFormat DateTimeFormatter formatter) {
     this.calendarClient = calendarClient;
     this.truckDAO = truckDAO;
     this.addressExtractor = addressExtractor;
     this.geoLocator = geoLocator;
     this.clock = clock;
     this.formatter = formatter;
-    this.staticConfig = staticConfig;
   }
 
   @Override
   public List<TruckStop> findForTime(Interval range, @Nullable Truck searchTruck) {
     String truckId = searchTruck == null ? null : searchTruck.getId();
     log.info("Initiating calendar search " + truckId);
-    List<TruckStop> stops = performTruckSearch(range, searchTruck, false);
-    stops = Lists.newLinkedList(stops);
+    List<TruckStop> stops = Lists.newLinkedList();
     if (searchTruck != null && !Strings.isNullOrEmpty(searchTruck.getCalendarUrl())) {
       customCalendarSearch(range, searchTruck, stops);
     } else if (searchTruck == null) {
@@ -81,24 +76,21 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
         return;
       }
       log.info("Custom calendar search: " + calendarUrl);
-      stops.addAll(performTruckSearch(range, truck, true));
+      stops.addAll(performTruckSearch(range, truck));
     } catch (RuntimeException rte) {
       log.info("Search truck: " + truck.getId());
       log.log(Level.SEVERE, rte.getMessage(), rte);
     }
   }
 
-  private List<TruckStop> performTruckSearch(Interval range, @Nullable Truck searchTruck, boolean customCalendar) {
+  private List<TruckStop> performTruckSearch(Interval range, @Nullable Truck searchTruck) {
     ImmutableList.Builder<TruckStop> builder = ImmutableList.builder();
     try {
-      final String calendarId = customCalendar ? searchTruck.getCalendarUrl() : staticConfig.getCalendarAddress();
+      final String calendarId = searchTruck.getCalendarUrl();
       String pageToken = null;
       do {
         Calendar.Events.List query = calendarClient.events().list(calendarId).setSingleEvents(true).setTimeMin(
             toGoogleDateTime(range.getStart())).setTimeMax(toGoogleDateTime(range.getEnd())).setPageToken(pageToken);
-        if (searchTruck != null && !customCalendar) {
-          query.setQ(searchTruck.getId());
-        }
         Events events = query.execute();
         List<Event> items = events.getItems();
         for (Event event : items) {
@@ -126,7 +118,7 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
             }
             location = geoLocator.locate(where, GeolocationGranularity.NARROW);
           }
-          if ((location == null || !location.isResolved()) && customCalendar) {
+          if (location == null || !location.isResolved()) {
             // Sometimes the location is in the title - try that too
             if (!Strings.isNullOrEmpty(titleText)) {
               where = titleText;
@@ -143,12 +135,10 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
             }
           }
           if (location != null && location.isResolved()) {
-            final String entered = enteredOn(event.getUpdated());
-            String note = customCalendar ? "Stop added from vendor's calendar" :
-                "Entered manually " + (entered == null ? "" : "on ") + entered;
-            Confidence confidence = customCalendar ? Confidence.HIGH : Confidence.MEDIUM;
+            String note = "Stop added from vendor's calendar";
+            Confidence confidence = Confidence.MEDIUM;
             final TruckStop truckStop = TruckStop.builder().truck(truck)
-                .origin(customCalendar ? StopOrigin.VENDORCAL : StopOrigin.MANUAL)
+                .origin(StopOrigin.VENDORCAL)
                 .location(location)
                 .confidence(confidence)
                 .appendNote(note)

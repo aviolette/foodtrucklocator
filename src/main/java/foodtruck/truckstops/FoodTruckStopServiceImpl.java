@@ -81,7 +81,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   @Override
   public void updateStopsForTruck(Interval range, Truck truck) {
     List<TruckStop> stops = scheduleStrategy.findForTime(range, truck);
-    truckStopDAO.deleteAfter(range.getStart(), truck.getId());
+    truckStopDAO.deleteStops(truckStopDAO.findVendorStopsAfter(range.getStart(), truck.getId()));
     truckStopDAO.addStops(stops);
   }
 
@@ -136,7 +136,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   private void pullTruckSchedule(Interval theDay) {
     try {
       List<TruckStop> stops = scheduleStrategy.findForTime(theDay, null);
-      truckStopDAO.deleteAfter(theDay.getStart());
+      truckStopDAO.deleteStops(truckStopDAO.findVendorStopsAfter(theDay.getStart(), null));
       truckStopDAO.addStops(stops);
     } catch (Exception e) {
       log.log(Level.WARNING, "Exception thrown while refreshing trucks", e);

@@ -1,16 +1,13 @@
 package foodtruck.server.dashboard;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.api.services.calendar.Calendar;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import org.joda.time.DateTime;
@@ -18,6 +15,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
+import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.TruckStop;
@@ -32,27 +30,22 @@ import foodtruck.util.HtmlDateFormatter;
  */
 @Singleton
 public class CompoundEventServlet extends HttpServlet {
-  private static final Logger log = Logger.getLogger(CompoundEventServlet.class.getName());
   private static final String JSP_PATH = "/WEB-INF/jsp/dashboard/compoundEvent.jsp";
   private final TruckDAO truckDAO;
   private final LocationDAO locationDAO;
   private final DateTimeFormatter timeFormatter;
   private final Clock clock;
-  private final Provider<Calendar> calendarProvider;
-  private final FoodTruckStopService service;
-  private final StaticConfig staticConfig;
+  private final TruckStopDAO truckStopDAO;
 
   @Inject
   public CompoundEventServlet(TruckDAO truckDAO, LocationDAO locationDAO,
-      @HtmlDateFormatter DateTimeFormatter formatter, Clock clock, Provider<Calendar> calendarProvider,
+      @HtmlDateFormatter DateTimeFormatter formatter, Clock clock, TruckStopDAO truckStopDAO,
       FoodTruckStopService service, StaticConfig staticConfig) {
     this.truckDAO = truckDAO;
     this.locationDAO = locationDAO;
     this.timeFormatter = formatter;
     this.clock = clock;
-    this.service = service;
-    this.calendarProvider = calendarProvider;
-    this.staticConfig = staticConfig;
+    this.truckStopDAO = truckStopDAO;
   }
 
   @Override
@@ -68,8 +61,6 @@ public class CompoundEventServlet extends HttpServlet {
     }
     DateTime startTime = timeFormatter.parseDateTime(startTimeParam),
         endTime = timeFormatter.parseDateTime(endTimeParam);
-    Calendar calendar = calendarProvider.get();
-    String calendarID = staticConfig.getCalendarAddress();
     for (String truckId : trucks) {
       TruckStop stop = TruckStop.builder()
           .location(location)
@@ -77,7 +68,7 @@ public class CompoundEventServlet extends HttpServlet {
           .endTime(endTime)
           .truck(truckDAO.findById(truckId))
           .build();
-      service.saveWithBackingStop(stop, calendar, calendarID);
+      truckStopDAO.save(stop);
     }
     resp.sendRedirect("/admin/trucks");
   }
