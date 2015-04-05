@@ -55,10 +55,6 @@ public class StaticConfig {
     return "true".equals(System.getProperty("foodtrucklocator.auto.off.road", "true"));
   }
 
-  public String getCalendarAddress() {
-    return System.getProperty("foodtrucklocator.calendar.address");
-  }
-
   public boolean isGoogleGeolocationEnabled() {
     return "true".equals(System.getProperty("foodtrucklocator.google.geolocation", "true"));
   }

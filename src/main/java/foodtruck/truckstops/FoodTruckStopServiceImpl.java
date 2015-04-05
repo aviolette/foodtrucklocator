@@ -9,9 +9,6 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
-import com.google.api.services.calendar.Calendar;
-import com.google.api.services.calendar.model.Event;
-import com.google.api.services.calendar.model.EventDateTime;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.FluentIterable;
@@ -22,7 +19,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -36,7 +32,6 @@ import foodtruck.dao.TruckStopDAO;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.model.DailySchedule;
 import foodtruck.model.Location;
-import foodtruck.model.StaticConfig;
 import foodtruck.model.StopOrigin;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckLocationGroup;
@@ -61,12 +56,9 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   private final LocationDAO locationDAO;
   private final GeoLocator geolocator;
   private final MessageDAO messageDAO;
-  private final Provider<Calendar> calendarProvider;
-  private final StaticConfig staticConfig;
 
   @Inject
-  public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, ScheduleStrategy googleCalendar, Clock clock, TruckDAO truckDAO, LocationDAO locationDAO, GeoLocator geoLocator, MessageDAO messageDAO,
-      Provider<Calendar> calendarProvider, StaticConfig staticConfig) {
+  public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, ScheduleStrategy googleCalendar, Clock clock, TruckDAO truckDAO, LocationDAO locationDAO, GeoLocator geoLocator, MessageDAO messageDAO) {
     this.truckStopDAO = truckStopDAO;
     this.scheduleStrategy = googleCalendar;
     this.clock = clock;
@@ -74,12 +66,10 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     this.locationDAO = locationDAO;
     this.geolocator = geoLocator;
     this.messageDAO = messageDAO;
-    this.calendarProvider = calendarProvider;
-    this.staticConfig = staticConfig;
   }
 
   @Override
-  public void updateStopsForTruck(Interval range, Truck truck) {
+  public void pullCustomCalendarFor(Interval range, Truck truck) {
     List<TruckStop> stops = scheduleStrategy.findForTime(range, truck);
     truckStopDAO.deleteStops(truckStopDAO.findVendorStopsAfter(range.getStart(), truck.getId()));
     truckStopDAO.addStops(stops);
@@ -104,36 +94,11 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
           .origin(stop.getOrigin())
           .appendNote("Changed manually at " + clock.nowFormattedAsTime()).build();
     }
-    saveWithBackingStop(truckStop, calendarProvider.get(), staticConfig.getCalendarAddress());
+    truckStopDAO.save(truckStop);
   }
 
   @Override
-  public void updateStopsFor(Interval instant) {
-    pullTruckSchedule(instant);
-  }
-
-  @Override
-  public void saveWithBackingStop(TruckStop stop, Calendar calendar, String calendarID) {
-    truckStopDAO.save(stop);
-    try {
-      Event event = new Event();
-      event.setLocation(stop.getLocation()
-          .getName());
-      event.setSummary(stop.getTruck().getId());
-      EventDateTime dt = new EventDateTime();
-      dt.setDateTime(new com.google.api.client.util.DateTime(stop.getStartTime().getMillis()));
-      event.setStart(dt);
-      dt = new EventDateTime();
-      dt.setDateTime(new com.google.api.client.util.DateTime(stop.getEndTime().getMillis()));
-      event.setEnd(dt);
-      Event createdEvent = calendar.events().insert(calendarID, event).execute();
-      log.log(Level.FINE, "Created event {}", createdEvent.getId());
-    } catch (Exception e) {
-      log.log(Level.WARNING, e.getMessage(), e);
-    }
-  }
-
-  private void pullTruckSchedule(Interval theDay) {
+  public void pullCustomCalendars(Interval theDay) {
     try {
       List<TruckStop> stops = scheduleStrategy.findForTime(theDay, null);
       List<TruckStop> vendorStopsAfter = truckStopDAO.findVendorStopsAfter(theDay.getStart());
@@ -141,7 +106,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
       truckStopDAO.deleteStops(vendorStopsAfter);
       truckStopDAO.addStops(stops);
     } catch (Exception e) {
-      log.log(Level.WARNING, "Exception thrown while refreshing trucks", e);
+      log.log(Level.SEVERE, "Exception thrown while refreshing trucks", e);
     }
   }
 

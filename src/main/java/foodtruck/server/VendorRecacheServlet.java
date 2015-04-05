@@ -38,7 +38,6 @@ public class VendorRecacheServlet extends VendorServletSupport {
       throws ServletException, IOException {
     LocalDate when = clock.currentDay();
     final Interval interval = when.toInterval(clock.zone()).withEnd(when.plusDays(7).toDateMidnight());
-    foodTruckStopService.updateStopsForTruck(interval, truck);
+    foodTruckStopService.pullCustomCalendarFor(interval, truck);
   }
-
 }

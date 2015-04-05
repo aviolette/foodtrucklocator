@@ -5,8 +5,6 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
-import com.google.api.services.calendar.Calendar;
-
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
@@ -28,12 +26,10 @@ import foodtruck.model.WeeklySchedule;
  */
 public interface FoodTruckStopService {
   /**
-   * Updates the location data for the current day.
+   * Syncs the custom calendar stops (removes old entries, and adds new ones)
    * @param range the time range to update
    */
-  void updateStopsFor(Interval range);
-
-  void saveWithBackingStop(TruckStop stop, Calendar calendar, String calendarID);
+  void pullCustomCalendars(Interval range);
 
   /**
    * Returns the food trucks, grouped by locations.
@@ -55,7 +51,7 @@ public interface FoodTruckStopService {
    */
   DailySchedule findStopsForDay(LocalDate day);
 
-  void updateStopsForTruck(Interval instant, Truck truck);
+  void pullCustomCalendarFor(Interval instant, Truck truck);
 
   /**
    * Finds a food truck stop by id.

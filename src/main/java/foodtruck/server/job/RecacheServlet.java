@@ -67,11 +67,11 @@ public class RecacheServlet extends HttpServlet {
     final Interval instant = when.toInterval(zone).withEnd(when.plusDays(7).toDateMidnight());
     if (!Strings.isNullOrEmpty(truck)) {
       log.info("Recaching truck: " + truck);
-      service.updateStopsForTruck(instant, truckDAO.findById(truck));
+      service.pullCustomCalendarFor(instant, truckDAO.findById(truck));
     } else {
       if (staticConfig.isRecachingEnabled()) {
         log.info("Recaching all trucks");
-        service.updateStopsFor(instant);
+        service.pullCustomCalendars(instant);
       } else {
         log.info("Recaching disabled");
       }
