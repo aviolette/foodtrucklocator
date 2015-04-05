@@ -18,6 +18,7 @@ import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
+import foodtruck.model.StopOrigin;
 import foodtruck.model.TruckStop;
 import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.truckstops.FoodTruckStopService;
@@ -66,6 +67,7 @@ public class CompoundEventServlet extends HttpServlet {
           .location(location)
           .startTime(startTime)
           .endTime(endTime)
+          .origin(StopOrigin.MANUAL)
           .truck(truckDAO.findById(truckId))
           .build();
       truckStopDAO.save(stop);
