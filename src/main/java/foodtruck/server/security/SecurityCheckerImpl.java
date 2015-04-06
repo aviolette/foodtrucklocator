@@ -41,7 +41,7 @@ public class SecurityCheckerImpl implements SecurityChecker {
   @Override
   public void requiresLoggedInAs(String truckId) {
     UserService userService = userServiceProvider.get();
-    if (userService.isUserAdmin()) {
+    if (userService.isUserLoggedIn() && userService.isUserAdmin()) {
       return;
     }
     if (userService.isUserLoggedIn()) {
