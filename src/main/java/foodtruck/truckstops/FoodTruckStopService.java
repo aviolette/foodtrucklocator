@@ -13,7 +13,6 @@ import foodtruck.beaconnaise.BeaconSignal;
 import foodtruck.model.DailySchedule;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
-import foodtruck.model.TruckLocationGroup;
 import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStatus;
 import foodtruck.model.TruckStop;
@@ -30,11 +29,6 @@ public interface FoodTruckStopService {
    * @param range the time range to update
    */
   void pullCustomCalendars(Interval range);
-
-  /**
-   * Returns the food trucks, grouped by locations.
-   */
-  Set<TruckLocationGroup> findFoodTruckGroups(DateTime dateTime);
 
   /**
    * Returns a list of truck stops for a truck on a particular day
@@ -85,14 +79,6 @@ public interface FoodTruckStopService {
    * @return the schedules
    */
   List<DailySchedule> findSchedules(String truckId, Interval range);
-
-  /**
-   * Finds the set of trucks that will be at a location on a particular date
-   * @param localDate the date
-   * @param location the location
-   * @return the set of trucks that will be there at that date
-   */
-  Set<Truck> findTrucksAtLocation(LocalDate localDate, Location location);
 
   /**
    * Finds trucks within 1/5 of a mile of the specified location

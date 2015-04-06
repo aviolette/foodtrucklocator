@@ -189,7 +189,7 @@ runEditWidget = function(truckId, locations, categories, options) {
               }
               stop.truckId = truckId;
               $.ajax({
-                url: "/services/stops",
+                url: "/services/v2/stops",
                 type: 'PUT',
                 contentType: 'application/json',
                 data: JSON.stringify(stop),

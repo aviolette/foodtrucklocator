@@ -1,6 +1,5 @@
 package foodtruck.truckstops;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,10 +13,8 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
@@ -34,7 +31,6 @@ import foodtruck.model.DailySchedule;
 import foodtruck.model.Location;
 import foodtruck.model.StopOrigin;
 import foodtruck.model.Truck;
-import foodtruck.model.TruckLocationGroup;
 import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStatus;
 import foodtruck.model.TruckStop;
@@ -108,29 +104,6 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     } catch (Exception e) {
       log.log(Level.SEVERE, "Exception thrown while refreshing trucks", e);
     }
-  }
-
-  @Override
-  public Set<TruckLocationGroup> findFoodTruckGroups(DateTime dateTime) {
-    Multimap<Location, Truck> locations = LinkedListMultimap.create();
-    Set<Truck> allTrucks = Sets.newHashSet();
-    allTrucks.addAll(truckDAO.findAll());
-    for (TruckStop stop : truckStopDAO.findAt(dateTime)) {
-      locations.put(stop.getLocation(), stop.getTruck());
-      allTrucks.remove(stop.getTruck());
-    }
-    for (Truck truck : allTrucks) {
-      locations.put(null, truck);
-    }
-    ImmutableSet.Builder<TruckLocationGroup> builder = ImmutableSet.builder();
-    for (Location location : locations.keySet()) {
-      builder.add(new TruckLocationGroup(location, locations.get(location)));
-    }
-    Collection c = locations.get(null);
-    if (c != null && !c.isEmpty()) {
-      builder.add(new TruckLocationGroup(null, c));
-    }
-    return builder.build();
   }
 
   @Override
@@ -303,16 +276,6 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
       }
     }
     return stops.build();
-  }
-
-  @Override public Set<Truck> findTrucksAtLocation(LocalDate localDate, Location location) {
-    ImmutableSet.Builder<Truck> builder = ImmutableSet.builder();
-    for (TruckStop stop : truckStopDAO.findDuring(null, localDate)) {
-      if (location.getName().equals(stop.getLocation().getName())) {
-        builder.add(stop.getTruck());
-      }
-    }
-    return builder.build();
   }
 
   @Override public Set<Truck> findTrucksNearLocation(Location location, DateTime currentTime) {

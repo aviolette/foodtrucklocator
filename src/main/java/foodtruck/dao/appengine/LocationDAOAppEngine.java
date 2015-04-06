@@ -82,7 +82,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     Query q = new Query(LOCATION_KIND);
     Query.Filter popularFilter = new Query.FilterPredicate(POPULAR_FIELD, Query.FilterOperator.EQUAL, true);
     q.setFilter(popularFilter);
-    return ImmutableSet.copyOf(executeQuery(dataStore, q));
+    return ImmutableSet.copyOf(executeQuery(dataStore, q, null));
   }
 
   @Override public List<Location> findAutocompleteLocations() {
@@ -92,7 +92,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     Query.Filter autoCompleteFilter = new Query.FilterPredicate(AUTOCOMPLETE, Query.FilterOperator.EQUAL, true);
     q.setFilter(Query.CompositeFilterOperator.or(popularFilter, autoCompleteFilter));
     q.addSort(NAME_FIELD);
-    return executeQuery(dataStore, q);
+    return executeQuery(dataStore, q, null);
   }
 
   @Override
@@ -100,19 +100,19 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     DatastoreService dataStore = provider.get();
     Query q = new Query(LOCATION_KIND);
     q.setFilter(new Query.FilterPredicate(OWNED_BY, Query.FilterOperator.NOT_EQUAL, null));
-    return executeQuery(dataStore, q);
+    return executeQuery(dataStore, q, null);
   }
 
   @Override public List<Location> findAliasesFor(String locationName) {
     return executeQuery(provider.get(), new Query(LOCATION_KIND)
-        .setFilter(new Query.FilterPredicate(ALIAS, Query.FilterOperator.EQUAL, locationName)));
+        .setFilter(new Query.FilterPredicate(ALIAS, Query.FilterOperator.EQUAL, locationName)), null);
   }
 
   @Override public Collection<Location> findDesignatedStops() {
     DatastoreService dataStore = provider.get();
     Query q = new Query(LOCATION_KIND);
     q.setFilter(new Query.FilterPredicate(DESIGNATED_STOP, Query.FilterOperator.EQUAL, true));
-    return ImmutableSet.copyOf(executeQuery(dataStore, q));
+    return ImmutableSet.copyOf(executeQuery(dataStore, q, null));
   }
 
   @Override public Iterable<Location> findBoozyLocations() {
@@ -120,7 +120,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     Query q = new Query(LOCATION_KIND);
     Query.Filter popularFilter = new Query.FilterPredicate(HAS_BOOZE, Query.FilterOperator.EQUAL, true);
     q.setFilter(popularFilter);
-    return ImmutableSet.copyOf(executeQuery(dataStore, q));
+    return ImmutableSet.copyOf(executeQuery(dataStore, q, null));
   }
 
   @Override

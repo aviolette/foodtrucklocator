@@ -181,7 +181,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     return executeQuery(dataStore,
         new Query(getKind())
             .addSort(TRUCK_NAME_FIELD)
-            .setFilter(new Query.FilterPredicate(INACTIVE_FIELD, Query.FilterOperator.EQUAL, true)));
+            .setFilter(new Query.FilterPredicate(INACTIVE_FIELD, Query.FilterOperator.EQUAL, true)), null);
   }
 
   @Override public Collection<Truck> findActiveTrucks() {
@@ -189,7 +189,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     return executeQuery(dataStore,
         new Query(getKind())
           .addSort(TRUCK_NAME_FIELD)
-          .setFilter(new Query.FilterPredicate(INACTIVE_FIELD, Query.FilterOperator.EQUAL, false)));
+          .setFilter(new Query.FilterPredicate(INACTIVE_FIELD, Query.FilterOperator.EQUAL, false)), null);
   }
 
   public List<Truck> findVisibleTrucks() {
@@ -197,7 +197,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     return executeQuery(dataStore,
         new Query(TRUCK_KIND)
             .setFilter(new Query.FilterPredicate(TRUCK_HIDDEN, Query.FilterOperator.EQUAL, false))
-            .addSort(TRUCK_NAME_FIELD));
+            .addSort(TRUCK_NAME_FIELD), null);
   }
 
   @Nullable @Override public Truck findFirst() {
@@ -231,7 +231,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     Query q = new Query(TRUCK_KIND);
     q.setFilter(Query.CompositeFilterOperator.and(new Query.FilterPredicate(TRUCK_EMAIL, Query.FilterOperator.NOT_EQUAL, null),
         new Query.FilterPredicate(TRUCK_ALLOW_SYSTEM_NOTIFICATIONS, Query.FilterOperator.EQUAL, true)));
-    return executeQuery(dataStore, q);
+    return executeQuery(dataStore, q, null);
   }
 
   @Override public void deleteAll() {

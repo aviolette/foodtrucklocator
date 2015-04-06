@@ -1,7 +1,6 @@
 package foodtruck.dao;
 
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -15,12 +14,7 @@ import foodtruck.model.TruckStop;
  * @author aviolette@gmail.com
  * @since Jul 12, 2011
  */
-public interface TruckStopDAO {
-  /**
-   * Finds a set of truck stops at a particular time
-   */
-  Set<TruckStop> findAt(DateTime instant);
-
+public interface TruckStopDAO extends DAO<Long,TruckStop> {
   /**
    * Adds the truckstops to the data store.
    */
@@ -40,28 +34,10 @@ public interface TruckStopDAO {
    * @param startDateTime the start time
    */
   void deleteAfter(DateTime startDateTime);
-
-  /**
-   * Deletes all the stops after the specified time for the specified truck.
-   * @param dateTime the time to start
-   * @param truckId for the specified truck
-   */
-  void deleteAfter(DateTime dateTime, String truckId);
-
   /**
    * Deletes the stops after the specified time
    */
   void deleteStops(List<TruckStop> toDelete);
-
-  @Nullable TruckStop findById(long stopId);
-
-  /**
-   * Deletes the truck stop specified by the ID
-   * @param stopId
-   */
-  void delete(long stopId);
-
-  void save(TruckStop truckStop);
 
   /**
    * Returns all the truck stops over a specific time range
@@ -71,7 +47,7 @@ public interface TruckStopDAO {
    */
   List<TruckStop> findOverRange(@Nullable String truckId, Interval range);
 
-  TruckStop findFirstStop(String id);
+  @Nullable TruckStop findFirstStop(String truckId);
 
   List<TruckStop> findAfter(String truckId, DateTime startTime);
 

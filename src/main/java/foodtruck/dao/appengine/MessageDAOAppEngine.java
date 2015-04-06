@@ -53,7 +53,7 @@ public class MessageDAOAppEngine extends AppEngineDAO<Long, Message> implements 
         new Query(MESSAGE_KIND)
             .setFilter(new Query.FilterPredicate("endTime",
                 Query.FilterOperator.GREATER_THAN_OR_EQUAL, instant.toDate()))
-            .addSort("endTime", Query.SortDirection.ASCENDING))) {
+            .addSort("endTime", Query.SortDirection.ASCENDING), null)) {
       boolean endsAfterTomorrow = m.getEndTime().plusDays(1).isAfter(tomorrowExclusive);
       boolean startsBeforeToday = m.getStartTime().isBefore(instant.plusMinutes(1));
       if (endsAfterTomorrow && startsBeforeToday) {

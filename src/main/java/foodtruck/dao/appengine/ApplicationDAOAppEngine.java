@@ -46,6 +46,6 @@ public class ApplicationDAOAppEngine extends AppEngineDAO<String, Application> i
     DatastoreService dataStore = provider.get();
     Query q = new Query(getKind());
     q.setFilter(new Query.FilterPredicate(PROP_ENABLED, Query.FilterOperator.EQUAL, true));
-    return executeQuery(dataStore, q);
+    return executeQuery(dataStore, q, null);
   }
 }

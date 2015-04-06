@@ -20,7 +20,7 @@ import org.joda.time.DateTimeZone;
  * @author aviolette@gmail.com
  * @since 7/3/12
  */
-public class Attributes {
+class Attributes {
   public static @Nullable DateTime getDateTime(Entity entity, String propertyName,
       DateTimeZone zone) {
     Date date = (Date) entity.getProperty(propertyName);

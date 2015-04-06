@@ -11,6 +11,7 @@ import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 
 import foodtruck.dao.DAO;
@@ -34,13 +35,16 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
     DatastoreService dataStore = provider.get();
     Query q = new Query(getKind());
     modifyFindAllQuery(q);
-    return executeQuery(dataStore, q);
+    return executeQuery(dataStore, q, null);
   }
 
 
-  protected List<T> executeQuery(DatastoreService dataStore, Query q) {
+  protected List<T> executeQuery(DatastoreService dataStore, Query q, @Nullable Predicate<Entity> predicate) {
     ImmutableList.Builder<T> objs = ImmutableList.builder();
     for (Entity entity : dataStore.prepare(q).asIterable()) {
+      if (predicate != null && !predicate.apply(entity)) {
+        continue;
+      }
       T obj = fromEntity(entity);
       objs.add(obj);
     }
@@ -54,6 +58,14 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
   public void delete(K id) {
     DatastoreService dataStore = provider.get();
     dataStore.delete(getKey(id));
+  }
+
+  protected void deleteFromQuery(DatastoreService dataStore, Query q) {
+    ImmutableList.Builder<Key> keys = ImmutableList.builder();
+    for (Entity entity : dataStore.prepare(q).asIterable()) {
+      keys.add(entity.getKey());
+    }
+    dataStore.delete(keys.build());
   }
 
   @Override
@@ -90,7 +102,7 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
     return key.getId();
   }
 
-  private Key getKey(Object theKey) {
+  protected Key getKey(Object theKey) {
     Key key;
     if (theKey instanceof Long) {
       key = KeyFactory.createKey(getKind(), (Long) theKey);

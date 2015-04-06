@@ -113,6 +113,6 @@ public class EventDAOAppengine extends AppEngineDAO<String, Event> implements Ev
     Query q = new Query(getKind());
     q.addSort(FIELD_START_TIME, Query.SortDirection.ASCENDING);
     q.setFilter(new Query.FilterPredicate(FIELD_START_TIME, Query.FilterOperator.GREATER_THAN, time.toDate()));
-    return executeQuery(dataStore, q);
+    return executeQuery(dataStore, q, null);
   }
 }
