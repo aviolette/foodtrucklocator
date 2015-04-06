@@ -173,7 +173,7 @@
 
 <script type="text/javascript">
 
-  runEditWidget("${truckId}", ${locations},[<c:forEach var="category" varStatus="categoryIndex" items="${truck.categories}">"${category}"<c:if test="${!categoryIndex.last}">,</c:if></c:forEach>]);
+  runEditWidget("${truckId}", ${locations},[<c:forEach var="category" varStatus="categoryIndex" items="${truck.categories}">"${category}"<c:if test="${!categoryIndex.last}">,</c:if></c:forEach>], {hasCalendar : ${not empty(truck.calendarUrl)}});
   $(".retweet-button").click(function(e) {
     e.preventDefault();
     var id = $(e.target).attr('id').substring(8);

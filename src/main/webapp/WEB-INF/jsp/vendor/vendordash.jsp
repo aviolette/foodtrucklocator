@@ -9,6 +9,6 @@ td.origin {
 <script type="text/javascript" src="/script/truck_edit_widget.js"></script>
 <script src="/script/lib/typeahead.bundle.js"></script>
 <script type="text/javascript">
-  runEditWidget("${truck.id}", ${locations}, ${categories}, {vendorEndpoints: true});
+  runEditWidget("${truck.id}", ${locations}, ${categories}, {vendorEndpoints: true, hasCalendar: ${not empty(truck.calendarUrl)}});
 </script>
 <%@ include file="vendorfooter.jsp" %>

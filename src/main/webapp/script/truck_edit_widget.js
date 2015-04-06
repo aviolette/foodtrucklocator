@@ -162,7 +162,6 @@ runEditWidget = function(truckId, locations, categories, options) {
             }
           }
           buf += "&nbsp;</td><td>";
-//          alert(showControls);
           if (showControls) {
             buf = buf + "<div class='btn-group'><button class='btn btn-default' id='truckDelete" + truckIndex +
             "' class='btn '><span class='glyphicon glyphicon-remove'></span> Delete</button>&nbsp;<button class='btn btn-default' id='truckEdit" +
@@ -261,6 +260,9 @@ runEditWidget = function(truckId, locations, categories, options) {
   var $offTheRoadButton = $("#offRoadButton");
   if (options["vendorEndpoints"]) {
     $offTheRoadButton.css("display", "none");
+  }
+  if (!options["hasCalendar"]) {
+    $("#recacheButton").addClass("hidden");
   }
   $offTheRoadButton.click(function (evt) {
     $.ajax({
