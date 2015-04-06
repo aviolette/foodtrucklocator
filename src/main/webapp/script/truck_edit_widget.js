@@ -127,6 +127,12 @@ runEditWidget = function(truckId, locations, categories, options) {
     var scheduleTable = $("#scheduleTable");
     scheduleTable.empty();
     lastStop = null;
+    var d = new Date();
+    d.setHours(0);
+    d.setMinutes(0);
+    d.setSeconds(0);
+    var tomorrow = d.getTime() + 86400000;
+
     $.ajax({
       url: '/services/v2/stops?truck=' + truckId,
       type: 'GET',
@@ -139,24 +145,30 @@ runEditWidget = function(truckId, locations, categories, options) {
           var labels = (stop.locked) ? "&nbsp;<span class=\"label important\">locked</span>" :
               "";
           var crazyDuration = stop.durationMillis < 0 || stop.durationMillis > 43200000;
+          var showControls = stop.startMillis < tomorrow || stop.origin != 'VENDORCAL';;
           labels += (stop.fromBeacon) ? "&nbsp;<span class=\"label important\">beacon</span>" : "";
           var buf = "<tr " + (crazyDuration ? " class='error'" : "") + "><td>" + stop.startDate + "</td><td>" + stop.startTime + "</td><td>" + stop.endTime +
               "</td><td>" + stop.duration + "</td><td class=\"origin\">" + stop.origin + "</td><td><a href='/admin/locations?q=" + encodeURIComponent(stop.location.name) +
               "'>"
               + stop.location.name + "</a>" + labels + "</td><td>";
-          if (!prevHadStart && now < stop.startTimeMillis) {
-            prevHadStart = true;
-            buf = buf + "<button class='btn btn-default' id='truckStartNow" + truckIndex +
-            "' class='btn success'>Start Now</button>"
-          } else if (now >= stop.startTimeMillis && now < stop.endTimeMillis) {
-            buf = buf + "<button class='btn btn-default' id='truckEndNow" + truckIndex +
-            "' class='btn warning'>End Now</button>";
+          if (showControls) {
+            if (!prevHadStart && now < stop.startTimeMillis) {
+              prevHadStart = true;
+              buf = buf + "<button class='btn btn-default' id='truckStartNow" + truckIndex +
+              "' class='btn success'>Start Now</button>"
+            } else if (now >= stop.startTimeMillis && now < stop.endTimeMillis) {
+              buf = buf + "<button class='btn btn-default' id='truckEndNow" + truckIndex +
+              "' class='btn warning'>End Now</button>";
+            }
           }
           buf += "&nbsp;</td><td>";
-          scheduleTable.append(buf +
-          "<div class='btn-group'><button class='btn btn-default' id='truckDelete" + truckIndex +
-          "' class='btn '><span class='glyphicon glyphicon-remove'></span> Delete</button>&nbsp;<button class='btn btn-default' id='truckEdit" +
-          truckIndex + "'><span class='glyphicon glyphicon-pencil'></span> Edit</button></div></td></tr>");
+//          alert(showControls);
+          if (showControls) {
+            buf = buf + "<div class='btn-group'><button class='btn btn-default' id='truckDelete" + truckIndex +
+            "' class='btn '><span class='glyphicon glyphicon-remove'></span> Delete</button>&nbsp;<button class='btn btn-default' id='truckEdit" +
+            truckIndex + "'><span class='glyphicon glyphicon-pencil'></span> Edit</button></div></td></tr>";
+          }
+          scheduleTable.append(buf);
           $("#truckEdit" + truckIndex).click(function (e) {
             stop["startDate"] = toDate(new Date(stop["startMillis"]));
             stop["endDate"] = toDate(new Date(stop["endMillis"]));
