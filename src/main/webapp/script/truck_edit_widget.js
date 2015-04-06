@@ -2,9 +2,12 @@
  * Created by andrew on 3/28/15.
  */
 runEditWidget = function(truckId, locations, categories, options) {
-  var lastStop, $editStop = $("#edit-stop");
+  var lastStop, $editStop = $("#edit-stop"), locationEndpoint = '/admin/locations';
   options = options || {};
 
+  if (options["vendorEndpoints"]) {
+    locationEndpoint = '/locations';
+  }
   $editStop.keypress(function(e) {
     if (e.which == 13) {
       e.preventDefault();
@@ -148,7 +151,7 @@ runEditWidget = function(truckId, locations, categories, options) {
           var showControls = stop.startMillis < tomorrow || stop.origin != 'VENDORCAL';;
           labels += (stop.fromBeacon) ? "&nbsp;<span class=\"label important\">beacon</span>" : "";
           var buf = "<tr " + (crazyDuration ? " class='error'" : "") + "><td>" + stop.startDate + "</td><td>" + stop.startTime + "</td><td>" + stop.endTime +
-              "</td><td>" + stop.duration + "</td><td class=\"origin\">" + stop.origin + "</td><td><a href='/admin/locations?q=" + encodeURIComponent(stop.location.name) +
+              "</td><td>" + stop.duration + "</td><td class=\"origin\">" + stop.origin + "</td><td><a href='" + locationEndpoint + "?q=" + encodeURIComponent(stop.location.name) +
               "'>"
               + stop.location.name + "</a>" + labels + "</td><td>";
           if (showControls) {
@@ -263,6 +266,9 @@ runEditWidget = function(truckId, locations, categories, options) {
   }
   if (!options["hasCalendar"]) {
     $("#recacheButton").addClass("hidden");
+  }
+  if (options["truckName"]) {
+    $("#truck-widget-header").html("Schedule for " + options["truckName"]);
   }
   $offTheRoadButton.click(function (evt) {
     $.ajax({

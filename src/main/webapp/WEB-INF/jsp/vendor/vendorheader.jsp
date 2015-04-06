@@ -8,7 +8,7 @@
   <meta name="author" content="Andrew Violette, @aviolette/@chifoodtruckz on twitter"/>
   <meta name="description"
         content="Portal app for food trucks"/>
-  <title>Beaconnaise</title>
+  <title>Vendor Dashboard</title>
   <c:choose>
     <c:when test="${localFrameworks}">
       <link rel="stylesheet" href="/bootstrap3.0.3/css/bootstrap.min.css"/>

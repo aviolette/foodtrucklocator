@@ -1,5 +1,5 @@
 <%@include file="../common.jsp" %>
-<h2>Schedule</h2>
+<h2 id="truck-widget-header">Schedule</h2>
 <table class="table table-striped">
     <thead>
     <tr>
