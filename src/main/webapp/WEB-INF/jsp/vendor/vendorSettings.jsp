@@ -1,22 +1,27 @@
 <%@ include file="vendorheader.jsp" %>
 
 <form id="settingsForm" method="POST" action="">
-  <fieldset>
-    <legend>Truck Settings</legend>
+  <div class="form-group">
     <label for="name">Name</label>
-    <input class="span3" id="name" name="name" type="text" value="${truck.name}" placeholder="The display name"/>
+    <input class="form-control" id="name" name="name" type="text" value="${truck.name}" placeholder="The display name"/>
+  </div>
+  <div class="form-group">
     <label for="phone">Phone</label>
-    <input class="span3" id="phone" name="phone" type="text" value="${truck.phone}" placeholder="XXX-XXX-XXXX"/>
+    <input class="form-control" id="phone" name="phone" type="text" value="${truck.phone}" placeholder="XXX-XXX-XXXX"/>
+  </div>
+  <div class="form-group">
     <label for="email">Email</label>
-    <input class="span3" id="email" name="email" type="text" value="${truck.email}" placeholder="foo@bar.com"/>
+    <input class="form-control" id="email" name="email" type="text" value="${truck.email}" placeholder="foo@bar.com"/>
+  </div>
+  <div class="form-group">
     <label for="url">URL</label>
-    <input class="span4" id="url" name="url" type="text" value="${truck.url}" placeholder="The URL to your website"/>
+    <input class="form-control" id="url" name="url" type="text" value="${truck.url}" placeholder="The URL to your website"/>
+  </div>
+  <div class="form-group">
     <label for="description">Description</label>
-    <textarea class="span6" id="description" name="description">${truck.description}</textarea>
-    <div>
-      <button id="settingsButton" type="button" class="btn btn-primary">Submit</button>
-    </div>
-  </fieldset>
+    <textarea class="form-control" id="description" name="description">${truck.description}</textarea>
+  </div>
+  <button id="settingsButton" type="button" class="btn btn-primary">Submit</button>
 </form>
 <%@ include file="../include/core_js.jsp" %>
 <script type="text/javascript">
