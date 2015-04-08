@@ -2,6 +2,7 @@ package foodtruck.server.resources.json;
 
 import com.google.inject.Inject;
 
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.Period;
@@ -41,6 +42,7 @@ public class TruckStopWriter implements JSONWriter<TruckStop> {
         .put("confidence", stop.getConfidence())
         .put("origin", stop.getOrigin())
         .put("fromBeacon", stop.isFromBeacon())
+        .put("notes", new JSONArray(stop.getNotes()))
         .put("startDate", dateFormatter.print(stop.getStartTime()))
         .put("startTime", formatter.print(stop.getStartTime()))
         .put("startMillis", stop.getStartTime().getMillis())

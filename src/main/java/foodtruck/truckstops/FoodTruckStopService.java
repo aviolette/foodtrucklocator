@@ -63,7 +63,7 @@ public interface FoodTruckStopService {
   /**
    * Updates a truck stop with new information.
    */
-  void update(TruckStop truckStop);
+  void update(TruckStop truckStop, String modifier);
 
   List<TruckStatus> findCurrentAndPreviousStop(LocalDate day);
 

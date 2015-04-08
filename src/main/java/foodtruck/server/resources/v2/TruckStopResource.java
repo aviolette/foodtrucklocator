@@ -2,7 +2,6 @@ package foodtruck.server.resources.v2;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.ws.rs.DELETE;
@@ -14,14 +13,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 
-import com.google.common.collect.ImmutableSet;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.inject.Inject;
-import com.sun.jersey.api.JResponse;
 
 import org.joda.time.DateTime;
 
 import foodtruck.dao.TruckStopDAO;
-import foodtruck.model.TruckLocationGroup;
 import foodtruck.model.TruckStop;
 import foodtruck.server.security.SecurityChecker;
 import foodtruck.truckstops.FoodTruckStopService;
@@ -67,7 +64,7 @@ public class TruckStopResource {
   public void save(TruckStop truckStop)
       throws ServletException, IOException {
     checker.requiresLoggedInAs(truckStop.getTruck().getId());
-    foodTruckService.update(truckStop);
+    foodTruckService.update(truckStop, UserServiceFactory.getUserService().getCurrentUser().getEmail());
   }
 
   @GET

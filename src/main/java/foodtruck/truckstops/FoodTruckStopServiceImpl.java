@@ -79,16 +79,16 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     truckStopDAO.delete(stopId);
   }
 
-  @Override public void update(TruckStop truckStop) {
+  @Override public void update(TruckStop truckStop, String modifier) {
     if (truckStop.isNew()) {
       truckStop = TruckStop.builder(truckStop)
-          .notes(ImmutableList.of("Entered manually at " + clock.nowFormattedAsTime())).build();
+          .notes(ImmutableList.of("Entered manually by " + modifier + " at " + clock.nowFormattedAsTime())).build();
     } else {
       TruckStop stop = truckStopDAO.findById((Long) truckStop.getKey());
       truckStop = TruckStop.builder(truckStop)
           .notes(stop.getNotes())
           .origin(stop.getOrigin())
-          .appendNote("Changed manually at " + clock.nowFormattedAsTime()).build();
+          .appendNote("Changed manually by " + modifier + " at " + clock.nowFormattedAsTime()).build();
     }
     truckStopDAO.save(truckStop);
   }
@@ -214,7 +214,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     int count = 0;
     for (TruckStop stop : stops.getStops()) {
       if (stop.activeDuring(after)) {
-        update(stop.withEndTime(after));
+        update(stop.withEndTime(after), "unknown");
         count++;
       } else if (stop.getEndTime().isAfter(after)) {
         delete((Long) stop.getKey());
