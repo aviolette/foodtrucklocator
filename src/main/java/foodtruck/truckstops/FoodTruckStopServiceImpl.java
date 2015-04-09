@@ -262,17 +262,23 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
         })
         .transform(new Function<TruckStop, TruckStopWithCounts>() {
           public TruckStopWithCounts apply(final TruckStop thisStop) {
-            final Interval thisInterval = thisStop.timeInterval();
-            ImmutableSet<String> trucks = FluentIterable.from(stops).filter(new Predicate<TruckStop>() {
-              public boolean apply(TruckStop truckStop) {
-                return truckStop.timeInterval().overlap(thisInterval) != null  && truckStop.getLocation().getName().equals(
-                    thisStop.getLocation().getName());
-              }
-            }).transform(new Function<TruckStop, String>() {
-              public String apply(TruckStop truckStop) {
-                return truckStop.getTruck().getName();
-              }
-            }).toSet();
+            ImmutableSet<String> trucks = ImmutableSet.of();
+            try {
+              final Interval thisInterval = thisStop.timeInterval();
+              trucks = FluentIterable.from(stops).filter(new Predicate<TruckStop>() {
+                public boolean apply(TruckStop truckStop) {
+                  return truckStop.timeInterval().overlap(thisInterval) != null && truckStop.getLocation()
+                      .getName()
+                      .equals(thisStop.getLocation().getName());
+                }
+              }).transform(new Function<TruckStop, String>() {
+                public String apply(TruckStop truckStop) {
+                  return truckStop.getTruck().getName();
+                }
+              }).toSet();
+            } catch (RuntimeException e) {
+              log.log(Level.SEVERE, e.getMessage(), e);
+            }
             return new TruckStopWithCounts(thisStop, trucks);
           }
         })
