@@ -267,9 +267,14 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
               final Interval thisInterval = thisStop.timeInterval();
               trucks = FluentIterable.from(stops).filter(new Predicate<TruckStop>() {
                 public boolean apply(TruckStop truckStop) {
-                  return truckStop.timeInterval().overlap(thisInterval) != null && truckStop.getLocation()
-                      .getName()
-                      .equals(thisStop.getLocation().getName());
+                  try {
+                    return truckStop.timeInterval().overlap(thisInterval) != null && truckStop.getLocation()
+                        .getName()
+                        .equals(thisStop.getLocation().getName());
+                  } catch (RuntimeException rte) {
+                    log.log(Level.WARNING, "Error processing stop {0}", truckStop);
+                    throw rte;
+                  }
                 }
               }).transform(new Function<TruckStop, String>() {
                 public String apply(TruckStop truckStop) {
@@ -278,8 +283,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
               }).toSet();
             } catch (RuntimeException e) {
               log.log(Level.SEVERE, e.getMessage(), e);
-            }
-            return new TruckStopWithCounts(thisStop, trucks);
+            } return new TruckStopWithCounts(thisStop, trucks);
           }
         })
         .toList();
