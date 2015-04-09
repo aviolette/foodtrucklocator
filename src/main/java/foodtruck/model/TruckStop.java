@@ -12,6 +12,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 import org.joda.time.DateTime;
+import org.joda.time.Interval;
 
 import foodtruck.schedule.Confidence;
 
@@ -85,6 +86,10 @@ public class TruckStop extends ModelEntity {
 
   public Location getLocation() {
     return location;
+  }
+
+  public Interval timeInterval() {
+    return new Interval(startTime, endTime);
   }
 
   @Override

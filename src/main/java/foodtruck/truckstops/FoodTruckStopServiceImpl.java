@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.FluentIterable;
@@ -34,6 +35,7 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStatus;
 import foodtruck.model.TruckStop;
+import foodtruck.model.TruckStopWithCounts;
 import foodtruck.model.WeeklySchedule;
 import foodtruck.schedule.ScheduleStrategy;
 import foodtruck.util.Clock;
@@ -244,6 +246,34 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
         .filter(new Predicate<TruckStop>() {
           public boolean apply(TruckStop truckStop) {
             return locations.containsKey(truckStop.getLocation().getName());
+          }
+        })
+        .toList();
+  }
+
+  @Override
+  public List<TruckStopWithCounts> findStopsForTruckAfter(final String truckId, DateTime startTime) {
+    final List<TruckStop> stops = truckStopDAO.findAfter(startTime);
+    return FluentIterable.from(stops)
+        .filter(new Predicate<TruckStop>() {
+          public boolean apply(@Nullable TruckStop truckStop) {
+            return truckId.equals(truckStop.getTruck().getId());
+          }
+        })
+        .transform(new Function<TruckStop, TruckStopWithCounts>() {
+          public TruckStopWithCounts apply(final TruckStop thisStop) {
+            final Interval thisInterval = thisStop.timeInterval();
+            ImmutableSet<String> trucks = FluentIterable.from(stops).filter(new Predicate<TruckStop>() {
+              public boolean apply(TruckStop truckStop) {
+                return truckStop.timeInterval().overlap(thisInterval) != null  && truckStop.getLocation().getName().equals(
+                    thisStop.getLocation().getName());
+              }
+            }).transform(new Function<TruckStop, String>() {
+              public String apply(TruckStop truckStop) {
+                return truckStop.getTruck().getName();
+              }
+            }).toSet();
+            return new TruckStopWithCounts(thisStop, trucks);
           }
         })
         .toList();

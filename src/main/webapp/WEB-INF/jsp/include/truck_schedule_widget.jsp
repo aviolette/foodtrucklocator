@@ -9,6 +9,7 @@
         <td>Duration</td>
         <td class="origin">Origin</td>
         <td>Location</td>
+        <td># Trucks</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
     </tr>

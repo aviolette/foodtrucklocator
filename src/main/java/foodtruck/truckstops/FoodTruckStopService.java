@@ -16,6 +16,7 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStatus;
 import foodtruck.model.TruckStop;
+import foodtruck.model.TruckStopWithCounts;
 import foodtruck.model.WeeklySchedule;
 
 /**
@@ -149,4 +150,6 @@ public interface FoodTruckStopService {
    * @return the upcoming boozy events
    */
   List<TruckStop> findUpcomingBoozyStops(LocalDate localDate, int daysOut);
+
+  List<TruckStopWithCounts> findStopsForTruckAfter(String truckId, DateTime startTime);
 }

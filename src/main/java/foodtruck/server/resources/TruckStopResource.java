@@ -1,4 +1,4 @@
-package foodtruck.server.resources.v2;
+package foodtruck.server.resources;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -18,8 +18,8 @@ import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
 
-import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.TruckStop;
+import foodtruck.model.TruckStopWithCounts;
 import foodtruck.server.security.SecurityChecker;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
@@ -35,15 +35,12 @@ public class TruckStopResource {
   private final FoodTruckStopService foodTruckService;
   private final Clock clock;
   private final SecurityChecker checker;
-  private final TruckStopDAO truckStopDAO;
 
   @Inject
-  public TruckStopResource(FoodTruckStopService service, Clock clock, SecurityChecker checker,
-      TruckStopDAO truckStopDAO) {
+  public TruckStopResource(FoodTruckStopService service, Clock clock, SecurityChecker checker) {
     this.foodTruckService = service;
     this.clock = clock;
     this.checker = checker;
-    this.truckStopDAO = truckStopDAO;
   }
 
   @DELETE
@@ -68,8 +65,8 @@ public class TruckStopResource {
   }
 
   @GET
-  public Collection<TruckStop> getStops(@QueryParam("truck") String truckId, @Context DateTime startTime) {
+  public Collection<TruckStopWithCounts> getStops(@QueryParam("truck") String truckId, @Context DateTime startTime) {
     startTime = (startTime == null) ? clock.currentDay().toDateMidnight().toDateTime() : startTime;
-    return truckStopDAO.findAfter(truckId, startTime);
+    return foodTruckService.findStopsForTruckAfter(truckId, startTime);
   }
 }

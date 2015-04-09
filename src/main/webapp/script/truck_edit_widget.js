@@ -150,10 +150,11 @@ runEditWidget = function(truckId, locations, categories, options) {
           var crazyDuration = stop.durationMillis < 0 || stop.durationMillis > 43200000;
           var showControls = stop.startMillis < tomorrow || stop.origin != 'VENDORCAL';;
           labels += (stop.fromBeacon) ? "&nbsp;<span class=\"label important\">beacon</span>" : "";
+          var truckCountLink = stop.totalTruckCount < 2 ? "" : "<span class='badge' title='" + stop.truckNames +"'>" + stop.totalTruckCount + "</span>";
           var buf = "<tr " + (crazyDuration ? " class='error'" : "") + "><td>" + stop.startDate + "</td><td>" + stop.startTime + "</td><td>" + stop.endTime +
               "</td><td>" + stop.duration + "</td><td class=\"origin\">" + stop.origin + "</td><td><a href='" + locationEndpoint + "?q=" + encodeURIComponent(stop.location.name) +
               "'>"
-              + stop.location.name + "</a>" + labels + "</td><td>";
+              + stop.location.name + "</a>" + labels + "</td><td>" + truckCountLink +"</td><td>";
           if (showControls) {
             if (!prevHadStart && now < stop.startTimeMillis) {
               prevHadStart = true;
