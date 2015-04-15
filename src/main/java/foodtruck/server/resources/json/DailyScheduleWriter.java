@@ -81,7 +81,8 @@ public class DailyScheduleWriter implements MessageBodyWriter<DailySchedule>, JS
     JSONArray schedules = new JSONArray();
     for (TruckStop stop : schedule.getStops()) {
       try {
-         JSONObject truckStop = new JSONObject()
+        JSONObject truckStop = new JSONObject()
+            .put("key", stop.getKey().toString())
             .put("location", locations.get(stop.getLocation()))
             .put("truckId", stop.getTruck().getId())
             .put("confidence", stop.getConfidence())
