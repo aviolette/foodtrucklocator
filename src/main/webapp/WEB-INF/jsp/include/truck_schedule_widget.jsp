@@ -54,8 +54,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <a id="cancelButton" href="#" class="btn btn-default">Cancel</a>
-                <a id="saveButton" href="#" class="btn btn-primary">Save</a>
+                <button id="cancelButton" class="btn btn-default">Cancel</button>
+                <button id="saveButton"  class="btn btn-primary" type="button" autocomplete="off" data-loading-text="Saving...">Save</button>
             </div>
         </div>
     </div>

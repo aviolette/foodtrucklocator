@@ -63,6 +63,7 @@ runEditWidget = function(truckId, locations, categories, options) {
     $saveButton.unbind('click');
     $saveButton.click(function (e) {
       e.preventDefault();
+      var $btn = $(this).button('loading')
       stop.startTime =  $("#startTimeInput").val();
       stop.endTime =  $("#endTimeInput").val();
       var locationName = $("#locationInput").val();
@@ -76,6 +77,7 @@ runEditWidget = function(truckId, locations, categories, options) {
       if(locationName.length == 0) {
         $("#locationInputGroup").addClass("has-error");
         $("#truck-schedule-error").html("No location specified");
+        $btn.button('reset')
       } else {
         $.ajax({
           url: "/services/v2/stops",
@@ -98,9 +100,11 @@ runEditWidget = function(truckId, locations, categories, options) {
               $("#endTimeInputGroup").addClass("has-error");
             }
             stop.location = oldLocation;
+            $btn.button('reset')
           },
           success: function() {
             $("#edit-stop").modal('hide');
+            $btn.button('reset');
             afterwards();
           }
         });
