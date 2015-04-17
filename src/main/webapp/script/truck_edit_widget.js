@@ -144,7 +144,9 @@ runEditWidget = function(truckId, locations, categories, options) {
         var now = new Date().getTime(), numStops = schedule.length;
         var prevHadStart = false;
         $.each(schedule, function (truckIndex, stop) {
-          lastStop = stop;
+          if (stop.startMillis < tomorrow) {
+            lastStop = stop;
+          }
           var labels = (stop.locked) ? "&nbsp;<span class=\"label important\">locked</span>" :
               "";
           var crazyDuration = stop.durationMillis < 0 || stop.durationMillis > 43200000;
