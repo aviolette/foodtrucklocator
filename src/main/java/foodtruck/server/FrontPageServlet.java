@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.common.base.MoreObjects;
 
 import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
@@ -28,6 +29,11 @@ public abstract class FrontPageServlet extends HttpServlet {
 
   @Override protected final void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
+    String userAgent = MoreObjects.firstNonNull(req.getHeader("User-Agent"), "");
+    if (userAgent.contains("domainreanimator")) {
+      resp.sendError(404);
+      return;
+    }
     // TODO: inject Provider<UserService>; not doing now since it would require updating a gazillion files
     UserService userService = UserServiceFactory.getUserService();
     req.setAttribute("localFrameworks", "true".equals(System.getProperty("use.local.frameworks", "false")));
