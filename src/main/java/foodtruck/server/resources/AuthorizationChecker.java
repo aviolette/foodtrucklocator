@@ -35,4 +35,19 @@ public class AuthorizationChecker {
     }
     throw new WebApplicationException(Response.Status.UNAUTHORIZED);
   }
+
+  public void requireAppKeyWithCount(String appKey, long count) throws WebApplicationException {
+    if (!Strings.isNullOrEmpty(appKey)) {
+      Application app = applicationDAO.findById(appKey);
+      if (app != null && app.isEnabled()) {
+        if (app.isRateLimitEnabled() && count > 6) {
+          log.warning("Rate limit exceeded for " + app.getName());
+          throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+        }
+        log.info("Requesting application: " + app.getName());
+        return;
+      }
+    }
+    throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+  }
 }

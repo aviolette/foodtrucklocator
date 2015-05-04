@@ -18,7 +18,6 @@ import javax.ws.rs.core.Context;
 import com.google.appengine.api.capabilities.CapabilitiesService;
 import com.google.appengine.api.capabilities.CapabilitiesServiceFactory;
 import com.google.appengine.api.capabilities.Capability;
-import com.google.appengine.api.capabilities.CapabilityServicePb;
 import com.google.appengine.api.capabilities.CapabilityStatus;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.inject.Inject;

@@ -9,12 +9,18 @@ public class Application extends ModelEntity {
   private final String name;
   private final String description;
   private final boolean enabled;
+  private final boolean rateLimit;
 
   public Application(Builder builder) {
     super(builder.appKey);
     this.name = builder.name;
     this.description = builder.description;
     this.enabled = builder.enabled;
+    this.rateLimit = builder.rateLimit;
+  }
+
+  public boolean isRateLimitEnabled() {
+    return rateLimit;
   }
 
   public boolean isEnabled() {
@@ -46,6 +52,7 @@ public class Application extends ModelEntity {
     private String appKey;
     private String description;
     private boolean enabled;
+    private boolean rateLimit;
 
     public Builder() {}
 
@@ -54,6 +61,12 @@ public class Application extends ModelEntity {
       this.appKey = (String) app.getKey();
       this.description = app.description;
       this.enabled = app.enabled;
+      this.rateLimit = app.rateLimit;
+    }
+
+    public Builder rateLimit(boolean rateLimit) {
+      this.rateLimit = rateLimit;
+      return this;
     }
 
     public Builder appKey(String appKey) {

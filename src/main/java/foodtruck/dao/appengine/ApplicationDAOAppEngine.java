@@ -21,6 +21,8 @@ public class ApplicationDAOAppEngine extends AppEngineDAO<String, Application> i
   private static final String PROP_NAME = "name";
   private static final String PROP_DESCRIPTION = "description";
   private static final String PROP_ENABLED = "enabled";
+  private static final String RATE_LIMIT = "rate_limit";
+
   @Inject
   public ApplicationDAOAppEngine(DatastoreServiceProvider provider) {
     super(KIND, provider);
@@ -30,12 +32,14 @@ public class ApplicationDAOAppEngine extends AppEngineDAO<String, Application> i
     entity.setProperty(PROP_NAME, obj.getName());
     entity.setProperty(PROP_DESCRIPTION, obj.getDescription());
     entity.setProperty(PROP_ENABLED, obj.isEnabled());
+    entity.setProperty(RATE_LIMIT, obj.isRateLimitEnabled());
     return entity;
   }
 
   @Override protected Application fromEntity(Entity entity) {
     return Application.builder()
         .name(getStringProperty(entity, PROP_NAME))
+        .rateLimit(getBooleanProperty(entity, RATE_LIMIT, false))
         .description(getStringProperty(entity, PROP_DESCRIPTION))
         .enabled(getBooleanProperty(entity, PROP_ENABLED, false))
         .appKey(entity.getKey().getName())
