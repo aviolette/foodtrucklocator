@@ -14,8 +14,6 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.LocationDAO;
-import foodtruck.geolocation.GeoLocator;
-import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
 import foodtruck.truckstops.FoodTruckStopService;
@@ -34,21 +32,18 @@ public class LocationServlet extends FrontPageServlet {
   private final Clock clock;
   private final DateTimeFormatter dateFormatter;
   private final FoodTruckStopService truckStopService;
-  private final GeoLocator geoLocator;
   private final DateTimeFormatter friendlyFormatter;
 
   @Inject
   public LocationServlet(LocationDAO locationDAO, Clock clock,
       @DateOnlyFormatter DateTimeFormatter dateFormatter,
       FoodTruckStopService truckStopService,
-      GeoLocator geoLocator,
       @FriendlyDateOnlyFormat DateTimeFormatter friendlyFormatter, StaticConfig staticConfig) {
     super(staticConfig);
     this.locationDAO = locationDAO;
     this.clock = clock;
     this.dateFormatter = dateFormatter;
     this.truckStopService = truckStopService;
-    this.geoLocator = geoLocator;
     this.friendlyFormatter = friendlyFormatter;
   }
 
@@ -68,7 +63,7 @@ public class LocationServlet extends FrontPageServlet {
       }
       location = locationDAO.findById(locId);
     } else {
-      location = geoLocator.locate(query, GeolocationGranularity.NARROW);
+      location = locationDAO.findByAddress(query);
       if (location != null && location.isResolved()) {
         String date = req.getParameter("date"), dateString="";
         if (!Strings.isNullOrEmpty(date)) {
