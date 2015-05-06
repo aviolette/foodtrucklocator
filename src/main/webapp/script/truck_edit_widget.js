@@ -162,11 +162,11 @@ runEditWidget = function(truckId, locations, categories, options) {
               "'>"
               + stop.location.name + "</a>" + labels + "</td><td>" + truckCountLink +"</td><td>";
           if (showControls) {
-            if (!prevHadStart && now < stop.startTimeMillis) {
+            if (!prevHadStart && now < stop.startMillis) {
               prevHadStart = true;
               buf = buf + "<button class='btn btn-default' id='truckStartNow" + truckIndex +
               "' class='btn success'>Start Now</button>"
-            } else if (now >= stop.startTimeMillis && now < stop.endTimeMillis) {
+            } else if (now >= stop.startMillis && now < stop.endMillis) {
               buf = buf + "<button class='btn btn-default' id='truckEndNow" + truckIndex +
               "' class='btn warning'>End Now</button>";
             }
