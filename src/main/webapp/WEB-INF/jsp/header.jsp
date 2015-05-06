@@ -73,15 +73,8 @@
           <ul class="dropdown-menu">
             <li><a href="/stats/timeline">Timeline</a></li>
           </ul>
-        </li>`
-        </c:if>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cities <b class="caret"></b></a>
-          <ul class="dropdown-menu">
-            <li><a href="http://www.chicagofoodtruckfinder.com">Chicago</a></li>
-            <li><a href="http://www.orlandofoodtruckfinder.com">Orlando</a></li>
-          </ul>
         </li>
+        </c:if>
         <c:if test="${showBlog}">
         <li><a href="http://blog.chicagofoodtruckfinder.com/">Blog</a></li>
         </c:if>
