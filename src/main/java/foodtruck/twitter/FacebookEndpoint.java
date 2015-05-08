@@ -1,4 +1,4 @@
-package foodtruck.facebook;
+package foodtruck.twitter;
 
 /**
  * @author aviolette

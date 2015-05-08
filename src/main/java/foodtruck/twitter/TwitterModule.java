@@ -53,4 +53,13 @@ public class TwitterModule extends AbstractModule {
     c.setReadTimeout(20000);
     return c.resource("http://chicagofoodtrucklocator.appspot.com/service/tweets");
   }
+
+
+  @FacebookEndpoint
+  @Provides @Singleton
+  public WebResource provideFacebookResource() {
+    Client c = Client.create();
+    return c.resource("http://graph.facebook.com");
+  }
+
 }

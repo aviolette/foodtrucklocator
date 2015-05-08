@@ -8,7 +8,6 @@ import com.google.inject.servlet.GuiceServletContextListener;
 import foodtruck.dao.appengine.AppEngineDAOModule;
 import foodtruck.dao.memcached.MemcachedModule;
 import foodtruck.email.EmailModule;
-import foodtruck.facebook.FacebookModule;
 import foodtruck.geolocation.GeolocationModule;
 import foodtruck.googleapi.GoogleApiModule;
 import foodtruck.monitoring.MonitoringModule;
@@ -43,7 +42,6 @@ public class FoodtruckConfig extends GuiceServletContextListener {
         new StatsModule(),
         new UtilModule(),
         new TwitterModule(),
-        new FacebookModule(),
         new MonitoringModule(),
         new NotificationModule(),
         new FoodtruckServletModule()

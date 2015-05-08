@@ -27,7 +27,6 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import foodtruck.dao.TruckDAO;
-import foodtruck.facebook.FacebookEndpoint;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
 import twitter4j.PagableResponseList;
