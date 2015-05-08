@@ -8,6 +8,18 @@ runEditWidget = function(truckId, locations, categories, options) {
   if (options["vendorEndpoints"]) {
     locationEndpoint = '/locations';
   }
+
+  var $startTimeInput = $("#startTimeInput"), $endTimeInput = $("#endTimeInput");
+
+  $startTimeInput.blur(function (e) {
+    var startTime = fromDate($startTimeInput.val()),
+        endTime = fromDate($endTimeInput.val());
+    if (startTime.getTime() > endTime.getTime()) {
+      var diff = startTime.getTime() + (60 * 60 * 2000);
+      $endTimeInput.val(toDate(new Date(diff)));
+    }
+  });
+
   $editStop.keypress(function(e) {
     if (e.which == 13) {
       e.preventDefault();
@@ -19,23 +31,13 @@ runEditWidget = function(truckId, locations, categories, options) {
   var substringMatcher = function(strs) {
     return function findMatches(q, cb) {
       var matches, substrRegex;
-
-      // an array that will be populated with substring matches
       matches = [];
-
-      // regex used to determine if a string contains the substring `q`
       substrRegex = new RegExp(q, 'i');
-
-      // iterate through the pool of strings and for any string that
-      // contains the substring `q`, add it to the `matches` array
       $.each(strs, function(i, str) {
         if (substrRegex.test(str)) {
-          // the typeahead jQuery plugin expects suggestions to a
-          // JavaScript object, refer to typeahead docs for more info
           matches.push({ value: str });
         }
       });
-
       cb(matches);
     };
   };
@@ -48,14 +50,18 @@ runEditWidget = function(truckId, locations, categories, options) {
 
 
   $editStop.on("shown.bs.modal", function() {
-    $("#startTimeInput").focus();
+    $startTimeInput.focus();
   });
 
-  function invokeEditDialog(stop, afterwards) {
-    $("#startTimeInput").val(stop.startTimeH);
-    $("#endTimeInput").val( stop.endTimeH);
+  function populateDialog(stop) {
+    $startTimeInput.val(stop.startTimeH);
+    $endTimeInput.val( stop.endTimeH);
     $("#locationInput").val(stop.location.name);
     $("#lockStop").val( stop.locked);
+  }
+
+  function invokeEditDialog(stop, afterwards) {
+    populateDialog(stop);
     $("#locationInputGroup").removeClass("has-error");
     $("#truck-schedule-alert").addClass("hidden");
     $("#edit-stop").modal({ show: true, keyboard: true, backdrop: true});
@@ -64,8 +70,8 @@ runEditWidget = function(truckId, locations, categories, options) {
     $saveButton.click(function (e) {
       e.preventDefault();
       var $btn = $(this).button('loading')
-      stop.startTime =  $("#startTimeInput").val();
-      stop.endTime =  $("#endTimeInput").val();
+      stop.startTime =  $startTimeInput.val();
+      stop.endTime =  $endTimeInput.val();
       var locationName = $("#locationInput").val();
       var oldLocation = stop.location;
       if (locationName != stop.location.name) {
@@ -124,6 +130,15 @@ runEditWidget = function(truckId, locations, categories, options) {
       return "0" + t;
     }
     return t;
+  }
+
+  function fromDate(dateString) {
+    var year = parseInt(dateString.substring(0, 4)),
+        month = parseInt(dateString.substring(5, 7))-1,
+        day = parseInt(dateString.substring(8, 10)),
+        hour = parseInt(dateString.substring(11, 13)),
+        min = parseInt(dateString.substring(14, 16));
+    return new Date(year, month, day, hour, min, 0, 0);
   }
 
   function toDate(d) {
