@@ -23,8 +23,8 @@ import org.joda.time.format.DateTimeFormatter;
 import foodtruck.dao.RetweetsDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.StaticConfig;
+import foodtruck.socialmedia.TwitterService;
 import foodtruck.truckstops.FoodTruckStopService;
-import foodtruck.twitter.TwitterService;
 import foodtruck.util.Clock;
 
 /**

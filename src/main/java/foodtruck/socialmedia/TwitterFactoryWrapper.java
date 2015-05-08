@@ -1,4 +1,4 @@
-package foodtruck.twitter;
+package foodtruck.socialmedia;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;

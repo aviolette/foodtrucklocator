@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import foodtruck.twitter.TwitterService;
+import foodtruck.socialmedia.TwitterService;
 
 /**
  * Loads the tweets since the last time this was run.  Analyzes the tweets for potential new stops.

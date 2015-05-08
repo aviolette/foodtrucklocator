@@ -16,7 +16,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 import foodtruck.dao.TwitterNotificationAccountDAO;
 import foodtruck.model.TwitterNotificationAccount;
-import foodtruck.twitter.TwitterFactoryWrapper;
+import foodtruck.socialmedia.TwitterFactoryWrapper;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;

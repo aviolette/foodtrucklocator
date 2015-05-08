@@ -11,7 +11,7 @@ import com.google.api.client.util.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import foodtruck.twitter.ProfileSyncService;
+import foodtruck.socialmedia.ProfileSyncService;
 
 /**
  * @author aviolette

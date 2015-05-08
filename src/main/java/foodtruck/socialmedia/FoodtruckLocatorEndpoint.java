@@ -1,4 +1,4 @@
-package foodtruck.twitter;
+package foodtruck.socialmedia;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

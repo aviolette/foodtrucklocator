@@ -14,9 +14,9 @@ import foodtruck.monitoring.MonitoringModule;
 import foodtruck.notifications.NotificationModule;
 import foodtruck.schedule.ScheduleModule;
 import foodtruck.server.security.SecurityModule;
+import foodtruck.socialmedia.TwitterModule;
 import foodtruck.stats.StatsModule;
 import foodtruck.truckstops.ServiceModule;
-import foodtruck.twitter.TwitterModule;
 import foodtruck.util.UtilModule;
 
 /**

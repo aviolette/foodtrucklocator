@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import foodtruck.twitter.TwitterService;
+import foodtruck.socialmedia.TwitterService;
 import foodtruck.util.Clock;
 
 /**

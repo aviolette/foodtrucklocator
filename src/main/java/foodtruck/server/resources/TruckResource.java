@@ -26,7 +26,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
-import foodtruck.twitter.ProfileSyncService;
+import foodtruck.socialmedia.ProfileSyncService;
 import foodtruck.util.Clock;
 import foodtruck.util.DateOnlyFormatter;
 
