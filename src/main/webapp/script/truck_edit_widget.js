@@ -14,7 +14,7 @@ runEditWidget = function(truckId, locations, categories, options) {
   $startTimeInput.blur(function (e) {
     var startTime = fromDate($startTimeInput.val()),
         endTime = fromDate($endTimeInput.val());
-    if (startTime.getTime() > endTime.getTime()) {
+    if (startTime.getTime() >= endTime.getTime()) {
       var diff = startTime.getTime() + (60 * 60 * 2000);
       $endTimeInput.val(toDate(new Date(diff)));
     }
@@ -322,5 +322,4 @@ runEditWidget = function(truckId, locations, categories, options) {
         refreshSchedule();
       }});
   });
-
 };
