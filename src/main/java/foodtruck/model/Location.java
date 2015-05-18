@@ -37,6 +37,7 @@ public class Location extends ModelEntity implements Serializable {
   private boolean designatedStop;
   private boolean hasBooze;
   private @Nullable String ownedBy;
+  private int radiateTo;
 
   // For serializable
   public Location() {
@@ -59,6 +60,7 @@ public class Location extends ModelEntity implements Serializable {
     designatedStop = builder.designatedStop;
     hasBooze = builder.hasBooze;
     ownedBy = builder.ownedBy;
+    radiateTo = builder.radiateTo;
   }
 
   public boolean isHasBooze() {
@@ -204,6 +206,10 @@ public class Location extends ModelEntity implements Serializable {
     return alias;
   }
 
+  public int getRadiateTo() {
+    return radiateTo;
+  }
+
   public static class Builder {
     private Object key;
     private double lat;
@@ -222,6 +228,7 @@ public class Location extends ModelEntity implements Serializable {
     private boolean designatedStop;
     private boolean hasBooze;
     private @Nullable String ownedBy;
+    private int radiateTo = 0;
 
     public Builder(Location location) {
       key = location.getKey();
@@ -241,9 +248,15 @@ public class Location extends ModelEntity implements Serializable {
       designatedStop = location.designatedStop;
       hasBooze = location.hasBooze;
       ownedBy = location.ownedBy;
+      radiateTo = location.radiateTo;
     }
 
     public Builder() {
+    }
+
+    public Builder radiateTo(int radiateTo) {
+      this.radiateTo = radiateTo;
+      return this;
     }
 
     public Builder ownedBy(String ownedBy) {

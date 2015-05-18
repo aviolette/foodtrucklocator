@@ -53,6 +53,7 @@ public class LocationWriter implements JSONWriter<Location>, MessageBodyWriter<L
         .put("longitude", location.getLongitude())
         .put("url", location.getUrl())
         .put("radius", location.getRadius())
+        .put("radiateTo", location.getRadiateTo())
         .put("description", location.getDescription())
         .put("name", location.getName())
         .put("designatedStop", location.isDesignatedStop())

@@ -22,6 +22,7 @@ import foodtruck.dao.LocationDAO;
 import foodtruck.model.Location;
 import foodtruck.util.Clock;
 
+import static foodtruck.dao.appengine.Attributes.getIntProperty;
 import static foodtruck.dao.appengine.Attributes.getStringProperty;
 
 /**
@@ -46,6 +47,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
   private static final String DESIGNATED_STOP = "designated_stop";
   private static final String HAS_BOOZE = "has_booze";
   private static final String OWNED_BY = "owned_by";
+  private static final String RADIATE_TO = "radiate_to";
 
   private static final Logger log = Logger.getLogger(LocationDAOAppEngine.class.getName());
   private final Clock clock;
@@ -180,6 +182,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     entity.setProperty(DESIGNATED_STOP, location.isDesignatedStop());
     entity.setProperty(OWNED_BY, location.getOwnedBy());
     entity.setProperty(HAS_BOOZE, location.isHasBooze());
+    entity.setProperty(RADIATE_TO, location.getRadiateTo());
     return entity;
   }
 
@@ -200,6 +203,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     builder.ownedBy(getStringProperty(entity, OWNED_BY));
     builder.designatedStop(getBooleanProperty(entity, DESIGNATED_STOP, false));
     builder.hasBooze(getBooleanProperty(entity, HAS_BOOZE, false));
+    builder.radiateTo(getIntProperty(entity, RADIATE_TO, 0));
     boolean isValid = valid == null || valid;
     if (lat == null || lng == null) {
       builder.valid(false);

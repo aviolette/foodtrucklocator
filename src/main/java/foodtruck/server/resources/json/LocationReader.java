@@ -24,6 +24,7 @@ public class LocationReader {
         .designatedStop(obj.optBoolean("designatedStop", false))
         .autocomplete(obj.optBoolean("autocomplete", false))
         .radius(obj.getDouble("radius"))
+        .radiateTo(obj.optInt("radiateTo", 0))
         .name(obj.getString("name")).key((key > 0) ? key : null)
         .url(obj.optString("url"))
         .ownedBy(Strings.emptyToNull(obj.optString("ownedBy")))

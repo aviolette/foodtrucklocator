@@ -52,6 +52,12 @@
       </div>
     </div>
     <div class="control-group">
+      <label class="control-label" for="radiateTo">Radiate Direction</label>
+      <div class="controls">
+        <input id="radiateTo" type="text"/>
+      </div>
+    </div>
+    <div class="control-group">
       <label class="control-label" for="alias">Alias for</label>
       <div class="controls">
         <input id="alias" class="span6" type="text" data-provider="typeahead" data-items="4"/>
@@ -117,6 +123,7 @@
       $("#latitude").attr("value", loc.latitude);
       $("#longitude").attr("value", loc.longitude);
       $("#radius").attr("value", loc.radius);
+      $("#radiateTo").attr("value", loc.radiateTo);
       $("#name").attr("value", loc.name);
       $("#alias").attr("value", loc.alias);
       $("#twitterHandle").attr("value", loc.twitterHandle);
@@ -234,6 +241,7 @@
       loc.designatedStop = $("#designatedStop").is(":checked");
       loc.autocomplete = $("#autocomplete").is(":checked");
       loc.ownedBy = $("#ownedBy").attr("value");
+      loc.radiateTo = parseInt($("#radiateTo").attr("value"));
       e.preventDefault();
       $submitButton.addClass("disabled");
       $.ajax({
