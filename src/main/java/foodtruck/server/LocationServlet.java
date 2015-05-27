@@ -1,6 +1,7 @@
 package foodtruck.server;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +29,8 @@ import foodtruck.util.FriendlyDateOnlyFormat;
 
 @Singleton
 public class LocationServlet extends FrontPageServlet {
+  private static final Logger log = Logger.getLogger(LocationServlet.class.getName());
+
   private final LocationDAO locationDAO;
   private final Clock clock;
   private final DateTimeFormatter dateFormatter;
@@ -85,6 +88,10 @@ public class LocationServlet extends FrontPageServlet {
         dateTime = dateFormatter.parseDateTime(timeRequest);
         onDate = " on " + friendlyFormatter.print(dateTime);
       } catch (IllegalArgumentException ignored) {
+        log.warning("Invalidate date specified " + timeRequest);
+        // lots of weird SQL stuff coming through in data parameter
+        resp.setStatus(404);
+        return;
       }
     }
     if (dateTime == null) {
