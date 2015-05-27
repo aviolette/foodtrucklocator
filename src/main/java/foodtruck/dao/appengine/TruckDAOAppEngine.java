@@ -25,6 +25,7 @@ import foodtruck.model.Truck;
 
 import static foodtruck.dao.appengine.Attributes.getDateTime;
 import static foodtruck.dao.appengine.Attributes.getDoubleProperty;
+import static foodtruck.dao.appengine.Attributes.getIntProperty;
 import static foodtruck.dao.appengine.Attributes.getLongProperty;
 import static foodtruck.dao.appengine.Attributes.getSetProperty;
 import static foodtruck.dao.appengine.Attributes.getStringProperty;
@@ -74,6 +75,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
   private static final String TRUCK_DISPLAY_EMAIL = "display_email";
   private static final String TRUCK_INSTAGRAM = "instagram";
   private static final String TRUCK_FULL_SIZE = "fullsize_image";
+  private static final String TIMEZONE_OFFSET = "timezone_offset";
 
   private DateTimeZone zone;
 
@@ -137,6 +139,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
         .matchOnlyIf((String) entity.getProperty(MATCH_REGEX_FIELD))
         .donotMatchIf((String) entity.getProperty(DONT_MATCH_REGEX_FIELD))
         .beaconnaiseEmails(getSetProperty(entity, TRUCK_BEACONNAISE_EMAILS))
+        .timezoneOffset(getIntProperty(entity, TIMEZONE_OFFSET, 0))
         .url((String) entity.getProperty(TRUCK_URL))
         .categories(categoriesList == null ? ImmutableSet.<String>of() :
             ImmutableSet.copyOf(categoriesList))
@@ -274,6 +277,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     entity.setProperty(MATCH_REGEX_FIELD, truck.getMatchOnlyIfString());
     entity.setProperty(DONT_MATCH_REGEX_FIELD, truck.getDonotMatchIfString());
     entity.setProperty(INACTIVE_FIELD, truck.isInactive());
+    entity.setProperty(TIMEZONE_OFFSET, truck.getTimezoneAdjustment());
     entity.setProperty(CATEGORIES_FIELD, truck.getCategories());
     entity.setProperty(TRUCK_EMAIL, truck.getEmail());
     entity.setProperty(TRUCK_YELP_SLUG, truck.getYelpSlug());

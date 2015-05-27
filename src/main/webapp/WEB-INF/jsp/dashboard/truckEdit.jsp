@@ -74,6 +74,11 @@
            value="${truck.calendarUrl}"/>
   </div>
   <div class="form-group">
+    <label for="timezoneAdjustment">Timezone adjustment</label>
+    <input type="text" class="form-control" id="timezoneAdjustment" name="timezoneAdjustment"
+           value="${truck.timezoneAdjustment}"/>
+  </div>
+  <div class="form-group">
     <label for="defaultCity">Default City</label>
     <input type="text" class="form-control" id="defaultCity" name="defaultCity"
            value="${truck.defaultCity}"/>

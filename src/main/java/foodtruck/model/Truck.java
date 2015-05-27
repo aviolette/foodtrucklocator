@@ -52,6 +52,7 @@ public class Truck extends ModelEntity implements Serializable {
   private boolean displayEmailPublicly;
   private String instagramId;
   private @Nullable String fullsizeImage;
+  private int timezoneAdjustment;
 
   public static final Function<Truck, String> TO_ID = new Function<Truck, String>() {
     @Nullable @Override public String apply(@Nullable Truck truck) {
@@ -94,6 +95,7 @@ public class Truck extends ModelEntity implements Serializable {
     this.displayEmailPublicly = builder.displayEmailPublicly;
     this.instagramId = builder.instagramId;
     this.fullsizeImage = builder.fullsizeImage;
+    this.timezoneAdjustment = builder.timezoneAdjustment;
   }
 
   public @Nullable String getFullsizeImage() {
@@ -307,6 +309,10 @@ public class Truck extends ModelEntity implements Serializable {
     return true;
   }
 
+  public int getTimezoneAdjustment() {
+    return timezoneAdjustment;
+  }
+
   public static class Stats implements Serializable {
     private DateTime lastUpdated;
     private DateTime lastSeen;
@@ -465,6 +471,7 @@ public class Truck extends ModelEntity implements Serializable {
     private boolean displayEmailPublicly;
     private @Nullable String instagramId;
     private @Nullable String fullsizeImage;
+    private int timezoneAdjustment = 0;
 
 
     public Builder() {
@@ -500,6 +507,7 @@ public class Truck extends ModelEntity implements Serializable {
       this.displayEmailPublicly = truck.displayEmailPublicly;
       this.instagramId = truck.instagramId;
       this.fullsizeImage = truck.fullsizeImage;
+      this.timezoneAdjustment = truck.timezoneAdjustment;
     }
 
     public Builder id(String id) {
@@ -656,6 +664,11 @@ public class Truck extends ModelEntity implements Serializable {
 
     public Builder stats(Stats stats) {
       this.stats = stats;
+      return this;
+    }
+
+    public Builder timezoneOffset(int timezoneAdjustment) {
+      this.timezoneAdjustment = timezoneAdjustment;
       return this;
     }
   }

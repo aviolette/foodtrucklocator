@@ -201,6 +201,7 @@ public class TruckServlet extends HttpServlet {
         .facebookPageId(request.getParameter("facebookPageId"))
         .foursquareUrl(request.getParameter("foursquareUrl"))
         .iconUrl(request.getParameter("iconUrl"))
+        .timezoneOffset(Integer.parseInt(request.getParameter("timezoneAdjustment")))
         .name(request.getParameter("name"))
         .yelpSlug(request.getParameter("yelp"))
         .phone(request.getParameter("phone"))

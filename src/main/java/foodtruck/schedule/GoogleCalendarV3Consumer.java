@@ -83,11 +83,12 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
     }
   }
 
-  private List<TruckStop> performTruckSearch(Interval range, @Nullable Truck searchTruck) {
+  private List<TruckStop> performTruckSearch(Interval range, Truck truck) {
     ImmutableList.Builder<TruckStop> builder = ImmutableList.builder();
     try {
-      final String calendarId = searchTruck.getCalendarUrl();
+      final String calendarId = truck.getCalendarUrl();
       String pageToken = null;
+      int timezoneAdjustment = truck.getTimezoneAdjustment();
       do {
         Calendar.Events.List query = calendarClient.events().list(calendarId).setSingleEvents(true).setTimeMin(
             toGoogleDateTime(range.getStart())).setTimeMax(toGoogleDateTime(range.getEnd())).setPageToken(pageToken);
@@ -95,11 +96,7 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
         List<Event> items = events.getItems();
         for (Event event : items) {
           final String titleText = event.getSummary();
-          Truck truck = (searchTruck != null || Strings.isNullOrEmpty(titleText)) ? searchTruck : truckDAO.findById(titleText);
-          if (truck == null) {
-            log.log(Level.WARNING, "Could not find title text for {0}", new Object[] { event.getHtmlLink() });
-            continue;
-          }
+
           String where = event.getLocation();
           Location location = null;
           if (!Strings.isNullOrEmpty(where)) {
@@ -123,7 +120,7 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
             if (!Strings.isNullOrEmpty(titleText)) {
               where = titleText;
               log.info("Trying title text: " + titleText);
-              final List<String> parsed = addressExtractor.parse(titleText, searchTruck);
+              final List<String> parsed = addressExtractor.parse(titleText, truck);
               String locString = Iterables.getFirst(parsed, null);
               if (locString == null) {
                 log.info("Failed to parse titletext for address, trying whole thing: " + titleText);
@@ -142,8 +139,8 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
                 .location(location)
                 .confidence(confidence)
                 .appendNote(note)
-                .startTime(new DateTime(event.getStart().getDateTime().getValue(), clock.zone()))
-                .endTime(new DateTime(event.getEnd().getDateTime().getValue(), clock.zone()))
+                .startTime(new DateTime(event.getStart().getDateTime().getValue(), clock.zone()).plusHours(timezoneAdjustment))
+                .endTime(new DateTime(event.getEnd().getDateTime().getValue(), clock.zone()).plusHours(timezoneAdjustment))
                 .build();
             log.log(Level.INFO, "Loaded truckstop: {0}", truckStop);
             builder.add(truckStop);

@@ -88,6 +88,5 @@ public class LocationWriter implements JSONWriter<Location>, MessageBodyWriter<L
     } catch (JSONException e) {
       throw new BadRequestException(e, MediaType.APPLICATION_JSON_TYPE);
     }
-
   }
 }
