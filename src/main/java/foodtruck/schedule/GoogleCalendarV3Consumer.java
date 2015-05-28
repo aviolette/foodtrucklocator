@@ -131,7 +131,11 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
               }
             }
           }
-          if (location != null && location.isResolved()) {
+          if (location != null && location.isResolved() && !event.isEndTimeUnspecified()) {
+            if (event.isEndTimeUnspecified() || event.getStart().getDateTime() == null) {
+              log.log(Level.WARNING, "Skipping {0} {1} because no time is specified", new Object[] {truck.getId(), location});
+              continue;
+            }
             String note = "Stop added from vendor's calendar";
             Confidence confidence = Confidence.MEDIUM;
             final TruckStop truckStop = TruckStop.builder().truck(truck)
