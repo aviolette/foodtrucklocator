@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.Events;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -132,9 +133,19 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
             }
           }
           if (location != null && location.isResolved() && !event.isEndTimeUnspecified()) {
-            if (event.isEndTimeUnspecified() || event.getStart().getDateTime() == null) {
-              log.log(Level.WARNING, "Skipping {0} {1} because no time is specified", new Object[] {truck.getId(), location});
-              continue;
+            DateTime startTime, endTime;
+            if (event.getStart().getDateTime() == null) {
+              if (truck.getCategories().contains("AssumeNoTimeEqualsLunch")) {
+                String dcs[] = event.getStart().getDate().toStringRfc3339().split("-");
+                startTime = new DateTime(Integer.parseInt(dcs[0]), Integer.parseInt(dcs[1]), Integer.parseInt(dcs[2]), 11, 0, clock.zone());
+                endTime = startTime.plusHours(2);
+              } else {
+                log.log(Level.WARNING, "Skipping {0} {1} because no time is specified", new Object[]{truck.getId(), location});
+                continue;
+              }
+            } else {
+              startTime = new DateTime(event.getStart().getDateTime().getValue(), clock.zone()).plusHours(timezoneAdjustment);
+              endTime = new DateTime(event.getEnd().getDateTime().getValue(), clock.zone()).plusHours(timezoneAdjustment);
             }
             String note = "Stop added from vendor's calendar";
             Confidence confidence = Confidence.MEDIUM;
@@ -143,8 +154,8 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
                 .location(location)
                 .confidence(confidence)
                 .appendNote(note)
-                .startTime(new DateTime(event.getStart().getDateTime().getValue(), clock.zone()).plusHours(timezoneAdjustment))
-                .endTime(new DateTime(event.getEnd().getDateTime().getValue(), clock.zone()).plusHours(timezoneAdjustment))
+                .startTime(startTime)
+                .endTime(endTime)
                 .build();
             log.log(Level.INFO, "Loaded truckstop: {0}", truckStop);
             builder.add(truckStop);
