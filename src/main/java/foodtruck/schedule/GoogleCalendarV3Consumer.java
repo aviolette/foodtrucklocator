@@ -9,7 +9,6 @@ import javax.annotation.Nullable;
 
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
-import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.Events;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -97,7 +96,11 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
         List<Event> items = events.getItems();
         for (Event event : items) {
           final String titleText = event.getSummary();
-
+          String lowerTitle = titleText.toLowerCase();
+          if (lowerTitle.contains("private") || lowerTitle.contains("catering")) {
+            log.log(Level.INFO, "Skipping {0} for {1}", new Object[] {titleText, truck.getId()});
+            continue;
+          }
           String where = event.getLocation();
           Location location = null;
           if (!Strings.isNullOrEmpty(where)) {
