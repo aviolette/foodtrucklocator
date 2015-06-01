@@ -45,8 +45,11 @@ public class TruckBusinessesServlet extends FrontPageServlet {
     req.setAttribute("locations", FluentIterable.from(locationDAO.findLocationsOwnedByFoodTrucks())
         .transform(new Function<Location, LocationWithTruck>() {
           public LocationWithTruck apply(Location location) {
-            //TODO: this shouldn't happen, but not sure what's up yet
             try {
+              //TODO: this shouldn't happen
+              if (Strings.isNullOrEmpty(location.getOwnedBy())) {
+                return null;
+              }
               return new LocationWithTruck(truckDAO.findById(location.getOwnedBy()), location);
             } catch (Exception e) {
               log.log(Level.WARNING, "Problem with location {0}", location);
