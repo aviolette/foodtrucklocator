@@ -98,7 +98,7 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
           final String titleText = event.getSummary();
           if (!Strings.isNullOrEmpty(titleText)) {
             String lowerTitle = titleText.toLowerCase();
-            if (lowerTitle.contains("private") || lowerTitle.contains("catering")) {
+            if (lowerTitle.contains("private") || lowerTitle.contains("catering") || lowerTitle.contains("TBD")) {
               log.log(Level.INFO, "Skipping {0} for {1}", new Object[]{titleText, truck.getId()});
               continue;
             }
