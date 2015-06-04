@@ -96,10 +96,12 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
         List<Event> items = events.getItems();
         for (Event event : items) {
           final String titleText = event.getSummary();
-          String lowerTitle = titleText.toLowerCase();
-          if (lowerTitle.contains("private") || lowerTitle.contains("catering")) {
-            log.log(Level.INFO, "Skipping {0} for {1}", new Object[] {titleText, truck.getId()});
-            continue;
+          if (!Strings.isNullOrEmpty(titleText)) {
+            String lowerTitle = titleText.toLowerCase();
+            if (lowerTitle.contains("private") || lowerTitle.contains("catering")) {
+              log.log(Level.INFO, "Skipping {0} for {1}", new Object[]{titleText, truck.getId()});
+              continue;
+            }
           }
           String where = event.getLocation();
           Location location = null;
