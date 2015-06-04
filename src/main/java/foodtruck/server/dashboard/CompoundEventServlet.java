@@ -17,11 +17,9 @@ import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.Location;
-import foodtruck.model.StaticConfig;
 import foodtruck.model.StopOrigin;
 import foodtruck.model.TruckStop;
 import foodtruck.server.GuiceHackRequestWrapper;
-import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 import foodtruck.util.HtmlDateFormatter;
 
@@ -40,8 +38,7 @@ public class CompoundEventServlet extends HttpServlet {
 
   @Inject
   public CompoundEventServlet(TruckDAO truckDAO, LocationDAO locationDAO,
-      @HtmlDateFormatter DateTimeFormatter formatter, Clock clock, TruckStopDAO truckStopDAO,
-      FoodTruckStopService service, StaticConfig staticConfig) {
+      @HtmlDateFormatter DateTimeFormatter formatter, Clock clock, TruckStopDAO truckStopDAO) {
     this.truckDAO = truckDAO;
     this.locationDAO = locationDAO;
     this.timeFormatter = formatter;
@@ -62,6 +59,12 @@ public class CompoundEventServlet extends HttpServlet {
     }
     DateTime startTime = timeFormatter.parseDateTime(startTimeParam),
         endTime = timeFormatter.parseDateTime(endTimeParam);
+
+    if (!endTime.isAfter(startTime)) {
+      resp.sendError(400, "End time is not after start time");
+      return;
+    }
+
     for (String truckId : trucks) {
       TruckStop stop = TruckStop.builder()
           .location(location)
@@ -83,8 +86,9 @@ public class CompoundEventServlet extends HttpServlet {
       resp.sendError(404);
       return;
     }
-    req.setAttribute("startTime", timeFormatter.print(clock.now()));
-    req.setAttribute("endTime", timeFormatter.print(clock.now().plusHours(2)));
+    DateTime time = clock.now().plusHours(1).withMinuteOfHour(0);
+    req.setAttribute("startTime", timeFormatter.print(time));
+    req.setAttribute("endTime", timeFormatter.print(time.plusHours(2)));
     req.setAttribute("location", location);
     req.setAttribute("trucks", truckDAO.findActiveTrucks());
     req.setAttribute("nav", "location");
