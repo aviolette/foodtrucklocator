@@ -122,7 +122,10 @@ public class FoodTruckServlet extends FrontPageServlet {
     resp.setHeader("Pragma", "no-cache");
     resp.setHeader("Expires", "Thu, 01 Jan 1970 00:00:00 GMT");
     req.setAttribute("payload", payload);
-    final String jsp = "/WEB-INF/jsp/index.jsp";
+    String jsp = "/WEB-INF/jsp/index.jsp";
+    if ("beta".equals(req.getParameter("version"))) {
+      jsp = "/WEB-INF/jsp/fullscreen.jsp";
+    }
     req.getRequestDispatcher(jsp).forward(req, resp);
   }
 }
