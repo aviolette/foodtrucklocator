@@ -21,7 +21,14 @@
     </c:otherwise>
   </c:choose>
   <link href="/css/main.css?ver=11" rel="stylesheet"/>
-  <script src="/script/lib/modernizr-1.7.min.js"></script>
+  <c:choose>
+    <c:when test="${localFrameworks}">
+      <script src="/script/lib/modernizr-1.7.min.js"></script>
+    </c:when>
+    <c:otherwise>
+      <script src="http://storage.googleapis.com/ftf_static/script/modernizr-1.7.min.js"></script>
+    </c:otherwise>
+  </c:choose>
   <style type="text/css">
     #listContainer {
       overflow-y: auto !important;
@@ -83,8 +90,8 @@
         </c:if>
       </ul>
       <ul class="nav navbar-right navbar-nav">
-        <li><a style="padding: 10px 0 0 0" href="http://twitter.com/${twitterHandle}"><img src="/img/twitter02_dark.png"/></a></li>
-        <li><a style="padding: 10px 0 0 0" href="http://facebook.com/${facebookPage}"><img src="/img/facebook_dark.png"/></a></li>
+        <li><a style="padding: 10px 0 0 0" href="http://twitter.com/${twitterHandle}"><img src="http://storage.googleapis.com/ftf_static/img/twitter02_dark.png"/></a></li>
+        <li><a style="padding: 10px 0 0 0" href="http://facebook.com/${facebookPage}"><img src="http://storage.googleapis.com/ftf_static/img/facebook_dark.png"/></a></li>
         <c:if test="${!empty(user)}">
           <%--          <li><a href="#">${user}</a></li> --%>
           <li><a href="${signoutUrl}">Logout</a></li>
