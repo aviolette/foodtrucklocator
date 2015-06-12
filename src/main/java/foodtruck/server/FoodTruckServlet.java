@@ -125,6 +125,9 @@ public class FoodTruckServlet extends FrontPageServlet {
     String jsp = "/WEB-INF/jsp/index.jsp";
     if ("beta".equals(req.getParameter("version"))) {
       jsp = "/WEB-INF/jsp/fullscreen.jsp";
+      req.setAttribute("suffix", "-fluid");
+    } else {
+      req.setAttribute("suffix", "");
     }
     req.getRequestDispatcher(jsp).forward(req, resp);
   }
