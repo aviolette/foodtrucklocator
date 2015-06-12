@@ -20,7 +20,7 @@
       <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
     </c:otherwise>
   </c:choose>
-  <link href="/css/main.css?ver=11" rel="stylesheet"/>
+  <link href="/css/main${suffix}.css" rel="stylesheet"/>
   <c:choose>
     <c:when test="${localFrameworks}">
       <script src="/script/lib/modernizr-1.7.min.js"></script>
@@ -44,7 +44,7 @@
   </style>
 </head>
 <body>
-<div class="container cftf-main-container">
+<div class="container${suffix} cftf-main-container">
 
 <div id="topBar" class="navbar navbar-fixed-top navbar-inverse" role="navigation">
   <div class="container">
