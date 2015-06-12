@@ -18,7 +18,7 @@
     </c:otherwise>
   </c:choose>
   <script src="/script/lib/modernizr-1.7.min.js"></script>
-  <link href="/css/main.css?ver=11" rel="stylesheet"/>
+  <link href="/css/foodtruckfinder.css?ver=11" rel="stylesheet"/>
   <link rel="stylesheet" href="/css/typeahead.css"/>
   <style type="text/css">
   </style>

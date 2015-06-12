@@ -20,7 +20,7 @@
       <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
     </c:otherwise>
   </c:choose>
-  <link href="/css/main${suffix}.css" rel="stylesheet"/>
+  <link href="/css/foodtruckfinder${suffix}.css" rel="stylesheet"/>
   <c:choose>
     <c:when test="${localFrameworks}">
       <script src="/script/lib/modernizr-1.7.min.js"></script>

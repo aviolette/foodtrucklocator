@@ -2,7 +2,6 @@ var FoodTruckLocator = function () {
   var _map = null,
       _appKey = null,
       _trucks = null,
-      _mode = null,
       _markers = null,
       _defaultCityRegex = null,
       _defaultCityLength = 0,
@@ -136,6 +135,7 @@ var FoodTruckLocator = function () {
   var Clock = {
     now: function () {
       return new Date().getTime();
+//      return 1434040077;
     }
   };
 
@@ -456,9 +456,7 @@ var FoodTruckLocator = function () {
   }
 
   function resize() {
-    $("#map_canvas").height($(window).height() - $("#topBar").height() - 60);
-    $("#sidebar").height($(window).height() - $("#topBar").height() - 60);
-    $("#listContainer").height($(window).height() - $("#topBar").height() - 60);
+    $("#map_canvas").height($(window).height() - $("#topBar").height() - 20);
   }
 
   function setupGlobalEventHandlers() {
@@ -556,10 +554,6 @@ var FoodTruckLocator = function () {
     });
     $("#truckTitle").html(truck.name);
     $truckDialog.modal({show: true, keyboard: true, backdrop: true});
-  }
-
-  function displayListOnly() {
-    return (_mode != "desktop" && Modernizr.touch && window.screen.width < 1024);
   }
 
   function displayMessageOfTheDay(model) {
@@ -683,7 +677,6 @@ var FoodTruckLocator = function () {
       var self = this;
       var mobile = "mobile" == mode;
       _appKey = appKey;
-      _mode = mode;
       _defaultCityRegex = new RegExp(", " + defaultCity + "$");
       _defaultCityLength = defaultCity.length;
       _center = findCenter(center);
