@@ -13,7 +13,8 @@
     <th style="min-width:200px">&nbsp;</th>
     <th style="min-width:100px">Name</th>
     <th style="min-width:150px">App Key</th>
-    <th style="min-width:300px">Description</th>
+    <th style="min-width:100px">Count</th>
+    <th style="min-width:200px">Description</th>
   </tr>
   </thead>
   <tbody id="applications">
@@ -79,7 +80,7 @@
               "' data-toggle='button' type='button'>" + btnLabel + "</button></td>";
           console.log(buttons);
           $("#applications").append("<tr>" + buttons + "<td>" + datum["name"] + "</td><td>" + datum['appKey']
-              + "</td><td>" + datum["description"]+"</td></tr>");
+              + "</td><td><span class='badge'>" + datum["dailyCounts"] + "</span></td><td>" + datum["description"]+"</td></tr>");
           var $activeBtn = $("#activeBtn-" + i);
           if (!datum["enabled"]) {
             $activeBtn.addClass("active").addClass("btn-success");
