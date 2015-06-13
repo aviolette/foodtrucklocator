@@ -1,6 +1,9 @@
 package foodtruck.monitoring;
 
+import com.google.appengine.api.memcache.Expiration;
+import com.google.appengine.api.memcache.MemcacheService;
 import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
 import com.google.inject.matcher.Matchers;
 
 /**
@@ -13,5 +16,16 @@ public class MonitoringModule extends AbstractModule {
     requestInjection(interceptor);
     bindInterceptor(Matchers.any(),
         Matchers.annotatedWith(Monitored.class), interceptor);
+  }
+
+  @Provides
+  @DailyScheduleCounter
+  public Counter providesDailyScheduleCounter(MemcacheService memcacheService) {
+    return new Counter("service.access.daily", memcacheService, null);
+  }
+
+  @Provides @HourlyScheduleCounter
+  public Counter providesHourlyScheduleCounter(MemcacheService memcacheService) {
+    return new Counter("service.access.hourly", memcacheService, Expiration.byDeltaSeconds(3600));
   }
 }

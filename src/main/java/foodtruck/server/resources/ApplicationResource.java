@@ -1,8 +1,5 @@
 package foodtruck.server.resources;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -12,7 +9,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.google.appengine.api.memcache.MemcacheService;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
@@ -20,6 +16,8 @@ import com.google.inject.Inject;
 import foodtruck.dao.ApplicationDAO;
 import foodtruck.model.Application;
 import foodtruck.model.ApplicationWithUsageCounts;
+import foodtruck.monitoring.Counter;
+import foodtruck.monitoring.DailyScheduleCounter;
 import foodtruck.util.RandomString;
 
 import static foodtruck.server.resources.Resources.requiresAdmin;
@@ -30,14 +28,13 @@ import static foodtruck.server.resources.Resources.requiresAdmin;
  */
 @Path("/applications") @Produces(MediaType.APPLICATION_JSON)
 public class ApplicationResource {
-  private static final Logger log = Logger.getLogger(ApplicationResource.class.getName());
   private final ApplicationDAO appDao;
-  private final MemcacheService memcacheService;
+  private final Counter counter;
 
   @Inject
-  public ApplicationResource(ApplicationDAO appDao, MemcacheService memcacheService) {
+  public ApplicationResource(ApplicationDAO appDao, @DailyScheduleCounter Counter counter) {
     this.appDao = appDao;
-    this.memcacheService = memcacheService;
+    this.counter = counter;
   }
 
   @GET
@@ -45,16 +42,7 @@ public class ApplicationResource {
     requiresAdmin();
     return Iterables.transform(appDao.findAll(), new Function<Application, ApplicationWithUsageCounts>() {
       public ApplicationWithUsageCounts apply(Application application) {
-        long count =  0;
-        try {
-          String key = "service.access.daily." + application.getKey();
-          if (memcacheService.contains(key)) {
-            count = (Long) memcacheService.get(key);
-          }
-        } catch (Exception e) {
-          log.log(Level.WARNING, e.getMessage());
-        }
-        return new ApplicationWithUsageCounts(application, count);
+        return new ApplicationWithUsageCounts(application, counter.getCount(application.getAppKey()));
       }
     });
   }
