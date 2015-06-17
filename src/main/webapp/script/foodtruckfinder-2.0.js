@@ -134,8 +134,8 @@ var FoodTruckLocator = function () {
 
   var Clock = {
     now: function () {
-      return new Date().getTime();
-//      return 1434040077;
+//      return new Date().getTime();
+      return 1434470438000;
     }
   };
 
@@ -206,9 +206,9 @@ var FoodTruckLocator = function () {
     };
 
     this.openNow = function () {
-      var now = Clock.now(), items = [], bounds = _map.getBounds();
+      var now = Clock.now(), items = [];
       $.each(self.stops, function (idx, item) {
-        if (item.stop["startMillis"] <= now && item.stop["endMillis"] > now &&  (bounds && bounds.contains(item.position))) {
+        if (item.stop["startMillis"] <= now && item.stop["endMillis"] > now) {
           items.push(item);
         }
       });
@@ -216,9 +216,9 @@ var FoodTruckLocator = function () {
     };
 
     this.openLater = function () {
-      var now = Clock.now(), items = [], bounds = _map.getBounds();
+      var now = Clock.now(), items = [];
       $.each(self.stops, function (idx, item) {
-        if (item.stop["startMillis"] > now && (bounds && bounds.contains(item.position))) {
+        if (item.stop["startMillis"] > now) {
           items.push(item);
         }
       });
@@ -379,47 +379,12 @@ var FoodTruckLocator = function () {
 
   function buildInfoWindows() {
     var location = findLocation(),
-        nowTrucks = sortByDistanceFromLocation(_trucks.openNow(), location),
-        laterTrucks = sortByDistanceFromLocation(_trucks.openLater(), location);
-    var markers = groupByStops(nowTrucks);
-    $.each(markers, function (idx, markerAndId) {
+        allTrucks = sortByDistanceFromLocation(_trucks.all(), location);
+    $.each(groupByStops(allTrucks), function (idx, markerAndId) {
       buildInfoWindow(markerAndId.marker, markerAndId.stops);
     });
   }
 
-  function updateTruckLists() {
-    var location = findLocation(),
-        nowTrucks = sortByDistanceFromLocation(_trucks.openNow(), location),
-        laterTrucks = sortByDistanceFromLocation(_trucks.openLater(), location);
-    if (nowTrucks.length == 0 && laterTrucks.length == 0) {
-      $(".trucksListHeader").css("display", "none");
-      $("#navTabs").css("display", "none");
-      $(".truckDL").empty();
-    } else {
-      $(".trucksListHeader").css("display", "block");
-      $("#navTabs").css("display", "block");
-      var markers = [];
-      buildTruckList($("#nowTrucks"), nowTrucks, markers);
-      buildTruckList($("#laterTrucks"), laterTrucks, markers);
-      $.each(markers, function (idx, markerAndId) {
-        if (markerAndId.marker.getAnimation() != null) {
-          return;
-        }
-        buildInfoWindow(markerAndId.marker, markerAndId.stops);
-        $("#" + markerAndId.id).click(function (e) {
-          e.preventDefault();
-          markerAndId.marker.setAnimation(google.maps.Animation.BOUNCE);
-          setTimeout(function () {
-            markerAndId.marker.setAnimation(null);
-          }, 3000);
-        });
-
-      });
-      if (nowTrucks.length == 0) {
-        $('a[href="#laterTrucks"]').tab('show');
-      }
-    }
-  }
 
   function updateDistanceFromCurrentLocation() {
     if (_trucks) {
@@ -471,16 +436,6 @@ var FoodTruckLocator = function () {
       e.preventDefault()
       $(this).tab('show')
     });
-  }
-
-  function displayWarningIfMarkersNotVisible() {
-    if (_trucks == null || !_trucks.hasActive()) {
-      flash("There are no food trucks on the road right now.");
-    } else if (_trucks.allVisible()) {
-      hideFlash();
-    } else {
-      flash("The result list is currently being filtered based on the zoom-level and center of the map.  To see all trucks, zoom out.", "warning")
-    }
   }
 
   function findCenter(defaultCenter) {
@@ -694,38 +649,17 @@ var FoodTruckLocator = function () {
       var loading = true, manuallyMoved = false;
       google.maps.event.addListener(_map, 'center_changed', function () {
         saveCenter(_map.getCenter());
-        displayWarningIfMarkersNotVisible();
       });
 
-      var centerMarker = new google.maps.Marker({
-        icon: "http://maps.google.com/mapfiles/arrow.png"
-      });
       if (!removeDesignatedStops) {
         _map.controls[google.maps.ControlPosition.TOP_RIGHT].push(toggleDesignatedStops());
       }
-
-      google.maps.event.addListener(_map, 'drag', function () {
-        if (loading) {
-          manuallyMoved = true;
-        }
-        centerMarker.setMap(_map);
-        centerMarker.setPosition(_map.getCenter());
-      });
-
-      google.maps.event.addListener(_map, 'dragend', function () {
-        if (loading) {
-          manuallyMoved = true;
-        }
-        centerMarker.setMap(null);
-        refreshViewData();
-      });
 
       google.maps.event.addListener(_map, 'zoom_changed', function () {
         if (loading) {
           manuallyMoved = true;
         }
         saveZoom(_map.getZoom());
-        refreshViewData();
       });
       var listener = null;
       // just want to invoke this once, for when the map first loads
@@ -736,30 +670,6 @@ var FoodTruckLocator = function () {
         }
       });
       setupGlobalEventHandlers();
-
-      if (Modernizr.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-          if (manuallyMoved) {
-            return;
-          }
-          loading = false;
-          var latLng = new google.maps.LatLng(position.coords.latitude,
-                  position.coords.longitude),
-              distance = google.maps.geometry.spherical.computeDistanceBetween(center,
-                  latLng, 3959);
-          // sanity check.  Don't pan beyond 60 miles from default center
-          if (distance < 60) {
-            saveCenter(latLng);
-            // refresh the distances
-            _map.panTo(_center);
-            refreshViewData();
-          }
-        }, function () {
-          loading = false;
-        });
-      } else {
-        loading = false;
-      }
       // reload the model every 5 minutes
       setInterval(function () {
         self.reload();
