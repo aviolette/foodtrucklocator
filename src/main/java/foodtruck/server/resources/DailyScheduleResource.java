@@ -50,7 +50,7 @@ public class DailyScheduleResource {
     this.dailyScheduleWriter = writer;
     this.memcacheService = memcacheService;
     this.dailyCounter = counter;
-    this.hourlyCounter = counter;
+    this.hourlyCounter = hourlyCounter;
   }
 
   @GET @Produces("application/json")
