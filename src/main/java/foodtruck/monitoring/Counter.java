@@ -28,7 +28,12 @@ public class Counter {
   }
 
   private long getCountWithName(String fullName) {
-    return memcacheService.contains(fullName) ? (Long)memcacheService.get(fullName) : 0L;
+    if (memcacheService.contains(fullName)) {
+      Long l = (Long)memcacheService.get(fullName);
+      return l;
+    }
+    return 0;
+//    return  ? (Long)memcacheService.get(fullName) : 0L;
   }
 
   public void increment(String suffix) {
@@ -36,10 +41,10 @@ public class Counter {
   }
 
   private void incrementWithFullName(String fullName) {
-    if (expiration != null && !memcacheService.contains(fullName)) {
+    if (!memcacheService.contains(fullName)) {
       memcacheService.put(fullName, 1L, expiration);
     } else {
-      memcacheService.increment(fullName, 1);
+      memcacheService.increment(fullName, 1L);
     }
   }
 }
