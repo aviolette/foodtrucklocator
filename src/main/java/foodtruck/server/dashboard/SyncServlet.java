@@ -90,7 +90,7 @@ public class SyncServlet extends HttpServlet {
     if (syncSchedule) {
       final DateTime from = clock.now().withHourOfDay(0).withMinuteOfHour(0);
       truckStopDAO.deleteAfter(from);
-      JSONObject dailySchedule = c.resource(config.getSyncUrl() + "/services/daily_schedule?appKey="+config.getSyncAppKey() + "&from=" + from.getMillis())
+      JSONObject dailySchedule = c.resource(config.getSyncUrl() + "/services/daily_schedule?appKey="+config.getSyncAppKey())
           .accept(MediaType.APPLICATION_JSON_TYPE).get(JSONObject.class);
 
       try {
