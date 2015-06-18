@@ -326,6 +326,38 @@ var FoodTruckLocator = function () {
     }
   }
 
+  function badgeWidget() {
+    var badgeDiv = document.createElement("div");
+    badgeDiv.index = 1;
+
+    // Setting padding to 5 px will offset the control
+    // from the edge of the map
+    badgeDiv.style.padding = '20px';
+
+    // Set CSS for the control border
+    var controlUI = document.createElement('div');
+    controlUI.style.backgroundColor = 'white';
+    controlUI.style.borderStyle = 'none';
+    controlUI.style.borderWidth = '0px';
+    controlUI.style.cursor = 'pointer';
+    controlUI.style.textAlign = 'center';
+    controlUI.title = '';
+    badgeDiv.appendChild(controlUI);
+
+    // Set CSS for the control interior
+    var controlText = document.createElement('div');
+    controlText.style.fontFamily = 'Arial,sans-serif';
+    controlText.style.fontSize = '12px';
+    controlText.style.paddingLeft = '4px';
+    controlText.style.paddingRight = '4px';
+    var checked = _showFutureStops ? " checked" : "";
+    controlText.innerHTML = '<b><a href="https://play.google.com/store/apps/details?id=net.andrewviolette.truckz"><img src="/img/en_generic_rgb_wo_45.png" title="Google Play Button"/></a> <a href="https://itunes.apple.com/us/app/chicago-food-truck-finder/id1002801516"><img height="45px" src="/img/Download_on_the_App_Store_Badge_US-UK_135x40.svg"/></a></b>';
+    controlUI.appendChild(controlText);
+
+    return badgeDiv;
+
+  }
+
   function openLaterWidget() {
     var toggleDiv = document.createElement("div");
     toggleDiv.index = 1;
@@ -422,6 +454,7 @@ var FoodTruckLocator = function () {
 
       _showFutureStops = _trucks.openNow().length == 0;
 
+      _map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(badgeWidget());
       _map.controls[google.maps.ControlPosition.TOP_RIGHT].push(openLaterWidget());
 
       google.maps.event.addListener(_map, 'zoom_changed', function () {
