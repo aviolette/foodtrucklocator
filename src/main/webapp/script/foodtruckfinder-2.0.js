@@ -347,11 +347,12 @@ var FoodTruckLocator = function () {
     controlText.style.fontSize = '12px';
     controlText.style.paddingLeft = '4px';
     controlText.style.paddingRight = '4px';
-    controlText.innerHTML = '<b><input type="checkbox" id="futureStopsCB">&nbsp;<label for="futureStopsCB">Show future stops</label></b>';
+    var checked = _showFutureStops ? " checked" : "";
+    controlText.innerHTML = '<b><input type="checkbox" id="futureStopsCB"' + checked +
+        '>&nbsp;<label for="futureStopsCB">Show future stops</label></b>';
     controlUI.appendChild(controlText);
 
     google.maps.event.addDomListener(controlUI, 'click', function () {
-      console.log("HELLO");
       _showFutureStops = $("#futureStopsCB").is(":checked");
       refreshViewData();
     });
@@ -415,6 +416,8 @@ var FoodTruckLocator = function () {
       google.maps.event.addListener(_map, 'center_changed', function () {
         saveCenter(_map.getCenter());
       });
+
+      _showFutureStops = _trucks.openNow().length == 0;
 
       _map.controls[google.maps.ControlPosition.TOP_RIGHT].push(openLaterWidget());
 
