@@ -227,6 +227,7 @@ var FoodTruckLocator = function () {
     $.each(_showFutureStops ? _trucks.fromNowOn() : _trucks.openNow(), function(idx, stop) {
       _markers.add(stop);
     });
+    _map.fitBounds(_markers.bounds);
   }
 
   function resize() {
