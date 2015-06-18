@@ -1,6 +1,6 @@
 <%@ include file="header.jsp" %>
 
-<div class="row" id="sidebar">
+<div class="row" id="main_content">
     <div id="map_wrapper">
         <div class="section" id="map_canvas"></div>
     </div>

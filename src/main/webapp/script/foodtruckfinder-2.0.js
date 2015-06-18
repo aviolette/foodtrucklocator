@@ -230,7 +230,9 @@ var FoodTruckLocator = function () {
   }
 
   function resize() {
-    $("#map_canvas").height($(window).height() - $("#topBar").height() - 20);
+    var topHeight = $("#topBar").height();
+    $("#map_canvas").height($(window).height() - topHeight);
+    $("#main_content").css("margin-top", topHeight + "px");
   }
 
   function setupGlobalEventHandlers() {
