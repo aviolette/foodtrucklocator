@@ -709,6 +709,15 @@ var FoodTruckLocator = function () {
         _mobile = true;
         $("body").css("background", "white");
         $("#map_wrapper").css("display", "none");
+
+        if (navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/iPad/i) ) {
+          $("#iphoneBadge").removeClass("hidden");
+        } else {
+          $("#androidBadge").removeClass("hidden");
+        }
+        $("#appbadges").removeClass("hidden");
+
+
         if (Modernizr.geolocation) {
           self.setModel(modelPayload);
           flash("Looking up location...");

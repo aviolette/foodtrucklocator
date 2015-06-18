@@ -4,6 +4,10 @@
   }
 }
 
+#appbadges {
+  padding-bottom: 10px;
+}
+
 thead tr {
   background-color: lightgrey;
   border-color: lightgrey;

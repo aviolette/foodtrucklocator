@@ -2,6 +2,10 @@
 
 <div class="row" id="sidebar">
   <div class="col-md-4" id="listContainer">
+    <div id="appbadges" class="hidden">
+      <a id="androidBadge" class="hidden" href="https://play.google.com/store/apps/details?id=net.andrewviolette.truckz"><img src="/img/en_generic_rgb_wo_45.png" title="Google Play Button"/></a>
+      <a id="iphoneBadge" class="hidden" href="https://itunes.apple.com/us/app/chicago-food-truck-finder/id1002801516"><img height="45px" src="/img/Download_on_the_App_Store_Badge_US-UK_135x40.svg"/></a>
+    </div>
     <div id="motd" class="alert alert-warning alert-dismissable hidden">
       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
       <span id="motd-message"></span>
@@ -31,7 +35,7 @@
 <%@include file="include/core_js.jsp" %>
 <script type="text/javascript"
         src="http://maps.google.com/maps/api/js?sensor=false&libraries=geometry"></script>
-<script type="text/javascript" src="script/foodtruckfinder.js"></script>
+<script type="text/javascript" src="script/foodtruckfinder-1.1.js"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     FoodTruckLocator.run("${mode}", new google.maps.LatLng(${center.latitude}, ${center.longitude}),
