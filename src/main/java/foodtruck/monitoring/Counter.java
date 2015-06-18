@@ -29,11 +29,9 @@ public class Counter {
 
   private long getCountWithName(String fullName) {
     if (memcacheService.contains(fullName)) {
-      Long l = (Long)memcacheService.get(fullName);
-      return l;
+      return (Long)memcacheService.get(fullName);
     }
     return 0;
-//    return  ? (Long)memcacheService.get(fullName) : 0L;
   }
 
   public void increment(String suffix) {
