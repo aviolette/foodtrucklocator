@@ -346,12 +346,17 @@ var FoodTruckLocator = function () {
 
     // Set CSS for the control interior
     var controlText = document.createElement('div');
-    controlText.style.fontFamily = 'Arial,sans-serif';
-    controlText.style.fontSize = '12px';
-    controlText.style.paddingLeft = '4px';
-    controlText.style.paddingRight = '4px';
-    var checked = _showFutureStops ? " checked" : "";
-    controlText.innerHTML = '<b><a href="https://play.google.com/store/apps/details?id=net.andrewviolette.truckz"><img src="/img/en_generic_rgb_wo_45.png" title="Google Play Button"/></a> <a href="https://itunes.apple.com/us/app/chicago-food-truck-finder/id1002801516"><img height="45px" src="/img/Download_on_the_App_Store_Badge_US-UK_135x40.svg"/></a></b>';
+    var androidBadge = '<a href="https://play.google.com/store/apps/details?id=net.andrewviolette.truckz"><img src="/img/en_generic_rgb_wo_45.png" title="Google Play Button"/></a>';
+    var iphoneBadge = '<a href="https://itunes.apple.com/us/app/chicago-food-truck-finder/id1002801516"><img height="45px" src="/img/Download_on_the_App_Store_Badge_US-UK_135x40.svg"/></a>';
+    if (Modernizr.touch) {
+      if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
+        controlText.innerHTML  = iphoneBadge;
+      } else {
+        controlText.innerHTML  = androidBadge;
+      }
+    } else {
+      controlText.innerHTML  = androidBadge + " " + iphoneBadge;
+    }
     controlUI.appendChild(controlText);
 
     return badgeDiv;
