@@ -292,14 +292,15 @@ var FoodTruckLocator = function () {
   function buildTruckList($truckList, stops, markers) {
     $truckList.empty();
     var $items = $("<ul class='media-list'></ul>"), lastIcon = null, now = Clock.now(),
-        $location, $div, lastMarkerGroup, lastLocation = null;
+        $location, $div, lastMarkerGroup, lastLocation = null, centerNote = _mobile ? "current location" : "map center";
     $items.appendTo($truckList);
+
     $.each(stops, function (idx, stop) {
       var $locationDescription = $("<div></div>");
       if (stop.location.url) $locationDescription.append("<div><a href='" + stop.location.url + "'>" + stop.location.url + "</a></div>");
       if (stop.location.description) $locationDescription.append("<div>" + stop.location.description + " </div>");
       if (stop.location.twitterHandle) $locationDescription.append("<div><small>Follow <a href='http://twitter.com/" + stop.location.twitterHandle + "'>@" + stop.location.twitterHandle + "</a> on twitter.</small></div>");
-      if (stop.distance) $locationDescription.append("<div>(" + stop.distance + " miles from map center)</div>");
+      if (stop.distance) $locationDescription.append("<div>(" + stop.distance + " miles from " + centerNote + ")</div>");
       if (lastLocation != stop.location.name) {
         $div = $("<div class='media-body'><h4><a href='/locations/" + stop.location.key + "'>" + formatLocation(stop.location.name) + "</a></h4></div>");
         $div.append($locationDescription);
@@ -567,7 +568,7 @@ var FoodTruckLocator = function () {
 
     // Setting padding to 5 px will offset the control
     // from the edge of the map
-    badgeDiv.style.padding = '5px';
+    badgeDiv.style.padding = '17px';
 
     // Set CSS for the control border
     var controlUI = document.createElement('div');
