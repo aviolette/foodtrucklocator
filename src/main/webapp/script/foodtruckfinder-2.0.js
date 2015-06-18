@@ -6,6 +6,7 @@ var FoodTruckLocator = function () {
       _defaultCityRegex = null,
       _defaultCityLength = 0,
       _openInfowindow = null,
+      _showFutureStops = false,
       _center = null;
 
   function refreshViewData() {
@@ -25,10 +26,6 @@ var FoodTruckLocator = function () {
     document.cookie = name + "=" + value + expires + "; path=/";
   }
 
-  function findLocation() {
-    return _center;
-  }
-
   function getCookie(name) {
     var nameEQ = name + "=";
     var ca = document.cookie.split(';');
@@ -40,49 +37,29 @@ var FoodTruckLocator = function () {
     return null;
   }
 
-  var Markers = function () {
-    var markers = {}, lastLetter = 0, color = "", locationMarkers = {};
+  function findLocation() {
+    return _center;
+  }
 
-    function buildIconURL(letter) {
-      var code = letter.charCodeAt(0);
-      var color = "";
-      if (code > 90) {
-        code = code - 26;
-        color = "_orange";
-      }
-      letter = String.fromCharCode(code);
-      return "http://www.google.com/mapfiles/marker" + color + letter + ".png"
-    }
+  var Markers = function () {
+    var markers = {};
 
     this.clear = function () {
-      color = "";
-      lastLetter = 0;
       this.bounds = new google.maps.LatLngBounds();
       $.each(markers, function (key, marker) {
         marker.setMap(null);
       });
       markers = {};
-      $.each(locationMarkers, function (key, marker) {
-        marker.setMap(null);
-      });
-      locationMarkers = {};
     };
 
     this.add = function (stop) {
       if (markers[stop.location.name] == undefined) {
-        var letterId = String.fromCharCode(65 + lastLetter), color = "";
         stop.marker = new google.maps.Marker({
           map: _map,
-          icon: buildIconURL(letterId),
+          icon: "http://www.google.com/mapfiles/marker.png",
           position: stop.position
         });
-        if (lastLetter > 25) {
-          color = "Orange";
-          letterId = String.fromCharCode(lastLetter - 26 + 65);
-        }
-        stop.markerId = "marker" + color + letterId;
         markers[stop.location.name] = stop.marker;
-        lastLetter++;
         this.bounds.extend(stop.position);
       } else {
         stop.marker = markers[stop.location.name];
@@ -132,8 +109,14 @@ var FoodTruckLocator = function () {
       return items;
     };
 
-    this.all = function () {
-      return this.stops;
+    this.fromNowOn = function() {
+      var now = Clock.now(), items = [];
+      $.each(self.stops, function (idx, item) {
+        if ((item.stop["startMillis"] <= now && item.stop["endMillis"] > now) || item.stop["startMillis"] > now) {
+          items.push(item);
+        }
+      });
+      return items;
     };
 
     this.updateDistanceFrom = function (location) {
@@ -142,20 +125,6 @@ var FoodTruckLocator = function () {
             stop.position, 3959);
         stop.distance = Math.round(distance * 100) / 100;
       });
-    };
-
-    this.allVisible = function () {
-      var bounds = _map.getBounds(), visible = true;
-      if (!bounds) {
-        return false;
-      }
-      // TODO: not efficient (looping)
-      $.each(this.stops, function (idx, stop) {
-        if (!bounds.contains(stop.position)) {
-          visible = false;
-        }
-      });
-      return visible;
     };
 
     this.hasActive = function () {
@@ -171,16 +140,6 @@ var FoodTruckLocator = function () {
       });
       return items;
     };
-
-    this.openLater = function () {
-      var now = Clock.now(), items = [];
-      $.each(self.stops, function (idx, item) {
-        if (item.stop["startMillis"] > now) {
-          items.push(item);
-        }
-      });
-      return items;
-    }
   };
 
   function formatLocation(location) {
@@ -219,20 +178,6 @@ var FoodTruckLocator = function () {
     });
   }
 
-  function buildDesignatedStopInfoWindow(marker, location) {
-    var contentString = "<div style='margin-bottom:25px' class='infoWindowContent'><h4><a href='/locations/" + location.key + "'>" +
-        location.name + "</a></h4>";
-    contentString = contentString + "</div>";
-
-    var infowindow = new google.maps.InfoWindow({
-      content: contentString
-    });
-
-    google.maps.event.addListener(marker, 'click', function () {
-      infowindow.open(_map, marker);
-    });
-  }
-
   function buildTimeRange(stop, time) {
     if (stop.startMillis < time && stop.endMillis > time) {
       return "Est. departure time: " + stop.endTime;
@@ -246,11 +191,7 @@ var FoodTruckLocator = function () {
     $.each(stops, function (idx, stop) {
       if (lastLocation != stop.location.name) {
         var foundItems = $.grep(markers, function (item) {
-          if (typeof(item.marker) == 'object') {
-            return item.marker.icon == stop.marker.icon;
-          } else {
-            return item.stops[0].location.name == stop.location.name;
-          }
+          return item.stops[0].location.name == stop.location.name;
         });
         if (foundItems.length == 0) {
           lastMarkerGroup = {marker: stop.marker, id: stop.markerId, stops: [stop]};
@@ -268,9 +209,7 @@ var FoodTruckLocator = function () {
   }
 
   function buildInfoWindows() {
-    var location = findLocation(),
-        allTrucks = sortByDistanceFromLocation(_trucks.all(), location);
-    $.each(groupByStops(allTrucks), function (idx, markerAndId) {
+    $.each(groupByStops(_showFutureStops ? _trucks.fromNowOn() : _trucks.openNow()), function (idx, markerAndId) {
       buildInfoWindow(markerAndId.marker, markerAndId.stops);
     });
   }
@@ -281,30 +220,11 @@ var FoodTruckLocator = function () {
     }
   }
 
-  function sortByDistanceFromLocation(stops, location) {
-    return stops.sort(function (a, b) {
-      if (typeof a.distance == "undefined" || a.distance == null) {
-        return 0;
-      }
-      if (a.distance > b.distance) {
-        return 1;
-      } else if (a.distance < b.distance) {
-        return -1;
-      } else {
-        return a.location.name.localeCompare(b.location.name);
-      }
-    });
-  }
-
   function updateMap() {
     _markers.clear();
     var currentLocation = findLocation();
     _markers.bounds.extend(currentLocation);
-    // TODO: we're sorting in two locations...probably shouldn't do that.
-    $.each(sortByDistanceFromLocation(_trucks.openNow(), currentLocation), function (idx, stop) {
-      _markers.add(stop);
-    });
-    $.each(sortByDistanceFromLocation(_trucks.openLater(), currentLocation), function (idx, stop) {
+    $.each(_showFutureStops ? _trucks.fromNowOn() : _trucks.openNow(), function(idx, stop) {
       _markers.add(stop);
     });
   }
@@ -403,10 +323,7 @@ var FoodTruckLocator = function () {
     }
   }
 
-  function toggleDesignatedStopDisplay() {
-  }
-
-  function toggleDesignatedStops() {
+  function openLaterWidget() {
     var toggleDiv = document.createElement("div");
     toggleDiv.index = 1;
 
@@ -430,34 +347,13 @@ var FoodTruckLocator = function () {
     controlText.style.fontSize = '12px';
     controlText.style.paddingLeft = '4px';
     controlText.style.paddingRight = '4px';
-    controlText.innerHTML = '<b><input type="checkbox" id="designatedStopsCB">&nbsp;<label for="designatedStopsCB">Show designated stops</label></b>';
+    controlText.innerHTML = '<b><input type="checkbox" id="futureStopsCB">&nbsp;<label for="futureStopsCB">Show future stops</label></b>';
     controlUI.appendChild(controlText);
 
     google.maps.event.addDomListener(controlUI, 'click', function () {
-      _showDesignated = $("#designatedStopsCB").is(":checked");
-      if (!_showDesignated || (_designatedStops && _designatedStops.length > 0)) {
-        toggleDesignatedStopDisplay();
-      } else {
-        $.ajax({
-          url: '/services/locations/designated?appKey=' + _appKey,
-          dataType: 'json',
-          cache: false,
-          error: function () {
-            try {
-              console.log("Failed to retrieve designated stops " + (new Date()));
-            } catch (e) {
-            }
-          },
-          success: function (data) {
-            try {
-              console.log("Successfully designated stops at " + (new Date()));
-            } catch (e) {
-            }
-            _designatedStops = data;
-            toggleDesignatedStopDisplay();
-          }
-        });
-      }
+      console.log("HELLO");
+      _showFutureStops = $("#futureStopsCB").is(":checked");
+      refreshViewData();
     });
     return toggleDiv;
   }
@@ -498,14 +394,13 @@ var FoodTruckLocator = function () {
     extend: function () {
       _map.fitBounds(_markers.bounds);
     },
-    run: function (mode, center, time, modelPayload, appKey, designatedStops, removeDesignatedStops, defaultCity) {
+    run: function (mode, center, time, modelPayload, appKey, defaultCity) {
       var self = this;
       var mobile = "mobile" == mode;
       _appKey = appKey;
       _defaultCityRegex = new RegExp(", " + defaultCity + "$");
       _defaultCityLength = defaultCity.length;
       _center = findCenter(center);
-      _designatedStops = designatedStops;
       resize();
       displayMessageOfTheDay(modelPayload);
       _markers = new Markers();
@@ -521,9 +416,7 @@ var FoodTruckLocator = function () {
         saveCenter(_map.getCenter());
       });
 
-      if (!removeDesignatedStops) {
-        _map.controls[google.maps.ControlPosition.TOP_RIGHT].push(toggleDesignatedStops());
-      }
+      _map.controls[google.maps.ControlPosition.TOP_RIGHT].push(openLaterWidget());
 
       google.maps.event.addListener(_map, 'zoom_changed', function () {
         if (loading) {
