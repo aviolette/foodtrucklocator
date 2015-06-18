@@ -560,6 +560,42 @@ var FoodTruckLocator = function () {
     }
   }
 
+
+  function badgeWidget() {
+    var badgeDiv = document.createElement("div");
+    badgeDiv.index = 1;
+
+    // Setting padding to 5 px will offset the control
+    // from the edge of the map
+    badgeDiv.style.padding = '5px';
+
+    // Set CSS for the control border
+    var controlUI = document.createElement('div');
+    controlUI.style.backgroundColor = 'white';
+    controlUI.style.borderStyle = 'none';
+    controlUI.style.borderWidth = '0px';
+    controlUI.style.cursor = 'pointer';
+    controlUI.style.textAlign = 'center';
+    controlUI.title = '';
+    badgeDiv.appendChild(controlUI);
+
+    // Set CSS for the control interior
+    var controlText = document.createElement('div');
+    var androidBadge = '<a href="https://play.google.com/store/apps/details?id=net.andrewviolette.truckz"><img src="/img/en_generic_rgb_wo_45.png" title="Google Play Button"/></a>';
+    var iphoneBadge = '<a href="https://itunes.apple.com/us/app/chicago-food-truck-finder/id1002801516"><img height="45px" src="/img/Download_on_the_App_Store_Badge_US-UK_135x40.svg"/></a>';
+    if (Modernizr.touch) {
+      if (navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/iPad/i) ) {
+        controlText.innerHTML  = iphoneBadge;
+      } else {
+        controlText.innerHTML  = androidBadge;
+      }
+    } else {
+      controlText.innerHTML  = androidBadge + " " + iphoneBadge;
+    }
+    controlUI.appendChild(controlText);
+    return badgeDiv;
+  }
+
   function toggleDesignatedStops() {
     var toggleDiv = document.createElement("div");
     toggleDiv.index = 1;
@@ -706,6 +742,8 @@ var FoodTruckLocator = function () {
         var centerMarker = new google.maps.Marker({
           icon: "http://maps.google.com/mapfiles/arrow.png"
         });
+
+        _map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(badgeWidget());
         if (!removeDesignatedStops) {
           _map.controls[google.maps.ControlPosition.TOP_RIGHT].push(toggleDesignatedStops());
         }
