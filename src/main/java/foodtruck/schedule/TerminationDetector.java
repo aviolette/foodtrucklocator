@@ -25,6 +25,10 @@ public class TerminationDetector {
       return tweet.getTime();
     }
 
+    if (tweetText.contains("done for the day")) {
+      return tweet.getTime();
+    }
+
     if (tweetText.contains("sold out of") || tweetText.contains("sold outta")) {
       return null;
     }

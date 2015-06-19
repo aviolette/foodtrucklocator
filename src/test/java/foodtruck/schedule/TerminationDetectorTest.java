@@ -37,6 +37,11 @@ public class TerminationDetectorTest {
   }
 
   @Test
+  public void testDoneForTheDay() {
+    assertEquals(tweetTime, detector.detect(tweetBuilder.text("#VaultVan is done for the day").build()));
+  }
+
+  @Test
   public void testFalseIfCashOrCredit() {
     assertEquals(null, detector.detect(tweetBuilder.text("Landed at 600 W Chicago - in the lot - cash or card please #ThanksForTheTwerk").build()));
   }
