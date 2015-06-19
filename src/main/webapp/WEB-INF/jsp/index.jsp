@@ -3,8 +3,8 @@
 <div class="row" id="sidebar">
   <div class="col-md-4" id="listContainer">
     <div id="appbadges" class="hidden">
-      <a id="androidBadge" class="hidden" href="https://play.google.com/store/apps/details?id=net.andrewviolette.truckz"><img src="/img/en_generic_rgb_wo_45.png" title="Google Play Button"/></a>
-      <a id="iphoneBadge" class="hidden" href="https://itunes.apple.com/us/app/chicago-food-truck-finder/id1002801516"><img height="45px" src="/img/Download_on_the_App_Store_Badge_US-UK_135x40.svg"/></a>
+      <a id="androidBadge" class="hidden" href="https://play.google.com/store/apps/details?id=net.andrewviolette.truckz" title="Chicago Food Truck Finder Android App"><img src="/img/en_generic_rgb_wo_45.png" title="Google Play Button"/></a>
+      <a id="iphoneBadge" class="hidden" href="https://itunes.apple.com/us/app/chicago-food-truck-finder/id1002801516" title="Chicago Food Truck Finder iPhone App"><img height="45px" src="/img/Download_on_the_App_Store_Badge_US-UK_135x40.svg"/></a>
     </div>
     <div id="motd" class="alert alert-warning alert-dismissable hidden">
       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
