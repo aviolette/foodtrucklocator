@@ -7,14 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="author" content="Andrew Violette, @aviolette/@chifoodtruckz on twitter"/>
   <title>${title}</title>
-  <c:choose>
-    <c:when test="${localFrameworks}">
-      <link rel="stylesheet" href="/bootstrap3.0.3/css/bootstrap.min.css"/>
-    </c:when>
-    <c:otherwise>
-      <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
-    </c:otherwise>
-  </c:choose>
+  <%@ include file="../include/bootstrap_css.jsp" %>
   <link href="/css/foodtruckfinder.css" rel="stylesheet"/>
   <link rel="stylesheet" href="/css/dashboard.css"/>
   <script src="/script/lib/modernizr-1.7.min.js"></script>

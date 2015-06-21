@@ -39,6 +39,7 @@ public class ApplicationDetailServlet extends HttpServlet {
       return;
     }
     req = new GuiceHackRequestWrapper(req, JSP_PATH);
+    req.setAttribute("localFrameworks", "true".equals(System.getProperty("use.local.frameworks", "false")));
     req.setAttribute("nav", "applications");
     req.setAttribute("application", app);
     req.getRequestDispatcher(JSP_PATH).forward(req, resp);
