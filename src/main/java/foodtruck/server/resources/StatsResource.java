@@ -20,6 +20,7 @@ import com.sun.jersey.api.JResponse;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
+import foodtruck.dao.DailyRollupDAO;
 import foodtruck.dao.FifteenMinuteRollupDAO;
 import foodtruck.dao.TimeSeriesDAO;
 import foodtruck.dao.TruckStopDAO;
@@ -29,6 +30,7 @@ import foodtruck.model.StatVector;
 import foodtruck.model.SystemStats;
 import foodtruck.model.TimeValue;
 import foodtruck.model.TruckStop;
+import foodtruck.util.DailyRollup;
 import foodtruck.util.FifteenMinuteRollup;
 import foodtruck.util.Slots;
 import foodtruck.util.WeeklyRollup;
@@ -46,20 +48,23 @@ public class StatsResource {
   private final Slots weeklyRollups;
   private final WeeklyRollupDAO weeklyRollupDAO;
   private final WeeklyLocationStatsRollupDAO weeklyLocationStatsRollupDAO;
+  private final DailyRollupDAO dailyRollupDAO;
   private final MemcacheService cache;
+  private final Slots dailyRollups;
 
   @Inject
   public StatsResource(FifteenMinuteRollupDAO fifteenMinuteRollupDAO, TruckStopDAO truckStopDAO,
-      WeeklyRollupDAO weeklyRollupDAO,
-      WeeklyLocationStatsRollupDAO weeklyLocationStatsRollupDAO,
-      @FifteenMinuteRollup Slots fifteenMinuteRollups,
-      @WeeklyRollup Slots weeklyRollups, MemcacheService cache) {
+      WeeklyRollupDAO weeklyRollupDAO, WeeklyLocationStatsRollupDAO weeklyLocationStatsRollupDAO,
+      @FifteenMinuteRollup Slots fifteenMinuteRollups, @WeeklyRollup Slots weeklyRollups, MemcacheService cache,
+      DailyRollupDAO dailyRollupDAO, @DailyRollup Slots dailyRollups) {
     this.fifteenMinuteRollupDAO = fifteenMinuteRollupDAO;
     this.truckStopDAO = truckStopDAO;
     this.fifteenMinuteRollups = fifteenMinuteRollups;
     this.weeklyRollups = weeklyRollups;
     this.weeklyRollupDAO = weeklyRollupDAO;
     this.weeklyLocationStatsRollupDAO = weeklyLocationStatsRollupDAO;
+    this.dailyRollupDAO = dailyRollupDAO;
+    this.dailyRollups = dailyRollups;
     this.cache = cache;
   }
 
@@ -67,13 +72,21 @@ public class StatsResource {
     // TODO: this is a really stupid way to do it
     if (interval == 604800000L) {
       return location ? weeklyLocationStatsRollupDAO : weeklyRollupDAO;
+    } else if (interval == 86400000) {
+      return dailyRollupDAO;
     } else {
       return fifteenMinuteRollupDAO;
     }
   }
 
   private Slots slots(long interval) {
-    return (interval == 604800000L) ? weeklyRollups : fifteenMinuteRollups;
+    if (interval == 604800000L) {
+      return weeklyRollups;
+    } else if (interval == 86400000L) {
+      return dailyRollups;
+    } else {
+      return fifteenMinuteRollups;
+    }
   }
 
   @GET @Path("counts/{statList}") @Produces(MediaType.APPLICATION_JSON)

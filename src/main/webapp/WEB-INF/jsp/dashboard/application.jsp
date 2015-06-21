@@ -39,7 +39,7 @@
     var start = new Date(end.getTime() - (30 *DAY_IN_MILLIS));
     var url = "/services/stats/counts/" + encodeURIComponent(statNames.join(",")) + "?start=" +
         start.getTime() +
-        "&end=" + end.getTime();
+        "&end=" + end.getTime() + "&interval=" + DAY_IN_MILLIS;
     new Rickshaw.Graph.Ajax({
       element: document.getElementById(containerId),
       width: 500,
