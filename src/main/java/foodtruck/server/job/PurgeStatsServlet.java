@@ -17,6 +17,8 @@ import foodtruck.dao.ApplicationDAO;
 import foodtruck.dao.DailyRollupDAO;
 import foodtruck.dao.FifteenMinuteRollupDAO;
 import foodtruck.model.Application;
+import foodtruck.monitoring.Counter;
+import foodtruck.monitoring.DailyScheduleCounter;
 import foodtruck.util.Clock;
 
 /**
@@ -31,29 +33,35 @@ public class PurgeStatsServlet extends HttpServlet {
   private MemcacheService memcache;
   private ApplicationDAO appDAO;
   private DailyRollupDAO dailyDAO;
+  private Counter dailyCounter;
 
   @Inject
   public void PurgeStatsServlet(FifteenMinuteRollupDAO dao, Clock clock, MemcacheService service, ApplicationDAO appDAO,
-      DailyRollupDAO dailyRollupDAO) {
+      DailyRollupDAO dailyRollupDAO, @DailyScheduleCounter Counter dailyCounter) {
     this.dao = dao;
     this.clock = clock;
     this.memcache = service;
     this.appDAO = appDAO;
     this.dailyDAO = dailyRollupDAO;
+    this.dailyCounter = dailyCounter;
   }
 
   @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
+    log.info("Purging stats");
     dao.deleteBefore(clock.currentDay().minusDays(2));
     // Need to roll these stats up, but for now just cancel
     for (Application application : appDAO.findAll()) {
-      String key = "service.counts.daily." + application.getKey();
+      String key = "service.count.daily." + application.getKey();
       try {
-        dailyDAO.updateCount(clock.now().minusHours(1), key, (Long)memcache.get(key));
+        long count = dailyCounter.getCount((String) application.getKey());
+        log.log(Level.INFO, "Updating {0} with {1}", new Object[] {key, count});
+        dailyDAO.updateCount(clock.now().minusHours(1), key, count);
       } catch (Exception e) {
         log.log(Level.WARNING, e.getMessage(), e);
       }
-      memcache.put(key, 0L);
+      dailyCounter.clear((String)application.getKey());
+      memcache.delete(key);
     }
   }
 }

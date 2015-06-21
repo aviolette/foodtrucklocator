@@ -9,6 +9,7 @@ import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 
 import foodtruck.server.dashboard.AddressRuleServlet;
 import foodtruck.server.dashboard.AdminDashboardServlet;
+import foodtruck.server.dashboard.ApplicationDetailServlet;
 import foodtruck.server.dashboard.ApplicationServlet;
 import foodtruck.server.dashboard.CompoundEventServlet;
 import foodtruck.server.dashboard.ConfigurationServlet;
@@ -78,6 +79,7 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/admin/notifications").with(NotificationServlet.class);
     serve("/admin/configuration").with(ConfigurationServlet.class);
     serve("/admin/applications").with(ApplicationServlet.class);
+    serve("/admin/applications/*").with(ApplicationDetailServlet.class);
     serve("/admin/lookouts").with(ObserverServlet.class);
     serve("/admin/notificationTest").with(TestNotificationServlet.class);
     serve("/admin/event_at/*").with(CompoundEventServlet.class);

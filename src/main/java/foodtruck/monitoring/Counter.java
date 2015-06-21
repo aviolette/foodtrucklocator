@@ -45,4 +45,8 @@ public class Counter {
       memcacheService.increment(fullName, 1L);
     }
   }
+
+  public void clear(String suffix) {
+    memcacheService.put(name + "." + suffix, 0L);
+  }
 }

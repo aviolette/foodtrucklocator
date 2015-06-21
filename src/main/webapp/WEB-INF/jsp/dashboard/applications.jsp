@@ -79,8 +79,8 @@
               "' class='btn'>Delete</button>&nbsp;<button id='activeBtn-" + i +"' class='btn " + btnClass +
               "' data-toggle='button' type='button'>" + btnLabel + "</button></td>";
           console.log(buttons);
-          $("#applications").append("<tr>" + buttons + "<td>" + datum["name"] + "</td><td>" + datum['appKey']
-              + "</td><td><span class='badge'>" + datum["dailyCounts"] + "</span></td><td>" + datum["description"]+"</td></tr>");
+          $("#applications").append("<tr>" + buttons + "<td>" + datum["name"] + "</td><td><a href='/admin/applications/" + datum["appKey"] + "'>" + datum['appKey']
+              + "</a></td><td><span class='badge'>" + datum["dailyCounts"] + "</span></td><td>" + datum["description"]+"</td></tr>");
           var $activeBtn = $("#activeBtn-" + i);
           if (!datum["enabled"]) {
             $activeBtn.addClass("active").addClass("btn-success");
