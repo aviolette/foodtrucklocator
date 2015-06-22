@@ -341,7 +341,7 @@ var FoodTruckLocator = function () {
       + stop.truck.iconUrl + "'/></a><div class='media-body'><a class='truckLink' href='#' truck-id='" + stop.truck.id
       + "'><strong>" + stop.truck.name + "</strong><div>"
       + buildTimeRange(stop.stop, now)
-      + "</div><div>Confidence: " + stop.stop.confidence + tooltipHtml + "</div>"
+      + "</div>"
       + "</a></div></div>"));
       if (stop.stop.notes && stop.stop.notes.length > 0) {
         $("#" + toolTipId).tooltip({
