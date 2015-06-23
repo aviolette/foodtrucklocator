@@ -200,6 +200,23 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     assertEquals(tweetTime, match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(17, 30, 0, 0), match.getStop().getEndTime());
   }
+  @Test
+  public void testMatch_lineBreak() {
+    tweetTime = tweetTime.withHourOfDay(16).withMinuteOfHour(16);
+    TruckStopMatch match =
+        tweet("Selling at 1623 N Damen - Timbuk2!\n" +
+            "\n" +
+            "Until 8\n" +
+            "\n" +
+            "#GratefulChacos\n" +
+            "\n")
+            .withTime(tweetTime)
+            .match();
+    assertNotNull(match);
+    assertEquals(Confidence.MEDIUM, match.getConfidence());
+    assertEquals(tweetTime, match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(20, 0, 0, 0), match.getStop().getEndTime());
+  }
 
   @Test @Ignore("This should work, but ignoring for now")
   public void testMatch_latetNight() {

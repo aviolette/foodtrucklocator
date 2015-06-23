@@ -377,6 +377,7 @@ public class TruckStopMatcher {
     }
     timeText = timeText.replace(":", "");
     timeText = timeText.replace(" ", "");
+    timeText = timeText.trim();
     String tmpTime = timeText;
     String suffix = null;
     if (timeText.endsWith("pm") || timeText.endsWith("am")) {
