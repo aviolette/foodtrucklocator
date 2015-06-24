@@ -8,7 +8,7 @@ function drawGraphs(statNames, containerId, interval, start, end) {
 }
 
 function drawGraph(statNames, containerId, interval, start, end) {
-  var series = [];
+  var series = [], type = "area";
   var colors = ["steelblue", "red", "green", "yellow", "orange", "cyan", "darkgray", "lawngreen", "midnightblue", "cadetblue"];
   $.each(statNames, function(i, statName) {
     series.push({name : statName, color : colors[i]});
@@ -20,6 +20,9 @@ function drawGraph(statNames, containerId, interval, start, end) {
     end = new Date();
     start = new Date(2011, 9, 1);
   }
+  if (statNames.length > 1) {
+    type = "line";
+  }
   var url = "/services/stats/counts/" + encodeURIComponent(statNames.join(",")) + "?start=" +
       start.getTime() +
       "&interval=" + interval +
@@ -28,7 +31,7 @@ function drawGraph(statNames, containerId, interval, start, end) {
     element: document.getElementById(containerId),
     width: $("#" + containerId).width() - 20,
     height: 200,
-    renderer: 'area',
+    renderer: type,
     stroke: true,
     dataURL: url,
     onData: function(d) {

@@ -1,4 +1,6 @@
 <%@include file="dashboardHeader.jsp" %>
+<link href="/css/rickshaw/rickshaw.min.css" rel="stylesheet">
+<%@include file="../include/graph_libraries.jsp" %>
 
 <div class="btn-toolbar">
   <div class="btn-group">
@@ -7,6 +9,9 @@
 </div>
 
 <h3>Applications</h3>
+
+<div id="appGraph"></div>
+
 <table class="table table-striped">
   <thead>
   <tr>
@@ -72,13 +77,14 @@
       complete : function() {
       },
       success: function(data) {
+        var graphItems = [];
         $.each(data, function(i, datum) {
           var btnClass = datum["enabled"] ? "btn-danger" : "btn-success";
           var btnLabel = datum["enabled"] ? "Disable" : "Enable";
+          graphItems.push("service.count.daily." + datum["appKey"]);
           var buttons = "<td><button id='deleteBtn-" + i +
               "' class='btn'>Delete</button>&nbsp;<button id='activeBtn-" + i +"' class='btn " + btnClass +
               "' data-toggle='button' type='button'>" + btnLabel + "</button></td>";
-          console.log(buttons);
           $("#applications").append("<tr>" + buttons + "<td>" + datum["name"] + "</td><td><a href='/admin/applications/" + datum["appKey"] + "'>" + datum['appKey']
               + "</a></td><td><span class='badge'>" + datum["dailyCounts"] + "</span></td><td>" + datum["description"]+"</td></tr>");
           var $activeBtn = $("#activeBtn-" + i);
@@ -97,6 +103,8 @@
             }
           });
         });
+        var end = new Date(), start = new Date(end.getTime() - (30 *86400000));
+        drawGraphs(graphItems, "appGraph", 86400000, start, end);
       }
     });
   }
@@ -144,7 +152,11 @@
     invokeEditDialog({name : "", description : "", enabled: true, appKey : ""});
   });
   refreshList();
-</script>
+  $(document).ready(function() {
+    var end = new Date(), start = new Date(end.getTime() - (30 *86400000));
+    drawGraphs(["service.count.daily.${application.key}"], "appGraph", 86400000, start, end);
+  });
+  </script>
 
 
 <%@include file="dashboardFooter.jsp" %>
