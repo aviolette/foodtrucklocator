@@ -1,24 +1,28 @@
 
-function drawGraphs(statNames, containerId) {
+function drawGraphs(statNames, containerId, interval, start, end) {
   if (typeof(statNames) == "string") {
-    drawGraph([statNames], containerId);
+    drawGraph([statNames], containerId, interval, start, end);
   } else {
-    drawGraph(statNames, containerId);
+    drawGraph(statNames, containerId, interval, start, end);
   }
 }
 
-function drawGraph(statNames, containerId) {
+function drawGraph(statNames, containerId, interval, start, end) {
   var series = [];
-  var colors = ["steelblue", "red", "green"];
+  var colors = ["steelblue", "red", "green", "yellow", "orange", "cyan", "darkgray", "lawngreen", "midnightblue", "cadetblue"];
   $.each(statNames, function(i, statName) {
     series.push({name : statName, color : colors[i]});
   });
-  var DAY_IN_MILLIS = 24 * 60 * 60 * 1000;
-  var end = new Date();
-  var start = new Date(2011, 9, 1);
+  if (!interval) {
+    interval = 604800000;
+  }
+  if (typeof(end) != "object") {
+    end = new Date();
+    start = new Date(2011, 9, 1);
+  }
   var url = "/services/stats/counts/" + encodeURIComponent(statNames.join(",")) + "?start=" +
       start.getTime() +
-      "&interval=604800000" +
+      "&interval=" + interval +
       "&end=" + end.getTime();
   new Rickshaw.Graph.Ajax({
     element: document.getElementById(containerId),
