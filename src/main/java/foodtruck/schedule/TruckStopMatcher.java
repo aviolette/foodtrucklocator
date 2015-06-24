@@ -200,6 +200,11 @@ public class TruckStopMatcher {
         endTime = clock.currentDay().toDateTime(new LocalTime(13, 0), clock.zone());
         notes.add("Presence of start time in tweet increased confidence.");
         confidence = confidence.up();
+      } else if (tweetText.contains("11-2")) {
+        startTime = clock.currentDay().toDateTime(new LocalTime(11, 0), clock.zone());
+        endTime = clock.currentDay().toDateTime(new LocalTime(14, 0), clock.zone());
+        notes.add("Presence of start time in tweet increased confidence.");
+        confidence = confidence.up();
       } else if (tweetText.contains("11a") && truck.getCategories().contains("Lunch")) {
         startTime = clock.currentDay().toDateTime(new LocalTime(11, 0), clock.zone());
         endTime = clock.currentDay().toDateTime(new LocalTime(13, 0), clock.zone());

@@ -272,6 +272,17 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
   @Test
+  public void testMatch_specifiedEndTime() {
+    TruckStopMatch match =
+        tweet("SAY HEY CHICAAAAGO @ CLARK & MONROE FROM 11-2PM! OUR BIRMINGHAM BLACK BARONS' PEACH COBBLER IS ON DECK TODAY!... http://t.co/4vXlQtKBqp")
+            .withTime(tweetTime.withTime(7, 0, 0, 0))
+            .match();
+    assertNotNull(match);
+    assertEquals(tweetTime.withTime(11,0,0,0), match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(14,0,0,0), match.getStop().getEndTime());
+  }
+
+  @Test
   public void testMatch_tonightHandling() {
     tweetTime = tweetTime.withHourOfDay(13).withMinuteOfHour(16);
     truck = Truck.builder().categories(ImmutableSet.of("Breakfast", "MorningSquatter", "HasNightStops")).build();
