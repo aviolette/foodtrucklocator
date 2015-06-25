@@ -38,11 +38,12 @@ function drawGraph(statNames, containerId, interval, start, end) {
       return d
     },
     onComplete: function(transport) {
-      var graph = transport.graph;
+      var graph = transport.graph, xAxis, yAxis;
       graph.renderer.unstack = true;
-      var xAxis = new Rickshaw.Graph.Axis.Time({ graph: graph });
+      new Rickshaw.Graph.HoverDetail({ graph: graph });
+      xAxis = new Rickshaw.Graph.Axis.Time({ graph: graph });
       xAxis.render();
-      var yAxis = new Rickshaw.Graph.Axis.Y({ graph: graph });
+      yAxis = new Rickshaw.Graph.Axis.Y({ graph: graph });
       yAxis.render();
     },
     series: series
