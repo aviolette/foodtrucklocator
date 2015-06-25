@@ -152,10 +152,6 @@
     invokeEditDialog({name : "", description : "", enabled: true, appKey : ""});
   });
   refreshList();
-  $(document).ready(function() {
-    var end = new Date(), start = new Date(end.getTime() - (30 *86400000));
-    drawGraphs(["service.count.daily.${application.key}"], "appGraph", 86400000, start, end);
-  });
   </script>
 
 
