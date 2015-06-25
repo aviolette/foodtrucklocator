@@ -72,7 +72,7 @@ public class TruckStopMatcher {
     this.center = center;
     this.atTimePattern = Pattern.compile("\\b(be at|ETA|open at|opening at|opens at|arrive at|there at) (" + TIME_PATTERN_STRICT + ")");
     this.endTimePattern = Pattern.compile("\\b(close at|leaving at|until|til|till) (" + TIME_PATTERN + ")");
-    this.timeRangePattern = Pattern.compile(TIME_RANGE_PATTERN);
+    this.timeRangePattern = Pattern.compile(TIME_RANGE_PATTERN, Pattern.CASE_INSENSITIVE);
     this.simpleDateParser = Pattern.compile("(\\d{1,2})/(\\d{1,2})");
     this.monPattern = Pattern.compile(
         "\\b(TUE|Tu|WED|Weds|THU|Th|FRI|SAT|Sa|SUN|Su|tuesday|wednesday|thursday|friday|saturday|sunday|tues|thurs|" +
@@ -382,6 +382,7 @@ public class TruckStopMatcher {
     }
     timeText = timeText.replace(":", "");
     timeText = timeText.replace(" ", "");
+    timeText = timeText.toLowerCase();
     timeText = timeText.trim();
     String tmpTime = timeText;
     String suffix = null;

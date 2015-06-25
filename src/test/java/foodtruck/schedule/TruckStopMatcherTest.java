@@ -923,6 +923,16 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
   @Test
+  public void testMatch_shouldMatchLunchHour4() {
+    tweetTime = new DateTime(2011, 11, 7, 7, 0, 0, 0, DateTimeZone.UTC);
+    TruckStopMatch match = tweet("\n" +
+        "Lunch today at @ShopNorthBridge for #FoodTruckWednesdays! 443 N Wabash, 11 AM-2 PM w/ @DaLobstaChicago &@GenosSteaks http://t.co/9VhW52nJg2")
+        .match();
+    assertEquals(tweetTime.withTime(11, 0, 0, 0), match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getStop().getEndTime());
+  }
+
+  @Test
   public void testMatch_lunchAnd11a() {
     truck = Truck.builder(truck)
         .categories(ImmutableSet.of("Lunch")).build();
