@@ -9,7 +9,7 @@ function drawGraphs(statNames, containerId, interval, start, end) {
 
 function drawGraph(statNames, containerId, interval, start, end) {
   var series = [], type = "area";
-  var colors = ["steelblue", "red", "green", "yellow", "orange", "cyan", "darkgray", "lawngreen", "midnightblue", "cadetblue"];
+  var colors = ["steelblue", "red", "green", "yellow", "orange", "cyan", "darkgray", "lawngreen", "midnightblue", "cadetblue", "burlywood", "chocolate", "coral", "darkmagenta", "darkolivegreen", "darkorchid", "darkviolet", "deepskyblue", "fuschia"];
   $.each(statNames, function(i, statName) {
     series.push({name : statName, color : colors[i]});
   });
