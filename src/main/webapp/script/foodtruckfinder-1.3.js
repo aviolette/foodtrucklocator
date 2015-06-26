@@ -9,6 +9,7 @@ var FoodTruckLocator = function () {
       _defaultCityLength = 0,
       _showDesignated = false,
       _designatedStops = null,
+      _openInfoWindow = null,
       _center = null;
 
   function isMobile() {
@@ -263,6 +264,10 @@ var FoodTruckLocator = function () {
     });
 
     google.maps.event.addListener(marker, 'click', function () {
+      if (_openInfoWindow) {
+        _openInfoWindow.close();
+      }
+      _openInfoWindow = infowindow;
       infowindow.open(_map, marker);
     });
   }
