@@ -169,9 +169,10 @@ runEditWidget = function(truckId, locations, categories, options) {
           var labels = (stop.locked) ? "&nbsp;<span class=\"label important\">locked</span>" :
               "";
           var crazyDuration = stop.durationMillis < 0 || stop.durationMillis > 43200000;
-          var showControls = stop.startMillis < tomorrow || stop.origin != 'VENDORCAL';;
+          var showControls = stop.startMillis < tomorrow || stop.origin != 'VENDORCAL';
+          var truckNames = stop.truckNames.replace(/\'/g, "");
           labels += (stop.fromBeacon) ? "&nbsp;<span class=\"label important\">beacon</span>" : "";
-          var truckCountLink = stop.totalTruckCount < 2 ? "" : "<span class='badge truck-info-badge' data-toggle='popover' data-content='" + stop.truckNames +"'>" + stop.totalTruckCount + "</span>";
+          var truckCountLink = stop.totalTruckCount < 2 ? "" : "<span class='badge truck-info-badge' data-toggle='popover' data-content='" + truckNames +"'>" + stop.totalTruckCount + "</span>";
           var buf = "<tr " + (crazyDuration ? " class='error'" : "") + "><td>" + stop.startDate + "</td><td>" + stop.startTime + "</td><td>" + stop.endTime +
               "</td><td>" + stop.duration + "</td><td class=\"origin\">" + stop.origin + "</td><td><a href='" + locationEndpoint + "?q=" + encodeURIComponent(stop.location.name) +
               "'>"
