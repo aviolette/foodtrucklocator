@@ -1,5 +1,7 @@
 package foodtruck.server.security;
 
+import java.security.Principal;
+
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -12,6 +14,7 @@ import com.google.inject.Provider;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
 import foodtruck.server.resources.ErrorPayload;
+import foodtruck.util.Session;
 
 /**
  * @author aviolette
@@ -20,11 +23,14 @@ import foodtruck.server.resources.ErrorPayload;
 public class SecurityCheckerImpl implements SecurityChecker {
   private final Provider<UserService> userServiceProvider;
   private final TruckDAO truckDAO;
+  private final Provider<Session> sessionProvider;
 
   @Inject
-  public SecurityCheckerImpl(Provider<UserService> userServiceProvider, TruckDAO truckDAO) {
+  public SecurityCheckerImpl(Provider<Session> sessionProvider,
+      Provider<UserService> userServiceProvider, TruckDAO truckDAO) {
     this.userServiceProvider = userServiceProvider;
     this.truckDAO = truckDAO;
+    this.sessionProvider = sessionProvider;
   }
 
   @Override
@@ -44,6 +50,17 @@ public class SecurityCheckerImpl implements SecurityChecker {
     if (userService.isUserLoggedIn() && userService.isUserAdmin()) {
       return;
     }
+    Session session = sessionProvider.get();
+    Principal principal = (Principal) session.getProperty("principal");
+    if (principal != null) {
+      // twitter user
+      for (Truck truck : truckDAO.findByTwitterId(principal.getName())) {
+        if (truck.getId().equals(truckId)) {
+          return;
+        }
+      }
+    }
+
     if (userService.isUserLoggedIn()) {
       User user = userService.getCurrentUser();
       for (Truck truck : truckDAO.findByBeaconnaiseEmail(user.getEmail().toLowerCase())) {

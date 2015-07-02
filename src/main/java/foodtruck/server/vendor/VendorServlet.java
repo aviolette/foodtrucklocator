@@ -1,4 +1,4 @@
-package foodtruck.server;
+package foodtruck.server.vendor;
 
 import java.io.IOException;
 import java.util.List;
@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import org.codehaus.jettison.json.JSONArray;
@@ -19,6 +20,7 @@ import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
+import foodtruck.util.Session;
 
 /**
  * @author aviolette
@@ -30,8 +32,8 @@ public class VendorServlet extends VendorServletSupport {
   private final LocationDAO locationDAO;
 
   @Inject
-  public VendorServlet(TruckDAO dao, LocationDAO locationDAO) {
-    super(dao);
+  public VendorServlet(TruckDAO dao, LocationDAO locationDAO, Provider<Session> sessionProvider) {
+    super(dao, sessionProvider);
     this.locationDAO = locationDAO;
   }
 

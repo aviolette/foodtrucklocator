@@ -1,4 +1,4 @@
-package foodtruck.server;
+package foodtruck.server.vendor;
 
 import java.io.IOException;
 
@@ -12,10 +12,13 @@ import com.google.common.base.Strings;
 import com.google.common.escape.Escaper;
 import com.google.common.html.HtmlEscapers;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
+import foodtruck.server.GuiceHackRequestWrapper;
+import foodtruck.util.Session;
 
 /**
  * @author aviolette
@@ -26,8 +29,8 @@ public class VendorSettingsServlet extends VendorServletSupport {
   private static final String JSP = "/WEB-INF/jsp/vendor/vendorSettings.jsp";
 
   @Inject
-  protected VendorSettingsServlet(TruckDAO dao) {
-    super(dao);
+  protected VendorSettingsServlet(TruckDAO dao, Provider<Session> sessionProvider) {
+    super(dao, sessionProvider);
   }
 
   @Override protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable Truck truck)

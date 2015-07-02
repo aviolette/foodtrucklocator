@@ -1,4 +1,4 @@
-package foodtruck.server;
+package foodtruck.server.vendor;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -16,9 +16,11 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
+import com.google.inject.Provider;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
+import foodtruck.util.Session;
 
 /**
  * @author aviolette
@@ -28,18 +30,19 @@ public abstract class VendorServletSupport extends HttpServlet {
   private static final Logger log = Logger.getLogger(VendorServletSupport.class.getName());
   private static final String LANDING_JSP = "/WEB-INF/jsp/vendor/index.jsp";
   protected final TruckDAO truckDAO;
+  protected final Provider<Session> sessionProvider;
 
-  protected VendorServletSupport(TruckDAO dao) {
+  protected VendorServletSupport(TruckDAO dao, Provider<Session> sessionProvider) {
     truckDAO = dao;
+    this.sessionProvider = sessionProvider;
   }
 
   @Override protected final void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     req.setAttribute("localFrameworks", "true".equals(System.getProperty("use.local.frameworks", "false")));
-
     UserService userService = UserServiceFactory.getUserService();
     String thisURL = req.getRequestURI();
-    final Principal userPrincipal = req.getUserPrincipal();
+    final Principal userPrincipal = getPrincipal(req);
     if (userPrincipal == null) {
       log.info("User failed logging in");
       req.setAttribute("loginUrl", userService.createLoginURL(thisURL));
@@ -91,8 +94,13 @@ public abstract class VendorServletSupport extends HttpServlet {
   }
 
   private Set<Truck> associatedTrucks(HttpServletRequest req) {
-    if (req.getUserPrincipal() != null) {
-      return truckDAO.findByBeaconnaiseEmail(req.getUserPrincipal().getName().toLowerCase());
+    Principal principal = getPrincipal(req);
+    if (principal != null) {
+      if (principal.getName().contains("@")) {
+        return truckDAO.findByBeaconnaiseEmail(principal.getName().toLowerCase());
+      } else {
+        return ImmutableSet.copyOf(truckDAO.findByTwitterId(principal.getName()));
+      }
     }
     return ImmutableSet.of();
   }
@@ -105,5 +113,11 @@ public abstract class VendorServletSupport extends HttpServlet {
     request.setAttribute("errorTitle", title);
     request.setAttribute("errorMessage", message);
     request.getRequestDispatcher(LANDING_JSP).forward(request, response);
+  }
+
+  protected @Nullable Principal getPrincipal(HttpServletRequest request) {
+    Session session = sessionProvider.get();
+    Principal principal = (Principal)session.getProperty("principal");
+    return principal == null ? request.getUserPrincipal() : principal;
   }
 }

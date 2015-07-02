@@ -1,4 +1,4 @@
-package foodtruck.server;
+package foodtruck.server.vendor;
 
 import java.io.IOException;
 
@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import org.joda.time.Interval;
@@ -17,6 +18,7 @@ import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
+import foodtruck.util.Session;
 
 /**
  * @author aviolette
@@ -28,8 +30,9 @@ public class VendorRecacheServlet extends VendorServletSupport {
   private final Clock clock;
 
   @Inject
-  protected VendorRecacheServlet(TruckDAO dao, FoodTruckStopService foodTruckStopService, Clock clock) {
-    super(dao);
+  protected VendorRecacheServlet(TruckDAO dao, FoodTruckStopService foodTruckStopService, Clock clock,
+      Provider<Session> sessionProvider) {
+    super(dao, sessionProvider);
     this.foodTruckStopService = foodTruckStopService;
     this.clock = clock;
   }

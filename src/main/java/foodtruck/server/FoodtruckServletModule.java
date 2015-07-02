@@ -38,6 +38,13 @@ import foodtruck.server.job.UpdateLocationStats;
 import foodtruck.server.job.UpdateTruckStats;
 import foodtruck.server.migrations.ForceSaveApplication;
 import foodtruck.server.migrations.ForceSaveTruck;
+import foodtruck.server.vendor.BeaconnaiseServlet;
+import foodtruck.server.vendor.VendorCallbackServlet;
+import foodtruck.server.vendor.VendorOffTheRoadServlet;
+import foodtruck.server.vendor.VendorRecacheServlet;
+import foodtruck.server.vendor.VendorServlet;
+import foodtruck.server.vendor.VendorSettingsServlet;
+import foodtruck.server.vendor.VendorTwitterRedirectServlet;
 
 /**
  * Wires all the endpoints for the application.
@@ -89,6 +96,8 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/vendor/recache/*").with(VendorRecacheServlet.class);
     serve("/vendor/offtheroad/*").with(VendorOffTheRoadServlet.class);
     serve("/vendor/settings/*").with(VendorSettingsServlet.class);
+    serve("/vendor/twitter").with(VendorTwitterRedirectServlet.class);
+    serve("/vendor/callback").with(VendorCallbackServlet.class);
 
     // Front-page endpoints
     serve("/weekly-schedule").with(WeeklyScheduleServlet.class);
