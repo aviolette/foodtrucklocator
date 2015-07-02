@@ -49,7 +49,7 @@ public abstract class VendorServletSupport extends HttpServlet {
       req.getRequestDispatcher(LANDING_JSP).forward(req,resp);
       return;
     }
-    Set<Truck> trucks = associatedTrucks(req);
+    Set<Truck> trucks = associatedTrucks(userPrincipal);
     if (trucks.isEmpty()) {
       String logoutUrl = userService.createLogoutURL(thisURL);
       String principal = userPrincipal.getName();
@@ -71,11 +71,12 @@ public abstract class VendorServletSupport extends HttpServlet {
 
   @Override protected final void doPost(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-    if (req.getUserPrincipal() == null) {
+    Principal principal = getPrincipal(req);
+    if (principal == null) {
       resp.setStatus(401);
       return;
     }
-    Set<Truck> trucks = associatedTrucks(req);
+    Set<Truck> trucks = associatedTrucks(principal);
     if (trucks.isEmpty()) {
       log.info("Sent 401 on post because user didn't belong to any trucks");
       resp.setStatus(401);
@@ -93,8 +94,7 @@ public abstract class VendorServletSupport extends HttpServlet {
     // TODO: default does nothing
   }
 
-  private Set<Truck> associatedTrucks(HttpServletRequest req) {
-    Principal principal = getPrincipal(req);
+  private Set<Truck> associatedTrucks(Principal principal) {
     if (principal != null) {
       if (principal.getName().contains("@")) {
         return truckDAO.findByBeaconnaiseEmail(principal.getName().toLowerCase());

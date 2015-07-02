@@ -1,6 +1,7 @@
 package foodtruck.server.resources;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,8 +20,9 @@ import com.google.appengine.api.capabilities.CapabilitiesService;
 import com.google.appengine.api.capabilities.CapabilitiesServiceFactory;
 import com.google.appengine.api.capabilities.Capability;
 import com.google.appengine.api.capabilities.CapabilityStatus;
-import com.google.appengine.api.users.UserServiceFactory;
+import com.google.appengine.api.users.UserService;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import org.joda.time.DateTime;
 
@@ -29,6 +31,7 @@ import foodtruck.model.TruckStopWithCounts;
 import foodtruck.server.security.SecurityChecker;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
+import foodtruck.util.Session;
 
 
 /**
@@ -43,12 +46,17 @@ public class TruckStopResource {
   private final FoodTruckStopService foodTruckService;
   private final Clock clock;
   private final SecurityChecker checker;
+  private final Provider<UserService> userServiceProvider;
+  private final Provider<Session> sessionProvider;
 
   @Inject
-  public TruckStopResource(FoodTruckStopService service, Clock clock, SecurityChecker checker) {
+  public TruckStopResource(FoodTruckStopService service, Clock clock, SecurityChecker checker,
+      Provider<UserService> userServiceProvider, Provider<Session> sessionProvider) {
     this.foodTruckService = service;
     this.clock = clock;
     this.checker = checker;
+    this.userServiceProvider = userServiceProvider;
+    this.sessionProvider = sessionProvider;
   }
 
   @DELETE
@@ -74,7 +82,10 @@ public class TruckStopResource {
         CapabilitiesServiceFactory.getCapabilitiesService();
     CapabilityStatus status = service.getStatus(Capability.DATASTORE_WRITE).getStatus();
     log.log(Level.INFO, "Data store: {0}", status);
-    foodTruckService.update(truckStop, UserServiceFactory.getUserService().getCurrentUser().getEmail());
+    UserService userService = userServiceProvider.get();
+    Principal principal = (Principal) sessionProvider.get().getProperty("principal");
+    String whom = (principal != null) ? principal.getName() : userService.getCurrentUser().getEmail();
+    foodTruckService.update(truckStop, whom);
   }
 
   @GET
