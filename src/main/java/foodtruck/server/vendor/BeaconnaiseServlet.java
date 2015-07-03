@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.users.UserService;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -24,8 +25,8 @@ public class BeaconnaiseServlet extends VendorServletSupport {
   private static final String JSP = "/WEB-INF/jsp/vendor/beaconnaise.jsp";
 
   @Inject
-  public BeaconnaiseServlet(TruckDAO truckDAO, Provider<Session> sessionProvider) {
-    super(truckDAO, sessionProvider);
+  public BeaconnaiseServlet(TruckDAO truckDAO, Provider<Session> sessionProvider, UserService userService) {
+    super(truckDAO, sessionProvider, userService);
   }
 
   @Override protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable Truck truck)

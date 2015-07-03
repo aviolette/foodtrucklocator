@@ -37,12 +37,16 @@
         <a class="navbar-brand" href="/">CFTF Vendor Dashboard</a>
       </div>
       <div class="collapse navbar-collapse">
-
-        <ul class="nav navbar-nav">
-          <li <c:if test="${tab == 'vendorhome'}"> class="active"</c:if>><a href="/vendor">Home</a></li>
-          <li <c:if test="${tab == 'beaconnaise'}"> class="active"</c:if>><a href="/vendor/beaconnaise">Beaconnaise</a></li>
-          <li <c:if test="${tab == 'trucksettings'}"> class="active"</c:if>><a href="/vendor/settings/${truck.id}">Settings</a></li>
-        </ul>
+        <c:if test="${!empty(logoutUrl)}">
+          <ul class="nav navbar-nav">
+            <li <c:if test="${tab == 'vendorhome'}"> class="active"</c:if>><a href="/vendor">Home</a></li>
+<%--            <li <c:if test="${tab == 'beaconnaise'}"> class="active"</c:if>><a href="/vendor/beaconnaise">Beaconnaise</a></li> --%>
+            <li <c:if test="${tab == 'trucksettings'}"> class="active"</c:if>><a href="/vendor/settings/${truck.id}">Settings</a></li>
+          </ul>
+          <ul class="nav navbar-nav pull-right">
+            <li><a href="${logoutUrl}">Logout</a></li>
+          </ul>
+        </c:if>
       </div>
     </div>
   </div>

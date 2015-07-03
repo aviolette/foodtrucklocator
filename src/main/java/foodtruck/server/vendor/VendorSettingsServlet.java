@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.users.UserService;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.escape.Escaper;
@@ -29,8 +30,8 @@ public class VendorSettingsServlet extends VendorServletSupport {
   private static final String JSP = "/WEB-INF/jsp/vendor/vendorSettings.jsp";
 
   @Inject
-  protected VendorSettingsServlet(TruckDAO dao, Provider<Session> sessionProvider) {
-    super(dao, sessionProvider);
+  protected VendorSettingsServlet(TruckDAO dao, Provider<Session> sessionProvider, UserService userService) {
+    super(dao, sessionProvider, userService);
   }
 
   @Override protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable Truck truck)

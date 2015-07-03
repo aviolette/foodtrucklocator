@@ -27,13 +27,17 @@ import org.joda.time.format.DateTimeFormatter;
 @RequestScoped
 public class Session {
   private final MemcacheService cache;
+  private final HttpServletResponse response;
   private String sessionKey;
+  private DateTimeFormatter formatter;
 
   @Inject
   public Session(HttpServletRequest request, HttpServletResponse response, MemcacheService cache,
       SessionIdentifier sessionIdentifier, Clock clock, @HttpHeaderFormat DateTimeFormatter formatter) {
     this.cache = cache;
     this.sessionKey = getSessionCookie(request);
+    this.formatter = formatter;
+    this.response = response;
     if (sessionKey == null) {
       sessionKey = sessionIdentifier.nextSessionId();
       DateTime tomorrow = clock.now().plusDays(1);
@@ -84,5 +88,13 @@ public class Session {
       contents.remove(name);
       cache.put(fullSessionKey(), contents);
     }
+  }
+
+  public void invalidate() {
+    cache.delete(fullSessionKey());
+    DateTime past= new DateTime(0);
+    response.setHeader(HttpHeaders.SET_COOKIE, "session=deleted; Expires=" + formatter.print(past) +
+        "; Path=/");
+
   }
 }

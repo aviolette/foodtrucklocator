@@ -40,6 +40,7 @@ import foodtruck.server.migrations.ForceSaveApplication;
 import foodtruck.server.migrations.ForceSaveTruck;
 import foodtruck.server.vendor.BeaconnaiseServlet;
 import foodtruck.server.vendor.VendorCallbackServlet;
+import foodtruck.server.vendor.VendorLogoutServlet;
 import foodtruck.server.vendor.VendorOffTheRoadServlet;
 import foodtruck.server.vendor.VendorRecacheServlet;
 import foodtruck.server.vendor.VendorServlet;
@@ -98,6 +99,7 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/vendor/settings/*").with(VendorSettingsServlet.class);
     serve("/vendor/twitter").with(VendorTwitterRedirectServlet.class);
     serve("/vendor/callback").with(VendorCallbackServlet.class);
+    serve("/vendor/logout").with(VendorLogoutServlet.class);
 
     // Front-page endpoints
     serve("/weekly-schedule").with(WeeklyScheduleServlet.class);

@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.users.UserService;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
@@ -32,8 +33,9 @@ public class VendorServlet extends VendorServletSupport {
   private final LocationDAO locationDAO;
 
   @Inject
-  public VendorServlet(TruckDAO dao, LocationDAO locationDAO, Provider<Session> sessionProvider) {
-    super(dao, sessionProvider);
+  public VendorServlet(TruckDAO dao, LocationDAO locationDAO, Provider<Session> sessionProvider,
+      UserService userService) {
+    super(dao, sessionProvider, userService);
     this.locationDAO = locationDAO;
   }
 

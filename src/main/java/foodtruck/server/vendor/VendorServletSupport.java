@@ -13,13 +13,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.inject.Provider;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
+import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.util.Session;
 
 /**
@@ -31,24 +31,32 @@ public abstract class VendorServletSupport extends HttpServlet {
   private static final String LANDING_JSP = "/WEB-INF/jsp/vendor/index.jsp";
   protected final TruckDAO truckDAO;
   protected final Provider<Session> sessionProvider;
+  private final UserService userService;
 
-  protected VendorServletSupport(TruckDAO dao, Provider<Session> sessionProvider) {
+  protected VendorServletSupport(TruckDAO dao, Provider<Session> sessionProvider, UserService userService) {
     truckDAO = dao;
     this.sessionProvider = sessionProvider;
+    this.userService = userService;
   }
 
   @Override protected final void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     req.setAttribute("localFrameworks", "true".equals(System.getProperty("use.local.frameworks", "false")));
-    UserService userService = UserServiceFactory.getUserService();
-    String thisURL = req.getRequestURI();
     final Principal userPrincipal = getPrincipal(req);
+    String thisURL = req.getRequestURI();
     if (userPrincipal == null) {
       log.info("User failed logging in");
-      req.setAttribute("loginUrl", userService.createLoginURL(thisURL));
-      req.getRequestDispatcher(LANDING_JSP).forward(req,resp);
+      if (thisURL.equals("/vendor")) {
+        req = new GuiceHackRequestWrapper(req, LANDING_JSP);
+        req.setAttribute("loginUrl", userService.createLoginURL("/vendor"));
+        req.getRequestDispatcher(LANDING_JSP).forward(req,resp);
+      } else {
+        resp.sendRedirect("/vendor");
+      }
       return;
     }
+    req.setAttribute("logoutUrl", getLogoutUrl(userPrincipal));
+
     Set<Truck> trucks = associatedTrucks(userPrincipal);
     if (trucks.isEmpty()) {
       String logoutUrl = userService.createLogoutURL(thisURL);
@@ -68,6 +76,15 @@ public abstract class VendorServletSupport extends HttpServlet {
         // goto truck selection page
     }
   }
+
+  private String getLogoutUrl(Principal userPrincipal) {
+    if (isIdentifiedByEmail(userPrincipal)) {
+      return userService.createLogoutURL("/vendor");
+    } else {
+      return "/vendor/logout";
+    }
+  }
+
 
   @Override protected final void doPost(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
@@ -96,13 +113,17 @@ public abstract class VendorServletSupport extends HttpServlet {
 
   private Set<Truck> associatedTrucks(Principal principal) {
     if (principal != null) {
-      if (principal.getName().contains("@")) {
+      if (isIdentifiedByEmail(principal)) {
         return truckDAO.findByBeaconnaiseEmail(principal.getName().toLowerCase());
       } else {
         return ImmutableSet.copyOf(truckDAO.findByTwitterId(principal.getName()));
       }
     }
     return ImmutableSet.of();
+  }
+
+  private boolean isIdentifiedByEmail(Principal principal) {
+    return principal.getName().contains("@");
   }
 
   protected abstract void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable Truck truck)

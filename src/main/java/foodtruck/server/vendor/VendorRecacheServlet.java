@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.users.UserService;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -31,8 +32,8 @@ public class VendorRecacheServlet extends VendorServletSupport {
 
   @Inject
   protected VendorRecacheServlet(TruckDAO dao, FoodTruckStopService foodTruckStopService, Clock clock,
-      Provider<Session> sessionProvider) {
-    super(dao, sessionProvider);
+      Provider<Session> sessionProvider, UserService userService) {
+    super(dao, sessionProvider, userService);
     this.foodTruckStopService = foodTruckStopService;
     this.clock = clock;
   }
