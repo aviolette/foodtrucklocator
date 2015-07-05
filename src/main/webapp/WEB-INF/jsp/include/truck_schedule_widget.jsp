@@ -1,5 +1,6 @@
 <%@include file="../common.jsp" %>
 <h2 id="truck-widget-header">Schedule</h2>
+<p>It may take up to <em>8 minutes</em> before the changes made here are reflected on the website.</p>
 <table class="table table-striped">
     <thead>
     <tr>

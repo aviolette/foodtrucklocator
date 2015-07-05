@@ -39,10 +39,7 @@
           $("#flash").html(resp.responseText);
         },
         success : function() {
-          $("#flash").css("display", "block");
-          $("#flash").removeClass("alert-error");
-          $("#flash").addClass("alert-info");
-          $("#flash").html("Successfully saved");
+          location.href = "/vendor";
         }
       });
     });

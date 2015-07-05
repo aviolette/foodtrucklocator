@@ -8,24 +8,43 @@ td.origin {
 <h1>${truck.name}</h1>
 <div class="row">
   <div class="col-md-3">
-
+    <img src="${truck.previewIcon}"/>
   </div>
-  <div class="col-md-9">
-    <button type="button" class="btn btn-default" aria-label="Edit">
+  <div class="col-md-4">
+    <a type="button" class="btn btn-default" aria-label="Edit" href="/vendor/settings/${truck.id}">
       <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-    </button>
+    </a>
 
     <dl>
       <dt>Description</dt>
       <dd>${truck.description}</dd>
       <dt>Website</dt>
-
+      <dd>${truck.url}</dd>
+      <dt>Phone</dt>
+      <dd>${truck.phone}</dd>
+      <dt>Email</dt>
+      <dd>${truck.email}</dd>
     </dl>
+  </div>
+  <div class="col-md-4">
+    <c:if test="${!empty(truck.facebook)}"><a target="_blank" href="http://facebook.com${truck.facebook}"><img
+        alt="Facebook" src="http://storage.googleapis.com/ftf_static/img/facebook32x32.png"></a></c:if>
+    <c:if test="${!empty(truck.twitterHandle)}"><a target="_blank"
+                                                   href="http://twitter.com/${truck.twitterHandle}"><img
+        alt="@${truck.twitterHandle} on twitter" src="http://storage.googleapis.com/ftf_static/img/twitter32x32.png"></a></c:if>
+    <c:if test="${!empty(truck.foursquareUrl)}"><a target="_blank"
+                                                   href="http://foursquare.com/venue/${truck.foursquareUrl}"><img
+        alt="Check in on foursquare" src="http://storage.googleapis.com/ftf_static/img/foursquare32x32.png"></a></c:if>
+    <c:if test="${!empty(truck.instagramId)}"><a target="_blank"
+                                                 href="http://instagram.com/${truck.instagramId}"><img
+        alt="View on instagram" src="http://storage.googleapis.com/ftf_static/img/instagram32x32.png"></a></c:if>
+    <c:if test="${!empty(truck.yelpSlug)}"><a target="_blank"
+                                              href="http://yelp.com/biz/${truck.yelpSlug}"><img alt="Yelp"
+                                                                                                src="http://storage.googleapis.com/ftf_static/img/yelp32x32.png"></a></c:if>
   </div>
 </div>
 <div class="row">
   <div class="col-md-12">
-    <p>It may take up to <em>8 minutes</em> before the changes made here are reflected on the website.</p>
     <%@ include file="../include/truck_schedule_widget.jsp" %>
   </div>
 </div>
