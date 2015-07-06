@@ -1,20 +1,15 @@
 <%@ include file="header.jsp" %>
 <link href="/css/rickshaw/rickshaw.min.css" rel="stylesheet">
 
-
 <div id="content" >
-
   <c:if test="${isAdmin}">
     <a href="/admin/trucks/${truck.id}">Edit on Admin Dashboard</a>
   </c:if>
   <div class="row">
     <div class="col-md-6">
       <h1>${truck.name}</h1>
-
       <c:if test="${truck.popupVendor}"><p><span class="badge badge-info">Popup Vendor</span></p></c:if>
-
-      <p>${truck.description}</p>
-
+      <p class="lead">${truck.description}</p>
       <div>
         <c:if test="${!empty(truck.facebook)}"><a target="_blank" href="http://facebook.com${truck.facebook}"><img
             alt="Facebook" src="http://storage.googleapis.com/ftf_static/img/facebook32x32.png"></a></c:if>
