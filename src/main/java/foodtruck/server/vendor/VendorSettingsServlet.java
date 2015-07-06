@@ -52,9 +52,13 @@ public class VendorSettingsServlet extends VendorServletSupport {
         description = req.getParameter("description");
     try {
       Preconditions.checkState(!Strings.isNullOrEmpty(name), "Name cannot be unspecified");
+      url = url == null ? null : escaper.escape(url);
+      if (!Strings.isNullOrEmpty(url) && !url.startsWith("http")) {
+        url = "http://" + url;
+      }
       truck = Truck.builder(truck)
           .name(escaper.escape(name))
-          .url(url == null ? null : escaper.escape(url))
+          .url(url)
           .phone(phone == null ? null : escaper.escape(phone))
           .email(email == null ? null : escaper.escape(email))
           .description(description == null ? null : escaper.escape(description)).build();
