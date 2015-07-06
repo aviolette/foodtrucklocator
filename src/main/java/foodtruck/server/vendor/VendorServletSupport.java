@@ -49,7 +49,7 @@ public abstract class VendorServletSupport extends HttpServlet {
       log.info("User failed logging in");
       if (thisURL.equals("/vendor")) {
         req = new GuiceHackRequestWrapper(req, LANDING_JSP);
-        req.setAttribute("loginUrl", userService.createLoginURL("/vendor"));
+        req.setAttribute("loginUrl", userService.createLoginURL("/vendor?check"));
         req.getRequestDispatcher(LANDING_JSP).forward(req,resp);
       } else {
         resp.sendRedirect("/vendor");
@@ -60,6 +60,9 @@ public abstract class VendorServletSupport extends HttpServlet {
 
     Set<Truck> trucks = associatedTrucks(userPrincipal);
     if (trucks.isEmpty()) {
+      if (req.getParameter("check") == null) {
+        resp.sendRedirect("/vendor");
+      }
       String logoutUrl = userService.createLogoutURL(thisURL);
       String principal = userPrincipal.getName();
       final String message = MessageFormat
