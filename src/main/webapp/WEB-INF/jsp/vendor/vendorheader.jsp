@@ -34,10 +34,13 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="/">CFTF Vendor Dashboard</a>
+        <a class="navbar-brand" href="/vendor">Vendor Dashboard</a>
       </div>
       <div class="collapse navbar-collapse">
         <c:if test="${!empty(logoutUrl)}">
+          <ul class="nav navbar-nav">
+            <li><a href="/">Main Site &raquo;</a></li>
+          </ul>
           <ul class="nav navbar-nav pull-right">
             <li><a href="${logoutUrl}">Logout</a></li>
           </ul>
