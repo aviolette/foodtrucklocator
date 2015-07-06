@@ -17,7 +17,7 @@ td.origin {
 
     <dl>
       <dt>Description</dt>
-      <dd>${truck.description}</dd>
+      <dd><p class="lead">${truck.description}</p></dd>
       <dt>Website</dt>
       <dd><c:if test="${!empty(truck.url)}"><a href="${truck.url}">${truck.url}</a></c:if></dd>
       <dt>Phone</dt>
