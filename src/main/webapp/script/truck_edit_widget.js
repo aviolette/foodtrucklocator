@@ -9,7 +9,34 @@ runEditWidget = function(truckId, locations, categories, options) {
     locationEndpoint = '/locations';
   }
 
-  var $startTimeInput = $("#startTimeInput"), $endTimeInput = $("#endTimeInput");
+  var $startTimeInput = $("#startTimeInput"), $endTimeInput = $("#endTimeInput"), calcStartDay, calcEndDay;
+
+  function figureOutDay($input, $output) {
+    return function() {
+      var time = fromDate($input.val()), day;
+      switch (time.getDay()) {
+        case 0:
+          day = "Sunday"; break;
+        case 1:
+          day = "Monday"; break;
+        case 2:
+          day = "Tuesday"; break;
+        case 3:
+          day = "Wednesday"; break;
+        case 4:
+          day = "Thursday"; break;
+        case 5:
+          day = "Friday"; break;
+        case 6:
+          day = "Saturday"; break;
+      }
+      $output.html(day);
+    }
+  }
+  calcStartDay = figureOutDay($startTimeInput, $("#startDay"));
+  calcEndDay = figureOutDay($endTimeInput, $("#endDay"));
+  $startTimeInput.change(calcStartDay);
+  $endTimeInput.change(calcEndDay);
 
   $startTimeInput.blur(function (e) {
     var startTime = fromDate($startTimeInput.val()),
@@ -17,6 +44,7 @@ runEditWidget = function(truckId, locations, categories, options) {
     if (startTime.getTime() >= endTime.getTime()) {
       var diff = startTime.getTime() + (60 * 60 * 2000);
       $endTimeInput.val(toDate(new Date(diff)));
+      calcEndDay();
     }
   });
 
@@ -55,7 +83,9 @@ runEditWidget = function(truckId, locations, categories, options) {
 
   function populateDialog(stop) {
     $startTimeInput.val(stop.startTimeH);
+    calcStartDay();
     $endTimeInput.val( stop.endTimeH);
+    calcEndDay();
     $("#locationInput").val(stop.location.name);
     $("#lockStop").val( stop.locked);
   }

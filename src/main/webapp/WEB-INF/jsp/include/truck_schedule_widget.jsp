@@ -39,10 +39,12 @@
                     <div class="form-group" id="startTimeInputGroup">
                         <label class="control-label" for="startTimeInput">Start</label>
                         <input class="timeentry form-control" id="startTimeInput" type="datetime-local" autofocus/>
+                        <div id="startDay"></div>
                     </div>
                     <div class="form-group" id="endTimeInputGroup">
                         <label class="control-label" for="endTimeInput">End</label>
                         <input class="timeentry form-control" id="endTimeInput" type="datetime-local"/>
+                        <div id="endDay"></div>
                     </div>
                     <div class="form-group" id="locationInputGroup">
                         <label class="control-label" for="locationInput">Location</label>
