@@ -8,7 +8,7 @@ td.origin {
 <h1>${truck.name}</h1>
 <div class="row">
   <div class="col-md-3">
-    <img src="${truck.previewIcon}"/>
+    <img src="${truck.previewIcon}" width="180" height="180"/>
   </div>
   <div class="col-md-4">
     <a type="button" class="btn btn-default" aria-label="Edit" href="/vendor/settings/${truck.id}">
