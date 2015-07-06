@@ -19,7 +19,7 @@ td.origin {
       <dt>Description</dt>
       <dd>${truck.description}</dd>
       <dt>Website</dt>
-      <dd>${truck.url}</dd>
+      <dd><c:if test="${!empty(truck.url)}"><a href="${truck.url}">${truck.url}</a></c:if></dd>
       <dt>Phone</dt>
       <dd>${truck.phone}</dd>
       <dt>Email</dt>
