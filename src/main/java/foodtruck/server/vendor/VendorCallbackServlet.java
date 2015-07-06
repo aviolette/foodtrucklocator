@@ -1,6 +1,8 @@
 package foodtruck.server.vendor;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -26,6 +28,7 @@ import twitter4j.auth.RequestToken;
 
 @Singleton
 public class VendorCallbackServlet extends HttpServlet {
+  private static final Logger log = Logger.getLogger(VendorCallbackServlet.class.getName());
   private final Provider<Session> sessionProvider;
 
   @Inject
@@ -42,6 +45,7 @@ public class VendorCallbackServlet extends HttpServlet {
     try {
       AccessToken token = twitter.getOAuthAccessToken(requestToken, verifier);
       String screenName = token.getScreenName();
+      log.log(Level.INFO, "User {0} logged on via twitter", screenName);
       session.setProperty("principal", new SimplePrincipal(screenName));
       session.removeProperty("requestToken");
       session.removeProperty("twitter");

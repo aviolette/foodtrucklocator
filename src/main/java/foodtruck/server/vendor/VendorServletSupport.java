@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.text.MessageFormat;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
@@ -63,17 +64,18 @@ public abstract class VendorServletSupport extends HttpServlet {
       String principal = userPrincipal.getName();
       final String message = MessageFormat
           .format("The user <strong>{0}</strong> is not associated with any food trucks.  You can " +
-              "<a href=\"{1}\">Click Here</a> to sign in as a different user", principal,
+                  "<a href=\"{1}\">Click Here</a> to sign in as a different user", principal,
               logoutUrl);
       vendorError("Invalid User", message, req, resp);
       log.info("Sent this message to the user" + message);
     } else if (trucks.size() == 1) {
-        Truck truck = Iterables.getFirst(trucks, null);
-        req.setAttribute("truck", truck);
-        dispatchGet(req, resp, truck);
+      Truck truck = Iterables.getFirst(trucks, null);
+      req.setAttribute("truck", truck);
+      log.log(Level.INFO, "User {0}", userPrincipal.getName());
+      dispatchGet(req, resp, truck);
     } else {
-        // TODO: implement
-        // goto truck selection page
+      // TODO: implement
+      // goto truck selection page
     }
   }
 
@@ -100,6 +102,7 @@ public abstract class VendorServletSupport extends HttpServlet {
     } else if (trucks.size() == 1) {
       Truck truck = Iterables.getFirst(trucks, null);
       req.setAttribute("truck", truck);
+      log.log(Level.INFO, "User {0}", principal.getName());
       dispatchPost(req, resp, truck.getId());
     } else {
       // TODO: implement
