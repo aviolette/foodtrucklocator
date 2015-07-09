@@ -1,6 +1,8 @@
 package foodtruck.server.vendor;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 import javax.servlet.ServletException;
@@ -27,6 +29,7 @@ import foodtruck.util.Session;
  */
 @Singleton
 public class VendorSettingsServlet extends VendorServletSupport {
+  private static final Logger log = Logger.getLogger(VendorSettingsServlet.class.getName());
   private static final String JSP = "/WEB-INF/jsp/vendor/vendorSettings.jsp";
 
   @Inject
@@ -62,9 +65,11 @@ public class VendorSettingsServlet extends VendorServletSupport {
           .phone(phone == null ? null : escaper.escape(phone))
           .email(email == null ? null : escaper.escape(email))
           .description(description == null ? null : escaper.escape(description)).build();
+      log.log(Level.INFO, "Saving truck {0}", truck);
       truckDAO.save(truck);
       req.setAttribute("flash", "Successfully saved");
     } catch (Exception e) {
+      log.log(Level.SEVERE, e.getMessage(), e);
       resp.setStatus(400);
       resp.getWriter().println(e.getMessage());
     }
