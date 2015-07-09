@@ -56,22 +56,24 @@ public abstract class VendorServletSupport extends HttpServlet {
       }
       return;
     }
-    req.setAttribute("logoutUrl", getLogoutUrl(userPrincipal));
-
     Set<Truck> trucks = associatedTrucks(userPrincipal);
     if (trucks.isEmpty()) {
-      if (req.getParameter("check") == null) {
-        resp.sendRedirect("/vendor");
+      req = new GuiceHackRequestWrapper(req, LANDING_JSP);
+      Session session = sessionProvider.get();
+      session.invalidate();
+      if (thisURL.equals("/vendor") && (req.getParameter("check") != null || !isIdentifiedByEmail(userPrincipal))) {
+        String logoutUrl = userService.createLogoutURL(thisURL);
+        String principal = userPrincipal.getName();
+        final String message = MessageFormat
+            .format("The user <strong>{0}</strong> is not associated with any food trucks.", principal, logoutUrl);
+        vendorError("Invalid User", message, req, resp);
+        log.info("Sent this message to the user" + message);
+      } else {
+        req.setAttribute("loginUrl", userService.createLoginURL("/vendor?check"));
+        req.getRequestDispatcher(LANDING_JSP).forward(req,resp);
       }
-      String logoutUrl = userService.createLogoutURL(thisURL);
-      String principal = userPrincipal.getName();
-      final String message = MessageFormat
-          .format("The user <strong>{0}</strong> is not associated with any food trucks.  You can " +
-                  "<a href=\"{1}\">Click Here</a> to sign in as a different user", principal,
-              logoutUrl);
-      vendorError("Invalid User", message, req, resp);
-      log.info("Sent this message to the user" + message);
     } else if (trucks.size() == 1) {
+      req.setAttribute("logoutUrl", getLogoutUrl(userPrincipal));
       Truck truck = Iterables.getFirst(trucks, null);
       req.setAttribute("truck", truck);
       log.log(Level.INFO, "User {0}", userPrincipal.getName());
