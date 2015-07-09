@@ -123,7 +123,7 @@ public class TruckDAOMemcache extends AbstractMemcachedDAO<TruckDAO> implements 
   }
 
   private void invalidateTruck(Truck truck) {
-    log.fine("Invalidating truck in cache: " + truck.getId());
+    log.info("Invalidating truck in cache: " + truck.getId());
     memcacheService.deleteAll(
         ImmutableList.of(keyName(BY_TWITTER_ID + truck.getTwitterHandle()), keyName(ALL_TWITTER_TRUCKS),
             keyName(ACTIVE_TRUCKS), keyName(INACTIVE_TRUCKS), keyName(FIND_FIRST), keyName(BY_ID + truck.getId())));

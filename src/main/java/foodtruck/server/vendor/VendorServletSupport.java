@@ -106,7 +106,7 @@ public abstract class VendorServletSupport extends HttpServlet {
       resp.setStatus(401);
     } else if (trucks.size() == 1) {
       Truck truck = Iterables.getFirst(trucks, null);
-      req.setAttribute("truck", truck);
+      req.setAttribute("truck", truckDAO.findById(truck.getId()));
       log.log(Level.INFO, "User {0}", principal.getName());
       dispatchPost(req, resp, truck.getId());
     } else {
