@@ -104,7 +104,7 @@
           });
         });
         var end = new Date(), start = new Date(end.getTime() - (30 *86400000));
-        drawGraphs(graphItems, "appGraph", 86400000, start, end);
+        drawGraphs(graphItems, "appGraph", 86400000, start, end, true);
       }
     });
   }
