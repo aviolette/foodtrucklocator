@@ -75,7 +75,8 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
       if (Strings.isNullOrEmpty(calendarUrl)) {
         return;
       }
-      log.info("Custom calendar search: " + calendarUrl);
+      log.log(Level.INFO, "Custom calendar search for truck {0} with calendar {1}: ",
+          new Object[] {truck.getName(), calendarUrl});
       stops.addAll(performTruckSearch(range, truck));
     } catch (RuntimeException rte) {
       log.info("Search truck: " + truck.getId());
