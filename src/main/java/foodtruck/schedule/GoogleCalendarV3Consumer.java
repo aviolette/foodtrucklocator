@@ -166,8 +166,10 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
             log.log(Level.INFO, "Loaded truckstop: {0}", truckStop);
             builder.add(truckStop);
           } else {
-            log.log(Level.WARNING, "Location could not be resolved for {0}, {1} between {2} and {3}. Link: {4}",
-                new Object[] {truck.getId(), where, range.getStart(), range.getEnd(), event.getHtmlLink()});
+            if (where != null) {
+              log.log(Level.WARNING, "Location could not be resolved for {0}, {1} between {2} and {3}. Link: {4}",
+                  new Object[]{truck.getId(), where, range.getStart(), range.getEnd(), event.getHtmlLink()});
+            }
           }
         }
         pageToken = events.getNextPageToken();
