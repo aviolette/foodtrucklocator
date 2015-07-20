@@ -43,7 +43,7 @@ public class TruckStopMatcher {
   static final String TIME_PATTERN_STRICT =
       "(\\d+:\\d+\\s*(p|pm|a|am|a\\.m\\.|p\\.m\\.)?)|noon|(\\d+\\s*(p|pm|a|am|a\\.m\\.|p\\.m\\.)|((11|12|1|2|3|4|5|6)\\b))";
   private static final String TIME_RANGE_PATTERN =
-      "(" + TIME_PATTERN + ")\\s*-\\s*(" + TIME_PATTERN + ")[\\s|,|\\.&&[^\\-]]";
+      "(" + TIME_PATTERN + ")\\s*-\\s*(" + TIME_PATTERN + ")[\\s|\\$|\\n|,|\\.&&[^\\-]]";
   private static final String TOMORROW = "2morrow|tmw|tmrw|tomorrow|maana|mañana";
   private final AddressExtractor addressExtractor;
   private final GeoLocator geoLocator;
@@ -161,7 +161,7 @@ public class TruckStopMatcher {
 
     // TODO: this is kind of a hack - this is a tweet announcing a future lunch location
     DateTime endTime = null;
-    Matcher m = timeRangePattern.matcher(tweetText);
+    Matcher m = timeRangePattern.matcher(tweetText + " ");
     if (m.find()) {
       final LocalDate date = tweet.getTime().toLocalDate();
       startTime = parseTime(m.group(1), date, null);

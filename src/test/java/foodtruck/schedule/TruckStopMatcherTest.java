@@ -320,6 +320,18 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
   @Test
+  public void testNightTimeRange2() {
+    TruckStopMatch match = tweet("Come check us out at Lake & Michigan 6:45pm-7:30pm")
+        .withTime(tweetTime.withTime(7, 43, 0, 0))
+        .withTruck(Truck.builder(truck).categories(ImmutableSet.of("Breakfast")).build())
+        .match();
+    assertNotNull(match);
+    assertEquals(tweetTime.withTime(18, 45, 0, 0), match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(19, 30, 0, 0), match.getStop().getEndTime());
+  }
+
+
+  @Test
   public void testNightTimeRangeWithDayBoundary() {
     TruckStopMatch match = tweet("Serving steak & cheese at 1030-1230 draft bar 8221 w Irving park rd")
         .withTime(tweetTime.withTime(22, 10, 0, 0))
