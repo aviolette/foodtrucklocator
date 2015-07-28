@@ -15,7 +15,7 @@ public interface Clock {
   /**
    * Returns the date time for the current instant.
    */
-  public DateTime now();
+  DateTime now();
 
   /**
    * Returns the current day in the current time zone.

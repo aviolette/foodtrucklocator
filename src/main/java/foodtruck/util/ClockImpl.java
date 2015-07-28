@@ -17,6 +17,7 @@ import foodtruck.model.DayOfWeek;
 public class ClockImpl implements Clock {
   private final DateTimeZone zone;
   private final DateTimeFormatter timeFormatter;
+
   @Inject
   public ClockImpl(DateTimeZone zone, @TimeOnlyFormatter DateTimeFormatter timeFormatter) {
     this.zone = zone;
