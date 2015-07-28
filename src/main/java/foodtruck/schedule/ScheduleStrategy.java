@@ -19,5 +19,5 @@ public interface ScheduleStrategy {
    * Finds all the truck stops for a truck over a time period on a day.
    * @return the list of stops sorted by time
    */
-  public List<TruckStop> findForTime(Interval range, @Nullable Truck searchTruck);
+  List<TruckStop> findForTime(Interval range, @Nullable Truck searchTruck);
 }
