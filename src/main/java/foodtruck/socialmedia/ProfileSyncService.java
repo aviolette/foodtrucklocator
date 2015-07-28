@@ -16,12 +16,6 @@ public interface ProfileSyncService {
    */
   Truck createFromTwitter(Truck truck);
 
-  /**
-   * Creates an initial list of trucks based on a twitter list ID
-   * @param primaryTwitterList
-   */
-  void syncFromTwitterList(String primaryTwitterList);
-
   void syncProfile(String truckId);
 
   void syncAllProfiles();

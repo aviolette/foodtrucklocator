@@ -29,7 +29,6 @@ import org.codehaus.jettison.json.JSONObject;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
-import twitter4j.PagableResponseList;
 import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -106,34 +105,6 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
       log.log(Level.WARNING, io.getMessage(), io);
     }
     return ogIconUrl;
-  }
-
-  @Override
-  public void syncFromTwitterList(String primaryTwitterList) {
-    Twitter twitter = twitterFactory.create();
-    String baseUrl = staticConfig.getBaseUrl();
-    int twitterListId = Integer.parseInt(Strings.nullToEmpty(staticConfig.getPrimaryTwitterList()));
-    long cursor = -1;
-    try {
-      PagableResponseList<User> result;
-      do {
-        result = twitter.list().getUserListMembers(twitterListId, cursor);
-        for (User user : result) {
-          String twitterHandle = user.getScreenName().toLowerCase();
-          String url = syncToGoogleStorage(twitterHandle, user.getProfileImageURL(), baseUrl,
-              staticConfig.getIconBucket());
-          truckDAO.save(Truck.builder()
-                  .id(twitterHandle)
-                  .name(user.getName())
-                  .twitterHandle(twitterHandle)
-                  .iconUrl(url)
-                  .build());
-        }
-        cursor = result.getNextCursor();
-      } while (!result.isEmpty());
-    } catch (TwitterException e) {
-      throw Throwables.propagate(e);
-    }
   }
 
   @Override
