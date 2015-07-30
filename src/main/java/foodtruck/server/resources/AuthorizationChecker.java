@@ -36,11 +36,11 @@ public class AuthorizationChecker {
     throw new WebApplicationException(Response.Status.UNAUTHORIZED);
   }
 
-  public void requireAppKeyWithCount(String appKey, long count) throws WebApplicationException {
+  public void requireAppKeyWithCount(String appKey, long hourlyCount, long dailyCount) throws WebApplicationException {
     if (!Strings.isNullOrEmpty(appKey)) {
       Application app = applicationDAO.findById(appKey);
       if (app != null && app.isEnabled()) {
-        if (app.isRateLimitEnabled() && count > 6) {
+        if (app.isRateLimitEnabled() && (hourlyCount > 6 || dailyCount > 24)) {
           log.warning("Rate limit exceeded for " + app.getName());
           throw new WebApplicationException(Response.Status.UNAUTHORIZED);
         }

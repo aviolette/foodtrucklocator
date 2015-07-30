@@ -57,7 +57,7 @@ public class DailyScheduleResource {
   public String findForDay(@QueryParam("appKey") final String appKey, @QueryParam("from") final long from) {
     dailyCounter.increment(appKey);
     hourlyCounter.increment(appKey);
-    checker.requireAppKeyWithCount(appKey, hourlyCounter.getCount(appKey));
+    checker.requireAppKeyWithCount(appKey, hourlyCounter.getCount(appKey), dailyCounter.getCount(appKey));
     if (from > 0) {
       try {
         return dailyScheduleWriter.asJSON(truckService.findStopsForDayAfter(new DateTime(from, clock.zone()))).toString();
