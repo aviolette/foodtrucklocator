@@ -49,11 +49,8 @@ public class ImageServlet extends HttpServlet {
     GcsFilename fileName = getFileName(req);
     try {
       GcsInputChannel readChannel = cloudStorage.openPrefetchingReadChannel(fileName, 0, 2097152);
-      InputStream in = Channels.newInputStream(readChannel);
-      try {
-        ByteStreams.copy(Channels.newInputStream(readChannel), resp.getOutputStream());
-      } finally {
-        in.close();
+      try (InputStream in = Channels.newInputStream(readChannel)) {
+        ByteStreams.copy(in, resp.getOutputStream());
       }
       GcsFileMetadata metaData = cloudStorage.getMetadata(fileName);
       resp.setHeader("ETag", metaData.getEtag());

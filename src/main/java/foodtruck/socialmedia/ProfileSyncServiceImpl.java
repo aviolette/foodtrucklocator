@@ -92,13 +92,8 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
           new GcsFileOptions.Builder().mimeType(fileName.matches("png") ? "image/png" : "image/jpeg")
               .build());
       URL iconUrl = new URL(ogIconUrl);
-      InputStream in = iconUrl.openStream();
-      OutputStream out = Channels.newOutputStream(channel);
-      try {
+      try (InputStream in = iconUrl.openStream(); OutputStream out = Channels.newOutputStream(channel)) {
         ByteStreams.copy(in, out);
-      } finally {
-        in.close();
-        out.close();
       }
       ogIconUrl = baseUrl + "/images/truckicons/" + fileName;
     } catch (Exception io) {
@@ -196,18 +191,13 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
       // copy icon to google cloud storage
       URLConnection connection = iconUrl.openConnection();
       String mimeType = connection.getContentType();
-      InputStream in = connection.getInputStream();
       String extension = mimeType.contains("jpeg") ? "jpg" : "png", fileName = baseName + "." + extension;
       GcsFilename gcsFilename = new GcsFilename(truckIconsBucket, fileName);
       GcsOutputChannel channel = cloudStorage.createOrReplace(gcsFilename,
           new GcsFileOptions.Builder().mimeType(mimeType)
               .build());
-      OutputStream out = Channels.newOutputStream(channel);
-      try {
+      try (InputStream in = connection.getInputStream(); OutputStream out = Channels.newOutputStream(channel)) {
         ByteStreams.copy(in, out);
-      } finally {
-        in.close();
-        out.close();
       }
       log.log(Level.INFO, "Created file {0} in bucket {1}", new Object[] {fileName, truckIconsBucket});
       return baseUrl + "/images/truckicons/" + fileName;
