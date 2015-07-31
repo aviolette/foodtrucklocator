@@ -40,7 +40,7 @@ public class AuthorizationChecker {
     if (!Strings.isNullOrEmpty(appKey)) {
       Application app = applicationDAO.findById(appKey);
       if (app != null && app.isEnabled()) {
-        if (app.isRateLimitEnabled() && (hourlyCount > 6 || dailyCount > 24)) {
+        if (app.isRateLimitEnabled() && (hourlyCount > 6 || dailyCount > 100)) {
           log.warning("Rate limit exceeded for " + app.getName());
           throw new WebApplicationException(Response.Status.UNAUTHORIZED);
         }
