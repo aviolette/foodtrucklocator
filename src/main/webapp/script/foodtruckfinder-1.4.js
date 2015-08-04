@@ -332,15 +332,6 @@ var FoodTruckLocator = function () {
         lastMarkerGroup["stops"].push(stop);
       }
       lastLocation = stop.location.name;
-      var toolTipId = "tooltip-" + $truckList.attr("id") + idx,
-          tooltipHtml = '';
-      /*
-       if (stop.stop.notes && stop.stop.notes.length > 0) {
-       tooltipHtml = " <a id='" + toolTipId + "' href='#' data-toggle='tooltip' " +
-       "data-placement='top' data-content=''>[?]</a>";
-       }
-       */
-
       $div.append($("<div class='media'><a class='pull-left truckLink' truck-id='" + stop.truck.id
       + "' href='#'><img class='media-object' src='"
       + stop.truck.iconUrl + "'/></a><div class='media-body'><a class='truckLink' href='#' truck-id='" + stop.truck.id
@@ -348,12 +339,6 @@ var FoodTruckLocator = function () {
       + buildTimeRange(stop.stop, now)
       + "</div>"
       + "</a></div></div>"));
-      if (stop.stop.notes && stop.stop.notes.length > 0) {
-        $("#" + toolTipId).tooltip({
-          "html": true,
-          "title": "<ul><li class='tooltip-li'>" + stop.stop.notes.join("</li><li class='tooltip-li'>") + "</li></ul>"
-        });
-      }
     });
     $("a.truckLink").each(function (idx, item) {
       var $item = $(item), truckId = $item.attr("truck-id");
