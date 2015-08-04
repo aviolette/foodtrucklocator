@@ -313,6 +313,16 @@ public class Truck extends ModelEntity implements Serializable {
     return timezoneAdjustment;
   }
 
+  public boolean isSavory() {
+    if (categories.contains("Sandwiches") || categories.contains("Lunch")) {
+      return true;
+    } else if (categories.contains("Dogs") || categories.contains("Cupcakes") ||
+        categories.contains("Dessert") || categories.contains("Donuts")) {
+      return false;
+    }
+    return true;
+  }
+
   public static class Stats implements Serializable {
     private DateTime lastUpdated;
     private DateTime lastSeen;
