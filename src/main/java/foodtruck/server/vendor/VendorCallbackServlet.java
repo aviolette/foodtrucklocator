@@ -13,6 +13,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
+import foodtruck.email.EmailNotifier;
 import foodtruck.server.security.SimplePrincipal;
 import foodtruck.util.Session;
 import twitter4j.Twitter;
@@ -30,10 +31,12 @@ import twitter4j.auth.RequestToken;
 public class VendorCallbackServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(VendorCallbackServlet.class.getName());
   private final Provider<Session> sessionProvider;
+  private final EmailNotifier emailNotifier;
 
   @Inject
-  public VendorCallbackServlet(Provider<Session> sessionProvider) {
+  public VendorCallbackServlet(Provider<Session> sessionProvider, EmailNotifier emailNotifier) {
     this.sessionProvider = sessionProvider;
+    this.emailNotifier = emailNotifier;
   }
 
   @Override
@@ -49,6 +52,7 @@ public class VendorCallbackServlet extends HttpServlet {
       session.setProperty("principal", new SimplePrincipal(screenName));
       session.removeProperty("requestToken");
       session.removeProperty("twitter");
+      emailNotifier.systemNotifyVendorPortalLogin(screenName, LoginMethod.TWITTER);
       resp.sendRedirect("/vendor");
     } catch (TwitterException e) {
       throw new ServletException(e);

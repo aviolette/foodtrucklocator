@@ -8,6 +8,7 @@ import foodtruck.model.PetitionSignature;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TweetSummary;
+import foodtruck.server.vendor.LoginMethod;
 
 /**
  * @author aviolette
@@ -36,11 +37,6 @@ public interface EmailNotifier {
   void systemNotifyTrucksAddedByObserver(Map<Truck, TweetSummary> trucksAdded);
 
   /**
-   * Send a notification when a request has come through.
-   */
-  void notifyNewFoodTruckRequest(FoodTruckRequest request);
-
-  /**
    * Send a notifications to all food trucks of a food truck request.
    */
   boolean notifyFoodTrucksOfRequest(Iterable<String> addresses, FoodTruckRequest request);
@@ -65,4 +61,11 @@ public interface EmailNotifier {
   void notifyVerifyPetitionSignature(PetitionSignature sig);
 
   void notifyThanksForSigningPetition(PetitionSignature sig);
+
+  /**
+   * Sends out a notification when a vendor logs in via a portal
+   * @param screenName the vendor's screen name
+   * @param loginMethod the login method
+   */
+  void systemNotifyVendorPortalLogin(String screenName, LoginMethod loginMethod);
 }

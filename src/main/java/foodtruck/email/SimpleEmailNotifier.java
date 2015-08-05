@@ -34,6 +34,7 @@ import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TweetSummary;
+import foodtruck.server.vendor.LoginMethod;
 import foodtruck.util.TimeOnlyFormatter;
 
 /**
@@ -90,20 +91,6 @@ public class SimpleEmailNotifier implements EmailNotifier {
     }
     try {
       sendSystemMessage("New stops added by observers", builder.toString());
-    } catch (Exception e) {
-      log.log(Level.WARNING, e.getMessage(), e);
-    }
-  }
-
-  @Override public void notifyNewFoodTruckRequest(FoodTruckRequest request) {
-    try {
-      StringBuilder builder = new StringBuilder("The following request was added: \n\n");
-      buildRequest(request,builder);
-      builder.append("\n\nClick here to promote: ")
-          .append(staticConfig.getBaseUrl())
-          .append("/admin/requests/promote?id=")
-          .append(request.getKey()).append("\n\n");
-      sendSystemMessage("New food truck request", builder.toString());
     } catch (Exception e) {
       log.log(Level.WARNING, e.getMessage(), e);
     }
@@ -171,6 +158,13 @@ public class SimpleEmailNotifier implements EmailNotifier {
         " 600 W. Chicago.", sig.getSignature());
     sendMessage("Thank you very much!", ImmutableList.of(sig.getEmail()), msgBody, ImmutableList.<String>of(),
         "no-reply@chicagofoodtruckfinder.com");
+  }
+
+  @Override
+  public void systemNotifyVendorPortalLogin(String screenName, LoginMethod loginMethod) {
+    String msgBody = MessageFormat.format("Vendor {0} logged in to vendor portal via {1}", screenName,
+        loginMethod.toString());
+    sendSystemMessage("Vendor portal login", msgBody);
   }
 
   private boolean sendMessage(String subject, Iterable<String> receivers, String msgBody, Iterable<String> bccs,
