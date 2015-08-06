@@ -21,7 +21,7 @@ import twitter4j.conf.PropertyConfiguration;
 public class SocialMediaModule extends AbstractModule {
   @Override
   protected void configure() {
-    bind(TwitterService.class).to(TwitterServiceImpl.class);
+    bind(SocialMediaCacher.class).to(SocialMediaCacherImpl.class);
     bind(ProfileSyncService.class).to(ProfileSyncServiceImpl.class);
   }
   @Provides @Singleton

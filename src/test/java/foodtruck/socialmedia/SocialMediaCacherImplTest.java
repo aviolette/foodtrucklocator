@@ -46,12 +46,12 @@ import static org.easymock.EasyMock.expect;
  * @author aviolette@gmail.com
  * @since 10/18/11
  */
-public class TwitterServiceImplTest extends EasyMockSupport {
+public class SocialMediaCacherImplTest extends EasyMockSupport {
 
   private TweetCacheDAO tweetDAO;
   private TruckStopMatcher matcher;
   private TruckStopDAO truckStopDAO;
-  private TwitterServiceImpl service;
+  private SocialMediaCacherImpl service;
   private static final String TRUCK_1_ID = "truck1";
   private static final String TRUCK_2_ID = "truck2";
   private Truck truck2;
@@ -107,7 +107,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     expect(notificationDAO.findAll()).andStubReturn(ImmutableList.<TwitterNotificationAccount>of());
     DateTimeFormatter timeFormatter = DateTimeFormat.longTime();
     expect(clock.nowFormattedAsTime()).andStubReturn(timeFormatter.print(now));
-    service = new TwitterServiceImpl(twitterFactory, tweetDAO, zone, matcher,
+    service = new SocialMediaCacherImpl(twitterFactory, tweetDAO, zone, matcher,
         truckStopDAO,
         clock, terminationDetector, truckDAO,
         new LoggingTruckStopNotifier(), emailNotifier, offTheRoadDetector, locator, truckObserverDAO,
@@ -119,7 +119,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     List<TweetSummary> tweets = ImmutableList.of(basicTweet);
     expect(terminationDetector.detect(basicTweet)).andStubReturn(null);
     expect(tweetDAO
-        .findTweetsAfter(now.minusHours(TwitterServiceImpl.HOURS_BACK_TO_SEARCH), TRUCK_2_ID,
+        .findTweetsAfter(now.minusHours(SocialMediaCacherImpl.HOURS_BACK_TO_SEARCH), TRUCK_2_ID,
             false))
         .andStubReturn(tweets);
     matchStartTime = now.minusHours(3);
@@ -153,7 +153,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     truckStopDAO.addStops(ImmutableList.<TruckStop>of(matchedStop));
     expectTweetsIgnored();
     replayAll();
-    service.twittalyze();
+    service.analyze();
     verifyAll();
   }
 
@@ -175,7 +175,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
         matchedStop.withStartTime(currentStop.getStartTime())));
     expectTweetsIgnored();
     replayAll();
-    service.twittalyze();
+    service.analyze();
     verifyAll();
   }
 
@@ -192,7 +192,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
         matchedStop.withStartTime(currentStop.getStartTime())));
     expectTweetsIgnored();
     replayAll();
-    service.twittalyze();
+    service.analyze();
     verifyAll();
   }
 
@@ -211,7 +211,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
             .withEndTime(currentStop.getEndTime())));
     expectTweetsIgnored();
     replayAll();
-    service.twittalyze();
+    service.analyze();
     verifyAll();
   }
 
@@ -229,7 +229,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
         ImmutableList.<TruckStop>of(matchedStop.withStartTime(currentStop.getStartTime())));
     expectTweetsIgnored();
     replayAll();
-    service.twittalyze();
+    service.analyze();
     verifyAll();
   }
 
@@ -240,7 +240,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     expect(matcher.match(truck2, basicTweet, null)).andStubReturn(null);
     expectTweetsIgnored();
     replayAll();
-    service.twittalyze();
+    service.analyze();
     verifyAll();
   }
 
@@ -258,7 +258,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
         ImmutableList.<TruckStop>of(matchedStop.withEndTime(currentStop.getEndTime())));
     expectTweetsIgnored();
     replayAll();
-    service.twittalyze();
+    service.analyze();
     verifyAll();
   }
 
@@ -273,7 +273,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     expectTweetsIgnored();
     truckStopDAO.addStops(ImmutableList.<TruckStop>of(matchedStop));
     replayAll();
-    service.twittalyze();
+    service.analyze();
     verifyAll();
   }
 
@@ -286,7 +286,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     expect(tweetDAO.findTweetsAfter(now.minusHours(6), "uchinomgo", false)).andReturn(ImmutableList.<TweetSummary>of());
     expect(tweetDAO.findTweetsAfter(now.minusHours(6), "mdw2mnl", false)).andReturn(ImmutableList.<TweetSummary>of());
     replayAll();
-    service.observerTwittalyze();
+    service.observerAnalyze();
     verifyAll();
   }
 
@@ -303,7 +303,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     expect(tweetDAO.findTweetsAfter(now.minusHours(6), "mdw2mnl", false)).andReturn(ImmutableList.<TweetSummary>of());
     tweetDAO.save(ImmutableList.of(tweet1));
     replayAll();
-    service.observerTwittalyze();
+    service.observerAnalyze();
     verifyAll();
   }
 
@@ -329,7 +329,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     emailNotifier.systemNotifyTrucksAddedByObserver(ImmutableMap.of(truck1, tweet1));
     tweetDAO.save(ImmutableList.of(tweet1));
     replayAll();
-    service.observerTwittalyze();
+    service.observerAnalyze();
     verifyAll();
   }
 
@@ -359,7 +359,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     tweetDAO.save(ImmutableList.of(tweet1));
     tweetDAO.save(ImmutableList.of(tweet2));
     replayAll();
-    service.observerTwittalyze();
+    service.observerAnalyze();
     verifyAll();
   }
 }

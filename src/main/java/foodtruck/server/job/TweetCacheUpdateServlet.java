@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import foodtruck.socialmedia.TwitterService;
+import foodtruck.socialmedia.SocialMediaCacher;
 
 /**
  * Loads the tweets since the last time this was run.  Analyzes the tweets for potential new stops.
@@ -22,10 +22,10 @@ import foodtruck.socialmedia.TwitterService;
 @Singleton
 public class TweetCacheUpdateServlet extends HttpServlet implements Runnable {
   private static final Logger log = Logger.getLogger(TweetCacheUpdateServlet.class.getName());
-  private final TwitterService service;
+  private final SocialMediaCacher service;
 
   @Inject
-  public TweetCacheUpdateServlet(TwitterService service) {
+  public TweetCacheUpdateServlet(SocialMediaCacher service) {
     this.service = service;
   }
 
@@ -38,11 +38,10 @@ public class TweetCacheUpdateServlet extends HttpServlet implements Runnable {
   @Override
   public void run() {
     try {
-      service.updateTwitterCache();
+      service.update();
     } catch (Exception e) {
       log.log(Level.WARNING, "Error updating twitter cache", e);
     }
-    service.twittalyze();
-    service.observerTwittalyze();
+    service.analyze();
   }
 }

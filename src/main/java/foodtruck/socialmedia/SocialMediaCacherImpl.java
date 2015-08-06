@@ -63,8 +63,8 @@ import twitter4j.TwitterFactory;
  * @author aviolette@gmail.com
  * @since 10/11/11
  */
-public class TwitterServiceImpl implements TwitterService {
-  private static final Logger log = Logger.getLogger(TwitterServiceImpl.class.getName());
+public class SocialMediaCacherImpl implements SocialMediaCacher {
+  private static final Logger log = Logger.getLogger(SocialMediaCacherImpl.class.getName());
   private static final Pattern TWITTER_PATTERN = Pattern.compile("@([\\w|\\d|_]+)");
 
   @VisibleForTesting
@@ -89,11 +89,12 @@ public class TwitterServiceImpl implements TwitterService {
   private final StaticConfig staticConfig;
 
   @Inject
-  public TwitterServiceImpl(TwitterFactoryWrapper twitter, TweetCacheDAO tweetDAO, DateTimeZone zone,
+  public SocialMediaCacherImpl(TwitterFactoryWrapper twitter, TweetCacheDAO tweetDAO, DateTimeZone zone,
       TruckStopMatcher matcher, TruckStopDAO truckStopDAO, Clock clock, TerminationDetector detector, TruckDAO truckDAO,
-      TruckStopNotifier truckStopNotifier, EmailNotifier notifier, OffTheRoadDetector offTheRoadDetector, GeoLocator locator,
-      TruckObserverDAO truckObserverDAO, TwitterNotificationAccountDAO notificationAccountDAO, RetweetsDAO retweetsDAO,
-      FoodTruckStopService truckStopService, @TimeOnlyFormatter DateTimeFormatter timeFormatter, StaticConfig staticConfig) {
+      TruckStopNotifier truckStopNotifier, EmailNotifier notifier, OffTheRoadDetector offTheRoadDetector,
+      GeoLocator locator, TruckObserverDAO truckObserverDAO, TwitterNotificationAccountDAO notificationAccountDAO,
+      RetweetsDAO retweetsDAO, FoodTruckStopService truckStopService,
+      @TimeOnlyFormatter DateTimeFormatter timeFormatter, StaticConfig staticConfig) {
     this.tweetDAO = tweetDAO;
     this.twitterFactory = twitter;
     this.defaultZone = zone;
@@ -115,7 +116,7 @@ public class TwitterServiceImpl implements TwitterService {
   }
 
   @Override @Monitored
-  public void updateTwitterCache() {
+  public void update() {
     Twitter twitter = twitterFactory.create();
     try {
       Paging paging = determinePaging();
@@ -174,7 +175,7 @@ public class TwitterServiceImpl implements TwitterService {
   }
 
   @Override
-  public void purgeTweetsBefore(LocalDate localDate) {
+  public void purgeBefore(LocalDate localDate) {
     tweetDAO.deleteBefore(localDate.toDateTimeAtStartOfDay());
   }
 
@@ -192,12 +193,13 @@ public class TwitterServiceImpl implements TwitterService {
    * 4) If the match is contained within the stop, then delete the stop
    */
   @Override
-  public void twittalyze() {
+  public void analyze() {
     log.log(Level.INFO, "Updating twitter trucks");
     handleTruckTweets();
+    observerAnalyze();
   }
 
-  public void observerTwittalyze() {
+  public void observerAnalyze() {
     LocalDate today = clock.currentDay();
     DateTime now = clock.now();
     Location uofc = locator.locate("58th and Ellis, Chicago, IL", GeolocationGranularity.NARROW);
@@ -463,21 +465,6 @@ public class TwitterServiceImpl implements TwitterService {
       l.add(summary);
     }
     tweetDAO.save(l);
-  }
-
-  @Override public List<TweetSummary> findByTwitterHandle(String twitterHandle) {
-    return tweetDAO
-        .findTweetsAfter(clock.currentDay().toDateMidnight().toDateTime(), twitterHandle, true);
-  }
-
-  @Override public @Nullable TweetSummary findByTweetId(long id) {
-    return tweetDAO.findByTweetId(id);
-
-  }
-
-  @Override public void save(TweetSummary summary) {
-    tweetDAO.saveOrUpdate(summary);
-
   }
 
   private void notifyIfOffTheRoad(List<TweetSummary> tweets, Truck truck) {

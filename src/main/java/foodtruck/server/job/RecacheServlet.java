@@ -23,7 +23,7 @@ import org.joda.time.format.DateTimeFormatter;
 import foodtruck.dao.RetweetsDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.StaticConfig;
-import foodtruck.socialmedia.TwitterService;
+import foodtruck.socialmedia.SocialMediaCacher;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 
@@ -36,7 +36,7 @@ import foodtruck.util.Clock;
 public class RecacheServlet extends HttpServlet {
   private final FoodTruckStopService service;
   private final Clock clock;
-  private final TwitterService twitterService;
+  private final SocialMediaCacher socialMediaCacher;
   private final TruckDAO truckDAO;
   private final DateTimeFormatter timeFormatter;
   private static final Logger log = Logger.getLogger(RecacheServlet.class.getName());
@@ -46,8 +46,8 @@ public class RecacheServlet extends HttpServlet {
 
   @Inject
   public RecacheServlet(FoodTruckStopService service, Clock clock, StaticConfig staticConfig,
-      TwitterService twitterService, TruckDAO truckDAO, DateTimeZone zone, RetweetsDAO retweetsDAO) {
-    this.twitterService = twitterService;
+      SocialMediaCacher socialMediaCacher, TruckDAO truckDAO, DateTimeZone zone, RetweetsDAO retweetsDAO) {
+    this.socialMediaCacher = socialMediaCacher;
     this.service = service;
     this.clock = clock;
     this.truckDAO = truckDAO;
@@ -76,7 +76,7 @@ public class RecacheServlet extends HttpServlet {
         log.info("Recaching disabled");
       }
     }
-    twitterService.twittalyze();
+    socialMediaCacher.analyze();
     retweetsDAO.deleteAll();
   }
 

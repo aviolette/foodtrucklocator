@@ -25,19 +25,18 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
+import foodtruck.dao.TweetCacheDAO;
 import foodtruck.model.DailySchedule;
 import foodtruck.model.DayOfWeek;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TweetSummary;
 import foodtruck.server.GuiceHackRequestWrapper;
-import foodtruck.socialmedia.TwitterService;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 import foodtruck.util.Link;
@@ -50,22 +49,20 @@ import foodtruck.util.MoreStrings;
 @Singleton
 public class TruckServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(TruckServlet.class.getName());
-  private final TwitterService twitterService;
   private final FoodTruckStopService truckService;
   private final Clock clock;
   private final TruckDAO truckDAO;
-  private final DateTimeZone zone;
   private final LocationDAO locationDAO;
+  private final TweetCacheDAO tweetDAO;
 
   @Inject
-  public TruckServlet(TwitterService twitterService, DateTimeZone zone,
+  public TruckServlet(TweetCacheDAO tweetCacheDAO,
       FoodTruckStopService truckService, Clock clock, TruckDAO truckDAO, LocationDAO locationDAO) {
-    this.twitterService = twitterService;
+    this.tweetDAO = tweetCacheDAO;
     this.truckService = truckService;
     this.locationDAO = locationDAO;
     this.clock = clock;
     this.truckDAO = truckDAO;
-    this.zone = zone;
   }
 
   @Override
@@ -103,6 +100,10 @@ public class TruckServlet extends HttpServlet {
     req = new GuiceHackRequestWrapper(req, jsp);
     req.setAttribute("headerName", "Edit");
     final Truck truck = truckDAO.findById(truckId);
+    if (truck == null) {
+      resp.sendError(404);
+      return;
+    }
     req.setAttribute("truck", truck);
     req.setAttribute("nav", "trucks");
     req.setAttribute("breadcrumbs", ImmutableList.of(new Link("Trucks", "/admin/trucks"),
@@ -122,8 +123,9 @@ public class TruckServlet extends HttpServlet {
       resp.setStatus(404);
       return;
     }
-    final List<TweetSummary> tweetSummaries =
-        twitterService.findByTwitterHandle(truck.getTwitterHandle());
+    final List<TweetSummary> tweetSummaries = tweetDAO.findTweetsAfter(
+        clock.currentDay().toDateTimeAtStartOfDay(clock.zone()), truck.getTwitterHandle(), true);
+
     req.setAttribute("tweets", tweetSummaries);
     final String name = truck.getName();
     req.setAttribute("headerName", name);
@@ -233,7 +235,7 @@ public class TruckServlet extends HttpServlet {
     try {
       JSONObject bodyObj = new JSONObject(body);
       final long tweetId = Long.parseLong(bodyObj.getString("id"));
-      TweetSummary summary = twitterService.findByTweetId(tweetId);
+      TweetSummary summary = tweetDAO.findByTweetId(tweetId);
       if (summary == null) {
         log.warning("COULDN'T FIND TWEET ID: " + tweetId);
         resp.setStatus(404);
@@ -241,7 +243,7 @@ public class TruckServlet extends HttpServlet {
       }
       summary = new TweetSummary.Builder(summary)
           .ignoreInTwittalyzer(bodyObj.getBoolean("ignore")).build();
-      twitterService.save(summary);
+      tweetDAO.saveOrUpdate(summary);
     } catch (JSONException e) {
       throw new RuntimeException(e);
     }
@@ -278,6 +280,7 @@ public class TruckServlet extends HttpServlet {
       return currentSchedule;
     }
 
+    @SuppressWarnings("unused")
     public DailySchedule getPrior() {
       return priorSchedule;
     }

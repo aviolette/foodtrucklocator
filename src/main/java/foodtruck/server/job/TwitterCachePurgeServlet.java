@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import foodtruck.socialmedia.TwitterService;
+import foodtruck.socialmedia.SocialMediaCacher;
 import foodtruck.util.Clock;
 
 /**
@@ -21,11 +21,11 @@ import foodtruck.util.Clock;
  */
 @Singleton
 public class TwitterCachePurgeServlet extends HttpServlet implements Runnable {
-  private final TwitterService service;
+  private final SocialMediaCacher service;
   private final Clock clock;
 
   @Inject
-  public TwitterCachePurgeServlet(TwitterService service, Clock clock) {
+  public TwitterCachePurgeServlet(SocialMediaCacher service, Clock clock) {
     this.service = service;
     this.clock = clock;
   }
@@ -38,6 +38,6 @@ public class TwitterCachePurgeServlet extends HttpServlet implements Runnable {
 
   @Override
   public void run() {
-    service.purgeTweetsBefore(clock.currentDay());
+    service.purgeBefore(clock.currentDay());
   }
 }
