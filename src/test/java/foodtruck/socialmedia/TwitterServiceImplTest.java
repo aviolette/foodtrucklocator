@@ -16,7 +16,6 @@ import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Test;
 
-import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.RetweetsDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckObserverDAO;
@@ -102,7 +101,6 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     expect(truckDAO.findAll()).andStubReturn(ImmutableSet.of(truck2));
     final int listId = 123;
     terminationDetector = createMock(TerminationDetector.class);
-    ConfigurationDAO configDAO = createMock(ConfigurationDAO.class);
     offTheRoadDetector = createMock(OffTheRoadDetector.class);
     truckObserverDAO = createMock(TruckObserverDAO.class);
     notificationDAO = createMock(TwitterNotificationAccountDAO.class);
@@ -111,7 +109,7 @@ public class TwitterServiceImplTest extends EasyMockSupport {
     expect(clock.nowFormattedAsTime()).andStubReturn(timeFormatter.print(now));
     service = new TwitterServiceImpl(twitterFactory, tweetDAO, zone, matcher,
         truckStopDAO,
-        clock, terminationDetector, new LocalCacheUpdater(), truckDAO,
+        clock, terminationDetector, truckDAO,
         new LoggingTruckStopNotifier(), emailNotifier, offTheRoadDetector, locator, truckObserverDAO,
         notificationDAO, retweetDAO, null, timeFormatter, new StaticConfig());
     loca = Location.builder().lat(1).lng(2).name("a").build();

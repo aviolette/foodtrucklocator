@@ -14,7 +14,7 @@ import foodtruck.monitoring.MonitoringModule;
 import foodtruck.notifications.NotificationModule;
 import foodtruck.schedule.ScheduleModule;
 import foodtruck.server.security.SecurityModule;
-import foodtruck.socialmedia.TwitterModule;
+import foodtruck.socialmedia.SocialMediaModule;
 import foodtruck.stats.StatsModule;
 import foodtruck.truckstops.ServiceModule;
 import foodtruck.util.UtilModule;
@@ -41,7 +41,7 @@ public class FoodtruckConfig extends GuiceServletContextListener {
         new ScheduleModule(),
         new StatsModule(),
         new UtilModule(),
-        new TwitterModule(),
+        new SocialMediaModule(),
         new MonitoringModule(),
         new NotificationModule(),
         new FoodtruckServletModule()

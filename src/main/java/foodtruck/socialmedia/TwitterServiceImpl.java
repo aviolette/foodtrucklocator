@@ -76,7 +76,6 @@ public class TwitterServiceImpl implements TwitterService {
   private final TruckStopDAO truckStopDAO;
   private final Clock clock;
   private final TerminationDetector terminationDetector;
-  private final TweetCacheUpdater remoteUpdater;
   private final TruckDAO truckDAO;
   private final TruckStopNotifier notifier;
   private final EmailNotifier emailNotifier;
@@ -91,7 +90,7 @@ public class TwitterServiceImpl implements TwitterService {
 
   @Inject
   public TwitterServiceImpl(TwitterFactoryWrapper twitter, TweetCacheDAO tweetDAO, DateTimeZone zone,
-      TruckStopMatcher matcher, TruckStopDAO truckStopDAO, Clock clock, TerminationDetector detector, TweetCacheUpdater updater, TruckDAO truckDAO,
+      TruckStopMatcher matcher, TruckStopDAO truckStopDAO, Clock clock, TerminationDetector detector, TruckDAO truckDAO,
       TruckStopNotifier truckStopNotifier, EmailNotifier notifier, OffTheRoadDetector offTheRoadDetector, GeoLocator locator,
       TruckObserverDAO truckObserverDAO, TwitterNotificationAccountDAO notificationAccountDAO, RetweetsDAO retweetsDAO,
       FoodTruckStopService truckStopService, @TimeOnlyFormatter DateTimeFormatter timeFormatter, StaticConfig staticConfig) {
@@ -102,7 +101,6 @@ public class TwitterServiceImpl implements TwitterService {
     this.truckStopDAO = truckStopDAO;
     this.clock = clock;
     this.terminationDetector = detector;
-    this.remoteUpdater = updater;
     this.truckDAO = truckDAO;
     this.notifier = truckStopNotifier;
     this.emailNotifier = notifier;
@@ -138,7 +136,6 @@ public class TwitterServiceImpl implements TwitterService {
         }
       }
       tweetDAO.save(summaries);
-      remoteUpdater.update(summaries);
     } catch (TwitterException e) {
       throw new RuntimeException(e);
     }
