@@ -12,7 +12,7 @@
   <link href="/bootstrap2.2.2-custom/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" rel="stylesheet"/>
   <link href="/css/foodtruckfinder.css" rel="stylesheet"/>
-  <script src="/script/lib/modernizr-1.7.min.js"></script>
+  <script src="//storage.googleapis.com/ftf_static/script/modernizr-1.7.min.js"></script>
   <style type="text/css">
     #listContainer {
       overflow-y: auto !important;

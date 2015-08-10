@@ -11,7 +11,7 @@
   <script>window.jQuery ||
   document.write("<script src='/script/lib/jquery-1.7.1.min.js'>\x3C/script>")</script>
   <script type="text/javascript" src="/bootstrap2.2.2-custom/js/bootstrap.js"></script>
-  <script src="/script/lib/modernizr-1.7.min.js"></script>
+  <script src="//storage.googleapis.com/ftf_static/script/modernizr-1.7.min.js"></script>
   <script src="/script/dashboard.js" type="text/javascript"></script>
   <link href="/bootstrap2.2.2-custom/css/bootstrap.min.css" rel="stylesheet"/>
   <link rel="stylesheet" href="/css/dashboard.css"/>

@@ -19,7 +19,7 @@
       <script src="/script/lib/modernizr-1.7.min.js"></script>
     </c:when>
     <c:otherwise>
-      <script src="http://storage.googleapis.com/ftf_static/script/modernizr-1.7.min.js"></script>
+      <script src="//storage.googleapis.com/ftf_static/script/modernizr-1.7.min.js"></script>
     </c:otherwise>
   </c:choose>
   <style type="text/css">
