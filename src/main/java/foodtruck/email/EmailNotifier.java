@@ -5,9 +5,9 @@ import java.util.Map;
 import foodtruck.model.FoodTruckRequest;
 import foodtruck.model.Location;
 import foodtruck.model.PetitionSignature;
+import foodtruck.model.Story;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
-import foodtruck.model.TweetSummary;
 import foodtruck.server.vendor.LoginMethod;
 
 /**
@@ -20,7 +20,7 @@ public interface EmailNotifier {
    * @param truck the truck that is the subject of the tweet
    * @param tweet the tweet
    */
-  void systemNotifyOffTheRoad(Truck truck, TweetSummary tweet);
+  void systemNotifyOffTheRoad(Truck truck, Story tweet);
 
   /**
    * Send system notification when a new address is added to the system by way of a parsed tweet.
@@ -28,13 +28,13 @@ public interface EmailNotifier {
    * @param tweet the tweet that triggered the lookup
    * @param truck the truck that owns the tweet
    */
-  void systemNotifyLocationAdded(Location location, TweetSummary tweet, Truck truck);
+  void systemNotifyLocationAdded(Location location, Story tweet, Truck truck);
 
   /**
    * Sends system notification when new stops are added by regional observers.
    * @param trucksAdded the map of truckIds
    */
-  void systemNotifyTrucksAddedByObserver(Map<Truck, TweetSummary> trucksAdded);
+  void systemNotifyTrucksAddedByObserver(Map<Truck, Story> trucksAdded);
 
   /**
    * Send a notifications to all food trucks of a food truck request.
@@ -44,7 +44,7 @@ public interface EmailNotifier {
   /**
    * Sends out a system notification when a stop is auto-canceled.
    */
-  void systemNotifyAutoCanceled(Truck truck, TweetSummary tweet);
+  void systemNotifyAutoCanceled(Truck truck, Story tweet);
 
   /**
    * Sends out a system notification when a stop is added after 1:30 for a lunch truck via the twittalyzer

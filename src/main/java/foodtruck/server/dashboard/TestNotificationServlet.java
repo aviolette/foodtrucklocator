@@ -13,8 +13,8 @@ import com.google.inject.Singleton;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.email.EmailNotifier;
+import foodtruck.model.Story;
 import foodtruck.model.Truck;
-import foodtruck.model.TweetSummary;
 import foodtruck.util.Clock;
 
 /**
@@ -43,7 +43,7 @@ public class TestNotificationServlet extends HttpServlet {
   @Override protected void doPost(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     Truck truck = Iterables.getFirst(truckDAO.findAll(), null);
-    TweetSummary tweet = TweetSummary.builder().
+    Story tweet = Story.builder().
         text("We are off the road today.").time(clock.now()).build();
     notifier.systemNotifyOffTheRoad(truck, tweet);
     resp.sendRedirect("/admin");

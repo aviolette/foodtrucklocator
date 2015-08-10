@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 
 import org.joda.time.DateTime;
 
-import foodtruck.model.TweetSummary;
+import foodtruck.model.Story;
 
 /**
  * DAO for persisting tweets.
@@ -14,18 +14,18 @@ import foodtruck.model.TweetSummary;
  * @since 10/11/11
  */
 public interface TweetCacheDAO {
-  public List<TweetSummary> findTweetsAfter(DateTime time, String twitterHandle,
+  List<Story> findTweetsAfter(DateTime time, String twitterHandle,
       boolean includeIgnored);
 
-  public void deleteBefore(DateTime dateTime);
+  void deleteBefore(DateTime dateTime);
 
   void setLastTweetId(long id);
 
   long getLastTweetId();
 
-  void save(List<TweetSummary> tweet);
+  void save(List<Story> tweet);
 
-  @Nullable TweetSummary findByTweetId(long id);
+  @Nullable Story findByTweetId(long id);
 
-  void saveOrUpdate(TweetSummary summary);
+  void saveOrUpdate(Story summary);
 }

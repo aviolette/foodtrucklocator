@@ -31,9 +31,9 @@ import foodtruck.model.FoodTruckRequest;
 import foodtruck.model.Location;
 import foodtruck.model.PetitionSignature;
 import foodtruck.model.StaticConfig;
+import foodtruck.model.Story;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
-import foodtruck.model.TweetSummary;
 import foodtruck.server.vendor.LoginMethod;
 import foodtruck.util.TimeOnlyFormatter;
 
@@ -56,7 +56,7 @@ public class SimpleEmailNotifier implements EmailNotifier {
     this.staticConfig = staticConfig;
   }
 
-  @Override public void systemNotifyOffTheRoad(Truck truck, TweetSummary tweet) {
+  @Override public void systemNotifyOffTheRoad(Truck truck, Story tweet) {
     String msgBody = MessageFormat.format("This tweet might indicate that {0} is off the road:\n" +
         "\n \"{1}\"\n\n" +
         "Click here to take the truck off the road: " + staticConfig.getBaseUrl() +
@@ -65,14 +65,14 @@ public class SimpleEmailNotifier implements EmailNotifier {
     sendSystemMessage(truck.getName() + " might be off the road", msgBody);
   }
 
-  private String locationAddedMessage(Location location, TweetSummary tweet, Truck truck) {
+  private String locationAddedMessage(Location location, Story tweet, Truck truck) {
     return MessageFormat.format("This tweet \"{0}\" triggered the following location to be added {1}.  Click here to " +
             "view the location {4}/admin/locations/{2} .  " +
             "Also, view the truck here: {4}/admin/trucks/{3}", tweet.getText(),
         location.getName(), String.valueOf(location.getKey()), truck.getId(), staticConfig.getBaseUrl());
   }
 
-  @Override public void systemNotifyLocationAdded(Location location, TweetSummary tweet, Truck truck) {
+  @Override public void systemNotifyLocationAdded(Location location, Story tweet, Truck truck) {
     try {
       sendSystemMessage("New Location Added: " + location.getName(),
           locationAddedMessage(location, tweet, truck));
@@ -81,9 +81,9 @@ public class SimpleEmailNotifier implements EmailNotifier {
     }
   }
 
-  @Override public void systemNotifyTrucksAddedByObserver(Map<Truck, TweetSummary> trucksAdded) {
+  @Override public void systemNotifyTrucksAddedByObserver(Map<Truck, Story> trucksAdded) {
     StringBuilder builder = new StringBuilder("The following trucks were added: \n\n");
-    for (Map.Entry<Truck, TweetSummary> entry : trucksAdded.entrySet()) {
+    for (Map.Entry<Truck, Story> entry : trucksAdded.entrySet()) {
       builder.append(entry.getKey().getName()).append(" ").append(staticConfig.getBaseUrl())
           .append("/admin/trucks/")
           .append(entry.getKey().getId()).append(" => @").append(entry.getValue().getScreenName())
@@ -123,7 +123,7 @@ public class SimpleEmailNotifier implements EmailNotifier {
         buildRequest(request, new StringBuilder()).toString(), addresses, request.getEmail());
   }
 
-  @Override public void systemNotifyAutoCanceled(Truck truck, TweetSummary tweet) {
+  @Override public void systemNotifyAutoCanceled(Truck truck, Story tweet) {
     String msgBody = MessageFormat.format("This tweet might indicate that {0} is off the road:\n" +
         "\n \"{1}\"\n\n" +
         "Because it was flagged as high-confidenced, all remaining stops were cancelled",

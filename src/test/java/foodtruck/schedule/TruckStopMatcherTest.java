@@ -19,8 +19,8 @@ import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.DayOfWeek;
 import foodtruck.model.Location;
+import foodtruck.model.Story;
 import foodtruck.model.Truck;
-import foodtruck.model.TweetSummary;
 import foodtruck.util.Clock;
 
 import static org.easymock.EasyMock.expect;
@@ -141,7 +141,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     final String tweetText = "foobar";
     expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.<String>of());
     replayAll();
-    TweetSummary tweet = new TweetSummary.Builder().text(tweetText).time(tweetTime).build();
+    Story tweet = new Story.Builder().text(tweetText).time(tweetTime).build();
     TruckStopMatch match = topic.match(truck, tweet, null);
     assertNull(match);
   }
@@ -164,7 +164,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     Location location =Location.builder().lat(41.889973).lng(-87.634024).name("foobar")
         .wasJustResolved(true).build();
     notifier.systemNotifyLocationAdded(location,
-        new TweetSummary.Builder().userId("foobar").text(tweet).time(tweetTime).build(), truck);
+        new Story.Builder().userId("foobar").text(tweet).time(tweetTime).build(), truck);
     TruckStopMatch match =
         tweet(tweet)
             .geolocatorReturns(location)
@@ -998,7 +998,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .andReturn(geolocatorResult);
       }
       replayAll();
-      TweetSummary tweet = new TweetSummary.Builder().text(Tweeter.this.tweet)
+      Story tweet = new Story.Builder().text(Tweeter.this.tweet)
           .userId("foobar")
           .time(Tweeter.this.time).build();
       return topic.match(Tweeter.this.truck, tweet, null);

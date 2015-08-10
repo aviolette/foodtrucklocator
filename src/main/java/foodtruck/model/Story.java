@@ -14,16 +14,17 @@ import org.joda.time.DateTime;
  * @author aviolette@gmail.com
  * @since 10/11/11
  */
-public class TweetSummary extends ModelEntity {
+public class Story extends ModelEntity {
   private final String screenName;
   private final Location location;
   private final String text;
   private final DateTime time;
   private final long id;
   private final boolean ignoreInTwittalyzer;
+  private final StoryType storyType;
   private static final Pattern retweetPattern = Pattern.compile("(\\bRT \"?)|(\")@");
 
-  public TweetSummary(Builder builder) {
+  public Story(Builder builder) {
     super(builder.key);
     this.text = builder.text;
     this.location = builder.location;
@@ -31,6 +32,7 @@ public class TweetSummary extends ModelEntity {
     this.screenName = builder.screenName;
     this.id = builder.id;
     this.ignoreInTwittalyzer = builder.ignoreInTwittalyzer;
+    this.storyType = builder.type;
   }
 
   public String getScreenName() {
@@ -71,10 +73,10 @@ public class TweetSummary extends ModelEntity {
   @Override public boolean equals(Object o) {
     if (o == this) {
       return true;
-    } else if (o == null || !(o instanceof TweetSummary)) {
+    } else if (o == null || !(o instanceof Story)) {
       return false;
     }
-    TweetSummary that = (TweetSummary) o;
+    Story that = (Story) o;
     return id == that.id && text.equals(that.text) && Objects.equal(location, that.location) &&
         screenName.equals(that.screenName);
   }
@@ -106,11 +108,12 @@ public class TweetSummary extends ModelEntity {
     private long id;
     private boolean ignoreInTwittalyzer;
     private Object key;
+    private StoryType type = StoryType.TWEET;
 
     public Builder() {
     }
 
-    public Builder(TweetSummary summary) {
+    public Builder(Story summary) {
       this.screenName = summary.screenName;
       this.location = summary.location;
       this.time = summary.time;
@@ -118,10 +121,11 @@ public class TweetSummary extends ModelEntity {
       this.id = summary.id;
       this.ignoreInTwittalyzer = summary.ignoreInTwittalyzer;
       this.key = summary.key;
+      this.type = summary.storyType;
     }
 
-    public TweetSummary build() {
-      return new TweetSummary(this);
+    public Story build() {
+      return new Story(this);
     }
 
     public Builder text(String text) {

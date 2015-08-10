@@ -17,7 +17,7 @@ import org.joda.time.DateTimeZone;
 
 import foodtruck.dao.TweetCacheDAO;
 import foodtruck.model.Location;
-import foodtruck.model.TweetSummary;
+import foodtruck.model.Story;
 
 /**
  * @author aviolette@gmail.com
@@ -44,7 +44,7 @@ public class TweetCacheAppEngineDAO implements TweetCacheDAO {
   }
 
   @Override
-  public List<TweetSummary> findTweetsAfter(DateTime time, String twitterHandle,
+  public List<Story> findTweetsAfter(DateTime time, String twitterHandle,
       boolean includeIgnored) {
     DatastoreService dataStore = provider.get();
     Query q = new Query(TWEET_KIND);
@@ -56,9 +56,9 @@ public class TweetCacheAppEngineDAO implements TweetCacheDAO {
     }
     q.setFilter(Query.CompositeFilterOperator.and(filters));
     q.addSort(TWEET_TIME, Query.SortDirection.DESCENDING);
-    ImmutableList.Builder<TweetSummary> tweets = ImmutableList.builder();
+    ImmutableList.Builder<Story> tweets = ImmutableList.builder();
     for (Entity entity : dataStore.prepare(q).asIterable()) {
-      TweetSummary tweet = fromEntity(entity);
+      Story tweet = fromEntity(entity);
       tweets.add(tweet);
     }
     return tweets.build();
@@ -98,14 +98,15 @@ public class TweetCacheAppEngineDAO implements TweetCacheDAO {
   }
 
   @Override
-  public void save(List<TweetSummary> tweets) {
+  public void save(List<Story> tweets) {
     DatastoreService dataStore = provider.get();
-    for (TweetSummary tweet : tweets) {
+    for (Story tweet : tweets) {
       saveOrUpdate(tweet, dataStore);
     }
   }
 
-  @Override public @Nullable TweetSummary findByTweetId(long id) {
+  @Override public @Nullable
+  Story findByTweetId(long id) {
     DatastoreService dataStore = provider.get();
     Query q = new Query(TWEET_KIND);
     q.setFilter(new Query.FilterPredicate(TWEET_ID, Query.FilterOperator.EQUAL, id));
@@ -116,12 +117,12 @@ public class TweetCacheAppEngineDAO implements TweetCacheDAO {
     return fromEntity(entity);
   }
 
-  @Override public void saveOrUpdate(TweetSummary tweet) {
+  @Override public void saveOrUpdate(Story tweet) {
     DatastoreService dataStore = provider.get();
     saveOrUpdate(tweet, dataStore);
   }
 
-  private void saveOrUpdate(TweetSummary tweet, DatastoreService dataStore) {
+  private void saveOrUpdate(Story tweet, DatastoreService dataStore) {
     final Entity entity =
         (tweet.getKey() == null) ? new Entity(TWEET_KIND) : new Entity((Key) tweet.getKey());
     entity.setProperty(TWEET_SCREEN_NAME, tweet.getScreenName());
@@ -137,7 +138,7 @@ public class TweetCacheAppEngineDAO implements TweetCacheDAO {
     dataStore.put(entity);
   }
 
-  private TweetSummary fromEntity(Entity entity) {
+  private Story fromEntity(Entity entity) {
     Double lat = (Double) entity.getProperty(TWEET_LOCATION_LAT);
     Double lng = (Double) entity.getProperty(TWEET_LOCATION_LNG);
     Location location = null;
@@ -145,7 +146,7 @@ public class TweetCacheAppEngineDAO implements TweetCacheDAO {
       location = Location.builder().lat(lat).lng(lng).build();
     }
     DateTime dateTime = new DateTime(entity.getProperty(TWEET_TIME), zone);
-    return new TweetSummary.Builder()
+    return new Story.Builder()
         .id((Long) entity.getProperty(TWEET_ID))
         .ignoreInTwittalyzer(Boolean.TRUE.equals(entity.getProperty(TWEET_IGNORE)))
         .location(location)

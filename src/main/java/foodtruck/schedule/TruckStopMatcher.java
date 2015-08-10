@@ -26,9 +26,9 @@ import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
 import foodtruck.model.StopOrigin;
+import foodtruck.model.Story;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
-import foodtruck.model.TweetSummary;
 import foodtruck.util.Clock;
 
 /**
@@ -118,7 +118,7 @@ public class TruckStopMatcher {
    * @param terminationTime an optional time to terminate any match
    * @return a TruckStopMatch if the match can be made, otherwise {@code null}
    */
-  public @Nullable TruckStopMatch match(Truck truck, TweetSummary tweet,
+  public @Nullable TruckStopMatch match(Truck truck, Story tweet,
       @Nullable DateTime terminationTime) {
     final String tweetText = tweet.getText();
     if (tweet.isManualRetweet()) {
@@ -342,7 +342,7 @@ public class TruckStopMatcher {
     }
   }
 
-  private @Nullable Location extractLocation(TweetSummary tweet, Truck truck) {
+  private @Nullable Location extractLocation(Story tweet, Truck truck) {
     List<String> addresses = addressExtractor.parse(tweet.getText(), truck);
     Location tweetLocation = tweet.getLocation();
     if (tweetLocation != null) {

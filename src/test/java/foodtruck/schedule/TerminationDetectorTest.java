@@ -5,7 +5,7 @@ import org.joda.time.DateTimeZone;
 import org.junit.Before;
 import org.junit.Test;
 
-import foodtruck.model.TweetSummary;
+import foodtruck.model.Story;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -17,13 +17,13 @@ import static org.junit.Assert.assertNull;
 public class TerminationDetectorTest {
   private DateTime tweetTime;
   private TerminationDetector detector;
-  private TweetSummary.Builder tweetBuilder;
+  private Story.Builder tweetBuilder;
 
   @Before
   public void before() {
     tweetTime = new DateTime(2011, 10, 10, 9, 8, 7, 0, DateTimeZone.UTC);
     detector = new TerminationDetector();
-    tweetBuilder = new TweetSummary.Builder().userId("foobar").time(tweetTime);
+    tweetBuilder = new Story.Builder().userId("foobar").time(tweetTime);
   }
 
   @Test

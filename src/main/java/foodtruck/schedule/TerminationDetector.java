@@ -2,7 +2,7 @@ package foodtruck.schedule;
 
 import org.joda.time.DateTime;
 
-import foodtruck.model.TweetSummary;
+import foodtruck.model.Story;
 
 /**
  * Detects termination messages in tweets
@@ -11,7 +11,7 @@ import foodtruck.model.TweetSummary;
  */
 public class TerminationDetector {
   // TODO: probably need an abstraction like TruckStopMatch to handle terminations
-  public DateTime detect(TweetSummary tweet) {
+  public DateTime detect(Story tweet) {
     if (tweet.isManualRetweet() || tweet.isReply()) {
       return null;
     }

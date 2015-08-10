@@ -36,10 +36,10 @@ import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.StopOrigin;
+import foodtruck.model.Story;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckObserver;
 import foodtruck.model.TruckStop;
-import foodtruck.model.TweetSummary;
 import foodtruck.model.TwitterNotificationAccount;
 import foodtruck.monitoring.Monitored;
 import foodtruck.schedule.Confidence;
@@ -123,14 +123,14 @@ public class SocialMediaCacherImpl implements SocialMediaCacher {
       int twitterListId = Integer.parseInt(staticConfig.getPrimaryTwitterList());
       List<Status> statuses = twitter.getUserListStatuses(twitterListId, paging);
       boolean first = true;
-      List<TweetSummary> summaries = Lists.newLinkedList();
+      List<Story> summaries = Lists.newLinkedList();
       for (Status status : statuses) {
         if (first) {
           // tweets come in descending order...so this is the tweet we want to start from next time
           tweetDAO.setLastTweetId(status.getId());
           first = false;
         }
-        TweetSummary tweet = statusToTweet(status);
+        Story tweet = statusToTweet(status);
         if (tweet != null) {
           log.log(Level.INFO, "Tweet {0}: ", tweet);
           summaries.add(tweet);
@@ -153,7 +153,7 @@ public class SocialMediaCacherImpl implements SocialMediaCacher {
     return paging;
   }
 
-  private @Nullable TweetSummary statusToTweet(Status status) {
+  private @Nullable Story statusToTweet(Status status) {
     final String screenName = status.getUser().getScreenName().toLowerCase();
     if (status.isRetweet()) {
       return null;
@@ -165,7 +165,7 @@ public class SocialMediaCacherImpl implements SocialMediaCacher {
           .lng(geoLocation.getLongitude()).build();
     }
     final DateTime tweetTime = new DateTime(status.getCreatedAt(), defaultZone);
-    return new TweetSummary.Builder()
+    return new Story.Builder()
         .userId(screenName)
         .location(location)
         .id(status.getId())
@@ -203,12 +203,12 @@ public class SocialMediaCacherImpl implements SocialMediaCacher {
     LocalDate today = clock.currentDay();
     DateTime now = clock.now();
     Location uofc = locator.locate("58th and Ellis, Chicago, IL", GeolocationGranularity.NARROW);
-    Map<Truck, TweetSummary> trucksAdded = Maps.newHashMap();
+    Map<Truck, Story> trucksAdded = Maps.newHashMap();
     List<TruckStop> truckStops = Lists.newLinkedList();
     for (TruckObserver observer : truckObserverDAO.findAll()) {
-      final List<TweetSummary> tweets = tweetDAO.findTweetsAfter(clock.now().minusHours(HOURS_BACK_TO_SEARCH),
+      final List<Story> tweets = tweetDAO.findTweetsAfter(clock.now().minusHours(HOURS_BACK_TO_SEARCH),
           observer.getTwitterHandle(), false);
-      for (TweetSummary tweet : tweets) {
+      for (Story tweet : tweets) {
         if (tweet.getIgnoreInTwittalyzer()) {
           continue;
         }
@@ -265,7 +265,7 @@ public class SocialMediaCacherImpl implements SocialMediaCacher {
       if (Strings.isNullOrEmpty(truck.getTwitterHandle())) {
         continue;
       }
-      List<TweetSummary> tweets =
+      List<Story> tweets =
           tweetDAO.findTweetsAfter(clock.now().minusHours(HOURS_BACK_TO_SEARCH),
               truck.getTwitterHandle(),
               false);
@@ -455,20 +455,20 @@ public class SocialMediaCacherImpl implements SocialMediaCacher {
   /**
    * Ignore tweets so they are not matched in upcoming requests
    */
-  private void ignoreTweets(List<TweetSummary> tweets) {
+  private void ignoreTweets(List<Story> tweets) {
     if (tweets.isEmpty()) {
       return;
     }
-    List<TweetSummary> l = Lists.newLinkedList();
-    for (TweetSummary tweet : tweets) {
-      TweetSummary summary = new TweetSummary.Builder(tweet).ignoreInTwittalyzer(true).build();
+    List<Story> l = Lists.newLinkedList();
+    for (Story tweet : tweets) {
+      Story summary = new Story.Builder(tweet).ignoreInTwittalyzer(true).build();
       l.add(summary);
     }
     tweetDAO.save(l);
   }
 
-  private void notifyIfOffTheRoad(List<TweetSummary> tweets, Truck truck) {
-    for (TweetSummary tweet : tweets) {
+  private void notifyIfOffTheRoad(List<Story> tweets, Truck truck) {
+    for (Story tweet : tweets) {
       if (tweet.getIgnoreInTwittalyzer()) {
         continue;
       }
@@ -503,8 +503,8 @@ public class SocialMediaCacherImpl implements SocialMediaCacher {
     }
   }
 
-  private @Nullable DateTime findTermination(List<TweetSummary> tweets, Truck truck) {
-    for (TweetSummary tweet : tweets) {
+  private @Nullable DateTime findTermination(List<Story> tweets, Truck truck) {
+    for (Story tweet : tweets) {
       if (tweet.getIgnoreInTwittalyzer()) {
         continue;
       }
@@ -520,8 +520,8 @@ public class SocialMediaCacherImpl implements SocialMediaCacher {
     return null;
   }
 
-  private TruckStopMatch findMatch(List<TweetSummary> tweets, Truck truck) {
-    for (TweetSummary tweet : tweets) {
+  private TruckStopMatch findMatch(List<Story> tweets, Truck truck) {
+    for (Story tweet : tweets) {
       if (tweet.getIgnoreInTwittalyzer()) {
         log.log(Level.INFO, "Ignoring tweet: {0}", tweet);
         continue;

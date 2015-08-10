@@ -34,8 +34,8 @@ import foodtruck.dao.TweetCacheDAO;
 import foodtruck.model.DailySchedule;
 import foodtruck.model.DayOfWeek;
 import foodtruck.model.Location;
+import foodtruck.model.Story;
 import foodtruck.model.Truck;
-import foodtruck.model.TweetSummary;
 import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
@@ -123,7 +123,7 @@ public class TruckServlet extends HttpServlet {
       resp.setStatus(404);
       return;
     }
-    final List<TweetSummary> tweetSummaries = tweetDAO.findTweetsAfter(
+    final List<Story> tweetSummaries = tweetDAO.findTweetsAfter(
         clock.currentDay().toDateTimeAtStartOfDay(clock.zone()), truck.getTwitterHandle(), true);
 
     req.setAttribute("tweets", tweetSummaries);
@@ -235,13 +235,13 @@ public class TruckServlet extends HttpServlet {
     try {
       JSONObject bodyObj = new JSONObject(body);
       final long tweetId = Long.parseLong(bodyObj.getString("id"));
-      TweetSummary summary = tweetDAO.findByTweetId(tweetId);
+      Story summary = tweetDAO.findByTweetId(tweetId);
       if (summary == null) {
         log.warning("COULDN'T FIND TWEET ID: " + tweetId);
         resp.setStatus(404);
         return;
       }
-      summary = new TweetSummary.Builder(summary)
+      summary = new Story.Builder(summary)
           .ignoreInTwittalyzer(bodyObj.getBoolean("ignore")).build();
       tweetDAO.saveOrUpdate(summary);
     } catch (JSONException e) {
