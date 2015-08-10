@@ -19,7 +19,7 @@
   </c:choose>
   <script src="//storage.googleapis.com/ftf_static/script/modernizr-1.7.min.js"></script>
   <link href="/css/foodtruckfinder.css?ver=11" rel="stylesheet"/>
-  <link rel="stylesheet" href="/css/typeahead.css"/>
+  <link rel="stylesheet" href="//storage.googleapis.com/ftf_static/css/typeahead.css"/>
   <style type="text/css">
   </style>
 </head>
