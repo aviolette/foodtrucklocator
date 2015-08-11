@@ -153,7 +153,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
     truckStopDAO.addStops(ImmutableList.<TruckStop>of(matchedStop));
     expectTweetsIgnored();
     replayAll();
-    service.analyze();
+    service.handleTruckTweets();
     verifyAll();
   }
 
@@ -175,7 +175,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
         matchedStop.withStartTime(currentStop.getStartTime())));
     expectTweetsIgnored();
     replayAll();
-    service.analyze();
+    service.handleTruckTweets();
     verifyAll();
   }
 
@@ -192,7 +192,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
         matchedStop.withStartTime(currentStop.getStartTime())));
     expectTweetsIgnored();
     replayAll();
-    service.analyze();
+    service.handleTruckTweets();
     verifyAll();
   }
 
@@ -211,7 +211,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
             .withEndTime(currentStop.getEndTime())));
     expectTweetsIgnored();
     replayAll();
-    service.analyze();
+    service.handleTruckTweets();
     verifyAll();
   }
 
@@ -229,7 +229,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
         ImmutableList.<TruckStop>of(matchedStop.withStartTime(currentStop.getStartTime())));
     expectTweetsIgnored();
     replayAll();
-    service.analyze();
+    service.handleTruckTweets();
     verifyAll();
   }
 
@@ -240,7 +240,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
     expect(matcher.match(truck2, basicTweet, null)).andStubReturn(null);
     expectTweetsIgnored();
     replayAll();
-    service.analyze();
+    service.handleTruckTweets();
     verifyAll();
   }
 
@@ -258,7 +258,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
         ImmutableList.<TruckStop>of(matchedStop.withEndTime(currentStop.getEndTime())));
     expectTweetsIgnored();
     replayAll();
-    service.analyze();
+    service.handleTruckTweets();
     verifyAll();
   }
 
@@ -273,7 +273,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
     expectTweetsIgnored();
     truckStopDAO.addStops(ImmutableList.<TruckStop>of(matchedStop));
     replayAll();
-    service.analyze();
+    service.handleTruckTweets();
     verifyAll();
   }
 

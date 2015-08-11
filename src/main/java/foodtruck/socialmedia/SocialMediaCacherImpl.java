@@ -259,8 +259,8 @@ public class SocialMediaCacherImpl implements SocialMediaCacher {
     return builder.build();
   }
 
-
-  private void handleTruckTweets() {
+  @VisibleForTesting
+  void handleTruckTweets() {
     for (Truck truck : truckDAO.findAll()) {
       if (Strings.isNullOrEmpty(truck.getTwitterHandle())) {
         continue;
