@@ -13,7 +13,7 @@ import com.sun.jersey.api.client.WebResource;
 public class GeolocationModule extends AbstractModule {
   @Override
   protected void configure() {
-    bind(GeoLocator.class).to(CacheAndStoreLocator.class);
+    bind(GeoLocator.class).to(CacheAndForwardLocator.class);
     bind(GeoLocator.class).annotatedWith(SecondaryGeolocator.class).to(OrderedGeolocator.class);
   }
 

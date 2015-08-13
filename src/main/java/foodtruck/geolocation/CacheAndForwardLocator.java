@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
@@ -21,17 +20,17 @@ import foodtruck.util.Clock;
  * @author aviolette@gmail.com
  * @since Jul 20, 2011
  */
-public class CacheAndStoreLocator implements GeoLocator {
+public class CacheAndForwardLocator implements GeoLocator {
   private final LocationDAO dao;
   private final GeoLocator secondaryLocator;
-  private static final Logger log = Logger.getLogger(CacheAndStoreLocator.class.getName());
+  private static final Logger log = Logger.getLogger(CacheAndForwardLocator.class.getName());
   private FifteenMinuteRollupDAO monitor;
   private Clock clock;
   private final static String LAT_LNG = "(\\+|-)?[\\d|\\.]+,(\\+|-)?[\\d|\\.]+";
 
   @Inject
-  public CacheAndStoreLocator(LocationDAO dao,
-      @SecondaryGeolocator GeoLocator secondaryLocator, FifteenMinuteRollupDAO monitor, Clock clock) {
+  public CacheAndForwardLocator(LocationDAO dao, @SecondaryGeolocator GeoLocator secondaryLocator,
+      FifteenMinuteRollupDAO monitor, Clock clock) {
     this.secondaryLocator = secondaryLocator;
     this.dao = dao;
     this.monitor = monitor;

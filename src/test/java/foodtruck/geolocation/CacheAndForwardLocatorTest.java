@@ -9,6 +9,7 @@ import foodtruck.dao.FifteenMinuteRollupDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.model.Location;
 import foodtruck.util.Clock;
+
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -17,9 +18,9 @@ import static org.junit.Assert.assertFalse;
  * @author aviolette@gmail.com
  * @since 9/8/11
  */
-public class CacheAndStoreLocatorTest extends EasyMockSupport {
+public class CacheAndForwardLocatorTest extends EasyMockSupport {
   private LocationDAO dao;
-  private CacheAndStoreLocator locator;
+  private CacheAndForwardLocator locator;
   private GeoLocator secondary;
   private final static String LOCATION_NAME = "Location";
   private Location unnamedLocation;
@@ -36,7 +37,7 @@ public class CacheAndStoreLocatorTest extends EasyMockSupport {
     clock = createMock(Clock.class);
     now = new DateTime();
     expect(clock.now()).andStubReturn(now);
-    locator = new CacheAndStoreLocator(dao, secondary, monitor, clock);
+    locator = new CacheAndForwardLocator(dao, secondary, monitor, clock);
     namedLocation = Location.builder().lat(-3).lng(-4).name(LOCATION_NAME).build();
     unnamedLocation = Location.builder().lat(-4).lng(-5).build();
   }
