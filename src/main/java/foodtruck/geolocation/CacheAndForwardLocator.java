@@ -24,8 +24,8 @@ public class CacheAndForwardLocator implements GeoLocator {
   private final LocationDAO dao;
   private final GeoLocator secondaryLocator;
   private static final Logger log = Logger.getLogger(CacheAndForwardLocator.class.getName());
-  private FifteenMinuteRollupDAO monitor;
-  private Clock clock;
+  private final FifteenMinuteRollupDAO monitor;
+  private final Clock clock;
   private final static String LAT_LNG = "(\\+|-)?[\\d|\\.]+,(\\+|-)?[\\d|\\.]+";
 
   @Inject
