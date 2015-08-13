@@ -9,8 +9,6 @@ import com.google.common.base.Splitter;
  * @since 1/5/15
  */
 public class StaticConfig {
-  private Location center;
-
   public boolean isRecachingEnabled() {
     return "true".equals(System.getProperty("foodtrucklocator.recache.enabled", "true"));
   }
@@ -79,7 +77,7 @@ public class StaticConfig {
       builder.name(it.next());
       builder.lat(Double.parseDouble(it.next()));
       builder.lng(Double.parseDouble(it.next()));
-    } catch (Exception e) {
+    } catch (Exception ignored) {
     }
     return builder.build();
   }
