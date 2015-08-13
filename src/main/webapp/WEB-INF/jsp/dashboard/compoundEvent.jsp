@@ -2,7 +2,7 @@
 
 <h2>New event at ${location.name}</h2>
 
-<form role="form" action="" method="post">
+<form role="form" action="${postMethod}" method="post">
     <div class="form-group">
         <label class="control-label" for="startTimeInput">Start</label>
         <input name="startTime" class="timeentry form-control" id="startTimeInput" value="${startTime}" type="datetime-local" autofocus/>
@@ -15,7 +15,7 @@
         <label class="control-label" for="truckList">Trucks</label>
         <select id="truckList" name="trucks" class="form-control" multiple>
             <c:forEach var="truck" items="${trucks}">
-                <option value="${truck.id}">${truck.name}</option>
+                <option value="${truck.truck.id}" <c:if test="${truck.selected}">selected</c:if>>${truck.truck.name}</option>
             </c:forEach>
         </select>
     </div>
