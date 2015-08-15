@@ -48,7 +48,7 @@ public class SimpleEmailNotifierTest extends EasyMockSupport {
         .build();
     sender.sendSystemMessage("Truck was mentioned by another truck", "This tweet \"foobar\"\n" +
         "\n might have indicated that there additional trucks to be added to the system.\n\n  " +
-        "Click here http://localhost/admin/event_at/123?selection=truck1,truck2&startTime=20150813-0700&endTime=20150812-2100 to add the trucks");
+        "Click here http://localhost/admin/event_at/123?selected=truck1,truck2&startTime=20150813-0700&endTime=20150812-2100 to add the trucks");
     replayAll();
     notifier.notifyAddMentionedTrucks(ImmutableSet.of("truck1", "truck2"), stop, "foobar");
     verifyAll();
