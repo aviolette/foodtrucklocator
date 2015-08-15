@@ -100,6 +100,10 @@ public class Story extends ModelEntity {
     return new Builder();
   }
 
+  public static Builder builder(Story story) {
+    return new Builder(story);
+  }
+
   public static class Builder {
     private String screenName;
     private Location location;

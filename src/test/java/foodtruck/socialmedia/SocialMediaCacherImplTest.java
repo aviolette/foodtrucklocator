@@ -362,4 +362,41 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
     service.observerAnalyze();
     verifyAll();
   }
+
+  @Test
+  public void testHandleNotificationsForMentionedTrucksNoneMentioned() {
+    final TruckStopMatch matched =
+        TruckStopMatch.builder().stop(matchedStop).text(basicTweet.getText()).terminated(false)
+            .build();
+    replayAll();
+    service.handleAdditionalTrucks(matchedStop, matched);
+    verifyAll();
+  }
+
+  @Test
+  public void testHandleNotificationsForMentionedTrucksMentionsNonTruck() {
+    basicTweet = Story.builder(basicTweet).text("We are here at @foobar on Clark and Monroe").build();
+    final TruckStopMatch matched =
+        TruckStopMatch.builder().stop(matchedStop).text(basicTweet.getText()).terminated(false)
+            .build();
+    expect(truckDAO.findByTwitterId("foobar")).andReturn(ImmutableSet.<Truck>of());
+    replayAll();
+    service.handleAdditionalTrucks(matchedStop, matched);
+    verifyAll();
+  }
+
+  @Test
+  public void testHandleNotificationsForMentionedTrucksMentionsTruck() {
+    basicTweet = Story.builder(basicTweet).text("We are here at @truck1 on Clark and Monroe").build();
+    final TruckStopMatch matched =
+        TruckStopMatch.builder().stop(matchedStop).text(basicTweet.getText()).terminated(false)
+            .build();
+    expect(truckDAO.findByTwitterId("truck1")).andReturn(ImmutableSet.of(truck1));
+    expect(truckStopDAO.findOverRange("truck1", matchedStop.getInterval()))
+        .andReturn(ImmutableList.<TruckStop>of());
+    emailNotifier.notifyAddMentionedTrucks(ImmutableSet.of("truck1"), matchedStop, basicTweet.getText());
+    replayAll();
+    service.handleAdditionalTrucks(matchedStop, matched);
+    verifyAll();
+  }
 }

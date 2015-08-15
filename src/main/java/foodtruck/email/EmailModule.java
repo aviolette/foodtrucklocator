@@ -9,5 +9,6 @@ import com.google.inject.AbstractModule;
 public class EmailModule extends AbstractModule {
   @Override protected void configure() {
     bind(EmailNotifier.class).to(SimpleEmailNotifier.class);
+    bind(EmailSender.class).to(JavaMailEmailSender.class);
   }
 }

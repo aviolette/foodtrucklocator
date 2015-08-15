@@ -182,6 +182,10 @@ public class TruckStop extends ModelEntity {
     return fromBeacon != null;
   }
 
+  public Interval getInterval() {
+    return new Interval(getStartTime(), getEndTime());
+  }
+
   public static class Builder {
     private Truck truck;
     private DateTime startTime;

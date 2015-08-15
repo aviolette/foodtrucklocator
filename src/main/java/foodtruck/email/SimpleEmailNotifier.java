@@ -1,23 +1,12 @@
 package foodtruck.email;
 
-import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
 import java.util.Map;
-import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.annotation.Nullable;
-import javax.mail.Address;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-
 import com.google.common.base.Joiner;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
@@ -26,7 +15,6 @@ import com.google.inject.Inject;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.ConfigurationDAO;
-import foodtruck.model.Configuration;
 import foodtruck.model.FoodTruckRequest;
 import foodtruck.model.Location;
 import foodtruck.model.PetitionSignature;
@@ -35,6 +23,7 @@ import foodtruck.model.Story;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.server.vendor.LoginMethod;
+import foodtruck.util.TimeFormatter;
 import foodtruck.util.TimeOnlyFormatter;
 
 /**
@@ -47,13 +36,18 @@ public class SimpleEmailNotifier implements EmailNotifier {
   private final ConfigurationDAO configDAO;
   private final DateTimeFormatter timeOnlyFormatter;
   private final StaticConfig staticConfig;
+  private final DateTimeFormatter dateTimeFormatter;
+  private final EmailSender sender;
 
   @Inject
   public SimpleEmailNotifier(ConfigurationDAO configurationDAO,
-      @TimeOnlyFormatter DateTimeFormatter timeFormatter, StaticConfig staticConfig) {
+      @TimeOnlyFormatter DateTimeFormatter timeFormatter, StaticConfig staticConfig,
+      @TimeFormatter DateTimeFormatter dateTimeFormatter, EmailSender sender) {
     this.configDAO = configurationDAO;
     this.timeOnlyFormatter = timeFormatter;
     this.staticConfig = staticConfig;
+    this.dateTimeFormatter = dateTimeFormatter;
+    this.sender = sender;
   }
 
   @Override public void systemNotifyOffTheRoad(Truck truck, Story tweet) {
@@ -62,7 +56,7 @@ public class SimpleEmailNotifier implements EmailNotifier {
         "Click here to take the truck off the road: " + staticConfig.getBaseUrl() +
         "/admin/trucks/{2}/offtheroad", truck.getName(), tweet.getText(),
         truck.getId());
-    sendSystemMessage(truck.getName() + " might be off the road", msgBody);
+    sender.sendSystemMessage(truck.getName() + " might be off the road", msgBody);
   }
 
   private String locationAddedMessage(Location location, Story tweet, Truck truck) {
@@ -74,7 +68,7 @@ public class SimpleEmailNotifier implements EmailNotifier {
 
   @Override public void systemNotifyLocationAdded(Location location, Story tweet, Truck truck) {
     try {
-      sendSystemMessage("New Location Added: " + location.getName(),
+      sender.sendSystemMessage("New Location Added: " + location.getName(),
           locationAddedMessage(location, tweet, truck));
     } catch (Exception e) {
       log.log(Level.WARNING, e.getMessage(), e);
@@ -90,7 +84,7 @@ public class SimpleEmailNotifier implements EmailNotifier {
           .append(" '").append(entry.getValue().getText()).append("'\n\n");
     }
     try {
-      sendSystemMessage("New stops added by observers", builder.toString());
+      sender.sendSystemMessage("New stops added by observers", builder.toString());
     } catch (Exception e) {
       log.log(Level.WARNING, e.getMessage(), e);
     }
@@ -118,8 +112,8 @@ public class SimpleEmailNotifier implements EmailNotifier {
       return false;
     }
     log.log(Level.INFO, "Sending Request {0} to {1}", new Object[]{request.getKey(), Joiner.on(",").join(addresses)});
-    return sendMessage("Food Trucks Needed: " + request.getEventName(), ImmutableSet
-        .of(configDAO.find().getNotificationSender()) ,
+    return sender.sendMessage("Food Trucks Needed: " + request.getEventName(),
+        ImmutableSet.of(configDAO.find().getNotificationSender()),
         buildRequest(request, new StringBuilder()).toString(), addresses, request.getEmail());
   }
 
@@ -128,35 +122,35 @@ public class SimpleEmailNotifier implements EmailNotifier {
         "\n \"{1}\"\n\n" +
         "Because it was flagged as high-confidenced, all remaining stops were cancelled",
         truck.getName(), tweet.getText());
-    sendSystemMessage("Stops auto-canceled for " + truck.getName(), msgBody);
+    sender.sendSystemMessage("Stops auto-canceled for " + truck.getName(), msgBody);
   }
 
   @Override public void systemNotifiyWeirdStopAdded(TruckStop truckStop, String tweetText) {
-    sendSystemMessage("Strange afternoon stop added " + truckStop.getTruck().getName(),
-        MessageFormat.format("This tweet added a new stop for {0} after 1:30pm for a lunch truck: \"{1}\"\n\n" +
-          "Stop that was added: {2} from {3} to {4}\n\n Go here to modify: {6}/admin/trucks/{5}\n\n",
-          truckStop.getTruck().getName(), tweetText,
-          truckStop.getLocation().getName(), timeOnlyFormatter.print(truckStop.getStartTime()),
-          timeOnlyFormatter.print(truckStop.getEndTime()), truckStop.getTruck().getId(), staticConfig.getBaseUrl()));
+    sender.sendSystemMessage("Strange afternoon stop added " + truckStop.getTruck().getName(), MessageFormat.format(
+            "This tweet added a new stop for {0} after 1:30pm for a lunch truck: \"{1}\"\n\n" + "Stop that was added: {2} from {3} to {4}\n\n Go here to modify: {6}/admin/trucks/{5}\n\n",
+            truckStop.getTruck().getName(), tweetText, truckStop.getLocation().getName(),
+            timeOnlyFormatter.print(truckStop.getStartTime()), timeOnlyFormatter.print(truckStop.getEndTime()),
+            truckStop.getTruck().getId(), staticConfig.getBaseUrl()));
   }
 
   @Override public void systemNotifyWarnError(String error) {
-    sendSystemMessage("Errors detected! (" + staticConfig.getCityState() + ")", "Errors detected on the site:\n\n" + error);
+    sender.sendSystemMessage("Errors detected! (" + staticConfig.getCityState() + ")",
+        "Errors detected on the site:\n\n" + error);
  }
 
   @Override public void notifyVerifyPetitionSignature(PetitionSignature sig) {
     String msgBody = MessageFormat.format("Thank you for signing our petition to bring back the food truck stands at" +
         " 600 W. Chicago.  Please click on this URL to verify your email http://www.chicagofoodtruckfinder.com/petitions/600w/verify/{0}", sig.getSignature());
     log.log(Level.FINE, "Petition signature {0}", sig);
-    sendMessage("Petition Signature Needs Verification", ImmutableList.of(sig.getEmail()),
-        msgBody,
+    sender.sendMessage("Petition Signature Needs Verification", ImmutableList.of(sig.getEmail()), msgBody,
         ImmutableList.<String>of(), "no-reply@chicagofoodtruckfinder.com");
   }
 
-  @Override public void notifyThanksForSigningPetition(PetitionSignature sig) {
+  @Override
+  public void notifyThanksForSigningPetition(PetitionSignature sig) {
     String msgBody = MessageFormat.format("Thank you for signing our petition to bring back the food truck stands at" +
         " 600 W. Chicago.", sig.getSignature());
-    sendMessage("Thank you very much!", ImmutableList.of(sig.getEmail()), msgBody, ImmutableList.<String>of(),
+    sender.sendMessage("Thank you very much!", ImmutableList.of(sig.getEmail()), msgBody, ImmutableList.<String>of(),
         "no-reply@chicagofoodtruckfinder.com");
   }
 
@@ -164,52 +158,17 @@ public class SimpleEmailNotifier implements EmailNotifier {
   public void systemNotifyVendorPortalLogin(String screenName, LoginMethod loginMethod) {
     String msgBody = MessageFormat.format("Vendor {0} logged in to vendor portal via {1}", screenName,
         loginMethod.toString());
-    sendSystemMessage("Vendor portal login", msgBody);
+    sender.sendSystemMessage("Vendor portal login", msgBody);
   }
 
-  private boolean sendMessage(String subject, Iterable<String> receivers, String msgBody, Iterable<String> bccs,
-      @Nullable String replyTo) {
-    Configuration config = configDAO.find();
-    if (Iterables.isEmpty(receivers)) {
-      log.log(Level.INFO, "No email addresses specified in receiver list for message: {0}", msgBody);
-      return false;
-    }
-    String sender = config.getNotificationSender();
-    Properties props = new Properties();
-    Session session = Session.getDefaultInstance(props, null);
-    Message msg = new MimeMessage(session);
-    try {
-      msg.setFrom(new InternetAddress(sender, "Food Truck Finder"));
-      for (String receiver : receivers) {
-        if (Strings.isNullOrEmpty(receiver)) {
-          continue;
-        }
-        msg.addRecipient(Message.RecipientType.TO,
-            new InternetAddress(receiver));
-      }
-      for (String receiver : bccs) {
-        if (Strings.isNullOrEmpty(receiver)) {
-          continue;
-        }
-        msg.addRecipient(Message.RecipientType.BCC, new InternetAddress(receiver));
-      }
-      if (!Strings.isNullOrEmpty(replyTo)) {
-        msg.setReplyTo(new Address[] { new InternetAddress(replyTo) });
-      }
-      msg.setSubject(subject);
-      msg.setText(msgBody);
-      Transport.send(msg);
-    } catch (MessagingException e) {
-      log.log(Level.WARNING, e.getMessage(), e);
-      return false;
-    } catch (UnsupportedEncodingException e) {
-      log.log(Level.WARNING, e.getMessage(), e);
-      return false;
-    }
-    return true;
-  }
-
-  private void sendSystemMessage(String subject, String msgBody) {
-    sendMessage(subject, configDAO.find().getSystemNotificationList(), msgBody, ImmutableList.<String>of(), null);
+  @Override
+  public void notifyAddMentionedTrucks(Set<String> truckIds, TruckStop stop, String text) {
+    String truckIdString = Joiner.on(",").join(truckIds),
+        url = staticConfig.getBaseUrl() + "/admin/event_at/" + stop.getLocation().getKey() +
+        "?selection=" + truckIdString + "&startTime=" + dateTimeFormatter.print(stop.getStartTime()) + "&endTime=" +
+            dateTimeFormatter.print(stop.getEndTime());
+    String msgBody = MessageFormat.format("This tweet \"{0}\"\n\n might have indicated that there additional trucks " +
+        "to be added to the system.\n\n  Click here {1} to add the trucks", text, url);
+    sender.sendSystemMessage("Truck was mentioned by another truck", msgBody);
   }
 }

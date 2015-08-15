@@ -1,5 +1,6 @@
 package foodtruck.socialmedia;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,6 +11,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
+import com.google.api.client.util.Sets;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -21,6 +23,7 @@ import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -379,11 +382,45 @@ public class SocialMediaCacherImpl implements SocialMediaCacher {
       for (TruckStop stop : addStops) {
         checkForRetweet(stop, match);
         checkIsWeird(stop, match);
+        handleAdditionalTrucks(stop, match);
         notifier.added(stop);
       }
       truckStopDAO.addStops(addStops);
     }
     compressAdjacentStops(truck.getId(), clock.currentDay());
+  }
+
+  @VisibleForTesting
+  void handleAdditionalTrucks(TruckStop stop, TruckStopMatch match) {
+    Set<String> truckIds = Sets.newHashSet();
+    Interval theInterval = stop.getInterval();
+    for (String twitterHandle : parseHandles(match.getText())) {
+      if (twitterHandle.equals(stop.getTruck().getTwitterHandle())) {
+        continue;
+      }
+      Collection<Truck> trucks = truckDAO.findByTwitterId(twitterHandle);
+      Truck truck = Iterables.getFirst(trucks, null);
+      if (truck == null) {
+        continue;
+      }
+      if (!hasOverlappingStops(theInterval, truck, stop)) {
+        truckIds.add(truck.getId());
+      }
+    }
+    if (truckIds.isEmpty()) {
+      return;
+    }
+    emailNotifier.notifyAddMentionedTrucks(truckIds, stop, match.getText());
+  }
+
+  private boolean hasOverlappingStops(Interval theInterval, Truck truck, TruckStop stop) {
+    List<TruckStop> stops = truckStopDAO.findOverRange(truck.getId(), theInterval);
+    for (TruckStop aStop : stops) {
+      if (aStop.getInterval().overlap(theInterval) != null) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private void checkIsWeird(TruckStop stop, TruckStopMatch match) {

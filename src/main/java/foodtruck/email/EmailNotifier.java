@@ -1,6 +1,7 @@
 package foodtruck.email;
 
 import java.util.Map;
+import java.util.Set;
 
 import foodtruck.model.FoodTruckRequest;
 import foodtruck.model.Location;
@@ -68,4 +69,10 @@ public interface EmailNotifier {
    * @param loginMethod the login method
    */
   void systemNotifyVendorPortalLogin(String screenName, LoginMethod loginMethod);
+
+  /**
+   * System notification that is sent out when a truck's location is added and other trucks
+   * are mentioned at that spot that don't already have an overlapping stop.
+   */
+  void notifyAddMentionedTrucks(Set<String> truckIds, TruckStop stop, String text);
 }
