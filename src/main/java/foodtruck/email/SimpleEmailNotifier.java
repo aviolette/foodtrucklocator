@@ -165,7 +165,7 @@ public class SimpleEmailNotifier implements EmailNotifier {
   public void notifyAddMentionedTrucks(Set<String> truckIds, TruckStop stop, String text) {
     String truckIdString = Joiner.on(",").join(truckIds),
         url = staticConfig.getBaseUrl() + "/admin/event_at/" + stop.getLocation().getKey() +
-        "?selection=" + truckIdString + "&startTime=" + dateTimeFormatter.print(stop.getStartTime()) + "&endTime=" +
+        "?selected=" + truckIdString + "&startTime=" + dateTimeFormatter.print(stop.getStartTime()) + "&endTime=" +
             dateTimeFormatter.print(stop.getEndTime());
     String msgBody = MessageFormat.format("This tweet \"{0}\"\n\n might have indicated that there additional trucks " +
         "to be added to the system.\n\n  Click here {1} to add the trucks", text, url);
