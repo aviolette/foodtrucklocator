@@ -61,6 +61,14 @@ public class StaticConfig {
     return "true".equals(System.getProperty("foodtrucklocator.yahoo.geolocation", "true"));
   }
 
+  public String getSyncUrl() {
+    return System.getProperty("foodtrucklocator.sync.url", null);
+  }
+
+  public String getSyncAppKey() {
+    return System.getProperty("foodtrucklocator.sync.app.key", null);
+  }
+
   public String getYahooAppId() {
     return System.getProperty("foodtrucklocator.yahoo.key");
   }

@@ -41,8 +41,6 @@ public class ConfigurationDAOAppEngine extends
     entity.setProperty(PROP_SYSTEM_NOTIFICATION_EMAILS, config.getSystemNotificationList());
     entity.setProperty(PROP_FRONT_DOOR_APP_KEY, config.getFrontDoorAppKey());
     entity.setProperty(MINIMUM_CONFIDENCE_FOR_DISPLAY, config.getMinimumConfidenceForDisplay().toString());
-    entity.setProperty(SYNC_URL, config.getSyncUrl());
-    entity.setProperty(SYNC_APPKEY, config.getSyncAppKey());
     return entity;
   }
 
@@ -50,8 +48,6 @@ public class ConfigurationDAOAppEngine extends
     String minimumDisplayConfidence = getStringProperty(entity, MINIMUM_CONFIDENCE_FOR_DISPLAY);
     Confidence confidence = Strings.isNullOrEmpty(minimumDisplayConfidence) ? Confidence.HIGH : Confidence.valueOf(minimumDisplayConfidence);
     return Configuration.builder()
-        .syncUrl(getStringProperty(entity, SYNC_URL))
-        .syncAppKey(getStringProperty(entity, SYNC_APPKEY))
         .minimumConfidenceForDisplay(confidence)
         .throttleGoogleGeocoding(Attributes.getDateTime(entity, PROP_GOOGLE_THROTTLE, defaultZone))
         .systemNotificationList(getListProperty(entity, PROP_SYSTEM_NOTIFICATION_EMAILS))

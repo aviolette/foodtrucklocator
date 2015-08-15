@@ -19,17 +19,15 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;
 
-import foodtruck.dao.ConfigurationDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
-import foodtruck.model.Configuration;
 import foodtruck.model.Location;
+import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.server.resources.json.LocationReader;
 import foodtruck.server.resources.json.TruckReader;
-import foodtruck.server.resources.json.TruckStopReader;
 import foodtruck.util.Clock;
 
 /**
@@ -38,32 +36,30 @@ import foodtruck.util.Clock;
  */
 @Singleton
 public class SyncServlet extends HttpServlet {
-  private final ConfigurationDAO configDao;
+  private final StaticConfig staticConfig;
   private final TruckReader truckReader;
   private final TruckDAO truckDAO;
   private final TruckStopDAO truckStopDAO;
-  private final TruckStopReader truckStopReader;
   private final Clock clock;
   private final LocationReader locationReader;
   private final LocationDAO locationDAO;
 
   @Inject
-  public SyncServlet(ConfigurationDAO configDao, TruckReader truckReader, TruckDAO truckDAO, TruckStopDAO truckStopDAO,
-      TruckStopReader truckStopReader, Clock clock, LocationReader locationReader, LocationDAO locationDAO) {
-    this.configDao = configDao;
+  public SyncServlet(StaticConfig staticConfig, TruckReader truckReader, TruckDAO truckDAO, TruckStopDAO truckStopDAO,
+      Clock clock, LocationReader locationReader, LocationDAO locationDAO) {
     this.truckReader = truckReader;
     this.truckDAO = truckDAO;
     this.truckStopDAO = truckStopDAO;
-    this.truckStopReader = truckStopReader;
     this.clock = clock;
     this.locationReader = locationReader;
     this.locationDAO = locationDAO;
+    this.staticConfig = staticConfig;
   }
 
   @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     req.setAttribute("nav", "sync");
-    req.setAttribute("syncEnabled", !Strings.isNullOrEmpty(configDao.find().getSyncUrl()));
+    req.setAttribute("syncEnabled", !Strings.isNullOrEmpty(staticConfig.getSyncUrl()));
     req.getRequestDispatcher("/WEB-INF/jsp/dashboard/sync.jsp").forward(req, resp);
   }
 
@@ -73,10 +69,9 @@ public class SyncServlet extends HttpServlet {
       syncSchedule = "on".equals(req.getParameter("schedule"));
 
     Client c = Client.create();
-    Configuration config = configDao.find();
     if (syncTrucks) {
       truckDAO.deleteAll();
-      JSONArray arr = c.resource(config.getSyncUrl() + "/services/trucks?appKey="+config.getSyncAppKey())
+      JSONArray arr = c.resource(staticConfig.getSyncUrl() + "/services/trucks?appKey="+staticConfig.getSyncAppKey())
           .accept(MediaType.APPLICATION_JSON_TYPE).get(JSONArray.class);
       for (int i=0; i < arr.length(); i++) {
         try {
@@ -90,7 +85,7 @@ public class SyncServlet extends HttpServlet {
     if (syncSchedule) {
       final DateTime from = clock.now().withHourOfDay(0).withMinuteOfHour(0);
       truckStopDAO.deleteAfter(from);
-      JSONObject dailySchedule = c.resource(config.getSyncUrl() + "/services/daily_schedule?appKey="+config.getSyncAppKey())
+      JSONObject dailySchedule = c.resource(staticConfig.getSyncUrl() + "/services/daily_schedule?appKey="+staticConfig.getSyncAppKey())
           .accept(MediaType.APPLICATION_JSON_TYPE).get(JSONObject.class);
 
       try {

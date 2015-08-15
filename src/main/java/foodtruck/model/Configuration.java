@@ -22,8 +22,6 @@ public class Configuration extends ModelEntity {
   private @Nullable String notificationSender;
   private @Nullable String frontDoorAppKey;
   private Confidence minimumConfidenceForDisplay;
-  private String syncUrl;
-  private String syncAppKey;
 
   public Configuration(Object key) {
     super(key);
@@ -36,8 +34,6 @@ public class Configuration extends ModelEntity {
     this.notificationSender = builder.notificationSender;
     this.frontDoorAppKey = builder.frontDoorAppKey;
     this.minimumConfidenceForDisplay = builder.minimumConfidenceForDisplay;
-    this.syncUrl = builder.syncUrl;
-    this.syncAppKey = builder.syncAppKey;
   }
 
   public Confidence getMinimumConfidenceForDisplay() {
@@ -80,14 +76,6 @@ public class Configuration extends ModelEntity {
     return new Builder(config);
   }
 
-  public String getSyncUrl() {
-    return syncUrl;
-  }
-
-  public String getSyncAppKey() {
-    return syncAppKey;
-  }
-
   public static class Builder {
     private Key key;
     private @Nullable DateTime throttleGoogleUntil;
@@ -102,8 +90,6 @@ public class Configuration extends ModelEntity {
     }
 
     public Builder(Configuration config) {
-      this.syncUrl = config.syncUrl;
-      this.syncAppKey = config.syncAppKey;
       this.throttleGoogleUntil = config.throttleGoogleUntil;
       this.key = (Key) config.getKey();
       this.systemNotificationList = config.systemNotificationList;
