@@ -1,6 +1,6 @@
 <%@include file="../common.jsp" %>
 <%@include file="dashboardHeaderBS3.jsp" %>
-<link href="/css/rickshaw/rickshaw.min.css" rel="stylesheet">
+<link href="//storage.googleapis.com/ftf_static/css/rickshaw.min.css" rel="stylesheet">
 <style type="text/css">
   .rickshaw_graph {
   }
@@ -117,10 +117,6 @@
     drawGraphs(["cacheLookup_total","cacheLookup_failed"], "databaseCache");
     drawGraphs(["foodtruck.server.api.FoodTruckScheduleServlet_doGet_total"], "scheduleService");
     drawGraphs([<c:forEach items="${applications}" var="app" varStatus="idx">"${app}"<c:if test="${!idx.last}">,</c:if></c:forEach>], "dailySchedule");
-    /*
-    drawGraphs(["foodtruck.server.resources.DailyScheduleResource_findForDay_total",
-      "foodtruck.server.resources.DailyScheduleResource_findForDay_failed"], "dailySchedule");
-*/
     drawGraphs(["foodtruck.server.resources.LocationResource_findLocation_total",
       "foodtruck.server.resources.LocationResource_findLocation_failed"], "locationLookup");
     drawGraphs("trucksOnRoad", "trucksOnRoad");
