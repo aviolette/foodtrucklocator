@@ -1,49 +1,49 @@
 <%@include file="../common.jsp" %>
-<%@include file="dashboardHeader.jsp" %>
+<%@include file="dashboardHeaderBS3.jsp" %>
 <link href="/css/rickshaw/rickshaw.min.css" rel="stylesheet">
 <style type="text/css">
   .rickshaw_graph {
   }
 </style>
 
-<script src="/script/lib/d3.min.js" type="text/javascript"></script>
-<script src="/script/lib/d3.layout.min.js" type="text/javascript"></script>
-<script src="/script/lib/rickshaw.min.js" type="text/javascript"></script>
+<script src="//storage.googleapis.com/ftf_static/script/d3.min.js" type="text/javascript"></script>
+<script src="//storage.googleapis.com/ftf_static/script/d3.layout.min.js" type="text/javascript"></script>
+<script src="//storage.googleapis.com/ftf_static/script/rickshaw.min.js" type="text/javascript"></script>
 
 <h2>Errors</h2>
 <div class="row">
-  <div class="span6">
+  <div class="col-md-6">
     <h3>System Errors</h3>
     <div id="systemErrors"></div>
   </div>
 </div>
 <h2>System Stats</h2>
 <div class="row">
-  <div class="span6">
+  <div class="col-md-6">
     <h3>Trucks</h3>
     <div id="trucksOnRoad"></div>
   </div>
-  <div class="span6">
+  <div class="col-md-6">
     <h3>Database Cache Lookups</h3>
     <div id="databaseCache"></div>
   </div>
 </div>
 <div class="row">
-  <div class="span6">
+  <div class="col-md-6">
     <h3>Google Geolocation Lookups</h3>
     <div id="googlelookups"></div>
   </div>
-  <div class="span6">
+  <div class="col-md-6">
     <h3>Yahoo Geolocation Lookups</h3>
     <div id="yahoolookups"></div>
   </div>
 </div>
 <div class="row">
-  <div class="span6">
+  <div class="col-md-6">
     <h3>Twitter Connector</h3>
     <div id="twitterCache"></div>
   </div>
-  <div class="span6">
+  <div class="col-md-6">
     <h3>Google Calendar Connector</h3>
     <div id="calendarCache"></div>
   </div>
@@ -51,11 +51,11 @@
 
 <h2>End Point Requests</h2>
 <div class="row">
-  <div class="span6">
+  <div class="col-md-6">
     <h3>Schedule Service - /services/daily_schedule</h3>
     <div id="dailySchedule"></div>
   </div>
-  <div class="span6">
+  <div class="col-md-6">
     <h3>Location Lookup - /services/locations/<code>location</code></h3>
     <div id="locationLookup"></div>
   </div>
@@ -127,4 +127,4 @@
   });
 </script>
 
-<%@include file="dashboardFooter.jsp" %>
+<%@include file="dashboardFooterBS3.jsp" %>
