@@ -60,8 +60,6 @@
           </li>
           <li class="visible-desktop<c:if test="${nav == 'notifications'}"> active</c:if>"><a href="/admin/notifications">Notifications</a>
           </li>
-          <li<c:if test="${nav == 'settings'}"> class="active"</c:if>><a href="/admin/configuration">Global Settings</a>
-          </li>
           <li class="<c:if test="${nav == 'lookouts'}"> active</c:if>"><a href="/admin/lookouts">Lookouts</a>
           </li>
         </ul>

@@ -9,6 +9,7 @@ import com.google.common.base.Splitter;
  * @since 1/5/15
  */
 public class StaticConfig {
+
   public boolean isRecachingEnabled() {
     return "true".equals(System.getProperty("foodtrucklocator.recache.enabled", "true"));
   }
@@ -96,5 +97,14 @@ public class StaticConfig {
 
   public boolean showLocationGraphs() {
     return "true".equals(System.getProperty("foodtrucklocator.show.location.graphs", "true"));
+  }
+
+  public Iterable<String> getSystemNotificationList() {
+    return Splitter.on(",").omitEmptyStrings()
+        .split(System.getProperty("foodtrucklocator.mail.receivers", ""));
+  }
+
+  public String getNotificationSender() {
+    return System.getProperty("foodtrucklocator.mail.sender", "");
   }
 }

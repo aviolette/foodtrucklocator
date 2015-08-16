@@ -33,7 +33,6 @@ import foodtruck.util.TimeOnlyFormatter;
  */
 public class SimpleEmailNotifier implements EmailNotifier {
   public static Logger log = Logger.getLogger(SimpleEmailNotifier.class.getName());
-  private final ConfigurationDAO configDAO;
   private final DateTimeFormatter timeOnlyFormatter;
   private final StaticConfig staticConfig;
   private final DateTimeFormatter dateTimeFormatter;
@@ -43,7 +42,6 @@ public class SimpleEmailNotifier implements EmailNotifier {
   public SimpleEmailNotifier(ConfigurationDAO configurationDAO,
       @TimeOnlyFormatter DateTimeFormatter timeFormatter, StaticConfig staticConfig,
       @TimeFormatter DateTimeFormatter dateTimeFormatter, EmailSender sender) {
-    this.configDAO = configurationDAO;
     this.timeOnlyFormatter = timeFormatter;
     this.staticConfig = staticConfig;
     this.dateTimeFormatter = dateTimeFormatter;
@@ -113,7 +111,7 @@ public class SimpleEmailNotifier implements EmailNotifier {
     }
     log.log(Level.INFO, "Sending Request {0} to {1}", new Object[]{request.getKey(), Joiner.on(",").join(addresses)});
     return sender.sendMessage("Food Trucks Needed: " + request.getEventName(),
-        ImmutableSet.of(configDAO.find().getNotificationSender()),
+        ImmutableSet.of(staticConfig.getNotificationSender()),
         buildRequest(request, new StringBuilder()).toString(), addresses, request.getEmail());
   }
 

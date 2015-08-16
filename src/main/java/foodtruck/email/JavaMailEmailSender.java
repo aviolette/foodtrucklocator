@@ -19,8 +19,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 
-import foodtruck.dao.ConfigurationDAO;
-import foodtruck.model.Configuration;
+import foodtruck.model.StaticConfig;
 
 /**
  * @author aviolette
@@ -28,23 +27,21 @@ import foodtruck.model.Configuration;
  */
 public class JavaMailEmailSender implements EmailSender {
   private static final Logger log = Logger.getLogger(JavaMailEmailSender.class.getName());
-
-  private final ConfigurationDAO configDAO;
+  private final StaticConfig config;
 
   @Inject
-  public JavaMailEmailSender(ConfigurationDAO configurationDAO) {
-    this.configDAO = configurationDAO;
+  public JavaMailEmailSender(StaticConfig staticConfig) {
+    this.config = staticConfig;
   }
 
   @Override
   public void sendSystemMessage(String subject, String msgBody) {
-    sendMessage(subject, configDAO.find().getSystemNotificationList(), msgBody, ImmutableList.<String>of(), null);
+    sendMessage(subject, config.getSystemNotificationList(), msgBody, ImmutableList.<String>of(), null);
   }
 
   @Override
   public boolean sendMessage(String subject, Iterable<String> receivers, String msgBody, Iterable<String> bccs,
       @Nullable String replyTo) {
-    Configuration config = configDAO.find();
     if (Iterables.isEmpty(receivers)) {
       log.log(Level.INFO, "No email addresses specified in receiver list for message: {0}", msgBody);
       return false;
