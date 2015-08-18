@@ -1,8 +1,8 @@
 <%@include file="../common.jsp" %>
 <%@include file="dashboardHeaderBS3.jsp" %>
 
-<div class="row">
-  <div class="col-md-12">
+<div class="btn-toolbar">
+  <div class="btn-group">
     <button class="btn btn-primary" data-loading-text="Saving..." id="scriptSaveButton"><span class="glyphicon glyphicon-upload"></span> Save</button>
   </div>
 </div>
