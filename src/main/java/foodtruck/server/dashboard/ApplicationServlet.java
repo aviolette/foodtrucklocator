@@ -18,6 +18,7 @@ public class ApplicationServlet extends HttpServlet {
   @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     req.setAttribute("nav", "applications");
+    req.setAttribute("localFrameworks", "true".equals(System.getProperty("use.local.frameworks", "false")));
     req.getRequestDispatcher("/WEB-INF/jsp/dashboard/applications.jsp").forward(req, resp);
   }
 }
