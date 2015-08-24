@@ -11,17 +11,17 @@ public interface RetweetsDAO {
    * @param twitterHandle the twitter handle
    * @return whether it has been mentioned at that location
    */
-  public boolean hasBeenRetweeted(String truckId, String twitterHandle);
+  boolean hasBeenRetweeted(String truckId, String twitterHandle);
 
   /**
    * Marks a truck as being deleted at a particular spot.
    * @param truckId the truck
    * @param twitterHandle the twitter handle
    */
-  public void markRetweeted(String truckId, String twitterHandle);
+  void markRetweeted(String truckId, String twitterHandle);
 
   /**
    * Deletes all the current retweet information
    */
-  public void deleteAll();
+  void deleteAll();
 }

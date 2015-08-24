@@ -5,7 +5,6 @@ import java.util.Set;
 
 import foodtruck.model.FoodTruckRequest;
 import foodtruck.model.Location;
-import foodtruck.model.PetitionSignature;
 import foodtruck.model.Story;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
@@ -58,10 +57,6 @@ public interface EmailNotifier {
    * @param error the error
    */
   void systemNotifyWarnError(String error);
-
-  void notifyVerifyPetitionSignature(PetitionSignature sig);
-
-  void notifyThanksForSigningPetition(PetitionSignature sig);
 
   /**
    * Sends out a notification when a vendor logs in via a portal

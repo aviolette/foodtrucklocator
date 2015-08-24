@@ -7,7 +7,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
@@ -16,7 +15,6 @@ import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.model.FoodTruckRequest;
 import foodtruck.model.Location;
-import foodtruck.model.PetitionSignature;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.Story;
 import foodtruck.model.Truck;
@@ -134,22 +132,6 @@ public class SimpleEmailNotifier implements EmailNotifier {
     sender.sendSystemMessage("Errors detected! (" + staticConfig.getCityState() + ")",
         "Errors detected on the site:\n\n" + error);
  }
-
-  @Override public void notifyVerifyPetitionSignature(PetitionSignature sig) {
-    String msgBody = MessageFormat.format("Thank you for signing our petition to bring back the food truck stands at" +
-        " 600 W. Chicago.  Please click on this URL to verify your email http://www.chicagofoodtruckfinder.com/petitions/600w/verify/{0}", sig.getSignature());
-    log.log(Level.FINE, "Petition signature {0}", sig);
-    sender.sendMessage("Petition Signature Needs Verification", ImmutableList.of(sig.getEmail()), msgBody,
-        ImmutableList.<String>of(), "no-reply@chicagofoodtruckfinder.com");
-  }
-
-  @Override
-  public void notifyThanksForSigningPetition(PetitionSignature sig) {
-    String msgBody = MessageFormat.format("Thank you for signing our petition to bring back the food truck stands at" +
-        " 600 W. Chicago.", sig.getSignature());
-    sender.sendMessage("Thank you very much!", ImmutableList.of(sig.getEmail()), msgBody, ImmutableList.<String>of(),
-        "no-reply@chicagofoodtruckfinder.com");
-  }
 
   @Override
   public void systemNotifyVendorPortalLogin(String screenName, LoginMethod loginMethod) {

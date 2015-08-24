@@ -26,7 +26,6 @@ import foodtruck.server.dashboard.TruckServlet;
 import foodtruck.server.dashboard.TruckStopServlet;
 import foodtruck.server.job.ErrorCountServlet;
 import foodtruck.server.job.InvalidateScheduleCache;
-import foodtruck.server.job.MigrateTimeSeries;
 import foodtruck.server.job.ProfileSyncServlet;
 import foodtruck.server.job.PurgeStatsServlet;
 import foodtruck.server.job.RecacheServlet;
@@ -35,8 +34,6 @@ import foodtruck.server.job.TweetCacheUpdateServlet;
 import foodtruck.server.job.TwitterCachePurgeServlet;
 import foodtruck.server.job.UpdateLocationStats;
 import foodtruck.server.job.UpdateTruckStats;
-import foodtruck.server.migrations.ForceSaveApplication;
-import foodtruck.server.migrations.ForceSaveTruck;
 import foodtruck.server.vendor.BeaconnaiseServlet;
 import foodtruck.server.vendor.VendorCallbackServlet;
 import foodtruck.server.vendor.VendorLogoutServlet;
@@ -63,9 +60,6 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/cron/profileSync").with(ProfileSyncServlet.class);
     serve("/cron/updateTruckStats").with(UpdateTruckStats.class);
     serve("/cron/updateLocationStats").with(UpdateLocationStats.class);
-    serve("/cron/forcesavetruck").with(ForceSaveTruck.class);
-    serve("/cron/forcesaveapplication").with(ForceSaveApplication.class);
-    serve("/cron/migrateWeeklyStats").with(MigrateTimeSeries.class);
     serve("/cron/invalidateCache").with(InvalidateScheduleCache.class);
     serve("/cron/error_stats").with(ErrorCountServlet.class);
     serve("/services/*").with(GuiceContainer.class,
