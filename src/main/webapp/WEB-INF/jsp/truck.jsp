@@ -1,5 +1,5 @@
 <%@ include file="header.jsp" %>
-<link href="/css/rickshaw/rickshaw.min.css" rel="stylesheet">
+<%@ include file="include/rickshaw_css.jsp"%>
 
 <div id="content" >
   <c:if test="${isAdmin}">

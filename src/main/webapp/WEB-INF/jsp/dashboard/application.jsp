@@ -1,6 +1,6 @@
 <%@include file="dashboardHeaderBS3.jsp" %>
 
-<link href="/css/rickshaw/rickshaw.min.css" rel="stylesheet">
+<%@include file="../include/rickshaw_css.jsp"%>
 <%@include file="../include/graph_libraries.jsp" %>
 
 <div class="row">

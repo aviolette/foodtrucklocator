@@ -1,10 +1,10 @@
-<%@include file="dashboardHeader.jsp" %>
-<link href="/css/rickshaw/rickshaw.min.css" rel="stylesheet">
+<%@include file="dashboardHeaderBS3.jsp" %>
+<%@include file="../include/rickshaw_css.jsp" %>
 <%@include file="../include/graph_libraries.jsp" %>
 
 <div class="btn-toolbar">
   <div class="btn-group">
-    <a href="#" class="btn" id="newApplication">New Application</a>&nbsp;
+    <a href="#" class="btn btn-primary" id="newApplication"> <span class="glyphicon glyphicon-plus"></span> New Application</a>&nbsp;
   </div>
 </div>
 
@@ -155,4 +155,4 @@
   </script>
 
 
-<%@include file="dashboardFooter.jsp" %>
+<%@include file="dashboardFooterBS3.jsp" %>

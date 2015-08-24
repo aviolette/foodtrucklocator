@@ -1,14 +1,7 @@
-<%@include file="../common.jsp" %>
-<%@include file="dashboardHeaderBS3.jsp" %>
-<link href="//storage.googleapis.com/ftf_static/css/rickshaw.min.css" rel="stylesheet">
-<style type="text/css">
-  .rickshaw_graph {
-  }
-</style>
-
-<script src="//storage.googleapis.com/ftf_static/script/d3.min.js" type="text/javascript"></script>
-<script src="//storage.googleapis.com/ftf_static/script/d3.layout.min.js" type="text/javascript"></script>
-<script src="//storage.googleapis.com/ftf_static/script/rickshaw.min.js" type="text/javascript"></script>
+<%@ include file="../common.jsp" %>
+<%@ include file="dashboardHeaderBS3.jsp" %>
+<%@ include file="../include/rickshaw_css.jsp" %>
+<%@ include file="../include/graph_libraries.jsp"%>
 
 <h2>Errors</h2>
 <div class="row">
