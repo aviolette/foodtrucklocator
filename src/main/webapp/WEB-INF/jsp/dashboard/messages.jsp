@@ -1,8 +1,8 @@
-<%@include file="dashboardHeader.jsp" %>
+<%@include file="dashboardHeaderBS3.jsp" %>
 
 <div class="btn-toolbar">
   <div class="btn-group">
-    <a href="/admin/messages/new" class="btn btn-primary">New Message</a>&nbsp;
+    <a href="/admin/messages/new" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> New Message</a>
   </div>
 </div>
 
@@ -30,4 +30,4 @@
   });
 </script>
 
-<%@include file="dashboardFooter.jsp" %>
+<%@include file="dashboardFooterBS3.jsp" %>

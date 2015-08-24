@@ -4,7 +4,8 @@
     display:none;
   }
 </style>
-<div class="btn-toolbar" style="margin-bottom:20px">
+
+<div class="btn-toolbar" >
   <div class="btn-group">
     <a href="#" class="btn btn-primary" id="newTruck"><span class="glyphicon glyphicon-plus"></span> New Truck</a>&nbsp;
     <a href="#" class="btn btn-default" id="profileSync">Sync all profiles</a>
