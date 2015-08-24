@@ -3,7 +3,6 @@ package foodtruck.email;
 import java.util.Map;
 import java.util.Set;
 
-import foodtruck.model.FoodTruckRequest;
 import foodtruck.model.Location;
 import foodtruck.model.Story;
 import foodtruck.model.Truck;
@@ -35,11 +34,6 @@ public interface EmailNotifier {
    * @param trucksAdded the map of truckIds
    */
   void systemNotifyTrucksAddedByObserver(Map<Truck, Story> trucksAdded);
-
-  /**
-   * Send a notifications to all food trucks of a food truck request.
-   */
-  boolean notifyFoodTrucksOfRequest(Iterable<String> addresses, FoodTruckRequest request);
 
   /**
    * Sends out a system notification when a stop is auto-canceled.

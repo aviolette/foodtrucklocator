@@ -7,13 +7,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 
 import org.joda.time.format.DateTimeFormatter;
 
-import foodtruck.model.FoodTruckRequest;
 import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.Story;
@@ -83,33 +80,6 @@ public class SimpleEmailNotifier implements EmailNotifier {
     } catch (Exception e) {
       log.log(Level.WARNING, e.getMessage(), e);
     }
-  }
-
-  private StringBuilder buildRequest(FoodTruckRequest request, StringBuilder builder) {
-    builder.append(request.getEventName()).append("\n\n");
-    builder.append("Requested by: ").append(request.getRequester()).append("\n");
-    builder.append("Email: ").append(request.getEmail()).append("\n");
-    builder.append("Phone: ").append(request.getPhone()).append("\n");
-    builder.append("Expected number of guests: ").append(request.getExpectedGuests()).append("\n");
-    if (request.isPrepaid()) {
-      builder.append("Food is not prepaid\n");
-    } else {
-      builder.append("Food will be paid for in advance\n");
-    }
-    builder.append("\n\n");
-    builder.append(request.getDescription());
-    return builder;
-  }
-
-  @Override public boolean notifyFoodTrucksOfRequest(Iterable<String> addresses, FoodTruckRequest request) {
-    if (Iterables.size(addresses) == 0) {
-      log.log(Level.INFO, "Message for request: {0} not sent 'cause there are no recipients", request.getKey());
-      return false;
-    }
-    log.log(Level.INFO, "Sending Request {0} to {1}", new Object[]{request.getKey(), Joiner.on(",").join(addresses)});
-    return sender.sendMessage("Food Trucks Needed: " + request.getEventName(),
-        ImmutableSet.of(staticConfig.getNotificationSender()),
-        buildRequest(request, new StringBuilder()).toString(), addresses, request.getEmail());
   }
 
   @Override public void systemNotifyAutoCanceled(Truck truck, Story tweet) {
