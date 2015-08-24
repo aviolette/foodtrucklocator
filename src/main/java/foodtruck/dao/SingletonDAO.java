@@ -11,10 +11,10 @@ public interface SingletonDAO<E extends ModelEntity> {
   /**
    * Returns the entity.  Creates one if it does not exist.
    */
-  public E find();
+  E find();
 
   /**
    * Saves the entity to persistent storage.
    */
-  public void save(E entity);
+  void save(E entity);
 }
