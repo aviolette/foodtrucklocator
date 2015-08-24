@@ -206,7 +206,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     Truck t = truckDAO.findById(truckId);
     t = Truck.builder(t)
         .muteUntil(clock.currentDay()
-            .toDateMidnight(clock.zone()).toDateTime().plusDays(1))
+            .toDateTimeAtStartOfDay(clock.zone()).plusDays(1))
         .build();
     truckDAO.save(t);
   }
@@ -226,7 +226,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     Truck t = truckDAO.findById(truckId);
     t = Truck.builder(t)
         .muteUntil(clock.currentDay()
-            .toDateMidnight(clock.zone()).toDateTime().plusDays(1))
+            .toDateTimeAtStartOfDay(clock.zone()).plusDays(1))
         .build();
     truckDAO.save(t);
     return count;

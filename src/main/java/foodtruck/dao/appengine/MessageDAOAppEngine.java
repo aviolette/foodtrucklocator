@@ -47,7 +47,8 @@ public class MessageDAOAppEngine extends AppEngineDAO<Long, Message> implements 
   }
 
   @Nullable @Override public Message findByDay(LocalDate day) {
-    DateTime instant = day.toDateMidnight().toDateTime(), tomorrowExclusive = instant.plusDays(1).minusMillis(1);
+    DateTime instant = day.toDateTimeAtStartOfDay(zone),
+        tomorrowExclusive = instant.plusDays(1).minusMillis(1);
     // TODO: this code is wildly inefficient
     for (Message m : executeQuery(provider.get(),
         new Query(MESSAGE_KIND)

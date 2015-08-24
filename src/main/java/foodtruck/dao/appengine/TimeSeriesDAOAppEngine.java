@@ -53,7 +53,7 @@ public abstract class TimeSeriesDAOAppEngine extends AppEngineDAO<Long, SystemSt
 
   @Override public void deleteBefore(LocalDate localDate) {
     DatastoreService dataStore = provider.get();
-    long ts = localDate.toDateMidnight().getMillis();
+    long ts = localDate.toDateTimeAtStartOfDay().getMillis();
     Query q = new Query(getKind())
         .setFilter(new Query.FilterPredicate(PARAM_TIMESTAMP, Query.FilterOperator.LESS_THAN, ts));
     List<Key> entities = Lists.newLinkedList();

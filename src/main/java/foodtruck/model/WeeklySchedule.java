@@ -57,7 +57,7 @@ public class WeeklySchedule {
     public Builder addStop(TruckStop stop) {
       if (!map.containsKey(stop.getLocation())) {
         map.put(stop.getLocation(), new LocationAndStops(
-            start.toDateMidnight(stop.getStartTime().getZone()).toDateTime(), stop.getLocation()));
+            start.toDateTimeAtStartOfDay(stop.getStartTime().getZone()), stop.getLocation()));
       }
       LocationAndStops row = map.get(stop.getLocation());
       row.addStop(stop);

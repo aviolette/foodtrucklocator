@@ -1,5 +1,6 @@
 package foodtruck.schedule;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import foodtruck.model.TruckStop;
@@ -50,7 +51,7 @@ public class TruckStopMatch {
   }
 
   @Override public String toString() {
-    return Objects.toStringHelper(this).add("confidence", confidence).add("stop", stop)
+    return MoreObjects.toStringHelper(this).add("confidence", confidence).add("stop", stop)
         .add("text", text).toString();
   }
 

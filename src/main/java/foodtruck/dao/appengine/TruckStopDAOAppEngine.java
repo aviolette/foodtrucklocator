@@ -19,7 +19,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
-import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
@@ -137,7 +136,7 @@ public class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> impleme
   public List<TruckStop> findDuring(@Nullable String truckId, LocalDate day) {
     DatastoreService dataStore = provider.get();
     Query q = new Query(STOP_KIND);
-    final DateMidnight midnight = day.toDateMidnight(zone);
+    final DateTime midnight = day.toDateTimeAtStartOfDay(zone);
     // This opens up a 6 hour window before the specified day to get any stops that start on the prior day
     // This is not the best way to do this.  This code needs to be refactored
     List<Query.Filter> filters = trucksOverRange(truckId, new Interval(midnight.toDateTime().minusHours(6),

@@ -90,7 +90,7 @@ public class TruckStopResource {
 
   @GET
   public Collection<TruckStopWithCounts> getStops(@QueryParam("truck") String truckId, @Context DateTime startTime) {
-    startTime = (startTime == null) ? clock.currentDay().toDateMidnight().toDateTime() : startTime;
+    startTime = (startTime == null) ? clock.currentDay().toDateTimeAtStartOfDay() : startTime;
     return foodTruckService.findStopsForTruckAfter(truckId, startTime);
   }
 }

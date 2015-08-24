@@ -1,6 +1,6 @@
 package foodtruck.beaconnaise;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 import foodtruck.model.Location;
 
@@ -26,7 +26,7 @@ public class BeaconSignal {
   }
 
   @Override public String toString() {
-    return Objects.toStringHelper(this)
+    return MoreObjects.toStringHelper(this)
         .add("truckId", truckId)
         .add("location", location)
         .toString();

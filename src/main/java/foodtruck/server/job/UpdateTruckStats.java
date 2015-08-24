@@ -107,7 +107,7 @@ public class UpdateTruckStats extends HttpServlet {
         lastSeen = endTime;
         whereLastSeen = stop.getLocation();
       }
-      timestamps.add(stop.getStartTime().toDateMidnight().getMillis());
+      timestamps.add(stop.getStartTime().withTimeAtStartOfDay().getMillis());
       totalStops++;
     }
     for (Long timestamp : timestamps) {

@@ -87,7 +87,7 @@ public class TruckResource {
   public void muteTruck(@PathParam("truckId") String truckId, @QueryParam("until") String until) {
     requiresAdmin();
     DateTime muteUntil = Strings.isNullOrEmpty(until) ?
-        clock.currentDay().toDateMidnight(zone).toDateTime().plusDays(1) :
+        clock.currentDay().toDateTimeAtStartOfDay(zone).plusDays(1) :
         formatter.parseDateTime(until);
     Truck t = truckDAO.findById(truckId);
     t = Truck.builder(t).muteUntil(muteUntil)

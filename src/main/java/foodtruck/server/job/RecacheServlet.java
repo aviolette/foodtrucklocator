@@ -64,7 +64,7 @@ public class RecacheServlet extends HttpServlet {
     final String date = req.getParameter("date");
 
     LocalDate when = parseDate(date);
-    final Interval instant = when.toInterval(zone).withEnd(when.plusDays(7).toDateMidnight());
+    final Interval instant = when.toInterval(zone).withEnd(when.plusDays(7).toDateTimeAtStartOfDay(zone));
     if (!Strings.isNullOrEmpty(truck)) {
       log.info("Recaching truck: " + truck);
       service.pullCustomCalendarFor(instant, truckDAO.findById(truck));
@@ -83,7 +83,7 @@ public class RecacheServlet extends HttpServlet {
   private LocalDate parseDate(String date) {
     if (!Strings.isNullOrEmpty(date)) {
       try {
-        return timeFormatter.parseDateTime(date).toDateMidnight().toLocalDate();
+        return timeFormatter.parseDateTime(date).withTimeAtStartOfDay().toLocalDate();
       } catch (Exception e) {
         log.log(Level.WARNING, "Error formatting time", e);
         Throwables.propagate(e);

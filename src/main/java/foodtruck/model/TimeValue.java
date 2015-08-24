@@ -2,7 +2,7 @@ package foodtruck.model;
 
 import java.io.Serializable;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 /**
  * @author aviolette@gmail.com
@@ -30,7 +30,7 @@ public class TimeValue implements Serializable {
   }
 
   @Override public String toString() {
-    return Objects.toStringHelper(this)
+    return MoreObjects.toStringHelper(this)
         .add("timeStamp", timestamp)
         .add("count", count).toString();
   }

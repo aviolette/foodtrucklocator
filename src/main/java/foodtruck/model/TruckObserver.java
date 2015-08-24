@@ -2,6 +2,7 @@ package foodtruck.model;
 
 import java.util.List;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 /**
@@ -40,7 +41,7 @@ public class TruckObserver extends ModelEntity {
   }
 
   @Override public String toString() {
-    return Objects.toStringHelper(this)
+    return MoreObjects.toStringHelper(this)
         .add("location", location)
         .add("twitter handle", twitterHandle)
         .toString();
