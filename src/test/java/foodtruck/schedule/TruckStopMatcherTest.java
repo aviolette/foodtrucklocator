@@ -9,6 +9,7 @@ import org.easymock.EasyMockSupport;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -52,7 +53,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     notifier = createMock(EmailNotifier.class);
     mapCenter = Location.builder().lat(41.8807438).lng(-87.6293867).build();
     expect(clock.dayOfWeek()).andStubReturn(DayOfWeek.sunday);
-    topic = new TruckStopMatcher(extractor, geolocator, DateTimeZone.UTC, clock, notifier, mapCenter);
+    topic = new TruckStopMatcher(extractor, geolocator, DateTimeZone.UTC, clock, notifier, mapCenter, new LocalTime(11, 30));
     truck = Truck.builder().id("foobar").build();
     expect(clock.zone()).andStubReturn(DateTimeZone.UTC);
     expect(clock.currentDay()).andStubReturn(new LocalDate(2011, 11, 10));

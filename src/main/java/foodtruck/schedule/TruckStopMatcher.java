@@ -63,13 +63,15 @@ public class TruckStopMatcher {
   private final EmailNotifier notifier;
   private final Pattern simpleDateParser;
   private final Location center;
+  private final LocalTime defaultLunchTime;
 
   @Inject
   public TruckStopMatcher(AddressExtractor extractor, GeoLocator geoLocator, DateTimeZone defaultZone, Clock clock,
-      EmailNotifier notifier, @Named("center") Location center) {
+      EmailNotifier notifier, @Named("center") Location center, @DefaultStartTime LocalTime startTime) {
     this.addressExtractor = extractor;
     this.geoLocator = geoLocator;
     this.center = center;
+    this.defaultLunchTime = startTime;
     this.atTimePattern = Pattern.compile("\\b(be at|ETA|open at|opening at|opens at|arrive at|there at) (" + TIME_PATTERN_STRICT + ")");
     this.endTimePattern = Pattern.compile("\\b(close at|leaving at|until|til|till) (" + TIME_PATTERN + ")");
     this.timeRangePattern = Pattern.compile(TIME_RANGE_PATTERN, Pattern.CASE_INSENSITIVE);
@@ -220,7 +222,7 @@ public class TruckStopMatcher {
       if (canStartNow(truck, morning, tweetText)) {
         startTime = tweet.getTime();
       } else {
-        startTime = tweet.getTime().withTime(11, 30, 0, 0);
+        startTime = tweet.getTime().withTime(defaultLunchTime);
         endTime = null;
       }
       if (!morning && truck.getCategories().contains("Dessert")) {
