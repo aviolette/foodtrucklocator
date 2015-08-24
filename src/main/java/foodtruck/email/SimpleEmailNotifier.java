@@ -14,7 +14,6 @@ import com.google.inject.Inject;
 
 import org.joda.time.format.DateTimeFormatter;
 
-import foodtruck.dao.ConfigurationDAO;
 import foodtruck.model.FoodTruckRequest;
 import foodtruck.model.Location;
 import foodtruck.model.PetitionSignature;
@@ -39,7 +38,7 @@ public class SimpleEmailNotifier implements EmailNotifier {
   private final EmailSender sender;
 
   @Inject
-  public SimpleEmailNotifier(ConfigurationDAO configurationDAO,
+  public SimpleEmailNotifier(
       @TimeOnlyFormatter DateTimeFormatter timeFormatter, StaticConfig staticConfig,
       @TimeFormatter DateTimeFormatter dateTimeFormatter, EmailSender sender) {
     this.timeOnlyFormatter = timeFormatter;

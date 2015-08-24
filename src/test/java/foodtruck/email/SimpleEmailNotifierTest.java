@@ -33,10 +33,8 @@ public class SimpleEmailNotifierTest extends EasyMockSupport {
     DateTimeFormatter timeFormatter = DateTimeFormat.forPattern("YYYYMMdd-HHmm").withZone(zone);
     config = createMock(StaticConfig.class);
     sender = createMock(EmailSender.class);
-    notifier = new SimpleEmailNotifier(null, timeOnlyFormatter, config, timeFormatter, sender);
+    notifier = new SimpleEmailNotifier(timeOnlyFormatter, config, timeFormatter, sender);
   }
-
-
 
   @Test
   public void testNotifyAddMentionedTrucks() throws Exception {
