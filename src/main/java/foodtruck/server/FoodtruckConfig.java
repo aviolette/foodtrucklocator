@@ -15,7 +15,6 @@ import foodtruck.notifications.NotificationModule;
 import foodtruck.schedule.ScheduleModule;
 import foodtruck.server.security.SecurityModule;
 import foodtruck.socialmedia.SocialMediaModule;
-import foodtruck.stats.StatsModule;
 import foodtruck.truckstops.ServiceModule;
 import foodtruck.util.UtilModule;
 
@@ -39,7 +38,6 @@ public class FoodtruckConfig extends GuiceServletContextListener {
         new EmailModule(),
         new SecurityModule(),
         new ScheduleModule(),
-        new StatsModule(),
         new UtilModule(),
         new SocialMediaModule(),
         new MonitoringModule(),

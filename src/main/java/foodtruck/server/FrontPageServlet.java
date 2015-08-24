@@ -66,11 +66,11 @@ public abstract class FrontPageServlet extends HttpServlet {
     if (cookies == null) {
       return staticConfig.getCenter();
     }
-    for (int i = 0; i < cookies.length; i++) {
-      if ("latitude".equals(cookies[i].getName())) {
-        lat = Double.valueOf(cookies[i].getValue());
-      } else if ("longitude".equals(cookies[i].getName())) {
-        lng = Double.valueOf(cookies[i].getValue());
+    for (Cookie cooky : cookies) {
+      if ("latitude".equals(cooky.getName())) {
+        lat = Double.valueOf(cooky.getValue());
+      } else if ("longitude".equals(cooky.getName())) {
+        lng = Double.valueOf(cooky.getValue());
       }
     }
     if (lat != 0 && lng != 0) {
