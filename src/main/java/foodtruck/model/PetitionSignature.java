@@ -2,7 +2,7 @@ package foodtruck.model;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 
 import org.joda.time.DateTime;
@@ -78,7 +78,7 @@ public class PetitionSignature extends ModelEntity {
   }
 
   @Override public String toString() {
-    return Objects.toStringHelper(this)
+    return MoreObjects.toStringHelper(this)
         .add("petition id", petitionId)
         .add("created", created)
         .add("signed", signed)

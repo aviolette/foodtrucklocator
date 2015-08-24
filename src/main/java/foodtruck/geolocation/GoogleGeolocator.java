@@ -63,10 +63,8 @@ public class GoogleGeolocator implements GeoLocator {
         return new Location.Builder(location).name(firstResult.getString("formatted_address"))
             .valid(true).build();
       }
-    } catch (ClientHandlerException timeoutException) {
-      throw new ServiceException(timeoutException);
-    } catch (JSONException jsonException) {
-      throw new ServiceException(jsonException);
+    } catch (ClientHandlerException|JSONException ex) {
+      throw new ServiceException(ex);
     }
     return null;
   }

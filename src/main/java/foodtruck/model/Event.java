@@ -20,9 +20,7 @@ public class Event extends ModelEntity {
   private final Location location;
   private final DateTime startTime;
   private final DateTime endTime;
-  private final
-  @Nullable
-  String url;
+  private final @Nullable String url;
   private final List<Truck> trucks;
   private final String description;
   private final String name;
@@ -103,9 +101,7 @@ public class Event extends ModelEntity {
     private Location location;
     private DateTime startTime;
     private DateTime endTime;
-    private
-    @Nullable
-    String url;
+    private @Nullable String url;
     private List<Truck> trucks = ImmutableList.of();
     private String description;
     private String key;

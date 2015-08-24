@@ -3,7 +3,7 @@ package foodtruck.model;
 import java.io.Serializable;
 import java.util.List;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 /**
  * Represents a series of datapoints defined by a name
@@ -28,7 +28,7 @@ public class StatVector implements Serializable {
   }
 
   @Override public String toString() {
-    return Objects.toStringHelper(this)
+    return MoreObjects.toStringHelper(this)
         .add("name", name)
         .add("dataPoints", dataPoints).toString();
   }

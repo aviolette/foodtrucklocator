@@ -3,7 +3,6 @@ package foodtruck.model;
 import java.util.Map;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 

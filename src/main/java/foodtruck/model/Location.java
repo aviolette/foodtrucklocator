@@ -137,13 +137,7 @@ public class Location extends ModelEntity implements Serializable {
   }
 
   public boolean containedWithRadiusOf(Location loc) {
-    if (equals(loc)) {
-      return true;
-    }
-    if (loc.getRadius() == 0) {
-      return false;
-    }
-    return within(loc.getRadius()).milesOf(loc);
+    return equals(loc) || loc.getRadius() != 0 && within(loc.getRadius()).milesOf(loc);
   }
 
 

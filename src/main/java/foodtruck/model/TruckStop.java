@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -123,7 +124,7 @@ public class TruckStop extends ModelEntity {
   @Override
   public String toString() {
     try {
-      return Objects.toStringHelper(this)
+      return MoreObjects.toStringHelper(this)
           .add("truck", truck.getId())
           .add("startTime", startTime)
           .add("endTime", endTime)
