@@ -567,7 +567,7 @@ public class SocialMediaCacherImpl implements SocialMediaCacher {
       if (terminationTime != null) {
         return null;
       }
-      TruckStopMatch match = matcher.match(truck, tweet, null);
+      TruckStopMatch match = matcher.match(truck, tweet);
       if (match != null) {
         return match;
       }

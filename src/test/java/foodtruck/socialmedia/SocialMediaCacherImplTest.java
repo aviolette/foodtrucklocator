@@ -134,7 +134,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
         TruckStopMatch.builder().stop(matchedStop).text(basicTweet.getText()).terminated(false)
             .softEnding(softEnding)
             .build();
-    expect(matcher.match(truck2, basicTweet, null)).andStubReturn(matched);
+    expect(matcher.match(truck2, basicTweet)).andStubReturn(matched);
   }
 
   private void expectTweetsIgnored() {
@@ -237,7 +237,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
   public void whenOffTheRoadTriggerNotification() {
     expectOffTheRoad(true);
     emailNotifier.systemNotifyOffTheRoad(truck2, basicTweet);
-    expect(matcher.match(truck2, basicTweet, null)).andStubReturn(null);
+    expect(matcher.match(truck2, basicTweet)).andStubReturn(null);
     expectTweetsIgnored();
     replayAll();
     service.handleTruckTweets();

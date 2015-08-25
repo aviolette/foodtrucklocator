@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -24,6 +24,7 @@ import org.joda.time.format.DateTimeFormatter;
 import foodtruck.email.EmailNotifier;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
+import foodtruck.model.DayOfWeek;
 import foodtruck.model.Location;
 import foodtruck.model.StopOrigin;
 import foodtruck.model.Story;
@@ -47,23 +48,16 @@ public class TruckStopMatcher {
   private static final String TOMORROW = "2morrow|tmw|tmrw|tomorrow|maana|mañana";
   private final AddressExtractor addressExtractor;
   private final GeoLocator geoLocator;
-  private final Pattern endTimePattern;
   private final DateTimeFormatter formatter;
   private final Clock clock;
-  private final Pattern timeRangePattern;
-  private final Pattern monPattern;
-  private final Pattern tuesPattern;
-  private final Pattern wedPattern;
-  private final Pattern thursPattern;
-  private final Pattern friPattern;
-  private final Pattern satPattern;
-  private final Pattern sunPattern;
-  private final Pattern atTimePattern;
-  private final Pattern schedulePattern = Pattern.compile(".*M:.+(\\b|\\n)T:.+(\\b|\\n)W:.+");
   private final EmailNotifier notifier;
-  private final Pattern simpleDateParser;
   private final Location center;
   private final LocalTime defaultLunchTime;
+  private final Pattern endTimePattern = Pattern.compile("\\b(close at|leaving at|until|til|till) (" + TIME_PATTERN + ")"),
+      timeRangePattern = Pattern.compile(TIME_RANGE_PATTERN, Pattern.CASE_INSENSITIVE),
+      atTimePattern = Pattern.compile("\\b(be at|ETA|open at|opening at|opens at|arrive at|there at) (" + TIME_PATTERN_STRICT + ")"),
+      schedulePattern = Pattern.compile(".*M:.+(\\b|\\n)T:.+(\\b|\\n)W:.+"),
+      simpleDateParser = Pattern.compile("(\\d{1,2})/(\\d{1,2})");
 
   @Inject
   public TruckStopMatcher(AddressExtractor extractor, GeoLocator geoLocator, DateTimeZone defaultZone, Clock clock,
@@ -72,195 +66,192 @@ public class TruckStopMatcher {
     this.geoLocator = geoLocator;
     this.center = center;
     this.defaultLunchTime = startTime;
-    this.atTimePattern = Pattern.compile("\\b(be at|ETA|open at|opening at|opens at|arrive at|there at) (" + TIME_PATTERN_STRICT + ")");
-    this.endTimePattern = Pattern.compile("\\b(close at|leaving at|until|til|till) (" + TIME_PATTERN + ")");
-    this.timeRangePattern = Pattern.compile(TIME_RANGE_PATTERN, Pattern.CASE_INSENSITIVE);
-    this.simpleDateParser = Pattern.compile("(\\d{1,2})/(\\d{1,2})");
-    this.monPattern = Pattern.compile(
-        "\\b(TUE|Tu|WED|Weds|THU|Th|FRI|SAT|Sa|SUN|Su|tuesday|wednesday|thursday|friday|saturday|sunday|tues|thurs|" +
-            TOMORROW + ")\\b",
-        Pattern.CASE_INSENSITIVE);
-    this.tuesPattern = Pattern.compile(
-        "\\b(MON|WED|Weds|THU|Th|FRI|SAT|Sa|SUN|Su|monday|wednesday|thursday|friday|saturday|sunday|thurs|" +
-            TOMORROW + ")\\b",
-        Pattern.CASE_INSENSITIVE);
-    this.wedPattern = Pattern.compile(
-        "\\b(MON|TUE|Tu|THU|Th|FRI|SAT|Sa|SUN|Su|monday|tuesday|thursday|friday|saturday|sunday|tues|thurs|" +
-            TOMORROW + ")\\b",
-        Pattern.CASE_INSENSITIVE);
-    this.thursPattern = Pattern.compile(
-        "\\b(MON|TUE|Tu|WED|Weds|FRI|SAT|Sa|SUN|Su|monday|tuesday|wednesday|friday|saturday|sunday|tues|" +
-            TOMORROW + ")\\b",
-        Pattern.CASE_INSENSITIVE);
-    this.friPattern = Pattern.compile(
-        "\\b(MON|TUE|Tu|WED|Weds|THU|Th|SAT|Sa|SUN|Su|monday|tuesday|wednesday|thursday|saturday|sunday|tues|thurs|" +
-            TOMORROW + ")\\b",
-        Pattern.CASE_INSENSITIVE);
-    this.satPattern = Pattern.compile(
-        "\\b(MON|TUE|Tu|WED|Weds|THU|Th|FRI|SUN|Su|monday|tuesday|wednesday|thursday|friday|sunday|tues|thurs|" +
-            TOMORROW + ")\\b",
-        Pattern.CASE_INSENSITIVE);
-    this.sunPattern = Pattern.compile(
-        "\\b(MON|TUE|Tu|WED|Weds|THU|Th|FRI|SAT|Sa|monday|tuesday|wednesday|thursday|friday|saturday|tues|thurs|" +
-            TOMORROW + ")\\b",
-        Pattern.CASE_INSENSITIVE);
     formatter = DateTimeFormat.forPattern("hhmma").withZone(defaultZone);
     this.clock = clock;
     this.notifier = notifier;
   }
 
-  public Location getMapCenter() {
-    return center;
-  }
-
   /**
-   * Matches a truck to a location via a tweet.
+   * Matches a truck to a location via a story.
    * @param truck a truck
-   * @param tweet a tweet
-   * @param terminationTime an optional time to terminate any match
+   * @param story a story
    * @return a TruckStopMatch if the match can be made, otherwise {@code null}
    */
-  public @Nullable TruckStopMatch match(Truck truck, Story tweet,
-      @Nullable DateTime terminationTime) {
-    final String tweetText = tweet.getText();
-    if (tweet.isManualRetweet()) {
-      log.log(Level.INFO, "Didn't match '{0}' because it is a retweet",
-          tweetText);
-      return null;
-    }
-    final String lowerCaseTweet = tweetText.toLowerCase();
-    Confidence confidence = Confidence.LOW;
-    List<String> notes = Lists.newLinkedList();
-    // Some trucks, like Starfruit Cafe have configurable expressions (e.g. #KefirTruck) that
-    // should be present in order to do a match
-    notes.add(String.format("Tweet received for location: '%s'", tweetText));
-    if (verifyMatchOnlyExpression(truck, tweetText)) {
-      log.log(Level.INFO, "Didn't match '{0}' because it didn't contain match-only expression",
-          tweetText);
-      return null;
-    } else if (truck.getMatchOnlyIf() != null || lowerCaseTweet.contains("#ftf")
-        || lowerCaseTweet.contains("#foodtruckfinder")) {
-      confidence = confidence.up();
-      notes.add("Presense of specific hash tag in tweet increased confidence.");
-    }
+  public @Nullable TruckStopMatch match(Truck truck, Story story) {
+    TruckStop.Builder truckStopBuilder = TruckStop.builder()
+        .origin(StopOrigin.TWITTER)
+        .truck(truck);
+    try {
+      // Ignore story if it's a retweet of another story
+      checkIfShared(story);
 
-    Location location = extractLocation(tweet, truck);
-    if (location == null || location.distanceFrom(getMapCenter()) > 50.0d) {
+      // Some trucks will only count if they contain a certain regular expression; conversely, we want to filter
+      // out tweets where regular expressions don't match
+      final String lowerCaseTweet = story.getText().toLowerCase();
+      verifyMatchOnlyExpression(truck, story, lowerCaseTweet);
+
+      // Some tweets indicate a daily schedule or a set of stops...skip those
+      verifySchedule(story);
+
+      // Some tweets are talking about happenings on other days...skip those too
+      verifyOtherDay(story);
+
+      // Get the location out of the story
+      Location location = extractLocation(story, truck);
+      verifyLocation(location);
+      truckStopBuilder.location(location);
+
+      // Get the time out of the story
+      boolean softEnding = extractDateTime(truck, story, truckStopBuilder);
+
+      return TruckStopMatch.builder()
+          .stop(truckStopBuilder
+              .notes(ImmutableList.of(String.format("Tweet received for location: '%s'", story.getText())))
+              .build())
+          .text(story.getText())
+          .softEnding(softEnding)
+          .tweetId(story.getId())
+          .build();
+    } catch (UnmatchedException e) {
+      log.info(e.getMessage());
       return null;
     }
-    DateTime startTime = null;
+  }
+
+  private void verifyOtherDay(Story tweet) throws UnmatchedException {
+    if (matchesOtherDay(tweet.getText())) {
+      throw new UnmatchedException(String.format("Didn't match '%s' because it contained a day of the week", tweet));
+    }
+  }
+
+  private void verifySchedule(Story tweet) throws UnmatchedException {
+    String lowerCaseTweet = tweet.getText().toLowerCase();
     final boolean morning = isMorning(tweet.getTime());
-    // TODO: this signals a schedule being tweeted, for now we can't handle that
     if (lowerCaseTweet.contains("stops") ||
-        (morning && (lowerCaseTweet.contains("schedule"))) || containsAbbreviatedSchedule(tweetText)) {
-      return null;
+        (morning && (lowerCaseTweet.contains("schedule"))) || containsAbbreviatedSchedule(tweet.getText())) {
+      throw new UnmatchedException(String.format("Ignoring '%s' because the word 'schedule' is there", tweet.getText()));
     }
-    // If we're on Tuesday and their tweeting about Wednesday, skip.
-    if (matchesOtherDay(tweetText)) {
-      log.log(Level.INFO, "Didn't match '{0}' because it contained a day of the week", tweetText);
-      return null;
+  }
+
+  private boolean extractDateTime(Truck truck, Story tweet, TruckStop.Builder tsBuilder) throws UnmatchedException {
+    // Handling time ranges (e.g. 11am-2pm)
+    handleTimeRange(tweet, tsBuilder);
+
+    // Handling start-time only
+    handleStartTime(truck, tweet, tsBuilder);
+
+    // If there's no start time, just start it now or (if certain rules apply) at lunch hour
+    handleImmediateStart(truck, tweet, tsBuilder);
+
+    // See if we can parse the end time out if it wasn't specified as a range earlier
+    handleSeparateEndTime(tweet, tsBuilder);
+
+    // If there is no end time, just guess
+    return handleSoftEnding(truck, tsBuilder);
+  }
+
+  private boolean handleSoftEnding(Truck truck, TruckStop.Builder tsBuilder) {
+    if (tsBuilder.endTime() != null) {
+      return false;
+    }
+    // If it's a lunch truck, extend its time to a min of 1pm.
+    if (tsBuilder.startTime().getHourOfDay() == 10 && tsBuilder.startTime().getMinuteOfHour() >= 30
+        && truck.getCategoryList().contains("Lunch")) {
+      tsBuilder.endTime(tsBuilder.startTime().withTime(14, 0, 0, 0));
+    } else {
+      tsBuilder.endTime(tsBuilder.startTime().plusHours(stopTime(truck, tsBuilder.startTime())));
+    }
+    return true;
+  }
+
+  private void handleSeparateEndTime(Story tweet, TruckStop.Builder tsBuilder) {
+    if (tsBuilder.endTime() == null) {
+      final DateTime endTime = parseEndTime(tweet.getText(), tsBuilder.startTime());
+      tsBuilder.endTime(endTime);
+      if (tsBuilder.hasTimes() &&
+          (tsBuilder.startTime().isAfter(endTime) && endTime.isAfter(tweet.getTime()))) {
+        tsBuilder.startTime(tweet.getTime());
+      }
     }
 
-    // TODO: this is kind of a hack - this is a tweet announcing a future lunch location
-    DateTime endTime = null;
-    Matcher m = timeRangePattern.matcher(tweetText + " ");
-    if (m.find()) {
-      final LocalDate date = tweet.getTime().toLocalDate();
-      startTime = parseTime(m.group(1), date, null);
-      endTime = parseTime(m.group(5), date, startTime);
-      if (endTime != null && terminationTime != null && endTime.isAfter(terminationTime)) {
-        endTime = terminationTime;
-      } else if (startTime != null && endTime != null && terminationTime == null &&
-          startTime.getHourOfDay() > 12 && endTime.getHourOfDay() < 12) {
-          startTime = startTime.minusHours(12);
-      } else if (endTime != null && startTime != null && endTime.isBefore(tweet.getTime())) {
-        Duration duration = new Duration(startTime.toInstant(), endTime.toInstant());
-        startTime = startTime.plusHours(12);
-        endTime = startTime.plus(duration);
-      }
-      notes.add("Presence of time range in tweet increased confidence.");
-      confidence = confidence.up();
+  }
+
+  private void handleImmediateStart(Truck truck, Story tweet, TruckStop.Builder tsBuilder) {
+    if (tsBuilder.startTime() != null) {
+      return;
     }
+    // Cupcake trucks and such should not be matched at all by this rule since they make many frequent stops
+    if (canStartNow(truck, isMorning(tweet.getTime()), tweet.getText())) {
+      tsBuilder.startTime(tweet.getTime());
+    } else {
+      tsBuilder.startTime(tweet.getTime().withTime(defaultLunchTime));
+      tsBuilder.endTime(null);
+    }
+  }
+
+  private void handleStartTime(Truck truck, Story tweet, TruckStop.Builder tsBuilder) {
+    Matcher m;
     // This is detecting something in the format: We will be at Merchandise mart at 11:00.
-    if (startTime == null) {
-      m = atTimePattern.matcher(tweetText);
+    if (tsBuilder.startTime() == null) {
+      m = atTimePattern.matcher(tweet.getText());
       if (m.find()) {
         final LocalDate date = tweet.getTime().toLocalDate();
-        startTime = parseTime(m.group(2), date, null);
-        if (startTime != null) {
-          if (startTime.getHourOfDay() == 0) {
-            startTime = startTime.withHourOfDay(12);
+        tsBuilder.startTime(parseTime(m.group(2), date, null));
+        if (tsBuilder.startTime() != null) {
+          if (tsBuilder.startTime().getHourOfDay() == 0) {
+            tsBuilder.startTime(tsBuilder.startTime().withHourOfDay(12));
           }
-          notes.add("Presence of start time in tweet increased confidence.");
-          confidence = confidence.up();
-          endTime = startTime.plusHours(stopTime(truck, startTime));
+          tsBuilder.endTime(tsBuilder.startTime().plusHours(stopTime(truck, tsBuilder.startTime())));
         }
         // This is a special case, since matching ranges like that will produce a lot of
         // false positives, but 11-1 is commonly used for lunch hour
-      } else if (tweetText.contains("11-1")) {
-        startTime = clock.currentDay().toDateTime(new LocalTime(11, 0), clock.zone());
-        endTime = clock.currentDay().toDateTime(new LocalTime(13, 0), clock.zone());
-        notes.add("Presence of start time in tweet increased confidence.");
-        confidence = confidence.up();
-      } else if (tweetText.contains("11-2")) {
-        startTime = clock.currentDay().toDateTime(new LocalTime(11, 0), clock.zone());
-        endTime = clock.currentDay().toDateTime(new LocalTime(14, 0), clock.zone());
-        notes.add("Presence of start time in tweet increased confidence.");
-        confidence = confidence.up();
-      } else if (tweetText.contains("11a") && truck.getCategories().contains("Lunch")) {
-        startTime = clock.currentDay().toDateTime(new LocalTime(11, 0), clock.zone());
-        endTime = clock.currentDay().toDateTime(new LocalTime(13, 0), clock.zone());
-        notes.add("Presence of start time in tweet increased confidence.");
-        confidence = confidence.up();
+      } else if (tweet.getText().contains("11-1")) {
+        tsBuilder.startTime(clock.currentDay().toDateTime(new LocalTime(11, 0), clock.zone()));
+        tsBuilder.endTime(clock.currentDay().toDateTime(new LocalTime(13, 0), clock.zone()));
+      } else if (tweet.getText().contains("11-2")) {
+        tsBuilder.startTime(clock.currentDay().toDateTime(new LocalTime(11, 0), clock.zone()));
+        tsBuilder.endTime(clock.currentDay().toDateTime(new LocalTime(14, 0), clock.zone()));
+      } else if (tweet.getText().contains("11a") && truck.getCategories().contains("Lunch")) {
+        tsBuilder.startTime(clock.currentDay().toDateTime(new LocalTime(11, 0), clock.zone()));
+        tsBuilder.endTime(clock.currentDay().toDateTime(new LocalTime(13, 0), clock.zone()));
       } else if (tweet.getTime().getHourOfDay() > 12 && tweet.getTime().getHourOfDay() < 17 &&
-          (tweetText.contains("tonight") || tweetText.contains("tonite"))) {
-        startTime = clock.currentDay().toDateTime(new LocalTime(17, 30), clock.zone());
+          (tweet.getText().contains("tonight") || tweet.getText().contains("tonite"))) {
+        tsBuilder.startTime(clock.currentDay().toDateTime(new LocalTime(17, 30), clock.zone()));
       }
     }
-    if (startTime == null) {
-      // Cupcake trucks and such should not be matched at all by this rule since they make many frequent stops
-      if (canStartNow(truck, morning, tweetText)) {
-        startTime = tweet.getTime();
-      } else {
-        startTime = tweet.getTime().withTime(defaultLunchTime);
-        endTime = null;
-      }
-      if (!morning && truck.getCategories().contains("Dessert")) {
-        confidence = confidence.up();
-      }
-    }
-    TruckStopMatch.Builder matchBuilder = TruckStopMatch.builder();
-    if (endTime == null) {
-      final DateTime parsedEndTime = parseEndTime(tweetText, startTime);
-      if (parsedEndTime != null) {
-        notes.add("Presence of end time in tweet increased confidence.");
-        confidence = confidence.up();
-      }
-      endTime = terminationTime == null ? parsedEndTime : terminationTime;
-      if (endTime != null && startTime != null && (startTime.isAfter(endTime) && endTime.isAfter(tweet.getTime()))) {
-        startTime = tweet.getTime();
+  }
+
+  private void handleTimeRange(Story tweet, TruckStop.Builder tsBuilder) {
+    Matcher m = timeRangePattern.matcher(tweet.getText() + " ");
+    if (m.find()) {
+      final LocalDate date = tweet.getTime().toLocalDate();
+      tsBuilder.startTime(parseTime(m.group(1), date, null));
+      tsBuilder.endTime(parseTime(m.group(5), date, tsBuilder.startTime()));
+      if (tsBuilder.hasTimes() && tsBuilder.startTime().getHourOfDay() > 12 &&
+          tsBuilder.endTime().getHourOfDay() < 12) {
+        tsBuilder.startTime(tsBuilder.startTime().minusHours(12));
+      } else if (tsBuilder.hasTimes() && tsBuilder.endTime().isBefore(tweet.getTime())) {
+        Duration duration = new Duration(tsBuilder.startTime().toInstant(),
+            tsBuilder.endTime().toInstant());
+        tsBuilder.startTime(tsBuilder.startTime().plusHours(12));
+        tsBuilder.endTime(tsBuilder.startTime().plus(duration));
       }
     }
-    if (endTime == null) {
-      matchBuilder.softEnding(true);
-      // If it's a lunch truck, extend its time to a min of 1pm.
-      if (startTime.getHourOfDay() == 10 && startTime.getMinuteOfHour() >= 30
-          && truck.getCategoryList().contains("Lunch")) {
-        endTime = startTime.withTime(13, 0, 0, 0);
-      } else {
-        endTime = startTime.plusHours(stopTime(truck, startTime));
-      }
+  }
+
+  private void verifyLocation(Location location) throws UnmatchedException {
+    if (location == null) {
+      throw new UnmatchedException("Location is not specified");
     }
-    return matchBuilder
-        .stop(TruckStop.builder().confidence(confidence)
-            .origin(StopOrigin.TWITTER)
-            .notes(notes)
-            .truck(truck).startTime(startTime).endTime(endTime).location(location).build())
-        .text(tweetText)
-        .confidence(confidence)
-        .tweetId(tweet.getId())
-        .terminated(terminationTime != null)
-        .build();
+    if (location.distanceFrom(center) > 50.0d) {
+      throw new UnmatchedException("Center greater than 50 miles");
+    }
+  }
+
+  private void checkIfShared(Story tweet) throws UnmatchedException {
+    if (tweet.isManualRetweet()) {
+      throw new UnmatchedException("Retweeted: " + tweet.getText());
+    }
   }
 
   private boolean isMorning(DateTime time) {
@@ -272,7 +263,6 @@ public class TruckStopMatcher {
   /**
    * Tests for tweets like this: <code></code>THE TRUCK: M: 600 W Chicago T: NBC Tower W: Clark & Monroe
    * TH: Madison & Wacker + Montrose & Ravenswood (5pm) F: Lake & Wabash</code>
-   * @return
    */
   private boolean containsAbbreviatedSchedule(String tweetText) {
     return schedulePattern.matcher(tweetText).find();
@@ -301,22 +291,27 @@ public class TruckStopMatcher {
     return false;
   }
 
-  private boolean verifyMatchOnlyExpression(Truck truck, String tweetText) {
+  private void verifyMatchOnlyExpression(Truck truck, Story tweet, String lower) throws UnmatchedException {
     Pattern p = truck.getMatchOnlyIf();
     if (p != null) {
-      Matcher m = p.matcher(tweetText.toLowerCase());
-      return !m.find();
+      Matcher m = p.matcher(lower);
+      if (!m.find()) {
+        throw new UnmatchedException(String.format("Match-only-if expression '%s' not found for tweet '%s'",
+            truck.getMatchOnlyIfString(), tweet.getText()));
+      }
     }
     p = truck.getDonotMatchIf();
     if (p != null) {
-      Matcher m = p.matcher(tweetText.toLowerCase());
-      return m.find();
+      Matcher m = p.matcher(lower);
+      if ( m.find()) {
+        throw new UnmatchedException(String.format("Do-not-match-if expression '%s' found in tweet '%s'", truck.getDonotMatchIfString(), tweet.getText()));
+      }
     }
-    return false;
   }
 
   private boolean matchesOtherDay(String tweetText) {
     Matcher matcher = simpleDateParser.matcher(tweetText);
+    // matches date pattern
     if (matcher.find()) {
       LocalDate date = clock.currentDay();
       String first = matcher.group(1);
@@ -326,22 +321,17 @@ public class TruckStopMatcher {
       }
     }
 
-    switch (clock.dayOfWeek()) {
-      case monday:
-        return monPattern.matcher(tweetText).find();
-      case tuesday:
-        return tuesPattern.matcher(tweetText).find();
-      case wednesday:
-        return wedPattern.matcher(tweetText).find();
-      case thursday:
-        return thursPattern.matcher(tweetText).find();
-      case friday:
-        return friPattern.matcher(tweetText).find();
-      case saturday:
-        return satPattern.matcher(tweetText).find();
-      default:
-        return sunPattern.matcher(tweetText).find();
+    // check to see if it has a day-of-the-week in the tweet (or 'tomorrow') that's not today
+    StringBuilder pattern = new StringBuilder();
+    pattern.append("\\b(");
+    DayOfWeek now = clock.dayOfWeek();
+    for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
+      if (dayOfWeek != now) {
+        pattern.append(dayOfWeek.getMatchPattern()).append("|");
+      }
     }
+    pattern.append(TOMORROW).append(")\\b");
+    return Pattern.compile(pattern.toString(), Pattern.CASE_INSENSITIVE).matcher(tweetText).find();
   }
 
   private @Nullable Location extractLocation(Story tweet, Truck truck) {
@@ -350,7 +340,6 @@ public class TruckStopMatcher {
     if (tweetLocation != null) {
       log.info("Location data enabled for tweet from " + truck.getId());
       // Currently not using this function...remove next line to re-enabled
-      tweetLocation = null;
     }
     log.log(Level.INFO, "Extracted these addresses: {0} from tweet: {1}", new Object[] {addresses, tweet.getText()});
     for (String address : addresses) {
@@ -361,14 +350,6 @@ public class TruckStopMatcher {
         }
         return loc;
       }
-    }
-    if (truck.isTwitterGeolocationDataValid() && tweetLocation != null && !tweet.isReply()) {
-      Location lookup = geoLocator.reverseLookup(tweetLocation);
-      String name = lookup != null ? lookup.getName() : "Unnamed Location";
-      return Location.builder()
-          .lat(tweetLocation.getLatitude())
-          .lng(tweetLocation.getLongitude())
-          .name(name).build();
     }
     return null;
   }
@@ -453,5 +434,11 @@ public class TruckStopMatcher {
       return dt;
     }
     return null;
+  }
+
+  static class UnmatchedException extends Exception {
+    public UnmatchedException(String msg) {
+      super(msg);
+    }
   }
 }

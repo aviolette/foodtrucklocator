@@ -75,7 +75,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .withTime(tweetTime)
             .match();
     assertNotNull(match);
-    assertEquals(Confidence.MEDIUM, match.getConfidence());
     assertEquals(tweetTime, match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(9, 0, 0, 0), match.getStop().getEndTime());
   }
@@ -91,7 +90,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .withTime(tweetTime)
             .match();
     assertNotNull(match);
-    assertEquals(Confidence.LOW, match.getConfidence());
     assertEquals(tweetTime, match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(9, 0, 0, 0), match.getStop().getEndTime());
   }
@@ -107,7 +105,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .withTime(tweetTime)
             .match();
     assertNotNull(match);
-    assertEquals(Confidence.LOW, match.getConfidence());
     assertEquals(tweetTime, match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(9, 0, 0, 0), match.getStop().getEndTime());
   }
@@ -123,7 +120,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .withTime(tweetTime)
             .match();
     assertNotNull(match);
-    assertEquals(Confidence.MEDIUM, match.getConfidence());
     assertEquals(tweetTime, match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(12, 30, 0, 0), match.getStop().getEndTime());
   }
@@ -143,7 +139,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.<String>of());
     replayAll();
     Story tweet = new Story.Builder().text(tweetText).time(tweetTime).build();
-    TruckStopMatch match = topic.match(truck, tweet, null);
+    TruckStopMatch match = topic.match(truck, tweet);
     assertNull(match);
   }
 
@@ -180,9 +176,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .withTime(tweetTime)
             .match();
     assertNotNull(match);
-    assertEquals(Confidence.MEDIUM, match.getConfidence());
-    assertThat(match.getStop().getNotes(), hasItems("Tweet received for location: 'Gold Coast, we have landed at Rush and Walton...here until 6 pm!'"));
-    assertThat(match.getStop().getNotes(), hasItems("Presence of end time in tweet increased confidence."));
     assertEquals(tweetTime, match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getStop().getEndTime());
   }
@@ -195,12 +188,11 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .withTime(tweetTime)
             .match();
     assertNotNull(match);
-    assertEquals(Confidence.MEDIUM, match.getConfidence());
     assertThat(match.getStop().getNotes(), hasItems("Tweet received for location: 'Our final stop is Grand & McClurg. We'll be leaving at 5:30pm, so come soon!'"));
-    assertThat(match.getStop().getNotes(), hasItems("Presence of end time in tweet increased confidence."));
     assertEquals(tweetTime, match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(17, 30, 0, 0), match.getStop().getEndTime());
   }
+
   @Test
   public void testMatch_lineBreak() {
     tweetTime = tweetTime.withHourOfDay(16).withMinuteOfHour(16);
@@ -214,7 +206,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .withTime(tweetTime)
             .match();
     assertNotNull(match);
-    assertEquals(Confidence.MEDIUM, match.getConfidence());
     assertEquals(tweetTime, match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(20, 0, 0, 0), match.getStop().getEndTime());
   }
@@ -227,7 +218,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .withTime(tweetTime)
             .match();
     assertNotNull(match);
-    assertEquals(Confidence.MEDIUM, match.getConfidence());
     assertEquals(tweetTime, match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(2, 0, 0, 0), match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(2, 0, 0, 0), match.getStop().getEndTime());
@@ -241,7 +231,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .withTime(tweetTime)
             .match();
     assertNotNull(match);
-    assertEquals(Confidence.MEDIUM, match.getConfidence());
     assertEquals(tweetTime.withTime(0, 0, 0, 0), match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(2, 0, 0, 0), match.getStop().getEndTime());
   }
@@ -254,7 +243,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .withTime(tweetTime)
             .match();
     assertNotNull(match);
-    assertEquals(Confidence.MEDIUM, match.getConfidence());
     assertEquals(tweetTime, match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(2, 0, 0, 0), match.getStop().getEndTime());
   }
@@ -267,7 +255,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .withTime(tweetTime)
             .match();
     assertNotNull(match);
-    assertEquals(Confidence.MEDIUM, match.getConfidence());
     assertEquals(tweetTime.withTime(23,30,0, 0), match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(23,30,0,0).plusHours(2), match.getStop().getEndTime());
   }
@@ -382,9 +369,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     TruckStopMatch match = tweet("Gold Coast, we have landed at Rush and Walton...here til 6 pm!")
         .match();
     assertNotNull(match);
-    assertEquals(Confidence.MEDIUM, match.getConfidence());
     assertThat(match.getStop().getNotes(), hasItems("Tweet received for location: 'Gold Coast, we have landed at Rush and Walton...here til 6 pm!'"));
-    assertThat(match.getStop().getNotes(), hasItems("Presence of end time in tweet increased confidence."));
     assertEquals(tweetTime, match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getStop().getEndTime());
   }
@@ -395,9 +380,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     TruckStopMatch match = tweet("Gold Coast, we have landed at Rush and Walton...here till 6 pm!")
         .match();
     assertNotNull(match);
-    assertEquals(Confidence.MEDIUM, match.getConfidence());
     assertThat(match.getStop().getNotes(), hasItems("Tweet received for location: 'Gold Coast, we have landed at Rush and Walton...here till 6 pm!'"));
-    assertThat(match.getStop().getNotes(), hasItems("Presence of end time in tweet increased confidence."));
     assertEquals(tweetTime, match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getStop().getEndTime());
   }
@@ -407,7 +390,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     TruckStopMatch match = tweet("At 353 N Desplaines until 8pm with @bigstarchicago  !!")
         .match();
     assertNotNull(match);
-    assertEquals(Confidence.MEDIUM, match.getConfidence());
     assertEquals(tweetTime, match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(20, 0, 0, 0), match.getStop().getEndTime());
   }
@@ -417,7 +399,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     TruckStopMatch match = tweet("Look For The Truck @UChicago This Afternoon Till 3 PM On Ellis! http://t.co/TD1aZ8OyHt")
         .match();
     assertNotNull(match);
-    assertEquals(Confidence.MEDIUM, match.getConfidence());
     assertEquals(tweetTime, match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(15, 0, 0, 0), match.getStop().getEndTime());
   }
@@ -429,7 +410,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
         "Come get your Sunday macaron going!")
         .match();
     assertNotNull(match);
-    assertEquals(Confidence.LOW, match.getConfidence());
     assertEquals(tweetTime, match.getStop().getStartTime());
   }
 
@@ -442,7 +422,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .geolocatorReturns(Location.builder().lat(41.889973).lng(-87.634024).name("Michigan and Ohio").build())
             .match();
     assertNotNull(match);
-    assertEquals(Confidence.MEDIUM, match.getConfidence());
     assertEquals("Michigan and Ohio", match.getStop().getLocation().getName());
     verifyAll();
   }
@@ -456,7 +435,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .geolocatorReturns(Location.builder().lat(41.889973).lng(-87.634024).name("Michigan and Ohio").build())
             .match();
     assertNotNull(match);
-    assertEquals(Confidence.LOW, match.getConfidence());
     assertEquals(match.getStop().getStartTime(), tweetTime);
     assertEquals(match.getStop().getEndTime(), tweetTime.withTime(13, 5, 0, 0));
     assertEquals("Michigan and Ohio", match.getStop().getLocation().getName());
@@ -472,7 +450,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .geolocatorReturns(Location.builder().lat(41.889973).lng(-87.634024).name("Michigan and Ohio").build())
             .match();
     assertNotNull(match);
-    assertEquals(Confidence.LOW, match.getConfidence());
     assertEquals(match.getStop().getStartTime(), tweetTime);
     assertEquals(match.getStop().getEndTime(), tweetTime.withTime(13, 5, 0, 0));
     assertEquals("Michigan and Ohio", match.getStop().getLocation().getName());
@@ -500,7 +477,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .withTime(tweetTime)
             .match();
     assertNotNull(match);
-    assertEquals(Confidence.MEDIUM, match.getConfidence());
     assertEquals(match.getStop().getStartTime(), tweetTime.withTime(11, 0, 0, 0));
     assertEquals(match.getStop().getEndTime(), tweetTime.withTime(13, 30, 0, 0));
   }
@@ -513,7 +489,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
         .withTime(tweetTime)
         .match();
     assertNotNull(match);
-    assertEquals(Confidence.MEDIUM, match.getConfidence());
     assertEquals(match.getStop().getStartTime(), tweetTime.withTime(11, 0, 0, 0));
     assertEquals(match.getStop().getEndTime(), tweetTime.withTime(12, 0, 0, 0));
   }
@@ -525,7 +500,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
         " Don't want to come out? call 312-498-9286 we... fb.me/1gKduQrvS")
         .match();
     assertNotNull(match);
-    assertEquals(Confidence.MEDIUM, match.getConfidence());
     assertEquals(match.getStop().getStartTime(), tweetTime.withTime(11, 30, 0, 0));
   }
 
@@ -540,7 +514,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .withTruck(truck)
             .match();
     assertNotNull(match);
-    assertEquals(Confidence.MEDIUM, match.getConfidence());
     assertEquals(match.getStop().getStartTime(), tweetTime);
   }
 
@@ -555,7 +528,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .withTruck(truck)
             .match();
     assertNotNull(match);
-    assertEquals(Confidence.MEDIUM, match.getConfidence());
     assertEquals(match.getStop().getStartTime(), tweetTime);
     assertEquals(match.getStop().getEndTime(), tweetTime.withHourOfDay(8).withMinuteOfHour(30));
   }
@@ -570,7 +542,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .withTruck(truck)
             .match();
     assertNotNull(match);
-    assertEquals(Confidence.LOW, match.getConfidence());
     assertEquals(tweetTime, match.getStop().getStartTime());
     assertEquals(tweetTime.plusHours(2), match.getStop().getEndTime());
   }
@@ -585,7 +556,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .withTruck(truck)
             .match();
     assertNotNull(match);
-    assertEquals(Confidence.MEDIUM, match.getConfidence());
     assertEquals("Start time should be same as tweet time", tweetTime, match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(13, 0, 0, 0), match.getStop().getEndTime());
   }
@@ -600,7 +570,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .withTruck(truck)
             .match();
     assertNotNull(match);
-    assertEquals(Confidence.LOW, match.getConfidence());
     assertEquals("Start time should be same as tweet time", tweetTime, match.getStop().getStartTime());
     assertEquals(tweetTime.plusHours(2), match.getStop().getEndTime());
   }
@@ -615,7 +584,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .withTruck(truck)
             .match();
     assertNotNull(match);
-    assertEquals(Confidence.LOW, match.getConfidence());
     assertEquals(match.getStop().getStartTime(), tweetTime);
   }
 
@@ -625,6 +593,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     TruckStopMatch match =
         tweet("5411empanadas: MON: Oak and Michigan / TUE: Univ of Chicago (Hyde Park) " +
             "/ WED: Dearborn & Monroe / THU: Columbus & Randolph / FRI: Wacker & Van Buren")
+            .noParse()
             .match();
     assertNull(match);
   }
@@ -638,18 +607,19 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             "F 7AM 600WChicago \n" +
             "Sa 10AM NOSH \n" +
             "Su 9AM 3627 N Southport")
+            .noParse()
             .match();
     assertNull(match);
   }
 
   @Test
-  public void testMatch_when1030AndLunchTruckExtendEndTimeToOne() {
+  public void testMatch_when1030AndLunchTruckExtendEndTimeToTwo() {
     TruckStopMatch match =
         tweet("foo")
           .withTime(tweetTime.withTime(10, 30, 0, 0))
           .withTruck(Truck.builder(truck).categories(ImmutableSet.of("Lunch")).build())
           .match();
-    assertEquals(13, match.getStop().getEndTime().getHourOfDay());
+    assertEquals(14, match.getStop().getEndTime().getHourOfDay());
     assertEquals(0, match.getStop().getEndTime().getMinuteOfHour());
   }
 
@@ -658,6 +628,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     TruckStopMatch match =
         tweet(
             "We are having maintenance done this week. We will be at U of C on Weds, " + "but that is it. See ya then! ")
+            .noParse()
             .match();
     assertNull(match);
   }
@@ -731,7 +702,9 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             "T: NBC Tower\n" +
             "W: Clark & Monroe\n" +
             "TH: Madison & Wacker + Montrose & Ravenswood (5pm)\n" +
-            "F: Lake & Wabash").match();
+            "F: Lake & Wabash")
+            .noParse()
+            .match();
     assertNull(match);
   }
 
@@ -741,7 +714,9 @@ public class TruckStopMatcherTest extends EasyMockSupport {
         tweet("Breakfast sandwich awesomeness meets @DarkMatter2521 bliss.\n" +
             "\n" +
             "Tu 7a AON\n" +
-            "W 7a 600WChicago").match();
+            "W 7a 600WChicago")
+            .noParse()
+            .match();
     assertNull(match);
   }
 
@@ -750,7 +725,9 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     TruckStopMatch match = tweet("SweetRideChi: TUES STOPS:  1130a - Taylor & Wood\n" +
         "1245p - UIC Campus Vernon Park Circle by BSB bldg\n" +
         "245p - Wacker & Lasalle\n" +
-        "430p... http://t.co/EDVtU2XM").match();
+        "430p... http://t.co/EDVtU2XM")
+        .noParse()
+        .match();
     assertNull(match);
   }
 
@@ -761,6 +738,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     tweetTime = new DateTime(2011, 11, 12, 9, 0, 0, 0, DateTimeZone.UTC);
     TruckStopMatch match =
         tweet("We hope you having a great weekend, see you on Monday <<Wells & Monroe>>")
+            .noParse()
             .match();
     assertNull(match);
   }
@@ -770,6 +748,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     tweetTime = new DateTime(2011, 11, 12, 9, 0, 0, 0, DateTimeZone.UTC);
     TruckStopMatch match =
         tweet("MonstaLobsta: 1/29 Lunch 11 til 1:30p at Bank of America 390 N Orange Ave. Let's Roll!!!")
+            .noParse()
             .match();
     assertNull(match);
   }
@@ -779,6 +758,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     tweetTime = new DateTime(2015, 1, 29, 9, 0, 0, 0, DateTimeZone.UTC);
     TruckStopMatch match =
         tweet("MonstaLobsta: 1/29 Lunch 11 til 1:30p at Bank of America 390 N Orange Ave. Let's Roll!!!")
+            .noParse()
             .match();
     assertNull(match);
   }
@@ -791,7 +771,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             "13th / S Michigan 11:15 am, Lincoln Square 1:30 pm")
             .match();
     assertNotNull(match);
-    assertEquals(Confidence.LOW, match.getConfidence());
     assertEquals(match.getStop().getStartTime(), tweetTime.withTime(11, 30, 0, 0));
   }
 
@@ -802,14 +781,15 @@ public class TruckStopMatcherTest extends EasyMockSupport {
         tweet("Come find us today for lunch at Clark & Monroe. Windows open at 11:00am!!!! ")
             .match();
     assertNotNull(match);
-    assertEquals(Confidence.MEDIUM, match.getConfidence());
     assertEquals(match.getStop().getStartTime(), tweetTime.withTime(11, 0, 0, 0));
   }
 
   @Test
   public void testMatch_shouldNotMatchDayOfWeekIfTomorrow() {
     tweetTime = new DateTime(2011, 11, 7, 9, 0, 0, 0, DateTimeZone.UTC);
-    TruckStopMatch match = tweet("@5411empanadas ahhh no uofc tues?? I shall starve").match();
+    TruckStopMatch match = tweet("@5411empanadas ahhh no uofc tues?? I shall starve")
+        .noParse()
+        .match();
     assertNull(match);
   }
 
@@ -818,6 +798,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     tweetTime = new DateTime(2011, 11, 7, 9, 0, 0, 0, DateTimeZone.UTC);
     TruckStopMatch match = tweet("Merch Mart, heading your way tmw. Carrying spicy chicken, " +
         "brunswick stew (website for details), corn on cob, biscuits and cucumber coleslaw.")
+        .noParse()
         .match();
     assertNull(match);
   }
@@ -827,8 +808,8 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     truck = new Truck.Builder(truck).matchOnlyIf("#bunsontherun").build();
     TruckStopMatch match = tweet(
         "Oooops on the handshake between Chris and Taylor - next time try a fistbump #AMA2011")
-        .noParse()
         .withTruck(truck)
+        .noParse()
         .match();
     assertNull(match);
     verifyAll();
@@ -842,7 +823,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
         .withTruck(truck)
         .match();
     assertNotNull(match);
-    assertEquals(Confidence.MEDIUM, match.getConfidence());
     assertEquals(tweetTime, match.getStop().getStartTime());
   }
 
@@ -1002,7 +982,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
       Story tweet = new Story.Builder().text(Tweeter.this.tweet)
           .userId("foobar")
           .time(Tweeter.this.time).build();
-      return topic.match(Tweeter.this.truck, tweet, null);
+      return topic.match(Tweeter.this.truck, tweet);
     }
 
     public Tweeter noParse() {

@@ -284,5 +284,17 @@ public class TruckStop extends ModelEntity {
       this.notes = newNotes;
       return this;
     }
+
+    public DateTime startTime() {
+      return startTime;
+    }
+
+    public boolean hasTimes() {
+      return startTime != null && endTime != null;
+    }
+
+    public DateTime endTime() {
+      return endTime;
+    }
   }
 }

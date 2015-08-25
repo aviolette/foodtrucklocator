@@ -10,20 +10,28 @@ import org.joda.time.DateTimeConstants;
  * @since Jul 14, 2011
  */
 public enum DayOfWeek {
-  monday(DateTimeConstants.MONDAY), tuesday(DateTimeConstants.TUESDAY), wednesday(
-      DateTimeConstants.WEDNESDAY),
-  thursday(DateTimeConstants.THURSDAY), friday(DateTimeConstants.FRIDAY), saturday(
-      DateTimeConstants.SATURDAY),
-  sunday(DateTimeConstants.SUNDAY);
+  monday(DateTimeConstants.MONDAY, "mon|monday"),
+  tuesday(DateTimeConstants.TUESDAY, "tue|tu|tues|tuesday"),
+  wednesday(DateTimeConstants.WEDNESDAY, "wed|weds|wednesday"),
+  thursday(DateTimeConstants.THURSDAY, "thu|th|thursday|thurs"),
+  friday(DateTimeConstants.FRIDAY, "fri|friday"),
+  saturday(DateTimeConstants.SATURDAY, "sat|saturday"),
+  sunday(DateTimeConstants.SUNDAY, "sun|su|sunday");
 
   private int isoConstant;
+  private final String matchPattern;
 
-  DayOfWeek(int dateConstant) {
+  DayOfWeek(int dateConstant, String matchPattern) {
     isoConstant = dateConstant;
+    this.matchPattern = matchPattern;
   }
 
   public int getConstant() {
     return isoConstant;
+  }
+
+  public String getMatchPattern() {
+    return matchPattern;
   }
 
   public static @Nullable DayOfWeek fromConstant(int dayOfWeek) {
