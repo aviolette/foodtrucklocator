@@ -1,5 +1,8 @@
 package foodtruck.model;
 
+import com.google.api.client.util.Preconditions;
+import com.google.api.client.util.Strings;
+
 /**
  * An application that access the food truck finder
  * @author aviolette
@@ -17,6 +20,12 @@ public class Application extends ModelEntity {
     this.description = builder.description;
     this.enabled = builder.enabled;
     this.rateLimit = builder.rateLimit;
+  }
+
+  @Override
+  public void validate() throws IllegalStateException {
+    Preconditions.checkArgument(!Strings.isNullOrEmpty(name), "Name is null");
+    Preconditions.checkArgument(!Strings.isNullOrEmpty(description), "Name is null");
   }
 
   public boolean isRateLimitEnabled() {

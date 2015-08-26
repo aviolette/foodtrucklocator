@@ -7,6 +7,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
 import com.google.common.base.Function;
@@ -51,6 +52,11 @@ public class ApplicationResource {
   public void create(Application app) {
     requiresAdmin();
     app = Application.builder(app).appKey(RandomString.nextString(8)).build();
+    try {
+      app.validate();
+    } catch (IllegalArgumentException iae) {
+      throw new WebApplicationException(iae, 400);
+    }
     appDao.save(app);
   }
 
@@ -63,6 +69,11 @@ public class ApplicationResource {
   @PUT @Path("{appKey}")
   public void update(@PathParam("appKey") String appKey, Application app) {
     requiresAdmin();
+    try {
+      app.validate();
+    } catch (IllegalArgumentException iae) {
+      throw new WebApplicationException(iae, 400);
+    }
     if (!appKey.equals(app.getAppKey())) {
       throw new BadRequestException("App keys not the same.");
     }
