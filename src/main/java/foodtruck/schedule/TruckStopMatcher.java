@@ -227,8 +227,7 @@ public class TruckStopMatcher {
       final LocalDate date = tweet.getTime().toLocalDate();
       tsBuilder.startTime(parseTime(m.group(1), date, null));
       tsBuilder.endTime(parseTime(m.group(5), date, tsBuilder.startTime()));
-      if (tsBuilder.hasTimes() && tsBuilder.startTime().getHourOfDay() > 12 &&
-          tsBuilder.endTime().getHourOfDay() < 12) {
+      if (tsBuilder.hasTimes() && tsBuilder.startTime().getHourOfDay() > 12 && tsBuilder.startTime().isAfter(tsBuilder.endTime())) {
         tsBuilder.startTime(tsBuilder.startTime().minusHours(12));
       } else if (tsBuilder.hasTimes() && tsBuilder.endTime().isBefore(tweet.getTime())) {
         Duration duration = new Duration(tsBuilder.startTime().toInstant(),

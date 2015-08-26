@@ -613,6 +613,19 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
   @Test
+  public void testHandleFirstTime() {
+    TruckStopMatch match =
+        tweet("Lil Red’s spots\n" +
+            "Clark&monroe8:30-2\n" +
+            "Lasalle&adams2:15-3\n" +
+            "Wabash&jackson3:30-4:45\n" +
+            "Vanburen&wabash4:50-6\n" +
+            "Kingsbury&Erie6:15-7:30").match();
+    assertEquals(tweetTime.withTime(8, 30, 0, 0), match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getStop().getEndTime());
+  }
+
+  @Test
   public void testMatch_when1030AndLunchTruckExtendEndTimeToTwo() {
     TruckStopMatch match =
         tweet("foo")
