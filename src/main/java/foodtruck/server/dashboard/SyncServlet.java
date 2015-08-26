@@ -76,7 +76,7 @@ public class SyncServlet extends HttpServlet {
       for (int i=0; i < arr.length(); i++) {
         try {
           Truck truck = truckReader.asJSON(arr.getJSONObject(i));
-          truckDAO.save(truck);
+          truckDAO.save(Truck.builder(truck).useTwittalyzer(true).build());
         } catch (JSONException e) {
           throw Throwables.propagate(e);
         }
