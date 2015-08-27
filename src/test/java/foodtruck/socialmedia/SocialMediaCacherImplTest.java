@@ -1,6 +1,7 @@
 package foodtruck.socialmedia;
 
 import java.util.List;
+import java.util.Set;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -107,11 +108,12 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
     expect(notificationDAO.findAll()).andStubReturn(ImmutableList.<TwitterNotificationAccount>of());
     DateTimeFormatter timeFormatter = DateTimeFormat.longTime();
     expect(clock.nowFormattedAsTime()).andStubReturn(timeFormatter.print(now));
-    service = new SocialMediaCacherImpl(twitterFactory, tweetDAO, zone, matcher,
+    Set<SocialMediaConnector> connectors = ImmutableSet.of();
+    service = new SocialMediaCacherImpl( tweetDAO, matcher,
         truckStopDAO,
         clock, terminationDetector, truckDAO,
         new LoggingTruckStopNotifier(), emailNotifier, offTheRoadDetector, locator, truckObserverDAO,
-        notificationDAO, retweetDAO, null, timeFormatter, new StaticConfig());
+        notificationDAO, retweetDAO, null, timeFormatter, new StaticConfig(), connectors);
     loca = Location.builder().lat(1).lng(2).name("a").build();
     locb = Location.builder().lat(3).lng(4).name("b").build();
     basicTweet = new Story.Builder().time(now.minusHours(2)).text(

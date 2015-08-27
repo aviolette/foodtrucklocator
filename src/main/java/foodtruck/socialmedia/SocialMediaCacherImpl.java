@@ -22,7 +22,6 @@ import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
@@ -55,9 +54,6 @@ import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.truckstops.TruckStopNotifier;
 import foodtruck.util.Clock;
 import foodtruck.util.TimeOnlyFormatter;
-import twitter4j.GeoLocation;
-import twitter4j.Paging;
-import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -73,8 +69,6 @@ public class SocialMediaCacherImpl implements SocialMediaCacher {
   @VisibleForTesting
   static final int HOURS_BACK_TO_SEARCH = 6;
   private final TweetCacheDAO tweetDAO;
-  private final TwitterFactoryWrapper twitterFactory;
-  private final DateTimeZone defaultZone;
   private final TruckStopMatcher matcher;
   private final TruckStopDAO truckStopDAO;
   private final Clock clock;
@@ -90,17 +84,16 @@ public class SocialMediaCacherImpl implements SocialMediaCacher {
   private final FoodTruckStopService truckStopService;
   private final DateTimeFormatter timeFormatter;
   private final StaticConfig staticConfig;
+  private final Set<SocialMediaConnector> connectors;
 
   @Inject
-  public SocialMediaCacherImpl(TwitterFactoryWrapper twitter, TweetCacheDAO tweetDAO, DateTimeZone zone,
-      TruckStopMatcher matcher, TruckStopDAO truckStopDAO, Clock clock, TerminationDetector detector, TruckDAO truckDAO,
-      TruckStopNotifier truckStopNotifier, EmailNotifier notifier, OffTheRoadDetector offTheRoadDetector,
-      GeoLocator locator, TruckObserverDAO truckObserverDAO, TwitterNotificationAccountDAO notificationAccountDAO,
-      RetweetsDAO retweetsDAO, FoodTruckStopService truckStopService,
-      @TimeOnlyFormatter DateTimeFormatter timeFormatter, StaticConfig staticConfig) {
+  public SocialMediaCacherImpl(TweetCacheDAO tweetDAO, TruckStopMatcher matcher, TruckStopDAO truckStopDAO, Clock clock,
+      TerminationDetector detector, TruckDAO truckDAO, TruckStopNotifier truckStopNotifier, EmailNotifier notifier,
+      OffTheRoadDetector offTheRoadDetector, GeoLocator locator, TruckObserverDAO truckObserverDAO,
+      TwitterNotificationAccountDAO notificationAccountDAO, RetweetsDAO retweetsDAO,
+      FoodTruckStopService truckStopService, @TimeOnlyFormatter DateTimeFormatter timeFormatter,
+      StaticConfig staticConfig, Set<SocialMediaConnector> connectors) {
     this.tweetDAO = tweetDAO;
-    this.twitterFactory = twitter;
-    this.defaultZone = zone;
     this.matcher = matcher;
     this.truckStopDAO = truckStopDAO;
     this.clock = clock;
@@ -116,65 +109,16 @@ public class SocialMediaCacherImpl implements SocialMediaCacher {
     this.truckStopService = truckStopService;
     this.timeFormatter = timeFormatter;
     this.staticConfig = staticConfig;
+    this.connectors = connectors;
   }
 
   @Override @Monitored
   public void update() {
-    Twitter twitter = twitterFactory.create();
-    try {
-      Paging paging = determinePaging();
-      int twitterListId = Integer.parseInt(staticConfig.getPrimaryTwitterList());
-      List<Status> statuses = twitter.getUserListStatuses(twitterListId, paging);
-      boolean first = true;
-      List<Story> summaries = Lists.newLinkedList();
-      for (Status status : statuses) {
-        if (first) {
-          // tweets come in descending order...so this is the tweet we want to start from next time
-          tweetDAO.setLastTweetId(status.getId());
-          first = false;
-        }
-        Story tweet = statusToTweet(status);
-        if (tweet != null) {
-          log.log(Level.INFO, "Tweet {0}: ", tweet);
-          summaries.add(tweet);
-        }
-      }
-      tweetDAO.save(summaries);
-    } catch (TwitterException e) {
-      throw new RuntimeException(e);
+    List<Story> summaries = Lists.newLinkedList();
+    for (SocialMediaConnector connector : connectors) {
+      summaries.addAll(connector.recentStories());
     }
-  }
-
-  private Paging determinePaging() {
-    long sinceId = tweetDAO.getLastTweetId();
-    Paging paging;
-    if (sinceId == 0) {
-      paging = new Paging();
-    } else {
-      paging = new Paging(sinceId);
-    }
-    return paging;
-  }
-
-  private @Nullable Story statusToTweet(Status status) {
-    final String screenName = status.getUser().getScreenName().toLowerCase();
-    if (status.isRetweet()) {
-      return null;
-    }
-    final GeoLocation geoLocation = status.getGeoLocation();
-    Location location = null;
-    if (geoLocation != null) {
-      location = Location.builder().lat(geoLocation.getLatitude())
-          .lng(geoLocation.getLongitude()).build();
-    }
-    final DateTime tweetTime = new DateTime(status.getCreatedAt(), defaultZone);
-    return new Story.Builder()
-        .userId(screenName)
-        .location(location)
-        .id(status.getId())
-        .time(tweetTime)
-        .text(status.getText())
-        .build();
+    tweetDAO.save(summaries);
   }
 
   @Override

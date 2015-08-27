@@ -8,6 +8,7 @@ import com.google.common.base.Throwables;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.multibindings.Multibinder;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 
@@ -19,11 +20,15 @@ import twitter4j.conf.PropertyConfiguration;
  * @since 10/11/11
  */
 public class SocialMediaModule extends AbstractModule {
+
   @Override
   protected void configure() {
     bind(SocialMediaCacher.class).to(SocialMediaCacherImpl.class);
     bind(ProfileSyncService.class).to(ProfileSyncServiceImpl.class);
+    Multibinder<SocialMediaConnector> connectorBinder = Multibinder.newSetBinder(binder(), SocialMediaConnector.class);
+    connectorBinder.addBinding().to(TwitterConnector.class);
   }
+
   @Provides @Singleton
   public TwitterFactoryWrapper provideTwitterFactory() {
     Properties properties = new Properties();
