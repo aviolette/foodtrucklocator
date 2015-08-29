@@ -12,7 +12,7 @@ import com.google.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-import foodtruck.dao.TweetCacheDAO;
+import foodtruck.dao.StoryDAO;
 import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.Story;
@@ -33,11 +33,11 @@ public class TwitterConnector implements SocialMediaConnector {
   private final TwitterFactoryWrapper twitterFactory;
   private final DateTimeZone defaultZone;
   private final StaticConfig config;
-  private final TweetCacheDAO tweetDAO;
+  private final StoryDAO tweetDAO;
 
   @Inject
   public TwitterConnector(TwitterFactoryWrapper twitter, DateTimeZone defaultZone, StaticConfig config,
-      TweetCacheDAO tweetDAO) {
+      StoryDAO tweetDAO) {
     this.twitterFactory = twitter;
     this.defaultZone = defaultZone;
     this.config = config;

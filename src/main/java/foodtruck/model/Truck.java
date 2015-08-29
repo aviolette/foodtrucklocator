@@ -214,6 +214,11 @@ public class Truck extends ModelEntity implements Serializable {
     return phone;
   }
 
+  public boolean shouldAnalyzeStories() {
+    return (!Strings.isNullOrEmpty(twitterHandle) && twittalyzer) ||
+        (!Strings.isNullOrEmpty(facebook) && scanFacebook);
+  }
+
   @Override
   public int hashCode() {
     return Objects.hashCode(id, name, url, iconUrl, twitterHandle, inactive);

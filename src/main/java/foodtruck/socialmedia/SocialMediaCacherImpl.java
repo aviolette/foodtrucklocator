@@ -27,10 +27,10 @@ import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.RetweetsDAO;
+import foodtruck.dao.StoryDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckObserverDAO;
 import foodtruck.dao.TruckStopDAO;
-import foodtruck.dao.TweetCacheDAO;
 import foodtruck.dao.TwitterNotificationAccountDAO;
 import foodtruck.email.EmailNotifier;
 import foodtruck.geolocation.GeoLocator;
@@ -68,7 +68,7 @@ public class SocialMediaCacherImpl implements SocialMediaCacher {
 
   @VisibleForTesting
   static final int HOURS_BACK_TO_SEARCH = 6;
-  private final TweetCacheDAO tweetDAO;
+  private final StoryDAO storyDAO;
   private final TruckStopMatcher matcher;
   private final TruckStopDAO truckStopDAO;
   private final Clock clock;
@@ -87,13 +87,13 @@ public class SocialMediaCacherImpl implements SocialMediaCacher {
   private final Set<SocialMediaConnector> connectors;
 
   @Inject
-  public SocialMediaCacherImpl(TweetCacheDAO tweetDAO, TruckStopMatcher matcher, TruckStopDAO truckStopDAO, Clock clock,
+  public SocialMediaCacherImpl(StoryDAO storyDAO, TruckStopMatcher matcher, TruckStopDAO truckStopDAO, Clock clock,
       TerminationDetector detector, TruckDAO truckDAO, TruckStopNotifier truckStopNotifier, EmailNotifier notifier,
       OffTheRoadDetector offTheRoadDetector, GeoLocator locator, TruckObserverDAO truckObserverDAO,
       TwitterNotificationAccountDAO notificationAccountDAO, RetweetsDAO retweetsDAO,
       FoodTruckStopService truckStopService, @TimeOnlyFormatter DateTimeFormatter timeFormatter,
       StaticConfig staticConfig, Set<SocialMediaConnector> connectors) {
-    this.tweetDAO = tweetDAO;
+    this.storyDAO = storyDAO;
     this.matcher = matcher;
     this.truckStopDAO = truckStopDAO;
     this.clock = clock;
@@ -118,12 +118,12 @@ public class SocialMediaCacherImpl implements SocialMediaCacher {
     for (SocialMediaConnector connector : connectors) {
       summaries.addAll(connector.recentStories());
     }
-    tweetDAO.save(summaries);
+    storyDAO.save(summaries);
   }
 
   @Override
   public void purgeBefore(LocalDate localDate) {
-    tweetDAO.deleteBefore(localDate.toDateTimeAtStartOfDay());
+    storyDAO.deleteBefore(localDate.toDateTimeAtStartOfDay());
   }
 
   /**
@@ -142,7 +142,7 @@ public class SocialMediaCacherImpl implements SocialMediaCacher {
   @Override
   public void analyze() {
     log.log(Level.INFO, "Updating twitter trucks");
-    handleTruckTweets();
+    handleTruckStories();
     observerAnalyze();
   }
 
@@ -153,7 +153,7 @@ public class SocialMediaCacherImpl implements SocialMediaCacher {
     Map<Truck, Story> trucksAdded = Maps.newHashMap();
     List<TruckStop> truckStops = Lists.newLinkedList();
     for (TruckObserver observer : truckObserverDAO.findAll()) {
-      final List<Story> tweets = tweetDAO.findTweetsAfter(clock.now().minusHours(HOURS_BACK_TO_SEARCH),
+      final List<Story> tweets = storyDAO.findTweetsAfter(clock.now().minusHours(HOURS_BACK_TO_SEARCH),
           observer.getTwitterHandle(), false);
       for (Story tweet : tweets) {
         if (tweet.getIgnoreInTwittalyzer()) {
@@ -207,23 +207,26 @@ public class SocialMediaCacherImpl implements SocialMediaCacher {
   }
 
   @VisibleForTesting
-  void handleTruckTweets() {
+  void handleTruckStories() {
     for (Truck truck : truckDAO.findAll()) {
       if (Strings.isNullOrEmpty(truck.getTwitterHandle())) {
         continue;
       }
-      List<Story> tweets =
-          tweetDAO.findTweetsAfter(clock.now().minusHours(HOURS_BACK_TO_SEARCH),
+      // TODO: this is kind of hacky. it presumes all trucks have a twitter handle.
+      // But for now its kind of needed because there is a many to one relationship
+      // between trucks and twitter handle
+      List<Story> stories =
+          storyDAO.findTweetsAfter(clock.now().minusHours(HOURS_BACK_TO_SEARCH),
               truck.getTwitterHandle(),
               false);
-      notifyIfOffTheRoad(tweets, truck);
-      if (!truck.isUsingTwittalyzer()) {
+      notifyIfOffTheRoad(stories, truck);
+      if (!truck.shouldAnalyzeStories()) {
         log.log(Level.FINE, "Twittalyzer isn't enabled for {0}", truck.getId());
         continue;
       }
-      TruckStopMatch match = findMatch(tweets, truck);
-      DateTime terminationTime = findTermination(tweets, truck);
-      ignoreTweets(tweets);
+      TruckStopMatch match = findMatch(stories, truck);
+      DateTime terminationTime = findTermination(stories, truck);
+      ignoreTweets(stories);
       if (match != null) {
         handleStopMatch(truck, match);
       } else if (terminationTime != null) {
@@ -445,7 +448,7 @@ public class SocialMediaCacherImpl implements SocialMediaCacher {
       Story summary = new Story.Builder(tweet).ignoreInTwittalyzer(true).build();
       l.add(summary);
     }
-    tweetDAO.save(l);
+    storyDAO.save(l);
   }
 
   private void notifyIfOffTheRoad(List<Story> tweets, Truck truck) {

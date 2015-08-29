@@ -18,10 +18,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import foodtruck.dao.RetweetsDAO;
+import foodtruck.dao.StoryDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckObserverDAO;
 import foodtruck.dao.TruckStopDAO;
-import foodtruck.dao.TweetCacheDAO;
 import foodtruck.dao.TwitterNotificationAccountDAO;
 import foodtruck.email.EmailNotifier;
 import foodtruck.geolocation.GeoLocator;
@@ -49,7 +49,7 @@ import static org.easymock.EasyMock.expect;
  */
 public class SocialMediaCacherImplTest extends EasyMockSupport {
 
-  private TweetCacheDAO tweetDAO;
+  private StoryDAO tweetDAO;
   private TruckStopMatcher matcher;
   private TruckStopDAO truckStopDAO;
   private SocialMediaCacherImpl service;
@@ -78,7 +78,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
   @Before
   public void before() {
     final TwitterFactoryWrapper twitterFactory = createMock(TwitterFactoryWrapper.class);
-    tweetDAO = createMock(TweetCacheDAO.class);
+    tweetDAO = createMock(StoryDAO.class);
     retweetDAO = createNiceMock(RetweetsDAO.class);
     truck1 = new Truck.Builder().id(TRUCK_1_ID).twitterHandle(TRUCK_1_ID)
         .useTwittalyzer(false).build();
@@ -155,7 +155,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
     truckStopDAO.addStops(ImmutableList.<TruckStop>of(matchedStop));
     expectTweetsIgnored();
     replayAll();
-    service.handleTruckTweets();
+    service.handleTruckStories();
     verifyAll();
   }
 
@@ -177,7 +177,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
         matchedStop.withStartTime(currentStop.getStartTime())));
     expectTweetsIgnored();
     replayAll();
-    service.handleTruckTweets();
+    service.handleTruckStories();
     verifyAll();
   }
 
@@ -194,7 +194,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
         matchedStop.withStartTime(currentStop.getStartTime())));
     expectTweetsIgnored();
     replayAll();
-    service.handleTruckTweets();
+    service.handleTruckStories();
     verifyAll();
   }
 
@@ -213,7 +213,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
             .withEndTime(currentStop.getEndTime())));
     expectTweetsIgnored();
     replayAll();
-    service.handleTruckTweets();
+    service.handleTruckStories();
     verifyAll();
   }
 
@@ -231,7 +231,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
         ImmutableList.<TruckStop>of(matchedStop.withStartTime(currentStop.getStartTime())));
     expectTweetsIgnored();
     replayAll();
-    service.handleTruckTweets();
+    service.handleTruckStories();
     verifyAll();
   }
 
@@ -242,7 +242,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
     expect(matcher.match(truck2, basicTweet)).andStubReturn(null);
     expectTweetsIgnored();
     replayAll();
-    service.handleTruckTweets();
+    service.handleTruckStories();
     verifyAll();
   }
 
@@ -260,7 +260,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
         ImmutableList.<TruckStop>of(matchedStop.withEndTime(currentStop.getEndTime())));
     expectTweetsIgnored();
     replayAll();
-    service.handleTruckTweets();
+    service.handleTruckStories();
     verifyAll();
   }
 
@@ -275,7 +275,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
     expectTweetsIgnored();
     truckStopDAO.addStops(ImmutableList.<TruckStop>of(matchedStop));
     replayAll();
-    service.handleTruckTweets();
+    service.handleTruckStories();
     verifyAll();
   }
 

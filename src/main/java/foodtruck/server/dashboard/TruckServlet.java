@@ -29,8 +29,8 @@ import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
 import foodtruck.dao.LocationDAO;
+import foodtruck.dao.StoryDAO;
 import foodtruck.dao.TruckDAO;
-import foodtruck.dao.TweetCacheDAO;
 import foodtruck.model.DailySchedule;
 import foodtruck.model.DayOfWeek;
 import foodtruck.model.Location;
@@ -53,12 +53,12 @@ public class TruckServlet extends HttpServlet {
   private final Clock clock;
   private final TruckDAO truckDAO;
   private final LocationDAO locationDAO;
-  private final TweetCacheDAO tweetDAO;
+  private final StoryDAO tweetDAO;
 
   @Inject
-  public TruckServlet(TweetCacheDAO tweetCacheDAO,
+  public TruckServlet(StoryDAO storyDAO,
       FoodTruckStopService truckService, Clock clock, TruckDAO truckDAO, LocationDAO locationDAO) {
-    this.tweetDAO = tweetCacheDAO;
+    this.tweetDAO = storyDAO;
     this.truckService = truckService;
     this.locationDAO = locationDAO;
     this.clock = clock;

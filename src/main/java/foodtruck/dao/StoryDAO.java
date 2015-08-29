@@ -13,7 +13,7 @@ import foodtruck.model.Story;
  * @author aviolette@gmail.com
  * @since 10/11/11
  */
-public interface TweetCacheDAO {
+public interface StoryDAO {
   List<Story> findTweetsAfter(DateTime time, String twitterHandle,
       boolean includeIgnored);
 

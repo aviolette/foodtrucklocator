@@ -16,7 +16,7 @@ import com.google.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-import foodtruck.dao.TweetCacheDAO;
+import foodtruck.dao.StoryDAO;
 import foodtruck.model.Location;
 import foodtruck.model.Story;
 import foodtruck.model.StoryType;
@@ -28,7 +28,7 @@ import static foodtruck.dao.appengine.Attributes.getTextProperty;
  * @author aviolette@gmail.com
  * @since 10/11/11
  */
-public class TweetCacheAppEngineDAO implements TweetCacheDAO {
+public class StoryDAOAppEngine implements StoryDAO {
   private static final String TWEET_KIND = "stories";
   private static final String TWEET_SINCE_KIND = "TweetsSince";
   private static final String TWEET_SCREEN_NAME = "screen_name";
@@ -44,7 +44,7 @@ public class TweetCacheAppEngineDAO implements TweetCacheDAO {
   private final DateTimeZone zone;
 
   @Inject
-  public TweetCacheAppEngineDAO(DatastoreServiceProvider provider, DateTimeZone zone) {
+  public StoryDAOAppEngine(DatastoreServiceProvider provider, DateTimeZone zone) {
     this.provider = provider;
     this.zone = zone;
   }
