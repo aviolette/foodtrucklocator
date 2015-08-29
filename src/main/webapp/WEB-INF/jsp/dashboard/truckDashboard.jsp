@@ -143,12 +143,13 @@
   </c:forEach>
   </tbody>
 </table>
-<h2>Tweets</h2>
+<h2>Stories</h2>
 <table class="table table-striped">
   <thead>
   <tr>
     <td style="width: 100px">Time</td>
     <td>Location</td>
+    <td>Source</td>
     <td>&nbsp;</td>
     <td>Text</td>
   </tr>
@@ -158,6 +159,7 @@
     <tr>
       <td style="width:100px !important"><a target="_blank" href="http://twitter.com/${tweet.screenName}/status/${tweet.id}"><joda:format value="${tweet.time}" style="-S"/></a></td>
       <td><ftl:location location="${tweet.location}"/>&nbsp;</td>
+      <td>${tweet.storyType}</td>
       <td><a class="btn btn-default retweet-button" id="retweet-${tweet.id}" href="#"><span class="glyphicon glyphicon-retweet"></span> Retweet</a></td>
       <td><ftl:tweetformat>${tweet.text}</ftl:tweetformat></td>
     </tr>

@@ -42,6 +42,14 @@ class Attributes {
     return (String) entity.getProperty(propertyName);
   }
 
+  public static String getStringProperty(Entity entity, String name, String defaultValue) {
+    String value = getStringProperty(entity, name);
+    if (value == null) {
+      return defaultValue;
+    }
+    return value;
+  }
+
   public static void setDateProperty(String propertyName, PropertyContainer entity,
       @Nullable DateTime dateTime) {
     if (dateTime == null) {

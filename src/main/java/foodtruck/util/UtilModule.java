@@ -37,6 +37,11 @@ public class UtilModule extends AbstractModule {
     return DateTimeFormat.forPattern("HH:mm").withZone(zone);
   }
 
+  @FacebookTimeFormat @Provides
+  public DateTimeFormatter providesFacebookTimeFormat(DateTimeZone zone) {
+    return DateTimeFormat.forPattern("YYYY-MM-dd'T'HH:mm:ssZ").withZone(zone);
+  }
+
   @HtmlDateFormatter @Provides
   public DateTimeFormatter providesDateTimeFormatterForHtml(DateTimeZone zone) {
     return DateTimeFormat.forPattern("YYYY-MM-dd'T'HH:mm").withZone(zone);

@@ -16,6 +16,7 @@ import foodtruck.dao.TweetCacheDAO;
 import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.Story;
+import foodtruck.model.StoryType;
 import twitter4j.GeoLocation;
 import twitter4j.Paging;
 import twitter4j.Status;
@@ -96,6 +97,7 @@ public class TwitterConnector implements SocialMediaConnector {
         .location(location)
         .id(status.getId())
         .time(tweetTime)
+        .type(StoryType.TWEET)
         .text(status.getText())
         .build();
   }

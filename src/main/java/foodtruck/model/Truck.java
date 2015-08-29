@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
@@ -54,12 +53,8 @@ public class Truck extends ModelEntity implements Serializable {
   private String instagramId;
   private @Nullable String fullsizeImage;
   private int timezoneAdjustment;
-
-  public static final Function<Truck, String> TO_ID = new Function<Truck, String>() {
-    @Nullable @Override public String apply(@Nullable Truck truck) {
-      return truck.getId();
-    }
-  };
+  private boolean scanFacebook;
+  private String lastScanned;
 
   // For serialization
   private Truck() {
@@ -97,6 +92,8 @@ public class Truck extends ModelEntity implements Serializable {
     this.instagramId = builder.instagramId;
     this.fullsizeImage = builder.fullsizeImage;
     this.timezoneAdjustment = builder.timezoneAdjustment;
+    this.scanFacebook = builder.scanFacebook;
+    this.lastScanned = builder.lastScanned;
   }
 
   public @Nullable String getFullsizeImage() {
@@ -250,6 +247,7 @@ public class Truck extends ModelEntity implements Serializable {
         .add("inactive", inactive)
         .add("instagramId", instagramId)
         .add("muteUntil", muteUntil)
+        .add("scanFacebook", scanFacebook)
         .toString();
   }
 
@@ -322,6 +320,14 @@ public class Truck extends ModelEntity implements Serializable {
       return false;
     }
     return true;
+  }
+
+  public boolean getScanFacebook() {
+    return scanFacebook;
+  }
+
+  public String getLastScanned() {
+    return lastScanned;
   }
 
   public static class Stats implements Serializable {
@@ -483,6 +489,8 @@ public class Truck extends ModelEntity implements Serializable {
     private @Nullable String instagramId;
     private @Nullable String fullsizeImage;
     private int timezoneAdjustment = 0;
+    private boolean scanFacebook;
+    private String lastScanned;
 
 
     public Builder() {
@@ -519,6 +527,8 @@ public class Truck extends ModelEntity implements Serializable {
       this.instagramId = truck.instagramId;
       this.fullsizeImage = truck.fullsizeImage;
       this.timezoneAdjustment = truck.timezoneAdjustment;
+      this.scanFacebook = truck.scanFacebook;
+      this.lastScanned = truck.lastScanned;
     }
 
     public Builder id(String id) {
@@ -548,6 +558,11 @@ public class Truck extends ModelEntity implements Serializable {
 
     public Builder hidden(boolean hidden) {
       this.hidden = hidden;
+      return this;
+    }
+
+    public Builder lastScanned(String lastScannedId) {
+      this.lastScanned = lastScannedId;
       return this;
     }
 
@@ -661,6 +676,11 @@ public class Truck extends ModelEntity implements Serializable {
 
     public Builder yelpSlug(@Nullable String yelpSlug) {
       this.yelpSlug = yelpSlug;
+      return this;
+    }
+
+    public Builder scanFacebook(boolean scanFacebook) {
+      this.scanFacebook = scanFacebook;
       return this;
     }
 

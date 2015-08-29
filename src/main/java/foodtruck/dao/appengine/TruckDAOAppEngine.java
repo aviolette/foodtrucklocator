@@ -76,6 +76,8 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
   private static final String TRUCK_INSTAGRAM = "instagram";
   private static final String TRUCK_FULL_SIZE = "fullsize_image";
   private static final String TIMEZONE_OFFSET = "timezone_offset";
+  private static final String SCAN_FACEBOOK = "scan_facebook";
+  private static final String LAST_SCANNED = "last_scanned_facebook";
 
   private DateTimeZone zone;
 
@@ -130,6 +132,8 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
         .hidden(getBooleanProperty(entity, TRUCK_HIDDEN, false))
         .instagramId(getStringProperty(entity, TRUCK_INSTAGRAM))
         .facebook((String) entity.getProperty(TRUCK_FACEBOOK_FIELD))
+        .scanFacebook(getBooleanProperty(entity, SCAN_FACEBOOK, false))
+        .lastScanned(getStringProperty(entity, LAST_SCANNED))
         .foursquareUrl((String) entity.getProperty(TRUCK_FOURSQUARE_URL_FIELD))
         .iconUrl((String) entity.getProperty(TRUCK_ICON_URL))
         .muteUntil(Attributes.getDateTime(entity, TRUCK_MUTE_UNTIL, zone))
@@ -188,6 +192,15 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     return executeQuery(dataStore,
         new Query(TRUCK_KIND)
             .setFilter(new Query.FilterPredicate(TRUCK_HIDDEN, Query.FilterOperator.EQUAL, false))
+            .addSort(TRUCK_NAME_FIELD), null);
+  }
+
+  @Override
+  public List<Truck> findFacebookTrucks() {
+    DatastoreService dataStore = provider.get();
+    return executeQuery(dataStore,
+        new Query(TRUCK_KIND)
+            .setFilter(new Query.FilterPredicate(SCAN_FACEBOOK, Query.FilterOperator.EQUAL, true))
             .addSort(TRUCK_NAME_FIELD), null);
   }
 
@@ -273,6 +286,8 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     entity.setProperty(TRUCK_HIDDEN, truck.isHidden());
     entity.setProperty(TRUCK_INSTAGRAM, truck.getInstagramId());
     entity.setProperty(TRUCK_FULL_SIZE, truck.getFullsizeImage());
+    entity.setProperty(SCAN_FACEBOOK, truck.getScanFacebook());
+    entity.setProperty(LAST_SCANNED, truck.getLastScanned());
     entity.setProperty(TRUCK_ALLOW_SYSTEM_NOTIFICATIONS, truck.isAllowSystemNotifications());
     entity.setProperty(TRUCK_FACEBOOK_PAGE_ID, truck.getFacebookPageId());
     entity.setProperty(TRUCK_TWITTER_GEOLOCATION, truck.isTwitterGeolocationDataValid());

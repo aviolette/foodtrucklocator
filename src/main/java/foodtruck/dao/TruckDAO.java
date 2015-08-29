@@ -43,6 +43,11 @@ public interface TruckDAO extends DAO<String, Truck> {
   List<Truck> findVisibleTrucks();
 
   /**
+   * Finds all trucks whose facebook feeds should be scanned
+   */
+  List<Truck> findFacebookTrucks();
+
+  /**
    * Returns the first truck in the db
    */
   @Nullable Truck findFirst();

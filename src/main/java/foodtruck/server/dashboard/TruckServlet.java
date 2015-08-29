@@ -123,10 +123,10 @@ public class TruckServlet extends HttpServlet {
       resp.setStatus(404);
       return;
     }
-    final List<Story> tweetSummaries = tweetDAO.findTweetsAfter(
+    final List<Story> stories = tweetDAO.findTweetsAfter(
         clock.currentDay().toDateTimeAtStartOfDay(clock.zone()), truck.getTwitterHandle(), true);
 
-    req.setAttribute("tweets", tweetSummaries);
+    req.setAttribute("tweets", stories);
     final String name = truck.getName();
     req.setAttribute("headerName", name);
     req.setAttribute("truckId", truckId);
@@ -216,6 +216,7 @@ public class TruckServlet extends HttpServlet {
     builder.twitterGeolocationDataValid(options.contains("twitterGeolocation"));
     builder.hidden(options.contains("hidden"));
     builder.useTwittalyzer(options.contains("twittalyzer"));
+    builder.scanFacebook(options.contains("facebooker"));
     builder.allowSystemNotifications(options.contains("systemNotifications"));
     builder.displayEmailPublicly(options.contains("displayEmailPublicly"));
     String matchRegex = request.getParameter("matchOnlyIf");

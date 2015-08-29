@@ -3,6 +3,7 @@ package foodtruck.socialmedia;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import com.google.common.base.Throwables;
 import com.google.inject.AbstractModule;
@@ -20,6 +21,7 @@ import twitter4j.conf.PropertyConfiguration;
  * @since 10/11/11
  */
 public class SocialMediaModule extends AbstractModule {
+  private static final Logger log = Logger.getLogger(SocialMediaModule.class.getName());
 
   @Override
   protected void configure() {
@@ -27,6 +29,11 @@ public class SocialMediaModule extends AbstractModule {
     bind(ProfileSyncService.class).to(ProfileSyncServiceImpl.class);
     Multibinder<SocialMediaConnector> connectorBinder = Multibinder.newSetBinder(binder(), SocialMediaConnector.class);
     connectorBinder.addBinding().to(TwitterConnector.class);
+    if (System.getProperty("foodtrucklocator.fb.access.token", null) != null) {
+      connectorBinder.addBinding().to(FacebookConnector.class);
+    } else {
+      log.info("Facebook connector is disabled since no access token is specified");
+    }
   }
 
   @Provides @Singleton
@@ -44,11 +51,10 @@ public class SocialMediaModule extends AbstractModule {
     return new TwitterFactoryWrapper(new TwitterFactory(), new TwitterFactory(new PropertyConfiguration(properties)));
   }
 
-
   @FacebookEndpoint
   @Provides @Singleton
   public WebResource provideFacebookResource() {
     Client c = Client.create();
-    return c.resource("http://graph.facebook.com");
+    return c.resource("https://graph.facebook.com");
   }
 }

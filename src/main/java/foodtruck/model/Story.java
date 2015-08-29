@@ -48,6 +48,10 @@ public class Story extends ModelEntity {
     return text;
   }
 
+  public StoryType getStoryType() {
+    return storyType;
+  }
+
   public DateTime getTime() {
     return time;
   }
@@ -131,6 +135,11 @@ public class Story extends ModelEntity {
 
     public Story build() {
       return new Story(this);
+    }
+
+    public Builder type(StoryType storyType) {
+      this.type = storyType;
+      return this;
     }
 
     public Builder text(String text) {

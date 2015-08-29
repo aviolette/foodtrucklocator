@@ -107,4 +107,8 @@ public class StaticConfig {
   public String getNotificationSender() {
     return System.getProperty("foodtrucklocator.mail.sender", "");
   }
+
+  public String getFacebookAccessToken() {
+    return System.getProperty("foodtrucklocator.fb.access.token", null);
+  }
 }

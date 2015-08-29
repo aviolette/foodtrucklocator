@@ -8,6 +8,7 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Text;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -18,22 +19,27 @@ import org.joda.time.DateTimeZone;
 import foodtruck.dao.TweetCacheDAO;
 import foodtruck.model.Location;
 import foodtruck.model.Story;
+import foodtruck.model.StoryType;
+
+import static foodtruck.dao.appengine.Attributes.getStringProperty;
+import static foodtruck.dao.appengine.Attributes.getTextProperty;
 
 /**
  * @author aviolette@gmail.com
  * @since 10/11/11
  */
 public class TweetCacheAppEngineDAO implements TweetCacheDAO {
-  private static final String TWEET_KIND = "Tweet";
+  private static final String TWEET_KIND = "stories";
   private static final String TWEET_SINCE_KIND = "TweetsSince";
-  private static final String TWEET_SCREEN_NAME = "screenName";
+  private static final String TWEET_SCREEN_NAME = "screen_name";
   private static final String TWEET_LOCATION_LAT = "lat";
   private static final String TWEET_LOCATION_LNG = "lng";
-  private static final String TWEET_TEXT = "tweetText";
+  private static final String TWEET_TEXT = "message";
   private static final String TWEET_TIME = "time";
-  private static final String TWEET_ID = "tweetId";
+  private static final String TWEET_ID = "message_id";
   private static final String TWEET_SINCE = "lastTweetId";
   private static final String TWEET_IGNORE = "ignore";
+  private static final String STORY_TYPE = "story_type";
   private final DatastoreServiceProvider provider;
   private final DateTimeZone zone;
 
@@ -131,10 +137,11 @@ public class TweetCacheAppEngineDAO implements TweetCacheDAO {
       entity.setProperty(TWEET_LOCATION_LAT, location.getLatitude());
       entity.setProperty(TWEET_LOCATION_LNG, location.getLongitude());
     }
-    entity.setProperty(TWEET_TEXT, tweet.getText());
+    entity.setProperty(TWEET_TEXT, new Text(tweet.getText()));
     entity.setProperty(TWEET_TIME, tweet.getTime().toDate());
     entity.setProperty(TWEET_ID, tweet.getId());
     entity.setProperty(TWEET_IGNORE, tweet.getIgnoreInTwittalyzer());
+    entity.setProperty(STORY_TYPE, tweet.getStoryType().toString());
     dataStore.put(entity);
   }
 
@@ -146,14 +153,16 @@ public class TweetCacheAppEngineDAO implements TweetCacheDAO {
       location = Location.builder().lat(lat).lng(lng).build();
     }
     DateTime dateTime = new DateTime(entity.getProperty(TWEET_TIME), zone);
+    StoryType storyType = StoryType.valueOf(getStringProperty(entity, STORY_TYPE, StoryType.TWEET.toString()));
     return new Story.Builder()
         .id((Long) entity.getProperty(TWEET_ID))
         .ignoreInTwittalyzer(Boolean.TRUE.equals(entity.getProperty(TWEET_IGNORE)))
         .location(location)
         .time(dateTime)
         .key(entity.getKey())
-        .text((String) entity.getProperty(TWEET_TEXT))
+        .text(getTextProperty(entity, TWEET_TEXT))
         .userId((String) entity.getProperty(TWEET_SCREEN_NAME))
+        .type(storyType)
         .build();
   }
 }
