@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
+import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 
 import static org.easymock.EasyMock.expect;
@@ -40,12 +41,13 @@ public class SimpleEmailNotifierTest extends EasyMockSupport {
   public void testNotifyAddMentionedTrucks() throws Exception {
     expect(config.getBaseUrl()).andReturn("http://localhost");
     TruckStop stop = TruckStop.builder()
+        .truck(Truck.builder().id("foo").name("bar").build())
         .startTime(new DateTime(2015, 8, 13, 12, 0, DateTimeZone.UTC))
         .endTime(new DateTime(2015, 8, 13, 2, 0, DateTimeZone.UTC))
         .location(Location.builder().key(123L).build())
         .build();
     sender.sendSystemMessage("Truck was mentioned by another truck", "This tweet \"foobar\"\n" +
-        "\n might have indicated that there additional trucks to be added to the system.\n\n  " +
+        "\n from bar might have indicated that there additional trucks to be added to the system.\n\n  " +
         "Click here http://localhost/admin/event_at/123?selected=truck1,truck2&startTime=20150813-0700&endTime=20150812-2100 to add the trucks");
     replayAll();
     notifier.notifyAddMentionedTrucks(ImmutableSet.of("truck1", "truck2"), stop, "foobar");
