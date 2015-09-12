@@ -46,8 +46,8 @@ public class ImageServlet extends HttpServlet {
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    GcsFilename fileName = getFileName(req);
     try {
+      GcsFilename fileName = getFileName(req);
       GcsInputChannel readChannel = cloudStorage.openPrefetchingReadChannel(fileName, 0, 2097152);
       try (InputStream in = Channels.newInputStream(readChannel)) {
         ByteStreams.copy(in, resp.getOutputStream());
@@ -66,8 +66,13 @@ public class ImageServlet extends HttpServlet {
     }
   }
 
-  private GcsFilename getFileName(HttpServletRequest req) {
+  private GcsFilename getFileName(HttpServletRequest req) throws FileNotFoundException {
     String[] splits = req.getRequestURI().split("/");
+    if (splits.length != 4) {
+      throw new FileNotFoundException("Invalid file");
+    } else if (splits[3].toLowerCase().contains(".php")) {
+      throw new FileNotFoundException("File does not appear to be an image");
+    }
     return new GcsFilename(staticConfig.getIconBucket(), splits[3]);
   }
 }
