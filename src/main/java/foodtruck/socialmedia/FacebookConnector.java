@@ -95,7 +95,8 @@ public class FacebookConnector implements SocialMediaConnector {
       String message = storyObj.getString("message");
       stories.add(Story.builder()
           .text(message)
-          .userId(truck.getId())
+          // This is a bad assumption to make, but the easiest way to get it to work across the board
+          .userId(truck.getTwitterHandle())
           .time(createTime)
           .type(StoryType.FACEBOOK)
           .build());
