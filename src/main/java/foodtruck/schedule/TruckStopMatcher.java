@@ -39,7 +39,8 @@ import foodtruck.util.Clock;
  */
 public class TruckStopMatcher {
   private static final Logger log = Logger.getLogger(TruckStopMatcher.class.getName());
-  public static final int DEFAULT_STOP_LENGTH_IN_HOURS = 2;
+  private static final long ONE_HOUR_IN_MILLIS = 3600000;
+  private static final long DEFAULT_STOP_LENGTH_IN_HOURS = 2 * ONE_HOUR_IN_MILLIS;
   public static final String TIME_PATTERN = "(\\d+(:\\d+)*\\s*(p|pm|a|am|a\\.m\\.|p\\.m\\.)?)|noon";
   static final String TIME_PATTERN_STRICT =
       "(\\d+:\\d+\\s*(p|pm|a|am|a\\.m\\.|p\\.m\\.)?)|noon|(\\d+\\s*(p|pm|a|am|a\\.m\\.|p\\.m\\.)|((11|12|1|2|3|4|5|6)\\b))";
@@ -160,7 +161,7 @@ public class TruckStopMatcher {
         && truck.getCategoryList().contains("Lunch")) {
       tsBuilder.endTime(tsBuilder.startTime().withTime(14, 0, 0, 0));
     } else {
-      tsBuilder.endTime(tsBuilder.startTime().plusHours(stopTime(truck, tsBuilder.startTime())));
+      tsBuilder.endTime(tsBuilder.startTime().plus(stopTime(truck, tsBuilder.startTime())));
     }
     return true;
   }
@@ -202,7 +203,7 @@ public class TruckStopMatcher {
           if (tsBuilder.startTime().getHourOfDay() == 0) {
             tsBuilder.startTime(tsBuilder.startTime().withHourOfDay(12));
           }
-          tsBuilder.endTime(tsBuilder.startTime().plusHours(stopTime(truck, tsBuilder.startTime())));
+          tsBuilder.endTime(tsBuilder.startTime().plus(stopTime(truck, tsBuilder.startTime())));
         }
         // This is a special case, since matching ranges like that will produce a lot of
         // false positives, but 11-1 is commonly used for lunch hour
@@ -269,11 +270,12 @@ public class TruckStopMatcher {
     return schedulePattern.matcher(tweetText).find();
   }
 
-  private int stopTime(Truck truck, DateTime startTime) {
+  private long stopTime(Truck truck, DateTime startTime) {
     if (startTime.getHourOfDay() < 11 && truck.getCategories().contains("MorningSquatter")) {
-      return Math.max(13 - startTime.getHourOfDay(), DEFAULT_STOP_LENGTH_IN_HOURS);
+      DateTime maxDay = startTime.withTime(14, 0, 0, 0);
+      return Math.max(maxDay.getMillis() - startTime.getMillis(), DEFAULT_STOP_LENGTH_IN_HOURS);
     }
-    return truck.getCategories().contains("1HRStops") ? 1 : DEFAULT_STOP_LENGTH_IN_HOURS;
+    return truck.getCategories().contains("1HRStops") ? ONE_HOUR_IN_MILLIS : DEFAULT_STOP_LENGTH_IN_HOURS;
   }
 
   private boolean canStartNow(Truck truck, boolean morning, String tweetText) {

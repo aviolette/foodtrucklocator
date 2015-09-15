@@ -435,8 +435,8 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .geolocatorReturns(Location.builder().lat(41.889973).lng(-87.634024).name("Michigan and Ohio").build())
             .match();
     assertNotNull(match);
-    assertEquals(match.getStop().getStartTime(), tweetTime);
-    assertEquals(match.getStop().getEndTime(), tweetTime.withTime(13, 5, 0, 0));
+    assertEquals(tweetTime, match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getStop().getEndTime());
     assertEquals("Michigan and Ohio", match.getStop().getLocation().getName());
     verifyAll();
   }
@@ -451,7 +451,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .match();
     assertNotNull(match);
     assertEquals(match.getStop().getStartTime(), tweetTime);
-    assertEquals(match.getStop().getEndTime(), tweetTime.withTime(13, 5, 0, 0));
+    assertEquals(match.getStop().getEndTime(), tweetTime.withTime(14, 0, 0, 0));
     assertEquals("Michigan and Ohio", match.getStop().getLocation().getName());
     verifyAll();
   }
