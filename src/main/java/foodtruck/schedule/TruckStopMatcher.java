@@ -155,7 +155,8 @@ public class TruckStopMatcher {
       return false;
     }
     // If it's a lunch truck, extend its time to a min of 1pm.
-    if (tsBuilder.startTime().getHourOfDay() == 10 && tsBuilder.startTime().getMinuteOfHour() >= 30
+    if (((tsBuilder.startTime().getHourOfDay() == 10 && tsBuilder.startTime().getMinuteOfHour() >= 30) ||
+        (tsBuilder.startTime().getHourOfDay() == 11 && tsBuilder.startTime().getMonthOfYear() == 0))
         && truck.getCategoryList().contains("Lunch")) {
       tsBuilder.endTime(tsBuilder.startTime().withTime(14, 0, 0, 0));
     } else {
