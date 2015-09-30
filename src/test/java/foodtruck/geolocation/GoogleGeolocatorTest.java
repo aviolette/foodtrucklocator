@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import foodtruck.model.Location;
+
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
