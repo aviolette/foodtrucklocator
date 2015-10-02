@@ -2,7 +2,6 @@ package foodtruck.dao.appengine;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
@@ -40,7 +39,6 @@ import static foodtruck.dao.appengine.Attributes.getStringProperty;
  * @since Jul 12, 2011
  */
 public class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements TruckStopDAO {
-  private static final Logger log = Logger.getLogger(TruckStopDAOAppEngine.class.getName());
   private static final String STOP_KIND = "Truck";
   private static final String START_TIME_FIELD = "startTime";
   private static final String END_TIME_FIELD = "endTime";

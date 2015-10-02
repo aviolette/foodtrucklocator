@@ -75,7 +75,7 @@ public abstract class TimeSeriesDAOAppEngine extends AppEngineDAO<Long, SystemSt
     try {
       Entity entity = findBySlot(slot, dataStore);
       if (entity == null) {
-        SystemStats stats = new SystemStats(-1, slot, ImmutableMap.<String, Long>of(statName, by));
+        SystemStats stats = new SystemStats(-1, slot, ImmutableMap.of(statName, by));
         save(stats, dataStore);
       } else {
         long statValue = Attributes.getLongProperty(entity, statName, 0);

@@ -162,7 +162,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
   @Override public Collection<Truck> findByTwitterId(String screenName) {
     DatastoreService dataStore = provider.get();
     Query q = new Query(TRUCK_KIND);
-    q.addFilter(TRUCK_TWITTER_HANDLE, Query.FilterOperator.EQUAL, screenName);
+    q.setFilter(new Query.FilterPredicate(TRUCK_TWITTER_HANDLE, Query.FilterOperator.EQUAL, screenName));
     ImmutableSet.Builder<Truck> trucks = ImmutableSet.builder();
     for (Entity entity : dataStore.prepare(q).asIterable()) {
       Truck truck = fromEntity(entity);
@@ -251,7 +251,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
   @Override public Set<Truck> findTrucksWithCalendars() {
     DatastoreService dataStore = provider.get();
     Query q = new Query(TRUCK_KIND);
-    q.addFilter(TRUCK_CALENDAR_URL, Query.FilterOperator.NOT_EQUAL, null);
+    q.setFilter(new Query.FilterPredicate(TRUCK_CALENDAR_URL, Query.FilterOperator.NOT_EQUAL, null));
     ImmutableSet.Builder<Truck> trucks = ImmutableSet.builder();
     for (Entity entity : dataStore.prepare(q).asIterable()) {
       Truck truck = fromEntity(entity);
