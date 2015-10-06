@@ -49,14 +49,18 @@
     }
 
     function buildCategories() {
-      var tmpSet = {}, $categories = $("#categories");
+      var tmpSet = {}, $categories = $("#categories"), categoryList = [];
       $.each(truckData, function(i, truck) {
         $.each(truck.categories, function(j, category) {
           tmpSet[category] = 1;
         });
       });
       Object.keys(tmpSet).forEach(function(key) {
-        $("<div class='checkbox'><label><input category-name='" + key + "' class='category-cb filter-cb' checked type='checkbox'/>" + key + "</label></div>").appendTo($categories);
+        categoryList.push(key);
+      });
+      categoryList.sort();
+      $.each(categoryList, function(i, category) {
+        $("<div class='checkbox'><label><input category-name='" + category + "' class='category-cb filter-cb' checked type='checkbox'/>" + category + "</label></div>").appendTo($categories);
       });
     }
 
