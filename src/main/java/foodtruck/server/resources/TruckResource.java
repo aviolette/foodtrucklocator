@@ -71,6 +71,8 @@ public class TruckResource {
     Collection<Truck> response;
     if ("false".equals(active)) {
       response = truckDAO.findInactiveTrucks();
+    } else if ("all".equals(active)) {
+      response = truckDAO.findVisibleTrucks();
     } else {
       response = Strings.isNullOrEmpty(filteredBy) ? truckDAO.findActiveTrucks() : truckDAO.findByCategory(filteredBy);
     }

@@ -10,7 +10,9 @@ import javax.annotation.Nullable;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
 
 import org.joda.time.DateTime;
@@ -333,6 +335,17 @@ public class Truck extends ModelEntity implements Serializable {
 
   public String getLastScanned() {
     return lastScanned;
+  }
+
+  public Set<String> publicCategories() {
+    return FluentIterable.from(categories)
+        .filter(new Predicate<String>() {
+          public boolean apply(String input) {
+            return !(input.equals("Lunch") || input.equals("1HRStops") || input.equals("MorningSquatter") ||
+                input.equals("AssumeNoTimeEqualsLunch"));
+          }
+        })
+        .toSet();
   }
 
   public static class Stats implements Serializable {

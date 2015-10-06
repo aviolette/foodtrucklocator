@@ -1,57 +1,120 @@
 <%@ include file="header.jsp" %>
-<script src="/script/holder.js"></script>
 
-<c:if test="${foodTruckRequestOn}">
-  <a href="/request" class="btn btn-primary" role="button">Request a Truck</a>
-</c:if>
-
-<ul class="nav nav-tabs<c:if test="${!empty(filteredBy)}"> hidden</c:if>" id="navTabs" style="margin-top:20px">
-  <li class="active"><a href="#truckList" data-toggle="tab">Active Trucks</a></li>
-  <li><a href="#inactiveTrucks" data-toggle="tab">Inactive Trucks</a></li>
-</ul>
-<div class="tab-content" style="margin-top:20px">
-  <div id="truckList" class="tab-pane active">
+<div class="row">
+  <div class="col-md-2">
+    <h4>Active</h4>
+    <div class="checkbox">
+      <label>
+        <input id="active-cb" checked class="filter-cb" type="checkbox"/>
+          Active Trucks
+      </label>
+    </div>
+    <div class="checkbox">
+      <label>
+        <input id="inactive-cb" class="filter-cb" type="checkbox"/>
+          Inactive Trucks
+      </label>
+    </div>
+    <h4>Categories</h4>
+    <a href="#" id="select-all">Select all</a> <a href="#" id="deselect-all">Deselect all</a>
+    <div id="categories">
+    </div>
   </div>
-  <div id="inactiveTrucks" class="tab-pane">
-    <em>Loading list...</em>
+  <div class="col-md-10">
+    <div id="truckList" class="tab-pane active">
+    </div>
   </div>
 </div>
 
 <%@include file="include/core_js.jsp" %>
 <script type="text/javascript">
   (function() {
-    function loadTruckList(active, $truckList, prefix) {
+    var truckData = [], $truckList = $("#truckList");
+
+    function refreshTruckList(dataSet) {
+      $truckList.empty();
+      $.each(dataSet, function(i, datum) {
+        var icon = datum["previewIcon"];
+        var $section = $("<div class='col-xs-6 col-md-3'></div>");
+        var thumbnailId ="thumbnail-" + i;
+        var $thumbnail = $("<div class='thumbnail' id='" + thumbnailId + "'></div>");
+        $section.append($thumbnail);
+        $truckList.append($section);
+        if (!icon) {
+          icon = "//storage.googleapis.com/truckpreviews/truck_holder.svg";
+        }
+        $("<img width='180' height='180' src='" + icon + "'/>").appendTo($thumbnail);
+        $thumbnail.append("<p class='text-center'><a href='/trucks/" + datum["id"] + "'>" + datum['name']+"</a></p>")
+      });
+    }
+
+    function buildCategories() {
+      var tmpSet = {}, $categories = $("#categories");
+      $.each(truckData, function(i, truck) {
+        $.each(truck.categories, function(j, category) {
+          tmpSet[category] = 1;
+        });
+      });
+      Object.keys(tmpSet).forEach(function(key) {
+        $("<div class='checkbox'><label><input category-name='" + key + "' class='category-cb filter-cb' checked type='checkbox'/>" + key + "</label></div>").appendTo($categories);
+      });
+    }
+
+    function parseSelectedCategories() {
+      var categories = {};
+      $(".category-cb:checked").each(function(i, target) {
+        var item = $(target).attr("category-name");
+        categories[item] = 1;
+      });
+      return categories;
+
+    }
+
+    function applyFilters() {
+      data = [];
+      var includeActive = $("#active-cb").is(":checked"),
+          includeInactive = $("#inactive-cb").is(":checked"),
+          selectedCategories = parseSelectedCategories();
+      $.each(truckData, function(i, truck) {
+        if ((truck.inactive && !includeInactive) || (!truck.inactive && !includeActive)) {
+          return;
+        }
+        var hasCategory = false;
+        for (var category=0; category < truck.categories.length; category++) {
+          if (truck.categories[category] in selectedCategories) {
+            hasCategory = true;
+            break;
+          }
+        }
+        if (hasCategory) {
+          data.push(truck);
+        }
+      });
+      return data;
+    }
+
+    function loadTruckList() {
       $.ajax({
-        url: '/services/trucks?active=' + active<c:if test="${!empty(filteredBy)}"> + "&tag=${filteredBy}"</c:if>,
+        url: '/services/trucks?active=all',
         success: function(data) {
-          $truckList.empty();
-          $.each(data, function(i, datum) {
-            var icon = datum["previewIcon"];
-            var $section = $("<div class='col-xs-6 col-md-3'></div>");
-            var thumbnailId ="thumbnail-" + prefix + "-" + i;
-            var $thumbnail = $("<div class='thumbnail' id='" + thumbnailId + "'></div>");
-            $section.append($thumbnail);
-            $truckList.append($section);
-            if (icon) {
-              $thumbnail.append("<img width='180' height='180' src='" + icon + "'/>")
-            } else {
-              Holder.add_image("/script/holder.js/180x180/sky/text:Truck Image", "#" + thumbnailId).run();
-            }
-            $thumbnail.append("<p class='text-center'><a href='/trucks/" + datum["id"] + "'>" + datum['name']+"</a></p>")
+          truckData = data;
+          buildCategories();
+          refreshTruckList(applyFilters());
+          $(".filter-cb").change(function() {
+            refreshTruckList(applyFilters());
           });
         }
       })
-
     }
-    loadTruckList(true, $("#truckList"), 'active');
-    var inactiveLoaded = false;
-    $('a[href="#inactiveTrucks"]').on('shown.bs.tab', function (e) {
-      if (inactiveLoaded) {
-        return;
-      }
-      loadTruckList(false, $("#inactiveTrucks"), 'inactive');
-      inactiveLoaded = true;
-    })
+    loadTruckList();
+    $("#select-all").click(function() {
+      $(".category-cb").prop("checked", true);
+      refreshTruckList(applyFilters());
+    });
+    $("#deselect-all").click(function() {
+      $(".category-cb").prop("checked", false);
+      refreshTruckList(applyFilters());
+    });
   })();
 </script>
 <%@ include file="footer.jsp" %>
