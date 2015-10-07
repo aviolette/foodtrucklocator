@@ -11,6 +11,7 @@ import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import foodtruck.dao.TruckDAO;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 
@@ -22,11 +23,13 @@ import foodtruck.util.Clock;
 public class TruckListServlet extends HttpServlet {
   private final FoodTruckStopService stopService;
   private final Clock clock;
+  private final TruckDAO truckDAO;
 
   @Inject
-  public TruckListServlet(FoodTruckStopService service, Clock clock) {
+  public TruckListServlet(FoodTruckStopService service, Clock clock, TruckDAO truckDAO) {
     this.stopService = service;
     this.clock = clock;
+    this.truckDAO = truckDAO;
   }
 
   @Override
@@ -34,8 +37,12 @@ public class TruckListServlet extends HttpServlet {
       throws ServletException, IOException {
     req.setAttribute("nav", "trucks");
     req.setAttribute("localFrameworks", "true".equals(System.getProperty("use.local.frameworks", "false")));
-    req.setAttribute("tab", MoreObjects.firstNonNull(req.getParameter("tab"), "home"));
+    String tab = MoreObjects.firstNonNull(req.getParameter("tab"), "home");
+    req.setAttribute("tab", tab);
     req.setAttribute("trucks", stopService.findCurrentAndPreviousStop(clock.currentDay()));
+    if (tab.equals("inactiveTrucks")) {
+      req.setAttribute("inactiveTrucks", truckDAO.findInactiveTrucks());
+    }
     req.getRequestDispatcher("/WEB-INF/jsp/dashboard/truckList.jsp").forward(req, resp);
   }
 }

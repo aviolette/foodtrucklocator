@@ -112,26 +112,25 @@
       </tbody>
     </table>
   </div>
-  <div class="tab-pane  <c:if test="${tab == 'noStops'}">inactiveTrucks</c:if>" id="inactiveTrucks">
+  <div class="tab-pane  <c:if test="${tab == 'inactiveTrucks'}">active</c:if>" id="inactiveTrucks">
     <table class="table table-striped">
       <thead>
       <tr>
         <th>Truck</th>
+        <th>Categories</th>
         <th>Twittalyzer</th>
       </tr>
       </thead>
       <tbody>
-      <c:forEach var="truckStops" items="${trucks}">
-        <c:if test="${!truckStops.active && truckStops.truck.inactive}">
+      <c:forEach var="truck" items="${inactiveTrucks}">
           <tr class="rowItem">
-            <td><a href="/admin/trucks/${truckStops.truck.id}">${truckStops.truck.name}</a></td>
-            <td>${truckStops.truck.categoryList}</td>
+            <td><a href="/admin/trucks/${truck.id}">${truck.name}</a></td>
+            <td>${truck.categoryList}</td>
             <td><c:choose><c:when
-                test="${truckStops.truck.usingTwittalyzer}"></c:when><c:otherwise><span
+                test="${truck.usingTwittalyzer}"></c:when><c:otherwise><span
                 class="label warning">off</span></c:otherwise></c:choose></td>
           </tr>
-        </c:if>
-      </c:forEach>
+        </c:forEach>
       </tbody>
     </table>
   </div>
