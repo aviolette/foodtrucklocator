@@ -112,7 +112,6 @@ public class FoodTruckServlet extends FrontPageServlet {
     req.setAttribute("requestDate", dateFormatter.print(dateTime));
     req.setAttribute("requestTime", timeFormatter.print(dateTime));
     req.setAttribute("requestTimeInMillis", dateTime.getMillis());
-    req.setAttribute("removeDesignatedStops", "false".equals(System.getProperty("foodtrucklocator.designatedStops", "true")));
     req.setAttribute("tab", "map");
     req.setAttribute("appKey", staticConfig.getFrontDoorAppKey());
     req.setAttribute("defaultCity", staticConfig.getCityState());

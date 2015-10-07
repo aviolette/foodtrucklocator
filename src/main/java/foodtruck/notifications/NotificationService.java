@@ -11,7 +11,7 @@ public interface NotificationService {
    * Broadcasts location-based notifications to people who subscribe.  Currently, this puts notifications on
    * location-specific twitter accounts.
    */
-  public void sendNotifications();
+  void sendNotifications();
 
   /**
    * Updates the embedded location stored in the notifications with new information.

@@ -61,7 +61,7 @@ public class BoozeAndTrucksServlet extends FrontPageServlet {
       try {
         date = dateFormatter.parseDateTime(dateString).toLocalDate();
         daysOut = 1;
-      } catch (IllegalArgumentException iae) {
+      } catch (IllegalArgumentException ignored) {
       }
     }
     for (TruckStop stop : stopService.findUpcomingBoozyStops(date, daysOut)) {
@@ -122,6 +122,7 @@ public class BoozeAndTrucksServlet extends FrontPageServlet {
       this.groups = groups;
     }
 
+    @SuppressWarnings("unused")
     public List<TruckStopGroup> getGroups() {
       return groups;
     }
