@@ -81,7 +81,7 @@ public class TruckResource {
 
   @GET @Produces("application/json") @Path("{truckId}")
   public JResponse<Truck> getTruck(@PathParam("truckId") String truckId) {
-    Truck t = truckDAO  .findById(truckId);
+    Truck t = truckDAO.findById(truckId);
     return JResponse.ok(t).build();
   }
 
@@ -108,6 +108,7 @@ public class TruckResource {
 
   @DELETE @Path("{truckId}")
   public void delete(@PathParam("truckId") String truckId) {
+    requiresAdmin();
     truckDAO.delete(truckId);
   }
 
