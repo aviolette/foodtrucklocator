@@ -12,6 +12,9 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Provider;
 
+import com.google.common.collect.ImmutableSet;
+
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -43,7 +46,7 @@ public class TruckReader implements MessageBodyReader<Truck> {
   }
 
   public Truck asJSON(JSONObject json) throws JSONException {
-    return Truck.builder()
+    Truck.Builder builder = Truck.builder()
         .id(json.getString("id"))
         .description(json.optString("description"))
         .facebook(json.optString("facebook"))
@@ -53,7 +56,15 @@ public class TruckReader implements MessageBodyReader<Truck> {
         .previewIcon(json.optString("previewIcon"))
         .yelpSlug(json.optString("yelp"))
         .name(json.getString("name"))
-        .twitterHandle(json.getString("twitterHandle")).build();
-
+        .twitterHandle(json.getString("twitterHandle"));
+    JSONArray arr = json.optJSONArray("categories");
+    if (arr != null) {
+      ImmutableSet.Builder<String> catBuilder = ImmutableSet.builder();
+      for (int i=0; i < arr.length(); i++) {
+        catBuilder.add(arr.getString(i));
+      }
+      builder.categories(catBuilder.build());
+    }
+    return builder.build();
   }
 }
