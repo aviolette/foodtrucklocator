@@ -1,5 +1,10 @@
 <%@ include file="header.jsp" %>
-
+<style type="text/css">
+  #categories {
+    max-height: 300px;
+    overflow-y:scroll;
+  }
+</style>
 <div class="row">
   <div class="col-md-2">
     <h4>Active</h4>
