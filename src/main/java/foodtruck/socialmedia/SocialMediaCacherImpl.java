@@ -63,11 +63,10 @@ import twitter4j.TwitterFactory;
  * @since 10/11/11
  */
 public class SocialMediaCacherImpl implements SocialMediaCacher {
-  private static final Logger log = Logger.getLogger(SocialMediaCacherImpl.class.getName());
-  private static final Pattern TWITTER_PATTERN = Pattern.compile("@([\\w|\\d|_]+)");
-
   @VisibleForTesting
   static final int HOURS_BACK_TO_SEARCH = 6;
+  private static final Logger log = Logger.getLogger(SocialMediaCacherImpl.class.getName());
+  private static final Pattern TWITTER_PATTERN = Pattern.compile("@([\\w|\\d|_]+)");
   private final StoryDAO storyDAO;
   private final TruckStopMatcher matcher;
   private final TruckStopDAO truckStopDAO;
@@ -170,7 +169,7 @@ public class SocialMediaCacherImpl implements SocialMediaCacher {
             List<TruckStop> trucks = truckStopDAO.findDuring(truck.getId(), today);
             if (trucks.isEmpty()) {
               DateTime startTime = now;
-              if (now.getHourOfDay() < 11 && !truck.getCategories().contains("Breakfast")) {
+              if (now.getHourOfDay() < 11 && (!truck.getCategories().contains("Breakfast") || lowerText.contains("lunch"))) {
                 startTime = now.withTime(11, 0, 0, 0);
               }
               truckStops.add(
