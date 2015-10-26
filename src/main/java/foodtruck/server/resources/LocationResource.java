@@ -48,7 +48,12 @@ public class LocationResource {
       @QueryParam("appKey") String appKey) {
     authorizationChecker.requireAppKey(appKey);
     try {
-      Location loc = locator.locate(locationName, GeolocationGranularity.NARROW);
+      Location loc;
+      if (locationName.matches("^\\d+$")) {
+        loc = locationDAO.findById(Long.parseLong(locationName));
+      } else {
+        loc = locator.locate(locationName, GeolocationGranularity.NARROW);
+      }
       if (loc != null) {
         return JResponse.ok(loc).build();
       }
