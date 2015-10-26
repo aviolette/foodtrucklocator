@@ -14,8 +14,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
 
+import com.google.api.client.util.Strings;
 import com.google.appengine.api.capabilities.CapabilitiesService;
 import com.google.appengine.api.capabilities.CapabilitiesServiceFactory;
 import com.google.appengine.api.capabilities.Capability;
@@ -48,15 +51,17 @@ public class TruckStopResource {
   private final SecurityChecker checker;
   private final Provider<UserService> userServiceProvider;
   private final Provider<Session> sessionProvider;
+  private final AuthorizationChecker authorizationChecker;
 
   @Inject
   public TruckStopResource(FoodTruckStopService service, Clock clock, SecurityChecker checker,
-      Provider<UserService> userServiceProvider, Provider<Session> sessionProvider) {
+      Provider<UserService> userServiceProvider, Provider<Session> sessionProvider, AuthorizationChecker authChecker) {
     this.foodTruckService = service;
     this.clock = clock;
     this.checker = checker;
     this.userServiceProvider = userServiceProvider;
     this.sessionProvider = sessionProvider;
+    this.authorizationChecker = authChecker;
   }
 
   @DELETE
@@ -90,7 +95,19 @@ public class TruckStopResource {
 
   @GET
   public Collection<TruckStopWithCounts> getStops(@QueryParam("truck") String truckId, @Context DateTime startTime) {
+    if (Strings.isNullOrEmpty(truckId)) {
+      throw new WebApplicationException(Response.Status.NOT_FOUND);
+    }
     startTime = (startTime == null) ? clock.currentDay().toDateTimeAtStartOfDay() : startTime;
     return foodTruckService.findStopsForTruckAfter(truckId, startTime);
   }
+
+  @GET @Path("{truckId}")
+  public Collection<TruckStopWithCounts> getStop(@PathParam("truckId") String truckId, @QueryParam("appKey") String appKey,
+      @Context DateTime startTime) {
+    authorizationChecker.requireAppKey(appKey);
+    startTime = (startTime == null) ? clock.currentDay().toDateTimeAtStartOfDay() : startTime;
+    return foodTruckService.findStopsForTruckAfter(truckId, startTime);
+  }
+
 }
