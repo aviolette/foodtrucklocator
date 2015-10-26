@@ -56,12 +56,12 @@ public class LocationWriter implements JSONWriter<Location>, MessageBodyWriter<L
         .put("radiateTo", location.getRadiateTo())
         .put("description", location.getDescription())
         .put("name", location.getName())
+        .put("hasBooze", location.isHasBooze())
+        .put("popular", location.isPopular())
         .put("designatedStop", location.isDesignatedStop())
         .putOpt("twitterHandle", location.getTwitterHandle())
         .put("key", location.getKey());
     if (fullOptions) {
-      obj.put("popular", location.isPopular());
-      obj.put("hasBooze", location.isHasBooze());
       obj.put("alias", location.getAlias());
       obj.put("ownedBy", location.getOwnedBy());
       obj.put("autocomplete", location.isAutocomplete());
