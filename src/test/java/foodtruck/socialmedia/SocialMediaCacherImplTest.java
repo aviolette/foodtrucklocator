@@ -49,12 +49,12 @@ import static org.easymock.EasyMock.expect;
  */
 public class SocialMediaCacherImplTest extends EasyMockSupport {
 
+  private static final String TRUCK_1_ID = "truck1";
+  private static final String TRUCK_2_ID = "truck2";
   private StoryDAO tweetDAO;
   private TruckStopMatcher matcher;
   private TruckStopDAO truckStopDAO;
   private SocialMediaCacherImpl service;
-  private static final String TRUCK_1_ID = "truck1";
-  private static final String TRUCK_2_ID = "truck2";
   private Truck truck2;
   private DateTime now;
   private LocalDate currentDay;
@@ -316,7 +316,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
         new TruckObserver("uchinomgo", uchicago, ImmutableList.of("breakfast", "lunch")),
         new TruckObserver("mdw2mnl", uchicago, ImmutableList.of("breakfast", "lunch"))));
     Story tweet1 = new Story.Builder().userId("uchinomgo").ignoreInTwittalyzer(false)
-        .text("For lunch we have these #foodtrucks: @CaponiesExp @threejsbbq @somethingelse").build();
+        .text("breakfast: @CaponiesExp @threejsbbq @somethingelse").build();
     truck1 = Truck.builder(truck1).categories(ImmutableSet.of("Breakfast")).twitterHandle("caponiesexp").id("caponiesexp").build();
     truck2 = Truck.builder(truck1).categories(ImmutableSet.of("Breakfast")).twitterHandle("threejsbbq").id("threejsbbq").build();
     expect(tweetDAO.findTweetsAfter(now.minusHours(6), "uchinomgo", false))
@@ -342,16 +342,16 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
         new TruckObserver("uchinomgo", uchicago, ImmutableList.of("breakfast", "#foodtrucks")),
         new TruckObserver("mdw2mnl", uchicago, ImmutableList.of("breakfast", "lunch"))));
     Story tweet1 = new Story.Builder().userId("uchinomgo").ignoreInTwittalyzer(false)
-        .text("For lunch we have these #foodtrucks: @CaponiesExp @threejsbbq @somethingelse").build();
+        .text("we have these #foodtrucks: @CaponiesExp @threejsbbq @somethingelse").build();
     Story tweet2 = new Story.Builder().userId("mdw2mnl").ignoreInTwittalyzer(false)
-        .text("For lunch we have these #foodtrucks: @CaponiesExp").build();
+        .text("we have these #foodtrucks: @CaponiesExp").build();
     truck1 = Truck.builder(truck1).categories(ImmutableSet.of("Breakfast")).twitterHandle("caponiesexp").id("caponiesexp").build();
     truck2 = Truck.builder(truck1).categories(ImmutableSet.of("Breakfast")).twitterHandle("threejsbbq").id("threejsbbq").build();
     expect(tweetDAO.findTweetsAfter(now.minusHours(6), "uchinomgo", false))
         .andReturn(ImmutableList.<Story>of(tweet1));
     expect(tweetDAO.findTweetsAfter(now.minusHours(6), "mdw2mnl", false))
         .andReturn(ImmutableList.<Story>of(tweet2));
-    expect(truckDAO.findByTwitterId("caponiesexp")).andReturn(ImmutableList.of(truck1)).times(2);
+    expect(truckDAO.findByTwitterId("caponiesexp")).andReturn(ImmutableList.of(truck1)).times(1);
     expect(truckStopDAO.findDuring("caponiesexp", currentDay)).andReturn(ImmutableList.<TruckStop>of());
     expect(truckDAO.findByTwitterId("threejsbbq")).andReturn(ImmutableList.of(truck2));
     expect(truckStopDAO.findDuring("threejsbbq", currentDay)).andReturn(ImmutableList.<TruckStop>of(matchedStop));
