@@ -42,7 +42,6 @@ public class TruckWriter implements JSONWriter<Truck>, MessageBodyWriter<Truck> 
       obj.put("firstSeen", stats.getFirstSeen() == null ? 0 : stats.getFirstSeen().getMillis());
       obj.put("lastSeen", stats.getLastSeen() == null ? 0 : stats.getLastSeen().getMillis());
     }
-    obj.put("categories", truck.publicCategories());
     return obj;
   }
 
