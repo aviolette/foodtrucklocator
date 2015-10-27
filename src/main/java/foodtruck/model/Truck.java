@@ -98,6 +98,14 @@ public class Truck extends ModelEntity implements Serializable {
     this.lastScanned = builder.lastScanned;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static Builder builder(Truck t) {
+    return new Builder(t);
+  }
+
   public @Nullable String getFullsizeImage() {
     return fullsizeImage;
   }
@@ -274,14 +282,6 @@ public class Truck extends ModelEntity implements Serializable {
     return donotMatchIf;
   }
 
-  public static Builder builder() {
-    return new Builder();
-  }
-
-  public static Builder builder(Truck t) {
-    return new Builder(t);
-  }
-
   @Override public void validate() throws IllegalStateException {
     super.validate();
     checkState(!Strings.isNullOrEmpty(id), "ID cannot be unspecified");
@@ -341,7 +341,7 @@ public class Truck extends ModelEntity implements Serializable {
     return FluentIterable.from(categories)
         .filter(new Predicate<String>() {
           public boolean apply(String input) {
-            return !(input.equals("Lunch") || input.equals("1HRStops") || input.equals("MorningSquatter") ||
+            return !(input.equals("Lunch") || input.equals("HasStore") || input.equals("1HRStops") || input.equals("MorningSquatter") ||
                 input.equals("AssumeNoTimeEqualsLunch"));
           }
         })
@@ -477,13 +477,16 @@ public class Truck extends ModelEntity implements Serializable {
   }
 
   public static class Builder {
+    public Set<String> categories = ImmutableSet.of();
+    public String description;
+    public boolean twitterGeolocationDataValid;
+    public Set<String> beaconnaiseEmails = ImmutableSet.of();
+    public boolean allowSystemNotifications;
     private String id;
     private String name;
     private @Nullable String url;
     private String iconUrl;
     private @Nullable String twitter;
-    public Set<String> categories = ImmutableSet.of();
-    public String description;
     private String foursquareUrl;
     private boolean twittalyzer;
     private String defaultCity = "Chicago, IL";
@@ -494,15 +497,12 @@ public class Truck extends ModelEntity implements Serializable {
     private Pattern donotMatchIf;
     private @Nullable String email;
     private @Nullable String phone;
-    public boolean twitterGeolocationDataValid;
     private @Nullable DateTime muteUntil;
     private @Nullable String yelpSlug;
     private @Nullable String facebookPageId;
     private @Nullable Stats stats;
     private boolean hidden;
     private @Nullable String previewIcon;
-    public Set<String> beaconnaiseEmails = ImmutableSet.of();
-    public boolean allowSystemNotifications;
     private boolean displayEmailPublicly;
     private @Nullable String instagramId;
     private @Nullable String fullsizeImage;
