@@ -2,6 +2,7 @@ package foodtruck.dao.appengine;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
@@ -27,7 +28,7 @@ import static foodtruck.dao.appengine.Attributes.setDateProperty;
  * @since 10/26/15
  */
 public class DailyDataDAOAppEngine extends AppEngineDAO<Long, DailyData> implements DailyDataDAO {
-
+  private static final Logger log = Logger.getLogger(DailyDataDAOAppEngine.class.getName());
   private static final String SPECIALS_LOCATION_ID = "location_id";
   private static final String SPECIALS_SPECIALS = "specials";
   private static final String SPECIALS_DATE = "date";
@@ -50,7 +51,7 @@ public class DailyDataDAOAppEngine extends AppEngineDAO<Long, DailyData> impleme
       entities.add(info.getSpecial() + ":" + info.isSoldOut());
     }
     entity.setProperty(SPECIALS_SPECIALS, entities);
-    setDateProperty(SPECIALS_DATE, entity, dailyData.getOnDate().toDateTimeAtStartOfDay());
+    setDateProperty(SPECIALS_DATE, entity, dailyData.getOnDate().toDateTimeAtStartOfDay(defaultZone));
     return entity;
   }
 
