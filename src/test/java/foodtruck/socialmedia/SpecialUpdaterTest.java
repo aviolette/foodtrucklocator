@@ -138,6 +138,7 @@ public class SpecialUpdaterTest extends EasyMockSupport {
         .locationId("Doughnut Vault @ Franklin")
         .onDate(localDate)
         .addSpecial("root beer old fashioned", false)
+        .addSpecial("strawberry jelly", false)
         .build())).andReturn(1L);
     expect(dailyDataDAO.findByLocationAndDay("Doughnut Vault @ Franklin", localDate)).andReturn(null);
     replayAll();

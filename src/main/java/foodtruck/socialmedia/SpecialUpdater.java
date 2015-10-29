@@ -25,6 +25,7 @@ public class SpecialUpdater {
   private static final Logger log = Logger.getLogger(SpecialUpdater.class.getName());
   private final DailyDataDAO dailyDataDAO;
   private final Pattern oldFashionedPattern = Pattern.compile("(\\w+)\\s+(\\w+) old fashioned");
+  private final Pattern jellyPattern = Pattern.compile("filled is (\\w+)");
   private final Clock clock;
 
   @Inject
@@ -78,6 +79,11 @@ public class SpecialUpdater {
   }
 
   private boolean detectJelly(String lower, String locationName, DailyData.Builder specialsBuilder) {
+    Matcher matcher = jellyPattern.matcher(lower);
+    if (matcher.find()) {
+      specialsBuilder.addSpecial(matcher.group(1) + " jelly", false);
+      return true;
+    }
     return false;
   }
 

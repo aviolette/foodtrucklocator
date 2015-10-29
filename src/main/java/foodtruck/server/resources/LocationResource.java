@@ -1,7 +1,6 @@
 package foodtruck.server.resources;
 
 import java.util.Collection;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ws.rs.GET;
@@ -69,7 +68,6 @@ public class LocationResource {
       }
       if (loc != null) {
         DailyData byLocationAndDay = dailyDataDAO.findByLocationAndDay(loc.getName(), clock.currentDay());
-        log.log(Level.INFO, "Daily data {0}", byLocationAndDay);
         LocationWithDailyData locationWithDailyData =
             new LocationWithDailyData(loc, byLocationAndDay);
         return JResponse.ok(locationWithDailyData).build();
