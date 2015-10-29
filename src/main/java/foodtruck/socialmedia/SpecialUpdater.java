@@ -68,7 +68,9 @@ public class SpecialUpdater {
           boolean changed = detectOldFashioned(lower, locationName, specialsBuilder);
           changed = detectJelly(lower, locationName, specialsBuilder) || changed;
           if (changed) {
-            dailyDataDAO.save(specialsBuilder.build());
+            DailyData built = specialsBuilder.build();
+            log.log(Level.INFO, "Saving {0}", built);
+            dailyDataDAO.save(built);
           }
         }
       }

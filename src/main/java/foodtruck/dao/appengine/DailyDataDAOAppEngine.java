@@ -75,7 +75,7 @@ public class DailyDataDAOAppEngine extends AppEngineDAO<Long, DailyData> impleme
     Query q = new Query(SPECIALS_KIND);
     List<Query.Filter> filters = ImmutableList.<Query.Filter>of(
         new Query.FilterPredicate(SPECIALS_LOCATION_ID, Query.FilterOperator.EQUAL, locationId),
-        new Query.FilterPredicate(SPECIALS_DATE, Query.FilterOperator.EQUAL, date.toDateTimeAtStartOfDay().toDate()));
+        new Query.FilterPredicate(SPECIALS_DATE, Query.FilterOperator.EQUAL, date.toDateTimeAtStartOfDay(defaultZone).toDate()));
     q.setFilter(Query.CompositeFilterOperator.and(filters));
     Entity entity = dataStore.prepare(q).asSingleEntity();
     if (entity == null) {
