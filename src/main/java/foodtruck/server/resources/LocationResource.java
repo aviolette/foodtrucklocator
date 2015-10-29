@@ -1,6 +1,8 @@
 package foodtruck.server.resources;
 
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -17,6 +19,7 @@ import foodtruck.dao.DailyDataDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
+import foodtruck.model.DailyData;
 import foodtruck.model.Location;
 import foodtruck.model.LocationWithDailyData;
 import foodtruck.monitoring.Monitored;
@@ -29,6 +32,8 @@ import foodtruck.util.ServiceException;
  */
 @Path("/locations") @Produces(MediaType.APPLICATION_JSON)
 public class LocationResource {
+  private static final Logger log = Logger.getLogger(LocationResource.class.getName());
+
   private final GeoLocator locator;
   private final AuthorizationChecker authorizationChecker;
   private final LocationDAO locationDAO;
@@ -63,8 +68,10 @@ public class LocationResource {
         loc = locator.locate(locationName, GeolocationGranularity.NARROW);
       }
       if (loc != null) {
+        DailyData byLocationAndDay = dailyDataDAO.findByLocationAndDay(loc.getName(), clock.currentDay());
+        log.log(Level.INFO, "Daily data {0}", byLocationAndDay);
         LocationWithDailyData locationWithDailyData =
-            new LocationWithDailyData(loc, dailyDataDAO.findByLocationAndDay(loc.getName(), clock.currentDay() ));
+            new LocationWithDailyData(loc, byLocationAndDay);
         return JResponse.ok(locationWithDailyData).build();
       }
       return JResponse.<LocationWithDailyData>status(Response.Status.NOT_FOUND).build();
