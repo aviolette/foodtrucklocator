@@ -13,8 +13,8 @@ import javax.ws.rs.core.Response;
 import com.google.inject.Inject;
 import com.sun.jersey.api.JResponse;
 
+import foodtruck.dao.DailyDataDAO;
 import foodtruck.dao.LocationDAO;
-import foodtruck.dao.SpecialsDAO;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
@@ -32,16 +32,16 @@ public class LocationResource {
   private final GeoLocator locator;
   private final AuthorizationChecker authorizationChecker;
   private final LocationDAO locationDAO;
-  private final SpecialsDAO specialsDAO;
+  private final DailyDataDAO dailyDataDAO;
   private final Clock clock;
 
   @Inject
   public LocationResource(GeoLocator locator, AuthorizationChecker checker, LocationDAO locationDAO,
-      SpecialsDAO specialsDAO, Clock clock) {
+      DailyDataDAO dailyDataDAO, Clock clock) {
     this.locator = locator;
     this.authorizationChecker = checker;
     this.locationDAO = locationDAO;
-    this.specialsDAO = specialsDAO;
+    this.dailyDataDAO = dailyDataDAO;
     this.clock = clock;
   }
 
@@ -64,7 +64,7 @@ public class LocationResource {
       }
       if (loc != null) {
         LocationWithDailyData locationWithDailyData =
-            new LocationWithDailyData(loc, specialsDAO.findByLocationAndDay(loc.getName(), clock.currentDay() ));
+            new LocationWithDailyData(loc, dailyDataDAO.findByLocationAndDay(loc.getName(), clock.currentDay() ));
         return JResponse.ok(locationWithDailyData).build();
       }
       return JResponse.<LocationWithDailyData>status(Response.Status.NOT_FOUND).build();

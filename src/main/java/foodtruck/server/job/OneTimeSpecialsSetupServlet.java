@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import foodtruck.dao.SpecialsDAO;
-import foodtruck.model.Specials;
+import foodtruck.dao.DailyDataDAO;
+import foodtruck.model.DailyData;
 import foodtruck.util.Clock;
 
 /**
@@ -20,25 +20,25 @@ import foodtruck.util.Clock;
  */
 @Singleton
 public class OneTimeSpecialsSetupServlet extends HttpServlet {
-  private final SpecialsDAO specialsDAO;
+  private final DailyDataDAO dailyDataDAO;
   private final Clock clock;
 
   @Inject
-  public OneTimeSpecialsSetupServlet(SpecialsDAO specialsDAO, Clock clock) {
-    this.specialsDAO = specialsDAO;
+  public OneTimeSpecialsSetupServlet(DailyDataDAO dailyDataDAO, Clock clock) {
+    this.dailyDataDAO = dailyDataDAO;
     this.clock = clock;
   }
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    Specials specials = specialsDAO.findByLocationAndDay("Doughnut Vault @ Canal", clock.currentDay());
-    if (specials == null) {
-      specials = Specials.builder()
+    DailyData dailyData = dailyDataDAO.findByLocationAndDay("Doughnut Vault @ Canal", clock.currentDay());
+    if (dailyData == null) {
+      dailyData = DailyData.builder()
           .addSpecial("Chestnut old-fashioned", false)
           .onDate(clock.currentDay())
           .locationId("Doughnut Vault @ Canal")
           .build();
-      specialsDAO.save(specials);
+      dailyDataDAO.save(dailyData);
     }
 
   }

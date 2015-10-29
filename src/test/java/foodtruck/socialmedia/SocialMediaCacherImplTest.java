@@ -74,6 +74,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
   private TruckObserverDAO truckObserverDAO;
   private RetweetsDAO retweetDAO;
   private TwitterNotificationAccountDAO notificationDAO;
+  private SpecialUpdater specialsUpdater;
 
   @Before
   public void before() {
@@ -100,8 +101,10 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
     expect(truckDAO.findById(TRUCK_1_ID)).andStubReturn(truck1);
     expect(truckDAO.findById(TRUCK_1_ID)).andStubReturn(truck2);
     expect(truckDAO.findAll()).andStubReturn(ImmutableSet.of(truck2));
-    final int listId = 123;
     terminationDetector = createMock(TerminationDetector.class);
+    specialsUpdater = createMock(SpecialUpdater.class);
+    specialsUpdater.update(EasyMock.anyObject(Truck.class), EasyMock.anyObject(List.class));
+    EasyMock.expectLastCall().anyTimes();
     offTheRoadDetector = createMock(OffTheRoadDetector.class);
     truckObserverDAO = createMock(TruckObserverDAO.class);
     notificationDAO = createMock(TwitterNotificationAccountDAO.class);
@@ -113,7 +116,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
         truckStopDAO,
         clock, terminationDetector, truckDAO,
         new LoggingTruckStopNotifier(), emailNotifier, offTheRoadDetector, locator, truckObserverDAO,
-        notificationDAO, retweetDAO, null, timeFormatter, new StaticConfig(), connectors);
+        notificationDAO, retweetDAO, null, timeFormatter, new StaticConfig(), connectors, specialsUpdater);
     loca = Location.builder().lat(1).lng(2).name("a").build();
     locb = Location.builder().lat(3).lng(4).name("b").build();
     basicTweet = new Story.Builder().time(now.minusHours(2)).text(

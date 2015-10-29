@@ -18,8 +18,8 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.format.DateTimeFormatter;
 
+import foodtruck.model.DailyData;
 import foodtruck.model.LocationWithDailyData;
-import foodtruck.model.Specials;
 import foodtruck.server.resources.BadRequestException;
 import foodtruck.util.DateOnlyFormatter;
 
@@ -42,11 +42,11 @@ public class LocationWithDailyDataWriter implements JSONWriter<LocationWithDaily
   @Override
   public JSONObject asJSON(LocationWithDailyData locationWithDailyData) throws JSONException {
     JSONObject jsonObject = locationWriter.asJSON(locationWithDailyData.getLocation());
-    if (locationWithDailyData.getSpecials() != null) {
+    if (locationWithDailyData.getDailyData() != null) {
       JSONObject specialsJson = new JSONObject();
-      specialsJson.put("forDate", dateOnlyFormatter.print(locationWithDailyData.getSpecials().getOnDate()));
+      specialsJson.put("forDate", dateOnlyFormatter.print(locationWithDailyData.getDailyData().getOnDate()));
       JSONArray specials = new JSONArray();
-      for (Specials.SpecialInfo special : locationWithDailyData.getSpecials().getSpecials()) {
+      for (DailyData.SpecialInfo special : locationWithDailyData.getDailyData().getSpecials()) {
         JSONObject obj = new JSONObject().put("special", special.getSpecial()).put("soldOut", special.isSoldOut());
         specials.put(obj);
 

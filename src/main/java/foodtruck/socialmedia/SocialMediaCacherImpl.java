@@ -84,6 +84,7 @@ public class SocialMediaCacherImpl implements SocialMediaCacher {
   private final DateTimeFormatter timeFormatter;
   private final StaticConfig staticConfig;
   private final Set<SocialMediaConnector> connectors;
+  private final SpecialUpdater specialUpdater;
 
   @Inject
   public SocialMediaCacherImpl(StoryDAO storyDAO, TruckStopMatcher matcher, TruckStopDAO truckStopDAO, Clock clock,
@@ -91,7 +92,7 @@ public class SocialMediaCacherImpl implements SocialMediaCacher {
       OffTheRoadDetector offTheRoadDetector, GeoLocator locator, TruckObserverDAO truckObserverDAO,
       TwitterNotificationAccountDAO notificationAccountDAO, RetweetsDAO retweetsDAO,
       FoodTruckStopService truckStopService, @TimeOnlyFormatter DateTimeFormatter timeFormatter,
-      StaticConfig staticConfig, Set<SocialMediaConnector> connectors) {
+      StaticConfig staticConfig, Set<SocialMediaConnector> connectors, SpecialUpdater specialUpdater) {
     this.storyDAO = storyDAO;
     this.matcher = matcher;
     this.truckStopDAO = truckStopDAO;
@@ -109,6 +110,7 @@ public class SocialMediaCacherImpl implements SocialMediaCacher {
     this.timeFormatter = timeFormatter;
     this.staticConfig = staticConfig;
     this.connectors = connectors;
+    this.specialUpdater = specialUpdater;
   }
 
   @Override @Monitored
@@ -233,7 +235,16 @@ public class SocialMediaCacherImpl implements SocialMediaCacher {
       } else {
         log.log(Level.FINE, "No matches for {0}", truck.getId());
       }
+      if (!stories.isEmpty()) {
+        updateLocationSpecials(truck, stories);
+      }
     }
+  }
+
+
+  @VisibleForTesting
+  void updateLocationSpecials(Truck truck, List<Story> stories) {
+    specialUpdater.update(truck, stories);
   }
 
   private void handleStopMatch(Truck truck, TruckStopMatch match) {
