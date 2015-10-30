@@ -58,6 +58,9 @@ public class LocationWriter implements JSONWriter<Location>, MessageBodyWriter<L
         .put("name", location.getName())
         .put("hasBooze", location.isHasBooze())
         .put("popular", location.isPopular())
+        .put("email", location.getEmail())
+        .put("facebookUri", location.getFacebookUri())
+        .put("phone", location.getPhoneNumber())
         .put("designatedStop", location.isDesignatedStop())
         .putOpt("twitterHandle", location.getTwitterHandle())
         .put("key", location.getKey());

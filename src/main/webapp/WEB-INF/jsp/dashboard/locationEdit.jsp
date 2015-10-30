@@ -92,6 +92,24 @@
       </div>
     </div>
     <div class="control-group">
+      <label for="facebookUri" class="control-label">Facebook</label>
+      <div class="controls">
+        <input id="facebookUri" class="span5" type="text"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label for="email" class="control-label">Email</label>
+      <div class="controls">
+        <input id="email" class="span5" type="text"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label for="phone" class="control-label">Phone</label>
+      <div class="controls">
+        <input id="phone" class="span5" type="text"/>
+      </div>
+    </div>
+    <div class="control-group">
       <div class="controls">
         <label><input id="invalidLoc" type="checkbox">&nbsp;Ignore in geolocation lookups</label>
         <label><input id="designatedStop" type="checkbox">&nbsp;Designated food truck stop</label>
@@ -135,6 +153,9 @@
       $("#autocomplete").attr("checked", loc.autocomplete);
       $("#url").attr("value", loc.url);
       $("#ownedBy").attr("value", loc.ownedBy);
+      $("#facebooKUri").attr("value", loc.facebookUri);
+      $("#email").attr("value", loc.email);
+      $("#phone").attr("value", loc.phone);
     }
 
     loadLocation(loc);
@@ -242,6 +263,9 @@
       loc.autocomplete = $("#autocomplete").is(":checked");
       loc.ownedBy = $("#ownedBy").attr("value");
       loc.radiateTo = parseInt($("#radiateTo").attr("value"));
+      loc.email = $("#email").attr("value");
+      loc.phone = $("#phone").attr("value");
+      loc.facebookUri = $("#facebookUri").attr("value");
       e.preventDefault();
       $submitButton.addClass("disabled");
       $.ajax({

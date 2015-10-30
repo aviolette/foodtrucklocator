@@ -17,13 +17,14 @@ import com.javadocmd.simplelatlng.util.LengthUnit;
  * @since Jul 12, 2011
  */
 public class Location extends ModelEntity implements Serializable {
+  private static final long serialVersionUID = 1L;
+  private LatLng latLng;
+  private String name;
   public static final Function<Location, String> TO_NAME = new Function<Location, String> () {
-    @Override public String apply(@Nullable Location input) {
+    public String apply(Location input) {
       return input.getName();
     }
   };
-  private LatLng latLng;
-  private String name;
   private boolean valid;
   private @Nullable String description;
   private @Nullable String url;
@@ -38,6 +39,9 @@ public class Location extends ModelEntity implements Serializable {
   private boolean hasBooze;
   private @Nullable String ownedBy;
   private int radiateTo;
+  private @Nullable String phoneNumber;
+  private @Nullable String email;
+  private @Nullable String facebookUri;
 
   // For serializable
   public Location() {
@@ -61,6 +65,29 @@ public class Location extends ModelEntity implements Serializable {
     hasBooze = builder.hasBooze;
     ownedBy = builder.ownedBy;
     radiateTo = builder.radiateTo;
+    phoneNumber = builder.phoneNumber;
+    email = builder.email;
+    facebookUri = builder.facebookUri;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static Builder builder(Location loc) {
+    return new Builder(loc);
+  }
+
+  public @Nullable String getPhoneNumber() {
+    return phoneNumber;
+  }
+
+  public @Nullable String getEmail() {
+    return email;
+  }
+
+  public @Nullable String getFacebookUri() {
+    return facebookUri;
   }
 
   public boolean isHasBooze() {
@@ -115,6 +142,8 @@ public class Location extends ModelEntity implements Serializable {
     return this.description;
   }
 
+  // TODO: this probably should be refactored out of here
+
   public @Nullable String getUrl() {
     return url;
   }
@@ -127,8 +156,6 @@ public class Location extends ModelEntity implements Serializable {
     return ownedBy;
   }
 
-  // TODO: this probably should be refactored out of here
-
   /**
    * Return true if the location has been properly resolved.
    */
@@ -139,7 +166,6 @@ public class Location extends ModelEntity implements Serializable {
   public boolean containedWithRadiusOf(Location loc) {
     return equals(loc) || loc.getRadius() != 0 && within(loc.getRadius()).milesOf(loc);
   }
-
 
   @Override
   public String toString() {
@@ -166,14 +192,6 @@ public class Location extends ModelEntity implements Serializable {
     }
     Location obj = (Location) o;
     return obj.latLng.equals(latLng);
-  }
-
-  public static Builder builder() {
-    return new Builder();
-  }
-
-  public static Builder builder(Location loc) {
-    return new Builder(loc);
   }
 
   public Location withKey(Object key) {
@@ -223,6 +241,9 @@ public class Location extends ModelEntity implements Serializable {
     private boolean hasBooze;
     private @Nullable String ownedBy;
     private int radiateTo = 0;
+    private @Nullable String phoneNumber;
+    private @Nullable String email;
+    private @Nullable String facebookUri;
 
     public Builder(Location location) {
       key = location.getKey();
@@ -243,9 +264,27 @@ public class Location extends ModelEntity implements Serializable {
       hasBooze = location.hasBooze;
       ownedBy = location.ownedBy;
       radiateTo = location.radiateTo;
+      phoneNumber = location.phoneNumber;
+      email = location.email;
+      facebookUri = location.facebookUri;
     }
 
     public Builder() {
+    }
+
+    public Builder phoneNumber(String phoneNumber) {
+      this.phoneNumber = phoneNumber;
+      return this;
+    }
+
+    public Builder email(String email) {
+      this.email = email;
+      return this;
+    }
+
+    public Builder facebookUri(String facebookUri) {
+      this.facebookUri = facebookUri;
+      return this;
     }
 
     public Builder radiateTo(int radiateTo) {

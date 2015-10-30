@@ -48,6 +48,9 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
   private static final String HAS_BOOZE = "has_booze";
   private static final String OWNED_BY = "owned_by";
   private static final String RADIATE_TO = "radiate_to";
+  private static final String PHONE = "phone";
+  private static final String EMAIL = "email";
+  private static final String FACEBOOK_URI = "facebook_uri";
 
   private static final Logger log = Logger.getLogger(LocationDAOAppEngine.class.getName());
   private final Clock clock;
@@ -183,6 +186,9 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     entity.setProperty(OWNED_BY, location.getOwnedBy());
     entity.setProperty(HAS_BOOZE, location.isHasBooze());
     entity.setProperty(RADIATE_TO, location.getRadiateTo());
+    entity.setProperty(PHONE, location.getPhoneNumber());
+    entity.setProperty(EMAIL, location.getEmail());
+    entity.setProperty(FACEBOOK_URI, location.getFacebookUri());
     return entity;
   }
 
@@ -204,6 +210,9 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     builder.designatedStop(getBooleanProperty(entity, DESIGNATED_STOP, false));
     builder.hasBooze(getBooleanProperty(entity, HAS_BOOZE, false));
     builder.radiateTo(getIntProperty(entity, RADIATE_TO, 0));
+    builder.phoneNumber(getStringProperty(entity, PHONE));
+    builder.email(getStringProperty(entity, EMAIL));
+    builder.facebookUri(getStringProperty(entity, FACEBOOK_URI));
     boolean isValid = valid == null || valid;
     if (lat == null || lng == null) {
       builder.valid(false);
