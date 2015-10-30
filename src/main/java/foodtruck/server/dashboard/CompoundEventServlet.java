@@ -97,6 +97,10 @@ public class CompoundEventServlet extends HttpServlet {
       return;
     }
     DateTime startTime = clock.now().plusHours(1).withMinuteOfHour(0), endTime = startTime.plusHours(2);
+    if (clock.now().isBefore(clock.timeAt(11, 0))) {
+      startTime = clock.timeAt(11, 0);
+      endTime = clock.timeAt(14, 0);
+    }
     try {
       startTime = urlFormatter.parseDateTime(req.getParameter("startTime"));
       endTime = urlFormatter.parseDateTime(req.getParameter("endTime"));
