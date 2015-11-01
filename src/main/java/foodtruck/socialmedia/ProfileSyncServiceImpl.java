@@ -70,6 +70,7 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
         String website = user.getURLEntity().getExpandedURL();
         truck = Truck.builder(truck)
             .name(user.getName())
+            .backgroundImage(user.getProfileBackgroundImageURL())
             .url(website)
             .iconUrl(url)
             .build();
@@ -223,7 +224,12 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
         }
         if (Strings.isNullOrEmpty(truck.getPreviewIcon())) {
           URL iconUrl = new URL(user.getProfileImageURL().replaceAll("_normal", "_400x400"));
-          builder.previewIcon(copyUrlToStorage(iconUrl, baseUrl, staticConfig.getIconBucket(), truck.getId() + "_preview"));
+          builder.previewIcon(
+              copyUrlToStorage(iconUrl, baseUrl, staticConfig.getIconBucket(), truck.getId() + "_preview"));
+        }
+        if (Strings.isNullOrEmpty(truck.getBackgroundImage())) {
+          URL backgroundUrl = new URL(user.getProfileBannerMobileURL());
+          builder.backgroundImage(copyUrlToStorage(backgroundUrl, baseUrl, staticConfig.getIconBucket(), truck.getId() + "_banner"));
         }
         return builder.build();
       }

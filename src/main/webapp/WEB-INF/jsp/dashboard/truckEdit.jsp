@@ -1,6 +1,5 @@
 <%@ include file="dashboardHeaderBS3.jsp" %>
 
-
 <form action="" method="POST" id="theForm">
   <div class="form-group">
     <label for="truckName">Name:</label>
@@ -69,9 +68,18 @@
            value="${truck.fullsizeImage}"/>
   </div>
   <div class="form-group">
+    <label for="iconUrl">Background Image URL:</label>
+    <input type="text" class="form-control" id="backgroundImage" name="backgroundImage"
+           value="${truck.backgroundImage}"/>
+  </div>
+  <div class="form-group">
     <label for="calendarUrl">Calendar URL</label>
     <input type="text" class="form-control" id="calendarUrl" name="calendarUrl"
            value="${truck.calendarUrl}"/>
+  </div>
+  <div class="form-group">
+    <label for="fleetSize">Fleet Size:</label>
+    <input type="text" class="form-control" id="fleetSize" name="fleetSize" value="${truck.fleetSize}"/>
   </div>
   <div class="form-group">
     <label for="timezoneAdjustment">Timezone adjustment</label>
@@ -135,10 +143,7 @@
     <label><input type="checkbox" name="options"
                   value="hidden" ${truck.hidden ? "checked='checked'" : ""}/>
       Truck is hidden from public listings</label>
-
-
   </div>
-
 </form>
 <button id="submitButton" class="btn btn-primary">Save</button>
 <button id="updateStats" class="btn btn-warning">Update Stats</button>

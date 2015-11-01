@@ -203,6 +203,7 @@ public class TruckServlet extends HttpServlet {
         .facebookPageId(request.getParameter("facebookPageId"))
         .foursquareUrl(request.getParameter("foursquareUrl"))
         .iconUrl(request.getParameter("iconUrl"))
+        .backgroundImage(request.getParameter("backgroundImage"))
         .timezoneOffset(Integer.parseInt(request.getParameter("timezoneAdjustment")))
         .name(request.getParameter("name"))
         .yelpSlug(request.getParameter("yelp"))
@@ -226,6 +227,10 @@ public class TruckServlet extends HttpServlet {
     Splitter splitter = Splitter.on(",").omitEmptyStrings().trimResults();
     builder.categories(ImmutableSet.copyOf(splitter.split(request.getParameter("categories"))));
     builder.beaconnaiseEmails(ImmutableSet.copyOf(splitter.split(request.getParameter("beaconnaiseEmails"))));
+    try {
+      builder.fleetSize(Integer.parseInt(request.getParameter("fleetSize")));
+    } catch (NumberFormatException ignored) {
+    }
     return builder.build();
   }
 

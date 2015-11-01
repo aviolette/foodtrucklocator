@@ -57,6 +57,8 @@ public class Truck extends ModelEntity implements Serializable {
   private int timezoneAdjustment;
   private boolean scanFacebook;
   private String lastScanned;
+  private int fleetSize;
+  private String backgroundImage;
 
   // For serialization
   private Truck() {
@@ -96,6 +98,8 @@ public class Truck extends ModelEntity implements Serializable {
     this.timezoneAdjustment = builder.timezoneAdjustment;
     this.scanFacebook = builder.scanFacebook;
     this.lastScanned = builder.lastScanned;
+    this.fleetSize = builder.fleetSize;
+    this.backgroundImage = builder.backgroundImage;
   }
 
   public static Builder builder() {
@@ -348,6 +352,14 @@ public class Truck extends ModelEntity implements Serializable {
         .toSet();
   }
 
+  public int getFleetSize() {
+    return fleetSize;
+  }
+
+  public String getBackgroundImage() {
+    return backgroundImage;
+  }
+
   public static class Stats implements Serializable {
     private DateTime lastUpdated;
     private DateTime lastSeen;
@@ -509,6 +521,8 @@ public class Truck extends ModelEntity implements Serializable {
     private int timezoneAdjustment = 0;
     private boolean scanFacebook;
     private String lastScanned;
+    private int fleetSize;
+    private String backgroundImage;
 
 
     public Builder() {
@@ -718,6 +732,16 @@ public class Truck extends ModelEntity implements Serializable {
 
     public Builder timezoneOffset(int timezoneAdjustment) {
       this.timezoneAdjustment = timezoneAdjustment;
+      return this;
+    }
+
+    public Builder fleetSize(int size) {
+      this.fleetSize = size;
+      return this;
+    }
+
+    public Builder backgroundImage(String image) {
+      this.backgroundImage = image;
       return this;
     }
   }
