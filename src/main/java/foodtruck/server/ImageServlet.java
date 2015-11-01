@@ -23,7 +23,9 @@ import com.google.inject.Singleton;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 
+import foodtruck.dao.TruckDAO;
 import foodtruck.model.StaticConfig;
+import foodtruck.model.Truck;
 import foodtruck.util.HttpHeaderFormat;
 
 /**
@@ -36,12 +38,15 @@ public class ImageServlet extends HttpServlet {
   private final GcsService cloudStorage;
   private final DateTimeFormatter dateFormatter;
   private final StaticConfig staticConfig;
+  private final TruckDAO truckDAO;
 
   @Inject
-  public ImageServlet(GcsService cloudStorage, @HttpHeaderFormat DateTimeFormatter formatter, StaticConfig staticConfig) {
+  public ImageServlet(GcsService cloudStorage, @HttpHeaderFormat DateTimeFormatter formatter,
+      StaticConfig staticConfig, TruckDAO truckDAO) {
     this.cloudStorage = cloudStorage;
     this.dateFormatter = formatter;
     this.staticConfig = staticConfig;
+    this.truckDAO = truckDAO;
   }
 
   @Override
@@ -73,6 +78,17 @@ public class ImageServlet extends HttpServlet {
     } else if (splits[3].toLowerCase().contains(".php")) {
       throw new FileNotFoundException("File does not appear to be an image");
     }
-    return new GcsFilename(staticConfig.getIconBucket(), splits[3]);
+    String fileName = splits[3];
+    if (fileName.endsWith("_banner")) {
+      int last = fileName.lastIndexOf("_");
+      String truckId = fileName.substring(0, last);
+      Truck truck = truckDAO.findById(truckId);
+      if (truck == null) {
+        throw new FileNotFoundException("Invalid truck: " + truckId);
+      }
+      fileName = truck.getId() + "_banner.";
+      fileName += truck.getBackgroundImage().endsWith("png") ? "png" : "jpg";
+    }
+    return new GcsFilename(staticConfig.getIconBucket(), fileName);
   }
 }
