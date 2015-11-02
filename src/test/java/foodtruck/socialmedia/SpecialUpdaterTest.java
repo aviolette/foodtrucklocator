@@ -70,6 +70,21 @@ public class SpecialUpdaterTest extends EasyMockSupport {
   }
 
   @Test
+  public void addBirthdayCake() {
+    expect(dailyDataDAO.save(DailyData.builder()
+        .locationId("Doughnut Vault @ Canal")
+        .onDate(localDate)
+        .addSpecial("birthday white cake", false)
+        .build()))
+        .andReturn(1L);
+    expect(dailyDataDAO.findByLocationAndDay("Doughnut Vault @ Canal", localDate)).andReturn(null);
+    replayAll();
+    specialUpdater.update(Truck.builder().id("thevaultvan").build(), ImmutableList.<Story>of(
+        Story.builder().text("Happy Monday! #CanalVault has the birthday white cake special today.").build()));
+    verifyAll();
+  }
+
+  @Test
   public void addCanalWithPreexistingSpecial() {
     expect(dailyDataDAO.save(DailyData.builder()
         .locationId("Doughnut Vault @ Canal")
