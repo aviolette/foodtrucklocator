@@ -346,7 +346,7 @@ public class Truck extends ModelEntity implements Serializable {
         .filter(new Predicate<String>() {
           public boolean apply(String input) {
             return !(input.equals("Lunch") || input.equals("HasStore") || input.equals("1HRStops") || input.equals("MorningSquatter") ||
-                input.equals("AssumeNoTimeEqualsLunch"));
+                input.equals("AssumeNoTimeEqualsLunch")) || input.equals("Chicago") || input.equals("Burbs");
           }
         })
         .toSet();
