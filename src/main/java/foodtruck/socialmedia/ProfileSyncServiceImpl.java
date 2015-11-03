@@ -227,7 +227,7 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
           builder.previewIcon(
               copyUrlToStorage(iconUrl, baseUrl, staticConfig.getIconBucket(), truck.getId() + "_preview"));
         }
-        if (Strings.isNullOrEmpty(truck.getBackgroundImage())) {
+        if (Strings.isNullOrEmpty(truck.getBackgroundImage()) && !Strings.isNullOrEmpty(user.getProfileBannerMobileURL())) {
           URL backgroundUrl = new URL(user.getProfileBannerMobileURL());
           builder.backgroundImage(copyUrlToStorage(backgroundUrl, baseUrl, staticConfig.getIconBucket(), truck.getId() + "_banner"));
         }
