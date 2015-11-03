@@ -200,7 +200,7 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
         ByteStreams.copy(in, out);
       }
       log.log(Level.INFO, "Created file {0} in bucket {1}", new Object[] {fileName, truckIconsBucket});
-      return "http://storage.googleapis.com/" + truckIconsBucket + fileName;
+      return "http://storage.googleapis.com/" + truckIconsBucket + "/" + fileName;
     } catch (Exception io) {
       log.log(Level.WARNING, io.getMessage(), io);
       throw Throwables.propagate(io);
