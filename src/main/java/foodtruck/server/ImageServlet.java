@@ -80,15 +80,26 @@ public class ImageServlet extends HttpServlet {
     }
     String fileName = splits[3];
     if (fileName.endsWith("_banner")) {
-      int last = fileName.lastIndexOf("_");
-      String truckId = fileName.substring(0, last);
-      Truck truck = truckDAO.findById(truckId);
-      if (truck == null) {
-        throw new FileNotFoundException("Invalid truck: " + truckId);
-      }
-      fileName = truck.getId() + "_banner.";
-      fileName += truck.getBackgroundImage().endsWith("png") ? "png" : "jpg";
+      fileName = fileNameFrom(fileName, "banner");
+    } else if (fileName.endsWith("_preview")) {
+      fileName = fileNameFrom(fileName, "preview");
     }
+    log.log(Level.INFO, "Retrieving image: {0}", fileName);
     return new GcsFilename(staticConfig.getIconBucket(), fileName);
+  }
+
+  private String fileNameFrom(final String fileName, String suffix) throws FileNotFoundException {
+    int last = fileName.lastIndexOf("_");
+    String truckId = fileName.substring(0, last);
+    Truck truck = truckDAO.findById(truckId);
+    if (truck == null) {
+      throw new FileNotFoundException("Invalid truck: " + truckId);
+    }
+    String imageUrl = "banner".equals(suffix) ? truck.getBackgroundImage() : truck.getPreviewIcon();
+    if (imageUrl == null) {
+      throw new FileNotFoundException(fileName);
+    }
+    String type = imageUrl.endsWith("png") ? "png" : "jpg";
+    return truck.getId() + "_" + suffix + "." + type;
   }
 }
