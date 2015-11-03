@@ -65,8 +65,7 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
       ResponseList<User> lookup = twitter.users().lookupUsers(new String[]{truck.getTwitterHandle()});
       User user = Iterables.getFirst(lookup, null);
       if (user != null) {
-        String url = syncToGoogleStorage(user.getScreenName(), user.getProfileImageURL(),
-            staticConfig.getBaseUrl(), staticConfig.getIconBucket());
+        String url = syncToGoogleStorage(user.getScreenName(), user.getProfileImageURL(), staticConfig.getIconBucket());
         String website = user.getURLEntity().getExpandedURL();
         truck = Truck.builder(truck)
             .name(user.getName())
@@ -82,7 +81,7 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
     return truck;
   }
 
-  private String syncToGoogleStorage(String twitterHandle, String ogIconUrl, String baseUrl, String bucket) {
+  private String syncToGoogleStorage(String twitterHandle, String ogIconUrl, String bucket) {
     try {
       // If the twitter profile exists, then get the icon URL
       String extension = ogIconUrl.substring(ogIconUrl.lastIndexOf(".")),
@@ -96,7 +95,7 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
       try (InputStream in = iconUrl.openStream(); OutputStream out = Channels.newOutputStream(channel)) {
         ByteStreams.copy(in, out);
       }
-      ogIconUrl = baseUrl + "/images/truckicons/" + fileName;
+      ogIconUrl = "http://storage.googleapis.com/" + bucket + "/" + fileName;
     } catch (Exception io) {
       log.log(Level.WARNING, io.getMessage(), io);
     }
@@ -113,7 +112,7 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
     log.log(Level.INFO, "Syncing truck {0}", truck.getId());
     boolean changed = false;
     if (!Strings.isNullOrEmpty(truck.getTwitterHandle())) {
-      truck = syncFromTwitter(truck, staticConfig.getBaseUrl());
+      truck = syncFromTwitter(truck);
       changed = true;
     }
     if (!Strings.isNullOrEmpty(truck.getFacebook())) {
@@ -169,7 +168,7 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
         if (Strings.isNullOrEmpty(truck.getPhone())) {
           builder.phone(responseObj.getString("phone"));
         }
-      } catch (JSONException e) {
+      } catch (JSONException ignored) {
       }
     // http://graph.facebook.com/overrice.foodtruck/picture?height=400&width=400
     if (Strings.isNullOrEmpty(truck.getPreviewIcon())) {
@@ -177,7 +176,7 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
         URL iconUrl = new URL("http", "graph.facebook.com", 80, uri + "/picture?width=180&height=180");
         log.log(Level.INFO, "Syncing from URL {0}", iconUrl.toString());
         builder.previewIcon(
-            copyUrlToStorage(iconUrl, staticConfig.getBaseUrl(), staticConfig.getIconBucket(),
+            copyUrlToStorage(iconUrl, staticConfig.getIconBucket(),
                 truck.getId() + "_preview"));
       } catch (MalformedURLException e) {
         return truck;
@@ -186,7 +185,7 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
     return builder.build();
   }
 
-  private String copyUrlToStorage(URL iconUrl, String baseUrl, String truckIconsBucket, String baseName) {
+  private String copyUrlToStorage(URL iconUrl, String truckIconsBucket, String baseName) {
     try {
       // If the twitter profile exists, then get the icon URL
       // copy icon to google cloud storage
@@ -201,14 +200,14 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
         ByteStreams.copy(in, out);
       }
       log.log(Level.INFO, "Created file {0} in bucket {1}", new Object[] {fileName, truckIconsBucket});
-      return baseUrl + "/images/truckicons/" + fileName;
+      return "http://storage.googleapis.com/" + truckIconsBucket + fileName;
     } catch (Exception io) {
       log.log(Level.WARNING, io.getMessage(), io);
       throw Throwables.propagate(io);
     }
   }
 
-  private Truck syncFromTwitter(Truck truck, String baseUrl) {
+  private Truck syncFromTwitter(Truck truck) {
     Twitter twitter = twitterFactory.create();
     try {
       ResponseList<User> response = twitter.users()
@@ -218,24 +217,21 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
         String twitterHandle = user.getScreenName().toLowerCase();
         Truck.Builder builder = Truck.builder(truck);
         if (Strings.isNullOrEmpty(truck.getIconUrl()) || truck.getIconUrl().contains("pbs.")) {
-          String url = syncToGoogleStorage(twitterHandle, user.getProfileImageURL(), baseUrl,
-              staticConfig.getIconBucket());
+          String url = syncToGoogleStorage(twitterHandle, user.getProfileImageURL(), staticConfig.getIconBucket());
           builder.iconUrl(url);
         }
         if (Strings.isNullOrEmpty(truck.getPreviewIcon())) {
           URL iconUrl = new URL(user.getProfileImageURL().replaceAll("_normal", "_400x400"));
           builder.previewIcon(
-              copyUrlToStorage(iconUrl, baseUrl, staticConfig.getIconBucket(), truck.getId() + "_preview"));
+              copyUrlToStorage(iconUrl, staticConfig.getIconBucket(), truck.getId() + "_preview"));
         }
         if (Strings.isNullOrEmpty(truck.getBackgroundImage()) && !Strings.isNullOrEmpty(user.getProfileBannerMobileURL())) {
           URL backgroundUrl = new URL(user.getProfileBannerMobileURL());
-          builder.backgroundImage(copyUrlToStorage(backgroundUrl, baseUrl, staticConfig.getIconBucket(), truck.getId() + "_banner"));
+          builder.backgroundImage(copyUrlToStorage(backgroundUrl, staticConfig.getIconBucket(), truck.getId() + "_banner"));
         }
         return builder.build();
       }
-    } catch (TwitterException e) {
-      throw Throwables.propagate(e);
-    } catch (MalformedURLException e) {
+    } catch (TwitterException|MalformedURLException e) {
       throw Throwables.propagate(e);
     }
     return truck;
