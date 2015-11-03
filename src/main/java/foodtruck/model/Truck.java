@@ -561,6 +561,8 @@ public class Truck extends ModelEntity implements Serializable {
       this.timezoneAdjustment = truck.timezoneAdjustment;
       this.scanFacebook = truck.scanFacebook;
       this.lastScanned = truck.lastScanned;
+      this.fleetSize = truck.fleetSize;
+      this.backgroundImage = truck.backgroundImage;
     }
 
     public Builder id(String id) {
