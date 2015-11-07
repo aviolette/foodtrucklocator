@@ -222,12 +222,15 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
         }
         if (Strings.isNullOrEmpty(truck.getPreviewIcon())) {
           URL iconUrl = new URL(user.getProfileImageURL().replaceAll("_normal", "_400x400"));
-          builder.previewIcon(
-              copyUrlToStorage(iconUrl, staticConfig.getIconBucket(), truck.getId() + "_preview"));
+          builder.previewIcon(copyUrlToStorage(iconUrl, staticConfig.getIconBucket(), truck.getId() + "_preview"));
         }
         if (Strings.isNullOrEmpty(truck.getBackgroundImage()) && !Strings.isNullOrEmpty(user.getProfileBannerMobileURL())) {
           URL backgroundUrl = new URL(user.getProfileBannerMobileURL());
           builder.backgroundImage(copyUrlToStorage(backgroundUrl, staticConfig.getIconBucket(), truck.getId() + "_banner"));
+        }
+        if (Strings.isNullOrEmpty(truck.getBackgroundImageLarge()) && !Strings.isNullOrEmpty(user.getProfileBannerIPadRetinaURL())) {
+          URL backgroundUrl = new URL(user.getProfileBannerIPadRetinaURL());
+          builder.backgroundImageLarge(copyUrlToStorage(backgroundUrl, staticConfig.getIconBucket(), truck.getId() + "_bannerlarge"));
         }
         return builder.build();
       }

@@ -204,6 +204,7 @@ public class TruckServlet extends HttpServlet {
         .foursquareUrl(request.getParameter("foursquareUrl"))
         .iconUrl(request.getParameter("iconUrl"))
         .backgroundImage(request.getParameter("backgroundImage"))
+        .backgroundImageLarge(request.getParameter("backgroundImageLarge"))
         .timezoneOffset(Integer.parseInt(request.getParameter("timezoneAdjustment")))
         .name(request.getParameter("name"))
         .yelpSlug(request.getParameter("yelp"))

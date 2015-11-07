@@ -73,6 +73,11 @@
            value="${truck.backgroundImage}"/>
   </div>
   <div class="form-group">
+    <label for="iconUrl">Large Background Image URL:</label>
+    <input type="text" class="form-control" id="largeBackgroundImage" name="backgroundImageLarge"
+           value="${truck.backgroundImageLarge}"/>
+  </div>
+  <div class="form-group">
     <label for="calendarUrl">Calendar URL</label>
     <input type="text" class="form-control" id="calendarUrl" name="calendarUrl"
            value="${truck.calendarUrl}"/>

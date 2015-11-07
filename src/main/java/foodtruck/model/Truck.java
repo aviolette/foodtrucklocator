@@ -59,6 +59,7 @@ public class Truck extends ModelEntity implements Serializable {
   private String lastScanned;
   private int fleetSize;
   private String backgroundImage;
+  private String backgroundImageLarge;
 
   // For serialization
   private Truck() {
@@ -100,6 +101,7 @@ public class Truck extends ModelEntity implements Serializable {
     this.lastScanned = builder.lastScanned;
     this.fleetSize = builder.fleetSize;
     this.backgroundImage = builder.backgroundImage;
+    this.backgroundImageLarge = builder.backgroundImageLarge;
   }
 
   public static Builder builder() {
@@ -360,6 +362,10 @@ public class Truck extends ModelEntity implements Serializable {
     return backgroundImage;
   }
 
+  public String getBackgroundImageLarge() {
+    return backgroundImageLarge;
+  }
+
   public static class Stats implements Serializable {
     private DateTime lastUpdated;
     private DateTime lastSeen;
@@ -523,7 +529,7 @@ public class Truck extends ModelEntity implements Serializable {
     private String lastScanned;
     private int fleetSize;
     private String backgroundImage;
-
+    private String backgroundImageLarge;
 
     public Builder() {
     }
@@ -563,6 +569,7 @@ public class Truck extends ModelEntity implements Serializable {
       this.lastScanned = truck.lastScanned;
       this.fleetSize = truck.fleetSize;
       this.backgroundImage = truck.backgroundImage;
+      this.backgroundImageLarge = truck.backgroundImageLarge;
     }
 
     public Builder id(String id) {
@@ -746,5 +753,12 @@ public class Truck extends ModelEntity implements Serializable {
       this.backgroundImage = image;
       return this;
     }
+
+    public Builder backgroundImageLarge(String image) {
+      this.backgroundImageLarge = image;
+      return this;
+    }
+
+
   }
 }

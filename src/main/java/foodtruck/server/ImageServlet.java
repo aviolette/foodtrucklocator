@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.api.client.util.Strings;
 import com.google.appengine.tools.cloudstorage.GcsFileMetadata;
 import com.google.appengine.tools.cloudstorage.GcsFilename;
 import com.google.appengine.tools.cloudstorage.GcsInputChannel;
@@ -52,7 +53,8 @@ public class ImageServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     try {
-      GcsFilename fileName = getFileName(req);
+      boolean isIpad = req.getHeader("user-agent").toLowerCase().contains("ipad");
+      GcsFilename fileName = getFileName(req, isIpad);
       GcsInputChannel readChannel = cloudStorage.openPrefetchingReadChannel(fileName, 0, 2097152);
       try (InputStream in = Channels.newInputStream(readChannel)) {
         ByteStreams.copy(in, resp.getOutputStream());
@@ -71,7 +73,7 @@ public class ImageServlet extends HttpServlet {
     }
   }
 
-  private GcsFilename getFileName(HttpServletRequest req) throws FileNotFoundException {
+  private GcsFilename getFileName(HttpServletRequest req, boolean isIpad) throws FileNotFoundException {
     String[] splits = req.getRequestURI().split("/");
     if (splits.length != 4) {
       throw new FileNotFoundException("Invalid file");
@@ -79,23 +81,41 @@ public class ImageServlet extends HttpServlet {
       throw new FileNotFoundException("File does not appear to be an image");
     }
     String fileName = splits[3];
-    if (fileName.endsWith("_banner")) {
-      fileName = fileNameFrom(fileName, "banner");
-    } else if (fileName.endsWith("_preview")) {
-      fileName = fileNameFrom(fileName, "preview");
+    if (fileName.endsWith("_banner") || fileName.endsWith("_bannerlarge") || fileName.endsWith("_preview")) {
+      int lastIndex = fileName.lastIndexOf("_");
+      fileName = fileNameFrom(fileName, fileName.substring(lastIndex+1), isIpad);
     }
     log.log(Level.INFO, "Retrieving image: {0}", fileName);
     return new GcsFilename(staticConfig.getIconBucket(), fileName);
   }
 
-  private String fileNameFrom(final String fileName, String suffix) throws FileNotFoundException {
+  private String fileNameFrom(final String fileName, String suffix,
+      boolean isIpad) throws FileNotFoundException {
     int last = fileName.lastIndexOf("_");
     String truckId = fileName.substring(0, last);
     Truck truck = truckDAO.findById(truckId);
     if (truck == null) {
       throw new FileNotFoundException("Invalid truck: " + truckId);
     }
-    String imageUrl = "banner".equals(suffix) ? truck.getBackgroundImage() : truck.getPreviewIcon();
+    String imageUrl;
+    switch(suffix) {
+      case "banner":
+        log.log(Level.INFO, "banner image for truck: {0}", truck.getId());
+        imageUrl = truck.getBackgroundImage();
+        if (!isIpad) {
+          break;
+        }
+      case "bannerlarge":
+        log.log(Level.INFO, "ipad banner image for truck: {0}", truck.getId());
+        imageUrl = truck.getBackgroundImageLarge();
+        if (Strings.isNullOrEmpty(imageUrl)) {
+          imageUrl = truck.getBackgroundImage();
+          suffix = "banner";
+        }
+        break;
+      default:
+        imageUrl = truck.getPreviewIcon();
+    }
     if (imageUrl == null) {
       throw new FileNotFoundException(fileName);
     }
