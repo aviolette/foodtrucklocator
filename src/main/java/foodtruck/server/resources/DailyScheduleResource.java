@@ -9,7 +9,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.google.api.client.util.Strings;
-import com.google.appengine.api.memcache.MemcacheService;
 import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 
@@ -38,14 +37,13 @@ public class DailyScheduleResource {
   private final AuthorizationChecker checker;
   private final ScheduleCacher scheduleCacher;
   private final DailyScheduleWriter dailyScheduleWriter;
-  private final MemcacheService memcacheService;
   private final DateTimeFormatter formatter;
   private final Counter dailyCounter;
   private final Counter hourlyCounter;
 
   @Inject
   public DailyScheduleResource(FoodTruckStopService foodTruckService, Clock clock, AuthorizationChecker checker,
-      ScheduleCacher scheduleCacher, DailyScheduleWriter writer, MemcacheService memcacheService,
+      ScheduleCacher scheduleCacher, DailyScheduleWriter writer,
       @DailyScheduleCounter Counter counter, @HourlyScheduleCounter Counter hourlyCounter,
       @DateOnlyFormatter DateTimeFormatter formatter) {
     this.truckService = foodTruckService;
@@ -53,7 +51,6 @@ public class DailyScheduleResource {
     this.checker = checker;
     this.scheduleCacher = scheduleCacher;
     this.dailyScheduleWriter = writer;
-    this.memcacheService = memcacheService;
     this.dailyCounter = counter;
     this.hourlyCounter = hourlyCounter;
     this.formatter = formatter;
