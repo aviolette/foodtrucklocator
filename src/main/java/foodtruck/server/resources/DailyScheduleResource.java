@@ -15,7 +15,6 @@ import com.google.inject.Inject;
 
 import org.codehaus.jettison.json.JSONException;
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.monitoring.Counter;
@@ -67,7 +66,6 @@ public class DailyScheduleResource {
     hourlyCounter.increment(appKey);
     checker.requireAppKeyWithCount(appKey, hourlyCounter.getCount(appKey), dailyCounter.getCount(appKey));
     if (!Strings.isNullOrEmpty(aDate)) {
-      LocalDate localDate = formatter.parseLocalDate(aDate);
       log.info("Pulled schedule for day: " + aDate);
       try {
         return dailyScheduleWriter.asJSON(truckService.findStopsForDay(formatter.parseLocalDate(aDate))).toString();
