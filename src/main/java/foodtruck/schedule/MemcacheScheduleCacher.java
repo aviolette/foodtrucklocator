@@ -12,6 +12,7 @@ import com.google.inject.Inject;
  */
 public class MemcacheScheduleCacher implements ScheduleCacher {
   public static final String DAILY_SCHEDULE = "daily_schedule";
+  public static final String TOMORROWS_SCHEDULE = "tomorrows_schedule";
   private final MemcacheService cache;
 
   @Inject
@@ -28,5 +29,15 @@ public class MemcacheScheduleCacher implements ScheduleCacher {
 
   @Override public void invalidate() {
     cache.delete(DAILY_SCHEDULE);
+    cache.delete(TOMORROWS_SCHEDULE);
+  }
+
+  @Override
+  public @Nullable String findTomorrowsSchedule() {
+    return (String) cache.get(TOMORROWS_SCHEDULE);
+  }
+
+  @Override public void saveTomorrowsSchedule(String payload) {
+    cache.put(TOMORROWS_SCHEDULE, payload, Expiration.byDeltaSeconds(3600));
   }
 }

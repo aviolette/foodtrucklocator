@@ -66,12 +66,19 @@ public class DailyScheduleResource {
     hourlyCounter.increment(appKey);
     checker.requireAppKeyWithCount(appKey, hourlyCounter.getCount(appKey), dailyCounter.getCount(appKey));
     if (!Strings.isNullOrEmpty(aDate)) {
-      log.info("Pulled schedule for day: " + aDate);
-      try {
-        return dailyScheduleWriter.asJSON(truckService.findStopsForDay(formatter.parseLocalDate(aDate))).toString();
-      } catch (JSONException e) {
-        throw Throwables.propagate(e);
+      // TODO: should definitely validate that aDate is tomorrow before saving it in cache
+      log.info("Pulling schedule for day: " + aDate);
+      String payload = scheduleCacher.findTomorrowsSchedule();
+      if (payload == null) {
+        log.info("Schedule not in cache, retrieving it from DB");
+        try {
+          payload = dailyScheduleWriter.asJSON(truckService.findStopsForDay(formatter.parseLocalDate(aDate))).toString();
+          scheduleCacher.saveTomorrowsSchedule(payload);
+        } catch (JSONException e) {
+          throw Throwables.propagate(e);
+        }
       }
+      return payload;
     } else if (from > 0) {
       try {
         return dailyScheduleWriter.asJSON(truckService.findStopsForDayAfter(new DateTime(from, clock.zone()))).toString();

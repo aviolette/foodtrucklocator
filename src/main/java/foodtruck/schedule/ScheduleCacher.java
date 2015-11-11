@@ -12,4 +12,9 @@ public interface ScheduleCacher {
   void saveSchedule(String payload);
 
   void invalidate();
+
+  @Nullable String findTomorrowsSchedule();
+
+  void saveTomorrowsSchedule(String payload);
+
 }
