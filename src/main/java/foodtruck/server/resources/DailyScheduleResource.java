@@ -8,12 +8,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.google.api.client.util.Strings;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 
 import org.codehaus.jettison.json.JSONException;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.monitoring.Counter;
 import foodtruck.monitoring.DailyScheduleCounter;
@@ -22,6 +25,7 @@ import foodtruck.schedule.ScheduleCacher;
 import foodtruck.server.resources.json.DailyScheduleWriter;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
+import foodtruck.util.DateOnlyFormatter;
 
 /**
  * @author aviolette
@@ -36,13 +40,15 @@ public class DailyScheduleResource {
   private final ScheduleCacher scheduleCacher;
   private final DailyScheduleWriter dailyScheduleWriter;
   private final MemcacheService memcacheService;
+  private final DateTimeFormatter formatter;
   private final Counter dailyCounter;
   private final Counter hourlyCounter;
 
   @Inject
   public DailyScheduleResource(FoodTruckStopService foodTruckService, Clock clock, AuthorizationChecker checker,
       ScheduleCacher scheduleCacher, DailyScheduleWriter writer, MemcacheService memcacheService,
-      @DailyScheduleCounter Counter counter, @HourlyScheduleCounter Counter hourlyCounter) {
+      @DailyScheduleCounter Counter counter, @HourlyScheduleCounter Counter hourlyCounter,
+      @DateOnlyFormatter DateTimeFormatter formatter) {
     this.truckService = foodTruckService;
     this.clock = clock;
     this.checker = checker;
@@ -51,14 +57,24 @@ public class DailyScheduleResource {
     this.memcacheService = memcacheService;
     this.dailyCounter = counter;
     this.hourlyCounter = hourlyCounter;
+    this.formatter = formatter;
   }
 
   @GET @Produces("application/json")
-  public String findForDay(@QueryParam("appKey") final String appKey, @QueryParam("from") final long from) {
+  public String findForDay(@QueryParam("appKey") final String appKey, @QueryParam("from") final long from,
+      @QueryParam("for") String aDate) {
     dailyCounter.increment(appKey);
     hourlyCounter.increment(appKey);
     checker.requireAppKeyWithCount(appKey, hourlyCounter.getCount(appKey), dailyCounter.getCount(appKey));
-    if (from > 0) {
+    if (!Strings.isNullOrEmpty(aDate)) {
+      LocalDate localDate = formatter.parseLocalDate(aDate);
+      log.info("Pulled schedule for day: " + aDate);
+      try {
+        return dailyScheduleWriter.asJSON(truckService.findStopsForDay(formatter.parseLocalDate(aDate))).toString();
+      } catch (JSONException e) {
+        throw Throwables.propagate(e);
+      }
+    } else if (from > 0) {
       try {
         return dailyScheduleWriter.asJSON(truckService.findStopsForDayAfter(new DateTime(from, clock.zone()))).toString();
       } catch (JSONException e) {
