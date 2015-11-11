@@ -178,7 +178,17 @@ var FoodTruckLocator = function () {
     };
 
     this.hasActive = function () {
-      return self.stops.length > 0;
+      return self.openNowAndLater().length > 0;
+    };
+
+    this.openNowAndLater = function() {
+      var now = Clock.now(), items = [];
+      $.each(self.stops, function (idx, item) {
+        if (item.stop["endMillis"] > now) {
+          items.push(item);
+        }
+      });
+      return items;
     };
 
     this.openNow = function () {
@@ -616,8 +626,15 @@ var FoodTruckLocator = function () {
     flash: function (msg, type) {
       flash(msg, type);
     },
+     clear: function() {
+       _markers.clear();
+    },
     extend: function () {
-      _map.fitBounds(_markers.bounds);
+      var bounds = new google.maps.LatLngBounds();
+      $.each(_trucks.openNowAndLater(), function (idx, stop) {
+        bounds.extend(stop.position);
+      });
+      _map.fitBounds(bounds);
     },
     run: function (mode, center, time, modelPayload, appKey, defaultCity) {
       var self = this;
@@ -706,6 +723,9 @@ var FoodTruckLocator = function () {
         // just want to invoke this once, for when the map first loads
         listener = google.maps.event.addListener(_map, 'bounds_changed', function () {
           refreshViewData();
+          console.log("HERE");
+          _map.fitBounds(_markers.bounds);
+
           if (listener) {
             google.maps.event.removeListener(listener);
           }
