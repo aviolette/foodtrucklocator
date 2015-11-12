@@ -5,10 +5,11 @@ var FoodTruckLocator = function () {
       _mobile = false,
       _mode = null,
       _markers = null,
+      _center = null,
+      _userLocation = null,
       _defaultCityRegex = null,
       _defaultCityLength = 0,
-      _openInfoWindow = null,
-      _center = null;
+      _openInfoWindow = null;
 
   function isMobile() {
     return _map == null || _mobile;
@@ -20,6 +21,10 @@ var FoodTruckLocator = function () {
 
   function flash(msg) {
     $("#flashMsg").css("display", "block").html(msg);
+  }
+
+  function shouldDisplayDistances() {
+    return _userLocation != null;
   }
 
   function refreshViewData() {
@@ -43,7 +48,7 @@ var FoodTruckLocator = function () {
   }
 
   function findLocation() {
-    return _center;
+    return (_userLocation != null) ? _userLocation : _center;
   }
 
   function getCookie(name) {
@@ -227,7 +232,7 @@ var FoodTruckLocator = function () {
   function buildInfoWindow(marker, stops) {
     var contentString = "<div class='infoWindowContent'><h4><a href='/locations/" + stops[0].location.key + "'>" +
         formatLocation(stops[0].location.name) + "</a></h4>";
-    if (stops.distance != null) {
+    if (shouldDisplayDistances() && stops.distance != null) {
       contentString += "<p>" + stops[0].distance + " miles from your location</p>"
     }
     contentString = contentString + "<div class='media-list' style='margin:10px'>";
@@ -259,7 +264,7 @@ var FoodTruckLocator = function () {
   function buildTruckList($truckList, stops, markers) {
     $truckList.empty();
     var $items = $("<ul class='media-list'></ul>"), now = Clock.now(),
-        $location, $div, lastMarkerGroup, lastLocation = null, centerNote = _mobile ? "current location" : "map center";
+        $location, $div, lastMarkerGroup, lastLocation = null, centerNote = "current location";
     $items.appendTo($truckList);
 
     $.each(stops, function (idx, stop) {
@@ -267,7 +272,7 @@ var FoodTruckLocator = function () {
       if (stop.location.url) $locationDescription.append("<div><a href='" + stop.location.url + "'>" + stop.location.url + "</a></div>");
       if (stop.location.description) $locationDescription.append("<div>" + stop.location.description + " </div>");
       if (stop.location.twitterHandle) $locationDescription.append("<div><small>Follow <a href='http://twitter.com/" + stop.location.twitterHandle + "'>@" + stop.location.twitterHandle + "</a> on twitter.</small></div>");
-      if (stop.distance) $locationDescription.append("<div>(" + stop.distance + " miles from " + centerNote + ")</div>");
+      if (shouldDisplayDistances() && stop.distance) $locationDescription.append("<div>(" + stop.distance + " miles from " + centerNote + ")</div>");
       if (lastLocation != stop.location.name) {
         $div = $("<div class='media-body'><h4><a href='/locations/" + stop.location.key + "'>" + formatLocation(stop.location.name) + "</a></h4></div>");
         $div.append($locationDescription);
@@ -417,32 +422,6 @@ var FoodTruckLocator = function () {
     }
   }
 
-  function findCenter(defaultCenter) {
-    var lat = getCookie("map_center_lat"), lng = getCookie("map_center_lng");
-    if (lat && lng) {
-      return new google.maps.LatLng(lat, lng);
-    }
-    return defaultCenter;
-  }
-
-  function saveCenter(center) {
-    setCookie("map_center_lat", center.lat());
-    setCookie("map_center_lng", center.lng());
-    _center = center;
-  }
-
-  function savePinMap(pinMap) {
-    setCookie("pin_map", pinMap);
-  }
-
-  function findPinMap() {
-    var pinMap = getCookie("pin_map");
-    if (pinMap) {
-      return "true" == pinMap;
-    }
-    return false;
-  }
-
   function findZoom(defaultZoom) {
     var zoom = getCookie("zoom");
     if (zoom) {
@@ -553,37 +532,12 @@ var FoodTruckLocator = function () {
     return badgeDiv;
   }
 
-  function createOptionsDiv() {
-    var toggleDiv = document.createElement("div");
-    toggleDiv.index = 1;
-
-    // Setting padding to 5 px will offset the control
-    // from the edge of the map
-    toggleDiv.style.padding = '5px';
-
-    // Set CSS for the control border
-    var controlUI = document.createElement('div');
-    controlUI.style.backgroundColor = 'white';
-    controlUI.style.borderStyle = 'none';
-    controlUI.style.borderWidth = '0px';
-    controlUI.style.cursor = 'pointer';
-    controlUI.style.textAlign = 'center';
-    controlUI.title = '';
-    toggleDiv.appendChild(controlUI);
-
-    // Set CSS for the control interior
-    var controlText = document.createElement('div');
-    controlText.style.fontFamily = 'Arial,sans-serif';
-    controlText.style.fontSize = '12px';
-    controlText.style.paddingLeft = '4px';
-    controlText.style.paddingRight = '4px';
-    controlText.innerHTML = '<b><input ' + (findPinMap() ? "checked" : "")  + ' type="checkbox" id="pinMapCB">&nbsp;<label for="pinMapCB">Pin map at current location</label></b>';
-    controlUI.appendChild(controlText);
-
-    google.maps.event.addDomListener(controlUI, 'click', function () {
-      savePinMap($("#pinMapCB").is(":checked"));
+  function fitAll() {
+    var bounds = new google.maps.LatLngBounds();
+    $.each(_trucks.openNowAndLater(), function (idx, stop) {
+      bounds.extend(stop.position);
     });
-    return toggleDiv;
+    _map.fitBounds(bounds);
   }
 
   //noinspection JSUnusedGlobalSymbols
@@ -643,7 +597,7 @@ var FoodTruckLocator = function () {
       _mode = mode;
       _defaultCityRegex = new RegExp(", " + defaultCity + "$");
       _defaultCityLength = defaultCity.length;
-      _center = findCenter(center);
+      _center = center;
       resize();
       displayMessageOfTheDay(modelPayload);
       if (displayListOnly() || mobile) {
@@ -666,6 +620,7 @@ var FoodTruckLocator = function () {
             _center = new google.maps.LatLng(position.coords.latitude,
                 position.coords.longitude);
             hideFlash();
+            _userLocation = _center;
             self.setModel(modelPayload);
           }, function () {
             hideFlash();
@@ -683,49 +638,25 @@ var FoodTruckLocator = function () {
           maxZoom: 18,
           mapTypeId: google.maps.MapTypeId.ROADMAP
         });
-        var loading = true, manuallyMoved = false;
+        var loading = true;
         google.maps.event.addListener(_map, 'center_changed', function () {
-          saveCenter(_map.getCenter());
           displayWarningIfMarkersNotVisible();
         });
 
-        var centerMarker = new google.maps.Marker({
-          icon: "http://maps.google.com/mapfiles/arrow.png"
-        });
-
         _map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(badgeWidget());
-        _map.controls[google.maps.ControlPosition.TOP_RIGHT].push(createOptionsDiv());
-
-        google.maps.event.addListener(_map, 'drag', function () {
-          if (loading) {
-            manuallyMoved = true;
-          }
-          centerMarker.setMap(_map);
-          centerMarker.setPosition(_map.getCenter());
-        });
 
         google.maps.event.addListener(_map, 'dragend', function () {
-          if (loading) {
-            manuallyMoved = true;
-          }
-          centerMarker.setMap(null);
           refreshViewData();
         });
 
         google.maps.event.addListener(_map, 'zoom_changed', function () {
-          if (loading) {
-            manuallyMoved = true;
-          }
-          saveZoom(_map.getZoom());
           refreshViewData();
         });
         var listener = null;
         // just want to invoke this once, for when the map first loads
         listener = google.maps.event.addListener(_map, 'bounds_changed', function () {
           refreshViewData();
-          console.log("HERE");
-          _map.fitBounds(_markers.bounds);
-
+          fitAll();
           if (listener) {
             google.maps.event.removeListener(listener);
           }
@@ -734,9 +665,6 @@ var FoodTruckLocator = function () {
 
         if (Modernizr.geolocation) {
           navigator.geolocation.getCurrentPosition(function (position) {
-            if (manuallyMoved || findPinMap()) {
-              return;
-            }
             loading = false;
             var latLng = new google.maps.LatLng(position.coords.latitude,
                     position.coords.longitude),
@@ -744,10 +672,11 @@ var FoodTruckLocator = function () {
                     latLng, 3959);
             // sanity check.  Don't pan beyond 60 miles from default center
             if (distance < 60) {
-              saveCenter(latLng);
               // refresh the distances
               _map.panTo(_center);
+              _userLocation = latLng;
               refreshViewData();
+              fitAll();
             }
           }, function () {
             loading = false;
