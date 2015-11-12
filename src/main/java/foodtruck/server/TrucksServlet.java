@@ -52,7 +52,10 @@ public class TrucksServlet extends FrontPageServlet {
     final String requestURI = req.getRequestURI();
     String truckId = (requestURI.equals("/trucks") || requestURI.equals("/trucks/") ? null : requestURI.substring(8));
     String jsp = "/WEB-INF/jsp/trucks.jsp";
-    if (!Strings.isNullOrEmpty(truckId)) {
+    if ("/".equals(truckId)) {
+      resp.sendRedirect("/trucks");
+      return;
+    } else if (!Strings.isNullOrEmpty(truckId)) {
       jsp = "/WEB-INF/jsp/truck.jsp";
       if (truckId.endsWith("/")) {
         truckId = truckId.substring(0, truckId.length() - 1);
