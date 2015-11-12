@@ -436,6 +436,7 @@ var FoodTruckLocator = function () {
 
   function buildTruckDialog(truck) {
     var $truckDialog = $("#truckDialog");
+    $("#truckDialog .modal-header").css("background-image", 'url("http://www.chicagofoodtruckfinder.com/images/truckicons/' + truck.id + '_bannerlarge")');
     $("#truckIcon").attr("src", truck.iconUrl);
     var $truckSocial = $("#truckSocial"), $truckUrl = $("#truck-url");
     $truckSocial.empty();

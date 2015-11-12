@@ -76,6 +76,7 @@ address.locationName {
 .modal-header {
   background-color: #183864 !important;
   color: white !important;
+  background-repeat: no-repeat;
 }
 
 .whitelink {
