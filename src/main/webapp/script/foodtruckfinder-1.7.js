@@ -537,6 +537,7 @@ var FoodTruckLocator = function () {
     $.each(_trucks.openNowAndLater(), function (idx, stop) {
       bounds.extend(stop.position);
     });
+    bounds.extend(_center);
     _map.fitBounds(bounds);
   }
 
@@ -617,10 +618,9 @@ var FoodTruckLocator = function () {
           self.setModel(modelPayload);
           flash("Looking up location...");
           navigator.geolocation.getCurrentPosition(function (position) {
-            _center = new google.maps.LatLng(position.coords.latitude,
+            _userLocation = new google.maps.LatLng(position.coords.latitude,
                 position.coords.longitude);
             hideFlash();
-            _userLocation = _center;
             self.setModel(modelPayload);
           }, function () {
             hideFlash();
