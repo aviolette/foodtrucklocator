@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nullable;
+
 import com.google.api.client.util.ByteStreams;
 import com.google.appengine.tools.cloudstorage.GcsFileOptions;
 import com.google.appengine.tools.cloudstorage.GcsFilename;
@@ -186,14 +188,15 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
     return builder.build();
   }
 
-  private String copyUrlToStorage(URL iconUrl, String truckIconsBucket, String baseName) {
+  private @Nullable String copyUrlToStorage(URL iconUrl, String truckIconsBucket, String baseName) {
     try {
       // If the twitter profile exists, then get the icon URL
       // copy icon to google cloud storage
       URLConnection connection = iconUrl.openConnection();
       String mimeType = connection.getContentType();
       if (mimeType.contains("text")) {
-        throw new RuntimeException("Invalid image type");
+        log.log(Level.INFO, "Invalid image type for: " + iconUrl);
+        return null;
       }
       String extension = mimeType.contains("jpeg") ? "jpg" : "png", fileName = baseName + "." + extension;
       GcsFilename gcsFilename = new GcsFilename(truckIconsBucket, fileName);
