@@ -196,7 +196,7 @@ runEditWidget = function(truckId, locations, categories, options) {
           if (stop.startMillis < tomorrow) {
             lastStop = stop;
           }
-          var labels = (stop.locked) ? "&nbsp;<span class=\"label important\">locked</span>" :
+          var labels = (stop.locked) ? "&nbsp;&nbsp;<span class=\"glyphicon glyphicon-lock\"> </span>" :
               "";
           var crazyDuration = stop.durationMillis < 0 || stop.durationMillis > 43200000;
           var showControls = stop.startMillis < tomorrow || stop.origin != 'VENDORCAL';
