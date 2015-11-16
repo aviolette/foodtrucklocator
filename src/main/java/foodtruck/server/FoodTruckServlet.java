@@ -29,6 +29,7 @@ import foodtruck.util.TimeFormatter;
 
 /**
  * Servlet that serves up the main food truck page.
+ *
  * @author aviolette
  * @since Jul 12, 2011
  */
@@ -45,8 +46,9 @@ public class FoodTruckServlet extends FrontPageServlet {
   private final LocationCollectionWriter locationCollectionWriter;
 
   @Inject
-  public FoodTruckServlet(Clock clock, FoodTruckStopService service, DailyScheduleWriter writer, ScheduleCacher scheduleCacher,
-      @TimeFormatter DateTimeFormatter timeFormatter, LocationDAO locationDAO, LocationCollectionWriter locationCollectionWriter, StaticConfig staticConfig) {
+  public FoodTruckServlet(Clock clock, FoodTruckStopService service, DailyScheduleWriter writer,
+      ScheduleCacher scheduleCacher, @TimeFormatter DateTimeFormatter timeFormatter, LocationDAO locationDAO,
+      LocationCollectionWriter locationCollectionWriter, StaticConfig staticConfig) {
     super(staticConfig);
     this.clock = clock;
     this.timeFormatter = timeFormatter;
@@ -59,8 +61,7 @@ public class FoodTruckServlet extends FrontPageServlet {
   }
 
   @Override
-  protected void doGetProtected(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+  protected void doGetProtected(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     final String path = req.getRequestURI();
     final String serverName = req.getServerName();
     if (serverName.equals("chicagofoodtrucklocator.appspot.com")) {
@@ -85,24 +86,11 @@ public class FoodTruckServlet extends FrontPageServlet {
     }
     req.setAttribute("center", getCenter(req.getCookies()));
     String payload = timeSpecified ? null : scheduleCacher.findSchedule();
-    if (payload == null || !staticConfig.isScheduleCachingOn()) {
-      DailySchedule schedule = stopService.findStopsForDayAfter(dateTime);
-      try {
-        payload = writer.asJSON(schedule).toString();
-        if (!timeSpecified) {
-          scheduleCacher.saveSchedule(payload);
-        }
-      } catch (JSONException e) {
-        // TODO: fix this
-        throw new RuntimeException(e);
-      }
-      log.log(Level.INFO, "Loaded page from datastore");
-    } else {
-      log.log(Level.INFO, "Loaded payload from cache");
-    }
+    payload = getSchedule(dateTime, timeSpecified, payload);
     final boolean includeDesignatedStops = "true".equals(req.getParameter("designatedStops"));
     if (includeDesignatedStops) {
-      req.setAttribute("designatedStops", locationCollectionWriter.asJSON(locationDAO.findDesignatedStops()).toString());
+      req.setAttribute("designatedStops",
+          locationCollectionWriter.asJSON(locationDAO.findDesignatedStops()).toString());
     } else {
       req.setAttribute("designatedStops", "[]");
     }
@@ -129,5 +117,24 @@ public class FoodTruckServlet extends FrontPageServlet {
       req.setAttribute("suffix", "");
     }
     req.getRequestDispatcher(jsp).forward(req, resp);
+  }
+
+  private String getSchedule(DateTime dateTime, boolean timeSpecified, String payload) {
+    if (payload == null || !staticConfig.isScheduleCachingOn()) {
+      DailySchedule schedule = stopService.findStopsForDay(dateTime.toLocalDate());
+      try {
+        payload = writer.asJSON(schedule).toString();
+        if (!timeSpecified) {
+          scheduleCacher.saveSchedule(payload);
+        }
+      } catch (JSONException e) {
+        // TODO: fix this
+        throw new RuntimeException(e);
+      }
+      log.log(Level.INFO, "Loaded page from datastore");
+    } else {
+      log.log(Level.INFO, "Loaded payload from cache");
+    }
+    return payload;
   }
 }
