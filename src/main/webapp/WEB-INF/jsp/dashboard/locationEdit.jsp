@@ -116,6 +116,7 @@
         <label><input id="popular" type="checkbox">&nbsp;Popular?</label>
         <label><input id="autocomplete" type="checkbox">&nbsp;Autocomplete?</label>
         <label><input id="hasBooze" type="checkbox">&nbsp;Serves Alcohol?</label>
+        <label><input id="closed" type="checkbox">&nbsp;Closed?</label>
         <input id="submitButton" type="submit" class="btn primary" value="Save"/>&nbsp;
       </div>
     </div>
@@ -149,6 +150,7 @@
       $("#description").attr("value", loc.description);
       $("#popular").attr("checked", loc.popular);
       $("#hasBooze").attr("checked", loc.hasBooze);
+      $("#closed").attr("checked", loc.closed);
       $("#designatedStop").attr("checked", loc.designatedStop);
       $("#autocomplete").attr("checked", loc.autocomplete);
       $("#url").attr("value", loc.url);
@@ -259,6 +261,7 @@
       loc.url = $("#url").attr("value");
       loc.popular = $("#popular").is(":checked");
       loc.hasBooze = $("#hasBooze").is(":checked");
+      loc.closed = $("#closed").is(":checked");
       loc.designatedStop = $("#designatedStop").is(":checked");
       loc.autocomplete = $("#autocomplete").is(":checked");
       loc.ownedBy = $("#ownedBy").attr("value");

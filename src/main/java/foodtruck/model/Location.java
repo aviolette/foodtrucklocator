@@ -42,6 +42,7 @@ public class Location extends ModelEntity implements Serializable {
   private @Nullable String phoneNumber;
   private @Nullable String email;
   private @Nullable String facebookUri;
+  private boolean closed;
 
   // For serializable
   public Location() {
@@ -68,6 +69,7 @@ public class Location extends ModelEntity implements Serializable {
     phoneNumber = builder.phoneNumber;
     email = builder.email;
     facebookUri = builder.facebookUri;
+    closed = builder.closed;
   }
 
   public static Builder builder() {
@@ -76,6 +78,10 @@ public class Location extends ModelEntity implements Serializable {
 
   public static Builder builder(Location loc) {
     return new Builder(loc);
+  }
+
+  public boolean isClosed() {
+    return closed;
   }
 
   public @Nullable String getPhoneNumber() {
@@ -244,6 +250,7 @@ public class Location extends ModelEntity implements Serializable {
     private @Nullable String phoneNumber;
     private @Nullable String email;
     private @Nullable String facebookUri;
+    private boolean closed;
 
     public Builder(Location location) {
       key = location.getKey();
@@ -267,6 +274,7 @@ public class Location extends ModelEntity implements Serializable {
       phoneNumber = location.phoneNumber;
       email = location.email;
       facebookUri = location.facebookUri;
+      closed = location.closed;
     }
 
     public Builder() {
@@ -279,6 +287,11 @@ public class Location extends ModelEntity implements Serializable {
 
     public Builder email(String email) {
       this.email = email;
+      return this;
+    }
+
+    public Builder closed(boolean closed) {
+      this.closed = closed;
       return this;
     }
 

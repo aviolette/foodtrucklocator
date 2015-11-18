@@ -12,7 +12,7 @@
 <div class="row">
 <ol>
 <c:forEach var="venue" items="${locations}">
-    <li style="padding-bottom:20px"><div><a href="/locations/${venue.location.key}">${venue.location.name}</a></div>
+    <li style="padding-bottom:20px"><div><a href="/locations/${venue.location.key}">${venue.location.name} <c:if test="${venue.location.closed}"><strong class="text-warning">(CLOSED)</strong></c:if></a></div>
         <div>Associated with truck <a href="/trucks/${venue.truck.id}">${venue.truck.name}</a> <c:if test="${venue.truck.inactive}"><strong class="text-warning">(NO LONGER ACTIVE)</strong></c:if></div>
         <div>${venue.location.description}</div>
         <c:if test="${!empty(venue.location.url)}">

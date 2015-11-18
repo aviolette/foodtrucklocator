@@ -51,6 +51,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
   private static final String PHONE = "phone";
   private static final String EMAIL = "email";
   private static final String FACEBOOK_URI = "facebook_uri";
+  private static final String CLOSED = "closed";
 
   private static final Logger log = Logger.getLogger(LocationDAOAppEngine.class.getName());
   private final Clock clock;
@@ -189,6 +190,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     entity.setProperty(PHONE, location.getPhoneNumber());
     entity.setProperty(EMAIL, location.getEmail());
     entity.setProperty(FACEBOOK_URI, location.getFacebookUri());
+    entity.setProperty(CLOSED, location.isClosed());
     return entity;
   }
 
@@ -213,6 +215,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     builder.phoneNumber(getStringProperty(entity, PHONE));
     builder.email(getStringProperty(entity, EMAIL));
     builder.facebookUri(getStringProperty(entity, FACEBOOK_URI));
+    builder.closed(getBooleanProperty(entity, CLOSED, false));
     boolean isValid = valid == null || valid;
     if (lat == null || lng == null) {
       builder.valid(false);
