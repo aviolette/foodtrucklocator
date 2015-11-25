@@ -208,7 +208,7 @@ public class TruckServlet extends HttpServlet {
         .timezoneOffset(Integer.parseInt(request.getParameter("timezoneAdjustment")))
         .name(request.getParameter("name"))
         .yelpSlug(request.getParameter("yelp"))
-        .phone(request.getParameter("phone"))
+        .normalizePhone(request.getParameter("phone"))
         .email(request.getParameter("email"))
         .twitterHandle(request.getParameter("twitterHandle"))
         .url(request.getParameter("url"));

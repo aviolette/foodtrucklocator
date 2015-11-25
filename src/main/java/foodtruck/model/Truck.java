@@ -760,5 +760,17 @@ public class Truck extends ModelEntity implements Serializable {
     }
 
 
+    public Builder normalizePhone(String phone) {
+      // only really works for american locale, but I'll cross that bridge later
+      if (phone.length() < 10) {
+        this.phone = phone;
+      } else {
+        this.phone = phone.replaceAll("\\(|\\)|\\-|\\+|\\.|\\ ", "");
+        if (this.phone.length() == 10) {
+          this.phone = this.phone.substring(0, 3) + "-" + this.phone.substring(3, 6) + "-" + this.phone.substring(6, 10);
+        }
+      }
+      return this;
+    }
   }
 }
