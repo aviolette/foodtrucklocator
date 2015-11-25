@@ -615,8 +615,8 @@ var FoodTruckLocator = function () {
         $("#appbadges").removeClass("hidden");
 
 
+        self.setModel(modelPayload);
         if (Modernizr.geolocation) {
-          self.setModel(modelPayload);
           flash("Looking up location...");
           navigator.geolocation.getCurrentPosition(function (position) {
             _userLocation = new google.maps.LatLng(position.coords.latitude,
@@ -627,8 +627,6 @@ var FoodTruckLocator = function () {
             hideFlash();
             self.setModel(modelPayload);
           }, {timeout: 5000});
-        } else {
-          self.setModel(modelPayload);
         }
       } else {
         _markers = new Markers();
@@ -656,8 +654,8 @@ var FoodTruckLocator = function () {
         var listener = null;
         // just want to invoke this once, for when the map first loads
         listener = google.maps.event.addListener(_map, 'bounds_changed', function () {
-          refreshViewData();
           fitAll();
+          refreshViewData();
           if (listener) {
             google.maps.event.removeListener(listener);
           }
