@@ -9,7 +9,7 @@
 
 
     <c:if test="${!empty(location.description)}">
-      <div>${location.description}</div>
+      <p class="lead">${location.description}</p>
     </c:if>
     <c:if test="${!empty(location.url)}">
       <div><a href='${location.url}'>${location.url}</a></div>
