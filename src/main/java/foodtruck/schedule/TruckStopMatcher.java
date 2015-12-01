@@ -274,6 +274,10 @@ public class TruckStopMatcher {
     if (startTime.getHourOfDay() < 11 && truck.getCategories().contains("MorningSquatter")) {
       DateTime maxDay = startTime.withTime(14, 0, 0, 0);
       return Math.max(maxDay.getMillis() - startTime.getMillis(), DEFAULT_STOP_LENGTH_IN_HOURS);
+    } else if(startTime.getHourOfDay() == 6) {
+      // if starts at 6am hour, extend to 9am instead of something like 8:43am or something.
+      DateTime maxDay = startTime.withTime(9, 0, 0, 0);
+      return Math.max(maxDay.getMillis() - startTime.getMillis(), DEFAULT_STOP_LENGTH_IN_HOURS);
     }
     return truck.getCategories().contains("1HRStops") ? ONE_HOUR_IN_MILLIS : DEFAULT_STOP_LENGTH_IN_HOURS;
   }

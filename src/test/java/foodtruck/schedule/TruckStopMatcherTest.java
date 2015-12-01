@@ -543,7 +543,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .match();
     assertNotNull(match);
     assertEquals(tweetTime, match.getStop().getStartTime());
-    assertEquals(tweetTime.plusHours(2), match.getStop().getEndTime());
+    assertEquals(tweetTime.withTime(9, 0, 0, 0), match.getStop().getEndTime());
   }
 
   @Test
@@ -571,7 +571,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .match();
     assertNotNull(match);
     assertEquals("Start time should be same as tweet time", tweetTime, match.getStop().getStartTime());
-    assertEquals(tweetTime.plusHours(2), match.getStop().getEndTime());
+    assertEquals(tweetTime.withTime(9, 0, 0, 0), match.getStop().getEndTime());
   }
 
   @Test
