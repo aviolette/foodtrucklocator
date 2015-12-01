@@ -112,56 +112,6 @@
   </div>
 </div>
 
-<h2>Weekly Overview</h2>
-<table class="table table-striped">
-  <thead>
-  <tr>
-    <th>Day</th>
-    <th>This Week</th>
-    <th>&nbsp;</th>
-    <th>Last Week</th>
-  </tr>
-  </thead>
-  <tbody>
-  <c:forEach items="${schedule}" var="day">
-    <tr>
-      <td>${day.name}</td>
-      <td><c:if test="${!empty(day.current)}">
-        <c:forEach items="${day.current.stops}" var="stop" varStatus="stopStatus">
-          <c:url value="/admin/locations"
-                 var="locationUrl">
-            <c:param name="q" value="${stop.location.name}"/>
-          </c:url> <a
-            href="${locationUrl}">${stop.location.name}</a>&nbsp;<c:if
-            test="${!stopStatus.last}"><br/></c:if>
-        </c:forEach>
-      </c:if>&nbsp;</td>
-      <td>
-        <c:choose>
-        <c:when test="${!empty(day.prior)}">
-        <c:forEach items="${day.prior.stops}" var="stop" varStatus="stopStatus">
-          <joda:format value="${stop.startTime}" style="-S"/> -
-          <joda:format value="${stop.endTime}" style="-S"/><c:if
-            test="${!stopStatus.last}"><br/></c:if>
-        </c:forEach></td>
-      <td>
-        <c:forEach items="${day.prior.stops}" var="stop" varStatus="stopStatus">
-        <c:url value="/admin/locations"
-               var="locationUrl">
-          <c:param name="q" value="${stop.location.name}"/>
-        </c:url> <a
-          href="${locationUrl}">${stop.location.name}</a>&nbsp;<c:if
-          test="${!stopStatus.last}"><br/></c:if>
-        </c:forEach>
-        </c:when>
-        <c:otherwise>
-      <td>&nbsp;</td>
-      <td>&nbsp;</c:otherwise>
-        </c:choose></td>
-    </tr>
-  </c:forEach>
-  </tbody>
-</table>
 <h2>Stories</h2>
 <table class="table table-striped">
   <thead>
