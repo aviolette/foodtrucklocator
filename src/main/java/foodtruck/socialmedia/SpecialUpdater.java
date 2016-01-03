@@ -40,36 +40,40 @@ public class SpecialUpdater {
     if (!"thevaultvan".equals(truck.getId())) {
       return;
     }
-
+    log.log(Level.INFO, "Checking this out {0}", truck.getId());
     for (Story story : Lists.reverse(stories)) {
       String lower = story.getText().toLowerCase();
-      String locationName = null;
+      String locationName = null, truckId = null;
       if (lower.contains("#canalvault")) {
         locationName = "Doughnut Vault @ Canal";
       } else if (lower.contains("#franklinvault")) {
         locationName = "Doughnut Vault @ Franklin";
+      } else if (lower.contains("#vaultvan")) {
+        truckId = "thevaultvan";
       }
-      if (locationName != null) {
+      if (locationName != null || truckId != null) {
         if (lower.contains("sold out")) {
           log.log(Level.INFO, locationName + " sold out");
-          DailyData dailyData = dailyDataDAO.findByLocationAndDay(locationName, clock.currentDay());
+          DailyData dailyData = findDailyData(locationName, truckId);
           if (dailyData != null) {
             dailyDataDAO.save(dailyData.markAllSoldOut());
           }
         } else  {
-          DailyData dailyData = dailyDataDAO.findByLocationAndDay(locationName, clock.currentDay());
+          DailyData dailyData = findDailyData(locationName, truckId);
           DailyData.Builder specialsBuilder;
           if (dailyData == null) {
             specialsBuilder = DailyData.builder()
                 .onDate(clock.currentDay())
                 .clearSpecials()
+                .truckId(truckId)
                 .locationId(locationName);
           } else {
             specialsBuilder = DailyData.builder(dailyData);
           }
-          boolean changed = detectOldFashioned(lower, locationName, specialsBuilder);
-          changed = detectCake(lower, locationName, specialsBuilder) || changed;
-          changed = detectJelly(lower, locationName, specialsBuilder) || changed;
+          boolean changed = detectOldFashioned(lower, locationName, specialsBuilder, truckId);
+          changed = detectCake(lower, locationName, specialsBuilder, truckId) || changed;
+          changed = detectJelly(lower, specialsBuilder) || changed;
+          changed = detectStack(lower, locationName, truckId, specialsBuilder) || changed;
           if (changed) {
             DailyData built = specialsBuilder.build();
             log.log(Level.INFO, "Saving {0}", built);
@@ -80,7 +84,30 @@ public class SpecialUpdater {
     }
   }
 
-  private boolean detectCake(String lower, String locationName, DailyData.Builder specialsBuilder) {
+  private boolean detectStack(String lower, String locationName, String truckId, DailyData.Builder specialsBuilder) {
+    DailyData dailyData;
+    if (lower.contains("powdered sugar stack")) {
+      dailyData = specialsBuilder.clearSpecials().addSpecial("Powdered Sugar Stack", false)
+          .locationId(locationName)
+          .truckId(truckId)
+          .build();
+      log.log(Level.INFO, "Found special at {0}", dailyData);
+      return true;
+    }
+    return false;
+  }
+
+  private DailyData findDailyData(String locationName, String truckId) {
+    DailyData dailyData;
+    if (locationName != null) {
+      dailyData = dailyDataDAO.findByLocationAndDay(locationName, clock.currentDay());
+    } else {
+      dailyData = dailyDataDAO.findByTruckAndDay(truckId, clock.currentDay());
+    }
+    return dailyData;
+  }
+
+  private boolean detectCake(String lower, String locationName, DailyData.Builder specialsBuilder, String truckId) {
     DailyData dailyData;
     Matcher matcher = cakeMatcher.matcher(lower);
     if (matcher.find()) {
@@ -93,6 +120,7 @@ public class SpecialUpdater {
       builder.append(" cake");
       dailyData = specialsBuilder.clearSpecials().addSpecial(builder.toString(), false)
           .locationId(locationName)
+          .truckId(truckId)
           .build();
       log.log(Level.INFO, "Found special at {0}", dailyData);
       return true;
@@ -100,7 +128,7 @@ public class SpecialUpdater {
     return false;
   }
 
-  private boolean detectJelly(String lower, String locationName, DailyData.Builder specialsBuilder) {
+  private boolean detectJelly(String lower, DailyData.Builder specialsBuilder) {
     Matcher matcher = jellyPattern.matcher(lower);
     if (matcher.find()) {
       specialsBuilder.addSpecial(matcher.group(1) + " jelly", false);
@@ -109,7 +137,8 @@ public class SpecialUpdater {
     return false;
   }
 
-  private boolean detectOldFashioned(String lower, String locationName, DailyData.Builder specialsBuilder) {
+  private boolean detectOldFashioned(String lower, String locationName, DailyData.Builder specialsBuilder,
+      String truckId) {
     DailyData dailyData;
     Matcher matcher = oldFashionedPattern.matcher(lower);
     if (matcher.find()) {
@@ -122,6 +151,7 @@ public class SpecialUpdater {
       builder.append(" old fashioned");
       dailyData = specialsBuilder.clearSpecials().addSpecial(builder.toString(), false)
           .locationId(locationName)
+          .truckId(truckId)
           .build();
       log.log(Level.INFO, "Found special at {0}", dailyData);
       return true;

@@ -47,14 +47,17 @@ public class DailyScheduleWriter implements MessageBodyWriter<DailySchedule>, JS
   private final DateTimeFormatter formatter;
   private final AbbreviatedTruckWriter truckWriter;
   private final DateTimeFormatter dateOnlyFormatter;
+  private final DailyDataWriter dailyDataWriter;
 
   @Inject
   public DailyScheduleWriter(LocationWriter locationWriter,@TimeOnlyFormatter DateTimeFormatter formatter,
-      AbbreviatedTruckWriter truckWriter, @DateOnlyFormatter DateTimeFormatter dateOnlyFormatter) {
+      AbbreviatedTruckWriter truckWriter, @DateOnlyFormatter DateTimeFormatter dateOnlyFormatter,
+      DailyDataWriter dailyDataWriter) {
     this.locationWriter = locationWriter;
     this.formatter = formatter;
     this.truckWriter = truckWriter;
     this.dateOnlyFormatter = dateOnlyFormatter;
+    this.dailyDataWriter = dailyDataWriter;
   }
 
   @Override public JSONObject asJSON(DailySchedule schedule) throws JSONException {
@@ -100,6 +103,7 @@ public class DailyScheduleWriter implements MessageBodyWriter<DailySchedule>, JS
     if (message != null) {
       payload.put("message", writeMessage(message));
     }
+    payload.put("specials", JSONSerializer.buildArray(schedule.getSpecials(), dailyDataWriter));
     return payload;
   }
 

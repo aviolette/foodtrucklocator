@@ -2,6 +2,8 @@ package foodtruck.model;
 
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import com.google.api.client.util.Sets;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
@@ -15,15 +17,17 @@ import org.joda.time.LocalDate;
  * @since 10/26/15
  */
 public class DailyData extends ModelEntity {
-  private String locationId;
+  private @Nullable String locationId;
   private LocalDate onDate;
   private Set<SpecialInfo> specials;
+  private @Nullable String truckId;
 
   private DailyData(Builder builder) {
     this.key = builder.key;
     this.locationId = builder.locationId;
     this.onDate = builder.onDate;
     this.specials = ImmutableSet.copyOf(builder.specials);
+    this.truckId = builder.truckId;
   }
 
   public static Builder builder() {
@@ -34,7 +38,7 @@ public class DailyData extends ModelEntity {
     return new Builder(dailyData);
   }
 
-  public String getLocationId() {
+  public @Nullable String getLocationId() {
     return locationId;
   }
 
@@ -46,6 +50,10 @@ public class DailyData extends ModelEntity {
     return specials;
   }
 
+  public @Nullable String getTruckId() {
+    return truckId;
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (obj == this) {
@@ -54,15 +62,15 @@ public class DailyData extends ModelEntity {
       return false;
     }
     DailyData other = (DailyData) obj;
-    boolean value =  other.locationId.equals(locationId) && other.onDate.equals(onDate) && Objects.equal(key,
-        other.key);
+    boolean value =  Objects.equal(locationId, other.locationId) && Objects.equal(truckId, other.truckId)
+        && other.onDate.equals(onDate) && Objects.equal(key, other.key);
     value = value && Objects.equal(Iterables.getFirst(other.specials, null), Iterables.getFirst(specials, null));
     return value;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(locationId, onDate, key, specials);
+    return Objects.hashCode(locationId, truckId, onDate, key, specials);
   }
 
   @Override
@@ -72,6 +80,7 @@ public class DailyData extends ModelEntity {
         .add("on date", onDate)
         .add("specials", specials)
         .add("key", key)
+        .add("truck ID", truckId)
         .toString();
   }
 
@@ -128,10 +137,11 @@ public class DailyData extends ModelEntity {
   }
 
   public static class Builder {
-    private String locationId;
+    private @Nullable String locationId;
     private LocalDate onDate;
     private Set<SpecialInfo> specials = Sets.newHashSet();
     private Object key = -1L;
+    private @Nullable String truckId;
 
     public Builder() {}
 
@@ -145,6 +155,11 @@ public class DailyData extends ModelEntity {
 
     public Builder locationId(String locationId) {
       this.locationId = locationId;
+      return this;
+    }
+
+    public Builder truckId(String truckId) {
+      this.truckId = truckId;
       return this;
     }
 

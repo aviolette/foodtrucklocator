@@ -23,6 +23,7 @@ import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
 import foodtruck.beaconnaise.BeaconSignal;
+import foodtruck.dao.DailyDataDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.MessageDAO;
 import foodtruck.dao.TruckDAO;
@@ -54,9 +55,12 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   private final LocationDAO locationDAO;
   private final GeoLocator geolocator;
   private final MessageDAO messageDAO;
+  private final DailyDataDAO dailyDataDAO;
 
   @Inject
-  public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, ScheduleStrategy googleCalendar, Clock clock, TruckDAO truckDAO, LocationDAO locationDAO, GeoLocator geoLocator, MessageDAO messageDAO) {
+  public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, ScheduleStrategy googleCalendar, Clock clock,
+      TruckDAO truckDAO, LocationDAO locationDAO, GeoLocator geoLocator, MessageDAO messageDAO,
+      DailyDataDAO dailyDataDAO) {
     this.truckStopDAO = truckStopDAO;
     this.scheduleStrategy = googleCalendar;
     this.clock = clock;
@@ -64,6 +68,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     this.locationDAO = locationDAO;
     this.geolocator = geoLocator;
     this.messageDAO = messageDAO;
+    this.dailyDataDAO = dailyDataDAO;
   }
 
   @Override
@@ -124,7 +129,12 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   }
 
   private DailySchedule dailySchedule(LocalDate day, List<TruckStop> stops) {
-    return new DailySchedule(day, stops, messageDAO.findByDay(day));
+    return DailySchedule.builder()
+        .date(day)
+        .stops(stops)
+        .message(messageDAO.findByDay(day))
+        .specials(dailyDataDAO.findTruckSpecialsByDay(day))
+        .build();
   }
 
   @Override public DailySchedule findStopsForDayAfter(final DateTime dateTime) {
@@ -309,10 +319,11 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     ImmutableList.Builder<DailySchedule> stops = ImmutableList.builder();
     for (int i=0; i < numDays; i++) {
       LocalDate currentDay = date.plusDays(i);
+      DailySchedule.Builder builder = DailySchedule.builder().date(currentDay);
       if (stopMM.containsKey(currentDay)) {
-        stops.add(new DailySchedule(currentDay, ImmutableList.copyOf(stopMM.get(currentDay)), null));
+        stops.add(builder.stops(ImmutableList.copyOf(stopMM.get(currentDay))).build());
       } else {
-        stops.add(new DailySchedule(currentDay, ImmutableList.<TruckStop>of(), null));
+        stops.add(builder.build());
       }
     }
     return stops.build();

@@ -6,6 +6,16 @@
 
 <%@include file="../include/truck_schedule_widget.jsp"%>
 
+<c:if test="${!empty(specials.specials)}">
+<h2>Daily Specials</h2>
+
+<ul id="daily-special-list">
+    <c:forEach items="${specials.specials}" var="specialInfo">
+      <li>${specialInfo.special}</li>
+    </c:forEach>
+</ul>
+</c:if>
+
 <div class="row">
   <div class="col-md-6">
     <h2>Configuration

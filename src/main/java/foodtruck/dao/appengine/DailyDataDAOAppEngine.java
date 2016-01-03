@@ -2,7 +2,7 @@ package foodtruck.dao.appengine;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -10,6 +10,7 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
@@ -28,11 +29,11 @@ import static foodtruck.dao.appengine.Attributes.setDateProperty;
  * @since 10/26/15
  */
 public class DailyDataDAOAppEngine extends AppEngineDAO<Long, DailyData> implements DailyDataDAO {
-  private static final Logger log = Logger.getLogger(DailyDataDAOAppEngine.class.getName());
   private static final String SPECIALS_LOCATION_ID = "location_id";
   private static final String SPECIALS_SPECIALS = "specials";
   private static final String SPECIALS_DATE = "date";
   private static final String SPECIALS_KIND = "specials";
+  private static final String SPECIALS_TRUCK_ID = "truck_id";
   private final DateTimeZone defaultZone;
 
   @Inject
@@ -44,7 +45,7 @@ public class DailyDataDAOAppEngine extends AppEngineDAO<Long, DailyData> impleme
   @Override
   protected Entity toEntity(DailyData dailyData, Entity entity) {
     entity.setProperty(SPECIALS_LOCATION_ID, dailyData.getLocationId());
-
+    entity.setProperty(SPECIALS_TRUCK_ID, dailyData.getTruckId());
     List<String> entities = Lists.newArrayListWithCapacity(dailyData.getSpecials().size());
     for (DailyData.SpecialInfo info : dailyData.getSpecials()) {
       // TODO: can we use embedded entities for this, because this is obviously horrible
@@ -60,6 +61,7 @@ public class DailyDataDAOAppEngine extends AppEngineDAO<Long, DailyData> impleme
     DailyData.Builder builder = DailyData.builder()
         .key(entity.getKey().getId())
         .locationId(getStringProperty(entity, SPECIALS_LOCATION_ID))
+        .truckId(getStringProperty(entity, SPECIALS_TRUCK_ID))
         .onDate(getDateTime(entity, SPECIALS_DATE, defaultZone).toLocalDate());
     Collection<String> specialsList = (Collection) entity.getProperty(SPECIALS_SPECIALS);
     for (String specialEncoded : specialsList) {
@@ -69,9 +71,8 @@ public class DailyDataDAOAppEngine extends AppEngineDAO<Long, DailyData> impleme
     return builder.build();
   }
 
-  @Nullable
   @Override
-  public DailyData findByLocationAndDay(String locationId, LocalDate date) {
+  public @Nullable DailyData findByLocationAndDay(String locationId, LocalDate date) {
     DatastoreService dataStore = provider.get();
     Query q = new Query(SPECIALS_KIND);
     List<Query.Filter> filters = ImmutableList.<Query.Filter>of(
@@ -83,5 +84,33 @@ public class DailyDataDAOAppEngine extends AppEngineDAO<Long, DailyData> impleme
       return null;
     }
     return fromEntity(entity);
+  }
+
+  @Override
+  public @Nullable DailyData findByTruckAndDay(String truckId, LocalDate date) {
+    DatastoreService dataStore = provider.get();
+    Query q = new Query(SPECIALS_KIND);
+    List<Query.Filter> filters = ImmutableList.<Query.Filter>of(
+        new Query.FilterPredicate(SPECIALS_TRUCK_ID, Query.FilterOperator.EQUAL, truckId),
+        new Query.FilterPredicate(SPECIALS_DATE, Query.FilterOperator.EQUAL, date.toDateTimeAtStartOfDay(defaultZone).toDate()));
+    q.setFilter(Query.CompositeFilterOperator.and(filters));
+    Entity entity = dataStore.prepare(q).asSingleEntity();
+    if (entity == null) {
+      return null;
+    }
+    return fromEntity(entity);
+  }
+
+  @Override
+  public Set<DailyData> findTruckSpecialsByDay(LocalDate day) {
+    ImmutableSet.Builder<DailyData> builder = ImmutableSet.builder();
+
+    // TODO: hack to get things going
+    DailyData data = findByTruckAndDay("thevaultvan", day);
+    if (data != null) {
+      builder.add(data);
+    }
+
+    return builder.build();
   }
 }

@@ -24,6 +24,7 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import foodtruck.dao.DailyDataDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.StoryDAO;
 import foodtruck.dao.TruckDAO;
@@ -47,15 +48,17 @@ public class TruckServlet extends HttpServlet {
   private final TruckDAO truckDAO;
   private final LocationDAO locationDAO;
   private final StoryDAO tweetDAO;
+  private final DailyDataDAO dailyDataDAO;
 
   @Inject
-  public TruckServlet(StoryDAO storyDAO,
-      FoodTruckStopService truckService, Clock clock, TruckDAO truckDAO, LocationDAO locationDAO) {
+  public TruckServlet(StoryDAO storyDAO, FoodTruckStopService truckService, Clock clock, TruckDAO truckDAO,
+      LocationDAO locationDAO, DailyDataDAO dailyDataDAO) {
     this.tweetDAO = storyDAO;
     this.truckService = truckService;
     this.locationDAO = locationDAO;
     this.clock = clock;
     this.truckDAO = truckDAO;
+    this.dailyDataDAO = dailyDataDAO;
   }
 
   @Override
@@ -116,11 +119,12 @@ public class TruckServlet extends HttpServlet {
       resp.setStatus(404);
       return;
     }
-    final List<Story> stories = tweetDAO.findTweetsAfter(
-        clock.currentDay().toDateTimeAtStartOfDay(clock.zone()), truck.getTwitterHandle(), true);
+    final List<Story> stories = tweetDAO.findTweetsAfter(clock.currentDay().toDateTimeAtStartOfDay(clock.zone()),
+        truck.getTwitterHandle(), true);
 
     req.setAttribute("tweets", stories);
     final String name = truck.getName();
+    req.setAttribute("specials",  dailyDataDAO.findByTruckAndDay(truck.getId(), clock.currentDay()));
     req.setAttribute("headerName", name);
     req.setAttribute("truckId", truckId);
     req.setAttribute("truck", truck);
@@ -132,7 +136,6 @@ public class TruckServlet extends HttpServlet {
         Iterables.transform(locationDAO.findAutocompleteLocations(), Location.TO_NAME));
     req.setAttribute("locations", new JSONArray(locationNames).toString());
     req.getRequestDispatcher(jsp).forward(req, resp);
-
   }
 
   @Override
