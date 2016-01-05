@@ -24,7 +24,9 @@ public class AbbreviatedTruckWriter implements JSONWriter<Truck> {
         .put("yelp", truck.getYelpSlug())
         .put("categories", truck.publicCategories())
         .put("phone", truck.getPhone())
+        .put("description", truck.getDescription())
         .put("url", truck.getUrl());
+
     if (truck.isDisplayEmailPublicly()) {
       obj.put("email", truck.getEmail());
     }

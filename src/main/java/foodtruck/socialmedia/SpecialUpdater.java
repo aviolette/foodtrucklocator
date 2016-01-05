@@ -74,6 +74,7 @@ public class SpecialUpdater {
           changed = detectCake(lower, locationName, specialsBuilder, truckId) || changed;
           changed = detectJelly(lower, specialsBuilder) || changed;
           changed = detectStack(lower, locationName, truckId, specialsBuilder) || changed;
+          changed = detectRedVelvet(lower, locationName, truckId, specialsBuilder) || changed;
           if (changed) {
             DailyData built = specialsBuilder.build();
             log.log(Level.INFO, "Saving {0}", built);
@@ -88,6 +89,19 @@ public class SpecialUpdater {
     DailyData dailyData;
     if (lower.contains("powdered sugar stack")) {
       dailyData = specialsBuilder.clearSpecials().addSpecial("Powdered Sugar Stack", false)
+          .locationId(locationName)
+          .truckId(truckId)
+          .build();
+      log.log(Level.INFO, "Found special at {0}", dailyData);
+      return true;
+    }
+    return false;
+  }
+
+  private boolean detectRedVelvet(String lower, String locationName, String truckId, DailyData.Builder specialsBuilder) {
+    DailyData dailyData;
+    if (lower.contains("red velvet")) {
+      dailyData = specialsBuilder.clearSpecials().addSpecial("Red Velvet Cake", false)
           .locationId(locationName)
           .truckId(truckId)
           .build();

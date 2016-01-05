@@ -34,7 +34,6 @@ public class TruckWriter implements JSONWriter<Truck>, MessageBodyWriter<Truck> 
 
   @Override public JSONObject asJSON(Truck truck) throws JSONException {
     JSONObject obj = truckWriter.asJSON(truck);
-    obj.put("description", truck.getDescription());
     obj.put("previewIcon", truck.getPreviewIcon());
     obj.put("inactive", truck.isInactive());
     Truck.Stats stats = truck.getStats();
