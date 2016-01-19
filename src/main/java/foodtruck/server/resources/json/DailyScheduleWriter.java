@@ -45,13 +45,13 @@ public class DailyScheduleWriter implements MessageBodyWriter<DailySchedule>, JS
   private static final Logger log = Logger.getLogger(DailyScheduleWriter.class.getName());
   private final LocationWriter locationWriter;
   private final DateTimeFormatter formatter;
-  private final AbbreviatedTruckWriter truckWriter;
+  private final TruckWriter truckWriter;
   private final DateTimeFormatter dateOnlyFormatter;
   private final DailyDataWriter dailyDataWriter;
 
   @Inject
   public DailyScheduleWriter(LocationWriter locationWriter,@TimeOnlyFormatter DateTimeFormatter formatter,
-      AbbreviatedTruckWriter truckWriter, @DateOnlyFormatter DateTimeFormatter dateOnlyFormatter,
+      TruckWriter truckWriter, @DateOnlyFormatter DateTimeFormatter dateOnlyFormatter,
       DailyDataWriter dailyDataWriter) {
     this.locationWriter = locationWriter;
     this.formatter = formatter;
