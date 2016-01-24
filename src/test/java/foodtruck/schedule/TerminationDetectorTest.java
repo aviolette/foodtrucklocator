@@ -138,6 +138,11 @@ public class TerminationDetectorTest {
   }
 
   @Test
+  public void testUntilSoldOut() {
+    assertTweet(null, "Have lunch with us - until SOLD OUT- 58th and Ellis. @uchiNOMgo @chiftf_uchicago https://t.co/0qLgcZqx0u");
+  }
+
+  @Test
   public void testThanksgiving() {
     assertTweet(null, "Today's menu: bacon Gouda burger, asiago pork, short rib, buff chix, red pepper falafel, and the new thanksgiving! http://t.co/BruxysPOhU");
   }
