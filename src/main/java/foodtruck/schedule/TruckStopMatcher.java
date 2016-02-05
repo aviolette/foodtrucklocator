@@ -38,12 +38,12 @@ import foodtruck.util.Clock;
  * @since 9/22/11
  */
 public class TruckStopMatcher {
-  private static final Logger log = Logger.getLogger(TruckStopMatcher.class.getName());
-  private static final long ONE_HOUR_IN_MILLIS = 3600000;
-  private static final long DEFAULT_STOP_LENGTH_IN_HOURS = 2 * ONE_HOUR_IN_MILLIS;
   public static final String TIME_PATTERN = "(\\d+(:\\d+)*\\s*(p|pm|a|am|a\\.m\\.|p\\.m\\.)?)|noon";
   static final String TIME_PATTERN_STRICT =
       "(\\d+:\\d+\\s*(p|pm|a|am|a\\.m\\.|p\\.m\\.)?)|noon|(\\d+\\s*(p|pm|a|am|a\\.m\\.|p\\.m\\.)|((11|12|1|2|3|4|5|6)\\b))";
+  private static final Logger log = Logger.getLogger(TruckStopMatcher.class.getName());
+  private static final long ONE_HOUR_IN_MILLIS = 3600000;
+  private static final long DEFAULT_STOP_LENGTH_IN_HOURS = 2 * ONE_HOUR_IN_MILLIS;
   private static final String TIME_RANGE_PATTERN =
       "(" + TIME_PATTERN + ")\\s*-\\s*(" + TIME_PATTERN + ")[\\s|\\$|\\n|,|\\.&&[^\\-]]";
   private static final String TOMORROW = "2morrow|tmw|tmrw|tomorrow|maana|mañana";
@@ -342,7 +342,7 @@ public class TruckStopMatcher {
   }
 
   private @Nullable Location extractLocation(Story tweet, Truck truck) {
-    List<String> addresses = addressExtractor.parse(tweet.getText(), truck);
+    List<String> addresses = addressExtractor.parse(tweet.getSanitizedText(), truck);
     Location tweetLocation = tweet.getLocation();
     if (tweetLocation != null) {
       log.info("Location data enabled for tweet from " + truck.getId());

@@ -16,6 +16,7 @@ import org.joda.time.DateTime;
  * @since 10/11/11
  */
 public class Story extends ModelEntity {
+  private static final Pattern retweetPattern = Pattern.compile("(\\bRT \"?)|(\")@");
   private final String screenName;
   private final Location location;
   private final String text;
@@ -23,7 +24,6 @@ public class Story extends ModelEntity {
   private final long id;
   private final boolean ignoreInTwittalyzer;
   private final StoryType storyType;
-  private static final Pattern retweetPattern = Pattern.compile("(\\bRT \"?)|(\")@");
 
   public Story(Builder builder) {
     super(builder.key);
@@ -36,12 +36,25 @@ public class Story extends ModelEntity {
     this.storyType = builder.type;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static Builder builder(Story story) {
+    return new Builder(story);
+  }
+
   public String getScreenName() {
     return screenName;
   }
 
   public @Nullable Location getLocation() {
     return location;
+  }
+
+  public String getSanitizedText() {
+    String foo = text.replaceAll(" ", " ");
+    return foo;
   }
 
   public String getText() {
@@ -99,14 +112,6 @@ public class Story extends ModelEntity {
 
   public boolean getIgnoreInTwittalyzer() {
     return ignoreInTwittalyzer;
-  }
-
-  public static Builder builder() {
-    return new Builder();
-  }
-
-  public static Builder builder(Story story) {
-    return new Builder(story);
   }
 
   public static class Builder {
