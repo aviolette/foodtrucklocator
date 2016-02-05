@@ -37,6 +37,10 @@ public class TerminationDetector {
       return null;
     }
 
+    if (tweetText.contains("or sold out")) {
+      return null;
+    }
+
     // TODO: this is crappy...fix
     if (tweetText.contains("thanksgiving")) {
       return null;

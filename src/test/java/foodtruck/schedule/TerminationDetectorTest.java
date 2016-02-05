@@ -143,6 +143,11 @@ public class TerminationDetectorTest {
   }
 
   @Test
+  public void testOrSoldOut() {
+    assertTweet(null, "Welcome to #FeelGoodFridays Adams & Wacker until130pm or SOLD OUT Stop on by!! @chiftf_willis @chifoodtruckz https://t.co/vC5m9bbNUu");
+  }
+
+  @Test
   public void testThanksgiving() {
     assertTweet(null, "Today's menu: bacon Gouda burger, asiago pork, short rib, buff chix, red pepper falafel, and the new thanksgiving! http://t.co/BruxysPOhU");
   }
@@ -164,20 +169,17 @@ public class TerminationDetectorTest {
 
   @Test
   public void onTheMove() {
-    assertTweet(tweetTime,
-        "The BAO-Mobile is on the move. Heading to Merchandise Mart #fb #BunsOnTheRun");
+    assertTweet(tweetTime, "The BAO-Mobile is on the move. Heading to Merchandise Mart #fb #BunsOnTheRun");
   }
 
   @Test
   public void test2() {
-    assertEquals(tweetTime,
-        detector.detect(tweetBuilder.text("Thanks so very much AON&Streeterville!!").build()));
+    assertEquals(tweetTime, detector.detect(tweetBuilder.text("Thanks so very much AON&Streeterville!!").build()));
   }
 
   @Test
   public void testTilNextTime() {
-    assertTweet(tweetTime,
-        "ChiTownTamale: SOLD!! we heart you #chicago!! till next time.. #fb #tamales #foodtrucks");
+    assertTweet(tweetTime, "ChiTownTamale: SOLD!! we heart you #chicago!! till next time.. #fb #tamales #foodtrucks");
   }
 
   @Test
@@ -202,6 +204,7 @@ public class TerminationDetectorTest {
     assertEquals(tweetTime, detector.detect(
         tweetBuilder.text("LQMeatMobile: All sold out for the day! Thanks everyone!").build()));
   }
+
 
   @Test
   public void testLastCall_PutItAtFifteenMinutesAhead() {
