@@ -1,5 +1,8 @@
 package foodtruck.monitoring;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.annotation.Nullable;
 
 import com.google.appengine.api.memcache.Expiration;
@@ -12,6 +15,7 @@ import com.google.inject.Inject;
  */
 
 public class Counter {
+  private static final Logger log = Logger.getLogger(Counter.class.getName());
   private final MemcacheService memcacheService;
   private final String name;
   private final @Nullable Expiration expiration;
@@ -29,7 +33,12 @@ public class Counter {
 
   private long getCountWithName(String fullName) {
     if (memcacheService.contains(fullName)) {
-      return (Long)memcacheService.get(fullName);
+      try {
+        return (Long) memcacheService.get(fullName);
+      } catch (NullPointerException npe) {
+        log.log(Level.WARNING, "NPE SHOULDN'T HAPPEN {0} {1}", new Object[] {fullName, name});
+        return 0;
+      }
     }
     return 0;
   }

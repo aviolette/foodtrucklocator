@@ -62,13 +62,7 @@ public class DailyScheduleResource {
       @QueryParam("for") String aDate) {
     dailyCounter.increment(appKey);
     hourlyCounter.increment(appKey);
-    try {
-      checker.requireAppKeyWithCount(appKey, hourlyCounter.getCount(appKey), dailyCounter.getCount(appKey));
-    } catch (NullPointerException npe) {
-      log.log(Level.INFO, "WHY IS THIS HAPPENING {0} {1} {2}", new Object[]{appKey, from, aDate});
-      log.log(Level.SEVERE, "WTF?", npe);
-      throw npe;
-    }
+    checker.requireAppKeyWithCount(appKey, hourlyCounter.getCount(appKey), dailyCounter.getCount(appKey));
     if (!Strings.isNullOrEmpty(aDate)) {
       // TODO: should definitely validate that aDate is tomorrow before saving it in cache
       log.info("Pulling schedule for day: " + aDate);
