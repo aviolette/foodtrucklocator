@@ -87,13 +87,6 @@ public class FoodTruckServlet extends FrontPageServlet {
     req.setAttribute("center", getCenter(req.getCookies()));
     String payload = timeSpecified ? null : scheduleCacher.findSchedule();
     payload = getSchedule(dateTime, timeSpecified, payload);
-    final boolean includeDesignatedStops = "true".equals(req.getParameter("designatedStops"));
-    if (includeDesignatedStops) {
-      req.setAttribute("designatedStops",
-          locationCollectionWriter.asJSON(locationDAO.findDesignatedStops()).toString());
-    } else {
-      req.setAttribute("designatedStops", "[]");
-    }
     final String mode = req.getParameter("mode");
     req.setAttribute("mobile", "mobile".equals(mode));
     req.setAttribute("mode", mode);

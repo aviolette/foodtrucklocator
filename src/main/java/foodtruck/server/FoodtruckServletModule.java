@@ -29,6 +29,7 @@ import foodtruck.server.job.InvalidateScheduleCache;
 import foodtruck.server.job.OneTimeSpecialsSetupServlet;
 import foodtruck.server.job.ProfileSyncServlet;
 import foodtruck.server.job.PurgeStatsServlet;
+import foodtruck.server.job.PushNotificationServlet;
 import foodtruck.server.job.RecacheServlet;
 import foodtruck.server.job.SendLunchNotificationsServlet;
 import foodtruck.server.job.TweetCacheUpdateServlet;
@@ -55,6 +56,7 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/cron/specialsSetup").with(OneTimeSpecialsSetupServlet.class);
 
     // Offline endpoints called via cron-jobs
+    serve("/cron/push_notifications").with(PushNotificationServlet.class);
     serve("/cron/recache").with(RecacheServlet.class);
     serve("/cron/tweets").with(TweetCacheUpdateServlet.class);
     serve("/cron/tweetPurge").with(TwitterCachePurgeServlet.class);

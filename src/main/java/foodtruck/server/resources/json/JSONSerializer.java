@@ -5,7 +5,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.io.ByteStreams;
 
 import org.codehaus.jettison.json.JSONArray;
@@ -58,5 +60,13 @@ public class JSONSerializer {
       arr.put(writer.asJSON(t));
     }
     return arr;
+  }
+
+  public static List<String> toStringList(JSONArray truckIds) throws JSONException {
+    ImmutableList.Builder<String> list = ImmutableList.builder();
+    for (int i=0; i < truckIds.length(); i++) {
+      list.add(truckIds.getString(i));
+    }
+    return list.build();
   }
 }

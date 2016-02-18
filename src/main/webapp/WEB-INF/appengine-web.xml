@@ -26,5 +26,7 @@
     <property name="foodtrucklocator.sync.app.key" value="AZNb0bbb"/>
     <property name="foodtrucklocator.map.center" value="Clark and Monroe, Chicago, IL; 41.880187; -87.63083499999999"/>
     <property name="foodtrucklocator.frontdoor.app.key" value="bGbTMbbb"/>
+    <property name="foodtrucklocator.supports.ssl" value="false"/>
+    <property name="foodtrucklocator.mail.sender" value="aviolette@chicagofoodtruckfinder.com"/>
   </system-properties>
 </appengine-web-app>

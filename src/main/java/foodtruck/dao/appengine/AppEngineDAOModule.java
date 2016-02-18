@@ -9,6 +9,7 @@ import foodtruck.dao.DailyRollupDAO;
 import foodtruck.dao.FifteenMinuteRollupDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.MessageDAO;
+import foodtruck.dao.NotificationDeviceProfileDAO;
 import foodtruck.dao.RetweetsDAO;
 import foodtruck.dao.StoryDAO;
 import foodtruck.dao.TruckDAO;
@@ -41,5 +42,6 @@ public class AppEngineDAOModule extends AbstractModule {
     bind(DailyRollupDAO.class).to(DailyRollupDAOAppEngine.class);
     bind(WeeklyLocationStatsRollupDAO.class).to(WeeklyLocationStatsRollupDAOAppEngine.class);
     bind(DailyDataDAO.class).to(DailyDataDAOAppEngine.class);
+    bind(NotificationDeviceProfileDAO.class).to(NotificationDeviceProfileDAOAppEngine.class);
   }
 }

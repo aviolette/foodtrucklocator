@@ -5,9 +5,12 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 /**
@@ -55,6 +58,14 @@ public class DailySchedule {
 
   public static Builder builder() {
     return new Builder();
+  }
+
+  public List<TruckStop> activeStopsAtLocation(final DateTime time) {
+    return FluentIterable.from(stops).filter(new Predicate<TruckStop>() {
+      public boolean apply(TruckStop input) {
+        return input.activeDuring(time);
+      }
+    }).toList();
   }
 
   public static class Builder {
