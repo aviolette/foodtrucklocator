@@ -50,4 +50,14 @@ public class AuthorizationChecker {
     }
     throw new WebApplicationException(Response.Status.UNAUTHORIZED);
   }
+
+  public boolean canRegisterForNotifications(String appKey) {
+    if (!Strings.isNullOrEmpty(appKey)) {
+      Application app = applicationDAO.findById(appKey);
+      if (app != null && app.isEnabled()) {
+        return app.canHandleNotifications();
+      }
+    }
+    throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+  }
 }

@@ -13,6 +13,7 @@ public class Application extends ModelEntity {
   private final String description;
   private final boolean enabled;
   private final boolean rateLimit;
+  private final boolean canHandleNotifications;
 
   public Application(Builder builder) {
     super(builder.appKey);
@@ -20,6 +21,7 @@ public class Application extends ModelEntity {
     this.description = builder.description;
     this.enabled = builder.enabled;
     this.rateLimit = builder.rateLimit;
+    this.canHandleNotifications = builder.canHandleNotifications;
   }
 
   @Override
@@ -56,12 +58,17 @@ public class Application extends ModelEntity {
     return new Builder(app);
   }
 
+  public boolean canHandleNotifications() {
+    return canHandleNotifications;
+  }
+
   public static class Builder {
     private String name;
     private String appKey;
     private String description;
     private boolean enabled;
     private boolean rateLimit;
+    private boolean canHandleNotifications;
 
     public Builder() {}
 
@@ -71,6 +78,7 @@ public class Application extends ModelEntity {
       this.description = app.description;
       this.enabled = app.enabled;
       this.rateLimit = app.rateLimit;
+      this.canHandleNotifications = app.canHandleNotifications;
     }
 
     public Builder rateLimit(boolean rateLimit) {
@@ -95,6 +103,11 @@ public class Application extends ModelEntity {
 
     public Builder enabled(boolean enabled) {
       this.enabled = enabled;
+      return this;
+    }
+
+    public Builder canHandleNotifications(boolean canHandleNotifications) {
+      this.canHandleNotifications = enabled;
       return this;
     }
 

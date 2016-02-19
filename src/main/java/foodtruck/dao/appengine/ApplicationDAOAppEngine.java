@@ -22,6 +22,7 @@ public class ApplicationDAOAppEngine extends AppEngineDAO<String, Application> i
   private static final String PROP_DESCRIPTION = "description";
   private static final String PROP_ENABLED = "enabled";
   private static final String RATE_LIMIT = "rate_limit";
+  private static final String CAN_HANDLE_NOTIFICATIONS = "can_handle_notifications";
 
   @Inject
   public ApplicationDAOAppEngine(DatastoreServiceProvider provider) {
@@ -33,6 +34,7 @@ public class ApplicationDAOAppEngine extends AppEngineDAO<String, Application> i
     entity.setProperty(PROP_DESCRIPTION, obj.getDescription());
     entity.setProperty(PROP_ENABLED, obj.isEnabled());
     entity.setProperty(RATE_LIMIT, obj.isRateLimitEnabled());
+    entity.setProperty(CAN_HANDLE_NOTIFICATIONS, obj.canHandleNotifications());
     return entity;
   }
 
@@ -42,6 +44,7 @@ public class ApplicationDAOAppEngine extends AppEngineDAO<String, Application> i
         .rateLimit(getBooleanProperty(entity, RATE_LIMIT, false))
         .description(getStringProperty(entity, PROP_DESCRIPTION))
         .enabled(getBooleanProperty(entity, PROP_ENABLED, false))
+        .canHandleNotifications(getBooleanProperty(entity, CAN_HANDLE_NOTIFICATIONS, false))
         .appKey(entity.getKey().getName())
         .build();
   }

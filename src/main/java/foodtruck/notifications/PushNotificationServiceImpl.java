@@ -74,7 +74,6 @@ public class PushNotificationServiceImpl implements PushNotificationService {
       activeLocations.add(input.getLocation());
     }
     cycleDeviceProfiles(activeLocations.build(), locationsToTrucks);
-
   }
   // TODO: filter by truck as well
   // TODO: handle radii
@@ -94,11 +93,11 @@ public class PushNotificationServiceImpl implements PushNotificationService {
         for (final Location location : activeLocations) {
           Location stopLocation = locationCache.get(location.getName());
           for (String locationName : deviceProfile.getLocationNames()) {
-              Location resolvedLocation = locationCache.get(locationName);
-              if (stopLocation.containedWithRadiusOf(resolvedLocation)) {
-                enqueue(locationsToTrucks, today, deviceProfile, location, resolvedLocation);
-                break;
-              }
+            Location resolvedLocation = locationCache.get(locationName);
+            if (stopLocation.containedWithRadiusOf(resolvedLocation)) {
+              enqueue(locationsToTrucks, today, deviceProfile, location, resolvedLocation);
+              break;
+            }
           }
         }
       } catch (ExecutionException e) {
