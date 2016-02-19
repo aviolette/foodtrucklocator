@@ -1,5 +1,7 @@
 package foodtruck.notifications;
 
+import java.util.logging.Logger;
+
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 
@@ -11,6 +13,8 @@ import foodtruck.model.NotificationType;
  * @since 2/17/16
  */
 public class EmailNotificationProcessor implements NotificationProcessor {
+  private static final Logger log = Logger.getLogger(EmailNotificationProcessor.class.getName());
+
   private final EmailSender sender;
 
   @Inject
@@ -23,7 +27,9 @@ public class EmailNotificationProcessor implements NotificationProcessor {
     if (notification.getType() != NotificationType.EMAIL) {
       return;
     }
-    sender.sendMessage("New food trucks open", ImmutableList.of(notification.getDeviceToken()),
+    log.info("Sending message: " + notification.getMessage());
+    sender.sendMessage(notification.getSummary(),
+        ImmutableList.of(notification.getDeviceToken()),
         notification.getMessage(), ImmutableList.<String>of(), null);
   }
 }

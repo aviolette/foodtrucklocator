@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import com.google.api.client.util.Strings;
 import com.google.appengine.api.memcache.Expiration;
 import com.google.appengine.api.memcache.MemcacheService;
+import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.cache.CacheBuilder;
@@ -111,7 +112,7 @@ public class PushNotificationServiceImpl implements PushNotificationService {
       final Location resolvedLocation) {
     // TODO: put on queue
     StringBuilder messageBuilder = new StringBuilder("New stops @ ");
-    messageBuilder.append(stopLocation.getName());
+    messageBuilder.append(stopLocation.getName().replaceAll(", Chicago, IL", ""));
     String trucksAtLocation = FluentIterable.from(locationsToTrucks.get(stopLocation.getName()))
         .filter(new Predicate<Truck>() {
           public boolean apply(Truck input) {
@@ -125,11 +126,18 @@ public class PushNotificationServiceImpl implements PushNotificationService {
             return throttle == null;
           }
         })
+        .transform(new Function<Truck, String>() {
+          public String apply(Truck input) {
+            return input.getName();
+          }
+        })
         .join(Joiner.on(","));
     if (!Strings.isNullOrEmpty(trucksAtLocation)) {
       messageBuilder.append(": ").append(trucksAtLocation);
       for (NotificationProcessor processor : processors) {
-        processor.handle(new PushNotification(messageBuilder.toString(), deviceProfile.getDeviceToken(),
+        processor.handle(new PushNotification("New trucks at " + stopLocation.getName().replace(", Chicago, IL", ""),
+            messageBuilder.toString(),
+            deviceProfile.getDeviceToken(),
             deviceProfile.getType()));
       }
     }

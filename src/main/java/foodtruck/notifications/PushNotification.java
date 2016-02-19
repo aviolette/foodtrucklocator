@@ -8,13 +8,19 @@ import foodtruck.model.NotificationType;
  */
 public class PushNotification {
   private final String message;
+  private final String summary;
   private final NotificationType type;
   private final String token;
 
-  public PushNotification(String message, String deviceToken, NotificationType type) {
+  public PushNotification(String summary, String message, String deviceToken, NotificationType type) {
+    this.summary = summary;
     this.message = message;
     this.type = type;
     this.token = deviceToken;
+  }
+
+  public String getSummary() {
+    return this.summary;
   }
 
   public String getDeviceToken() {
