@@ -353,6 +353,8 @@ var FoodTruckLocator = function () {
       }
       if (nowTrucks.length == 0) {
         $('a[href="#laterTrucks"]').tab('show');
+      } else {
+        $('a[href="#nowTrucks"]').tab('show');
       }
     }
   }
