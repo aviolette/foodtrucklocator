@@ -81,6 +81,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
   private static final String FLEET_SIZE = "fleet_size";
   private static final String BACKGROUND_IMAGE = "background_image";
   private static final String BACKGROUND_IMAGE_LARGE = "background_image_large";
+  private static final String MENU_URL = "menu_url";
 
   private DateTimeZone zone;
 
@@ -139,6 +140,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
         .lastScanned(getStringProperty(entity, LAST_SCANNED))
         .foursquareUrl((String) entity.getProperty(TRUCK_FOURSQUARE_URL_FIELD))
         .iconUrl((String) entity.getProperty(TRUCK_ICON_URL))
+        .menuUrl(getStringProperty(entity, MENU_URL))
         .fleetSize(getIntProperty(entity, FLEET_SIZE, 1))
         .backgroundImage(getStringProperty(entity, BACKGROUND_IMAGE, null))
         .backgroundImageLarge(getStringProperty(entity, BACKGROUND_IMAGE_LARGE, null))
@@ -291,6 +293,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     entity.setProperty(FLEET_SIZE, truck.getFleetSize());
     entity.setProperty(BACKGROUND_IMAGE, truck.getBackgroundImage());
     entity.setProperty(BACKGROUND_IMAGE_LARGE, truck.getBackgroundImageLarge());
+    entity.setProperty(MENU_URL, truck.getMenuUrl());
     entity.setProperty(TRUCK_PHONE, truck.getPhone());
     entity.setProperty(TRUCK_HIDDEN, truck.isHidden());
     entity.setProperty(TRUCK_INSTAGRAM, truck.getInstagramId());

@@ -58,25 +58,31 @@
            value="${truck.iconUrl}"/>
   </div>
   <div class="form-group">
-    <label for="iconUrl">Preview Image URL:</label>
+    <label for="previewIcon">Preview Image URL:</label>
     <input type="text" class="form-control" id="previewIcon" name="previewIcon"
            value="${truck.previewIcon}"/>
   </div>
   <div class="form-group">
-    <label for="iconUrl">Fullsize Image URL:</label>
+    <label for="fullsizeImage">Fullsize Image URL:</label>
     <input type="text" class="form-control" id="fullsizeImage" name="fullsizeImage"
            value="${truck.fullsizeImage}"/>
   </div>
   <div class="form-group">
-    <label for="iconUrl">Background Image URL:</label>
+    <label for="backgroundImage">Background Image URL:</label>
     <input type="text" class="form-control" id="backgroundImage" name="backgroundImage"
            value="${truck.backgroundImage}"/>
   </div>
   <div class="form-group">
-    <label for="iconUrl">Large Background Image URL:</label>
+    <label for="largeBackgroundImage">Large Background Image URL:</label>
     <input type="text" class="form-control" id="largeBackgroundImage" name="backgroundImageLarge"
            value="${truck.backgroundImageLarge}"/>
   </div>
+  <div class="form-group">
+    <label for="menuUrl">Menu URL:</label>
+    <input type="text" class="form-control" id="menuUrl" name="menuUrl"
+           value="${truck.menuUrl}"/>
+  </div>
+
   <div class="form-group">
     <label for="calendarUrl">Calendar URL</label>
     <input type="text" class="form-control" id="calendarUrl" name="calendarUrl"

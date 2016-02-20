@@ -36,10 +36,17 @@ public class TruckWriter implements JSONWriter<Truck>, MessageBodyWriter<Truck> 
     JSONObject obj = truckWriter.asJSON(truck);
     obj.put("previewIcon", truck.getPreviewIcon());
     obj.put("inactive", truck.isInactive());
+    obj.put("menuUrl", truck.getMenuUrl());
     Truck.Stats stats = truck.getStats();
     if (stats != null) {
       obj.put("firstSeen", stats.getFirstSeen() == null ? 0 : stats.getFirstSeen().getMillis());
+      if (stats.getWhereFirstSeen() != null) {
+        obj.put("whereFirstSeen", stats.getWhereFirstSeen().getName());
+      }
       obj.put("lastSeen", stats.getLastSeen() == null ? 0 : stats.getLastSeen().getMillis());
+      if (stats.getWhereLastSeen() != null) {
+        obj.put("whereLastSeen", stats.getWhereLastSeen().getName());
+      }
     }
     return obj;
   }

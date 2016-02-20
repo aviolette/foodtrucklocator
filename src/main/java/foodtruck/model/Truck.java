@@ -60,6 +60,7 @@ public class Truck extends ModelEntity implements Serializable {
   private int fleetSize;
   private String backgroundImage;
   private String backgroundImageLarge;
+  private @Nullable String menuUrl;
 
   // For serialization
   private Truck() {
@@ -102,6 +103,7 @@ public class Truck extends ModelEntity implements Serializable {
     this.fleetSize = builder.fleetSize;
     this.backgroundImage = builder.backgroundImage;
     this.backgroundImageLarge = builder.backgroundImageLarge;
+    this.menuUrl = builder.menuUrl;
   }
 
   public static Builder builder() {
@@ -110,6 +112,10 @@ public class Truck extends ModelEntity implements Serializable {
 
   public static Builder builder(Truck t) {
     return new Builder(t);
+  }
+
+  public @Nullable String getMenuUrl() {
+    return menuUrl;
   }
 
   public @Nullable String getFullsizeImage() {
@@ -530,6 +536,7 @@ public class Truck extends ModelEntity implements Serializable {
     private int fleetSize;
     private String backgroundImage;
     private String backgroundImageLarge;
+    private @Nullable String menuUrl;
 
     public Builder() {
     }
@@ -570,6 +577,7 @@ public class Truck extends ModelEntity implements Serializable {
       this.fleetSize = truck.fleetSize;
       this.backgroundImage = truck.backgroundImage;
       this.backgroundImageLarge = truck.backgroundImageLarge;
+      this.menuUrl = truck.menuUrl;
     }
 
     public Builder id(String id) {
@@ -759,6 +767,10 @@ public class Truck extends ModelEntity implements Serializable {
       return this;
     }
 
+    public Builder menuUrl(String menuUrl) {
+      this.menuUrl = menuUrl;
+      return this;
+    }
 
     public Builder normalizePhone(String phone) {
       // only really works for american locale, but I'll cross that bridge later
