@@ -2,6 +2,7 @@ package foodtruck.model;
 
 import java.util.List;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -43,6 +44,15 @@ public class NotificationDeviceProfile extends ModelEntity {
 
   public static Builder builder(NotificationDeviceProfile deviceProfile) {
     return new Builder(deviceProfile);
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("token", getDeviceToken())
+        .add("truckIds", truckIds)
+        .add("locationNames", locationNames)
+        .toString();
   }
 
   public static class Builder {
