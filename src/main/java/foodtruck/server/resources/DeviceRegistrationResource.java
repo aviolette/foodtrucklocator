@@ -42,7 +42,8 @@ public class DeviceRegistrationResource {
     }
   }
 
-  @DELETE
+  // had to do it this way because iOS doesn't seem to like DELETE
+  @POST @Path("deregister")
   public void deregister(@QueryParam("appKey") final String appKey, JSONObject request) {
     if (checker.canRegisterForNotifications(appKey)) {
       try {
