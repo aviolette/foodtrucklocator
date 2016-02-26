@@ -3,11 +3,16 @@ package foodtruck.server.resources;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 
+import com.google.common.base.Throwables;
 import com.google.inject.Inject;
+
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 import foodtruck.model.NotificationDeviceProfile;
 import foodtruck.notifications.PushNotificationService;
@@ -34,6 +39,19 @@ public class DeviceRegistrationResource {
     if (checker.canRegisterForNotifications(appKey)) {
       log.log(Level.INFO, "Device registration {}", profile);
       this.notificationService.register(profile);
+    }
+  }
+
+  @DELETE
+  public void deregister(@QueryParam("appKey") final String appKey, JSONObject request) {
+    if (checker.canRegisterForNotifications(appKey)) {
+      try {
+        String deviceToken = request.getString("deviceToken");
+        log.log(Level.INFO, "Device deregistration {}", deviceToken);
+        this.notificationService.deregister(deviceToken);
+      } catch (JSONException e) {
+        throw Throwables.propagate(e);
+      }
     }
   }
 }
