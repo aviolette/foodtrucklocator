@@ -1,5 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -174,6 +174,14 @@
       <groupId>antlr</groupId>
       <artifactId>antlr</artifactId>
       <version>2.7.7</version>
+    </dependency>
+
+    <!-- push notification client -->
+
+    <dependency>
+      <groupId>com.notnoop.apns</groupId>
+      <artifactId>apns</artifactId>
+      <version>1.0.0.Beta6</version>
     </dependency>
 
     <!-- Code needed for google apis V3 -->

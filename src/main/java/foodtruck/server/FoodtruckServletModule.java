@@ -1,5 +1,6 @@
 package foodtruck.server;
 
+import com.google.appengine.api.utils.SystemProperty;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Provides;
 import com.google.inject.name.Named;
@@ -69,7 +70,9 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/cron/error_stats").with(ErrorCountServlet.class);
     serve("/services/*").with(GuiceContainer.class,
         ImmutableMap.of(PackagesResourceConfig.PROPERTY_PACKAGES, "foodtruck.server.resources"));
-
+    if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development) {
+      serve("/cron/hello_world").with(foodtruck.server.job.TestNotificationServlet.class);
+    }
     // Dashboard endpoints
     serve("/admin").with(AdminDashboardServlet.class);
     serve("/admin/addresses").with(AddressRuleServlet.class);

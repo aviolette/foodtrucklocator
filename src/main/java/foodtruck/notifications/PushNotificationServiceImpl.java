@@ -131,7 +131,7 @@ public class PushNotificationServiceImpl implements PushNotificationService {
             return input.getName();
           }
         })
-        .join(Joiner.on(","));
+        .join(Joiner.on(", "));
     if (!Strings.isNullOrEmpty(trucksAtLocation)) {
       messageBuilder.append(": ").append(trucksAtLocation);
       for (NotificationProcessor processor : processors) {

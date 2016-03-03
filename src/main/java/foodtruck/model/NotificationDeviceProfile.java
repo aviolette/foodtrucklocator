@@ -22,6 +22,14 @@ public class NotificationDeviceProfile extends ModelEntity {
     this.notificationType = builder.deviceToken.contains("@") ? NotificationType.EMAIL : NotificationType.PUSH;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static Builder builder(NotificationDeviceProfile deviceProfile) {
+    return new Builder(deviceProfile);
+  }
+
   public String getDeviceToken() {
     return (String)getKey();
   }
@@ -38,14 +46,6 @@ public class NotificationDeviceProfile extends ModelEntity {
     return locationNames;
   }
 
-  public static Builder builder() {
-    return new Builder();
-  }
-
-  public static Builder builder(NotificationDeviceProfile deviceProfile) {
-    return new Builder(deviceProfile);
-  }
-
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
@@ -57,8 +57,8 @@ public class NotificationDeviceProfile extends ModelEntity {
 
   public static class Builder {
     private String deviceToken;
-    private List<String> truckIds;
-    private List<String> locationNames;
+    private List<String> truckIds = ImmutableList.of();
+    private List<String> locationNames = ImmutableList.of();
 
     public Builder() {}
 
