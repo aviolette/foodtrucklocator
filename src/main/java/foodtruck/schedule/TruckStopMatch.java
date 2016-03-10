@@ -1,7 +1,11 @@
 package foodtruck.schedule;
 
+import java.util.List;
+
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 import foodtruck.model.TruckStop;
 
@@ -17,14 +21,20 @@ public class TruckStopMatch {
   private final boolean terminated;
   private final boolean softEnding;
   private final long tweetId;
+  private final ImmutableList<TruckStop> additionalStops;
 
   private TruckStopMatch(Builder builder) {
     this.confidence = builder.confidence;
-    this.stop = builder.stop;
+    this.stop = builder.stops.get(0);
     this.text = builder.text;
     this.terminated = builder.terminated;
     this.softEnding = builder.softEnding;
     this.tweetId = builder.tweetId;
+    this.additionalStops = builder.getAdditionalStops();
+  }
+
+  public ImmutableList<TruckStop> getAdditionalStops() {
+    return additionalStops;
   }
 
   public boolean isTerminated() {
@@ -78,12 +88,12 @@ public class TruckStopMatch {
   }
 
   public static class Builder {
-    private TruckStop stop;
     private String text;
     private Confidence confidence = Confidence.HIGH;
     private boolean terminated;
     private boolean softEnding;
     private long tweetId;
+    public List<TruckStop> stops = Lists.newLinkedList();
 
     public Builder() {
     }
@@ -94,12 +104,18 @@ public class TruckStopMatch {
     }
 
     public Builder stop(TruckStop stop) {
-      this.stop = stop;
+      stops.clear();
+      stops.add(stop);
       return this;
     }
 
     public Builder text(String text) {
       this.text = text;
+      return this;
+    }
+
+    public Builder stops(ImmutableList<TruckStop> stops) {
+      this.stops = stops;
       return this;
     }
 
@@ -120,6 +136,13 @@ public class TruckStopMatch {
 
     public TruckStopMatch build() {
       return new TruckStopMatch(this);
+    }
+
+    public ImmutableList<TruckStop> getAdditionalStops() {
+      if (stops.size() < 2) {
+        return ImmutableList.of();
+      }
+      return ImmutableList.copyOf(stops.subList(1, stops.size()));
     }
   }
 }

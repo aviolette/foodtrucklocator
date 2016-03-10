@@ -336,6 +336,9 @@ public class SocialMediaCacherImpl implements SocialMediaCacher {
     }
     if (matchedStop != null) {
       addStops.add(matchedStop);
+      if (currentStops.isEmpty()) {
+        addStops.addAll(match.getAdditionalStops());
+      }
       for (TruckStop stop : addStops) {
         checkForRetweet(stop, match);
         checkIsWeird(stop, match);
