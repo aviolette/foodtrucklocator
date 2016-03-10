@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.api.client.util.Strings;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -52,6 +53,9 @@ public class NotificationServiceImpl implements NotificationService {
           Joiner joiner = Joiner.on(" ");
           Iterable<String> twitterHandles = Iterables.transform(trucks, new Function<Truck, String>(){
             @Override public String apply(Truck input) {
+              if (Strings.isNullOrEmpty(input.getTwitterHandle())) {
+                return input.getName();
+              }
               return "@" + input.getTwitterHandle();
             }
           });
