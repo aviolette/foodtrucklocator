@@ -25,7 +25,7 @@ public class TruckStopMatch {
 
   private TruckStopMatch(Builder builder) {
     this.confidence = builder.confidence;
-    this.stop = builder.stops.get(0);
+    this.stop = builder.getPrimaryStop();
     this.text = builder.text;
     this.terminated = builder.terminated;
     this.softEnding = builder.softEnding;
@@ -109,13 +109,18 @@ public class TruckStopMatch {
       return this;
     }
 
+    public Builder appendStop(TruckStop stop) {
+      stops.add(stop);
+      return this;
+    }
+
     public Builder text(String text) {
       this.text = text;
       return this;
     }
 
     public Builder stops(ImmutableList<TruckStop> stops) {
-      this.stops = stops;
+      this.stops = Lists.newLinkedList(stops);
       return this;
     }
 
@@ -136,6 +141,10 @@ public class TruckStopMatch {
 
     public TruckStopMatch build() {
       return new TruckStopMatch(this);
+    }
+
+    public TruckStop getPrimaryStop() {
+      return stops.get(0);
     }
 
     public ImmutableList<TruckStop> getAdditionalStops() {

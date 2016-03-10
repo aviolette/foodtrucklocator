@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import foodtruck.dao.TruckDAO;
 import foodtruck.email.EmailNotifier;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
@@ -45,7 +46,8 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   private Location mapCenter;
   private EmailNotifier notifier;
   private Location loc1, loc2, loc3;
-  private Truck beavers;
+  private Truck beavers, patrona, lajefa;
+  private TruckDAO truckDAO;
 
   @Before
   public void before() {
@@ -55,11 +57,15 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     extractor = createMock(AddressExtractor.class);
     geolocator = createMock(GeoLocator.class);
     clock = createMock(Clock.class);
+    truckDAO = createMock(TruckDAO.class);
     notifier = createMock(EmailNotifier.class);
     beavers = Truck.builder().id("beaversdonuts").categories(ImmutableSet.of("Breakfast", "MorningSquatter")).build();
+    patrona = Truck.builder().id("patronachicago").categories(ImmutableSet.of("Mexican")).build();
+    lajefa = Truck.builder().id("lajefa").categories(ImmutableSet.of("Mexican")).build();
     mapCenter = Location.builder().lat(41.8807438).lng(-87.6293867).build();
     expect(clock.dayOfWeek()).andStubReturn(DayOfWeek.sunday);
-    topic = new TruckStopMatcher(extractor, geolocator, DateTimeZone.UTC, clock, notifier, mapCenter, new LocalTime(11, 30));
+    topic = new TruckStopMatcher(extractor, geolocator, DateTimeZone.UTC, clock, notifier, mapCenter, new LocalTime(11, 30),
+        truckDAO);
     truck = Truck.builder().id("foobar").build();
     expect(clock.zone()).andStubReturn(DateTimeZone.UTC);
     expect(clock.currentDay()).andStubReturn(new LocalDate(2011, 11, 10));
@@ -1187,6 +1193,40 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     assertEquals(loc2,  match.getAdditionalStops().get(1).getLocation());
   }
 
+  @Test
+  public void testMatch_laJefa1() {
+    TruckStopMatch match = tweet(
+        "Haven't had lunch yet? We're on Wacker and Adams until 3pm! La Jefa is on lasalle and Adams until 3pm too!")
+        .geolocate("Lasalle and Adams, Chicago, IL", loc2)
+        .patrona()
+        .match();
+    assertEquals(tweetTime, match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(15, 0, 0, 0), match.getStop().getEndTime());
+    assertEquals("Foo and Bar", match.getStop().getLocation().getName());
+    assertEquals(1, match.getAdditionalStops().size());
+    assertEquals(tweetTime, match.getAdditionalStops().get(0).getStartTime());
+    assertEquals(tweetTime.withTime(15, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
+    assertEquals(loc2,  match.getAdditionalStops().get(0).getLocation());
+    assertEquals(lajefa, match.getAdditionalStops().get(0).getTruck());
+  }
+
+  @Test
+  public void testMatch_laJefa2() {
+    TruckStopMatch match = tweet(
+        "Wacker and Adams La Jefa at Clark and Monroe! Don't miss out on this beautiful weather!  Fresh meat in the grill! ")
+        .geolocate("Clark and Monroe, Chicago, IL", loc2)
+        .patrona()
+        .match();
+    assertEquals(tweetTime, match.getStop().getStartTime());
+    assertEquals(tweetTime.plusHours(2), match.getStop().getEndTime());
+    assertEquals("Foo and Bar", match.getStop().getLocation().getName());
+    assertEquals(1, match.getAdditionalStops().size());
+    assertEquals(tweetTime, match.getAdditionalStops().get(0).getStartTime());
+    assertEquals(tweetTime.plusHours(2), match.getAdditionalStops().get(0).getEndTime());
+    assertEquals(loc2,  match.getAdditionalStops().get(0).getLocation());
+    assertEquals(lajefa, match.getAdditionalStops().get(0).getTruck());
+  }
+
 
 
   @Test
@@ -1244,6 +1284,12 @@ public class TruckStopMatcherTest extends EasyMockSupport {
 
     public Tweeter beavers() {
       this.truck = beavers;
+      return this;
+    }
+
+    public Tweeter patrona() {
+      expect(truckDAO.findById("lajefa")).andStubReturn(lajefa);
+      this.truck = patrona;
       return this;
     }
 

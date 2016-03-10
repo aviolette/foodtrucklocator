@@ -21,6 +21,7 @@ import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import foodtruck.dao.TruckDAO;
 import foodtruck.email.EmailNotifier;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
@@ -59,6 +60,8 @@ public class TruckStopMatcher {
       new Spot("wabash/vanburen", "Wabash and Van Buren, Chicago, IL"),
       new Spot("wacker/adams", "Wacker and Adams, Chicago, IL"),
       new Spot("clark/adams", "Clark and Adams, Chicago, IL"),
+      new Spot("lasalle/adams", "Lasalle and Adams, Chicago, IL"),
+      new Spot("clark/monroe", "Clark and Monroe, Chicago, IL"),
       new Spot("wabash/jackson", "Wabash and Jackson, Chicago, IL"),
       new Spot("58th/ellis", "University of Chicago"));
   private final Pattern endTimePattern = Pattern.compile("\\b(close at|leaving at|until|til|till) (" + TIME_PATTERN + ")"),
@@ -66,10 +69,12 @@ public class TruckStopMatcher {
       atTimePattern = Pattern.compile("\\b(be at|ETA|open at|opening at|opens at|arrive at|there at) (" + TIME_PATTERN_STRICT + ")"),
       schedulePattern = Pattern.compile(".*M:.+(\\b|\\n)T:.+(\\b|\\n)W:.+"),
       simpleDateParser = Pattern.compile("(\\d{1,2})/(\\d{1,2})");
+  private final TruckDAO truckDAO;
 
   @Inject
   public TruckStopMatcher(AddressExtractor extractor, GeoLocator geoLocator, DateTimeZone defaultZone, Clock clock,
-      EmailNotifier notifier, @Named("center") Location center, @DefaultStartTime LocalTime startTime) {
+      EmailNotifier notifier, @Named("center") Location center, @DefaultStartTime LocalTime startTime,
+      TruckDAO truckDAO) {
     this.addressExtractor = extractor;
     this.geoLocator = geoLocator;
     this.center = center;
@@ -77,6 +82,7 @@ public class TruckStopMatcher {
     formatter = DateTimeFormat.forPattern("hhmma").withZone(defaultZone);
     this.clock = clock;
     this.notifier = notifier;
+    this.truckDAO = truckDAO;
   }
 
   /**
@@ -123,10 +129,48 @@ public class TruckStopMatcher {
       // in a fairly predictable way
       handleBeavers(builder, story, truck);
 
+      handleLaJefa(builder, story, truck);
+
       return builder.build();
     } catch (UnmatchedException e) {
       log.info(e.getMessage());
       return null;
+    }
+  }
+
+  private void handleLaJefa(TruckStopMatch.Builder builder, Story story, Truck truck) {
+    if(!"patronachicago".equals(truck.getId())) {
+      return;
+    }
+    String lowerTweet = story.getText().toLowerCase();
+    String stripped = lowerTweet.replace(" ", "");
+
+    int index = stripped.indexOf("lajefa");
+    if (index == -1) {
+      return;
+    }
+    stripped = stripped.substring(index);
+
+    Truck laJefa = truckDAO.findById("lajefa");
+    if (laJefa == null) {
+      log.warning("La Jefa food truck not found.");
+      return;
+    }
+
+    TruckStop primary = builder.getPrimaryStop();
+
+    for (Spot spot : BEAVER_SPOTS) {
+      if (spot.contains(stripped)) {
+        builder.appendStop(TruckStop.builder()
+            .startTime(primary.getStartTime())
+            .endTime(primary.getEndTime())
+            .origin(StopOrigin.TWITTER)
+            .truck(laJefa)
+            .locked(true)
+            .location(geoLocator.locate(spot.getCanonicalForm(), GeolocationGranularity.NARROW))
+            .build());
+        return;
+      }
     }
   }
 
@@ -142,6 +186,7 @@ public class TruckStopMatcher {
       stops.add(TruckStop.builder()
           .startTime(story.getTime().withTime(7, 0, 0, 0))
           .endTime(story.getTime().withTime(10, 0, 0, 0))
+          .origin(StopOrigin.TWITTER)
           .truck(truck)
           .locked(true)
           .location(geoLocator.locate("Madison and Wacker, Chicago, IL", GeolocationGranularity.NARROW))
@@ -153,6 +198,7 @@ public class TruckStopMatcher {
         stops.add(TruckStop.builder()
             .startTime(story.getTime().withTime(7, 0, 0, 0))
             .endTime(story.getTime().withTime(14, 0, 0, 0))
+            .origin(StopOrigin.TWITTER)
             .truck(truck)
             .locked(true)
             .location(geoLocator.locate(spot.getCanonicalForm(), GeolocationGranularity.NARROW))
@@ -166,6 +212,7 @@ public class TruckStopMatcher {
           .endTime(story.getTime().withTime(14, 0, 0, 0))
           .startTime(story.getTime().withTime(8, 0, 0, 0))
           .truck(truck)
+          .origin(StopOrigin.TWITTER)
           .locked(true)
           .location(geoLocator.locate("Southport and Addison, Chicago, IL", GeolocationGranularity.NARROW))
           .build());
