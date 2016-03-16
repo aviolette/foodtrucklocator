@@ -64,6 +64,7 @@ public class TruckStopMatcher {
       new Spot("lasalle/adams", "Lasalle and Adams, Chicago, IL"),
       new Spot("clark/monroe", "Clark and Monroe, Chicago, IL"),
       new Spot("wabash/jackson", "Wabash and Jackson, Chicago, IL"),
+      new Spot("uchicago", "University of Chicago"),
       new Spot("58th/ellis", "University of Chicago"));
   private final Pattern endTimePattern = Pattern.compile("\\b(close at|leaving at|until|til|till) (" + TIME_PATTERN + ")"),
       timeRangePattern = Pattern.compile(TIME_RANGE_PATTERN, Pattern.CASE_INSENSITIVE),
@@ -226,6 +227,19 @@ public class TruckStopMatcher {
           .build());
     }
     ImmutableList<TruckStop> truckStops = stops.build();
+
+    if (truckStops.size() == 1 && !truckStops.get(0).getLocation().getName().contains("Wacker") && lowerTweet.contains("wacker")) {
+      stops.add(TruckStop.builder()
+          .startTime(story.getTime().withTime(7, 0, 0, 0))
+          .endTime(story.getTime().withTime(14, 0, 0, 0))
+          .origin(StopOrigin.TWITTER)
+          .truck(truck)
+          .locked(true)
+          .location(geoLocator.locate("Wacker and Adams, Chicago, IL", GeolocationGranularity.NARROW))
+          .build());
+      truckStops = stops.build();
+    }
+
     if (truckStops.size() > 1) {
       builder.softEnding(false);
       builder.stops(truckStops);

@@ -1194,6 +1194,51 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
   @Test
+  public void testMatch_handleBeaves11() {
+    tweetTime = new DateTime(2016, 1, 8, 7, 30, 0, 0, DateTimeZone.UTC);
+    TruckStopMatch match = tweet("Open Now Inside\n" +
+        "@ChiFrenchMarket \n" +
+        "Or On:\n" +
+        "Wacker\n" +
+        "Or\n" +
+        "Wabash & Jackson")
+        .geolocate("Wacker and Adams, Chicago, IL", loc2)
+        .geolocate("Wabash and Jackson, Chicago, IL", loc1)
+        .beavers()
+        .match();
+    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getStop().getEndTime());
+    assertEquals(loc1, match.getStop().getLocation());
+    assertEquals(1, match.getAdditionalStops().size());
+    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(0).getStartTime());
+    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
+    assertEquals(loc2,  match.getAdditionalStops().get(0).getLocation());
+  }
+
+
+  @Test
+  public void testMatch_handleBeaves12() {
+    tweetTime = new DateTime(2016, 1, 8, 7, 30, 0, 0, DateTimeZone.UTC);
+    TruckStopMatch match = tweet("Open Now On\n" +
+        "Wacker Drive,\n" +
+        "@UChicago \n" +
+        "& Inside @ChiFrenchMarket \n" +
+        "#DamGoodDonuts")
+        .geolocate("Wacker and Adams, Chicago, IL", loc2)
+        .geolocate("University of Chicago", loc1)
+        .beavers()
+        .match();
+    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getStop().getEndTime());
+    assertEquals(loc1, match.getStop().getLocation());
+    assertEquals(1, match.getAdditionalStops().size());
+    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(0).getStartTime());
+    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
+    assertEquals(loc2,  match.getAdditionalStops().get(0).getLocation());
+  }
+
+
+  @Test
   public void testMatch_laJefa1() {
     TruckStopMatch match = tweet(
         "Haven't had lunch yet? We're on Wacker and Adams until 3pm! La Jefa is on lasalle and Adams until 3pm too!")
