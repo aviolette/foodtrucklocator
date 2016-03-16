@@ -60,6 +60,7 @@ public class TruckStopMatcher {
       new Spot("wabash/vanburen", "Wabash and Van Buren, Chicago, IL"),
       new Spot("wacker/adams", "Wacker and Adams, Chicago, IL"),
       new Spot("clark/adams", "Clark and Adams, Chicago, IL"),
+      new Spot("harrison/michigan", "Michigan and Harrison, Chicago, IL"),
       new Spot("lasalle/adams", "Lasalle and Adams, Chicago, IL"),
       new Spot("clark/monroe", "Clark and Monroe, Chicago, IL"),
       new Spot("wabash/jackson", "Wabash and Jackson, Chicago, IL"),
