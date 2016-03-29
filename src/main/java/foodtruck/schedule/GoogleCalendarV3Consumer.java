@@ -18,7 +18,6 @@ import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
-import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.geolocation.GeoLocator;
@@ -28,7 +27,6 @@ import foodtruck.model.StopOrigin;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.util.Clock;
-import foodtruck.util.FriendlyDateOnlyFormat;
 
 /**
  * @author aviolette
@@ -41,17 +39,15 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
   private final AddressExtractor addressExtractor;
   private final GeoLocator geoLocator;
   private final Clock clock;
-  private final DateTimeFormatter formatter;
 
   @Inject
   public GoogleCalendarV3Consumer(AddressExtractor addressExtractor, Calendar calendarClient, TruckDAO truckDAO,
-      GeoLocator geoLocator, Clock clock, @FriendlyDateOnlyFormat DateTimeFormatter formatter) {
+      GeoLocator geoLocator, Clock clock) {
     this.calendarClient = calendarClient;
     this.truckDAO = truckDAO;
     this.addressExtractor = addressExtractor;
     this.geoLocator = geoLocator;
     this.clock = clock;
-    this.formatter = formatter;
   }
 
   @Override
@@ -88,6 +84,9 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
     ImmutableList.Builder<TruckStop> builder = ImmutableList.builder();
     try {
       final String calendarId = truck.getCalendarUrl();
+      if (calendarId == null) {
+        return ImmutableList.of();
+      }
       String pageToken = null;
       int timezoneAdjustment = truck.getTimezoneAdjustment();
       do {
@@ -96,81 +95,7 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
         Events events = query.execute();
         List<Event> items = events.getItems();
         for (Event event : items) {
-          final String titleText = event.getSummary();
-          if (!Strings.isNullOrEmpty(titleText)) {
-            String lowerTitle = titleText.toLowerCase();
-            if (lowerTitle.contains("private") || lowerTitle.contains("catering") || lowerTitle.contains("downtown chicago") || titleText.contains("TBD") || titleText.contains("TBA")) {
-              log.log(Level.INFO, "Skipping {0} for {1}", new Object[]{titleText, truck.getId()});
-              continue;
-            }
-          }
-          String where = event.getLocation();
-          Location location = null;
-          if (!Strings.isNullOrEmpty(where)) {
-            if (where.endsWith(", United States")) {
-              where = where.substring(0, where.lastIndexOf(","));
-              // Fixes how google calendar normalizes fully-qualified addresses with a state, zip and country code
-            } else if (where.lastIndexOf(", IL ") != -1) {
-              where = where.substring(0, where.lastIndexOf(", IL ")) + ", IL";
-            }
-            // HACK Alert, the address extractor doesn't handle non-Chicago addresses well, so
-            // if it is a fully qualified address written by me, it will probably end in City, IL
-            if (!where.endsWith(", IL")) {
-              where =
-                  coalesce(Iterables.getFirst(addressExtractor.parse(where, truck), null),
-                      where);
-            }
-            location = geoLocator.locate(where, GeolocationGranularity.NARROW);
-          }
-          if (location == null || !location.isResolved()) {
-            // Sometimes the location is in the title - try that too
-            if (!Strings.isNullOrEmpty(titleText)) {
-              where = titleText;
-              log.info("Trying title text: " + titleText);
-              final List<String> parsed = addressExtractor.parse(titleText, truck);
-              String locString = Iterables.getFirst(parsed, null);
-              if (locString == null) {
-                log.info("Failed to parse titletext for address, trying whole thing: " + titleText);
-                locString = titleText;
-              }
-              if (locString != null) {
-                location = geoLocator.locate(locString, GeolocationGranularity.NARROW);
-              }
-            }
-          }
-          if (location != null && location.isResolved() && !event.isEndTimeUnspecified()) {
-            DateTime startTime, endTime;
-            if (event.getStart().getDateTime() == null) {
-              if (truck.getCategories().contains("AssumeNoTimeEqualsLunch")) {
-                String dcs[] = event.getStart().getDate().toStringRfc3339().split("-");
-                startTime = new DateTime(Integer.parseInt(dcs[0]), Integer.parseInt(dcs[1]), Integer.parseInt(dcs[2]), 11, 0, clock.zone());
-                endTime = startTime.plusHours(2);
-              } else {
-                log.log(Level.WARNING, "Skipping {0} {1} because no time is specified", new Object[]{truck.getId(), location});
-                continue;
-              }
-            } else {
-              startTime = new DateTime(event.getStart().getDateTime().getValue(), clock.zone()).plusHours(timezoneAdjustment);
-              endTime = new DateTime(event.getEnd().getDateTime().getValue(), clock.zone()).plusHours(timezoneAdjustment);
-            }
-            String note = "Stop added from vendor's calendar";
-            Confidence confidence = Confidence.MEDIUM;
-            final TruckStop truckStop = TruckStop.builder().truck(truck)
-                .origin(StopOrigin.VENDORCAL)
-                .location(location)
-                .confidence(confidence)
-                .appendNote(note)
-                .startTime(startTime)
-                .endTime(endTime)
-                .build();
-            log.log(Level.INFO, "Loaded truckstop: {0}", truckStop);
-            builder.add(truckStop);
-          } else {
-            if (where != null) {
-              log.log(Level.WARNING, "Location could not be resolved for {0}, {1} between {2} and {3}. Link: {4}",
-                  new Object[]{truck.getId(), where, range.getStart(), range.getEnd(), event.getHtmlLink()});
-            }
-          }
+          buildTruckStop(range, truck, builder, timezoneAdjustment, event);
         }
         pageToken = events.getNextPageToken();
       } while (pageToken != null);
@@ -180,13 +105,109 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
     return builder.build();
   }
 
-  private @Nullable String enteredOn(com.google.api.client.util.DateTime entry) {
-    try {
-      return formatter.print(new DateTime(entry.getValue(), clock.zone()));
-    } catch (Exception e) {
-      log.log(Level.WARNING, e.getMessage(), e);
-      return clock.nowFormattedAsTime();
+  private void buildTruckStop(Interval range, Truck truck, ImmutableList.Builder<TruckStop> builder,
+      int timezoneAdjustment, Event event) {
+    final String titleText = event.getSummary();
+    if (hasInvalidTitle(titleText)) {
+      log.log(Level.INFO, "Skipping {0} for {1}", new Object[]{titleText, truck.getId()});
+      return;
     }
+    Location location = locationFromWhereField(event, truck);
+    String where = (location == null) ? null : location.getName();
+    if (location == null || !location.isResolved()) {
+      // Sometimes the location is in the title - try that too
+      if (!Strings.isNullOrEmpty(titleText)) {
+        where = titleText;
+        location = locationFromTitleText(titleText, truck);
+      }
+    }
+    if (location != null && location.isResolved() && !event.isEndTimeUnspecified()) {
+      TruckStop truckStop = buildTruckStopFromLocation(location, truck, event, timezoneAdjustment);
+      if (truckStop == null) {
+        return;
+      }
+      builder.add(truckStop);
+    } else {
+      if (where != null) {
+        log.log(Level.WARNING, "Location could not be resolved for {0}, {1} between {2} and {3}. Link: {4}",
+            new Object[]{truck.getId(), where, range.getStart(), range.getEnd(), event.getHtmlLink()});
+      }
+    }
+  }
+
+  private @Nullable TruckStop buildTruckStopFromLocation(Location location, Truck truck, Event event,
+      int timezoneAdjustment) {
+    DateTime startTime, endTime;
+    if (event.getStart().getDateTime() == null) {
+      if (truck.getCategories().contains("AssumeNoTimeEqualsLunch")) {
+        String dcs[] = event.getStart().getDate().toStringRfc3339().split("-");
+        startTime = new DateTime(Integer.parseInt(dcs[0]), Integer.parseInt(dcs[1]), Integer.parseInt(dcs[2]), 11, 0, clock.zone());
+        endTime = startTime.plusHours(2);
+      } else {
+        log.log(Level.WARNING, "Skipping {0} {1} because no time is specified", new Object[]{truck.getId(), location});
+        return null;
+      }
+    } else {
+      startTime = new DateTime(event.getStart().getDateTime().getValue(), clock.zone()).plusHours(timezoneAdjustment);
+      endTime = new DateTime(event.getEnd().getDateTime().getValue(), clock.zone()).plusHours(timezoneAdjustment);
+    }
+    String note = "Stop added from vendor's calendar";
+    Confidence confidence = Confidence.MEDIUM;
+    final TruckStop truckStop = TruckStop.builder().truck(truck)
+        .origin(StopOrigin.VENDORCAL)
+        .location(location)
+        .confidence(confidence)
+        .appendNote(note)
+        .startTime(startTime)
+        .endTime(endTime)
+        .build();
+    log.log(Level.INFO, "Loaded truckstop: {0}", truckStop);
+    return truckStop;
+  }
+
+  private @Nullable Location locationFromTitleText(String titleText, Truck truck) {
+    log.info("Trying title text: " + titleText);
+    final List<String> parsed = addressExtractor.parse(titleText, truck);
+    String locString = Iterables.getFirst(parsed, null);
+    if (locString == null) {
+      log.info("Failed to parse titletext for address, trying whole thing: " + titleText);
+      locString = titleText;
+    }
+    if (locString != null) {
+      return geoLocator.locate(locString, GeolocationGranularity.NARROW);
+    }
+    return null;
+  }
+
+  private @Nullable Location locationFromWhereField(Event event, Truck truck) {
+    String where = event.getLocation();
+    if (!Strings.isNullOrEmpty(where)) {
+      if (where.endsWith(", United States")) {
+        where = where.substring(0, where.lastIndexOf(","));
+        // Fixes how google calendar normalizes fully-qualified addresses with a state, zip and country code
+      } else if (where.lastIndexOf(", IL ") != -1) {
+        where = where.substring(0, where.lastIndexOf(", IL ")) + ", IL";
+      }
+      // HACK Alert, the address extractor doesn't handle non-Chicago addresses well, so
+      // if it is a fully qualified address written by me, it will probably end in City, IL
+      if (!where.endsWith(", IL")) {
+        where =
+            coalesce(Iterables.getFirst(addressExtractor.parse(where, truck), null),
+                where);
+      }
+      return geoLocator.locate(where, GeolocationGranularity.NARROW);
+    }
+    return null;
+  }
+
+  private boolean hasInvalidTitle(String titleText) {
+    if (!Strings.isNullOrEmpty(titleText)) {
+      String lowerTitle = titleText.toLowerCase();
+      if (lowerTitle.contains("private") || lowerTitle.contains("catering") || lowerTitle.contains("downtown chicago") || titleText.contains("TBD") || titleText.contains("TBA")) {
+        return true;
+      }
+    }
+    return false;
   }
 
   // TODO: make this generic and pull it out
