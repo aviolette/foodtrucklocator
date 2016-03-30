@@ -21,7 +21,6 @@ import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import foodtruck.dao.TruckDAO;
 import foodtruck.email.EmailNotifier;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
@@ -55,28 +54,17 @@ public class TruckStopMatcher {
   private final EmailNotifier notifier;
   private final Location center;
   private final LocalTime defaultLunchTime;
-  private final ImmutableList<Spot> BEAVER_SPOTS = ImmutableList.of(
-      new Spot("600w", "600 West Chicago Avenue, Chicago, IL"),
-      new Spot("wabash/vanburen", "Wabash and Van Buren, Chicago, IL"),
-      new Spot("wacker/adams", "Wacker and Adams, Chicago, IL"),
-      new Spot("clark/adams", "Clark and Adams, Chicago, IL"),
-      new Spot("harrison/michigan", "Michigan and Harrison, Chicago, IL"),
-      new Spot("lasalle/adams", "Lasalle and Adams, Chicago, IL"),
-      new Spot("clark/monroe", "Clark and Monroe, Chicago, IL"),
-      new Spot("wabash/jackson", "Wabash and Jackson, Chicago, IL"),
-      new Spot("uchicago", "University of Chicago"),
-      new Spot("58th/ellis", "University of Chicago"));
   private final Pattern endTimePattern = Pattern.compile("\\b(close at|leaving at|until|til|till) (" + TIME_PATTERN + ")"),
       timeRangePattern = Pattern.compile(TIME_RANGE_PATTERN, Pattern.CASE_INSENSITIVE),
       atTimePattern = Pattern.compile("\\b(be at|ETA|open at|opening at|opens at|arrive at|there at) (" + TIME_PATTERN_STRICT + ")"),
       schedulePattern = Pattern.compile(".*M:.+(\\b|\\n)T:.+(\\b|\\n)W:.+"),
       simpleDateParser = Pattern.compile("(\\d{1,2})/(\\d{1,2})");
-  private final TruckDAO truckDAO;
+  private final Set<SpecialMatcher> specialMatchers;
 
   @Inject
   public TruckStopMatcher(AddressExtractor extractor, GeoLocator geoLocator, DateTimeZone defaultZone, Clock clock,
       EmailNotifier notifier, @Named("center") Location center, @DefaultStartTime LocalTime startTime,
-      TruckDAO truckDAO) {
+      Set<SpecialMatcher> specialMatchers) {
     this.addressExtractor = extractor;
     this.geoLocator = geoLocator;
     this.center = center;
@@ -84,7 +72,7 @@ public class TruckStopMatcher {
     formatter = DateTimeFormat.forPattern("hhmma").withZone(defaultZone);
     this.clock = clock;
     this.notifier = notifier;
-    this.truckDAO = truckDAO;
+    this.specialMatchers = specialMatchers;
   }
 
   /**
@@ -127,122 +115,13 @@ public class TruckStopMatcher {
             .softEnding(softEnding)
             .tweetId(story.getId());
 
-      // Special handling for beavers since they tweet out multiple stops in one tweet at the beginning of the day
-      // in a fairly predictable way
-      handleBeavers(builder, story, truck);
-
-      handleLaJefa(builder, story, truck);
-
+      for (SpecialMatcher matcher : specialMatchers) {
+        matcher.handle(builder, story, truck);
+      }
       return builder.build();
     } catch (UnmatchedException e) {
       log.info(e.getMessage());
       return null;
-    }
-  }
-
-  private void handleLaJefa(TruckStopMatch.Builder builder, Story story, Truck truck) {
-    if(!"patronachicago".equals(truck.getId())) {
-      return;
-    }
-    String lowerTweet = story.getText().toLowerCase();
-    String stripped = lowerTweet.replace(" ", "");
-
-    int index = stripped.indexOf("lajefa");
-    if (index == -1) {
-      return;
-    }
-    stripped = stripped.substring(index);
-
-    Truck laJefa = truckDAO.findById("lajefa");
-    if (laJefa == null) {
-      log.warning("La Jefa food truck not found.");
-      return;
-    }
-
-    TruckStop primary = builder.getPrimaryStop();
-
-    for (Spot spot : BEAVER_SPOTS) {
-      if (spot.contains(stripped)) {
-        builder.appendStop(TruckStop.builder()
-            .startTime(primary.getStartTime())
-            .endTime(primary.getEndTime())
-            .origin(StopOrigin.TWITTER)
-            .truck(laJefa)
-            .locked(true)
-            .location(geoLocator.locate(spot.getCanonicalForm(), GeolocationGranularity.NARROW))
-            .build());
-        return;
-      }
-    }
-  }
-
-  private void handleBeavers(TruckStopMatch.Builder builder, Story story, Truck truck) {
-    if (!"beaversdonuts".equals(truck.getId())) {
-      return;
-    }
-
-    String lowerTweet = story.getText().toLowerCase();
-    String stripped = lowerTweet.replace(" ", "");
-    ImmutableList.Builder<TruckStop> stops = ImmutableList.builder();
-    if (lowerTweet.contains("wacker") && lowerTweet.contains("madison")) {
-      stops.add(TruckStop.builder()
-          .startTime(story.getTime().withTime(7, 0, 0, 0))
-          .endTime(story.getTime().withTime(10, 0, 0, 0))
-          .origin(StopOrigin.TWITTER)
-          .truck(truck)
-          .locked(true)
-          .location(geoLocator.locate("Madison and Wacker, Chicago, IL", GeolocationGranularity.NARROW))
-          .build());
-    }
-
-    for (Spot spot : BEAVER_SPOTS) {
-      if (spot.contains(stripped)) {
-        stops.add(TruckStop.builder()
-            .startTime(story.getTime().withTime(7, 0, 0, 0))
-            .endTime(story.getTime().withTime(14, 0, 0, 0))
-            .origin(StopOrigin.TWITTER)
-            .truck(truck)
-            .locked(true)
-            .location(geoLocator.locate(spot.getCanonicalForm(), GeolocationGranularity.NARROW))
-            .build());
-      }
-    }
-
-    if (lowerTweet.contains("sangamon") && lowerTweet.contains("southport") && story.getTime().getHourOfDay() < 13) {
-      builder.softEnding(false);
-      stops.add(TruckStop.builder()
-          .endTime(story.getTime().withTime(14, 0, 0, 0))
-          .startTime(story.getTime().withTime(8, 0, 0, 0))
-          .truck(truck)
-          .origin(StopOrigin.TWITTER)
-          .locked(true)
-          .location(geoLocator.locate("Southport and Addison, Chicago, IL", GeolocationGranularity.NARROW))
-          .build());
-      stops.add(TruckStop.builder()
-          .endTime(story.getTime().withTime(13, 0, 0, 0))
-          .startTime(story.getTime().withTime(8, 0, 0, 0))
-          .truck(truck)
-          .locked(true)
-          .location(geoLocator.locate("Sangamon and Monroe, Chicago, IL", GeolocationGranularity.NARROW))
-          .build());
-    }
-    ImmutableList<TruckStop> truckStops = stops.build();
-
-    if (truckStops.size() == 1 && !truckStops.get(0).getLocation().getName().contains("Wacker") && lowerTweet.contains("wacker")) {
-      stops.add(TruckStop.builder()
-          .startTime(story.getTime().withTime(7, 0, 0, 0))
-          .endTime(story.getTime().withTime(14, 0, 0, 0))
-          .origin(StopOrigin.TWITTER)
-          .truck(truck)
-          .locked(true)
-          .location(geoLocator.locate("Wacker and Adams, Chicago, IL", GeolocationGranularity.NARROW))
-          .build());
-      truckStops = stops.build();
-    }
-
-    if (truckStops.size() > 1) {
-      builder.softEnding(false);
-      builder.stops(truckStops);
     }
   }
 
@@ -297,7 +176,7 @@ public class TruckStopMatcher {
     if (tsBuilder.endTime() == null) {
       final DateTime endTime = parseEndTime(tweet.getText(), tsBuilder.startTime());
       tsBuilder.endTime(endTime);
-      if (tsBuilder.hasTimes() &&
+      if (tsBuilder.hasTimes() && endTime != null &&
           (tsBuilder.startTime().isAfter(endTime) && endTime.isAfter(tweet.getTime()))) {
         tsBuilder.startTime(tweet.getTime());
       }
@@ -577,37 +456,6 @@ public class TruckStopMatcher {
   static class UnmatchedException extends Exception {
     public UnmatchedException(String msg) {
       super(msg);
-    }
-  }
-
-  static class Spot {
-    public final String searchForm;
-    public final String canonicalForm;
-
-    public Spot(String searchForm, String canonicalForm) {
-      this.searchForm = searchForm;
-      this.canonicalForm = canonicalForm;
-    }
-
-    public boolean contains(String stripped) {
-      if (process(stripped, searchForm)) {
-        return true;
-      }
-      String split[] = searchForm.split("/");
-      if (split.length < 2) {
-        return false;
-      }
-      return process(stripped, split[1] + "/" + split[0]);
-    }
-
-    private boolean process(String stripped, String spot) {
-      return stripped.contains(spot) ||
-          stripped.contains(spot.replace("/", "and")) ||
-          stripped.contains(spot.replace("/", "&"));
-
-    }
-    public String getCanonicalForm() {
-      return canonicalForm;
     }
   }
 }

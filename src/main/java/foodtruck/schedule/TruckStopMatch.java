@@ -2,6 +2,8 @@ package foodtruck.schedule;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
@@ -31,6 +33,10 @@ public class TruckStopMatch {
     this.softEnding = builder.softEnding;
     this.tweetId = builder.tweetId;
     this.additionalStops = builder.getAdditionalStops();
+  }
+
+  public static Builder builder() {
+    return new Builder();
   }
 
   public ImmutableList<TruckStop> getAdditionalStops() {
@@ -79,21 +85,17 @@ public class TruckStopMatch {
     return confidence == match.confidence && stop.equals(match.stop) && text.equals(match.text);
   }
 
-  public static Builder builder() {
-    return new Builder();
-  }
-
   public long getTweetId() {
     return tweetId;
   }
 
   public static class Builder {
+    public List<TruckStop> stops = Lists.newLinkedList();
     private String text;
     private Confidence confidence = Confidence.HIGH;
     private boolean terminated;
     private boolean softEnding;
     private long tweetId;
-    public List<TruckStop> stops = Lists.newLinkedList();
 
     public Builder() {
     }
@@ -143,7 +145,10 @@ public class TruckStopMatch {
       return new TruckStopMatch(this);
     }
 
-    public TruckStop getPrimaryStop() {
+    public @Nullable TruckStop getPrimaryStop() {
+      if (stops.isEmpty()) {
+        return null;
+      }
       return stops.get(0);
     }
 

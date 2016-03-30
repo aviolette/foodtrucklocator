@@ -15,7 +15,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import foodtruck.dao.TruckDAO;
 import foodtruck.email.EmailNotifier;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
@@ -43,29 +42,17 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   private Truck truck;
   private DateTime tweetTime;
   private Clock clock;
-  private Location mapCenter;
   private EmailNotifier notifier;
-  private Location loc1, loc2, loc3;
-  private Truck beavers, patrona, lajefa;
-  private TruckDAO truckDAO;
 
   @Before
   public void before() {
-    loc1 = Location.builder().name("Location 1").lat(1).lng(1).build();
-    loc3 = Location.builder().name("Location 2").lat(2).lng(2).build();
-    loc2 = Location.builder().name("Location 3").lat(1).lng(1).build();
     extractor = createMock(AddressExtractor.class);
     geolocator = createMock(GeoLocator.class);
     clock = createMock(Clock.class);
-    truckDAO = createMock(TruckDAO.class);
     notifier = createMock(EmailNotifier.class);
-    beavers = Truck.builder().id("beaversdonuts").categories(ImmutableSet.of("Breakfast", "MorningSquatter")).build();
-    patrona = Truck.builder().id("patronachicago").categories(ImmutableSet.of("Mexican")).build();
-    lajefa = Truck.builder().id("lajefa").categories(ImmutableSet.of("Mexican")).build();
-    mapCenter = Location.builder().lat(41.8807438).lng(-87.6293867).build();
+    Location mapCenter = Location.builder().lat(41.8807438).lng(-87.6293867).build();
     expect(clock.dayOfWeek()).andStubReturn(DayOfWeek.sunday);
-    topic = new TruckStopMatcher(extractor, geolocator, DateTimeZone.UTC, clock, notifier, mapCenter, new LocalTime(11, 30),
-        truckDAO);
+    topic = new TruckStopMatcher(extractor, geolocator, DateTimeZone.UTC, clock, notifier, mapCenter, new LocalTime(11, 30), ImmutableSet.<SpecialMatcher>of());
     truck = Truck.builder().id("foobar").build();
     expect(clock.zone()).andStubReturn(DateTimeZone.UTC);
     expect(clock.currentDay()).andStubReturn(new LocalDate(2011, 11, 10));
@@ -138,9 +125,10 @@ public class TruckStopMatcherTest extends EasyMockSupport {
 
   @Test
   public void testMatch_carriageReturn() {
-    TruckStopMatch match = tweet("1815 S. Meyers Road, Chicago, IL] from tweet: Corporate Lakes III, 2200 Cabot Drive, Lisle 1:30-3\n" +
-        "\n" +
-        "Oakbrook Terrace Corporate Center III, 1815 S. Meyers Road 3:15-4:30")
+    TruckStopMatch match = tweet(
+        "1815 S. Meyers Road, Chicago, IL] from tweet: Corporate Lakes III, 2200 Cabot Drive, Lisle 1:30-3\n" +
+            "\n" +
+            "Oakbrook Terrace Corporate Center III, 1815 S. Meyers Road 3:15-4:30")
         .match();
     assertNotNull(match);
   }
@@ -280,7 +268,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .withTime(tweetTime.withTime(7, 0, 0, 0))
             .match();
     assertNotNull(match);
-    assertEquals(tweetTime.withTime(11,0,0,0), match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(11, 0, 0, 0), match.getStop().getStartTime());
     assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getStop().getEndTime());
   }
 
@@ -412,7 +400,8 @@ public class TruckStopMatcherTest extends EasyMockSupport {
 
   @Test
   public void testMatch_yetAnotherUntil() {
-    TruckStopMatch match = tweet("Look For The Truck @UChicago This Afternoon Till 3 PM On Ellis! http://t.co/TD1aZ8OyHt")
+    TruckStopMatch match = tweet(
+        "Look For The Truck @UChicago This Afternoon Till 3 PM On Ellis! http://t.co/TD1aZ8OyHt")
         .match();
     assertNotNull(match);
     assertEquals(tweetTime, match.getStop().getStartTime());
@@ -955,326 +944,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
   @Test
-  public void testMatch_handleBeaves1() {
-    tweetTime = new DateTime(2016, 1, 8, 7, 30, 0, 0, DateTimeZone.UTC);
-    expect(clock.dayOfWeek()).andStubReturn(DayOfWeek.thursday);
-    TruckStopMatch match = tweet("\n" +
-        "Open This Morning\n" +
-        "@600WestBuilding\n" +
-        "Wabash & Van Buren\n" +
-        "Wacker & Adams\n" +
-        "And Inside @ChiFrenchMarket\n" +
-        "#HumpDayDonuts ")
-        .geolocate("Wacker and Adams, Chicago, IL", loc1)
-        .geolocate("600 West Chicago Avenue, Chicago, IL", loc2)
-        .geolocate("Wabash and Van Buren, Chicago, IL", loc3)
-        .beavers()
-        .match();
-    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getStop().getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getStop().getEndTime());
-    assertEquals(loc2, match.getStop().getLocation());
-    assertEquals(2, match.getAdditionalStops().size());
-    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(0).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
-    assertEquals(loc3,  match.getAdditionalStops().get(0).getLocation());
-    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(1).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(1).getEndTime());
-    assertEquals(loc1,  match.getAdditionalStops().get(1).getLocation());
-  }
-
-  @Test
-  public void testMatch_handleBeaves2() {
-    tweetTime = new DateTime(2016, 1, 8, 7, 30, 0, 0, DateTimeZone.UTC);
-    TruckStopMatch match = tweet("Today You Can Find Us On\n" +
-        "Wacker & Adams\n" +
-        "Wabash & Jackson\n" +
-        "58th & Ellis\n" +
-        "Or Our Shop Inside \n" +
-        "The Chicago French Market http://fb.me/VyHs8HmW ")
-        .beavers()
-        .geolocate("Wacker and Adams, Chicago, IL", loc1)
-        .geolocate("Wabash and Jackson, Chicago, IL", loc2)
-        .geolocate("University of Chicago", loc3)
-        .match();
-    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getStop().getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getStop().getEndTime());
-    assertEquals(loc1, match.getStop().getLocation());
-    assertEquals(2, match.getAdditionalStops().size());
-    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(0).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
-    assertEquals(loc2,  match.getAdditionalStops().get(0).getLocation());
-    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(1).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(1).getEndTime());
-    assertEquals(loc3,  match.getAdditionalStops().get(1).getLocation());
-  }
-
-  @Test
-  public void testMatch_handleBeaves3() {
-    tweetTime = new DateTime(2016, 1, 8, 7, 30, 0, 0, DateTimeZone.UTC);
-    expect(clock.dayOfWeek()).andStubReturn(DayOfWeek.thursday);
-    TruckStopMatch match = tweet("Hot.Fresh.Made To Order\n" +
-        "Open Now On\n" +
-        "Wacker & Madison\n" +
-        "Wacker & Adams\n" +
-        "And Inside @ChiFrenchMarket\n" +
-        "#DamGoodDonuts ")
-        .beavers()
-        .geolocate("Wacker and Adams, Chicago, IL", loc1)
-        .geolocate("Madison and Wacker, Chicago, IL", loc3)
-        .match();
-    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getStop().getStartTime());
-    assertEquals(tweetTime.withTime(10, 0, 0, 0), match.getStop().getEndTime());
-    assertEquals(loc3, match.getStop().getLocation());
-    assertEquals(1, match.getAdditionalStops().size());
-    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(0).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
-    assertEquals(loc1,  match.getAdditionalStops().get(0).getLocation());
-  }
-
-  @Test
-  public void testMatch_handleBeaves4() {
-    tweetTime = new DateTime(2016, 1, 8, 7, 30, 0, 0, DateTimeZone.UTC);
-    expect(clock.dayOfWeek()).andStubReturn(DayOfWeek.thursday);
-    TruckStopMatch match = tweet("Catch Us Today On\n" +
-        "Wabash & Jackson\n" +
-        "Wacker & Adams\n" +
-        "And Inside @ChiFrenchMarket \n" +
-        "#ThinkSpring ")
-        .geolocate("Wabash and Jackson, Chicago, IL", loc1)
-        .geolocate("Wacker and Adams, Chicago, IL", loc2)
-        .beavers()
-        .match();
-    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getStop().getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getStop().getEndTime());
-    assertEquals(loc1, match.getStop().getLocation());
-    assertEquals(1, match.getAdditionalStops().size());
-    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(0).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
-    assertEquals(loc2,  match.getAdditionalStops().get(0).getLocation());
-  }
-
-  @Test
-  public void testMatch_handleBeaves5() {
-    tweetTime = new DateTime(2016, 1, 8, 7, 30, 0, 0, DateTimeZone.UTC);
-    TruckStopMatch match = tweet("Open At Our Usual Sunday Spots\n" +
-        "On Southport Till 2\n" +
-        "And In West Loop\n" +
-        "On Sangamon & Monroe Till 1")
-        .beavers()
-        .geolocate("Southport and Addison, Chicago, IL", loc1)
-        .geolocate("Sangamon and Monroe, Chicago, IL", loc2)
-        .match();
-    assertEquals(tweetTime.withTime(8, 0, 0, 0), match.getStop().getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getStop().getEndTime());
-    assertEquals(loc1, match.getStop().getLocation());
-    assertEquals(1, match.getAdditionalStops().size());
-    assertEquals(tweetTime.withTime(8, 0, 0, 0), match.getAdditionalStops().get(0).getStartTime());
-    assertEquals(tweetTime.withTime(13, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
-    assertEquals(loc2, match.getAdditionalStops().get(0).getLocation());
-  }
-
-  @Test
-  public void testMatch_handleBeaves6() {
-    tweetTime = new DateTime(2016, 1, 8, 7, 30, 0, 0, DateTimeZone.UTC);
-    TruckStopMatch match = tweet("Find Us This Morning\n" +
-        "On Wacker & Adams\n" +
-        "Clark & Adams\n" +
-        "And Inside @ChiFrenchMarket\n" +
-        "#TGIF")
-        .beavers()
-        .geolocate("Wacker and Adams, Chicago, IL", loc1)
-        .geolocate("Clark and Adams, Chicago, IL", loc1)
-        .match();
-    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getStop().getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getStop().getEndTime());
-    assertEquals(loc1, match.getStop().getLocation());
-    assertEquals(1, match.getAdditionalStops().size());
-    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(0).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
-    assertEquals(loc2, match.getAdditionalStops().get(0).getLocation());
-  }
-
-  @Test
-  public void testMatch_handleBeaves7() {
-    tweetTime = new DateTime(2016, 1, 8, 7, 30, 0, 0, DateTimeZone.UTC);
-    TruckStopMatch match = tweet("The best donuts in Chicago! Coming out fried to order at:\n" +
-        "-Wacker/Madison\n" +
-        "-Wacker/Adams\n" +
-        "-Clark/Adams\n" +
-        "- &inside @ChiFrenchMarket\n" +
-        "#noSnowDay")
-        .geolocate("Madison and Wacker, Chicago, IL", loc1)
-        .geolocate("Clark and Adams, Chicago, IL", loc2)
-        .geolocate("Wacker and Adams, Chicago, IL", loc3)
-        .beavers()
-        .match();
-    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getStop().getStartTime());
-    assertEquals(tweetTime.withTime(10, 0, 0, 0), match.getStop().getEndTime());
-    assertEquals(loc1, match.getStop().getLocation());
-    assertEquals(2, match.getAdditionalStops().size());
-    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(0).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
-    assertEquals(loc3,  match.getAdditionalStops().get(0).getLocation());
-    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(1).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(1).getEndTime());
-    assertEquals(loc2,  match.getAdditionalStops().get(1).getLocation());
-  }
-
-  @Test @Ignore
-  public void testMatch_handleBeaves8() {
-    tweetTime = new DateTime(2016, 1, 8, 7, 30, 0, 0, DateTimeZone.UTC);
-    TruckStopMatch match = tweet("Open At\n" +
-        "The Usual Spots\n" +
-        "This Morning\n" +
-        "Find Us On Wacker\n" +
-        "And On Clark\n" +
-        "Or Visit The Stand\n" +
-        "Inside @ChiFrenchMarket ")
-        .match();
-    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getStop().getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getStop().getEndTime());
-    assertEquals("600 West Chicago Avenue, Chicago, IL", match.getStop().getLocation().getName());
-    assertEquals(2, match.getAdditionalStops().size());
-  }
-
-  @Test
-  public void testMatch_handleBeaves9() {
-    tweetTime = new DateTime(2016, 1, 8, 7, 30, 0, 0, DateTimeZone.UTC);
-    TruckStopMatch match = tweet("It's #LeapDay \n" +
-        "Great Reason To Eat Donuts!\n" +
-        "Open On\n" +
-        "Wacker & Adams\n" +
-        "Wacker & Madison\n" +
-        "Clark & Adams\n" +
-        "&  @ChiFrenchMarket ")
-        .geolocate("Madison and Wacker, Chicago, IL", loc1)
-        .geolocate("Clark and Adams, Chicago, IL", loc2)
-        .geolocate("Wacker and Adams, Chicago, IL", loc3)
-        .beavers()
-        .match();
-    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getStop().getStartTime());
-    assertEquals(tweetTime.withTime(10, 0, 0, 0), match.getStop().getEndTime());
-    assertEquals(loc1, match.getStop().getLocation());
-    assertEquals(2, match.getAdditionalStops().size());
-    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(0).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
-    assertEquals(loc3,  match.getAdditionalStops().get(0).getLocation());
-    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(1).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(1).getEndTime());
-    assertEquals(loc2,  match.getAdditionalStops().get(1).getLocation());
-  }
-
-
-  @Test
-  public void testMatch_handleBeaves10() {
-    tweetTime = new DateTime(2016, 1, 8, 7, 30, 0, 0, DateTimeZone.UTC);
-    TruckStopMatch match = tweet("Start Your Day\n" +
-        "The Beavers Way\n" +
-        "Open On\n" +
-        "Wacker & Madison\n" +
-        "Wacker & Adams\n" +
-        "Clark & Adams\n" +
-        "& Inside @ChiFrenchMarket\n" +
-        "#TGIF ")
-        .geolocate("Madison and Wacker, Chicago, IL", loc1)
-        .geolocate("Clark and Adams, Chicago, IL", loc2)
-        .geolocate("Wacker and Adams, Chicago, IL", loc3)
-        .beavers()
-        .match();
-    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getStop().getStartTime());
-    assertEquals(tweetTime.withTime(10, 0, 0, 0), match.getStop().getEndTime());
-    assertEquals(loc1, match.getStop().getLocation());
-    assertEquals(2, match.getAdditionalStops().size());
-    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(0).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
-    assertEquals(loc3,  match.getAdditionalStops().get(0).getLocation());
-    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(1).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(1).getEndTime());
-    assertEquals(loc2,  match.getAdditionalStops().get(1).getLocation());
-  }
-
-  @Test
-  public void testMatch_handleBeaves11() {
-    tweetTime = new DateTime(2016, 1, 8, 7, 30, 0, 0, DateTimeZone.UTC);
-    TruckStopMatch match = tweet("Open Now Inside\n" +
-        "@ChiFrenchMarket \n" +
-        "Or On:\n" +
-        "Wacker\n" +
-        "Or\n" +
-        "Wabash & Jackson")
-        .geolocate("Wacker and Adams, Chicago, IL", loc2)
-        .geolocate("Wabash and Jackson, Chicago, IL", loc1)
-        .beavers()
-        .match();
-    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getStop().getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getStop().getEndTime());
-    assertEquals(loc1, match.getStop().getLocation());
-    assertEquals(1, match.getAdditionalStops().size());
-    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(0).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
-    assertEquals(loc2,  match.getAdditionalStops().get(0).getLocation());
-  }
-
-
-  @Test
-  public void testMatch_handleBeaves12() {
-    tweetTime = new DateTime(2016, 1, 8, 7, 30, 0, 0, DateTimeZone.UTC);
-    TruckStopMatch match = tweet("Open Now On\n" +
-        "Wacker Drive,\n" +
-        "@UChicago \n" +
-        "& Inside @ChiFrenchMarket \n" +
-        "#DamGoodDonuts")
-        .geolocate("Wacker and Adams, Chicago, IL", loc2)
-        .geolocate("University of Chicago", loc1)
-        .beavers()
-        .match();
-    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getStop().getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getStop().getEndTime());
-    assertEquals(loc1, match.getStop().getLocation());
-    assertEquals(1, match.getAdditionalStops().size());
-    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(0).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
-    assertEquals(loc2,  match.getAdditionalStops().get(0).getLocation());
-  }
-
-
-  @Test
-  public void testMatch_laJefa1() {
-    TruckStopMatch match = tweet(
-        "Haven't had lunch yet? We're on Wacker and Adams until 3pm! La Jefa is on lasalle and Adams until 3pm too!")
-        .geolocate("Lasalle and Adams, Chicago, IL", loc2)
-        .patrona()
-        .match();
-    assertEquals(tweetTime, match.getStop().getStartTime());
-    assertEquals(tweetTime.withTime(15, 0, 0, 0), match.getStop().getEndTime());
-    assertEquals("Foo and Bar", match.getStop().getLocation().getName());
-    assertEquals(1, match.getAdditionalStops().size());
-    assertEquals(tweetTime, match.getAdditionalStops().get(0).getStartTime());
-    assertEquals(tweetTime.withTime(15, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
-    assertEquals(loc2,  match.getAdditionalStops().get(0).getLocation());
-    assertEquals(lajefa, match.getAdditionalStops().get(0).getTruck());
-  }
-
-  @Test
-  public void testMatch_laJefa2() {
-    TruckStopMatch match = tweet(
-        "Wacker and Adams La Jefa at Clark and Monroe! Don't miss out on this beautiful weather!  Fresh meat in the grill! ")
-        .geolocate("Clark and Monroe, Chicago, IL", loc2)
-        .patrona()
-        .match();
-    assertEquals(tweetTime, match.getStop().getStartTime());
-    assertEquals(tweetTime.plusHours(2), match.getStop().getEndTime());
-    assertEquals("Foo and Bar", match.getStop().getLocation().getName());
-    assertEquals(1, match.getAdditionalStops().size());
-    assertEquals(tweetTime, match.getAdditionalStops().get(0).getStartTime());
-    assertEquals(tweetTime.plusHours(2), match.getAdditionalStops().get(0).getEndTime());
-    assertEquals(loc2,  match.getAdditionalStops().get(0).getLocation());
-    assertEquals(lajefa, match.getAdditionalStops().get(0).getTruck());
-  }
-
-
-
-  @Test
   public void testMatch_lunchAnd11a() {
     truck = Truck.builder(truck)
         .categories(ImmutableSet.of("Lunch")).build();
@@ -1327,16 +996,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
       return this;
     }
 
-    public Tweeter beavers() {
-      this.truck = beavers;
-      return this;
-    }
-
-    public Tweeter patrona() {
-      expect(truckDAO.findById("lajefa")).andStubReturn(lajefa);
-      this.truck = patrona;
-      return this;
-    }
 
     public TruckStopMatch match() {
       if (expectParse) {

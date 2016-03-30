@@ -8,9 +8,11 @@ import javax.script.ScriptEngineManager;
 import com.google.appengine.api.memcache.ErrorHandlers;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
+import com.google.common.collect.ImmutableList;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Named;
 
 import org.joda.time.LocalTime;
@@ -33,6 +35,23 @@ public class ScheduleModule extends AbstractModule {
     bind(AddressExtractor.class).to(JavascriptAddressExtractor.class);
     bind(ScheduleStrategy.class).to(GoogleCalendarV3Consumer.class);
     bind(ScheduleCacher.class).to(MemcacheScheduleCacher.class);
+    Multibinder<SpecialMatcher> binder = Multibinder.newSetBinder(binder(), SpecialMatcher.class);
+    binder.addBinding().to(BeaverMatcher.class);
+    binder.addBinding().to(LaJefaMatcher.class);
+  }
+
+  @Provides @Singleton
+  public ImmutableList<Spot> provideCommonSpots() {
+    return ImmutableList.of(
+        new Spot("600w", "600 West Chicago Avenue, Chicago, IL"),
+        new Spot("wabash/vanburen", "Wabash and Van Buren, Chicago, IL"),
+        new Spot("wacker/adams", "Wacker and Adams, Chicago, IL"),
+        new Spot("clark/adams", "Clark and Adams, Chicago, IL"),
+        new Spot("harrison/michigan", "Michigan and Harrison, Chicago, IL"),
+        new Spot("lasalle/adams", "Lasalle and Adams, Chicago, IL"),
+        new Spot("clark/monroe", "Clark and Monroe, Chicago, IL"),
+        new Spot("wabash/jackson", "Wabash and Jackson, Chicago, IL"), new Spot("uchicago", "University of Chicago"),
+        new Spot("58th/ellis", "University of Chicago"));
   }
 
   @Provides @Singleton
