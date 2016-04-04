@@ -65,9 +65,12 @@ var FoodTruckLocator = function () {
   var Markers = function () {
     var markers = {}, lastLetter = 0, color = "", locationMarkers = {};
 
-    function buildIconURL(letter) {
+    function buildIconURL(letter, now) {
       var code = letter.charCodeAt(0);
       var color = "";
+      if (now) {
+        color = "_green";
+      }
       if (code > 90) {
         code = code - 26;
         color = "_orange";
@@ -94,7 +97,7 @@ var FoodTruckLocator = function () {
         var letterId = String.fromCharCode(65 + lastLetter), color = "";
         stop.marker = new google.maps.Marker({
           map: _map,
-          icon: buildIconURL(letterId),
+          icon: buildIconURL(letterId, stop.now),
           position: stop.position
         });
         if (lastLetter > 25) {
@@ -132,6 +135,7 @@ var FoodTruckLocator = function () {
     function buildStop(stop) {
       return {
         stop: stop,
+        now : false,
         truck: self.trucks[stop["truckId"]],
         location: model["locations"][stop["location"] - 1],
         position: new google.maps.LatLng(model["locations"][stop["location"] - 1].latitude,
@@ -200,6 +204,7 @@ var FoodTruckLocator = function () {
       var now = Clock.now(), items = [], bounds = isMobile() ? null : _map.getBounds();
       $.each(self.stops, function (idx, item) {
         if (item.stop["startMillis"] <= now && item.stop["endMillis"] > now && (isMobile() || (bounds && bounds.contains(item.position)))) {
+          item.now = true;
           items.push(item);
         }
       });
@@ -210,6 +215,7 @@ var FoodTruckLocator = function () {
       var now = Clock.now(), items = [], bounds = isMobile() ? null : _map.getBounds();
       $.each(self.stops, function (idx, item) {
         if (item.stop["startMillis"] > now && (isMobile() || (bounds && bounds.contains(item.position)))) {
+          item.now = false;
           items.push(item);
         }
       });
@@ -430,10 +436,6 @@ var FoodTruckLocator = function () {
       return parseInt(zoom);
     }
     return defaultZoom;
-  }
-
-  function saveZoom(zoom) {
-    setCookie("zoom", zoom);
   }
 
   function buildTruckDialog(truck) {
