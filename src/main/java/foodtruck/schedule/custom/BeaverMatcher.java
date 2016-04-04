@@ -1,4 +1,4 @@
-package foodtruck.schedule;
+package foodtruck.schedule.custom;
 
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
@@ -9,6 +9,9 @@ import foodtruck.model.StopOrigin;
 import foodtruck.model.Story;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
+import foodtruck.schedule.AbstractSpecialMatcher;
+import foodtruck.schedule.Spot;
+import foodtruck.schedule.TruckStopMatch;
 
 /**
  * @author aviolette

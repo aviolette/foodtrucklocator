@@ -1,4 +1,4 @@
-package foodtruck.schedule;
+package foodtruck.schedule.custom;
 
 import com.google.common.collect.ImmutableList;
 
@@ -13,6 +13,8 @@ import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
 import foodtruck.model.Story;
 import foodtruck.model.Truck;
+import foodtruck.schedule.Spot;
+import foodtruck.schedule.TruckStopMatch;
 
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;

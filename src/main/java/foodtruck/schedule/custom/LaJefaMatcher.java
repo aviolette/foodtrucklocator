@@ -1,4 +1,4 @@
-package foodtruck.schedule;
+package foodtruck.schedule.custom;
 
 import java.util.logging.Logger;
 
@@ -12,6 +12,9 @@ import foodtruck.model.StopOrigin;
 import foodtruck.model.Story;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
+import foodtruck.schedule.AbstractSpecialMatcher;
+import foodtruck.schedule.Spot;
+import foodtruck.schedule.TruckStopMatch;
 
 /**
  * @author aviolette
