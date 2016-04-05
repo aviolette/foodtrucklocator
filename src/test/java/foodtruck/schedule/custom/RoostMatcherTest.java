@@ -33,7 +33,7 @@ public class RoostMatcherTest extends EasyMockSupport {
   public void setup() {
     geoLocator = createMock(GeoLocator.class);
     tweetTime = new DateTime(2016, 1, 8, 7, 30, 0, 0, DateTimeZone.UTC);
-    truck = Truck.builder().id("theroostkitchen").build();
+    truck = Truck.builder().id("theroosttruck").build();
     ImmutableList<Spot> commonSpots = ImmutableList.of(new Spot("600w", "600 West Chicago Avenue, Chicago, IL"));
     roostMatch = new RoostMatcher(geoLocator, commonSpots);
   }

@@ -23,7 +23,7 @@ public class RoostMatcher extends AbstractSpecialMatcher {
 
   @Override
   public void handle(TruckStopMatch.Builder builder, Story story, Truck truck) {
-    if (!"theroostkitchen".equals(truck.getId())) {
+    if (!"theroosttruck".equals(truck.getId())) {
       return;
     }
     if (story.getText().toLowerCase().contains("all day")
