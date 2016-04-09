@@ -111,6 +111,12 @@ public class TruckStopMatch {
       return this;
     }
 
+    public Builder addAll(ImmutableList<TruckStop> stops) {
+      this.stops.clear();
+      this.stops.addAll(stops);
+      return this;
+    }
+
     public Builder appendStop(TruckStop stop) {
       stops.add(stop);
       return this;

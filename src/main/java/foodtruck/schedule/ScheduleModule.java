@@ -21,6 +21,7 @@ import org.joda.time.format.DateTimeFormatter;
 import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
 import foodtruck.schedule.custom.BeaverMatcher;
+import foodtruck.schedule.custom.BobChaMatcher;
 import foodtruck.schedule.custom.LaJefaMatcher;
 import foodtruck.schedule.custom.RoostMatcher;
 import foodtruck.util.MilitaryTimeOnlyFormatter;
@@ -34,7 +35,6 @@ public class ScheduleModule extends AbstractModule {
 
   @Override
   protected void configure() {
-    // TODO: use assisted inject
     bind(AddressExtractor.class).to(JavascriptAddressExtractor.class);
     bind(ScheduleStrategy.class).to(GoogleCalendarV3Consumer.class);
     bind(ScheduleCacher.class).to(MemcacheScheduleCacher.class);
@@ -42,6 +42,7 @@ public class ScheduleModule extends AbstractModule {
     binder.addBinding().to(BeaverMatcher.class);
     binder.addBinding().to(LaJefaMatcher.class);
     binder.addBinding().to(RoostMatcher.class);
+    binder.addBinding().to(BobChaMatcher.class);
   }
 
   @Provides @Singleton
@@ -54,7 +55,9 @@ public class ScheduleModule extends AbstractModule {
         new Spot("harrison/michigan", "Michigan and Harrison, Chicago, IL"),
         new Spot("lasalle/adams", "Lasalle and Adams, Chicago, IL"),
         new Spot("clark/monroe", "Clark and Monroe, Chicago, IL"),
-        new Spot("wabash/jackson", "Wabash and Jackson, Chicago, IL"), new Spot("uchicago", "University of Chicago"),
+        new Spot("wabash/jackson", "Wabash and Jackson, Chicago, IL"),
+        new Spot("uchicago", "University of Chicago"),
+        new Spot("uofc", "University of Chicago"),
         new Spot("58th/ellis", "University of Chicago"));
   }
 

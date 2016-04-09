@@ -18,20 +18,12 @@ public enum DayOfWeek {
   saturday(DateTimeConstants.SATURDAY, "sat|saturday"),
   sunday(DateTimeConstants.SUNDAY, "sun|su|sunday");
 
-  private int isoConstant;
   private final String matchPattern;
+  private int isoConstant;
 
   DayOfWeek(int dateConstant, String matchPattern) {
     isoConstant = dateConstant;
     this.matchPattern = matchPattern;
-  }
-
-  public int getConstant() {
-    return isoConstant;
-  }
-
-  public String getMatchPattern() {
-    return matchPattern;
   }
 
   public static @Nullable DayOfWeek fromConstant(int dayOfWeek) {
@@ -40,5 +32,18 @@ public enum DayOfWeek {
       return null;
     }
     return values[dayOfWeek];
+  }
+
+  public boolean isWeekend() {
+    return isoConstant == DateTimeConstants.SATURDAY ||
+        isoConstant == DateTimeConstants.SUNDAY;
+  }
+
+  public int getConstant() {
+    return isoConstant;
+  }
+
+  public String getMatchPattern() {
+    return matchPattern;
   }
 }
