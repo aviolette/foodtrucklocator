@@ -134,6 +134,10 @@ public class TruckStopMatcher {
   private void verifySchedule(Story tweet) throws UnmatchedException {
     String lowerCaseTweet = tweet.getText().toLowerCase();
     final boolean morning = isMorning(tweet.getTime());
+    // TODO: generalize this eventually, but for amanecertacos we can process schedules via the custom matcher
+    if ("amanecertacos".equals(tweet.getScreenName())) {
+      return;
+    }
     if (lowerCaseTweet.contains("stops") ||
         (morning && (lowerCaseTweet.contains("schedule"))) || containsAbbreviatedSchedule(tweet.getText())) {
       throw new UnmatchedException(String.format("Ignoring '%s' because the word 'schedule' is there", tweet.getText()));

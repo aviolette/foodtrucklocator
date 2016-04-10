@@ -20,6 +20,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
+import foodtruck.schedule.custom.AmanecerTacosMatcher;
 import foodtruck.schedule.custom.BeaverMatcher;
 import foodtruck.schedule.custom.BobChaMatcher;
 import foodtruck.schedule.custom.LaJefaMatcher;
@@ -43,6 +44,7 @@ public class ScheduleModule extends AbstractModule {
     binder.addBinding().to(LaJefaMatcher.class);
     binder.addBinding().to(RoostMatcher.class);
     binder.addBinding().to(BobChaMatcher.class);
+    binder.addBinding().to(AmanecerTacosMatcher.class);
   }
 
   @Provides @Singleton
