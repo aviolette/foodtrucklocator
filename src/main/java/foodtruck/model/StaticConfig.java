@@ -111,4 +111,8 @@ public class StaticConfig {
   public String getFacebookAccessToken() {
     return System.getProperty("foodtrucklocator.fb.access.token", null);
   }
+
+  public String getGoogleJavascriptApiKey() {
+    return System.getProperty("foodtrucklocator.google.javascript.api.key", null);
+  }
 }

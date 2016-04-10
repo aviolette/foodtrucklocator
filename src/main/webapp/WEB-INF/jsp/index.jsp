@@ -34,7 +34,7 @@
 </c:if>
 <%@include file="include/core_js.jsp" %>
 <script type="text/javascript"
-        src="//maps.google.com/maps/api/js?sensor=false&libraries=geometry"></script>
+        src="//maps.google.com/maps/api/js?key=${googleApiKey}&sensor=false&libraries=geometry"></script>
 <script type="text/javascript" src="script/foodtruckfinder-1.10.js"></script>
 <script type="text/javascript">
   $(document).ready(function() {

@@ -17,12 +17,10 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import foodtruck.dao.LocationDAO;
 import foodtruck.model.DailySchedule;
 import foodtruck.model.StaticConfig;
 import foodtruck.schedule.ScheduleCacher;
 import foodtruck.server.resources.json.DailyScheduleWriter;
-import foodtruck.server.resources.json.LocationCollectionWriter;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 import foodtruck.util.TimeFormatter;
@@ -42,13 +40,10 @@ public class FoodTruckServlet extends FrontPageServlet {
   private final FoodTruckStopService stopService;
   private final DailyScheduleWriter writer;
   private final ScheduleCacher scheduleCacher;
-  private final LocationDAO locationDAO;
-  private final LocationCollectionWriter locationCollectionWriter;
 
   @Inject
   public FoodTruckServlet(Clock clock, FoodTruckStopService service, DailyScheduleWriter writer,
-      ScheduleCacher scheduleCacher, @TimeFormatter DateTimeFormatter timeFormatter, LocationDAO locationDAO,
-      LocationCollectionWriter locationCollectionWriter, StaticConfig staticConfig) {
+      ScheduleCacher scheduleCacher, @TimeFormatter DateTimeFormatter timeFormatter, StaticConfig staticConfig) {
     super(staticConfig);
     this.clock = clock;
     this.timeFormatter = timeFormatter;
@@ -56,8 +51,6 @@ public class FoodTruckServlet extends FrontPageServlet {
     this.stopService = service;
     this.writer = writer;
     this.scheduleCacher = scheduleCacher;
-    this.locationDAO = locationDAO;
-    this.locationCollectionWriter = locationCollectionWriter;
   }
 
   @Override
@@ -96,6 +89,7 @@ public class FoodTruckServlet extends FrontPageServlet {
     req.setAttribute("tab", "map");
     req.setAttribute("appKey", staticConfig.getFrontDoorAppKey());
     req.setAttribute("defaultCity", staticConfig.getCityState());
+    req.setAttribute("googleApiKey", staticConfig.getGoogleJavascriptApiKey());
     req.setAttribute("description", "Find food trucks on the streets of " + staticConfig.getCity() +
         " by time and location.  Results are updated in real-time throughout the day.");
     resp.setHeader("Cache-Control", "no-cache");
