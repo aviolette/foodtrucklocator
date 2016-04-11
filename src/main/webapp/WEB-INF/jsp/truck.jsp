@@ -48,6 +48,14 @@
           </tr>
         </table>
       </div>
+      <c:if test="${!empty(dailyData)}">
+        <h1>Today's Specials</h1>
+        <ul class="list-unstyled">
+        <c:forEach items="${dailyData.specials}" var="special">
+          <li class="lead">${special.special} <c:if test="${special.soldOut}"><span class="label label-danger">sold out!</span></c:if></li>
+        </c:forEach>
+        </ul>
+      </c:if>
     </div>
     <div class="col-md-6">
       <div id="truck-image-container">
