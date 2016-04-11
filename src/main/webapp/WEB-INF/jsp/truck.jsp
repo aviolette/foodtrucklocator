@@ -48,6 +48,13 @@
           </tr>
         </table>
       </div>
+      <c:if test="${!empty(truck.menuUrl)}">
+        <h2>Menu</h2>
+        <div>
+          <a target="_blank" href="${truck.menuUrl}">Click here to see this truck's current menu!</a>
+        </div>
+        <small><em>*disclaimer - this data may or may not be accurate or up-to-date.</em></small>
+      </c:if>
       <c:if test="${!empty(dailyData)}">
         <h1>Today's Specials</h1>
         <ul class="list-unstyled">
