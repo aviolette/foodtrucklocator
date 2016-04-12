@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import org.easymock.EasyMockSupport;
 import org.joda.time.LocalDate;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import foodtruck.dao.DailyDataDAO;
@@ -111,14 +112,14 @@ public class SpecialUpdaterTest extends EasyMockSupport {
     expect(dailyDataDAO.save(DailyData.builder()
         .locationId("Doughnut Vault @ Canal")
         .onDate(localDate)
-        .addSpecial("apple cider old fashioned", true)
+        .addSpecial("Apple Cider Old Fashioned", true)
         .key(123L)
         .build()))
         .andReturn(123L);
     DailyData existing = DailyData.builder()
         .locationId("Doughnut Vault @ Canal")
         .onDate(localDate)
-        .addSpecial("apple cider old fashioned", false)
+        .addSpecial("Apple Cider Old Fashioned", false)
         .key(123L)
         .build();
     expect(dailyDataDAO.findByLocationAndDay("Doughnut Vault @ Canal", localDate)).andReturn(existing);
@@ -159,6 +160,104 @@ public class SpecialUpdaterTest extends EasyMockSupport {
     replayAll();
     specialUpdater.update(Truck.builder().id("thevaultvan").build(), ImmutableList.<Story>of(
         Story.builder().text("#FranklinVault has root beer old fashioned and the filled is strawberry jelly.").build()));
+    verifyAll();
+  }
+
+  @Test
+  public void addVaultVan() {
+    expect(dailyDataDAO.save(DailyData.builder()
+        .truckId("thevaultvan")
+        .onDate(localDate)
+        .addSpecial("Pinã Colada Old-fashioned", false)
+        .build())).andReturn(1L);
+    expect(dailyDataDAO.findByTruckAndDay("thevaultvan", localDate)).andReturn(null);
+    replayAll();
+    specialUpdater.update(Truck.builder().id("thevaultvan").build(), ImmutableList.<Story>of(
+        Story.builder().text("#VaultVan is at  LaSalle & Adams this morning with our piña colada special. Come on by.").build()));
+    verifyAll();
+  }
+
+  @Test
+  public void orangeCreamOldFashioned() {
+    expect(dailyDataDAO.save(DailyData.builder()
+        .truckId("thevaultvan")
+        .onDate(localDate)
+        .addSpecial("Orange Cream Old Fashioned with Chocolate Drizzle", false)
+        .build())).andReturn(1L);
+    expect(dailyDataDAO.findByTruckAndDay("thevaultvan", localDate)).andReturn(null);
+    replayAll();
+    specialUpdater.update(Truck.builder().id("thevaultvan").build(), ImmutableList.<Story>of(
+        Story.builder().text("#VaultVan is at Oz Park with the orange cream old fashioned with chocolate drizzle").build()));
+    verifyAll();
+  }
+
+
+  @Test
+  public void strawberryDrizzle1() {
+    expect(dailyDataDAO.save(DailyData.builder()
+        .truckId("thevaultvan")
+        .onDate(localDate)
+        .addSpecial("Vanilla Old Fashioned with Strawberry Drizzle", false)
+        .build())).andReturn(1L);
+    expect(dailyDataDAO.findByTruckAndDay("thevaultvan", localDate)).andReturn(null);
+    replayAll();
+    specialUpdater.update(Truck.builder().id("thevaultvan").build(), ImmutableList.<Story>of(
+        Story.builder().text("#VaultVan is at Wabash & Jackson!  The special is vanilla old fashioned with strawberry drizzle.").build()));
+    verifyAll();
+  }
+  @Test
+  public void creamCake() {
+    expect(dailyDataDAO.save(DailyData.builder()
+        .truckId("thevaultvan")
+        .onDate(localDate)
+        .addSpecial("Raspberry Cream Cake", false)
+        .build())).andReturn(1L);
+    expect(dailyDataDAO.findByTruckAndDay("thevaultvan", localDate)).andReturn(null);
+    replayAll();
+    specialUpdater.update(Truck.builder().id("thevaultvan").build(), ImmutableList.<Story>of(
+        Story.builder().text("#VaultVan is at LaSalle & Adams with the raspberry cream cake").build()));
+    verifyAll();
+  }
+
+  @Test
+  public void doubleChocolateYellowCake() {
+    expect(dailyDataDAO.save(DailyData.builder()
+        .truckId("thevaultvan")
+        .onDate(localDate)
+        .addSpecial("Double Chocolate Yellow Cake", false)
+        .build())).andReturn(1L);
+    expect(dailyDataDAO.findByTruckAndDay("thevaultvan", localDate)).andReturn(null);
+    replayAll();
+    specialUpdater.update(Truck.builder().id("thevaultvan").build(), ImmutableList.<Story>of(
+        Story.builder().text("#VaultVan is at Southport & Addison today, serving up hot Metropolis coffee with our double chocolate yellow cake special. Come say hi!\n").build()));
+    verifyAll();
+  }
+
+  @Test
+  public void mochaCoconutCrunch() {
+    expect(dailyDataDAO.save(DailyData.builder()
+        .truckId("thevaultvan")
+        .onDate(localDate)
+        .addSpecial("Mocha Coconut Crunch Cake", false)
+        .build())).andReturn(1L);
+    expect(dailyDataDAO.findByTruckAndDay("thevaultvan", localDate)).andReturn(null);
+    replayAll();
+    specialUpdater.update(Truck.builder().id("thevaultvan").build(), ImmutableList.<Story>of(
+        Story.builder().text("Mocha coconut crunch cake is our special of the day at #VaultVan, posted at LaSalle & Adams for ya.").build()));
+    verifyAll();
+  }
+
+  @Test @Ignore
+  public void shortCake() {
+    expect(dailyDataDAO.save(DailyData.builder()
+        .truckId("thevaultvan")
+        .onDate(localDate)
+        .addSpecial("Strawberry Shortcake", false)
+        .build())).andReturn(1L);
+    expect(dailyDataDAO.findByTruckAndDay("thevaultvan", localDate)).andReturn(null);
+    replayAll();
+    specialUpdater.update(Truck.builder().id("thevaultvan").build(), ImmutableList.<Story>of(
+        Story.builder().text("Happy Friday, #CanalVault has the strawberry shortcake with crumble.").build()));
     verifyAll();
   }
 }

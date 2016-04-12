@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
@@ -24,7 +25,7 @@ import foodtruck.util.Clock;
 public class SpecialUpdater {
   private static final Logger log = Logger.getLogger(SpecialUpdater.class.getName());
   private final DailyDataDAO dailyDataDAO;
-  private final Pattern oldFashionedPattern = Pattern.compile("(\\w+)\\s+(\\w+) old fashioned");
+  private final Pattern oldFashionedPattern = Pattern.compile("(\\w+)\\s+(\\w+) old fashioned(.*)");
   private final Pattern cakeMatcher = Pattern.compile("(\\w+)\\s+(\\w+) cake");
   private final Pattern jellyPattern = Pattern.compile("filled is (\\w+)");
   private final Clock clock;
@@ -74,6 +75,7 @@ public class SpecialUpdater {
           changed = detectCake(lower, locationName, specialsBuilder, truckId) || changed;
           changed = detectJelly(lower, specialsBuilder) || changed;
           changed = detectStack(lower, locationName, truckId, specialsBuilder) || changed;
+          changed = detectPina(lower, locationName, truckId, specialsBuilder) || changed;
           changed = detectRedVelvet(lower, locationName, truckId, specialsBuilder) || changed;
           if (changed) {
             DailyData built = specialsBuilder.build();
@@ -83,6 +85,19 @@ public class SpecialUpdater {
         }
       }
     }
+  }
+
+  private boolean detectPina(String lower, String locationName, String truckId, DailyData.Builder specialsBuilder) {
+    if (lower.contains("piña colada special") || lower.contains("pina colada special")) {
+      DailyData dailyData = specialsBuilder.clearSpecials()
+          .addSpecial("Pinã Colada Old-fashioned", false)
+          .locationId(locationName)
+          .truckId(truckId)
+          .build();
+      log.log(Level.INFO, "Found special at {0}", dailyData);
+      return true;
+    }
+    return false;
   }
 
   private boolean detectStack(String lower, String locationName, String truckId, DailyData.Builder specialsBuilder) {
@@ -127,6 +142,11 @@ public class SpecialUpdater {
     if (matcher.find()) {
       StringBuilder builder = new StringBuilder();
       String first = matcher.group(1);
+      if (lower.contains("double chocolate")) {
+        builder.append("double ");
+      } else if (lower.contains("mocha coconut crunch cake")) {
+        builder.append("mocha ");
+      }
       if (!first.matches("the|is|our")) {
         builder.append(first).append(" ");
       }
@@ -163,6 +183,17 @@ public class SpecialUpdater {
       }
       builder.append(matcher.group(2));
       builder.append(" old fashioned");
+      String rest = matcher.group(3);
+      if (!Strings.isNullOrEmpty(rest)) {
+        rest = rest.toLowerCase();
+        if (rest.contains("chocolate drizzle")) {
+          builder.append(" with chocolate drizzle");
+        } else if (rest.contains("strawberry drizzle")) {
+          builder.append(" with strawberry drizzle");
+        } else if (rest.contains("crumble")) {
+          builder.append(" with crumble");
+        }
+      }
       dailyData = specialsBuilder.clearSpecials().addSpecial(builder.toString(), false)
           .locationId(locationName)
           .truckId(truckId)
