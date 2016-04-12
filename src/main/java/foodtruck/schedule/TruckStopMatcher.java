@@ -194,7 +194,12 @@ public class TruckStopMatcher {
     }
     // Cupcake trucks and such should not be matched at all by this rule since they make many frequent stops
     if (canStartNow(truck, isMorning(tweet.getTime()), tweet.getText())) {
-      tsBuilder.startTime(tweet.getTime());
+      DateTime sixThirty = tweet.getTime().withTime(6, 30, 0, 0);
+      if (sixThirty.isAfter(tweet.getTime()) && tweet.getTime().withTime(5, 0, 0, 0).isBefore(tweet.getTime())) {
+        tsBuilder.startTime(sixThirty);
+      } else {
+        tsBuilder.startTime(tweet.getTime());
+      }
     } else {
       tsBuilder.startTime(tweet.getTime().withTime(defaultLunchTime));
       tsBuilder.endTime(null);
