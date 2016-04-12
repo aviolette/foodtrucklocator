@@ -108,7 +108,6 @@ public class AmanecerTacosMatcherTest extends EasyMockSupport {
     Story story = Story.builder().text("We're on our regular schedule:  8AM Davis, 9AM Foster, 10AM Garrett. Usher in the weekend taco style!")
         .time(tweetTime)
         .build();
-
     geolocate("Davis Station", loc1);
     geolocate("Foster and Sheridan, Evanston, IL", loc1);
     geolocate("Garrett and Sheridan, Evanston, IL", loc3);
@@ -134,5 +133,4 @@ public class AmanecerTacosMatcherTest extends EasyMockSupport {
     expect(geoLocator.locate(address, GeolocationGranularity.NARROW))
         .andReturn(location);
   }
-
 }
