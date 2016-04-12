@@ -24,6 +24,7 @@ import foodtruck.schedule.custom.AmanecerTacosMatcher;
 import foodtruck.schedule.custom.BeaverMatcher;
 import foodtruck.schedule.custom.BobChaMatcher;
 import foodtruck.schedule.custom.LaJefaMatcher;
+import foodtruck.schedule.custom.PierogiWagonMatcher;
 import foodtruck.schedule.custom.RoostMatcher;
 import foodtruck.util.MilitaryTimeOnlyFormatter;
 
@@ -44,6 +45,7 @@ public class ScheduleModule extends AbstractModule {
     binder.addBinding().to(LaJefaMatcher.class);
     binder.addBinding().to(RoostMatcher.class);
     binder.addBinding().to(BobChaMatcher.class);
+    binder.addBinding().to(PierogiWagonMatcher.class);
     binder.addBinding().to(AmanecerTacosMatcher.class);
   }
 

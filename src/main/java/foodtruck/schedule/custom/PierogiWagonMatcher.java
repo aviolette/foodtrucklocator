@@ -8,12 +8,11 @@ import foodtruck.schedule.Spot;
 
 /**
  * @author aviolette
- * @since 4/9/16
+ * @since 4/12/16
  */
-public class BobChaMatcher extends MultipleTruckMatcher {
-
+public class PierogiWagonMatcher extends MultipleTruckMatcher {
   @Inject
-  public BobChaMatcher(GeoLocator geoLocator, ImmutableList<Spot> commonSpots) {
-    super("bobchafoodtruck", geoLocator, commonSpots);
+  public PierogiWagonMatcher(GeoLocator geoLocator, ImmutableList<Spot> commonSpots) {
+    super("pierogiwagon", geoLocator, commonSpots);
   }
 }
