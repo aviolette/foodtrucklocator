@@ -12,6 +12,8 @@ import com.google.common.collect.Iterables;
 
 import org.joda.time.LocalDate;
 
+import foodtruck.util.MoreStrings;
+
 /**
  * @author aviolette
  * @since 10/26/15
@@ -169,7 +171,7 @@ public class DailyData extends ModelEntity {
     }
 
     public Builder addSpecial(String special, boolean soldOut) {
-      this.specials.add(new SpecialInfo(special, soldOut));
+      this.specials.add(new SpecialInfo(MoreStrings.capitalize(special), soldOut));
       return this;
     }
 
