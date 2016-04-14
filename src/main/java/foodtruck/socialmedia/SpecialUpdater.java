@@ -152,7 +152,11 @@ public class SpecialUpdater {
       }
       builder.append(matcher.group(2));
       builder.append(" cake");
-      dailyData = specialsBuilder.clearSpecials().addSpecial(builder.toString(), false)
+      String name = builder.toString();
+      if (name.toLowerCase().contains("n cream")) {
+        name = "Cookies n' Cream Cake";
+      }
+      dailyData = specialsBuilder.clearSpecials().addSpecial(name, false)
           .locationId(locationName)
           .truckId(truckId)
           .build();
