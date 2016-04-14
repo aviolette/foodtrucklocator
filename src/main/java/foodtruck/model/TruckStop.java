@@ -24,6 +24,7 @@ import foodtruck.schedule.Confidence;
  * @since Jul 12, 2011
  */
 public class TruckStop extends ModelEntity {
+  private static final Logger log = Logger.getLogger(TruckStop.class.getName());
   private final Truck truck;
   private final DateTime startTime;
   private final DateTime endTime;
@@ -34,8 +35,6 @@ public class TruckStop extends ModelEntity {
   private final Confidence matchConfidence;
   private final List<String> notes;
   private final StopOrigin origin;
-
-  private static final Logger log = Logger.getLogger(TruckStop.class.getName());
   private TruckStop(Builder builder) {
     super(builder.key);
     truck = builder.truck;
@@ -48,6 +47,14 @@ public class TruckStop extends ModelEntity {
     matchConfidence = builder.matchConfidence;
     notes = ImmutableList.copyOf(builder.notes);
     origin = builder.origin;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static Builder builder(TruckStop stop) {
+    return new Builder(stop);
   }
 
   public StopOrigin getOrigin() {
@@ -165,14 +172,6 @@ public class TruckStop extends ModelEntity {
    */
   public boolean hasExpiredBy(DateTime currentTime) {
     return endTime.isBefore(currentTime);
-  }
-
-  public static Builder builder() {
-    return new Builder();
-  }
-
-  public static Builder builder(TruckStop stop) {
-    return new Builder(stop);
   }
 
   public @Nullable DateTime getBeaconTime() {
@@ -295,6 +294,10 @@ public class TruckStop extends ModelEntity {
 
     public DateTime endTime() {
       return endTime;
+    }
+
+    public boolean hasCategory(String category) {
+      return (truck != null && truck.getCategories().contains(category));
     }
   }
 }

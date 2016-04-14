@@ -252,6 +252,9 @@ public class TruckStopMatcher {
             tsBuilder.endTime().toInstant());
         tsBuilder.startTime(tsBuilder.startTime().plusHours(12));
         tsBuilder.endTime(tsBuilder.startTime().plus(duration));
+      } else if (tsBuilder.hasTimes() && tweet.getTime().getHourOfDay() < 12 && tsBuilder.startTime().getHourOfDay() == 19 && tsBuilder.hasCategory("Breakfast")) {
+        tsBuilder.startTime(tsBuilder.startTime().minusHours(12));
+        tsBuilder.endTime(tsBuilder.endTime().minusHours(12));
       }
     }
   }

@@ -299,6 +299,18 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
   @Test
+  public void testMorningRange() {
+    TruckStopMatch match = tweet("Get ready, Jackson and Wabash! We're coming your way this AM--7 - 10. Let us make your morning better, won't you?")
+        .withTime(tweetTime.withTime(6, 58, 0, 0))
+        .withTruck(Truck.builder(truck).categories(ImmutableSet.of("Lunch", "Breakfast")).build())
+        .match();
+    assertNotNull(match);
+    assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(10, 0, 0, 0), match.getStop().getEndTime());
+
+  }
+
+  @Test
   public void testNightTimeRange() {
     TruckStopMatch match = tweet("Come check us out at Lake & Michigan 9-11 tonight! ")
         .withTime(tweetTime.withTime(20, 43, 0, 0))
@@ -634,9 +646,9 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   public void testMatch_when1030AndLunchTruckExtendEndTimeToTwo() {
     TruckStopMatch match =
         tweet("foo")
-          .withTime(tweetTime.withTime(10, 30, 0, 0))
-          .withTruck(Truck.builder(truck).categories(ImmutableSet.of("Lunch")).build())
-          .match();
+            .withTime(tweetTime.withTime(10, 30, 0, 0))
+            .withTruck(Truck.builder(truck).categories(ImmutableSet.of("Lunch")).build())
+            .match();
     assertEquals(14, match.getStop().getEndTime().getHourOfDay());
     assertEquals(0, match.getStop().getEndTime().getMinuteOfHour());
   }
@@ -1015,5 +1027,4 @@ public class TruckStopMatcherTest extends EasyMockSupport {
       return this;
     }
   }
-
 }
