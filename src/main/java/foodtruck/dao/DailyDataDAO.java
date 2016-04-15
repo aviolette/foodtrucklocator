@@ -1,6 +1,6 @@
 package foodtruck.dao;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -26,5 +26,5 @@ public interface DailyDataDAO extends DAO<Long, DailyData> {
   /**
    * Finds all the truck specials for a specific day
    */
-  Set<DailyData> findTruckSpecialsByDay(LocalDate day);
+  List<DailyData> findTruckSpecialsByDay(LocalDate day);
 }

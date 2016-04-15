@@ -6,15 +6,15 @@
 
 <%@include file="../include/truck_schedule_widget.jsp"%>
 
-<c:if test="${!empty(specials.specials)}">
 <h2>Daily Specials</h2>
 
-<ul id="daily-special-list">
-    <c:forEach items="${specials.specials}" var="specialInfo">
-      <li>${specialInfo.special}</li>
-    </c:forEach>
-</ul>
-</c:if>
+<table class="table table-striped">
+  <tbody id="specialTable">
+  </tbody>
+</table>
+<div class="btn-group">
+  <button class="btn btn-default" id="addSpecial"><span class="glyphicon glyphicon-exclamation-sign"></span>&nbsp;New Daily Special</button>
+</div>
 
 <div class="row">
   <div class="col-md-6">
@@ -176,6 +176,56 @@
         }
       });
     }
+  });
+
+  var specials = null;
+  function reloadSpecials() {
+    $.ajax({
+      url: "/services/trucks/${truckId}/specials",
+      type: 'GET',
+      dataType: 'json',
+      success: function (data) {
+        specials = data;
+        var $specialsTable = $("#specialTable");
+        $specialsTable.html("");
+        $.each(specials["specials"], function(idx, foo) {
+          $specialsTable.append($("<tr><td>"+ foo["special"] +"</td><td><button row-idx=" + idx + " class='specialDeleteButton btn btn-default'><span class='glyphicon glyphicon-remove'></span>Delete</tr>"));
+        });
+        $(".specialDeleteButton").click(function(e) {
+          var $target = $(e.target);
+          specials["specials"].splice(parseInt($target.attr("row-idx")), 1);
+          updateSpecials();
+        })
+      }
+    });
+  }
+
+  function updateSpecials() {
+    $.ajax({
+      url:  "/services/trucks/${truckId}/specials",
+      type: 'PUT',
+      contentType: 'application/json',
+      data: JSON.stringify(specials),
+      complete: function () {
+        reloadSpecials();
+      },
+      success: function() {
+      }
+    });
+  }
+
+  reloadSpecials();
+
+  $("#addSpecial").click(function() {
+    var name = prompt("Special name");
+    if (!name) {
+      return;
+    }
+    if (!specials) {
+      specials = {truckId : "${truckId}", specials : []};
+    }
+    specials["specials"].push({"special" : name, "soldout" : false});
+    updateSpecials();
   });
 
 </script>

@@ -47,10 +47,10 @@ import foodtruck.util.ServiceException;
  * @since Jul 12, 2011
  */
 public class FoodTruckStopServiceImpl implements FoodTruckStopService {
+  private static final Logger log = Logger.getLogger(FoodTruckStopServiceImpl.class.getName());
   private final TruckStopDAO truckStopDAO;
   private final TruckDAO truckDAO;
   private final ScheduleStrategy scheduleStrategy;
-  private static final Logger log = Logger.getLogger(FoodTruckStopServiceImpl.class.getName());
   private final Clock clock;
   private final LocationDAO locationDAO;
   private final GeoLocator geolocator;
@@ -133,7 +133,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
         .date(day)
         .stops(stops)
         .message(messageDAO.findByDay(day))
-        .specials(dailyDataDAO.findTruckSpecialsByDay(day))
+        .specials(ImmutableSet.copyOf(dailyDataDAO.findTruckSpecialsByDay(day)))
         .build();
   }
 

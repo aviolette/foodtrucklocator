@@ -2,7 +2,6 @@ package foodtruck.dao.appengine;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -10,7 +9,6 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
@@ -64,9 +62,11 @@ public class DailyDataDAOAppEngine extends AppEngineDAO<Long, DailyData> impleme
         .truckId(getStringProperty(entity, SPECIALS_TRUCK_ID))
         .onDate(getDateTime(entity, SPECIALS_DATE, defaultZone).toLocalDate());
     Collection<String> specialsList = (Collection) entity.getProperty(SPECIALS_SPECIALS);
-    for (String specialEncoded : specialsList) {
-      String[] pieces = specialEncoded.split(":");
-      builder.addSpecial(pieces[0], Boolean.parseBoolean(pieces[1]));
+    if (specialsList != null) {
+      for (String specialEncoded : specialsList) {
+        String[] pieces = specialEncoded.split(":");
+        builder.addSpecial(pieces[0], Boolean.parseBoolean(pieces[1]));
+      }
     }
     return builder.build();
   }
@@ -102,15 +102,10 @@ public class DailyDataDAOAppEngine extends AppEngineDAO<Long, DailyData> impleme
   }
 
   @Override
-  public Set<DailyData> findTruckSpecialsByDay(LocalDate day) {
-    ImmutableSet.Builder<DailyData> builder = ImmutableSet.builder();
-
-    // TODO: hack to get things going
-    DailyData data = findByTruckAndDay("thevaultvan", day);
-    if (data != null) {
-      builder.add(data);
-    }
-
-    return builder.build();
+  public List<DailyData> findTruckSpecialsByDay(LocalDate day) {
+    DatastoreService dataStore = provider.get();
+    Query q = new Query(SPECIALS_KIND);
+    q.setFilter(new Query.FilterPredicate(SPECIALS_DATE, Query.FilterOperator.EQUAL, day.toDateTimeAtStartOfDay(defaultZone).toDate()));
+    return executeQuery(dataStore, q, null);
   }
 }

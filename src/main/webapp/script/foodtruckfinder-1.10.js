@@ -132,6 +132,10 @@ var FoodTruckLocator = function () {
       self.stops.push(buildStop(item));
     });
 
+    $.each(model["specials"], function(idx, item) {
+      self.trucks[item["truckId"]]["specials"] = item["specials"];
+    });
+
     function buildStop(stop) {
       return {
         stop: stop,
@@ -305,12 +309,17 @@ var FoodTruckLocator = function () {
         lastMarkerGroup["stops"].push(stop);
       }
       lastLocation = stop.location.name;
+      var special = "";
+      if (stop.truck["specials"]) {
+        var firstSpecial = stop.truck["specials"][0]["special"];
+        special = "<div class='text-info'><strong>Special: " + firstSpecial + "</strong></div>";
+      }
       $div.append($("<div class='media'><a class='pull-left truckLink' truck-id='" + stop.truck.id
       + "' href='#'><img class='media-object' src='"
       + stop.truck.iconUrl + "'/></a><div class='media-body'><a class='truckLink' href='#' truck-id='" + stop.truck.id
       + "'><strong>" + stop.truck.name + "</strong><div>"
       + buildTimeRange(stop.stop, now)
-      + "</div>"
+      + "</div>" + special
       + "</a></div></div>"));
     });
     $("a.truckLink").each(function (idx, item) {

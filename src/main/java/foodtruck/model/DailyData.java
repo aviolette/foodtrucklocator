@@ -48,6 +48,10 @@ public class DailyData extends ModelEntity {
     return onDate;
   }
 
+  public boolean hasSpecials() {
+    return !specials.isEmpty();
+  }
+
   public Set<SpecialInfo> getSpecials() {
     return specials;
   }

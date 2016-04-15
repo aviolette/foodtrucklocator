@@ -3,6 +3,7 @@ package foodtruck.server;
 import com.google.appengine.api.utils.SystemProperty;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Provides;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.name.Named;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.api.core.PackagesResourceConfig;
@@ -37,6 +38,7 @@ import foodtruck.server.job.TweetCacheUpdateServlet;
 import foodtruck.server.job.TwitterCachePurgeServlet;
 import foodtruck.server.job.UpdateLocationStats;
 import foodtruck.server.job.UpdateTruckStats;
+import foodtruck.server.resources.DailySpecialResourceFactory;
 import foodtruck.server.vendor.BeaconnaiseServlet;
 import foodtruck.server.vendor.VendorCallbackServlet;
 import foodtruck.server.vendor.VendorLogoutServlet;
@@ -114,6 +116,9 @@ public class FoodtruckServletModule extends ServletModule {
     serve("/support").with(SupportServlet.class);
     serve("/support/iphone").with(IPhoneSupportServlet.class);
     serveRegex("/[\\w]*").with(FoodTruckServlet.class);
+
+    install(new FactoryModuleBuilder().build(DailySpecialResourceFactory.class));
+
   }
 
   @Provides @Named("remote.tweet.update")

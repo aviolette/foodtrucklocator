@@ -38,26 +38,28 @@ import static foodtruck.server.resources.Resources.requiresAdmin;
  */
 @Path("/trucks{view : (\\.[a-z]{3})?}")
 public class TruckResource {
-  private static final Logger log = Logger.getLogger(TruckResource.class.getName());
   public static final Predicate<Truck> NOT_HIDDEN = new Predicate<Truck>() {
     @Override public boolean apply(@Nullable Truck truck) {
       return !truck.isHidden();
     }
   };
+  private static final Logger log = Logger.getLogger(TruckResource.class.getName());
   private final TruckDAO truckDAO;
   private final Clock clock;
   private final DateTimeZone zone;
   private final DateTimeFormatter formatter;
   private final ProfileSyncService profileSyncService;
+  private final DailySpecialResourceFactory dailySpecialResourceFactory;
 
   @Inject
   public TruckResource(TruckDAO truckDAO, Clock clock, DateTimeZone zone, @DateOnlyFormatter DateTimeFormatter formatter,
-      ProfileSyncService profileSyncService) {
+      ProfileSyncService profileSyncService, DailySpecialResourceFactory dailySpecialResourceFactory) {
     this.truckDAO = truckDAO;
     this.clock = clock;
     this.zone = zone;
     this.formatter = formatter;
     this.profileSyncService = profileSyncService;
+    this.dailySpecialResourceFactory = dailySpecialResourceFactory;
   }
 
   @GET
@@ -110,6 +112,11 @@ public class TruckResource {
   public void delete(@PathParam("truckId") String truckId) {
     requiresAdmin();
     truckDAO.delete(truckId);
+  }
+
+  @Path("{truckId}/specials")
+  public DailySpecialResource getDailySpecialResource(@PathParam("truckId") String truckId) {
+    return dailySpecialResourceFactory.create(truckDAO.findById(truckId));
   }
 
   @POST @Consumes(MediaType.APPLICATION_JSON) @Produces(MediaType.APPLICATION_JSON)
