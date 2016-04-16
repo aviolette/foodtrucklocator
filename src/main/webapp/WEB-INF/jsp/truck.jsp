@@ -56,7 +56,7 @@
         <small><em>*disclaimer - this data may or may not be accurate or up-to-date.</em></small>
       </c:if>
       <c:if test="${!empty(dailyData)}">
-        <h1>Today's Specials</h1>
+        <h2>Today's Specials</h2>
         <ul class="list-unstyled">
         <c:forEach items="${dailyData.specials}" var="special">
           <li class="lead">${special.special} <c:if test="${special.soldOut}"><span class="label label-danger">sold out!</span></c:if></li>
