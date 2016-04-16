@@ -13,7 +13,7 @@
   </tbody>
 </table>
 <div class="btn-group">
-  <button class="btn btn-default" id="addSpecial"><span class="glyphicon glyphicon-exclamation-sign"></span>&nbsp;New Daily Special</button>
+  <button class="btn btn-default" id="addSpecial"><span class="glyphicon glyphicon-plus"></span>&nbsp;New Daily Special</button>
 </div>
 
 <div class="row">
