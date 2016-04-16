@@ -153,6 +153,7 @@ public class DailyData extends ModelEntity {
 
     public Builder(DailyData dailyData) {
       this.locationId = dailyData.locationId;
+      this.truckId = dailyData.truckId;
       this.onDate = dailyData.onDate;
       this.specials.clear();
       this.specials.addAll(dailyData.getSpecials());

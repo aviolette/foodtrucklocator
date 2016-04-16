@@ -105,7 +105,10 @@ public class DailyDataDAOAppEngine extends AppEngineDAO<Long, DailyData> impleme
   public List<DailyData> findTruckSpecialsByDay(LocalDate day) {
     DatastoreService dataStore = provider.get();
     Query q = new Query(SPECIALS_KIND);
-    q.setFilter(new Query.FilterPredicate(SPECIALS_DATE, Query.FilterOperator.EQUAL, day.toDateTimeAtStartOfDay(defaultZone).toDate()));
+    List<Query.Filter> filters = ImmutableList.<Query.Filter>of(
+        new Query.FilterPredicate(SPECIALS_TRUCK_ID, Query.FilterOperator.NOT_EQUAL, null),
+        new Query.FilterPredicate(SPECIALS_DATE, Query.FilterOperator.EQUAL, day.toDateTimeAtStartOfDay(defaultZone).toDate()));
+    q.setFilter(Query.CompositeFilterOperator.and(filters));
     return executeQuery(dataStore, q, null);
   }
 }
