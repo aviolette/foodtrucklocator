@@ -46,7 +46,7 @@ public class BeaverMatcher extends AbstractSpecialMatcher {
       if (spot.contains(stripped)) {
         stops.add(TruckStop.builder()
             .startTime(story.getTime().withTime(7, 0, 0, 0))
-            .endTime(story.getTime().withTime(14, 0, 0, 0))
+            .endTime(story.getTime().withTime(18, 0, 0, 0))
             .origin(StopOrigin.TWITTER)
             .truck(truck)
             .locked(true)
@@ -76,7 +76,7 @@ public class BeaverMatcher extends AbstractSpecialMatcher {
     if (truckStops.size() == 1 && !truckStops.get(0).getLocation().getName().contains("Wacker") && lowerTweet.contains("wacker")) {
       stops.add(TruckStop.builder()
           .startTime(story.getTime().withTime(7, 0, 0, 0))
-          .endTime(story.getTime().withTime(14, 0, 0, 0))
+          .endTime(story.getTime().withTime(18, 0, 0, 0))
           .origin(StopOrigin.TWITTER)
           .truck(truck)
           .locked(true)

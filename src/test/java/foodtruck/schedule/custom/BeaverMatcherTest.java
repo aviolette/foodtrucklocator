@@ -70,14 +70,14 @@ public class BeaverMatcherTest extends EasyMockSupport {
     beaverMatch.handle(builder, story, truck);
     TruckStopMatch match = builder.build();
     assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getStop().getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getStop().getEndTime());
+    assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getStop().getEndTime());
     assertEquals(loc2, match.getStop().getLocation());
     assertEquals(2, match.getAdditionalStops().size());
     assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(0).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
+    assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
     assertEquals(loc3,  match.getAdditionalStops().get(0).getLocation());
     assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(1).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(1).getEndTime());
+    assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getAdditionalStops().get(1).getEndTime());
     assertEquals(loc1, match.getAdditionalStops().get(1).getLocation());
     verifyAll();
   }
@@ -101,14 +101,14 @@ public class BeaverMatcherTest extends EasyMockSupport {
     beaverMatch.handle(builder, story, truck);
     TruckStopMatch match = builder.build();
     assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getStop().getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getStop().getEndTime());
+    assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getStop().getEndTime());
     assertEquals(loc1, match.getStop().getLocation());
     assertEquals(2, match.getAdditionalStops().size());
     assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(0).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
+    assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
     assertEquals(loc2,  match.getAdditionalStops().get(0).getLocation());
     assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(1).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(1).getEndTime());
+    assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getAdditionalStops().get(1).getEndTime());
     assertEquals(loc3,  match.getAdditionalStops().get(1).getLocation());
     verifyAll();
   }
@@ -134,7 +134,7 @@ public class BeaverMatcherTest extends EasyMockSupport {
     assertEquals(loc3, match.getStop().getLocation());
     assertEquals(1, match.getAdditionalStops().size());
     assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(0).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
+    assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
     assertEquals(loc1,  match.getAdditionalStops().get(0).getLocation());
     verifyAll();
   }
@@ -155,11 +155,11 @@ public class BeaverMatcherTest extends EasyMockSupport {
     beaverMatch.handle(builder, story, truck);
     TruckStopMatch match = builder.build();
     assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getStop().getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getStop().getEndTime());
+    assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getStop().getEndTime());
     assertEquals(loc1, match.getStop().getLocation());
     assertEquals(1, match.getAdditionalStops().size());
     assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(0).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
+    assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
     assertEquals(loc2,  match.getAdditionalStops().get(0).getLocation());
     verifyAll();
   }
@@ -205,11 +205,11 @@ public class BeaverMatcherTest extends EasyMockSupport {
     beaverMatch.handle(builder, story, truck);
     TruckStopMatch match = builder.build();
     assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getStop().getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getStop().getEndTime());
+    assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getStop().getEndTime());
     assertEquals(loc1, match.getStop().getLocation());
     assertEquals(1, match.getAdditionalStops().size());
     assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(0).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
+    assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
     assertEquals(loc2,  match.getAdditionalStops().get(0).getLocation());
     verifyAll();
   }
@@ -237,10 +237,10 @@ public class BeaverMatcherTest extends EasyMockSupport {
     assertEquals(loc1, match.getStop().getLocation());
     assertEquals(2, match.getAdditionalStops().size());
     assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(0).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
+    assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
     assertEquals(loc3,  match.getAdditionalStops().get(0).getLocation());
     assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(1).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(1).getEndTime());
+    assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getAdditionalStops().get(1).getEndTime());
     assertEquals(loc2,  match.getAdditionalStops().get(1).getLocation());
     verifyAll();
   }
@@ -269,10 +269,10 @@ public class BeaverMatcherTest extends EasyMockSupport {
     assertEquals(loc1, match.getStop().getLocation());
     assertEquals(2, match.getAdditionalStops().size());
     assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(0).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
+    assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
     assertEquals(loc3,  match.getAdditionalStops().get(0).getLocation());
     assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(1).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(1).getEndTime());
+    assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getAdditionalStops().get(1).getEndTime());
     assertEquals(loc2,  match.getAdditionalStops().get(1).getLocation());
     verifyAll();
 
@@ -303,10 +303,10 @@ public class BeaverMatcherTest extends EasyMockSupport {
     assertEquals(loc1, match.getStop().getLocation());
     assertEquals(2, match.getAdditionalStops().size());
     assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(0).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
+    assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
     assertEquals(loc3,  match.getAdditionalStops().get(0).getLocation());
     assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(1).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(1).getEndTime());
+    assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getAdditionalStops().get(1).getEndTime());
     assertEquals(loc2,  match.getAdditionalStops().get(1).getLocation());
     verifyAll();
   }
@@ -329,11 +329,11 @@ public class BeaverMatcherTest extends EasyMockSupport {
     beaverMatch.handle(builder, story, truck);
     TruckStopMatch match = builder.build();
     assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getStop().getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getStop().getEndTime());
+    assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getStop().getEndTime());
     assertEquals(loc1, match.getStop().getLocation());
     assertEquals(1, match.getAdditionalStops().size());
     assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(0).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
+    assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
     assertEquals(loc2,  match.getAdditionalStops().get(0).getLocation());
     verifyAll();
   }
@@ -355,11 +355,11 @@ public class BeaverMatcherTest extends EasyMockSupport {
     beaverMatch.handle(builder, story, truck);
     TruckStopMatch match = builder.build();
     assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getStop().getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getStop().getEndTime());
+    assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getStop().getEndTime());
     assertEquals(loc1, match.getStop().getLocation());
     assertEquals(1, match.getAdditionalStops().size());
     assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(0).getStartTime());
-    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
+    assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
     assertEquals(loc2,  match.getAdditionalStops().get(0).getLocation());
     verifyAll();
   }
