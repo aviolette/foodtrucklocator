@@ -235,7 +235,7 @@ var FoodTruckLocator = function () {
   }
 
   function buildGroupTableRow(stop) {
-    return "<div class='media'><a href='/trucks/" + stop.truck.id + "' class='pull-left'><img src='" + stop.truck.iconUrl + "'/></a><div class='media-body' >" +
+    return "<div class='media'><a href='/trucks/" + stop.truck.id + "' class='pull-left'><img class='img-responsive img-rounded' src='" + stop.truck.iconUrl + "'/></a><div class='media-body' >" +
         "<div><strong>" + stop.truck.name + "</strong></div><div>" + buildTimeRange(stop.stop, Clock.now()) + " </div></div></div>";
   }
 
@@ -286,7 +286,7 @@ var FoodTruckLocator = function () {
       if (lastLocation != stop.location.name) {
         $div = $("<div class='media-body'><h4><a href='/locations/" + stop.location.key + "'>" + formatLocation(stop.location.name) + "</a></h4></div>");
         $div.append($locationDescription);
-        var linkBody = isMobile() ? "" : "<a class='pull-left' href='#'><img id='" + stop.markerId + "' class='media-object' src='"
+        var linkBody = isMobile() ? "" : "<a class='pull-left' href='#'><img id='" + stop.markerId + "' class='media-object img-responsive img-rounded' src='"
         + stop.marker.icon + "'/></a>";
         $location = $("<li class='media'>" + linkBody + "</li>");
         $location.append($div);
@@ -315,7 +315,7 @@ var FoodTruckLocator = function () {
         special = "<div class='text-info'><strong>Special: " + firstSpecial + "</strong></div>";
       }
       $div.append($("<div class='media'><a class='pull-left truckLink' truck-id='" + stop.truck.id
-      + "' href='#'><img class='media-object' src='"
+      + "' href='#'><img class='media-object img-responsive img-rounded' src='"
       + stop.truck.iconUrl + "'/></a><div class='media-body'><a class='truckLink' href='#' truck-id='" + stop.truck.id
       + "'><strong>" + stop.truck.name + "</strong><div>"
       + buildTimeRange(stop.stop, now)
