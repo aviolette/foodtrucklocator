@@ -54,6 +54,7 @@ public class ScheduleModule extends AbstractModule {
     return ImmutableList.of(
         new Spot("600w", "600 West Chicago Avenue, Chicago, IL"),
         new Spot("wabash/vanburen", "Wabash and Van Buren, Chicago, IL"),
+        new Spot("wabash/jackson", "Wabash and Jackson, Chicago, IL"),
         new Spot("wacker/adams", "Wacker and Adams, Chicago, IL"),
         new Spot("clark/adams", "Clark and Adams, Chicago, IL"),
         new Spot("harrison/michigan", "Michigan and Harrison, Chicago, IL"),
