@@ -62,7 +62,9 @@ public class ImageServlet extends HttpServlet {
       GcsFileMetadata metaData = cloudStorage.getMetadata(fileName);
       resp.setHeader("ETag", metaData.getEtag());
       resp.setHeader("Cache-Control", "no-transform,public,max-age=300,s-max-age=900");
-      resp.setHeader("Last-Modified", dateFormatter.print(new DateTime(metaData.getLastModified().getTime())));
+      if (metaData.getLastModified() != null) {
+        resp.setHeader("Last-Modified", dateFormatter.print(new DateTime(metaData.getLastModified().getTime())));
+      }
       resp.setContentType(metaData.getOptions().getMimeType());
     } catch (FileNotFoundException fnfe) {
       log.log(Level.FINE, fnfe.getMessage());
