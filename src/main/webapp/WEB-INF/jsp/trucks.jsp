@@ -4,9 +4,20 @@
     max-height: 300px;
     overflow-y:scroll;
   }
+
+  @media (max-width: 1000px) {
+    .category-selection {
+      display: none;
+    }
+
+    body {
+      background-color: white;
+    }
+  }
+
 </style>
 <div class="row">
-  <div class="col-md-2">
+  <div class="col-md-2 category-selection">
     <h4>Active</h4>
     <div class="checkbox">
       <label>

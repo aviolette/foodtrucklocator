@@ -10,7 +10,6 @@ tr.selected td.gutter {
   background-color: #be9a3f !important;
 }
 
-
 @media only screen and (max-width: 800px) {
   body {
     background-color: white;
