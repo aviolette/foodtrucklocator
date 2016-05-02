@@ -201,7 +201,11 @@ public class SpecialUpdater {
           builder.append(" with crumble");
         }
       }
-      dailyData = specialsBuilder.clearSpecials().addSpecial(builder.toString(), false)
+      String special = builder.toString();
+      if (special.startsWith("your favorite")) {
+        return false;
+      }
+      dailyData = specialsBuilder.clearSpecials().addSpecial(special, false)
           .locationId(locationName)
           .truckId(truckId)
           .build();

@@ -263,6 +263,17 @@ public class SpecialUpdaterTest extends EasyMockSupport {
     verifyAll();
   }
 
+
+  @Test
+  public void ignoreYourFavorite() {
+    expect(dailyDataDAO.findByTruckAndDay("thevaultvan", localDate)).andReturn(null);
+    replayAll();
+    specialUpdater.update(Truck.builder().id("thevaultvan").build(), ImmutableList.<Story>of(
+        Story.builder().text("#VaultVan is at Southport & Addison with your favorite old fashioned flavors. Come and get it!").build()));
+    verifyAll();
+  }
+
+
   @Test @Ignore
   public void shortCake() {
     expect(dailyDataDAO.save(DailyData.builder()
