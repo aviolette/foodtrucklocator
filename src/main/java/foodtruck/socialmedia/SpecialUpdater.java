@@ -183,6 +183,9 @@ public class SpecialUpdater {
       StringBuilder builder = new StringBuilder();
       String first = matcher.group(1);
       if (!first.matches("the|is|our")) {
+        if (first.equalsIgnoreCase("lime") && lower.contains("key lime")) {
+          builder.append("key ");
+        }
         builder.append(first).append(" ");
       }
       builder.append(matcher.group(2));

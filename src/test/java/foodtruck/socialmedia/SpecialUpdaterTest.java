@@ -205,6 +205,22 @@ public class SpecialUpdaterTest extends EasyMockSupport {
         Story.builder().text("#VaultVan is at Wabash & Jackson!  The special is vanilla old fashioned with strawberry drizzle.").build()));
     verifyAll();
   }
+
+
+  @Test
+  public void keylimeCrunch() {
+    expect(dailyDataDAO.save(DailyData.builder()
+        .truckId("thevaultvan")
+        .onDate(localDate)
+        .addSpecial("Key lime crunch old fashioned", false)
+        .build())).andReturn(1L);
+    expect(dailyDataDAO.findByTruckAndDay("thevaultvan", localDate)).andReturn(null);
+    replayAll();
+    specialUpdater.update(Truck.builder().id("thevaultvan").build(), ImmutableList.<Story>of(
+        Story.builder().text("Key lime crunch old fashioned is our special of the day. Come find #VaultVan at Lasalle and Adams this morning.").build()));
+    verifyAll();
+  }
+
   @Test
   public void creamCake() {
     expect(dailyDataDAO.save(DailyData.builder()
