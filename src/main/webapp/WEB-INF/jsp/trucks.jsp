@@ -1,10 +1,5 @@
 <%@ include file="header.jsp" %>
 <style type="text/css">
-  #categories {
-    max-height: 300px;
-    overflow-y:scroll;
-  }
-
   @media (max-width: 1000px) {
     .category-selection {
       display: none;

@@ -38,6 +38,7 @@ import static foodtruck.dao.appengine.Attributes.setDateProperty;
 public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO {
   private static final String TRUCK_KIND = "Store";
   private static final String TRUCK_NAME_FIELD = "name";
+  private static final String TRUCK_CANONICAL_NAME = "canonical_name";
   private static final String TRUCK_TWITTER_HANDLE = "twitterHandle";
   private static final String TRUCK_URL = "url";
   private static final String TRUCK_ICON_URL = "iconUrl";
@@ -269,6 +270,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
   }
 
   protected Entity toEntity(Truck truck, Entity entity) {
+    entity.setProperty(TRUCK_CANONICAL_NAME, truck.canonicalName());
     entity.setProperty(TRUCK_DISPLAY_EMAIL, truck.isDisplayEmailPublicly());
     entity.setProperty(TRUCK_NAME_FIELD, truck.getName());
     entity.setProperty(TRUCK_TWITTER_HANDLE, truck.getTwitterHandle());

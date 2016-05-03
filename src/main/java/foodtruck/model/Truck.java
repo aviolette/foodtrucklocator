@@ -372,6 +372,16 @@ public class Truck extends ModelEntity implements Serializable {
     return backgroundImageLarge;
   }
 
+  public String canonicalName() {
+    String name = getName();
+    name = name.toLowerCase();
+    if(name.startsWith("The ")) {
+      name = name.substring(3);
+    }
+    return name;
+  }
+
+
   public static class Stats implements Serializable {
     private DateTime lastUpdated;
     private DateTime lastSeen;
