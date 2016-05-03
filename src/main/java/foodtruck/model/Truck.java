@@ -375,7 +375,7 @@ public class Truck extends ModelEntity implements Serializable {
   public String canonicalName() {
     String name = getName();
     name = name.toLowerCase();
-    if(name.startsWith("The ")) {
+    if(name.startsWith("the ")) {
       name = name.substring(3);
     }
     return name;
