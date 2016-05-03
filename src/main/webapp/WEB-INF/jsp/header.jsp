@@ -52,7 +52,7 @@
     </div>
     <div class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
-        <li <c:if test="${tab == 'map'}"> class="active"</c:if>><a href="/">Map</a></li>
+        <li <c:if test="${tab == 'map'}"> class="active"</c:if>><a href="/">Activity</a></li>
         <li <c:if test="${tab == 'trucks'}"> class="active"</c:if>><a href="/trucks">Trucks</a></li>
         <c:if test="${showWeekly}">
           <li class="dropdown">
