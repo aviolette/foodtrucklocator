@@ -165,7 +165,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
   }
 
   @Override protected void modifyFindAllQuery(Query q) {
-    q.addSort(TRUCK_NAME_FIELD);
+    q.addSort(TRUCK_CANONICAL_NAME);
   }
 
   @Override public Collection<Truck> findByTwitterId(String screenName) {
@@ -184,7 +184,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     DatastoreService dataStore = provider.get();
     return executeQuery(dataStore,
         new Query(getKind())
-            .addSort(TRUCK_NAME_FIELD)
+            .addSort(TRUCK_CANONICAL_NAME)
             .setFilter(new Query.FilterPredicate(INACTIVE_FIELD, Query.FilterOperator.EQUAL, true)), null);
   }
 
@@ -192,7 +192,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     DatastoreService dataStore = provider.get();
     return executeQuery(dataStore,
         new Query(getKind())
-          .addSort(TRUCK_NAME_FIELD)
+          .addSort(TRUCK_CANONICAL_NAME)
           .setFilter(new Query.FilterPredicate(INACTIVE_FIELD, Query.FilterOperator.EQUAL, false)), null);
   }
 
@@ -201,7 +201,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     return executeQuery(dataStore,
         new Query(TRUCK_KIND)
             .setFilter(new Query.FilterPredicate(TRUCK_HIDDEN, Query.FilterOperator.EQUAL, false))
-            .addSort(TRUCK_NAME_FIELD), null);
+            .addSort(TRUCK_CANONICAL_NAME), null);
   }
 
   @Override
@@ -210,7 +210,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
     return executeQuery(dataStore,
         new Query(TRUCK_KIND)
             .setFilter(new Query.FilterPredicate(SCAN_FACEBOOK, Query.FilterOperator.EQUAL, true))
-            .addSort(TRUCK_NAME_FIELD), null);
+            .addSort(TRUCK_CANONICAL_NAME), null);
   }
 
   @Nullable @Override public Truck findFirst() {
