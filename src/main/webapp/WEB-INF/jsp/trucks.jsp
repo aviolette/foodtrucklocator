@@ -16,6 +16,7 @@
   }
 
 </style>
+
 <div class="row">
   <div class="col-md-2 category-selection">
     <h4>Active</h4>

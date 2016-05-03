@@ -5,6 +5,10 @@
   <c:if test="${isAdmin}">
     <a href="/admin/trucks/${truck.id}">Edit on Admin Dashboard</a>
   </c:if>
+  <ol class="breadcrumb">
+    <li><a href="/trucks">Trucks</a></li>
+    <li class="active">${truck.name}</li>
+  </ol>
   <div class="row">
     <div class="col-md-6">
       <h1>${truck.name}</h1>
