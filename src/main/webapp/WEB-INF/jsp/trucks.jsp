@@ -1,5 +1,9 @@
 <%@ include file="header.jsp" %>
 <style type="text/css">
+  .thumbnail {
+    border: none;
+  }
+
   @media (max-width: 1000px) {
     .category-selection {
       display: none;
@@ -50,13 +54,15 @@
         var $section = $("<div class='col-xs-6 col-md-3'></div>");
         var thumbnailId ="thumbnail-" + i;
         var $thumbnail = $("<div class='thumbnail' id='" + thumbnailId + "'></div>");
-        $section.append($thumbnail);
+        var $a = $("<a href='/trucks/" + datum["id"] + "'></a>");
+        $section.append($a);
+        $a.append($thumbnail);
         $truckList.append($section);
         if (!icon) {
           icon = "//storage.googleapis.com/truckpreviews/truck_holder.svg";
         }
         $("<img width='180' height='180' src='" + icon + "'/>").appendTo($thumbnail);
-        $thumbnail.append("<p class='text-center'><a href='/trucks/" + datum["id"] + "'>" + datum['name']+"</a></p>")
+        $thumbnail.append("<p class='text-center'><strong>" + datum['name']+"</strong></p>")
       });
     }
 
