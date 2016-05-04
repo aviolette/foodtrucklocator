@@ -16,6 +16,8 @@ import com.google.common.collect.ImmutableSet;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+import foodtruck.model.Url;
+
 /**
  * @author aviolette@gmail.com
  * @since 7/3/12
@@ -48,6 +50,22 @@ class Attributes {
       return defaultValue;
     }
     return value;
+  }
+
+  public static Url getUrlProperty(Entity entity, String propertyName) {
+    String value = getStringProperty(entity, propertyName);
+    if (value == null) {
+      return null;
+    }
+    return new Url(value);
+  }
+
+  public static void setUrlProperty(Entity entity, String propertyName, @Nullable Url value) {
+    if (value == null) {
+      entity.setProperty(propertyName, null);
+    } else {
+      entity.setProperty(propertyName, value.getUrl());
+    }
   }
 
   public static void setDateProperty(String propertyName, PropertyContainer entity,

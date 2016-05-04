@@ -24,6 +24,8 @@ import foodtruck.util.Clock;
 
 import static foodtruck.dao.appengine.Attributes.getIntProperty;
 import static foodtruck.dao.appengine.Attributes.getStringProperty;
+import static foodtruck.dao.appengine.Attributes.getUrlProperty;
+import static foodtruck.dao.appengine.Attributes.setUrlProperty;
 
 /**
  * @author aviolette@gmail.com
@@ -52,6 +54,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
   private static final String EMAIL = "email";
   private static final String FACEBOOK_URI = "facebook_uri";
   private static final String CLOSED = "closed";
+  private static final String IMAGE_URL = "image_url";
 
   private static final Logger log = Logger.getLogger(LocationDAOAppEngine.class.getName());
   private final Clock clock;
@@ -191,6 +194,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     entity.setProperty(EMAIL, location.getEmail());
     entity.setProperty(FACEBOOK_URI, location.getFacebookUri());
     entity.setProperty(CLOSED, location.isClosed());
+    setUrlProperty(entity, IMAGE_URL, location.getImageUrl());
     return entity;
   }
 
@@ -216,6 +220,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     builder.email(getStringProperty(entity, EMAIL));
     builder.facebookUri(getStringProperty(entity, FACEBOOK_URI));
     builder.closed(getBooleanProperty(entity, CLOSED, false));
+    builder.imageUrl(getUrlProperty(entity, IMAGE_URL));
     boolean isValid = valid == null || valid;
     if (lat == null || lng == null) {
       builder.valid(false);

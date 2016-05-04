@@ -6,6 +6,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import foodtruck.model.Location;
+import foodtruck.model.Url;
 
 /**
  * @author aviolette@gmail.com
@@ -14,6 +15,11 @@ import foodtruck.model.Location;
 public class LocationReader {
   public Location toLocation(JSONObject obj) throws JSONException {
     long key = obj.optLong("key", 0);
+    String imageUrlValue = obj.optString("imageUrl");
+    Url imageUrl = null;
+    if (!Strings.isNullOrEmpty(imageUrlValue)) {
+      imageUrl = new Url(imageUrlValue);
+    }
     return Location.builder()
         .lat(obj.getDouble("latitude"))
         .lng(obj.getDouble("longitude"))
@@ -27,6 +33,7 @@ public class LocationReader {
         .radius(obj.getDouble("radius"))
         .phoneNumber(obj.optString("phone"))
         .email(obj.optString("email"))
+        .imageUrl(imageUrl)
         .facebookUri(obj.optString("facebookUri"))
         .radiateTo(obj.optInt("radiateTo", 0))
         .name(obj.getString("name")).key((key > 0) ? key : null)

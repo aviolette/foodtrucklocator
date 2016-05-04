@@ -63,6 +63,7 @@ public class LocationWriter implements JSONWriter<Location>, MessageBodyWriter<L
         .put("facebookUri", location.getFacebookUri())
         .put("phone", location.getPhoneNumber())
         .put("designatedStop", location.isDesignatedStop())
+        .putOpt("imageUrl", location.getImageUrl())
         .putOpt("twitterHandle", location.getTwitterHandle())
         .put("key", location.getKey());
     if (fullOptions) {

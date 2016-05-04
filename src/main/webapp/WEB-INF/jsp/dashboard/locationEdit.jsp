@@ -98,6 +98,12 @@
       </div>
     </div>
     <div class="control-group">
+      <label for="imageUrl" class="control-label">Image Url</label>
+      <div class="controls">
+        <input id="imageUrl" class="span5" type="text"/>
+      </div>
+    </div>
+    <div class="control-group">
       <label for="email" class="control-label">Email</label>
       <div class="controls">
         <input id="email" class="span5" type="text"/>
@@ -156,6 +162,7 @@
       $("#url").attr("value", loc.url);
       $("#ownedBy").attr("value", loc.ownedBy);
       $("#facebooKUri").attr("value", loc.facebookUri);
+      $("#imageUrl").attr("value", loc.imageUrl);
       $("#email").attr("value", loc.email);
       $("#phone").attr("value", loc.phone);
     }
@@ -269,6 +276,7 @@
       loc.email = $("#email").attr("value");
       loc.phone = $("#phone").attr("value");
       loc.facebookUri = $("#facebookUri").attr("value");
+      loc.imageUrl = $("#imageUrl").attr("value");
       e.preventDefault();
       $submitButton.addClass("disabled");
       $.ajax({
