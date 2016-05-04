@@ -64,22 +64,25 @@ public class BoozeAndTrucksServlet extends FrontPageServlet {
       } catch (IllegalArgumentException ignored) {
       }
     }
+    ImmutableList.Builder<TruckStopGroup> builder = ImmutableList.builder();
     for (TruckStop stop : stopService.findUpcomingBoozyStops(date, daysOut)) {
       if (currentDay != null && !stop.getStartTime().toLocalDate().equals(currentDay) && !tsgs.isEmpty()) {
         schedules.add(new ScheduleForDay(currentDay, ImmutableList.copyOf(tsgs.values())));
         tsgs = Maps.newHashMap();
       }
       TruckStopGroup tsg = tsgs.get(stop.getLocation().getName());
+      currentDay = stop.getStartTime().toLocalDate();
       if (tsg == null) {
-        tsg = new TruckStopGroup(stop.getLocation());
+        tsg = new TruckStopGroup(stop.getLocation(), currentDay);
         tsgs.put(stop.getLocation().getName(), tsg);
+        builder.add(tsg);
       }
       tsg.addStop(stop);
-      currentDay = stop.getStartTime().toLocalDate();
     }
     if (!tsgs.isEmpty()) {
       schedules.add(new ScheduleForDay(currentDay, ImmutableList.copyOf(tsgs.values())));
     }
+    req.setAttribute("allGroups", builder.build());
     req.setAttribute("daySchedules", schedules.build());
     req.setAttribute("tab", "booze");
     if (daysOut == 1) {
@@ -94,10 +97,16 @@ public class BoozeAndTrucksServlet extends FrontPageServlet {
 
   public static class TruckStopGroup {
     private Location location;
+    private LocalDate day;
     private List<TruckStop> stops = Lists.newLinkedList();
 
-    public TruckStopGroup(Location location) {
+    public TruckStopGroup(Location location, LocalDate day) {
       this.location = location;
+      this.day = day;
+    }
+
+    public LocalDate getDay() {
+      return day;
     }
 
     public Location getLocation() {

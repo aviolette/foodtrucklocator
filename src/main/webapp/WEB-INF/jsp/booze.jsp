@@ -3,25 +3,23 @@
 <c:choose>
     <c:when test="${empty(boozyDate)}">
      <h1>Boozy Stops</h1>
-    <p>These are the upcoming food truck events that blend booze and food trucks.</p>
+    <p class="lead">These are the upcoming food truck events that blend booze and food trucks.</p>
     </c:when>
     <c:otherwise>
         <h1>Boozy Stops for <joda:format pattern="EEE MMM dd" value="${boozyDate}"/></h1>
     </c:otherwise>
 </c:choose>
 
-<c:forEach items="${daySchedules}" var="schedule" varStatus="counter">
-  <c:if test="${(counter.index mod 3) == 0}">
-    <div class="row">
-  </c:if>
 
-  <c:forEach items="${schedule.groups}" var="group" varStatus="status">
+  <c:forEach items="${allGroups}" var="group" varStatus="status">
+    <c:if test="${(status.index mod 3) == 0}">
+      <div class="row">
+    </c:if>
     <div class="col-md-4">
     <div class="panel panel-default">
-      <div class="panel-heading"><c:if test="${empty(boozyDate)}"><a href="/booze?date=<joda:format value="${schedule.day}" pattern="yyyyMMdd"/>"></c:if><joda:format pattern="EEE MMM dd" value="${schedule.day}"/><c:if test="${empty(boozyDate)}"></a></c:if>
+      <div class="panel-heading"><c:if test="${empty(boozyDate)}"><a href="/booze?date=<joda:format value="${group.day}" pattern="yyyyMMdd"/>"></c:if><joda:format pattern="EEE MMM dd" value="${group.day}"/><c:if test="${empty(boozyDate)}"></a></c:if>
       </div>
       <div class="panel-body">
-
 
         <c:forEach items="${group.stops}" var="stop" varStatus="stopStatus">
           <c:if test="${stopStatus.index == 0}">
@@ -39,21 +37,15 @@
             </div>
           </div>
         </c:forEach>
-
-
-
-
       </div>
     </div>
     </div>
+    <c:if test="${(status.index % 3) == 2 or status.last}">
+      </div>
+    </c:if>
   </c:forEach>
 
 
-
-  <c:if test="${(counter.index % 3) == 0}">
-    </div>
-  </c:if>
-</c:forEach>
 
 <%@include file="include/core_js.jsp" %>
 
