@@ -36,6 +36,7 @@
             <c:forEach items="${group.stops}" var="stop" varStatus="stopStatus">
               <c:if test="${stopStatus.index == 0}">
                 <h3><ftl:location location="${group.location}" at="${stop.startTime}"/></h3>
+                <p>${group.location.description}</p>
               </c:if>
               <div class="media">
                 <a class="pull-left" href="/trucks/${stop.truck.id}">
