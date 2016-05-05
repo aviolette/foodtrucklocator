@@ -228,9 +228,15 @@ public class TruckStopMatcher {
       } else if (tweet.getText().contains("11-2")) {
         tsBuilder.startTime(clock.currentDay().toDateTime(new LocalTime(11, 0), clock.zone()));
         tsBuilder.endTime(clock.currentDay().toDateTime(new LocalTime(14, 0), clock.zone()));
-      } else if (tweet.getText().contains("11a") && truck.getCategories().contains("Lunch")) {
+      } else if (tweet.getText().toLowerCase().contains("11a") && truck.getCategories().contains("Lunch")) {
         tsBuilder.startTime(clock.currentDay().toDateTime(new LocalTime(11, 0), clock.zone()));
         tsBuilder.endTime(clock.currentDay().toDateTime(new LocalTime(13, 0), clock.zone()));
+      } else if (tweet.getText().toLowerCase().contains("at 4pm")) {
+        tsBuilder.startTime(clock.currentDay().toDateTime(new LocalTime(16, 0), clock.zone()));
+        tsBuilder.endTime(clock.currentDay().toDateTime(new LocalTime(18, 0), clock.zone()));
+      } else if (tweet.getText().toLowerCase().contains("at 5pm")) {
+        tsBuilder.startTime(clock.currentDay().toDateTime(new LocalTime(17, 0), clock.zone()));
+        tsBuilder.endTime(clock.currentDay().toDateTime(new LocalTime(19, 0), clock.zone()));
       } else if (tweet.getTime().getHourOfDay() > 12 && tweet.getTime().getHourOfDay() < 17 &&
           (tweet.getText().contains("tonight") || tweet.getText().contains("tonite"))) {
         tsBuilder.startTime(clock.currentDay().toDateTime(new LocalTime(17, 30), clock.zone()));

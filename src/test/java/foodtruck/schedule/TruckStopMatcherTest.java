@@ -674,6 +674,18 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
   @Test
+  public void testMatch_shouldMatchStartTime4() {
+    truck = Truck.builder(truck)
+        .categories(ImmutableSet.of("Lunch")).build();
+    TruckStopMatch match =
+        tweet(
+            "Happy Regular:) Join us at 11AM today on Franklin and Adams. @chifoodtruckz. #foodcart #crepes")
+            .withTruck(truck)
+            .match();
+    assertEquals(tweetTime.withTime(11, 0, 0, 0), match.getStop().getStartTime());
+  }
+
+  @Test
   public void testMatch_shouldMatchStartTimeETA() {
     TruckStopMatch match =
         tweet(
@@ -691,6 +703,16 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .withTruck(truck)
             .match();
     assertEquals(tweetTime.withTime(11, 0, 0, 0), match.getStop().getStartTime());
+  }
+
+  @Test
+  public void testMatch_shouldMatchStartTime5() {
+    TruckStopMatch match =
+        tweet(
+            "***Bark Travel News*** Tonight at 4pm we'll be serving up treats at River North Park Apartments -... ")
+            .withTruck(truck)
+            .match();
+    assertEquals(tweetTime.withTime(16, 0, 0, 0), match.getStop().getStartTime());
   }
 
   @Test
