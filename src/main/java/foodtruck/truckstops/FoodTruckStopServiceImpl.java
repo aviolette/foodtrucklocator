@@ -249,6 +249,7 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
   @Override public List<TruckStop> findUpcomingBoozyStops(LocalDate startDate, int daysOut) {
     final Map<String, Location> locations = Maps.newHashMap();
     for (Location loc : locationDAO.findBoozyLocations()) {
+      log.log(Level.INFO, "Boozy location {}", loc);
       locations.put(loc.getName(), loc);
     }
     return FluentIterable.from(truckStopDAO.findOverRange(null, new Interval(startDate.toDateTimeAtStartOfDay(clock.zone()),
