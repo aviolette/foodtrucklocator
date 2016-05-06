@@ -60,6 +60,10 @@ public class LocationServlet extends FrontPageServlet {
     if (Strings.isNullOrEmpty(query)) {
       try {
         locId = Long.parseLong(locationId);
+        if (locId == 0) {
+          resp.setStatus(404);
+          return;
+        }
       } catch (Exception e) {
         resp.setStatus(404);
         return;
