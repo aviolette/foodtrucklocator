@@ -80,6 +80,7 @@
       <label for="url" class="control-label">URL</label>
       <div class="controls">
         <input id="url" class="span6" type="text"/>
+        <a href="#" id="viewUrl">View</a>
       </div>
     </div>
     <div class="control-group">
@@ -89,6 +90,7 @@
           <span class="add-on">@</span>
           <input id="twitterHandle" class="span5" type="text"/>
         </div>
+        <a href="#" id="viewTwitter">View</a>
       </div>
     </div>
     <div class="control-group">
@@ -131,12 +133,23 @@
 
 <script type="text/javascript">
   $(document).ready(function() {
+    var MILES_TO_METERS = 1609.34;
 
     $("#alias").typeahead({source:${locations}});
 
     $("#viewAlias").click(function(e) {
       e.preventDefault();
       location.href = '/admin/locations?q=' + encodeURIComponent($("#alias").val());
+    });
+
+    $("#viewUrl").click(function(e) {
+      e.preventDefault();
+      window.open($("#url").val(), "_blank");
+    });
+
+    $("#viewTwitter").click(function(e) {
+      e.preventDefault();
+      window.open("http://twitter.com/" + $("#twitterHandle").val(), "_blank");
     });
 
     var loc = ${location};
@@ -192,7 +205,6 @@
         map: map
       });
 
-      const MILES_TO_METERS = 1609.34;
       circle = new google.maps.Circle({
         radius: loc.radius * MILES_TO_METERS,
         center: markerLat,
@@ -240,6 +252,7 @@
             $("a.address").click(function(e) {
               e.preventDefault();
               var target = e.target;
+              $("#invalidLoc").prop('checked', false);
               var lat = $(e.target).attr("lat"),
                   lng = $(e.target).attr("lng");
               var newPos = new google.maps.LatLng(parseFloat(lat),
