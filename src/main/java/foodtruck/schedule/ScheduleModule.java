@@ -23,6 +23,7 @@ import foodtruck.model.StaticConfig;
 import foodtruck.schedule.custom.AmanecerTacosMatcher;
 import foodtruck.schedule.custom.BeaverMatcher;
 import foodtruck.schedule.custom.BobChaMatcher;
+import foodtruck.schedule.custom.CajunConMatcher;
 import foodtruck.schedule.custom.LaJefaMatcher;
 import foodtruck.schedule.custom.PierogiWagonMatcher;
 import foodtruck.schedule.custom.RoostMatcher;
@@ -47,6 +48,7 @@ public class ScheduleModule extends AbstractModule {
     binder.addBinding().to(BobChaMatcher.class);
     binder.addBinding().to(PierogiWagonMatcher.class);
     binder.addBinding().to(AmanecerTacosMatcher.class);
+    binder.addBinding().to(CajunConMatcher.class);
   }
 
   @Provides @Singleton
