@@ -1,4 +1,4 @@
-package foodtruck.notifications;
+package foodtruck.notifications.email;
 
 import java.util.logging.Logger;
 
@@ -7,6 +7,8 @@ import com.google.inject.Inject;
 
 import foodtruck.email.EmailSender;
 import foodtruck.model.NotificationType;
+import foodtruck.notifications.NotificationProcessor;
+import foodtruck.notifications.PushNotification;
 
 /**
  * @author aviolette

@@ -1,4 +1,4 @@
-package foodtruck.notifications;
+package foodtruck.notifications.apple;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -8,17 +8,19 @@ import com.notnoop.apns.APNS;
 import com.notnoop.apns.ApnsService;
 
 import foodtruck.model.NotificationType;
+import foodtruck.notifications.NotificationProcessor;
+import foodtruck.notifications.PushNotification;
 
 /**
  * @author aviolette
  * @since 2/17/16
  */
-public class PushNotificationProcessor implements NotificationProcessor {
-  private static final Logger log = Logger.getLogger(PushNotificationProcessor.class.getName());
+public class APNSProcessor implements NotificationProcessor {
+  private static final Logger log = Logger.getLogger(APNSProcessor.class.getName());
   private final ApnsService apnsService;
 
   @Inject
-  public PushNotificationProcessor(ApnsService service) {
+  public APNSProcessor(ApnsService service) {
     this.apnsService = service;
   }
 

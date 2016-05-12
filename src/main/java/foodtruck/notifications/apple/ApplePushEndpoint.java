@@ -1,4 +1,4 @@
-package foodtruck.notifications;
+package foodtruck.notifications.apple;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
