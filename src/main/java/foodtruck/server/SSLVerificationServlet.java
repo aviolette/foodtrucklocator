@@ -17,6 +17,6 @@ import com.google.inject.Singleton;
 public class SSLVerificationServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    resp.getWriter().write("MZxAdOD7MXGB2Z1vQz2csYqXp_ul9DU9iqLnPipiTfU.G0-9lfhFfooxK32XNFfifqqxYRWjUgHiFf32xVhm8zo");
+    resp.getWriter().write("dswFbgBMCKQDsjmSJqFe0pRNtTfbrx7VEskhnkFcoFM.G0-9lfhFfooxK32XNFfifqqxYRWjUgHiFf32xVhm8zo");
   }
 }
