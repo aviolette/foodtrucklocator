@@ -83,8 +83,8 @@
         </c:if>
       </ul>
       <ul class="nav navbar-right navbar-nav">
-        <li><a style="padding: 10px 0 0 0" href="http://twitter.com/${twitterHandle}"><img src="http://storage.googleapis.com/ftf_static/img/twitter02_dark.png"/></a></li>
-        <li><a style="padding: 10px 0 0 0" href="http://facebook.com/${facebookPage}"><img src="http://storage.googleapis.com/ftf_static/img/facebook_dark.png"/></a></li>
+        <li><a style="padding: 10px 0 0 0" href="http://twitter.com/${twitterHandle}"><img src="//storage.googleapis.com/ftf_static/img/twitter02_dark.png"/></a></li>
+        <li><a style="padding: 10px 0 0 0" href="http://facebook.com/${facebookPage}"><img src="//storage.googleapis.com/ftf_static/img/facebook_dark.png"/></a></li>
         <c:if test="${!empty(user)}">
           <%--          <li><a href="#">${user}</a></li> --%>
           <li><a href="${signoutUrl}">Logout</a></li>

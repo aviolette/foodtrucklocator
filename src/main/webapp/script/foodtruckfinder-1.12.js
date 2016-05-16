@@ -76,7 +76,7 @@ var FoodTruckLocator = function () {
         color = "_orange";
       }
       letter = String.fromCharCode(code);
-      return "http://www.google.com/mapfiles/marker" + color + letter + ".png";
+      return "//www.google.com/mapfiles/marker" + color + letter + ".png";
     }
 
     this.clear = function () {
@@ -449,7 +449,7 @@ var FoodTruckLocator = function () {
 
   function buildTruckDialog(truck) {
     var $truckDialog = $("#truckDialog");
-    $("#truckDialog .modal-header").css("background-image", 'url("http://www.chicagofoodtruckfinder.com/images/truckicons/' + truck.id + '_bannerlarge")');
+    $("#truckDialog .modal-header").css("background-image", 'url("//www.chicagofoodtruckfinder.com/images/truckicons/' + truck.id + '_bannerlarge")');
     $("#truckIcon").attr("src", truck.iconUrl);
     var $truckSocial = $("#truckSocial"), $truckUrl = $("#truck-url");
     $truckSocial.empty();
@@ -458,22 +458,22 @@ var FoodTruckLocator = function () {
     if (truck.twitterHandle) {
       $truckSocial.append("<a target='_blank' href='http://twitter.com/" + truck.twitterHandle +
       "'><img alt='@" +
-      truck.twitterHandle + "' src='http://storage.googleapis.com/ftf_static/img/twitter32x32.png'/></a> ");
+      truck.twitterHandle + "' src='//storage.googleapis.com/ftf_static/img/twitter32x32.png'/></a> ");
     }
     if (truck.foursquare) {
       $truckSocial.append("<a target='_blank' href='http://foursquare.com/venue/" +
       truck.foursquare +
-      "'><img alt='Checkin on foursquare' src='http://storage.googleapis.com/ftf_static/img/foursquare32x32.png'/></a> ");
+      "'><img alt='Checkin on foursquare' src='//storage.googleapis.com/ftf_static/img/foursquare32x32.png'/></a> ");
     }
     if (truck.instagram) {
       $truckSocial.append("<a target='_blank' href='http://instagram.com/" +
       truck.instagram +
-      "'><img alt='View instagram feed' src='http://storage.googleapis.com/ftf_static/img/instagram32x32.png'/></a> ");
+      "'><img alt='View instagram feed' src='//storage.googleapis.com/ftf_static/img/instagram32x32.png'/></a> ");
     }
     if (truck.facebook) {
       $truckSocial.append("<a target='_blank' href='http://facebook.com" + truck.facebook +
       "'><img alt='" +
-      truck.facebook + "' src='http://storage.googleapis.com/ftf_static/img/facebook32x32.png'/></a> ");
+      truck.facebook + "' src='//storage.googleapis.com/ftf_static/img/facebook32x32.png'/></a> ");
     }
     var $truckInfo = $("#truckInfo");
     $truckInfo.empty();
