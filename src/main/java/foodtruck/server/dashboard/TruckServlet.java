@@ -67,6 +67,10 @@ public class TruckServlet extends HttpServlet {
     final String requestURI = req.getRequestURI();
     req.setAttribute("localFrameworks", "true".equals(System.getProperty("use.local.frameworks", "false")));
     String truckId = requestURI.substring(14);
+    if (Strings.isNullOrEmpty(truckId)) {
+      resp.sendRedirect("/trucks");
+      return;
+    }
     if (truckId.endsWith("/configuration")) {
       truckId = truckId.substring(0, truckId.length() - 14);
       editConfiguration(truckId, req, resp);
