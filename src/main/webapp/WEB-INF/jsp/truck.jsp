@@ -11,11 +11,6 @@
 </style>
 
 <div id="content" >
-<%--
-  <c:if test="${isAdmin}">
-    <a href="/admin/trucks/${truck.id}">Edit on Admin Dashboard</a>
-  </c:if>
-  --%>
   <ol class="breadcrumb">
     <li><a href="/trucks">Trucks</a></li>
     <li class="active">${truck.name}</li>
@@ -52,26 +47,20 @@
                                                                                                     src="http://storage.googleapis.com/ftf_static/img/yelp32x32.png"></a></c:if>
       </div>
       <div style="padding-top:20px">
-        <table class="table">
-          <tr>
-            <td>Website</td>
-            <td><c:choose><c:when test="${empty(truck.url)}">none</c:when><c:otherwise><a target="_blank"
-                                                                                          href="${truck.url}">${truck.url}</a></c:otherwise></c:choose>
-            </td>
-          </tr>
-          <tr>
-            <td>Email</td>
-            <td><c:choose><c:when test="${empty(truck.publicEmail)}">none</c:when><c:otherwise><a target="_blank"
-                                                                                            href="mailto:${truck.publicEmail}">${truck.publicEmail}</a></c:otherwise></c:choose>
-            </td>
-          </tr>
-          <tr>
-            <td>Phone</td>
-            <td><c:choose><c:when
-                test="${empty(truck.phone)}">none</c:when><c:otherwise>${truck.phone}</c:otherwise></c:choose>
-            </td>
-          </tr>
-        </table>
+        <ul class="list-unstyled">
+          <c:if test="${!empty(truck.url)}">
+            <li><a target="_blank" href="${truck.url}">${truck.url}</a></li>
+          </c:if>
+          <c:if test="${!empty(truck.publicEmail)}">
+            <li><span class="glyphicon glyphicon-envelope"></span>&nbsp;
+              <a target="_blank"
+                   href="mailto:${truck.publicEmail}">${truck.publicEmail}</a></li>
+          </c:if>
+          <c:if test="${!empty(truck.phone)}">
+            <li><span class="glyphicon glyphicon-earphone"></span>&nbsp;
+              ${truck.phone}</li>
+          </c:if>
+        </ul>
       </div>
       <c:if test="${!empty(truck.menuUrl)}">
         <h2>Menu</h2>
