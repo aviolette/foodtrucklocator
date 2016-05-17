@@ -4,7 +4,7 @@
 
 <div class="row top-row">
   <div class="col-md-12">
-    <img class="previewIcon" src="${location.imageUrl.protocolRelative}" width="150" height="150"/>
+    <img <c:if test="${empty(location.imageUrl.protocolRelative)}">style="display:none"</c:if> class="previewIcon" src="${location.imageUrl.protocolRelative}" width="150" height="150"/>
   </div>
 </div>
 
