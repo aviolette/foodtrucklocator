@@ -1,7 +1,14 @@
 <%@ include file="header.jsp" %>
 <%@ include file="include/rickshaw_css.jsp"%>
+<div id="map_canvas" style="width:100%; height:300px;"></div>
 
-<div class="row" >
+<div class="row top-row">
+  <div class="col-md-12">
+    <img class="previewIcon" src="${location.imageUrl.protocolRelative}" width="150" height="150"/>
+  </div>
+</div>
+
+<div class="row second-top-row" style="padding-top: 0;">
   <div class="col-md-6">
     <h2>${location.name}<c:if test="${isAdmin}">
       <a class="btn btn-small btn-default" href="/admin/locations/${location.key}"> <span class="glyphicon glyphicon-pencil"></span> Edit</a>
@@ -36,8 +43,6 @@
 
   </div>
   <div class="col-md-6">
-    <div id="map_canvas" style="width:100%; height:300px; margin-top:10px; padding-bottom:20px;">
-    </div>
   </div>
 </div>
 

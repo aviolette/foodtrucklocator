@@ -1,13 +1,6 @@
 <%@ include file="header.jsp" %>
 <%@ include file="include/rickshaw_css.jsp"%>
 <style>
-  #previewIcon {
-    position: absolute;
-    top: -140px;
-    left: 50px;
-    border: 5px white solid;
-  }
-
   dl.schedule {
     font-size: 125%;
   }
@@ -30,21 +23,16 @@
 
   <img src="${truck.biggestBackgroundImageUrl.protocolRelative}" width="100%" height="300"/>
 
-  <div class="row" style="padding-bottom: 0;">
+  <div class="row top-row" style="padding-bottom: 0;">
     <div class="col-md-6">
-      <img id="previewIcon" src="${truck.previewIconUrl.protocolRelative}" width="150" height="150"/>
+      <img class="previewIcon" src="${truck.previewIconUrl.protocolRelative}" width="150" height="150"/>
     </div>
-<!--
-    <div class="col-md-6">
-      <c:if test="${isAdmin}">
-        <a class="btn btn-default" href="/admin/trucks/${truck.id}">Edit</a>
-      </c:if>
-    </div>
-    -->
   </div>
-  <div class="row" style="padding-top:0">
+  <div class="row second-top-row">
     <div class="col-md-6">
-      <h1>${truck.name}</h1>
+      <h1>${truck.name}<c:if test="${isAdmin}">
+        <a class="btn btn-default" href="/admin/trucks/${truck.id}">Edit</a>
+      </c:if></h1>
       <c:if test="${truck.popupVendor}"><p><span class="badge badge-info">Popup Vendor</span></p></c:if>
       <p class="lead">${truck.description}</p>
       <div>
