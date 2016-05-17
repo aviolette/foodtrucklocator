@@ -7,6 +7,14 @@
     left: 50px;
     border: 5px white solid;
   }
+
+  dl.schedule {
+    font-size: 125%;
+  }
+
+  dl.schedule dd {
+    padding-bottom: 10px;
+  }
 </style>
 
 <div id="content" >
@@ -95,7 +103,7 @@
     </div>
     <div class="col-md-6">
       <h2>This Week's Schedule</h2>
-      <dl>
+      <dl class="schedule">
         <c:forEach items="${stops}" var="schedule" varStatus="scheduleStatus">
 
           <c:forEach items="${schedule.stops}" var="stop" varStatus="stopStatus">
