@@ -13,7 +13,7 @@
   <link rel="apple-touch-icon" sizes="152x152" href="/img/apple-touch-icon-ipad-retina.png">
   <title>${title}</title>
   <%@ include file="include/bootstrap_css.jsp" %>
-  <link href="/css/foodtruckfinder${suffix}.css" rel="stylesheet"/>
+  <link href="/css/foodtruckfinder${suffix}-1.0.css" rel="stylesheet"/>
   <c:choose>
     <c:when test="${localFrameworks}">
       <script src="/script/lib/modernizr-1.7.min.js"></script>
