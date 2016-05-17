@@ -28,7 +28,7 @@
     <li class="active">${truck.name}</li>
   </ol>
 
-  <img src="${truck.backgroundImageUrl.protocolRelative}" width="100%" height="300"/>
+  <img src="${truck.biggestBackgroundImageUrl.protocolRelative}" width="100%" height="300"/>
 
   <div class="row" style="padding-bottom: 0;">
     <div class="col-md-6">

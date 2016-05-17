@@ -382,6 +382,13 @@ public class Truck extends ModelEntity implements Serializable {
     return new Url(backgroundImage);
   }
 
+  public @Nullable Url getBiggestBackgroundImageUrl() {
+    if (Strings.isNullOrEmpty(backgroundImageLarge)) {
+      return getBackgroundImageUrl();
+    }
+    return new Url(backgroundImageLarge);
+  }
+
   public String getBackgroundImageLarge() {
     return backgroundImageLarge;
   }
