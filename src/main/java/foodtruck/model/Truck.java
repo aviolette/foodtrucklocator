@@ -154,6 +154,13 @@ public class Truck extends ModelEntity implements Serializable {
     return previewIcon;
   }
 
+  public @Nullable Url getPreviewIconUrl() {
+    if (Strings.isNullOrEmpty(previewIcon)) {
+      return null;
+    }
+    return new Url(previewIcon);
+  }
+
   public String getName() {
     return name;
   }
@@ -368,8 +375,22 @@ public class Truck extends ModelEntity implements Serializable {
     return backgroundImage;
   }
 
+  public @Nullable Url getBackgroundImageUrl() {
+    if (Strings.isNullOrEmpty(backgroundImage)) {
+      return null;
+    }
+    return new Url(backgroundImage);
+  }
+
   public String getBackgroundImageLarge() {
     return backgroundImageLarge;
+  }
+
+  public @Nullable Url getLargeBackgroundImageUrl() {
+    if (Strings.isNullOrEmpty(backgroundImageLarge)) {
+      return null;
+    }
+    return new Url(backgroundImageLarge);
   }
 
   public String canonicalName() {

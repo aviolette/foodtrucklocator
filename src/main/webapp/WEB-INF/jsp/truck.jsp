@@ -1,15 +1,40 @@
 <%@ include file="header.jsp" %>
 <%@ include file="include/rickshaw_css.jsp"%>
+<style>
+  #previewIcon {
+    position: absolute;
+    top: -140px;
+    left: 50px;
+    border: 5px white solid;
+  }
+</style>
 
 <div id="content" >
+<%--
   <c:if test="${isAdmin}">
     <a href="/admin/trucks/${truck.id}">Edit on Admin Dashboard</a>
   </c:if>
+  --%>
   <ol class="breadcrumb">
     <li><a href="/trucks">Trucks</a></li>
     <li class="active">${truck.name}</li>
   </ol>
-  <div class="row">
+
+  <img src="${truck.backgroundImageUrl.protocolRelative}" width="100%" height="300"/>
+
+  <div class="row" style="padding-bottom: 0;">
+    <div class="col-md-6">
+      <img id="previewIcon" src="${truck.previewIconUrl.protocolRelative}" width="150" height="150"/>
+    </div>
+<!--
+    <div class="col-md-6">
+      <c:if test="${isAdmin}">
+        <a class="btn btn-default" href="/admin/trucks/${truck.id}">Edit</a>
+      </c:if>
+    </div>
+    -->
+  </div>
+  <div class="row" style="padding-top:0">
     <div class="col-md-6">
       <h1>${truck.name}</h1>
       <c:if test="${truck.popupVendor}"><p><span class="badge badge-info">Popup Vendor</span></p></c:if>
@@ -69,77 +94,24 @@
       </c:if>
     </div>
     <div class="col-md-6">
-      <div id="truck-image-container">
-        <c:if test="${!empty(truck.fullsizeImage)}">
-          <img src="${truck.fullsizeImage}" class="img-rounded img-responsive"/>
-        </c:if>
-      </div>
+      <h2>This Week's Schedule</h2>
+      <dl>
+        <c:forEach items="${stops}" var="schedule" varStatus="scheduleStatus">
+
+          <c:forEach items="${schedule.stops}" var="stop" varStatus="stopStatus">
+            <c:if test="${stopStatus.first}">
+              <dt><joda:format value="${stop.startTime}" pattern="EEEE MM/dd"/>
+              </dt>
+            </c:if>
+            <dd>                    <joda:format value="${stop.startTime}" style="-S"/> -
+              <ftl:location at="${stop.startTime}" location="${stop.location}"/>
+            </dd>
+          </c:forEach>
+
+        </c:forEach>
+      </dl>
     </div>
    </div>
-
-  <div class="row" style="padding-top: 20px">
-    <div class="col-md-12">
-      <h2>This Week's Schedule</h2>
-      <table class="table table-bordered" id="scheduleTableView">
-        <thead>
-        <tr>
-          <c:forEach items="${daysOfWeek}" var="day">
-            <th style="width:14%">${day}</th>
-          </c:forEach>
-        </tr>
-        </thead>
-        <tbody id="scheduleTable">
-        <tr>
-          <c:forEach items="${stops}" var="schedule" varStatus="scheduleStatus">
-            <c:if test="${scheduleStatus.index < 7}">
-          <td style="min-height:200px">
-            <c:choose>
-              <c:when test="${schedule.hasStops}">
-                <ul class="list-unstyled">
-                  <c:forEach items="${schedule.stops}" var="stop">
-                    <li style="padding-bottom:10px">
-                    <joda:format value="${stop.startTime}" style="-S"/>
-                    <ftl:location at="${stop.startTime}" location="${stop.location}"/>
-                    </li>
-                  </c:forEach>
-
-                </ul>
-              </c:when>
-              <c:otherwise>
-                <c:choose>
-                  <c:when test="${schedule.afterToday}">
-                    <em>No Scheduled Stops</em>
-                  </c:when>
-                  <c:otherwise>
-                    <em>No Stops</em>
-                  </c:otherwise>
-                </c:choose>
-              </c:otherwise>
-            </c:choose>
-          </td>
-            </c:if>
-          </c:forEach>
-        </tr>
-        </tbody>
-      </table>
-
-    <dl id="scheduleList">
-    <c:forEach items="${stops}" var="schedule" varStatus="scheduleStatus">
-
-      <c:forEach items="${schedule.stops}" var="stop" varStatus="stopStatus">
-        <c:if test="${stopStatus.first}">
-          <dt><joda:format value="${stop.startTime}" pattern="EEEE MM/dd"/>
-          </dt>
-        </c:if>
-        <dd>                    <joda:format value="${stop.startTime}" style="-S"/> -
-          <ftl:location at="${stop.startTime}" location="${stop.location}"/>
-        </dd>
-      </c:forEach>
-
-    </c:forEach>
-    </dl>
-  </div>
-
 </div>
 
 

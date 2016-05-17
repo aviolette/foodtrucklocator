@@ -74,6 +74,7 @@ public class TrucksServlet extends FrontPageServlet {
       req.setAttribute("daysOfWeek", daysOfWeek(firstDay));
       req.setAttribute("enableGraphs", staticConfig.getShowTruckGraphs());
       req.setAttribute("title", truck.getName());
+      req.setAttribute("suffix", "-fluid");
       req.setAttribute("dailyData", dailyDataDAO.findByTruckAndDay(truck.getId(), clock.currentDay()));
       req.setAttribute("description", Strings.isNullOrEmpty(truck.getDescription()) ? truck.getName() : truck.getDescription());
     } else {

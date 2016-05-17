@@ -8,6 +8,8 @@
     margin-top: 0;
   }
 </style>
+<div class="row">
+  <div class="col-md-12">
 <c:choose>
   <c:when test="${empty(boozyDate)}">
     <h1>Boozy Stops</h1>
@@ -17,7 +19,8 @@
     <h1>Boozy Stops for <joda:format pattern="EEE MMM dd" value="${boozyDate}"/></h1>
   </c:otherwise>
 </c:choose>
-
+  </div>
+</div>
 
 <c:forEach items="${allGroups}" var="group" varStatus="status">
   <c:if test="${(status.index mod 2) == 0}">

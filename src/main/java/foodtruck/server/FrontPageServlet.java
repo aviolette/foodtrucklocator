@@ -41,6 +41,7 @@ public abstract class FrontPageServlet extends HttpServlet {
     String title = System.getProperty("foodtrucklocator.title", "Chicago Food Truck Finder");
     req.setAttribute("title", title);
     req.setAttribute("brandTitle", title);
+    req.setAttribute("suffix", "-fluid");
     req.setAttribute("showBoozy", !"false".equals(System.getProperty("foodtrucklocator.showBoozy")));
     req.setAttribute("showWeekly", !"false".equals(System.getProperty("foodtrucklocator.showWeekly")));
     req.setAttribute("showAbout", !"false".equals(System.getProperty("foodtrucklocator.showAbout")));
