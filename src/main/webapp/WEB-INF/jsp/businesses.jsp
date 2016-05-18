@@ -1,8 +1,8 @@
 <%@ include file="header.jsp" %>
 
-<p class="lead">These are businesses owned by past and present food truck owners.</p>
 <div class="row">
 <div class="col-md-12">
+    <p class="lead">These are businesses owned by past and present food truck owners.</p>
     <div id="map_wrapper">
         <div class="section" style="min-height:400px" id="map_canvas"></div>
     </div>
