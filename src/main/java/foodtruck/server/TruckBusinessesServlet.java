@@ -64,6 +64,7 @@ public class TruckBusinessesServlet extends FrontPageServlet {
             return o1.getLocation().getName().compareTo(o2.getLocation().getName());
           }
         }));
+    req.setAttribute("tab", "location");
     req.getRequestDispatcher("/WEB-INF/jsp/businesses.jsp").forward(req, resp);
   }
 

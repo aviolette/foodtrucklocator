@@ -60,7 +60,7 @@ public class WeeklyScheduleServlet extends FrontPageServlet {
     req.setAttribute("weekOf", startDate);
     req.setAttribute("title", "Weekly Schedule");
     req.setAttribute("description", "Weekly schedule of the most-popular food truck stops in chicago");
-    req.setAttribute("tab", "weekly");
+    req.setAttribute("tab", "location");
     req.getRequestDispatcher(jsp).forward(req, resp);
   }
 }

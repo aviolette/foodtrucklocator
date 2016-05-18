@@ -105,8 +105,9 @@ public class BoozeAndTrucksServlet extends FrontPageServlet {
       schedules.add(new ScheduleForDay(currentDay, ImmutableList.copyOf(tsgs.values())));
     }
     req.setAttribute("allGroups", builder.build());
+    req.setAttribute("tab", "location");
     req.setAttribute("daySchedules", schedules.build());
-    req.setAttribute("tab", "booze");
+
     if (daysOut == 1) {
       req.setAttribute("title", "Boozy Stops for " + friendlyFormatter.print(date));
       req.setAttribute("boozyDate", date);
