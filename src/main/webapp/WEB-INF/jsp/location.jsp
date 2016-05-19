@@ -21,9 +21,16 @@
     <c:if test="${!empty(location.url)}">
       <div><a href='${location.url}'>${location.url}</a></div>
     </c:if>
-    <c:if test="${!empty(location.twitterHandle)}">
-      <div><a href="http://twitter.com/${location.twitterHandle}">@${location.twitterHandle}</a></div>
-    </c:if>
+
+    <div>
+      <c:if test="${!empty(location.facebookUri)}"><a target="_blank" href="http://facebook.com${location.facebookUri}"><img
+          alt="Facebook" src="http://storage.googleapis.com/ftf_static/img/facebook32x32.png"></a></c:if>
+      <c:if test="${!empty(location.twitterHandle)}"><a target="_blank"
+                                                     href="http://twitter.com/${location.twitterHandle}"><img
+          alt="@${location.twitterHandle} on twitter" src="http://storage.googleapis.com/ftf_static/img/twitter32x32.png"></a></c:if>
+    </div>
+
+
       <c:forEach items="${stops}" var="stop" varStatus="status">
         <c:if test="${status.index == 0}">
           <h3><a href="/locations/${location.key}?date=<joda:format value="${thedate}" pattern="YYYYMMdd"/>">Schedule for <joda:format value="${thedate}" pattern="MMM dd, YYYY"/></a></h3>
