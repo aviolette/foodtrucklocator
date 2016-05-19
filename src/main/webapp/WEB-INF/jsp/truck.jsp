@@ -46,7 +46,7 @@
       <div style="padding-top:20px">
         <ul class="list-unstyled">
           <c:if test="${!empty(truck.url)}">
-            <li><a target="_blank" href="${truck.url}">${truck.url}</a></li>
+            <li class="lead"><a target="_blank" href="${truck.url}">${truck.url}</a></li>
           </c:if>
           <c:if test="${!empty(truck.publicEmail)}">
             <li><span class="glyphicon glyphicon-envelope"></span>&nbsp;

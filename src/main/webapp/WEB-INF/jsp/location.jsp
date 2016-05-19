@@ -19,7 +19,7 @@
       <p class="lead">${location.description}</p>
     </c:if>
     <c:if test="${!empty(location.url)}">
-      <div><a href='${location.url}'>${location.url}</a></div>
+      <div class="lead"><a href='${location.url}'>${location.url}</a></div>
     </c:if>
 
     <div>
@@ -31,25 +31,26 @@
     </div>
 
 
-      <c:forEach items="${stops}" var="stop" varStatus="status">
-        <c:if test="${status.index == 0}">
-          <h3><a href="/locations/${location.key}?date=<joda:format value="${thedate}" pattern="YYYYMMdd"/>">Schedule for <joda:format value="${thedate}" pattern="MMM dd, YYYY"/></a></h3>
-        </c:if>
-        <div class="media">
-          <a class="pull-left" href="/trucks/${stop.truck.id}">
-            <img class="media-object" src="${stop.truck.iconUrl}" alt="${stop.truck.name} icon"/>
-          </a>
-          <div class="media-body">
-            <a href="/trucks/${stop.truck.id}" class="truckLink">
-            <h4 class="media-heading">${stop.truck.name}</h4>
-            <joda:format value="${stop.startTime}" style="-S"/> - <joda:format value="${stop.endTime}" style="-S"/>
-            </a>
-          </div>
-        </div>
-      </c:forEach>
 
   </div>
   <div class="col-md-6">
+    <c:forEach items="${stops}" var="stop" varStatus="status">
+      <c:if test="${status.index == 0}">
+        <h3>Schedule for <joda:format value="${thedate}" pattern="MMM dd, YYYY"/></h3>
+          <c:if test="${requestedTime}"><div><small><a href="/locations/${location.key}">(click here for today's schedule)</a></small></div></c:if>
+      </c:if>
+      <div class="media">
+        <a class="pull-left" href="/trucks/${stop.truck.id}">
+          <img class="media-object" src="${stop.truck.iconUrl}" alt="${stop.truck.name} icon"/>
+        </a>
+        <div class="media-body">
+          <a href="/trucks/${stop.truck.id}" class="truckLink">
+            <h4 class="media-heading">${stop.truck.name}</h4>
+            <joda:format value="${stop.startTime}" style="-S"/> - <joda:format value="${stop.endTime}" style="-S"/>
+          </a>
+        </div>
+      </div>
+    </c:forEach>
   </div>
 </div>
 

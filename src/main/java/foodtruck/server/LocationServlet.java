@@ -87,10 +87,12 @@ public class LocationServlet extends FrontPageServlet {
     final String timeRequest = req.getParameter("date");
     DateTime dateTime = null;
     String onDate = "";
+    boolean requestedTime = false;
     if (!Strings.isNullOrEmpty(timeRequest)) {
       try {
         dateTime = dateFormatter.parseDateTime(timeRequest);
         onDate = " on " + friendlyFormatter.print(dateTime);
+        requestedTime = true;
       } catch (IllegalArgumentException ignored) {
         log.warning("Invalidate date specified " + timeRequest);
         // lots of weird SQL stuff coming through in data parameter
@@ -103,6 +105,7 @@ public class LocationServlet extends FrontPageServlet {
     }
     req.setAttribute("stops", truckStopService.findStopsNearALocation(location, dateTime.toLocalDate()));
     req.setAttribute("thedate", dateTime);
+    req.setAttribute("requestedTime", requestedTime);
     req.setAttribute("tab", "location");
     req.setAttribute("hasPopularityStats", staticConfig.showLocationGraphs() && location.isPopular());
     req.setAttribute("location", location);
