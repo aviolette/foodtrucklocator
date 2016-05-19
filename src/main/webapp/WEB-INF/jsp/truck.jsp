@@ -42,9 +42,6 @@
         <c:if test="${!empty(truck.instagramId)}"><a target="_blank"
                                                        href="http://instagram.com/${truck.instagramId}"><img
             alt="View on instagram" src="http://storage.googleapis.com/ftf_static/img/instagram32x32.png"></a></c:if>
-        <c:if test="${!empty(truck.yelpSlug)}"><a target="_blank"
-                                                  href="http://yelp.com/biz/${truck.yelpSlug}"><img alt="Yelp"
-                                                                                                    src="http://storage.googleapis.com/ftf_static/img/yelp32x32.png"></a></c:if>
       </div>
       <div style="padding-top:20px">
         <ul class="list-unstyled">
