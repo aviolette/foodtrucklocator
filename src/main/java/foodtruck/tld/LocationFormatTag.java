@@ -58,7 +58,7 @@ public class LocationFormatTag extends TagSupport {
         String locationName = HtmlEscapers.htmlEscaper().escape(location.getName());
         String aString = admin ? "/admin" : "";
         if (location.getKey() != null) {
-          out.println("<a href='" + aString + "/locations/" + location.getKey() + "'>" + locationName + "</a>");
+          out.println("<a href='" + aString + "/locations/" + location.getKey() +  dateString +"'>" + locationName + "</a>");
         } else {
           out.println("<a href='/locations?q=" + locationName + dateString + "'>" + locationName + "</a>");
         }
