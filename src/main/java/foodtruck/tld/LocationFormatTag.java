@@ -51,16 +51,16 @@ public class LocationFormatTag extends TagSupport {
     JspWriter out = pageContext.getOut();
     String dateString = "";
     if (when != null) {
-      dateString = "&date=" + formatter.print(when);
+      dateString = "date=" + formatter.print(when);
     }
     try {
       if (location != null) {
         String locationName = HtmlEscapers.htmlEscaper().escape(location.getName());
         String aString = admin ? "/admin" : "";
         if (location.getKey() != null) {
-          out.println("<a href='" + aString + "/locations/" + location.getKey() +  dateString +"'>" + locationName + "</a>");
+          out.println("<a href='" + aString + "/locations/" + location.getKey() + "?" + dateString +"'>" + locationName + "</a>");
         } else {
-          out.println("<a href='/locations?q=" + locationName + dateString + "'>" + locationName + "</a>");
+          out.println("<a href='/locations?q=" + locationName + "&" + dateString + "'>" + locationName + "</a>");
         }
       }
     } catch (Exception e) {
