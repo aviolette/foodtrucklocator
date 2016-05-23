@@ -511,6 +511,39 @@ var FoodTruckLocator = function () {
     }
   }
 
+  function zoomWidget(name, zoomTo) {
+    var zoomDiv = document.createElement("div");
+    zoomDiv.index = 1;
+
+    // Setting padding to 5 px will offset the control
+    // from the edge of the map
+    zoomDiv.style.padding = '10px';
+
+    // Set CSS for the control border
+    var controlUI = document.createElement('div');
+    controlUI.style.backgroundColor = 'white';
+    controlUI.style.borderStyle = 'none';
+    controlUI.style.borderWidth = '0px';
+    controlUI.style.cursor = 'pointer';
+    controlUI.style.textAlign = 'center';
+    controlUI.style.padding = '10px';
+    controlUI.title = '';
+    zoomDiv.appendChild(controlUI);
+
+    // Set CSS for the control interior
+    var controlText = document.createElement('div');
+
+    var a = document.createElement('a');
+    a.innerHTML = name;
+    controlText.innerHTML  = "";
+    a.onclick = zoomTo;
+
+    controlText.appendChild(a);
+
+    controlUI.appendChild(controlText);
+    return zoomDiv;
+  }
+
   function badgeWidget() {
     var badgeDiv = document.createElement("div");
     badgeDiv.index = 1;
@@ -656,7 +689,20 @@ var FoodTruckLocator = function () {
         });
 
         _map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(badgeWidget());
-
+        _map.controls[google.maps.ControlPosition.TOP_LEFT].push(zoomWidget('University of Chicago', function() {
+          _map.setZoom(16);
+          _map.setCenter( new google.maps.LatLng(41.790628999999996, -87.60130099999999));
+          refreshViewData();
+        }));
+        _map.controls[google.maps.ControlPosition.TOP_LEFT].push(zoomWidget('Downtown', function() {
+          _map.setZoom(14);
+          _map.setCenter( new google.maps.LatLng(41.888141, -87.635352));
+          refreshViewData();
+        }));
+        _map.controls[google.maps.ControlPosition.TOP_LEFT].push(zoomWidget('Show All Markers', function() {
+          fitAll();
+          refreshViewData();
+        }));
         google.maps.event.addListener(_map, 'dragend', function () {
           refreshViewData();
         });
