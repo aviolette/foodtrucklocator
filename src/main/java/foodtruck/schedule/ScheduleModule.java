@@ -62,6 +62,7 @@ public class ScheduleModule extends AbstractModule {
         new Spot("lasalle/adams", "Lasalle and Adams, Chicago, IL"),
         new Spot("clark/monroe", "Clark and Monroe, Chicago, IL"),
         new Spot("wabash/jackson", "Wabash and Jackson, Chicago, IL"),
+        new Spot("michigan/monroe", "Michigan and Monroe, Chicago, IL"),
         new Spot("uchicago", "University of Chicago"),
         new Spot("uofc", "University of Chicago"),
         new Spot("58th/ellis", "University of Chicago"));
