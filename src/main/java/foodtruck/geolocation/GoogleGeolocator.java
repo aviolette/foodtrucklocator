@@ -27,11 +27,11 @@ import foodtruck.util.ServiceException;
  * @since 8/29/11
  */
 public class GoogleGeolocator implements GeoLocator {
-  private final Pattern latLongExpression;
   private static final Logger log = Logger.getLogger(GoogleGeolocator.class.getName());
+  private final Pattern latLongExpression;
   private final GoogleResource googleResource;
-  private final Set<String> NARROW_SET = ImmutableSet.of("intersection", "street_address"),
-                BROAD_SET = ImmutableSet.of("intersection", "street_address", "airport", "park", "point_of_interest");
+  private final Set<String> NARROW_SET = ImmutableSet.of("intersection", "street_address", "premise"),
+                BROAD_SET = ImmutableSet.of("intersection", "street_address", "airport", "park", "point_of_interest", "premise");
 
   @Inject
   public GoogleGeolocator(GoogleResource googleResource) {
