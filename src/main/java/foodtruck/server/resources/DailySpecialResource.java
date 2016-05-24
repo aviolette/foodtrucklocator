@@ -3,6 +3,7 @@ package foodtruck.server.resources;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
@@ -34,7 +35,7 @@ public class DailySpecialResource {
   }
 
   @GET
-  public DailyData findForDate(String dateString) {
+  public DailyData findForDate(@QueryParam("date") String dateString) {
     LocalDate date = clock.currentDay();
     DailyData dailyData =  dailyDataDAO.findByTruckAndDay(truck.getId(), clock.currentDay());
     if (dailyData == null) {
