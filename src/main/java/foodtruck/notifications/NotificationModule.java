@@ -28,7 +28,7 @@ public class NotificationModule extends AbstractModule {
     Multibinder<NotificationProcessor> binder = Multibinder.newSetBinder(binder(), NotificationProcessor.class);
     binder.addBinding().to(EmailNotificationProcessor.class);
     if (Strings.isNullOrEmpty(System.getProperty("foodtrucklocator.apns.password"))) {
-      log.warning("Disabling push notifications because no cert file is specified");
+      log.info("Disabling push notifications because no cert file is specified");
     } else {
       binder.addBinding().to(APNSProcessor.class);
     }
