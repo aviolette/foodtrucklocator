@@ -211,6 +211,21 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     assertEquals(tweetTime.withTime(20, 0, 0, 0), match.getStop().getEndTime());
   }
 
+  @Test
+  public void testMatch_lineBreak2() {
+    tweetTime = tweetTime.withHourOfDay(8).withMinuteOfHour(16);
+    TruckStopMatch match =
+        tweet("Check us out at the Chago Dept of Aviation \n" +
+            "Food Truck Fest\n" +
+            "10A -2P\n" +
+            "10510 W Zemke Blvd")
+            .withTime(tweetTime)
+            .match();
+    assertNotNull(match);
+    assertEquals(tweetTime.withTime(10, 0, 0, 0), match.getStop().getStartTime());
+    assertEquals(tweetTime.withTime(14, 0, 0, 0), match.getStop().getEndTime());
+  }
+
   @Test @Ignore("This should work, but ignoring for now")
   public void testMatch_latetNight() {
     tweetTime = tweetTime.withHourOfDay(0).withMinuteOfHour(37);

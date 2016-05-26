@@ -394,13 +394,13 @@ public class TruckStopMatcher {
     if (lineBreak != -1) {
       timeText = timeText.substring(0, lineBreak);
     }
+    timeText = timeText.toLowerCase();
     timeText = timeText.replace(".", "");
     if (timeText.endsWith("p") || timeText.endsWith("a")) {
       timeText = timeText + "m";
     }
     timeText = timeText.replace(":", "");
     timeText = timeText.replace(" ", "");
-    timeText = timeText.toLowerCase();
     timeText = timeText.trim();
     String tmpTime = timeText;
     String suffix = null;
