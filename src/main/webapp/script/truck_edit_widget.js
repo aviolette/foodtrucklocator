@@ -204,7 +204,7 @@ runEditWidget = function(truckId, locations, categories, options) {
           labels += (stop.fromBeacon) ? "&nbsp;<span class=\"label important\">beacon</span>" : "";
           var truckCountLink = stop.totalTruckCount < 2 ? "" : "<span class='badge truck-info-badge' data-toggle='popover' data-content='" + truckNames +"'>" + stop.totalTruckCount + "</span>";
           var buf = "<tr " + (crazyDuration ? " class='error'" : "") + "><td>" + stop.startDate + "</td><td>" + stop.startTime + "</td><td>" + stop.endTime +
-              "</td><td>" + stop.duration + "</td><td class=\"origin\">" + stop.origin + "</td><td><a href='" + locationEndpoint + "?q=" + encodeURIComponent(stop.location.name) +
+              "</td><td>" + stop.duration + "</td><td class=\"origin\"><a href='#' data-toggle='popover' data-content='" + stop.notes.join('. ') + "'>" + stop.origin + "</a></td><td><a href='" + locationEndpoint + "?q=" + encodeURIComponent(stop.location.name) +
               "'>"
               + stop.location.name + "</a>" + labels + "</td><td>" + truckCountLink +"</td><td>";
           if (showControls) {
