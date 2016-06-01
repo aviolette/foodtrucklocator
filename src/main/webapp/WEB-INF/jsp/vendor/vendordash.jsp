@@ -1,10 +1,4 @@
 <%@ include file="vendorheader.jsp" %>
-<style>
-td.origin {
-  display:none;
-}
-</style>
-
 <h1>${truck.name}</h1>
 <div class="row">
   <div class="col-md-3">
