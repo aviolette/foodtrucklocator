@@ -1,16 +1,29 @@
 /**
  * Created by andrew on 3/28/15.
  */
-runEditWidget = function(truckId, locations, categories, options) {
-  var lastStop, $editStop = $("#edit-stop"), locationEndpoint = '/admin/locations';
-  options = options || {};
 
-  if (options["vendorEndpoints"]) {
-    locationEndpoint = '/locations';
+function padTime(t) {
+  t = String(t)
+  if (t.length == 1) {
+    return "0" + t;
   }
+  return t;
+}
 
-  var $startTimeInput = $("#startTimeInput"), $endTimeInput = $("#endTimeInput"), calcStartDay, calcEndDay;
+function fromDate(dateString) {
+  var year = parseInt(dateString.substring(0, 4)),
+      month = parseInt(dateString.substring(5, 7))-1,
+      day = parseInt(dateString.substring(8, 10)),
+      hour = parseInt(dateString.substring(11, 13)),
+      min = parseInt(dateString.substring(14, 16));
+  return new Date(year, month, day, hour, min, 0, 0);
+}
 
+function toDate(d) {
+  return (d.getFullYear()) + "-" + padTime(d.getMonth()+1) + "-" + padTime(d.getDate()) + "T" + padTime(d.getHours()) + ":" + padTime(d.getMinutes());
+}
+
+function enhancedDateWidget(widgetPrefix) {
   function figureOutDay($input, $output) {
     return function() {
       var time = fromDate($input.val()), day;
@@ -33,28 +46,27 @@ runEditWidget = function(truckId, locations, categories, options) {
       $output.html(day);
     }
   }
-  calcStartDay = figureOutDay($startTimeInput, $("#startDay"));
-  calcEndDay = figureOutDay($endTimeInput, $("#endDay"));
-  $startTimeInput.change(calcStartDay);
-  $endTimeInput.change(calcEndDay);
+  var $timeWidget = $("#" + widgetPrefix + "TimeInput");
+  var calcDay = figureOutDay($timeWidget, $("#" + widgetPrefix + "Day"));
+  $timeWidget.change(calcDay);
+  return calcDay;
+}
 
+function unifiedDateControls(calcEndDay) {
+  var $startTimeInput = $("#startTimeInput"),
+      $endTimeInput = $("#endTimeInput");
   $startTimeInput.blur(function (e) {
     var startTime = fromDate($startTimeInput.val()),
         endTime = fromDate($endTimeInput.val());
-    if (startTime.getTime() >= endTime.getTime()) {
+    if (isNaN(endTime.getTime()) || startTime.getTime() >= endTime.getTime()) {
       var diff = startTime.getTime() + (60 * 60 * 2000);
       $endTimeInput.val(toDate(new Date(diff)));
       calcEndDay();
     }
   });
+}
 
-  $editStop.keypress(function(e) {
-    if (e.which == 13) {
-      e.preventDefault();
-      $("#saveButton").click();
-    }
-  });
-
+function locationMatching(locations) {
   // Type-ahead related stuff
   var substringMatcher = function(strs) {
     return function findMatches(q, cb) {
@@ -75,7 +87,32 @@ runEditWidget = function(truckId, locations, categories, options) {
     highlight: true,
     minLength: 1
   },{ name: 'locations', displayKey: 'value', source: substringMatcher(locations)});
+}
 
+runEditWidget = function(truckId, locations, categories, options) {
+  var lastStop, $editStop = $("#edit-stop"), locationEndpoint = '/admin/locations', useFormSubmitOnTouch = true;
+  options = options || {};
+
+  if (options["vendorEndpoints"]) {
+    locationEndpoint = '/locations';
+    useFormSubmitOnTouch = false;
+  }
+
+  var $startTimeInput = $("#startTimeInput"), $endTimeInput = $("#endTimeInput"), calcStartDay, calcEndDay;
+
+  calcStartDay = enhancedDateWidget("start");
+  calcEndDay = enhancedDateWidget("end");
+
+  unifiedDateControls(calcEndDay);
+
+  $editStop.keypress(function(e) {
+    if (e.which == 13) {
+      e.preventDefault();
+      $("#saveButton").click();
+    }
+  });
+
+  locationMatching(locations);
 
   $editStop.on("shown.bs.modal", function() {
     $startTimeInput.focus();
@@ -154,26 +191,6 @@ runEditWidget = function(truckId, locations, categories, options) {
     });
   }
 
-  function pad(t) {
-    t = String(t)
-    if (t.length == 1) {
-      return "0" + t;
-    }
-    return t;
-  }
-
-  function fromDate(dateString) {
-    var year = parseInt(dateString.substring(0, 4)),
-        month = parseInt(dateString.substring(5, 7))-1,
-        day = parseInt(dateString.substring(8, 10)),
-        hour = parseInt(dateString.substring(11, 13)),
-        min = parseInt(dateString.substring(14, 16));
-    return new Date(year, month, day, hour, min, 0, 0);
-  }
-
-  function toDate(d) {
-    return (d.getFullYear()) + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate()) + "T" + pad(d.getHours()) + ":" + pad(d.getMinutes());
-  }
 
   function refreshSchedule() {
     var scheduleTable = $("#scheduleTable");
@@ -306,7 +323,11 @@ runEditWidget = function(truckId, locations, categories, options) {
   }
 
   $("#addButton").click(function (e) {
-    newStop();
+    if (Modernizr.touch && useFormSubmitOnTouch) {
+      location.href = location.href + '/stops/new';
+    } else {
+      newStop();
+    }
   });
 
   $(document).keypress(function(e) {
