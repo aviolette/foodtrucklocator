@@ -19,7 +19,7 @@ public class ClockImpl implements Clock {
   private final DateTimeFormatter timeFormatter;
 
   @Inject
-  public ClockImpl(DateTimeZone zone, @TimeOnlyFormatter DateTimeFormatter timeFormatter) {
+  public ClockImpl(DateTimeZone zone, @FriendlyDateTimeFormat DateTimeFormatter timeFormatter) {
     this.zone = zone;
     this.timeFormatter = timeFormatter;
   }
