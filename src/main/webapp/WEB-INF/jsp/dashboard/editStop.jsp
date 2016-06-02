@@ -36,5 +36,9 @@
   enhancedDateWidget("start");
   unifiedDateControls(enhancedDateWidget("end"));
   locationMatching(${locations});
+  $("#cancelButton").click(function(e) {
+    e.preventDefault();
+    location.href="/admin/trucks/${truck.id}";
+  })
 </script>
 <%@include file="dashboardFooterBS3.jsp" %>
