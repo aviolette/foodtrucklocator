@@ -26,7 +26,6 @@
 <script type="text/javascript">
     enhancedDateWidget("start");
     unifiedDateControls(enhancedDateWidget("end"));
-    locationMatching(${locations});
 </script>
 
 <%@ include file="dashboardFooterBS3.jsp" %>
