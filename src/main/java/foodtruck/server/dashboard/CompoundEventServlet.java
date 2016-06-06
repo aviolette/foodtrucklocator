@@ -7,12 +7,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.users.UserService;
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import org.joda.time.DateTime;
@@ -26,6 +28,7 @@ import foodtruck.model.StopOrigin;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.server.GuiceHackRequestWrapper;
+import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 import foodtruck.util.HtmlDateFormatter;
 import foodtruck.util.TimeFormatter;
@@ -41,19 +44,22 @@ public class CompoundEventServlet extends HttpServlet {
   private final LocationDAO locationDAO;
   private final DateTimeFormatter timeFormatter;
   private final Clock clock;
-  private final TruckStopDAO truckStopDAO;
   private final DateTimeFormatter urlFormatter;
+  private final Provider<UserService> userServiceProvider;
+  private final FoodTruckStopService stopService;
 
   @Inject
   public CompoundEventServlet(TruckDAO truckDAO, LocationDAO locationDAO,
       @HtmlDateFormatter DateTimeFormatter formatter, Clock clock, TruckStopDAO truckStopDAO,
-      @TimeFormatter DateTimeFormatter urlFormatter) {
+      @TimeFormatter DateTimeFormatter urlFormatter, FoodTruckStopService stopService,
+      Provider<UserService> userServiceProvider) {
     this.truckDAO = truckDAO;
     this.locationDAO = locationDAO;
     this.timeFormatter = formatter;
     this.clock = clock;
-    this.truckStopDAO = truckStopDAO;
     this.urlFormatter = urlFormatter;
+    this.stopService = stopService;
+    this.userServiceProvider = userServiceProvider;
   }
 
   @Override
@@ -75,6 +81,8 @@ public class CompoundEventServlet extends HttpServlet {
       return;
     }
 
+    UserService userService = userServiceProvider.get();
+    String email = userService.getCurrentUser().getEmail();
     for (String truckId : trucks) {
       TruckStop stop = TruckStop.builder()
           .location(location)
@@ -83,7 +91,7 @@ public class CompoundEventServlet extends HttpServlet {
           .origin(StopOrigin.MANUAL)
           .truck(truckDAO.findById(truckId))
           .build();
-      truckStopDAO.save(stop);
+      stopService.update(stop, email);
     }
     resp.sendRedirect("/admin/trucks");
   }
