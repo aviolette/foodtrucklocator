@@ -23,23 +23,17 @@ import com.google.inject.Singleton;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.DailyDataDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.StoryDAO;
 import foodtruck.dao.TruckDAO;
-import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.Location;
-import foodtruck.model.StopOrigin;
 import foodtruck.model.Story;
 import foodtruck.model.Truck;
-import foodtruck.model.TruckStop;
 import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
-import foodtruck.util.HtmlDateFormatter;
 import foodtruck.util.Link;
 
 /**
@@ -52,26 +46,19 @@ public class TruckServlet extends HttpServlet {
   private final FoodTruckStopService truckService;
   private final Clock clock;
   private final TruckDAO truckDAO;
-  private final TruckStopDAO truckStopDAO;
   private final LocationDAO locationDAO;
   private final StoryDAO tweetDAO;
   private final DailyDataDAO dailyDataDAO;
-  private final DateTimeFormatter formatter;
-  private final FoodTruckStopService truckStopService;
 
   @Inject
   public TruckServlet(StoryDAO storyDAO, FoodTruckStopService truckService, Clock clock, TruckDAO truckDAO,
-      LocationDAO locationDAO, DailyDataDAO dailyDataDAO, @HtmlDateFormatter DateTimeFormatter formatter,
-      TruckStopDAO truckStopDAO, FoodTruckStopService truckStopService) {
+      LocationDAO locationDAO, DailyDataDAO dailyDataDAO) {
     this.tweetDAO = storyDAO;
     this.truckService = truckService;
     this.locationDAO = locationDAO;
     this.clock = clock;
     this.truckDAO = truckDAO;
     this.dailyDataDAO = dailyDataDAO;
-    this.formatter = formatter;
-    this.truckStopDAO = truckStopDAO;
-    this.truckStopService = truckStopService;
   }
 
   @Override
@@ -90,11 +77,6 @@ public class TruckServlet extends HttpServlet {
     } else if (truckId.endsWith("/offtheroad")) {
       truckId = truckId.substring(0, truckId.length() - 11);
       offTheRoad(truckId, req, resp);
-    } else if (truckId.contains("/stops/")) {
-      int index = truckId.indexOf("/stops/");
-      String actualTruckId = truckId.substring(0, index);
-      String stopId = truckId.substring(index+7);
-      stopEditPage(actualTruckId, stopId, req, resp);
     } else {
       loadDashboard(truckId, req, resp);
     }
@@ -107,87 +89,11 @@ public class TruckServlet extends HttpServlet {
       handleConfigurationPost(req, resp);
     } else if (req.getRequestURI().endsWith("/offtheroad")) {
       handleOffTheRoadPost(req, resp);
-    } else if (req.getRequestURI().contains("/stops/")) {
-      handleSaveTruckStopPost(req, resp);
     } else {
       handleTweetUpdate(req, resp);
     }
   }
 
-  private void handleSaveTruckStopPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    String stopId = req.getParameter("stopId");
-    String truckId = req.getParameter("truckId");
-    Truck truck = truckDAO.findById(truckId);
-    TruckStop.Builder builder;
-    if (!stopId.equalsIgnoreCase("new")) {
-      try {
-        TruckStop actual = truckStopDAO.findById(Long.parseLong(stopId));
-        if (actual == null) {
-          resp.sendError(400, "Stop could not be found");
-          return;
-        } else {
-          builder = TruckStop.builder(actual);
-        }
-      } catch (NumberFormatException nfe) {
-        resp.sendError(400, "Invalid stop ID specified");
-        return;
-      }
-    } else {
-      builder = TruckStop.builder()
-          .origin(StopOrigin.MANUAL);
-    }
-    builder.truck(truck);
-    DateTime startTime = formatter.parseDateTime(req.getParameter("startTime"));
-    DateTime endTime = formatter.parseDateTime(req.getParameter("endTime"));
-    if (!endTime.isAfter(startTime)) {
-      resp.sendError(400, "End time is not after start time.");
-      return;
-    }
-    Location location = locationDAO.findByAddress(req.getParameter("location"));
-    if (location == null || !location.isResolved()) {
-      resp.sendError(400, "Location is not resolved.");
-      return;
-    }
-    builder.startTime(startTime)
-        .endTime(endTime)
-        .locked("on".equals(req.getParameter("lockStop")))
-        .location(location);
-    truckStopService.update(builder.build(), "foo");
-    String uri = req.getRequestURI().substring(0, req.getRequestURI().indexOf("/stops/"));;
-    resp.sendRedirect(uri);
-  }
-
-  private void stopEditPage(String truckId, String stopId, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    final String jsp = "/WEB-INF/jsp/dashboard/editStop.jsp";
-    req = new GuiceHackRequestWrapper(req, jsp);
-    final Truck truck = truckDAO.findById(truckId);
-    DateTime startTime, endTime;
-    String title;
-    if ("new".equals(stopId)) {
-      if (truck.getCategories().contains("Breakfast") || clock.now().getHourOfDay() > 11) {
-        startTime = clock.now();
-      } else {
-        startTime = clock.now().withTime(11, 0, 0, 0);
-      }
-      endTime = startTime.plusHours(3);
-      endTime = endTime.withMinuteOfHour(0);
-      title = "New Stop";
-    } else {
-      startTime = clock.now();
-      endTime = startTime.plusHours(2);
-      title = "New Stop";
-    }
-    req.setAttribute("startTime", formatter.print(startTime));
-    req.setAttribute("endTime", formatter.print(endTime));
-    req.setAttribute("truck", truck);
-    req.setAttribute("stopId", stopId);
-    req.setAttribute("nav", "trucks");
-    req.setAttribute("locations", locationNamesAsJsonArray());
-    req.setAttribute("breadcrumbs", ImmutableList.of(new Link("Trucks", "/admin/trucks"),
-        new Link(truck.getName(), "/admin/trucks/" + truckId),
-        new Link(title, "/admin/trucks/" + truckId + "/stops/" + stopId)));
-    req.getRequestDispatcher(jsp).forward(req, resp);
-  }
 
   private void offTheRoad(String truckId, HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
@@ -343,6 +249,5 @@ public class TruckServlet extends HttpServlet {
       throw new RuntimeException(e);
     }
     resp.setStatus(204);
-
   }
 }

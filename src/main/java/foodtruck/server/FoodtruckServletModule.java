@@ -80,7 +80,7 @@ public class FoodtruckServletModule extends ServletModule {
     // Dashboard endpoints
     serve("/admin").with(AdminDashboardServlet.class);
     serve("/admin/addresses").with(AddressRuleServlet.class);
-    serveRegex("/admin/trucks/[\\S]*/events/[\\w]*").with(TruckStopServlet.class);
+    serveRegex("/admin/trucks/[\\S]*/stops/[\\w]*").with(TruckStopServlet.class);
     serve("/admin/trucks/*").with(TruckServlet.class);
     serve("/admin/trucks").with(TruckListServlet.class);
     serve("/admin/locations/*").with(LocationEditServlet.class);

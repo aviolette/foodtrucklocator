@@ -3,7 +3,6 @@ package foodtruck.server.dashboard;
 import java.io.IOException;
 import java.util.List;
 
-import javax.annotation.Nullable;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,26 +13,23 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
-import foodtruck.geolocation.GeoLocator;
-import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
-import foodtruck.model.ModelEntity;
 import foodtruck.model.StopOrigin;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
+import foodtruck.server.GuiceHackRequestWrapper;
+import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
-import foodtruck.util.TimeOnlyFormatter;
+import foodtruck.util.HtmlDateFormatter;
+import foodtruck.util.Link;
 
 /**
  * @author aviolette
@@ -44,85 +40,109 @@ public class TruckStopServlet extends HttpServlet {
   private final TruckStopDAO truckStopDAO;
   private final TruckDAO truckDAO;
   private final Clock clock;
-  private final Location center;
   private final DateTimeFormatter timeFormatter;
-  private final GeoLocator geolocator;
   private final LocationDAO locationDAO;
+  private final FoodTruckStopService stopService;
 
   @Inject
   public TruckStopServlet(TruckDAO truckDAO, TruckStopDAO truckStopDAO, Clock clock,
-      @Named("center") Location center, LocationDAO locationDAO,
-      @TimeOnlyFormatter DateTimeFormatter timeFormatter, GeoLocator geolocator) {
+      LocationDAO locationDAO, FoodTruckStopService stopService,
+      @HtmlDateFormatter DateTimeFormatter timeFormatter) {
     this.truckDAO = truckDAO;
     this.truckStopDAO = truckStopDAO;
     this.clock = clock;
     this.timeFormatter = timeFormatter;
-    this.geolocator = geolocator;
     this.locationDAO = locationDAO;
-    this.center = center;
+    this.stopService = stopService;
   }
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-    String truckId = getTruckId(req);
-    String eventId = req.getParameter("event");
-    Truck truck = truckDAO.findById(truckId);
-    TruckStop truckStop;
-    if (!Strings.isNullOrEmpty(eventId)) {
-      truckStop = truckStopDAO.findById(Long.parseLong(eventId));
-      // TODO: 404 if null
-    } else {
-      DateTime start = clock.now();
-      if (start.toLocalTime().isBefore(new LocalTime(11, 30))) {
-        start = start.withTime(11, 30, 0, 0);
-      }
-      DateTime end = start.plusHours(2);
-      truckStop = TruckStop.builder()
-          .origin(StopOrigin.MANUAL)
-          .truck(truck).startTime(start).endTime(end).location(center).build();
-    }
-    req.setAttribute("nav", "trucks");
-    req.setAttribute("truckStop", truckStop);
-    List<String> locationNames = ImmutableList.copyOf(
-        Iterables.transform(locationDAO.findAutocompleteLocations(), Location.TO_NAME));
-    req.setAttribute("locations", new JSONArray(locationNames).toString());
-    req.getRequestDispatcher("/WEB-INF/jsp/dashboard/event.jsp").forward(req, resp);
-  }
-
-  private String getTruckId(HttpServletRequest req) {
-    String requestURI = req.getRequestURI();
+    final String requestURI = req.getRequestURI();
+    req.setAttribute("localFrameworks", "true".equals(System.getProperty("use.local.frameworks", "false")));
     String truckId = requestURI.substring(14);
-    truckId = truckId.substring(0, truckId.indexOf('/'));
-    return truckId;
+    if (Strings.isNullOrEmpty(truckId)) {
+      resp.sendRedirect("/trucks");
+      return;
+    }
+    int index = truckId.indexOf("/stops/");
+    String actualTruckId = truckId.substring(0, index);
+    String stopId = truckId.substring(index+7);
+    final String jsp = "/WEB-INF/jsp/dashboard/editStop.jsp";
+    req = new GuiceHackRequestWrapper(req, jsp);
+    final Truck truck = truckDAO.findById(actualTruckId);
+    DateTime startTime, endTime;
+    String title;
+    if ("new".equals(stopId)) {
+      if (truck.getCategories().contains("Breakfast") || clock.now().getHourOfDay() > 11) {
+        startTime = clock.now();
+      } else {
+        startTime = clock.now().withTime(11, 0, 0, 0);
+      }
+      endTime = startTime.plusHours(3);
+      endTime = endTime.withMinuteOfHour(0);
+      title = "New Stop";
+    } else {
+      startTime = clock.now();
+      endTime = startTime.plusHours(2);
+      title = "New Stop";
+    }
+    req.setAttribute("startTime", timeFormatter.print(startTime));
+    req.setAttribute("endTime", timeFormatter.print(endTime));
+    req.setAttribute("truck", truck);
+    req.setAttribute("stopId", stopId);
+    req.setAttribute("nav", "trucks");
+    req.setAttribute("locations", locationNamesAsJsonArray());
+    req.setAttribute("breadcrumbs", ImmutableList.of(new Link("Trucks", "/admin/trucks"),
+        new Link(truck.getName(), "/admin/trucks/" + actualTruckId),
+        new Link(title, "/admin/trucks/" + actualTruckId + "/stops/" + stopId)));
+    req.getRequestDispatcher(jsp).forward(req, resp);
   }
 
   @Override protected void doPost(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-    String truckID = getTruckId(req);
-    Truck truck = truckDAO.findById(truckID);
-    DateTime startTime = parseTime(req.getParameter("startTime"), null);
-    DateTime endTime = parseTime(req.getParameter("endTime"), startTime);
-    Location location = geolocator.locate(req.getParameter("location"), GeolocationGranularity.NARROW);
-    long locationId = ModelEntity.UNINITIALIZED;
-    if (req.getParameter("entityId") != null) {
-      locationId = Long.parseLong(req.getParameter("entityId"));
+    String stopId = req.getParameter("stopId");
+    String truckId = req.getParameter("truckId");
+    Truck truck = truckDAO.findById(truckId);
+    TruckStop.Builder builder;
+    if (!stopId.equalsIgnoreCase("new")) {
+      try {
+        TruckStop actual = truckStopDAO.findById(Long.parseLong(stopId));
+        if (actual == null) {
+          resp.sendError(400, "Stop could not be found");
+          return;
+        } else {
+          builder = TruckStop.builder(actual);
+        }
+      } catch (NumberFormatException nfe) {
+        resp.sendError(400, "Invalid stop ID specified");
+        return;
+      }
+    } else {
+      builder = TruckStop.builder().origin(StopOrigin.MANUAL);
     }
-    boolean locked = false;
-    TruckStop stop = TruckStop.builder().truck(truck).startTime(startTime).endTime(endTime)
-        .origin(StopOrigin.MANUAL)
-        .location(location).key(locationId).locked(locked).build();
-    truckStopDAO.save(stop);
-    resp.sendRedirect("/admin/trucks/" + truckID);
+    builder.truck(truck);
+    DateTime startTime = timeFormatter.parseDateTime(req.getParameter("startTime"));
+    DateTime endTime = timeFormatter.parseDateTime(req.getParameter("endTime"));
+    if (!endTime.isAfter(startTime)) {
+      resp.sendError(400, "End time is not after start time.");
+      return;
+    }
+    Location location = locationDAO.findByAddress(req.getParameter("location"));
+    if (location == null || !location.isResolved()) {
+      resp.sendError(400, "Location is not resolved.");
+      return;
+    }
+    builder.startTime(startTime).endTime(endTime).locked("on".equals(req.getParameter("lockStop"))).location(location);
+    stopService.update(builder.build(), "foo");
+    String uri = req.getRequestURI().substring(0, req.getRequestURI().indexOf("/stops/"));
+    resp.sendRedirect(uri);
   }
 
-  private DateTime parseTime(String time, @Nullable DateTime context) {
-    DateTime dt = timeFormatter.parseDateTime(time.trim().toLowerCase());
-    DateTimeZone zone = dt.getZone();
-    DateTime theTime = clock.currentDay().toDateTime(dt.toLocalTime(), zone);
-    if (context == null) {
-      return theTime;
-    }
-    return theTime.isBefore(context) ? theTime.plusDays(1) : theTime;
+  private String locationNamesAsJsonArray() {
+    List<String> locationNames = ImmutableList.copyOf(
+        Iterables.transform(locationDAO.findAutocompleteLocations(), Location.TO_NAME));
+    return new JSONArray(locationNames).toString();
   }
 }
