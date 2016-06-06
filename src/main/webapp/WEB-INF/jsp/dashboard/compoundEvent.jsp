@@ -22,5 +22,11 @@
     <a href="/admin/locations/${location.key}" class="btn">Cancel</a>
     <input type="submit" class="btn btn-primary" value="Create"/>
 </form>
+<script type="text/javascript" src="/script/truck_edit_widget.js"></script>
+<script type="text/javascript">
+    enhancedDateWidget("start");
+    unifiedDateControls(enhancedDateWidget("end"));
+    locationMatching(${locations});
+</script>
 
 <%@ include file="dashboardFooterBS3.jsp" %>
