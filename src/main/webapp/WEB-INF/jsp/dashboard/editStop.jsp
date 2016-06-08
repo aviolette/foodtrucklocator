@@ -27,7 +27,7 @@
       twittalyzer from changing location</label>
   </div>
   <div>
-    <button id="cancelButton" class="btn btn-default">Cancel</button>
+    <a href="${backUrl}" id="cancelButton" class="btn btn-default">Cancel</a>
     <button id="saveButton"  class="btn btn-primary" type="submit" autocomplete="off" data-loading-text="Saving...">Save</button>
   </div>
 </form>
@@ -38,7 +38,7 @@
   locationMatching(${locations});
   $("#cancelButton").click(function(e) {
     e.preventDefault();
-    location.href="/admin/trucks/${truck.id}";
+    location.href="${backUrl}";
   })
 </script>
 <%@include file="dashboardFooterBS3.jsp" %>

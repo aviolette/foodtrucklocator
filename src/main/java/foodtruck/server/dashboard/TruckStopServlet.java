@@ -102,6 +102,7 @@ public class TruckStopServlet extends HttpServlet {
     req.setAttribute("stopId", stopId);
     req.setAttribute("nav", "trucks");
     req.setAttribute("locked", locked);
+    req.setAttribute("backUrl", "/admin/trucks/" + truckId);
     req.setAttribute("locationName", locationName);
     req.setAttribute("locations", locationNamesAsJsonArray());
     req.setAttribute("breadcrumbs", ImmutableList.of(new Link("Trucks", "/admin/trucks"),
