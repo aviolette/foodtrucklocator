@@ -8,10 +8,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.users.UserService;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import org.codehaus.jettison.json.JSONArray;
@@ -21,6 +23,8 @@ import org.joda.time.format.DateTimeFormatter;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
+import foodtruck.geolocation.GeoLocator;
+import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
 import foodtruck.model.StopOrigin;
 import foodtruck.model.Truck;
@@ -41,19 +45,23 @@ public class TruckStopServlet extends HttpServlet {
   private final TruckDAO truckDAO;
   private final Clock clock;
   private final DateTimeFormatter timeFormatter;
-  private final LocationDAO locationDAO;
+  private final GeoLocator geoLocator;
   private final FoodTruckStopService stopService;
+  private final LocationDAO locationDAO;
+  private final Provider<UserService> userServiceProvider;
 
   @Inject
   public TruckStopServlet(TruckDAO truckDAO, TruckStopDAO truckStopDAO, Clock clock,
-      LocationDAO locationDAO, FoodTruckStopService stopService,
-      @HtmlDateFormatter DateTimeFormatter timeFormatter) {
+      GeoLocator geoLocator, FoodTruckStopService stopService, Provider<UserService> userServiceProvider,
+      @HtmlDateFormatter DateTimeFormatter timeFormatter, LocationDAO locationDAO) {
     this.truckDAO = truckDAO;
     this.truckStopDAO = truckStopDAO;
     this.clock = clock;
     this.timeFormatter = timeFormatter;
-    this.locationDAO = locationDAO;
+    this.geoLocator = geoLocator;
     this.stopService = stopService;
+    this.locationDAO = locationDAO;
+    this.userServiceProvider = userServiceProvider;
   }
 
   @Override
@@ -140,13 +148,14 @@ public class TruckStopServlet extends HttpServlet {
       resp.sendError(400, "End time is not after start time.");
       return;
     }
-    Location location = locationDAO.findByAddress(req.getParameter("location"));
+    Location location = geoLocator.locate(req.getParameter("location"), GeolocationGranularity.BROAD);
     if (location == null || !location.isResolved()) {
       resp.sendError(400, "Location is not resolved.");
       return;
     }
     builder.startTime(startTime).endTime(endTime).locked("on".equals(req.getParameter("lockStop"))).location(location);
-    stopService.update(builder.build(), "foo");
+    UserService userService = userServiceProvider.get();
+    stopService.update(builder.build(), userService.getCurrentUser().getEmail());
     String uri = req.getRequestURI().substring(0, req.getRequestURI().indexOf("/stops/"));
     resp.sendRedirect(uri);
   }
