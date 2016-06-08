@@ -73,7 +73,8 @@ public class TruckStopServlet extends HttpServlet {
     req = new GuiceHackRequestWrapper(req, jsp);
     final Truck truck = truckDAO.findById(actualTruckId);
     DateTime startTime, endTime;
-    String title;
+    String title, locationName = "";
+    boolean locked = false;
     if ("new".equals(stopId)) {
       if (truck.getCategories().contains("Breakfast") || clock.now().getHourOfDay() > 11) {
         startTime = clock.now();
@@ -84,15 +85,24 @@ public class TruckStopServlet extends HttpServlet {
       endTime = endTime.withMinuteOfHour(0);
       title = "New Stop";
     } else {
-      startTime = clock.now();
-      endTime = startTime.plusHours(2);
-      title = "New Stop";
+      TruckStop stop = stopService.findById(Long.parseLong(stopId));
+      if (stop == null) {
+        resp.sendError(404, "Stop could not be found");
+        return;
+      }
+      locked = stop.isLocked();
+      startTime = stop.getStartTime();
+      endTime = stop.getEndTime();
+      title = stop.getLocation().getName();
+      locationName = title;
     }
     req.setAttribute("startTime", timeFormatter.print(startTime));
     req.setAttribute("endTime", timeFormatter.print(endTime));
     req.setAttribute("truck", truck);
     req.setAttribute("stopId", stopId);
     req.setAttribute("nav", "trucks");
+    req.setAttribute("locked", locked);
+    req.setAttribute("locationName", locationName);
     req.setAttribute("locations", locationNamesAsJsonArray());
     req.setAttribute("breadcrumbs", ImmutableList.of(new Link("Trucks", "/admin/trucks"),
         new Link(truck.getName(), "/admin/trucks/" + actualTruckId),
@@ -110,7 +120,7 @@ public class TruckStopServlet extends HttpServlet {
       try {
         TruckStop actual = truckStopDAO.findById(Long.parseLong(stopId));
         if (actual == null) {
-          resp.sendError(400, "Stop could not be found");
+          resp.sendError(404, "Stop could not be found");
           return;
         } else {
           builder = TruckStop.builder(actual);

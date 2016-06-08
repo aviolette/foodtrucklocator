@@ -90,13 +90,15 @@ function locationMatching(locations) {
 }
 
 runEditWidget = function(truckId, locations, categories, options) {
-  var lastStop, $editStop = $("#edit-stop"), locationEndpoint = '/admin/locations', useFormSubmitOnTouch = true;
+  var lastStop, baseEndpoint = '/admin/trucks/' + truckId, $editStop = $("#edit-stop"), locationEndpoint = '/admin/locations', useFormSubmitOnTouch = true;
   options = options || {};
 
   if (options["vendorEndpoints"]) {
     locationEndpoint = '/locations';
     useFormSubmitOnTouch = false;
+    baseEndpoint = '/vendor';
   }
+  useFormSubmitOnTouch = Modernizr.touch && useFormSubmitOnTouch;
 
   var $startTimeInput = $("#startTimeInput"), $endTimeInput = $("#endTimeInput"), calcStartDay, calcEndDay;
 
@@ -245,7 +247,11 @@ runEditWidget = function(truckId, locations, categories, options) {
           $("#truckEdit" + truckIndex).click(function (e) {
             stop["startDate"] = toDate(new Date(stop["startMillis"]));
             stop["endDate"] = toDate(new Date(stop["endMillis"]));
-            invokeEditDialog(stop, refreshSchedule);
+            if (useFormSubmitOnTouch) {
+              location.href = baseEndpoint + '/stops/'+ stop.id;
+            } else {
+              invokeEditDialog(stop, refreshSchedule);
+            }
           });
 
           function timeUpdateMaker(useStart) {
@@ -323,8 +329,8 @@ runEditWidget = function(truckId, locations, categories, options) {
   }
 
   $("#addButton").click(function (e) {
-    if (Modernizr.touch && useFormSubmitOnTouch) {
-      location.href = location.href + '/stops/new';
+    if (useFormSubmitOnTouch) {
+      location.href = baseEndpoint + '/stops/new';
     } else {
       newStop();
     }
