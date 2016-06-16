@@ -25,6 +25,7 @@ public class LocationReader {
         .lng(obj.getDouble("longitude"))
         .alias(obj.optString("alias"))
         .hasBooze(obj.optBoolean("hasBooze"))
+        .eventCalendarUrl(obj.optString("eventUrl"))
         .closed(obj.optBoolean("closed"))
         .twitterHandle(obj.optString("twitterHandle"))
         .popular(obj.optBoolean("popular", false))

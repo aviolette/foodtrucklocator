@@ -17,14 +17,14 @@ import com.javadocmd.simplelatlng.util.LengthUnit;
  * @since Jul 12, 2011
  */
 public class Location extends ModelEntity implements Serializable {
-  private static final long serialVersionUID = 1L;
-  private LatLng latLng;
-  private String name;
   public static final Function<Location, String> TO_NAME = new Function<Location, String> () {
     public String apply(Location input) {
       return input.getName();
     }
   };
+  private static final long serialVersionUID = 1L;
+  private LatLng latLng;
+  private String name;
   private boolean valid;
   private @Nullable String description;
   private @Nullable String url;
@@ -44,6 +44,7 @@ public class Location extends ModelEntity implements Serializable {
   private @Nullable String facebookUri;
   private boolean closed;
   private @Nullable Url imageUrl;
+  private @Nullable String eventCalendarUrl;
 
   // For serializable
   public Location() {
@@ -73,6 +74,7 @@ public class Location extends ModelEntity implements Serializable {
     closed = builder.closed;
     url = builder.url;
     imageUrl = builder.imageUrl;
+    eventCalendarUrl = builder.eventCalendarUrl;
   }
 
   public static Builder builder() {
@@ -81,6 +83,10 @@ public class Location extends ModelEntity implements Serializable {
 
   public static Builder builder(Location loc) {
     return new Builder(loc);
+  }
+
+  public @Nullable String getEventCalendarUrl() {
+    return eventCalendarUrl;
   }
 
   public @Nullable Url getImageUrl() {
@@ -259,6 +265,7 @@ public class Location extends ModelEntity implements Serializable {
     private @Nullable String facebookUri;
     private boolean closed;
     private @Nullable Url imageUrl;
+    private @Nullable String eventCalendarUrl;
 
     public Builder(Location location) {
       key = location.getKey();
@@ -284,9 +291,15 @@ public class Location extends ModelEntity implements Serializable {
       facebookUri = location.facebookUri;
       closed = location.closed;
       imageUrl = location.imageUrl;
+      eventCalendarUrl = location.eventCalendarUrl;
     }
 
     public Builder() {
+    }
+
+    public Builder eventCalendarUrl(String eventCalendarUrl) {
+      this.eventCalendarUrl = eventCalendarUrl;
+      return this;
     }
 
     public Builder imageUrl(Url imageUrl) {

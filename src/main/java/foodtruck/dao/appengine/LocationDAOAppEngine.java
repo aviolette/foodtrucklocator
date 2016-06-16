@@ -55,6 +55,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
   private static final String FACEBOOK_URI = "facebook_uri";
   private static final String CLOSED = "closed";
   private static final String IMAGE_URL = "image_url";
+  private static final String EVENT_URL = "event_url";
 
   private static final Logger log = Logger.getLogger(LocationDAOAppEngine.class.getName());
   private final Clock clock;
@@ -133,6 +134,14 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
   }
 
   @Override
+  public Iterable<Location> findLocationsWithCalendars() {
+    DatastoreService dataStore = provider.get();
+    Query q = new Query(LOCATION_KIND);
+    q.setFilter(new Query.FilterPredicate(EVENT_URL, Query.FilterOperator.NOT_EQUAL, null));
+    return executeQuery(dataStore, q, null);
+  }
+
+  @Override
   public @Nullable Location findByAlias(String location) {
     // max of three marches up the alias-tree
     for (int i=0; i < 3; i++) {
@@ -195,6 +204,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     entity.setProperty(FACEBOOK_URI, location.getFacebookUri());
     entity.setProperty(CLOSED, location.isClosed());
     setUrlProperty(entity, IMAGE_URL, location.getImageUrl());
+    entity.setProperty(EVENT_URL, location.getEventCalendarUrl());
     return entity;
   }
 
@@ -210,6 +220,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     builder.popular(getBooleanProperty(entity, POPULAR_FIELD, false));
     builder.autocomplete(getBooleanProperty(entity, AUTOCOMPLETE, false));
     builder.alias(getStringProperty(entity, ALIAS));
+    builder.eventCalendarUrl(getStringProperty(entity, EVENT_URL));
     builder.radius(Attributes.getDoubleProperty(entity, RADIAL_FIELD, 0.0));
     builder.twitterHandle(Attributes.getStringProperty(entity, TWITTERHANDLE));
     builder.ownedBy(getStringProperty(entity, OWNED_BY));

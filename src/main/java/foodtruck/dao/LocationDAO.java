@@ -53,4 +53,9 @@ public interface LocationDAO extends DAO<Long, Location> {
   Iterable<Location> findBoozyLocations();
 
   Location findByAlias(String location);
+
+  /**
+   * Returns all the locations that have event calendars
+   */
+  Iterable<Location> findLocationsWithCalendars();
 }
