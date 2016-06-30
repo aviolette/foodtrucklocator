@@ -18,7 +18,7 @@ import foodtruck.util.ServiceException;
  * @author aviolette
  * @since 4/29/13
  */
-public class YQLGeolocator implements GeoLocator {
+class YQLGeolocator implements GeoLocator {
   private static final Logger log = Logger.getLogger(YQLGeolocator.class.getName());
   private final YQLResource yahooResource;
 
@@ -32,9 +32,7 @@ public class YQLGeolocator implements GeoLocator {
     try {
       JSONObject obj = yahooResource.findLocation(location, false);
       return parseResponse(location, obj, granularity);
-    } catch (JSONException e) {
-      log.log(Level.WARNING, e.getMessage(), e);
-    } catch (ServiceException e) {
+    } catch (JSONException | ServiceException e) {
       log.log(Level.WARNING, e.getMessage(), e);
     }
     return null;

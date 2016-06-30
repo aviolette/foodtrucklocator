@@ -15,7 +15,7 @@ import foodtruck.util.ServiceException;
  * @author aviolette@gmail.com
  * @since 4/11/12
  */
-public class OrderedGeolocator implements GeoLocator {
+class OrderedGeolocator implements GeoLocator {
   private static final Logger log = Logger.getLogger(OrderedGeolocator.class.getName());
   private final StaticConfig staticConfig;
   private final GoogleGeolocator googleGeolocator;

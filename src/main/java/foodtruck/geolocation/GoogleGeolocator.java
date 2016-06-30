@@ -26,7 +26,7 @@ import foodtruck.util.ServiceException;
  * @author aviolette@gmail.com
  * @since 8/29/11
  */
-public class GoogleGeolocator implements GeoLocator {
+class GoogleGeolocator implements GeoLocator {
   private static final Logger log = Logger.getLogger(GoogleGeolocator.class.getName());
   private final Pattern latLongExpression;
   private final GoogleResource googleResource;

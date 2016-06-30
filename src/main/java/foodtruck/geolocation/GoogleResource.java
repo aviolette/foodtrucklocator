@@ -15,7 +15,7 @@ import foodtruck.model.Location;
  * @author aviolette@gmail.com
  * @since 10/18/11
  */
-public class GoogleResource {
+class GoogleResource {
   private static final Logger log = Logger.getLogger(GoogleResource.class.getName());
 
   private final WebResource geolocationResource;
@@ -27,7 +27,7 @@ public class GoogleResource {
     this.apiKey = apiKey;
   }
 
-  public JSONObject findLocation(String location) {
+  JSONObject findLocation(String location) {
     // TODO: make country and state configurable
     WebResource resource = geolocationResource.queryParam("address", location)
         .queryParam("sensor", "false")
@@ -40,7 +40,7 @@ public class GoogleResource {
     return resource.get(JSONObject.class);
   }
 
-  public JSONObject reverseLookup(Location location) {
+  JSONObject reverseLookup(Location location) {
     WebResource resource = geolocationResource.queryParam("latlng", location.getLatitude() + "," +
         location.getLongitude())
         .queryParam("sensor", "false");

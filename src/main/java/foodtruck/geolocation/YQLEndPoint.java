@@ -15,5 +15,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @since 4/29/13
  */
 @BindingAnnotation @Target( {FIELD, PARAMETER, METHOD}) @Retention(RUNTIME)
-public @interface YQLEndPoint {
+@interface YQLEndPoint {
 }

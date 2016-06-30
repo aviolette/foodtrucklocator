@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.base.Strings;
+import com.google.common.net.HttpHeaders;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -92,9 +93,9 @@ public class FoodTruckServlet extends FrontPageServlet {
     req.setAttribute("googleApiKey", staticConfig.getGoogleJavascriptApiKey());
     req.setAttribute("description", "Find food trucks on the streets of " + staticConfig.getCity() +
         " by time and location.  Results are updated in real-time throughout the day.");
-    resp.setHeader("Cache-Control", "no-cache");
-    resp.setHeader("Pragma", "no-cache");
-    resp.setHeader("Expires", "Thu, 01 Jan 1970 00:00:00 GMT");
+    resp.setHeader(HttpHeaders.CACHE_CONTROL, "no-cache");
+    resp.setHeader(HttpHeaders.PRAGMA, "no-cache");
+    resp.setHeader(HttpHeaders.EXPIRES, "Thu, 01 Jan 1970 00:00:00 GMT");
     req.setAttribute("payload", payload);
     String jsp = "/WEB-INF/jsp/index.jsp";
     req.getRequestDispatcher(jsp).forward(req, resp);

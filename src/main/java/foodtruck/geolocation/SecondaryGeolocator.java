@@ -15,5 +15,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @since 9/8/11
  */
 @BindingAnnotation @Target({FIELD, PARAMETER, METHOD}) @Retention(RUNTIME)
-public @interface SecondaryGeolocator {
+@interface SecondaryGeolocator {
 }

@@ -20,13 +20,13 @@ import foodtruck.util.Clock;
  * @author aviolette@gmail.com
  * @since Jul 20, 2011
  */
-public class CacheAndForwardLocator implements GeoLocator {
+class CacheAndForwardLocator implements GeoLocator {
+  private static final Logger log = Logger.getLogger(CacheAndForwardLocator.class.getName());
+  private final static String LAT_LNG = "(\\+|-)?[\\d|\\.]+,(\\+|-)?[\\d|\\.]+";
   private final LocationDAO dao;
   private final GeoLocator secondaryLocator;
-  private static final Logger log = Logger.getLogger(CacheAndForwardLocator.class.getName());
   private final FifteenMinuteRollupDAO monitor;
   private final Clock clock;
-  private final static String LAT_LNG = "(\\+|-)?[\\d|\\.]+,(\\+|-)?[\\d|\\.]+";
 
   @Inject
   public CacheAndForwardLocator(LocationDAO dao, @SecondaryGeolocator GeoLocator secondaryLocator,

@@ -15,5 +15,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @since 10/16/11
  */
 @BindingAnnotation @Target({FIELD, PARAMETER, METHOD}) @Retention(RUNTIME)
-public @interface GoogleEndPoint {
+@interface GoogleEndPoint {
 }

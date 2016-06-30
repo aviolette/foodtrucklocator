@@ -23,8 +23,7 @@ import foodtruck.model.Url;
  * @since 7/3/12
  */
 class Attributes {
-  public static @Nullable DateTime getDateTime(Entity entity, String propertyName,
-      DateTimeZone zone) {
+  static @Nullable DateTime getDateTime(Entity entity, String propertyName, DateTimeZone zone) {
     Date date = (Date) entity.getProperty(propertyName);
     if (date == null) {
       return null;
@@ -32,7 +31,7 @@ class Attributes {
     return new DateTime(date, zone);
   }
 
-  public static @Nullable String getTextProperty(Entity entity, String propertyName) {
+  static @Nullable String getTextProperty(Entity entity, String propertyName) {
     Text text = (Text) entity.getProperty(propertyName);
     if (text == null) {
       return null;
@@ -40,11 +39,11 @@ class Attributes {
     return text.getValue();
   }
 
-  public static String getStringProperty(Entity entity, String propertyName) {
+  static String getStringProperty(Entity entity, String propertyName) {
     return (String) entity.getProperty(propertyName);
   }
 
-  public static String getStringProperty(Entity entity, String name, String defaultValue) {
+  static String getStringProperty(Entity entity, String name, String defaultValue) {
     String value = getStringProperty(entity, name);
     if (value == null) {
       return defaultValue;
@@ -52,7 +51,7 @@ class Attributes {
     return value;
   }
 
-  public static Url getUrlProperty(Entity entity, String propertyName) {
+  static Url getUrlProperty(Entity entity, String propertyName) {
     String value = getStringProperty(entity, propertyName);
     if (value == null) {
       return null;
@@ -60,7 +59,7 @@ class Attributes {
     return new Url(value);
   }
 
-  public static void setUrlProperty(Entity entity, String propertyName, @Nullable Url value) {
+  static void setUrlProperty(Entity entity, String propertyName, @Nullable Url value) {
     if (value == null) {
       entity.setProperty(propertyName, null);
     } else {
@@ -68,8 +67,7 @@ class Attributes {
     }
   }
 
-  public static void setDateProperty(String propertyName, PropertyContainer entity,
-      @Nullable DateTime dateTime) {
+  static void setDateProperty(String propertyName, PropertyContainer entity, @Nullable DateTime dateTime) {
     if (dateTime == null) {
       entity.setProperty(propertyName, null);
     } else {
@@ -77,7 +75,7 @@ class Attributes {
     }
   }
 
-  public static int getIntProperty(Entity entity, String statName, int defaultValue) {
+  static int getIntProperty(Entity entity, String statName, int defaultValue) {
     if (entity.hasProperty(statName)) {
       Number num = (Number) entity.getProperty(statName);
       return num.intValue();
@@ -85,25 +83,22 @@ class Attributes {
     return defaultValue;
   }
 
-  public static long getLongProperty(Entity entity, String statName, long defaultValue) {
+  static long getLongProperty(Entity entity, String statName, long defaultValue) {
     if (entity.hasProperty(statName)) {
       return (Long) entity.getProperty(statName);
     }
     return defaultValue;
   }
 
-  public static double getDoubleProperty(Entity entity, String statName, double defaultValue) {
+  static double getDoubleProperty(Entity entity, String statName, double defaultValue) {
     if (entity.hasProperty(statName)) {
       return (Double) entity.getProperty(statName);
     }
     return defaultValue;
   }
 
-  public static boolean getBooleanProperty(Entity entity, String statName) {
-    return getBooleanProperty(entity, statName, false);
-  }
-
-  public static List<String> getListProperty(Entity entity, String name) {
+  @SuppressWarnings("unchecked")
+  static List<String> getListProperty(Entity entity, String name) {
     if (entity.hasProperty(name)) {
       List<String> val = (List<String>) entity.getProperty(name);
       return val == null ? ImmutableList.<String>of() : val;
@@ -111,14 +106,8 @@ class Attributes {
     return ImmutableList.of();
   }
 
-  public static boolean getBooleanProperty(Entity entity, String statName, boolean defaultValue) {
-    if (entity.hasProperty(statName)) {
-      return (Boolean) entity.getProperty(statName);
-    }
-    return defaultValue;
-  }
-
-  public static Set<String> getSetProperty(Entity entity, String name) {
+  @SuppressWarnings("unchecked")
+  static Set<String> getSetProperty(Entity entity, String name) {
     if (entity.hasProperty(name)) {
       Collection<String> values = (Collection<String>) entity.getProperty(name);
       if (values == null) {

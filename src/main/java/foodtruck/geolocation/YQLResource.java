@@ -12,7 +12,7 @@ import foodtruck.util.ServiceException;
  * @author aviolette
  * @since 4/29/13
  */
-public class YQLResource {
+class YQLResource {
   private final WebResource resource;
   private final StaticConfig config;
 
@@ -22,7 +22,7 @@ public class YQLResource {
     this.config = staticConfig;
   }
 
-  public JSONObject findLocation(String location, boolean reverse) {
+  JSONObject findLocation(String location, boolean reverse) {
     try {
       location = "select * from geo.placefinder where text = \"" + location + "\"";
       // TODO: Make locale a configurable parameter
