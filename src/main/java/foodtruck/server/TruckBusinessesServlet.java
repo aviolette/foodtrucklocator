@@ -68,11 +68,11 @@ public class TruckBusinessesServlet extends FrontPageServlet {
     req.getRequestDispatcher("/WEB-INF/jsp/businesses.jsp").forward(req, resp);
   }
 
-  public static class LocationWithTruck {
+  private static class LocationWithTruck {
     private final Truck truck;
     private final Location location;
 
-    public LocationWithTruck(Truck truck, Location location) {
+    LocationWithTruck(Truck truck, Location location) {
       this.truck = truck;
       this.location = Location.builder(location)
           .description(sanitize(location.getDescription()))

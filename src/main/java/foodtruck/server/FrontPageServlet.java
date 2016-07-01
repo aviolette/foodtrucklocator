@@ -42,6 +42,7 @@ public abstract class FrontPageServlet extends HttpServlet {
     req.setAttribute("title", title);
     req.setAttribute("brandTitle", title);
     req.setAttribute("suffix", "-fluid");
+    req.setAttribute("googleApiKey", staticConfig.getGoogleJavascriptApiKey());
     req.setAttribute("showBoozy", !"false".equals(System.getProperty("foodtrucklocator.showBoozy")));
     req.setAttribute("showWeekly", !"false".equals(System.getProperty("foodtrucklocator.showWeekly")));
     req.setAttribute("showAbout", !"false".equals(System.getProperty("foodtrucklocator.showAbout")));

@@ -29,7 +29,7 @@
 <%@include file="include/core_js.jsp" %>
 
 <script type="text/javascript"
-        src="http://maps.google.com/maps/api/js?sensor=false&libraries=geometry"></script>
+        src="http://maps.google.com/maps/api/js?key=${googleApiKey}&libraries=geometry"></script>
 
 <script type="text/javascript">
     (function() {

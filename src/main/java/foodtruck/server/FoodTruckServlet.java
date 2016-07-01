@@ -90,7 +90,6 @@ public class FoodTruckServlet extends FrontPageServlet {
     req.setAttribute("tab", "map");
     req.setAttribute("appKey", staticConfig.getFrontDoorAppKey());
     req.setAttribute("defaultCity", staticConfig.getCityState());
-    req.setAttribute("googleApiKey", staticConfig.getGoogleJavascriptApiKey());
     req.setAttribute("description", "Find food trucks on the streets of " + staticConfig.getCity() +
         " by time and location.  Results are updated in real-time throughout the day.");
     resp.setHeader(HttpHeaders.CACHE_CONTROL, "no-cache");

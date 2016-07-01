@@ -21,6 +21,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 import foodtruck.dao.LocationDAO;
 import foodtruck.model.Location;
+import foodtruck.model.StaticConfig;
 import foodtruck.notifications.NotificationService;
 import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.server.resources.json.LocationReader;
@@ -41,15 +42,17 @@ public class LocationEditServlet extends HttpServlet {
   private final LocationReader reader;
   private final FoodTruckStopService truckStopService;
   private final NotificationService notificationService;
+  private final StaticConfig config;
 
   @Inject
   public LocationEditServlet(LocationDAO dao, LocationWriter writer, LocationReader reader,
-      FoodTruckStopService truckStopService, NotificationService notificationService) {
+      FoodTruckStopService truckStopService, NotificationService notificationService, StaticConfig config) {
     this.locationDAO = dao;
     this.writer = writer;
     this.reader = reader;
     this.truckStopService = checkNotNull(truckStopService);
     this.notificationService = checkNotNull(notificationService);
+    this.config = config;
   }
 
   @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -58,6 +61,7 @@ public class LocationEditServlet extends HttpServlet {
     final String path = Urls.stripSessionId(req.getRequestURI());
     final String keyIndex = path.substring(path.lastIndexOf("/") + 1);
     req = new GuiceHackRequestWrapper(req, jsp);
+    req.setAttribute("googleApiKey", config.getGoogleJavascriptApiKey());
     Location location = locationDAO.findById(Long.valueOf(keyIndex));
     if (location != null) {
       try {
