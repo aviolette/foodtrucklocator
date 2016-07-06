@@ -98,7 +98,7 @@ runEditWidget = function(truckId, locations, categories, options) {
     useFormSubmitOnTouch = false;
     baseEndpoint = '/vendor';
   }
-  useFormSubmitOnTouch = Modernizr.touch && useFormSubmitOnTouch;
+  useFormSubmitOnTouch = (window.innerWidth < 600) && useFormSubmitOnTouch;
 
   var $startTimeInput = $("#startTimeInput"), $endTimeInput = $("#endTimeInput"), calcStartDay, calcEndDay;
 
