@@ -68,7 +68,9 @@ public class TruckBusinessesServlet extends FrontPageServlet {
     req.getRequestDispatcher("/WEB-INF/jsp/businesses.jsp").forward(req, resp);
   }
 
-  private static class LocationWithTruck {
+  // public access needed for access on JSP
+  @SuppressWarnings("WeakerAccess")
+  public static class LocationWithTruck {
     private final Truck truck;
     private final Location location;
 
