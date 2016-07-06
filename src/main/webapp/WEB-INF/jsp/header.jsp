@@ -14,14 +14,6 @@
   <title>${title}</title>
   <%@ include file="include/bootstrap_css.jsp" %>
   <link href="/css/foodtruckfinder${suffix}-1.0.css" rel="stylesheet"/>
-  <c:choose>
-    <c:when test="${localFrameworks}">
-      <script src="/script/lib/modernizr-1.7.min.js"></script>
-    </c:when>
-    <c:otherwise>
-      <script src="//storage.googleapis.com/ftf_static/script/modernizr-1.7.min.js"></script>
-    </c:otherwise>
-  </c:choose>
   <style type="text/css">
     #listContainer {
       overflow-y: auto !important;

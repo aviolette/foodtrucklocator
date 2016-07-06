@@ -1,78 +1,91 @@
 
+@media (max-width:990px) {
+  #map_wrapper {
+    display:none;
+  }
+}
+
+@media (min-width:990px) {
+  #map_wrapper {
+    display:block;
+  }
+}
+
+
 .cftf-header {
-    background-color: #333;
-    color: #f2f2f2;
+  background-color: #333;
+  color: #f2f2f2;
 }
 
 .cftf-header  a {
-    color: #f2f2f2;
+  color: #f2f2f2;
 }
 
 .navbar-nav > li > a:hover, .navbar-nav > li.active > a {
-    background-color: black;
+  background-color: black;
 }
 
 .cftf-main-container {
-    margin-top:50px;
-    background-color:white;
+  margin-top:50px;
+  background-color:white;
 }
 /* adjusts the background color of the dropdown when open */
 .nav > .open>a {
-    background-color: black !important;
+  background-color: black !important;
 }
 
 address.locationName {
-    font-weight: bold;
-    font-size: 110%;
+  font-weight: bold;
+  font-size: 110%;
 }
 
 .truckLeft {
-    margin-left: 50px;
+  margin-left: 50px;
 }
 
 .truckLink {
-    text-decoration:none;
-    display:block;
-    color: inherit;
+  text-decoration:none;
+  display:block;
+  color: inherit;
 }
 
 .truckLink:hover {
-    background-color: #eee;
-    text-decoration:inherit;
+  background-color: #eee;
+  text-decoration:inherit;
 }
 
 .infoWindowContent {
-    padding: 10px;
+  padding: 10px;
 }
 
 .modal-header {
-    background-color: #183864 !important;
-    color: white !important;
+  background-color: #183864 !important;
+  color: white !important;
 }
 
 .whitelink {
-    color: white !important;
+  color: white !important;
 }
 
 div.row {
-    padding: 20px;
+  padding: 20px;
 }
 
 .breadcrumb {
-    display:none;
+  display:none;
 }
 
 .previewIcon {
-    position: absolute;
-    top: -140px;
-    left: 50px;
-    border: 5px white solid;
+  position: absolute;
+  top: -140px;
+  left: 50px;
+  border: 5px white solid;
 }
 
 .top-row {
-    padding-bottom:0 !important;
+  padding-bottom:0 !important;
 }
 
 .second-top-row {
-    padding-top:0 !important;
+  padding-top:0 !important;
 }

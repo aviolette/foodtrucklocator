@@ -2,7 +2,6 @@ var FoodTruckLocator = function () {
   var _map = null,
       _appKey = null,
       _trucks = null,
-      _mobile = false,
       _mode = null,
       _markers = null,
       _center = null,
@@ -11,12 +10,20 @@ var FoodTruckLocator = function () {
       _defaultCityLength = 0,
       _openInfoWindow = null;
 
-  function isMobile() {
-    return _map == null || _mobile;
-  }
-
   function hideFlash() {
     $("#flashMsg").css("display", "none");
+  }
+
+  function isIOS() {
+    return navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/iPad/i);
+  }
+
+  function isAndroid() {
+    return navigator.userAgent.match(/Android/i);
+  }
+
+  function isMapVisible() {
+    return $("#map_wrapper").css("display") != "none";
   }
 
   function flash(msg) {
@@ -29,7 +36,7 @@ var FoodTruckLocator = function () {
 
   function refreshViewData() {
     updateDistanceFromCurrentLocation();
-    if (!isMobile()) {
+    if (isMapVisible()) {
       updateMap();
     }
     updateTruckLists();
@@ -174,10 +181,10 @@ var FoodTruckLocator = function () {
     };
 
     this.allVisible = function () {
-      if (isMobile()) {
+      if (!isMapVisible()) {
         return true;
       }
-      var bounds = isMobile() ? null : _map.getBounds(), visible = true;
+      var bounds = !isMapVisible() ? null : _map.getBounds(), visible = true;
       if (!bounds) {
         return false;
       }
@@ -205,9 +212,9 @@ var FoodTruckLocator = function () {
     };
 
     this.openNow = function () {
-      var now = Clock.now(), items = [], bounds = isMobile() ? null : _map.getBounds();
+      var now = Clock.now(), items = [], bounds = !isMapVisible() ? null : _map.getBounds();
       $.each(self.stops, function (idx, item) {
-        if (item.stop["startMillis"] <= now && item.stop["endMillis"] > now && (isMobile() || (bounds && bounds.contains(item.position)))) {
+        if (item.stop["startMillis"] <= now && item.stop["endMillis"] > now && (!isMapVisible() || (bounds && bounds.contains(item.position)))) {
           item.now = true;
           items.push(item);
         }
@@ -216,9 +223,9 @@ var FoodTruckLocator = function () {
     };
 
     this.openLater = function () {
-      var now = Clock.now(), items = [], bounds = isMobile() ? null : _map.getBounds();
+      var now = Clock.now(), items = [], bounds = !isMapVisible() ? null : _map.getBounds();
       $.each(self.stops, function (idx, item) {
-        if (item.stop["startMillis"] > now && (isMobile() || (bounds && bounds.contains(item.position)))) {
+        if (item.stop["startMillis"] > now && (!isMapVisible() || (bounds && bounds.contains(item.position)))) {
           item.now = false;
           items.push(item);
         }
@@ -286,7 +293,7 @@ var FoodTruckLocator = function () {
       if (lastLocation != stop.location.name) {
         $div = $("<div class='media-body'><h4><a href='/locations/" + stop.location.key + "'>" + formatLocation(stop.location.name) + "</a></h4></div>");
         $div.append($locationDescription);
-        var linkBody = isMobile() ? "" : "<a class='pull-left' href='#'><img id='" + stop.markerId + "' class='media-object img-responsive img-rounded' src='"
+        var linkBody = !isMapVisible() ? "" : "<a class='pull-left' href='#'><img id='" + stop.markerId + "' class='media-object img-responsive img-rounded' src='"
         + stop.marker.icon + "'/></a>";
         $location = $("<li class='media'>" + linkBody + "</li>");
         $location.append($div);
@@ -315,16 +322,16 @@ var FoodTruckLocator = function () {
         special = "<div class='text-info'><strong>Special: " + firstSpecial + "</strong></div>";
       }
       $div.append($("<div class='media'><a class='pull-left truckLink' truck-id='" + stop.truck.id
-      + "' href='#'><img class='media-object img-responsive img-rounded' src='"
-      + stop.truck.iconUrl + "'/></a><div class='media-body'><a class='truckLink' href='#' truck-id='" + stop.truck.id
-      + "'><strong>" + stop.truck.name + "</strong><div>"
-      + buildTimeRange(stop.stop, now)
-      + "</div>" + special
-      + "</a></div></div>"));
+          + "' href='#'><img class='media-object img-responsive img-rounded' src='"
+          + stop.truck.iconUrl + "'/></a><div class='media-body'><a class='truckLink' href='#' truck-id='" + stop.truck.id
+          + "'><strong>" + stop.truck.name + "</strong><div>"
+          + buildTimeRange(stop.stop, now)
+          + "</div>" + special
+          + "</a></div></div>"));
     });
     $("a.truckLink").each(function (idx, item) {
       var $item = $(item), truckId = $item.attr("truck-id");
-      if (isMobile()) {
+      if (!isMapVisible()) {
         $item.attr("href", "/trucks/" + truckId);
       } else {
         $item.off('click');
@@ -350,7 +357,7 @@ var FoodTruckLocator = function () {
       var markers = [];
       buildTruckList($("#nowTrucks"), nowTrucks, markers);
       buildTruckList($("#laterTrucks"), laterTrucks, markers);
-      if (!isMobile()) {
+      if (isMapVisible()) {
         $.each(markers, function (idx, markerAndId) {
           if (markerAndId.marker.getAnimation() != null) {
             return;
@@ -457,29 +464,29 @@ var FoodTruckLocator = function () {
     $("#truckInfoLink").attr("href", "/trucks/" + truck.id);
     if (truck.twitterHandle) {
       $truckSocial.append("<a target='_blank' href='http://twitter.com/" + truck.twitterHandle +
-      "'><img alt='@" +
-      truck.twitterHandle + "' src='//storage.googleapis.com/ftf_static/img/twitter32x32.png'/></a> ");
+          "'><img alt='@" +
+          truck.twitterHandle + "' src='//storage.googleapis.com/ftf_static/img/twitter32x32.png'/></a> ");
     }
     if (truck.foursquare) {
       $truckSocial.append("<a target='_blank' href='http://foursquare.com/venue/" +
-      truck.foursquare +
-      "'><img alt='Checkin on foursquare' src='//storage.googleapis.com/ftf_static/img/foursquare32x32.png'/></a> ");
+          truck.foursquare +
+          "'><img alt='Checkin on foursquare' src='//storage.googleapis.com/ftf_static/img/foursquare32x32.png'/></a> ");
     }
     if (truck.instagram) {
       $truckSocial.append("<a target='_blank' href='http://instagram.com/" +
-      truck.instagram +
-      "'><img alt='View instagram feed' src='//storage.googleapis.com/ftf_static/img/instagram32x32.png'/></a> ");
+          truck.instagram +
+          "'><img alt='View instagram feed' src='//storage.googleapis.com/ftf_static/img/instagram32x32.png'/></a> ");
     }
     if (truck.facebook) {
       $truckSocial.append("<a target='_blank' href='http://facebook.com" + truck.facebook +
-      "'><img alt='" +
-      truck.facebook + "' src='//storage.googleapis.com/ftf_static/img/facebook32x32.png'/></a> ");
+          "'><img alt='" +
+          truck.facebook + "' src='//storage.googleapis.com/ftf_static/img/facebook32x32.png'/></a> ");
     }
     var $truckInfo = $("#truckInfo");
     $truckInfo.empty();
     if (truck.url) {
       $truckUrl.append("<a class='whitelink' target='_blank' href='" + truck.url + "'>" +
-      truck.url + "</a>").removeClass("hidden");
+          truck.url + "</a>").removeClass("hidden");
     } else {
       $truckUrl.addClass("hidden");
     }
@@ -493,10 +500,6 @@ var FoodTruckLocator = function () {
     });
     $("#truckTitle").html(truck.name);
     $truckDialog.modal({show: true, keyboard: true, backdrop: true});
-  }
-
-  function displayListOnly() {
-    return (_mode != "desktop" && Modernizr.touch && window.screen.width < 1024);
   }
 
   function displayMessageOfTheDay(model) {
@@ -566,12 +569,11 @@ var FoodTruckLocator = function () {
     var controlText = document.createElement('div');
     var androidBadge = '<a href="https://play.google.com/store/apps/details?id=net.andrewviolette.truckz"><img src="/img/en_generic_rgb_wo_45.png" title="Google Play Button"/></a>';
     var iphoneBadge = '<a href="https://itunes.apple.com/us/app/chicago-food-truck-finder/id1002801516"><img height="45px" src="/img/Download_on_the_App_Store_Badge_US-UK_135x40.svg"/></a>';
-    if (Modernizr.touch) {
-      if (navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/iPad/i) ) {
-        controlText.innerHTML  = iphoneBadge;
-      } else {
-        controlText.innerHTML  = androidBadge;
-      }
+
+    if (isIOS()) {
+      controlText.innerHTML  = iphoneBadge;
+    } else if (isAndroid()) {
+      controlText.innerHTML  = androidBadge;
     } else {
       controlText.innerHTML  = androidBadge + " " + iphoneBadge;
     }
@@ -622,14 +624,17 @@ var FoodTruckLocator = function () {
         }
       });
     },
+    mapVisible: function() {
+      return isMapVisible();
+    },
     hideFlash: function () {
       hideFlash();
     },
     flash: function (msg, type) {
       flash(msg, type);
     },
-     clear: function() {
-       _markers.clear();
+    clear: function() {
+      _markers.clear();
     },
     extend: function () {
       var bounds = new google.maps.LatLngBounds();
@@ -648,100 +653,77 @@ var FoodTruckLocator = function () {
       _center = center;
       resize();
       displayMessageOfTheDay(modelPayload);
-      if (displayListOnly() || mobile) {
-        _mobile = true;
-        $("body").css("background", "white");
-        $("#map_wrapper").css("display", "none");
+      if (isIOS()) {
+        $("#iphoneBadge").removeClass("hidden");
+      } else if (isAndroid()) {
+        $("#androidBadge").removeClass("hidden");
+      }
+      _markers = new Markers();
+      _trucks = new Trucks(modelPayload);
+      _map = new google.maps.Map(document.getElementById("map_canvas"), {
+        zoom: findZoom(11),
+        center: _center,
+        maxZoom: 18,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      });
+      var loading = true;
+      google.maps.event.addListener(_map, 'center_changed', function () {
+        displayWarningIfMarkersNotVisible();
+      });
 
-        if (navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/iPad/i) ) {
-          $("#iphoneBadge").removeClass("hidden");
-        } else {
-          $("#androidBadge").removeClass("hidden");
+      _map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(badgeWidget());
+      _map.controls[google.maps.ControlPosition.TOP_LEFT].push(zoomWidget('University of Chicago', function() {
+        _map.setZoom(16);
+        _map.setCenter( new google.maps.LatLng(41.790628999999996, -87.60130099999999));
+        refreshViewData();
+      }));
+      _map.controls[google.maps.ControlPosition.TOP_LEFT].push(zoomWidget('Downtown', function() {
+        _map.setZoom(14);
+        _map.setCenter( new google.maps.LatLng(41.888141, -87.635352));
+        refreshViewData();
+      }));
+      _map.controls[google.maps.ControlPosition.TOP_LEFT].push(zoomWidget('Show All Markers', function() {
+        fitAll();
+        refreshViewData();
+      }));
+      google.maps.event.addListener(_map, 'dragend', function () {
+        refreshViewData();
+      });
+
+      google.maps.event.addListener(_map, 'zoom_changed', function () {
+        refreshViewData();
+      });
+      var listener = null;
+      // just want to invoke this once, for when the map first loads
+      listener = google.maps.event.addListener(_map, 'bounds_changed', function () {
+        fitAll();
+        refreshViewData();
+        if (listener) {
+          google.maps.event.removeListener(listener);
         }
-        $("#appbadges").removeClass("hidden");
+      });
+      setupGlobalEventHandlers();
 
-
-        self.setModel(modelPayload);
-        if (Modernizr.geolocation) {
-          flash("Looking up location...");
-          navigator.geolocation.getCurrentPosition(function (position) {
-            _userLocation = new google.maps.LatLng(position.coords.latitude,
-                position.coords.longitude);
-            hideFlash();
-            self.setModel(modelPayload);
-          }, function () {
-            hideFlash();
-            self.setModel(modelPayload);
-          }, {timeout: 5000});
-        }
-      } else {
-        _markers = new Markers();
-        _trucks = new Trucks(modelPayload);
-        _map = new google.maps.Map(document.getElementById("map_canvas"), {
-          zoom: findZoom(11),
-          center: _center,
-          maxZoom: 18,
-          mapTypeId: google.maps.MapTypeId.ROADMAP
-        });
-        var loading = true;
-        google.maps.event.addListener(_map, 'center_changed', function () {
-          displayWarningIfMarkersNotVisible();
-        });
-
-        _map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(badgeWidget());
-        _map.controls[google.maps.ControlPosition.TOP_LEFT].push(zoomWidget('University of Chicago', function() {
-          _map.setZoom(16);
-          _map.setCenter( new google.maps.LatLng(41.790628999999996, -87.60130099999999));
-          refreshViewData();
-        }));
-        _map.controls[google.maps.ControlPosition.TOP_LEFT].push(zoomWidget('Downtown', function() {
-          _map.setZoom(14);
-          _map.setCenter( new google.maps.LatLng(41.888141, -87.635352));
-          refreshViewData();
-        }));
-        _map.controls[google.maps.ControlPosition.TOP_LEFT].push(zoomWidget('Show All Markers', function() {
-          fitAll();
-          refreshViewData();
-        }));
-        google.maps.event.addListener(_map, 'dragend', function () {
-          refreshViewData();
-        });
-
-        google.maps.event.addListener(_map, 'zoom_changed', function () {
-          refreshViewData();
-        });
-        var listener = null;
-        // just want to invoke this once, for when the map first loads
-        listener = google.maps.event.addListener(_map, 'bounds_changed', function () {
-          fitAll();
-          refreshViewData();
-          if (listener) {
-            google.maps.event.removeListener(listener);
-          }
-        });
-        setupGlobalEventHandlers();
-
-        if (Modernizr.geolocation) {
-          navigator.geolocation.getCurrentPosition(function (position) {
-            loading = false;
-            var latLng = new google.maps.LatLng(position.coords.latitude,
-                    position.coords.longitude),
-                distance = google.maps.geometry.spherical.computeDistanceBetween(center,
-                    latLng, 3959);
-            // sanity check.  Don't pan beyond 60 miles from default center
-            if (distance < 60) {
-              // refresh the distances
-              _map.panTo(_center);
-              _userLocation = latLng;
-              refreshViewData();
-              fitAll();
-            }
-          }, function () {
-            loading = false;
-          });
-        } else {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
           loading = false;
-        }
+          var latLng = new google.maps.LatLng(position.coords.latitude,
+              position.coords.longitude),
+              distance = google.maps.geometry.spherical.computeDistanceBetween(center,
+                  latLng, 3959);
+          // sanity check.  Don't pan beyond 60 miles from default center
+          if (distance < 60) {
+            // refresh the distances
+            _map.panTo(_center);
+            _userLocation = latLng;
+            refreshViewData();
+            fitAll();
+          }
+        }, function () {
+          loading = false;
+        });
+      } else {
+        loading = false;
       }
       // reload the model every 5 minutes
       setInterval(function () {
