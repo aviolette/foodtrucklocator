@@ -37,7 +37,6 @@ import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStatus;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TruckStopWithCounts;
-import foodtruck.model.WeeklySchedule;
 import foodtruck.schedule.ScheduleStrategy;
 import foodtruck.util.Clock;
 import foodtruck.util.ServiceException;
@@ -86,6 +85,7 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
     truckStopDAO.delete(stopId);
   }
 
+  @SuppressWarnings("ConstantConditions")
   @Override public void update(TruckStop truckStop, String modifier) {
     if (truckStop.isNew()) {
       truckStop = TruckStop.builder(truckStop)
@@ -267,7 +267,7 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
     final List<TruckStop> stops = truckStopDAO.findAfter(startTime);
     return FluentIterable.from(stops)
         .filter(new Predicate<TruckStop>() {
-          public boolean apply(@Nullable TruckStop truckStop) {
+          public boolean apply(TruckStop truckStop) {
             return truckId.equals(truckStop.getTruck().getId());
           }
         })
@@ -385,34 +385,6 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
     return truckStopDAO.findOverRange(truckId, new Interval(since, clock.now()));
   }
 
-  @Override public WeeklySchedule findPopularStopsForWeek(LocalDate startDate) {
-    List<TruckStop> stops = truckStopDAO.findOverRange(null, new Interval(startDate.toDateTimeAtStartOfDay(),
-        startDate.plusDays(7).toDateTimeAtStartOfDay()));
-    Set<Location> locationSet = locationDAO.findPopularLocations();
-    Map<String, Location> locationMap = Maps.newHashMap();
-    for (Location loc : locationSet) {
-      locationMap.put(loc.getName(), loc);
-    }
-    WeeklySchedule.Builder scheduleBuilder = new WeeklySchedule.Builder();
-    scheduleBuilder.start(startDate);
-    for (TruckStop stop : stops) {
-      if (stop.getTruck() == null) {
-        // this will happen if I deleted a truck that was referenced in a stop
-        continue;
-      }
-      if (locationMap.containsKey(stop.getLocation().getName())) {
-        scheduleBuilder.addStop(stop);
-      } else {
-        for (Location loc : locationSet) {
-          if (loc.within(loc.getRadius()).milesOf(stop.getLocation())) {
-            scheduleBuilder.addStop(stop.withLocation(loc));
-            break;
-          }
-        }
-      }
-    }
-    return scheduleBuilder.build();
-  }
 
   @Override public List<TruckStatus> findCurrentAndPreviousStop(LocalDate day) {
     List<TruckStop> stops = truckStopDAO.findDuring(null, day);

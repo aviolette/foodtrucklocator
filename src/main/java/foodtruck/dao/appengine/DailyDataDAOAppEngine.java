@@ -26,7 +26,7 @@ import static foodtruck.dao.appengine.Attributes.setDateProperty;
  * @author aviolette
  * @since 10/26/15
  */
-public class DailyDataDAOAppEngine extends AppEngineDAO<Long, DailyData> implements DailyDataDAO {
+class DailyDataDAOAppEngine extends AppEngineDAO<Long, DailyData> implements DailyDataDAO {
   private static final String SPECIALS_LOCATION_ID = "location_id";
   private static final String SPECIALS_SPECIALS = "specials";
   private static final String SPECIALS_DATE = "date";

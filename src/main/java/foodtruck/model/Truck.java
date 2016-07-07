@@ -24,6 +24,7 @@ import static com.google.common.base.Preconditions.checkState;
  * @author aviolette@gmail.com
  * @since Jul 12, 2011
  */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class Truck extends ModelEntity implements Serializable {
   private String id;
   private String name;
@@ -150,7 +151,8 @@ public class Truck extends ModelEntity implements Serializable {
     return defaultCity;
   }
 
-  public String getPreviewIcon() {
+
+  public @Nullable String getPreviewIcon() {
     return previewIcon;
   }
 
@@ -815,7 +817,7 @@ public class Truck extends ModelEntity implements Serializable {
       if (phone.length() < 10) {
         this.phone = phone;
       } else {
-        this.phone = phone.replaceAll("\\(|\\)|\\-|\\+|\\.|\\ ", "");
+        this.phone = phone.replaceAll("\\(|\\)|\\-|\\+|\\.| ", "");
         if (this.phone.length() == 10) {
           this.phone = this.phone.substring(0, 3) + "-" + this.phone.substring(3, 6) + "-" + this.phone.substring(6, 10);
         }

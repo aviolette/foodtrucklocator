@@ -25,7 +25,7 @@ import foodtruck.util.TimeOnlyFormatter;
  * @author aviolette
  * @since 4/29/13
  */
-public class SimpleEmailNotifier implements EmailNotifier {
+class SimpleEmailNotifier implements EmailNotifier {
   public static Logger log = Logger.getLogger(SimpleEmailNotifier.class.getName());
   private final DateTimeFormatter timeOnlyFormatter;
   private final StaticConfig staticConfig;

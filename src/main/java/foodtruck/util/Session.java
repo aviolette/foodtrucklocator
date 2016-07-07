@@ -78,7 +78,7 @@ public class Session {
     return null;
   }
 
-  public String fullSessionKey() {
+  private String fullSessionKey() {
     return "session-" + sessionKey;
   }
 

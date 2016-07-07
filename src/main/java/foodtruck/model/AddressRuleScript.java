@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 public class AddressRuleScript extends ModelEntity {
   private String script;
 
-  public AddressRuleScript(Builder builder) {
+  private AddressRuleScript(Builder builder) {
     super(builder.key);
     this.script = builder.script;
   }
@@ -19,12 +19,12 @@ public class AddressRuleScript extends ModelEntity {
     return new Builder();
   }
 
-  public String getScript() {
-    return script;
-  }
-
   public static Builder builder(AddressRuleScript obj) {
     return new Builder(obj);
+  }
+
+  public String getScript() {
+    return script;
   }
 
   public static class Builder {

@@ -382,11 +382,6 @@ public class Location extends ModelEntity implements Serializable {
       return this;
     }
 
-    public Builder eventSpecific(boolean eventSpecific) {
-      this.eventSpecific = eventSpecific;
-      return this;
-    }
-
     public Builder url(@Nullable String url) {
       this.url = url;
       return this;
@@ -422,9 +417,10 @@ public class Location extends ModelEntity implements Serializable {
     }
   }
 
+  @SuppressWarnings("WeakerAccess")
   public class ScalarDistanceRequest {
     private final double distance;
-    public ScalarDistanceRequest(double distance) {
+    ScalarDistanceRequest(double distance) {
       this.distance = distance;
     }
 

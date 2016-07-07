@@ -16,7 +16,7 @@ import static foodtruck.dao.appengine.Attributes.getStringProperty;
  * @author aviolette
  * @since 1/25/13
  */
-public class ApplicationDAOAppEngine extends AppEngineDAO<String, Application> implements ApplicationDAO {
+class ApplicationDAOAppEngine extends AppEngineDAO<String, Application> implements ApplicationDAO {
   private static final String KIND = "application";
   private static final String PROP_NAME = "name";
   private static final String PROP_DESCRIPTION = "description";

@@ -24,6 +24,14 @@ public class Application extends ModelEntity {
     this.canHandleNotifications = builder.canHandleNotifications;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static Builder builder(Application app) {
+    return new Builder(app);
+  }
+
   @Override
   public void validate() throws IllegalStateException {
     Preconditions.checkArgument(!Strings.isNullOrEmpty(name), "Name is null");
@@ -48,14 +56,6 @@ public class Application extends ModelEntity {
 
   public String getDescription() {
     return description;
-  }
-
-  public static Builder builder() {
-    return new Builder();
-  }
-
-  public static Builder builder(Application app) {
-    return new Builder(app);
   }
 
   public boolean canHandleNotifications() {
@@ -107,7 +107,7 @@ public class Application extends ModelEntity {
     }
 
     public Builder canHandleNotifications(boolean canHandleNotifications) {
-      this.canHandleNotifications = enabled;
+      this.canHandleNotifications = canHandleNotifications;
       return this;
     }
 

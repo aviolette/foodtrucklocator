@@ -14,7 +14,7 @@ import foodtruck.model.DayOfWeek;
  * @author aviolette@gmail.com
  * @since 9/22/11
  */
-public class ClockImpl implements Clock {
+class ClockImpl implements Clock {
   private final DateTimeZone zone;
   private final DateTimeFormatter timeFormatter;
 

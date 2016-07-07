@@ -25,7 +25,7 @@ import foodtruck.model.StaticConfig;
  * @author aviolette
  * @since 8/13/15
  */
-public class JavaMailEmailSender implements EmailSender {
+class JavaMailEmailSender implements EmailSender {
   private static final Logger log = Logger.getLogger(JavaMailEmailSender.class.getName());
   private final StaticConfig config;
 

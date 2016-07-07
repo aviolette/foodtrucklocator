@@ -7,9 +7,9 @@ import foodtruck.model.TruckStop;
  * @since 5/24/12
  */
 public interface TruckStopNotifier {
-  public void added(TruckStop stop);
+  void added(TruckStop stop);
 
-  public void removed(TruckStop stop);
+  void removed(TruckStop stop);
 
-  public void terminated(TruckStop stop);
+  void terminated(TruckStop stop);
 }

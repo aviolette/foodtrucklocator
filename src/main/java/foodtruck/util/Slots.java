@@ -17,7 +17,7 @@ import foodtruck.model.TimeValue;
 public class Slots {
   private final long slotLength;
 
-  public Slots(long slotLength) {
+  Slots(long slotLength) {
     this.slotLength = slotLength;
   }
 

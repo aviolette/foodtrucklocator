@@ -103,7 +103,7 @@ public class DailyData extends ModelEntity {
     private boolean soldOut;
     private String special;
 
-    public SpecialInfo(String special, boolean soldOut) {
+    SpecialInfo(String special, boolean soldOut) {
       this.soldOut = soldOut;
       this.special = special;
     }

@@ -17,7 +17,6 @@ import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStatus;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TruckStopWithCounts;
-import foodtruck.model.WeeklySchedule;
 
 /**
  * Service for manipulating food truck stops.
@@ -104,12 +103,6 @@ public interface FoodTruckStopService {
    * @return the list of all truck stops
    */
   List<TruckStop> findStopsForTruckSince(DateTime since, String truckId);
-
-  /**
-   * Generates a weekly schedule based on popular stops/
-   * @return the weekly schedule for the current week
-   */
-  WeeklySchedule findPopularStopsForWeek(LocalDate startDate);
 
   /**
    * Returns the daily schedule with only the stops that end after the specified time

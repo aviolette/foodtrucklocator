@@ -53,8 +53,7 @@ public class Story extends ModelEntity {
   }
 
   public String getSanitizedText() {
-    String foo = text.replaceAll(" ", " ");
-    return foo;
+    return text.replaceAll(" ", " ");
   }
 
   public String getText() {
@@ -78,10 +77,8 @@ public class Story extends ModelEntity {
   }
 
   public boolean isReply() {
-    if (Strings.isNullOrEmpty(text) || text.toLowerCase().startsWith("@" + screenName.toLowerCase() + " ")) {
-      return false;
-    }
-    return text.charAt(0) == '@';
+    return !(Strings.isNullOrEmpty(text) || text.toLowerCase().startsWith("@" + screenName.toLowerCase() + " ")) && text
+        .charAt(0) == '@';
   }
 
   @Override public int hashCode() {

@@ -7,10 +7,10 @@ import java.security.SecureRandom;
  * @author aviolette
  * @since 6/18/14
  */
-public class SessionIdentifier {
+class SessionIdentifier {
   private SecureRandom random = new SecureRandom();
 
-  public String nextSessionId() {
+  String nextSessionId() {
     return new BigInteger(130, random).toString(32);
   }
 }

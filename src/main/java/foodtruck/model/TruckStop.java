@@ -120,14 +120,6 @@ public class TruckStop extends ModelEntity {
         location.equals(obj.location);
   }
 
-  /**
-   * Returns true if the start time of the stop falls within the specified time range.
-   */
-  public boolean within(TimeRange range) {
-    return range.getStartDateTime().isBefore(startTime.plusSeconds(1)) &&
-        range.getEndDateTime().isAfter(startTime);
-  }
-
   @Override
   public String toString() {
     try {
