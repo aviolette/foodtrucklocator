@@ -46,7 +46,7 @@ import foodtruck.util.ServiceException;
  * @author aviolette@gmail.com
  * @since Jul 12, 2011
  */
-public class FoodTruckStopServiceImpl implements FoodTruckStopService {
+class FoodTruckStopServiceImpl implements FoodTruckStopService {
   private static final Logger log = Logger.getLogger(FoodTruckStopServiceImpl.class.getName());
   private final TruckStopDAO truckStopDAO;
   private final TruckDAO truckDAO;

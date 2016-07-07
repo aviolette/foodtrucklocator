@@ -45,7 +45,7 @@
         <c:forEach items="${stops}" var="stop" varStatus="status">
           <c:if test="${status.index == 0}">
             <h3>Schedule for <joda:format value="${thedate}" pattern="MMM dd, YYYY"/></h3>
-            <c:if test="${requestedTime}"><div><small><a href="/locations/${location.key}">(click here for today's schedule)</a></small></div></c:if>
+            <c:if test="${requestedTime}"><div><small><a href="/locations/${location.key}">(click here for this week's schedule)</a></small></div></c:if>
           </c:if>
           <div class="media">
             <a class="pull-left" href="/trucks/${stop.truck.id}">

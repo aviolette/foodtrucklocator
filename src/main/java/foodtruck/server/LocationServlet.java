@@ -92,6 +92,7 @@ public class LocationServlet extends FrontPageServlet {
     DateTime dateTime = null;
     String onDate = "";
     boolean requestedTime = false;
+    boolean showStops = true;
     if (!Strings.isNullOrEmpty(timeRequest)) {
       try {
         dateTime = dateFormatter.parseDateTime(timeRequest);
@@ -104,15 +105,18 @@ public class LocationServlet extends FrontPageServlet {
         return;
       }
     } else {
+      showStops = false;
       LocalDate startDate = clock.firstDayOfWeekFrom(clock.now());
       List<DailySchedule> truckStops = truckStopService.findStopsNearLocationOverRange(location,
-          new Interval(startDate.toDateTimeAtStartOfDay(), startDate.plusDays(7).toDateTimeAtStartOfDay()));
+          new Interval(startDate.toDateTimeAtStartOfDay(), startDate.plusDays(8).toDateTimeAtStartOfDay()));
       req.setAttribute("weeklyStops", truckStops);
     }
     if (dateTime == null) {
       dateTime = clock.now();
     }
-    req.setAttribute("stops", truckStopService.findStopsNearALocation(location, dateTime.toLocalDate()));
+    if (showStops) {
+      req.setAttribute("stops", truckStopService.findStopsNearALocation(location, dateTime.toLocalDate()));
+    }
     req.setAttribute("thedate", dateTime);
     req.setAttribute("requestedTime", requestedTime);
     req.setAttribute("tab", "location");
