@@ -9,6 +9,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -29,6 +30,10 @@ public class DailySchedule {
     this.day = builder.day;
     this.message = builder.message;
     this.specials = ImmutableSet.copyOf(builder.specials);
+  }
+
+  public static Builder builder() {
+    return new Builder();
   }
 
   public @Nullable Message getMessageOfTheDay() {
@@ -56,10 +61,6 @@ public class DailySchedule {
     return !stops.isEmpty();
   }
 
-  public static Builder builder() {
-    return new Builder();
-  }
-
   public List<TruckStop> activeStopsAtLocation(final DateTime time) {
     return FluentIterable.from(stops).filter(new Predicate<TruckStop>() {
       public boolean apply(TruckStop input) {
@@ -69,7 +70,7 @@ public class DailySchedule {
   }
 
   public static class Builder {
-    private List<TruckStop> stops = ImmutableList.of();
+    private List<TruckStop> stops = Lists.newLinkedList();
     private LocalDate day;
     private @Nullable Message message;
     private Set<DailyData> specials = ImmutableSet.of();
@@ -81,9 +82,18 @@ public class DailySchedule {
       return this;
     }
 
+    public Builder addStop(TruckStop stop) {
+      this.stops.add(stop);
+      return this;
+    }
+
     public Builder date(LocalDate date) {
       this.day = date;
       return this;
+    }
+
+    public LocalDate getDay() {
+      return day;
     }
 
     public Builder message(Message message) {
@@ -98,6 +108,10 @@ public class DailySchedule {
 
     public DailySchedule build() {
       return new DailySchedule(this);
+    }
+
+    public boolean hasStops() {
+      return !stops.isEmpty();
     }
   }
 

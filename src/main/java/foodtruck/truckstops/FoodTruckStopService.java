@@ -152,4 +152,6 @@ public interface FoodTruckStopService {
   List<TruckStop> findUpcomingBoozyStops(LocalDate localDate, int daysOut);
 
   List<TruckStopWithCounts> findStopsForTruckAfter(String truckId, DateTime startTime);
+
+  List<DailySchedule> findStopsNearLocationOverRange(Location location, Interval range);
 }

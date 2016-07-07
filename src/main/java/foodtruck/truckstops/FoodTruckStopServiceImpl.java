@@ -300,6 +300,30 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
         .toList();
   }
 
+  @Override
+  public List<DailySchedule> findStopsNearLocationOverRange(final Location location, Interval range) {
+    ImmutableList.Builder<DailySchedule> builder = ImmutableList.builder();
+    DailySchedule.Builder schedule = null;
+    for (TruckStop stop : truckStopDAO.findOverRange(null, range)) {
+      if (!stop.getLocation().containedWithRadiusOf(location)) {
+        continue;
+      }
+      if (schedule != null && !schedule.getDay().isEqual(stop.getStartTime().toLocalDate())) {
+        builder.add(schedule.build());
+        schedule = null;
+      }
+      if (schedule == null) {
+        schedule = DailySchedule.builder()
+            .date(stop.getStartTime().toLocalDate());
+      }
+      schedule.addStop(stop);
+    }
+    if (schedule != null && schedule.hasStops()) {
+      builder.add(schedule.build());
+    }
+    return builder.build();
+  }
+
   private DateTime lesserOf(DateTime dateTime1, DateTime dateTime2) {
     return dateTime1.isBefore(dateTime2) ? dateTime1 : dateTime2;
   }
@@ -389,7 +413,6 @@ public class FoodTruckStopServiceImpl implements FoodTruckStopService {
     }
     return scheduleBuilder.build();
   }
-
 
   @Override public List<TruckStatus> findCurrentAndPreviousStop(LocalDate day) {
     List<TruckStop> stops = truckStopDAO.findDuring(null, day);

@@ -1,6 +1,7 @@
 package foodtruck.server;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -12,9 +13,12 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import org.joda.time.DateTime;
+import org.joda.time.Interval;
+import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.LocationDAO;
+import foodtruck.model.DailySchedule;
 import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
 import foodtruck.truckstops.FoodTruckStopService;
@@ -99,6 +103,11 @@ public class LocationServlet extends FrontPageServlet {
         resp.setStatus(404);
         return;
       }
+    } else {
+      LocalDate startDate = clock.firstDayOfWeekFrom(clock.now());
+      List<DailySchedule> truckStops = truckStopService.findStopsNearLocationOverRange(location,
+          new Interval(startDate.toDateTimeAtStartOfDay(), startDate.plusDays(7).toDateTimeAtStartOfDay()));
+      req.setAttribute("weeklyStops", truckStops);
     }
     if (dateTime == null) {
       dateTime = clock.now();

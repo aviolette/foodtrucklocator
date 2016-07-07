@@ -29,28 +29,38 @@
                                                      href="http://twitter.com/${location.twitterHandle}"><img
           alt="@${location.twitterHandle} on twitter" src="http://storage.googleapis.com/ftf_static/img/twitter32x32.png"></a></c:if>
     </div>
-
-
-
   </div>
   <div class="col-md-6">
-    <c:forEach items="${stops}" var="stop" varStatus="status">
-      <c:if test="${status.index == 0}">
-        <h3>Schedule for <joda:format value="${thedate}" pattern="MMM dd, YYYY"/></h3>
-          <c:if test="${requestedTime}"><div><small><a href="/locations/${location.key}">(click here for today's schedule)</a></small></div></c:if>
-      </c:if>
-      <div class="media">
-        <a class="pull-left" href="/trucks/${stop.truck.id}">
-          <img class="media-object" src="${stop.truck.iconUrl}" alt="${stop.truck.name} icon"/>
-        </a>
-        <div class="media-body">
-          <a href="/trucks/${stop.truck.id}" class="truckLink">
-            <h4 class="media-heading">${stop.truck.name}</h4>
-            <joda:format value="${stop.startTime}" style="-S"/> - <joda:format value="${stop.endTime}" style="-S"/>
-          </a>
-        </div>
-      </div>
-    </c:forEach>
+    <c:choose>
+      <c:when test="${!empty(weeklyStops)}">
+        <c:forEach items="${weeklyStops}" var="day" varStatus="dayStatus">
+          <h3><joda:format value="${day.day}" pattern="EEEE"/></h3>
+          <c:forEach items="${day.stops}" var="stop">
+            <a href="/trucks/${stop.truck.id}"><img src="${stop.truck.iconUrl}" alt=""
+                                                    title="<joda:format pattern="hh:mm a" value="${stop.startTime}"/> - <joda:format pattern="hh:mm a" value="${stop.endTime}"/> ${stop.truck.name}"/></a>
+          </c:forEach>
+        </c:forEach>
+      </c:when>
+      <c:otherwise>
+        <c:forEach items="${stops}" var="stop" varStatus="status">
+          <c:if test="${status.index == 0}">
+            <h3>Schedule for <joda:format value="${thedate}" pattern="MMM dd, YYYY"/></h3>
+            <c:if test="${requestedTime}"><div><small><a href="/locations/${location.key}">(click here for today's schedule)</a></small></div></c:if>
+          </c:if>
+          <div class="media">
+            <a class="pull-left" href="/trucks/${stop.truck.id}">
+              <img class="media-object" src="${stop.truck.iconUrl}" alt="${stop.truck.name} icon"/>
+            </a>
+            <div class="media-body">
+              <a href="/trucks/${stop.truck.id}" class="truckLink">
+                <h4 class="media-heading">${stop.truck.name}</h4>
+                <joda:format value="${stop.startTime}" style="-S"/> - <joda:format value="${stop.endTime}" style="-S"/>
+              </a>
+            </div>
+          </div>
+        </c:forEach>
+      </c:otherwise>
+    </c:choose>
   </div>
 </div>
 
