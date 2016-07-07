@@ -107,6 +107,7 @@ public class FoodtruckServletModule extends ServletModule {
 
     // Front-page endpoints
     serve("/weekly-schedule").with(WeeklyScheduleServlet.class);
+    serve("/popular").with(PopularServlet.class);
     serve("/businesses").with(TruckBusinessesServlet.class);
     serve("/booze").with(BoozeAndTrucksServlet.class);
     serve("/vendor/beaconnaise").with(BeaconnaiseServlet.class);
