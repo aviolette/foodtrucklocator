@@ -6,15 +6,14 @@
   </div>
 </div>
 
-<div class="row">
-  <c:forEach items="${locations}" var="location" varStatus="locationStatus">
-    <div class='col-xs-6 col-md-2'>
-      <a href='/locations/${location.key}'>
-        <img width='180' height='180' src='${location.imageUrl}'/>
-        <p class='text-center'><strong>${location.name}</strong></p>
-      </a>
-    </div>
-  </c:forEach>
+<c:forEach items="${locations}" var="location" varStatus="locationStatus">
+  <c:if test="${locationStatus.index % 6 == 0}"><c:if test="${locationStatus.index !=0 }"></div></c:if><div class="row"></c:if>
+  <div class='col-xs-6 col-md-2'>
+    <a href='/locations/${location.key}'>
+      <img width='180' height='180' src='${location.imageUrl}'/>
+      <p class='text-center'><strong>${location.name}</strong></p>
+    </a>
+  </div>
+</c:forEach>
 </div>
-
 <%@ include file="footer.jsp" %>
