@@ -92,6 +92,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     Query q = new Query(LOCATION_KIND);
     Query.Filter popularFilter = new Query.FilterPredicate(POPULAR_FIELD, Query.FilterOperator.EQUAL, true);
     q.setFilter(popularFilter);
+    q.addSort(NAME_FIELD);
     return ImmutableSet.copyOf(executeQuery(dataStore, q, null));
   }
 
