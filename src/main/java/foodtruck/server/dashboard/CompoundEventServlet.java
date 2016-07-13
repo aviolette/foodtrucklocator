@@ -52,6 +52,6 @@ public class CompoundEventServlet extends HttpServlet {
       resp.sendError(404);
       return;
     }
-    eventServletSupportProvider.get().get(location);
+    eventServletSupportProvider.get().get(location, "/admin/locations/" + locationID);
   }
 }

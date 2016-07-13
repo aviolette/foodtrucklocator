@@ -79,7 +79,7 @@ public class EventServletSupport {
     response.sendRedirect(redirectTo);
   }
 
-  public void get(Location location) throws ServletException, IOException {
+  public void get(Location location, String redirectTo) throws ServletException, IOException {
     DateTime startTime = clock.now().plusHours(1).withMinuteOfHour(0), endTime = startTime.plusHours(2);
     if (clock.now().isBefore(clock.timeAt(11, 0))) {
       startTime = clock.timeAt(11, 0);
@@ -95,6 +95,7 @@ public class EventServletSupport {
     request.setAttribute("startTime", timeFormatter.print(startTime));
     request.setAttribute("endTime", timeFormatter.print(endTime));
     request.setAttribute("location", location);
+    request.setAttribute("cancelUrl", redirectTo);
     request.setAttribute("postMethod", request.getRequestURI());
     request.setAttribute("trucks", ImmutableList.copyOf(
         Iterables.transform(truckDAO.findActiveTrucks(), new Function<Truck, TruckWithSelectionIndicator>() {

@@ -35,12 +35,16 @@ public class LocationEditVendorServlet extends VendorServletSupport {
 
   @Override
   protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable Location location) throws ServletException, IOException {
-    eventServletSupportProvider.get().get(location);
+    eventServletSupportProvider.get().get(location, getRedirectTo(location));
   }
 
   @Override
   protected void dispatchPost(HttpServletRequest req, HttpServletResponse resp, Location location,
       String principalName) throws IOException {
-    eventServletSupportProvider.get().post(location, principalName, "/vendor/locations/" + location.getKey());
+    eventServletSupportProvider.get().post(location, principalName, getRedirectTo(location));
+  }
+
+  private String getRedirectTo(Location location) {
+    return "/vendor/locations/" + location.getKey();
   }
 }
