@@ -23,7 +23,6 @@ public interface TimeSeriesDAO extends DAO<Long, SystemStats>{
 
   /**
    * Deletes all stats before the current day
-   * @param localDate
    */
   void deleteBefore(LocalDate localDate);
 

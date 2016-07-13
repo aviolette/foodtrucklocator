@@ -29,7 +29,6 @@ public interface Clock {
 
   /**
    * Returns the first day of this week.
-   * @return
    */
   LocalDate firstDayOfWeek();
 
@@ -48,7 +47,6 @@ public interface Clock {
 
   /**
    * Returns the current time/date formatted as a string
-   * @return
    */
   String nowFormattedAsTime();
 

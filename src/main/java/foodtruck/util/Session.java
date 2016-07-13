@@ -62,6 +62,7 @@ public class Session {
   public void setProperty(String name, Object value) {
     Map<String, Object> contents;
     if (cache.contains(fullSessionKey())) {
+      //noinspection unchecked
       contents = (Map<String, Object>) cache.get(fullSessionKey());
     } else {
       contents = Maps.newHashMap();
@@ -72,6 +73,7 @@ public class Session {
 
   public @Nullable Object getProperty(String name) {
     if (cache.contains(fullSessionKey())) {
+      //noinspection unchecked
       Map<String, Object> map = (Map<String, Object>) cache.get(fullSessionKey());
       return map.get(name);
     }
@@ -84,6 +86,7 @@ public class Session {
 
   public void removeProperty(String name) {
     if (cache.contains(fullSessionKey())) {
+      //noinspection unchecked
       Map<String, Object> contents = (Map<String, Object>) cache.get(fullSessionKey());
       contents.remove(name);
       cache.put(fullSessionKey(), contents);

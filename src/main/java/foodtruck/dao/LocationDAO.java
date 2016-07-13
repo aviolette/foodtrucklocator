@@ -54,11 +54,6 @@ public interface LocationDAO extends DAO<Long, Location> {
 
   Location findByAlias(String location);
 
-  /**
-   * Returns all the locations that have event calendars
-   */
-  Iterable<Location> findLocationsWithCalendars();
-
   Collection<Location> findByTwitterId(String twitterId);
 
   Collection<Location> findByManagerEmail(String email);

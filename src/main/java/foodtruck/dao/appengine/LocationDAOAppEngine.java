@@ -137,14 +137,6 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
   }
 
   @Override
-  public Iterable<Location> findLocationsWithCalendars() {
-    DatastoreService dataStore = provider.get();
-    Query q = new Query(LOCATION_KIND);
-    q.setFilter(new Query.FilterPredicate(EVENT_URL, Query.FilterOperator.NOT_EQUAL, null));
-    return executeQuery(dataStore, q, null);
-  }
-
-  @Override
   public Collection<Location> findByTwitterId(String twitterId) {
     DatastoreService dataStore = provider.get();
     Query q = new Query(LOCATION_KIND);
