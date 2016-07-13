@@ -8,30 +8,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.users.UserService;
-import com.google.common.base.Function;
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
-
 import foodtruck.dao.LocationDAO;
-import foodtruck.dao.TruckDAO;
-import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.Location;
-import foodtruck.model.StopOrigin;
-import foodtruck.model.Truck;
-import foodtruck.model.TruckStop;
-import foodtruck.server.GuiceHackRequestWrapper;
-import foodtruck.truckstops.FoodTruckStopService;
-import foodtruck.util.Clock;
-import foodtruck.util.HtmlDateFormatter;
-import foodtruck.util.TimeFormatter;
 
 /**
  * @author aviolette
@@ -39,61 +21,27 @@ import foodtruck.util.TimeFormatter;
  */
 @Singleton
 public class CompoundEventServlet extends HttpServlet {
-  private static final String JSP_PATH = "/WEB-INF/jsp/dashboard/compoundEvent.jsp";
-  private final TruckDAO truckDAO;
   private final LocationDAO locationDAO;
-  private final DateTimeFormatter timeFormatter;
-  private final Clock clock;
-  private final DateTimeFormatter urlFormatter;
   private final Provider<UserService> userServiceProvider;
-  private final FoodTruckStopService stopService;
+  private final Provider<EventServletSupport> eventServletSupportProvider;
 
   @Inject
-  public CompoundEventServlet(TruckDAO truckDAO, LocationDAO locationDAO,
-      @HtmlDateFormatter DateTimeFormatter formatter, Clock clock, TruckStopDAO truckStopDAO,
-      @TimeFormatter DateTimeFormatter urlFormatter, FoodTruckStopService stopService,
-      Provider<UserService> userServiceProvider) {
-    this.truckDAO = truckDAO;
+  public CompoundEventServlet(LocationDAO locationDAO, Provider<UserService> userServiceProvider, Provider<EventServletSupport> eventServletSupportProvider) {
     this.locationDAO = locationDAO;
-    this.timeFormatter = formatter;
-    this.clock = clock;
-    this.urlFormatter = urlFormatter;
-    this.stopService = stopService;
     this.userServiceProvider = userServiceProvider;
+    this.eventServletSupportProvider = eventServletSupportProvider;
   }
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    String startTimeParam = req.getParameter("startTime"),
-        endTimeParam = req.getParameter("endTime"),
-        locationID = req.getRequestURI().substring(req.getRequestURI().lastIndexOf('/') + 1);
-    String[] trucks = req.getParameterValues("trucks");
-    Location location = locationDAO.findById(Long.valueOf(locationID));
+    Location location = locationDAO.findById(Long.valueOf(req.getRequestURI().substring(
+        req.getRequestURI().lastIndexOf('/') + 1)));
     if (location == null) {
       resp.sendError(404);
       return;
     }
-    DateTime startTime = timeFormatter.parseDateTime(startTimeParam),
-        endTime = timeFormatter.parseDateTime(endTimeParam);
-
-    if (!endTime.isAfter(startTime)) {
-      resp.sendError(400, "End time is not after start time");
-      return;
-    }
-
     UserService userService = userServiceProvider.get();
-    String email = userService.getCurrentUser().getEmail();
-    for (String truckId : trucks) {
-      TruckStop stop = TruckStop.builder()
-          .location(location)
-          .startTime(startTime)
-          .endTime(endTime)
-          .origin(StopOrigin.MANUAL)
-          .truck(truckDAO.findById(truckId))
-          .build();
-      stopService.update(stop, email);
-    }
-    resp.sendRedirect("/admin/trucks");
+    eventServletSupportProvider.get().post(location, userService.getCurrentUser().getEmail(), "/admin/trucks");
   }
 
   @Override
@@ -104,48 +52,6 @@ public class CompoundEventServlet extends HttpServlet {
       resp.sendError(404);
       return;
     }
-    DateTime startTime = clock.now().plusHours(1).withMinuteOfHour(0), endTime = startTime.plusHours(2);
-    if (clock.now().isBefore(clock.timeAt(11, 0))) {
-      startTime = clock.timeAt(11, 0);
-      endTime = clock.timeAt(14, 0);
-    }
-    try {
-      startTime = urlFormatter.parseDateTime(req.getParameter("startTime"));
-      endTime = urlFormatter.parseDateTime(req.getParameter("endTime"));
-    } catch (IllegalArgumentException|NullPointerException ignored) {
-    }
-    final ImmutableSet<String> selected = Strings.isNullOrEmpty(req.getParameter("selected")) ? ImmutableSet.<String>of() :
-        ImmutableSet.copyOf(req.getParameter("selected").split(","));
-    req.setAttribute("startTime", timeFormatter.print(startTime));
-    req.setAttribute("endTime", timeFormatter.print(endTime));
-    req.setAttribute("location", location);
-    req.setAttribute("postMethod", req.getRequestURI());
-    req.setAttribute("trucks", ImmutableList.copyOf(
-        Iterables.transform(truckDAO.findActiveTrucks(), new Function<Truck, TruckWithSelectionIndicator>() {
-              public TruckWithSelectionIndicator apply(Truck truck) {
-                return new TruckWithSelectionIndicator(truck, selected.contains(truck.getId()));
-              }
-            })));
-    req.setAttribute("nav", "location");
-    req = new GuiceHackRequestWrapper(req, JSP_PATH);
-    req.getRequestDispatcher(JSP_PATH).forward(req, resp);
-  }
-
-  public static class TruckWithSelectionIndicator {
-    private final Truck truck;
-    private final boolean selected;
-
-    public TruckWithSelectionIndicator(Truck truck, boolean selected) {
-      this.truck = truck;
-      this.selected = selected;
-    }
-
-    public Truck getTruck() {
-      return truck;
-    }
-
-    public boolean isSelected() {
-      return selected;
-    }
+    eventServletSupportProvider.get().get(location);
   }
 }

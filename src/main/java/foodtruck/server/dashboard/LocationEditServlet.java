@@ -55,7 +55,8 @@ public class LocationEditServlet extends HttpServlet {
     this.config = config;
   }
 
-  @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+  @Override
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     final String jsp = "/WEB-INF/jsp/dashboard/locationEdit.jsp";
     final String path = Urls.stripSessionId(req.getRequestURI());
@@ -79,7 +80,8 @@ public class LocationEditServlet extends HttpServlet {
     req.getRequestDispatcher(jsp).forward(req, resp);
   }
 
-  @Override protected void doPut(HttpServletRequest req, HttpServletResponse resp)
+  @Override
+  protected void doPut(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     final String json = new String(ByteStreams.toByteArray(req.getInputStream()));
     try {

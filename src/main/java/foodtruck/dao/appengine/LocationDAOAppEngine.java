@@ -23,6 +23,7 @@ import foodtruck.model.Location;
 import foodtruck.util.Clock;
 
 import static foodtruck.dao.appengine.Attributes.getIntProperty;
+import static foodtruck.dao.appengine.Attributes.getSetProperty;
 import static foodtruck.dao.appengine.Attributes.getStringProperty;
 import static foodtruck.dao.appengine.Attributes.getUrlProperty;
 import static foodtruck.dao.appengine.Attributes.setUrlProperty;
@@ -31,7 +32,7 @@ import static foodtruck.dao.appengine.Attributes.setUrlProperty;
  * @author aviolette@gmail.com
  * @since Jul 20, 2011
  */
-public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements LocationDAO {
+class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements LocationDAO {
   private static final String LOCATION_KIND = "Location";
   private static final String NAME_FIELD = "name";
   private static final String LAT_FIELD = "lat";
@@ -56,6 +57,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
   private static final String CLOSED = "closed";
   private static final String IMAGE_URL = "image_url";
   private static final String EVENT_URL = "event_url";
+  private static final String MANAGER_EMAILS = "manager_emails";
 
   private static final Logger log = Logger.getLogger(LocationDAOAppEngine.class.getName());
   private final Clock clock;
@@ -143,6 +145,22 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
   }
 
   @Override
+  public Collection<Location> findByTwitterId(String twitterId) {
+    DatastoreService dataStore = provider.get();
+    Query q = new Query(LOCATION_KIND);
+    q.setFilter(new Query.FilterPredicate(TWITTERHANDLE, Query.FilterOperator.EQUAL, twitterId));
+    return executeQuery(dataStore, q, null);
+  }
+
+  @Override
+  public Collection<Location> findByManagerEmail(String email) {
+    DatastoreService dataStore = provider.get();
+    Query q = new Query(LOCATION_KIND);
+    q.setFilter(new Query.FilterPredicate(MANAGER_EMAILS, Query.FilterOperator.IN, ImmutableSet.of(email)));
+    return executeQuery(dataStore, q, null);
+  }
+
+  @Override
   public @Nullable Location findByAlias(String location) {
     // max of three marches up the alias-tree
     for (int i=0; i < 3; i++) {
@@ -198,6 +216,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     entity.setProperty(TWITTERHANDLE, location.getTwitterHandle());
     entity.setProperty(DESIGNATED_STOP, location.isDesignatedStop());
     entity.setProperty(OWNED_BY, location.getOwnedBy());
+    entity.setProperty(MANAGER_EMAILS, location.getManagerEmails());
     entity.setProperty(HAS_BOOZE, location.isHasBooze());
     entity.setProperty(RADIATE_TO, location.getRadiateTo());
     entity.setProperty(PHONE, location.getPhoneNumber());
@@ -227,6 +246,7 @@ public class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implement
     builder.ownedBy(getStringProperty(entity, OWNED_BY));
     builder.designatedStop(getBooleanProperty(entity, DESIGNATED_STOP, false));
     builder.hasBooze(getBooleanProperty(entity, HAS_BOOZE, false));
+    builder.managerEmails(getSetProperty(entity, MANAGER_EMAILS));
     builder.radiateTo(getIntProperty(entity, RADIATE_TO, 0));
     builder.phoneNumber(getStringProperty(entity, PHONE));
     builder.email(getStringProperty(entity, EMAIL));

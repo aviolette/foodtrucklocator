@@ -12,6 +12,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
+import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
 import foodtruck.util.Session;
@@ -25,8 +26,9 @@ public class BeaconnaiseServlet extends VendorServletSupport {
   private static final String JSP = "/WEB-INF/jsp/vendor/beaconnaise.jsp";
 
   @Inject
-  public BeaconnaiseServlet(TruckDAO truckDAO, Provider<Session> sessionProvider, UserService userService) {
-    super(truckDAO, sessionProvider, userService);
+  public BeaconnaiseServlet(TruckDAO truckDAO, Provider<Session> sessionProvider, UserService userService,
+      LocationDAO locationDAO) {
+    super(truckDAO, sessionProvider, userService, locationDAO);
   }
 
   @Override protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable Truck truck)

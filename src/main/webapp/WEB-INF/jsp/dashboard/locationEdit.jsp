@@ -118,6 +118,12 @@
       </div>
     </div>
     <div class="control-group">
+      <label for="managerEmails" class="control-label">Manager Emails (comma separated)</label>
+      <div class="controls">
+        <input id="managerEmails" class="span5" type="text"/>
+      </div>
+    </div>
+    <div class="control-group">
       <label for="phone" class="control-label">Phone</label>
       <div class="controls">
         <input id="phone" class="span5" type="text"/>
@@ -183,7 +189,7 @@
       $("#facebooKUri").attr("value", loc.facebookUri);
       $("#imageUrl").attr("value", loc.imageUrl);
       $("#eventUrl").attr("value", loc.eventUrl);
-
+      $("#managerEmails").attr("value", loc.managerEmails);
       $("#email").attr("value", loc.email);
       $("#phone").attr("value", loc.phone);
     }
@@ -299,6 +305,7 @@
       loc.facebookUri = $("#facebookUri").attr("value");
       loc.imageUrl = $("#imageUrl").attr("value");
       loc.eventUrl = $("#eventUrl").attr("value");
+      loc.managerEmails = $("#managerEmails").attr("value");
       e.preventDefault();
       $submitButton.addClass("disabled");
       $.ajax({

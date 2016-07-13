@@ -46,6 +46,7 @@ public class VendorCallbackServlet extends HttpServlet {
     RequestToken requestToken = (RequestToken) session.getProperty("requestToken");
     String verifier = req.getParameter("oauth_verifier");
     try {
+      @SuppressWarnings("ConstantConditions")
       AccessToken token = twitter.getOAuthAccessToken(requestToken, verifier);
       String screenName = token.getScreenName();
       log.log(Level.INFO, "User {0} logged on via twitter", screenName);

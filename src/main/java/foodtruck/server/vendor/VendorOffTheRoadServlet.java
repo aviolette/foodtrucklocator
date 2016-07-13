@@ -12,6 +12,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
+import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
 import foodtruck.truckstops.FoodTruckStopService;
@@ -29,8 +30,8 @@ public class VendorOffTheRoadServlet extends VendorServletSupport {
 
   @Inject
   protected VendorOffTheRoadServlet(TruckDAO dao, FoodTruckStopService foodTruckStopService, Clock clock,
-      Provider<Session> sessionProvider, UserService userService) {
-    super(dao, sessionProvider, userService);
+      Provider<Session> sessionProvider, UserService userService, LocationDAO locationDAO) {
+    super(dao, sessionProvider, userService, locationDAO);
     this.stopService = foodTruckStopService;
     this.clock = clock;
   }

@@ -35,7 +35,7 @@ public class VendorServlet extends VendorServletSupport {
   @Inject
   public VendorServlet(TruckDAO dao, LocationDAO locationDAO, Provider<Session> sessionProvider,
       UserService userService) {
-    super(dao, sessionProvider, userService);
+    super(dao, sessionProvider, userService, locationDAO);
     this.locationDAO = locationDAO;
   }
 

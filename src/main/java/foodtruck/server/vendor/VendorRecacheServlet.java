@@ -15,6 +15,7 @@ import com.google.inject.Singleton;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
+import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
 import foodtruck.truckstops.FoodTruckStopService;
@@ -32,8 +33,8 @@ public class VendorRecacheServlet extends VendorServletSupport {
 
   @Inject
   protected VendorRecacheServlet(TruckDAO dao, FoodTruckStopService foodTruckStopService, Clock clock,
-      Provider<Session> sessionProvider, UserService userService) {
-    super(dao, sessionProvider, userService);
+      Provider<Session> sessionProvider, UserService userService, LocationDAO locationDAO) {
+    super(dao, sessionProvider, userService, locationDAO);
     this.foodTruckStopService = foodTruckStopService;
     this.clock = clock;
   }

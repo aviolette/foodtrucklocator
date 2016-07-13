@@ -18,6 +18,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
+import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
 import foodtruck.server.GuiceHackRequestWrapper;
@@ -33,8 +34,9 @@ public class VendorSettingsServlet extends VendorServletSupport {
   private static final String JSP = "/WEB-INF/jsp/vendor/vendorSettings.jsp";
 
   @Inject
-  protected VendorSettingsServlet(TruckDAO dao, Provider<Session> sessionProvider, UserService userService) {
-    super(dao, sessionProvider, userService);
+  protected VendorSettingsServlet(TruckDAO dao, Provider<Session> sessionProvider, UserService userService,
+      LocationDAO locationDAO) {
+    super(dao, sessionProvider, userService, locationDAO);
   }
 
   @Override protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable Truck truck)

@@ -128,8 +128,6 @@ public interface FoodTruckStopService {
   /**
    * Similar to offTheRoad, but only removes stops that start after the current time.  It also caps any stop that is
    * active at the specified time.
-   * @param truckId
-   * @param after
    * @return the number of stops removed
    */
   int cancelRemainingStops(String truckId, DateTime after);
@@ -139,7 +137,7 @@ public interface FoodTruckStopService {
   /**
    * Find upcoming events that blend food trucks and booze.
    * @param localDate the start date
-   * @param daysOut
+   * @param daysOut how many days out to search
    * @return the upcoming boozy events
    */
   List<TruckStop> findUpcomingBoozyStops(LocalDate localDate, int daysOut);
@@ -147,4 +145,7 @@ public interface FoodTruckStopService {
   List<TruckStopWithCounts> findStopsForTruckAfter(String truckId, DateTime startTime);
 
   List<DailySchedule> findStopsNearLocationOverRange(Location location, Interval range);
+
+  List<TruckStop> findStopsAtLocationOverRange(Location location, Interval range);
+
 }

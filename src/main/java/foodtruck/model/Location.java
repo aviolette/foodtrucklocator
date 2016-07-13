@@ -1,11 +1,13 @@
 package foodtruck.model;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
 import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableSet;
 import com.javadocmd.simplelatlng.LatLng;
 import com.javadocmd.simplelatlng.LatLngTool;
 import com.javadocmd.simplelatlng.util.LengthUnit;
@@ -45,6 +47,7 @@ public class Location extends ModelEntity implements Serializable {
   private boolean closed;
   private @Nullable Url imageUrl;
   private @Nullable String eventCalendarUrl;
+  private ImmutableSet<String> managerEmails;
 
   // For serializable
   public Location() {
@@ -75,6 +78,7 @@ public class Location extends ModelEntity implements Serializable {
     url = builder.url;
     imageUrl = builder.imageUrl;
     eventCalendarUrl = builder.eventCalendarUrl;
+    managerEmails = ImmutableSet.copyOf(builder.managerEmails);
   }
 
   public static Builder builder() {
@@ -241,6 +245,10 @@ public class Location extends ModelEntity implements Serializable {
     return radiateTo;
   }
 
+  public ImmutableSet<String> getManagerEmails() {
+    return managerEmails;
+  }
+
   public static class Builder {
     private Object key;
     private double lat;
@@ -266,6 +274,7 @@ public class Location extends ModelEntity implements Serializable {
     private boolean closed;
     private @Nullable Url imageUrl;
     private @Nullable String eventCalendarUrl;
+    private Set<String> managerEmails = ImmutableSet.of();
 
     public Builder(Location location) {
       key = location.getKey();
@@ -292,6 +301,7 @@ public class Location extends ModelEntity implements Serializable {
       closed = location.closed;
       imageUrl = location.imageUrl;
       eventCalendarUrl = location.eventCalendarUrl;
+      managerEmails = location.managerEmails;
     }
 
     public Builder() {
@@ -409,6 +419,11 @@ public class Location extends ModelEntity implements Serializable {
 
     public Builder valid(boolean valid) {
       this.valid = valid;
+      return this;
+    }
+
+    public Builder managerEmails(Set managerEmails) {
+      this.managerEmails = managerEmails;
       return this;
     }
 

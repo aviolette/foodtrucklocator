@@ -11,6 +11,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 
 import org.codehaus.jettison.json.JSONException;
@@ -68,6 +69,7 @@ public class LocationWriter implements JSONWriter<Location>, MessageBodyWriter<L
         .put("key", location.getKey());
     if (fullOptions) {
       obj.put("alias", location.getAlias());
+      obj.put("managerEmails", Joiner.on(",").join(location.getManagerEmails()));
       obj.put("ownedBy", location.getOwnedBy());
       obj.put("eventUrl", location.getEventCalendarUrl());
       obj.put("autocomplete", location.isAutocomplete());

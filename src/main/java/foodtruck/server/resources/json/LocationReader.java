@@ -1,6 +1,8 @@
 package foodtruck.server.resources.json;
 
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableSet;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -35,6 +37,7 @@ public class LocationReader {
         .phoneNumber(obj.optString("phone"))
         .email(obj.optString("email"))
         .imageUrl(imageUrl)
+        .managerEmails(ImmutableSet.copyOf(Splitter.on(",").trimResults().omitEmptyStrings().split(obj.optString("managerEmails"))))
         .facebookUri(obj.optString("facebookUri"))
         .radiateTo(obj.optInt("radiateTo", 0))
         .name(obj.getString("name")).key((key > 0) ? key : null)
