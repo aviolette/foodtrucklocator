@@ -11,11 +11,11 @@ import foodtruck.model.ModelEntity;
  * @author aviolette@gmail.com
  * @since 9/13/12
  */
-public abstract class SingletonDAOAppEngine<E extends ModelEntity> implements SingletonDAO<E> {
+abstract class SingletonDAOAppEngine<E extends ModelEntity> implements SingletonDAO<E> {
   private final DatastoreServiceProvider provider;
   private String kind;
 
-  public SingletonDAOAppEngine(DatastoreServiceProvider provider, String kind) {
+  SingletonDAOAppEngine(DatastoreServiceProvider provider, String kind) {
     this.provider = provider;
     this.kind = kind;
   }

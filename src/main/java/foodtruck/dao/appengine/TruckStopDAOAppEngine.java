@@ -38,7 +38,7 @@ import static foodtruck.dao.appengine.Attributes.getStringProperty;
  * @author aviolette@gmail.com
  * @since Jul 12, 2011
  */
-public class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements TruckStopDAO {
+class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements TruckStopDAO {
   private static final String STOP_KIND = "Truck";
   private static final String START_TIME_FIELD = "startTime";
   private static final String END_TIME_FIELD = "endTime";
@@ -56,7 +56,7 @@ public class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> impleme
   private static final String MATCH_CONFIDENCE = "match_confidence";
   private static final String NOTES = "notes";
   private static final String ORIGIN = "origin";
-  public static final Predicate<TruckStop> VENDOR_STOP_PREDICATE = new Predicate<TruckStop>() {
+  private static final Predicate<TruckStop> VENDOR_STOP_PREDICATE = new Predicate<TruckStop>() {
     public boolean apply(TruckStop truckStop) {
       return truckStop.getOrigin() == StopOrigin.VENDORCAL;
     }

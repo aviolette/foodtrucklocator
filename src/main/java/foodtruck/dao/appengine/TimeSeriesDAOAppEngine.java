@@ -27,12 +27,12 @@ import foodtruck.util.Slots;
  * @author aviolette
  * @since 2/27/14
  */
-public abstract class TimeSeriesDAOAppEngine extends AppEngineDAO<Long, SystemStats> implements TimeSeriesDAO {
+abstract class TimeSeriesDAOAppEngine extends AppEngineDAO<Long, SystemStats> implements TimeSeriesDAO {
   private static final String PARAM_TIMESTAMP = "timestamp";
   private static final Logger log = Logger.getLogger(FifteenMinuteRollupDAOAppEngine.class.getName());
   private final Slots slotter;
 
-  public TimeSeriesDAOAppEngine(String kind, DatastoreServiceProvider provider, Slots slotter) {
+  TimeSeriesDAOAppEngine(String kind, DatastoreServiceProvider provider, Slots slotter) {
     super(kind, provider);
     this.slotter = slotter;
   }

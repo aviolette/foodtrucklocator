@@ -35,7 +35,7 @@ import static foodtruck.dao.appengine.Attributes.setDateProperty;
  * @author aviolette@gmail.com
  * @since 2/26/12
  */
-public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO {
+class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO {
   private static final String TRUCK_KIND = "Store";
   private static final String TRUCK_NAME_FIELD = "name";
   private static final String TRUCK_CANONICAL_NAME = "canonical_name";
@@ -124,6 +124,7 @@ public class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements Tr
           .build();
     }
 
+    //noinspection unchecked
     return builder.id(entity.getKey().getName())
         .stats(stats)
         .fullsizeImage(getStringProperty(entity, TRUCK_FULL_SIZE))

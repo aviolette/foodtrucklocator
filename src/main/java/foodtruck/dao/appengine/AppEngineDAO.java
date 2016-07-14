@@ -22,8 +22,8 @@ import foodtruck.model.ModelEntity;
  * @since 4/12/12
  */
 public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T> {
-  private final String kind;
   protected final DatastoreServiceProvider provider;
+  private final String kind;
 
   public AppEngineDAO(String kind, DatastoreServiceProvider provider) {
     this.kind = kind;
@@ -39,7 +39,7 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
   }
 
 
-  protected List<T> executeQuery(DatastoreService dataStore, Query q, @Nullable Predicate<Entity> predicate) {
+  List<T> executeQuery(DatastoreService dataStore, Query q, @Nullable Predicate<Entity> predicate) {
     ImmutableList.Builder<T> objs = ImmutableList.builder();
     for (Entity entity : dataStore.prepare(q).asIterable()) {
       if (predicate != null && !predicate.apply(entity)) {
@@ -60,7 +60,7 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
     dataStore.delete(getKey(id));
   }
 
-  protected void deleteFromQuery(DatastoreService dataStore, Query q) {
+  void deleteFromQuery(DatastoreService dataStore, Query q) {
     ImmutableList.Builder<Key> keys = ImmutableList.builder();
     for (Entity entity : dataStore.prepare(q).asIterable()) {
       keys.add(entity.getKey());
@@ -126,7 +126,7 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
     return entity;
   }
 
-  protected boolean getBooleanProperty(Entity entity, String propertyName, boolean defaultValue) {
+  boolean getBooleanProperty(Entity entity, String propertyName, boolean defaultValue) {
     if (!entity.hasProperty(propertyName)) {
       return defaultValue;
     }
@@ -142,11 +142,13 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
     return kind;
   }
 
-  public @Nullable T findSingleItemByAttribute(String attributeName, String attributeValue) {
+  @Nullable
+  T findSingleItemByAttribute(String attributeName, String attributeValue) {
     return findSingleItemByFilter(new Query.FilterPredicate(attributeName, Query.FilterOperator.EQUAL, attributeValue));
   }
 
-  protected @Nullable T findSingleItemByFilter(Query.Filter filter) {
+  @Nullable
+  private T findSingleItemByFilter(Query.Filter filter) {
     DatastoreService dataStore = provider.get();
     Query q = new Query(getKind());
     q.setFilter(filter);

@@ -10,7 +10,7 @@ import foodtruck.util.Slots;
  * @author aviolette
  * @since 7/2/14
  */
-public class DailyRollupDAOAppEngine extends TimeSeriesDAOAppEngine implements DailyRollupDAO {
+class DailyRollupDAOAppEngine extends TimeSeriesDAOAppEngine implements DailyRollupDAO {
 
   @Inject
   public DailyRollupDAOAppEngine(DatastoreServiceProvider provider, @DailyRollup Slots slotter) {

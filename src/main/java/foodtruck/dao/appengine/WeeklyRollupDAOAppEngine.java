@@ -10,7 +10,7 @@ import foodtruck.util.WeeklyRollup;
  * @author aviolette
  * @since 2/28/14
  */
-public class WeeklyRollupDAOAppEngine extends TimeSeriesDAOAppEngine
+class WeeklyRollupDAOAppEngine extends TimeSeriesDAOAppEngine
     implements WeeklyRollupDAO {
 
   @Inject

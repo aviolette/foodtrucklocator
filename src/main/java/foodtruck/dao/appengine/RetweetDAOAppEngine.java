@@ -14,13 +14,13 @@ import foodtruck.util.Clock;
  * @author aviolette
  * @since 8/5/13
  */
-public class RetweetDAOAppEngine implements RetweetsDAO {
-  private final DatastoreServiceProvider provider;
+class RetweetDAOAppEngine implements RetweetsDAO {
   private static final String RETWEETS_KIND = "retweets";
   private static final String TWITTER_HANDLE = "twitter_handle";
   private static final String TRUCK_ID = "truck_id";
-  private final Clock clock;
   private static final String TIMESTAMP = "timestamp";
+  private final Clock clock;
+  private final DatastoreServiceProvider provider;
 
   @Inject
   public RetweetDAOAppEngine(DatastoreServiceProvider provider, Clock clock) {

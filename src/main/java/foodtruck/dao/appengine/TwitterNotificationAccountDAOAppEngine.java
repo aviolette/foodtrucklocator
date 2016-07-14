@@ -2,7 +2,6 @@ package foodtruck.dao.appengine;
 
 import javax.annotation.Nullable;
 
-import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
 import com.google.inject.Inject;
@@ -18,7 +17,7 @@ import static foodtruck.dao.appengine.Attributes.getStringProperty;
  * @author aviolette
  * @since 12/3/12
  */
-public class TwitterNotificationAccountDAOAppEngine extends AppEngineDAO<Long, TwitterNotificationAccount>
+class TwitterNotificationAccountDAOAppEngine extends AppEngineDAO<Long, TwitterNotificationAccount>
     implements TwitterNotificationAccountDAO {
 
   private static final String PROP_LOCATION_NAME = "location_name";
@@ -72,24 +71,10 @@ public class TwitterNotificationAccountDAOAppEngine extends AppEngineDAO<Long, T
   }
 
   @Override public @Nullable TwitterNotificationAccount findByLocationName(String name) {
-    DatastoreService dataStore = provider.get();
-    Query q = new Query(getKind());
-    q.setFilter(new Query.FilterPredicate(PROP_LOCATION_NAME, Query.FilterOperator.EQUAL, name));
-    Entity e = dataStore.prepare(q).asSingleEntity();
-    if (e == null) {
-      return null;
-    }
-    return fromEntity(e);
+    return findSingleItemByAttribute(PROP_LOCATION_NAME, name);
   }
 
   @Nullable @Override public TwitterNotificationAccount findByTwitterHandle(String twitterHandle) {
-    DatastoreService dataStore = provider.get();
-    Query q = new Query(getKind());
-    q.setFilter(new Query.FilterPredicate(PROP_TWITTER_HANDLE, Query.FilterOperator.EQUAL, twitterHandle));
-    Entity e = dataStore.prepare(q).asSingleEntity();
-    if (e == null) {
-      return null;
-    }
-    return fromEntity(e);
+    return findSingleItemByAttribute(PROP_TWITTER_HANDLE, twitterHandle);
   }
 }

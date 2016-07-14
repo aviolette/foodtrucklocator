@@ -12,7 +12,7 @@ import static foodtruck.dao.appengine.Attributes.getListProperty;
  * @author aviolette
  * @since 2/14/16
  */
-public class NotificationDeviceProfileDAOAppEngine extends AppEngineDAO<String, NotificationDeviceProfile> implements NotificationDeviceProfileDAO {
+class NotificationDeviceProfileDAOAppEngine extends AppEngineDAO<String, NotificationDeviceProfile> implements NotificationDeviceProfileDAO {
   private static final String KIND = "notification_device_profile";
   private static final String LOCATION_NAMES = "location_names";
   private static final String TRUCK_IDS = "truck_ids";

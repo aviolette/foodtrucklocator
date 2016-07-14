@@ -10,7 +10,7 @@ import foodtruck.util.Slots;
  * @author aviolette@gmail.com
  * @since 7/5/12
  */
-public class FifteenMinuteRollupDAOAppEngine extends TimeSeriesDAOAppEngine
+class FifteenMinuteRollupDAOAppEngine extends TimeSeriesDAOAppEngine
     implements FifteenMinuteRollupDAO {
 
   @Inject

@@ -20,7 +20,7 @@ import static foodtruck.dao.appengine.Attributes.setDateProperty;
  * @author aviolette
  * @since 2/6/14
  */
-public class MessageDAOAppEngine extends AppEngineDAO<Long, Message> implements MessageDAO {
+class MessageDAOAppEngine extends AppEngineDAO<Long, Message> implements MessageDAO {
   private static final String MESSAGE_KIND = "message";
   private final DateTimeZone zone;
 

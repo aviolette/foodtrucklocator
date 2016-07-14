@@ -17,7 +17,7 @@ import static foodtruck.dao.appengine.Attributes.getStringProperty;
  * @author aviolette
  * @since 6/6/13
  */
-public class TruckObserverDAOAppEngine extends AppEngineDAO<String, TruckObserver> implements TruckObserverDAO {
+class TruckObserverDAOAppEngine extends AppEngineDAO<String, TruckObserver> implements TruckObserverDAO {
   private static final String TRUCK_OBSERVER_KIND = "truck_observer";
   private static final String NAME_FIELD = "location_name";
   private static final String LAT_FIELD = "lat_field";
@@ -42,6 +42,7 @@ public class TruckObserverDAOAppEngine extends AppEngineDAO<String, TruckObserve
         .lat(getDoubleProperty(entity, LAT_FIELD, 0.0d))
         .lng(getDoubleProperty(entity, LNG_FIELD, 0.0d))
         .build();
+    //noinspection unchecked
     return new TruckObserver(entity.getKey().getName(), location,
         ImmutableList.copyOf((Collection) entity.getProperty(KEYWORDS_FIELD)));
   }
