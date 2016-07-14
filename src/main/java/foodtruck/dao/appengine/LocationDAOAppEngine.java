@@ -140,7 +140,7 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
   public Collection<Location> findByTwitterId(String twitterId) {
     DatastoreService dataStore = provider.get();
     Query q = new Query(LOCATION_KIND);
-    q.setFilter(new Query.FilterPredicate(TWITTERHANDLE, Query.FilterOperator.EQUAL, twitterId));
+    q.setFilter(new Query.FilterPredicate(TWITTERHANDLE, Query.FilterOperator.EQUAL, twitterId.toLowerCase()));
     return executeQuery(dataStore, q, null);
   }
 
