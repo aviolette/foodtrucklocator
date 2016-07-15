@@ -34,12 +34,12 @@ import foodtruck.util.Clock;
  */
 @Singleton
 public class RecacheServlet extends HttpServlet {
+  private static final Logger log = Logger.getLogger(RecacheServlet.class.getName());
   private final FoodTruckStopService service;
   private final Clock clock;
   private final SocialMediaCacher socialMediaCacher;
   private final TruckDAO truckDAO;
   private final DateTimeFormatter timeFormatter;
-  private static final Logger log = Logger.getLogger(RecacheServlet.class.getName());
   private final DateTimeZone zone;
   private final RetweetsDAO retweetsDAO;
   private final StaticConfig staticConfig;

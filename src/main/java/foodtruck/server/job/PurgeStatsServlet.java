@@ -36,7 +36,7 @@ public class PurgeStatsServlet extends HttpServlet {
   private Counter dailyCounter;
 
   @Inject
-  public void PurgeStatsServlet(FifteenMinuteRollupDAO dao, Clock clock, MemcacheService service, ApplicationDAO appDAO,
+  public PurgeStatsServlet(FifteenMinuteRollupDAO dao, Clock clock, MemcacheService service, ApplicationDAO appDAO,
       DailyRollupDAO dailyRollupDAO, @DailyScheduleCounter Counter dailyCounter) {
     this.dao = dao;
     this.clock = clock;

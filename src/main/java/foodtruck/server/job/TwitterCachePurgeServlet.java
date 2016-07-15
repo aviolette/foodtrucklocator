@@ -15,7 +15,6 @@ import foodtruck.util.Clock;
 
 /**
  * Removes tweets prior to midnight on the current day.
- *
  * @author aviolette@gmail.com
  * @since 10/11/11
  */

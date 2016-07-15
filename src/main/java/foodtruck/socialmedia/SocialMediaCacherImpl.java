@@ -62,7 +62,7 @@ import twitter4j.TwitterFactory;
  * @author aviolette@gmail.com
  * @since 10/11/11
  */
-public class SocialMediaCacherImpl implements SocialMediaCacher {
+class SocialMediaCacherImpl implements SocialMediaCacher {
   @VisibleForTesting
   static final int HOURS_BACK_TO_SEARCH = 6;
   private static final Logger log = Logger.getLogger(SocialMediaCacherImpl.class.getName());
@@ -147,7 +147,7 @@ public class SocialMediaCacherImpl implements SocialMediaCacher {
     observerAnalyze();
   }
 
-  public void observerAnalyze() {
+  void observerAnalyze() {
     LocalDate today = clock.currentDay();
     DateTime now = clock.now();
     Location uofc = locator.locate("58th and Ellis, Chicago, IL", GeolocationGranularity.NARROW);

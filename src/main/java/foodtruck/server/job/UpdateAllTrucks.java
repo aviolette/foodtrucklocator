@@ -15,12 +15,12 @@ import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
 
 /**
+ * Does a force-save of all the trucks.  This is useful if a field is added.
  * @author aviolette
  * @since 3/12/13
  */
 @Singleton
 public class UpdateAllTrucks extends HttpServlet {
-  private static final Logger log = Logger.getLogger(UpdateTruckStats.class.getName());
   private final TruckDAO truckDAO;
 
   @Inject
@@ -30,7 +30,6 @@ public class UpdateAllTrucks extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-
     for (Truck truck : truckDAO.findAll()) {
       truckDAO.save(truck);
     }

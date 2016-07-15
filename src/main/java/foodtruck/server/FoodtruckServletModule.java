@@ -28,7 +28,6 @@ import foodtruck.server.dashboard.TruckServlet;
 import foodtruck.server.dashboard.TruckStopServlet;
 import foodtruck.server.job.ErrorCountServlet;
 import foodtruck.server.job.InvalidateScheduleCache;
-import foodtruck.server.job.OneTimeSpecialsSetupServlet;
 import foodtruck.server.job.ProfileSyncServlet;
 import foodtruck.server.job.PurgeStatsServlet;
 import foodtruck.server.job.PushNotificationServlet;
@@ -59,7 +58,6 @@ import foodtruck.server.vendor.VendorTwitterRedirectServlet;
 public class FoodtruckServletModule extends ServletModule {
   @Override
   protected void configureServlets() {
-    serve("/cron/specialsSetup").with(OneTimeSpecialsSetupServlet.class);
 
     // Offline endpoints called via cron-jobs
     serve("/cron/save_all_trucks").with(UpdateAllTrucks.class);

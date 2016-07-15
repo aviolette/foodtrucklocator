@@ -35,6 +35,7 @@ import foodtruck.util.Slots;
 import foodtruck.util.WeeklyRollup;
 
 /**
+ * Called to update stats about a location.
  * @author aviolette
  * @since 3/9/15
  */

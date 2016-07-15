@@ -25,6 +25,7 @@ import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 
 /**
+ * Called to update stats about a truck.  For instance, how many stops it made in the last year.
  * @author aviolette
  * @since 3/12/13
  */

@@ -28,13 +28,14 @@ import foodtruck.email.EmailNotifier;
 import foodtruck.util.Clock;
 
 /**
+ * Detects errors that have been logged and sends out a system notification.
  * @author aviolette
  * @since 7/1/14
  */
 @Singleton
 public class ErrorCountServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(ErrorCountServlet.class.getName());
-  public static final String APP_ERROR_COUNT = "app_error_count";
+  private static final String APP_ERROR_COUNT = "app_error_count";
   private final Clock clock;
   private final FifteenMinuteRollupDAO fifteenMinuteRollupDAO;
   private final DailyRollupDAO dailyRollupDAO;
