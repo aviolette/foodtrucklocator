@@ -28,7 +28,7 @@ import static foodtruck.dao.appengine.Attributes.getTextProperty;
  * @author aviolette@gmail.com
  * @since 10/11/11
  */
-public class StoryDAOAppEngine implements StoryDAO {
+class StoryDAOAppEngine implements StoryDAO {
   private static final String TWEET_KIND = "stories";
   private static final String TWEET_SINCE_KIND = "TweetsSince";
   private static final String TWEET_SCREEN_NAME = "screen_name";
@@ -82,6 +82,16 @@ public class StoryDAOAppEngine implements StoryDAO {
     dataStore.delete(keys.build());
   }
 
+  @Override public long getLastTweetId() {
+    Query q = new Query(TWEET_SINCE_KIND);
+    DatastoreService dataStore = provider.get();
+    Entity entity = dataStore.prepare(q).asSingleEntity();
+    if (entity == null) {
+      return 0;
+    }
+    return (Long) entity.getProperty(TWEET_SINCE);
+  }
+
   @Override public void setLastTweetId(long id) {
     DatastoreService dataStore = provider.get();
     Query q = new Query(TWEET_SINCE_KIND);
@@ -91,16 +101,6 @@ public class StoryDAOAppEngine implements StoryDAO {
     }
     e.setProperty(TWEET_SINCE, id);
     dataStore.put(e);
-  }
-
-  @Override public long getLastTweetId() {
-    Query q = new Query(TWEET_SINCE_KIND);
-    DatastoreService dataStore = provider.get();
-    Entity entity = dataStore.prepare(q).asSingleEntity();
-    if (entity == null) {
-      return 0;
-    }
-    return (Long) entity.getProperty(TWEET_SINCE);
   }
 
   @Override

@@ -243,7 +243,7 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
 
 
   @VisibleForTesting
-  void updateLocationSpecials(Truck truck, List<Story> stories) {
+  private void updateLocationSpecials(Truck truck, List<Story> stories) {
     specialUpdater.update(truck, stories);
   }
 
