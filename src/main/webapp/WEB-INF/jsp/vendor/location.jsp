@@ -20,6 +20,7 @@
       <td><joda:format value="${stop.startTime}" pattern="hh:mm"/></td>
       <td><joda:format value="${stop.endTime}" pattern="hh:mm"/></td>
       <td>${stop.truck.name}</td>
+      <td><a href="/vendor/locations/${locationId}/stops/${stop.key}/delete" class="btn btn-default">Delete</a></td>
     </tr>
 </c:forEach>
   </tbody>

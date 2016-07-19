@@ -40,6 +40,7 @@ import foodtruck.server.job.UpdateTruckStats;
 import foodtruck.server.resources.DailySpecialResourceFactory;
 import foodtruck.server.vendor.BeaconnaiseServlet;
 import foodtruck.server.vendor.LocationEditVendorServlet;
+import foodtruck.server.vendor.LocationStopDeleteServlet;
 import foodtruck.server.vendor.LocationVendorServlet;
 import foodtruck.server.vendor.VendorCallbackServlet;
 import foodtruck.server.vendor.VendorLogoutServlet;
@@ -73,6 +74,7 @@ class FoodtruckServletModule extends ServletModule {
     serve("/cron/error_stats").with(ErrorCountServlet.class);
     serve("/services/*").with(GuiceContainer.class,
         ImmutableMap.of(PackagesResourceConfig.PROPERTY_PACKAGES, "foodtruck.server.resources"));
+
     // Dashboard endpoints
     serve("/admin").with(AdminDashboardServlet.class);
     serve("/admin/addresses").with(AddressRuleServlet.class);
@@ -94,6 +96,7 @@ class FoodtruckServletModule extends ServletModule {
 
     // Vendor dashboard endpoints
     serve("/vendor").with(VendorServlet.class);
+    serveRegex("/vendor/locations/[\\d]*/stops/[\\w]*/delete").with(LocationStopDeleteServlet.class);
     serveRegex("/vendor/locations/[\\d]*/stops/[\\w]*").with(LocationEditVendorServlet.class);
     serve("/vendor/locations/*").with(LocationVendorServlet.class);
     serve("/vendor/recache/*").with(VendorRecacheServlet.class);
