@@ -241,9 +241,15 @@ var FoodTruckLocator = function () {
     return location;
   }
 
+  function makeRelative(url) {
+    return /^http:/.exec(url) ? url.substr(5) : url;
+  }
+
   function buildGroupTableRow(stop) {
-    return "<div class='media'><a href='/trucks/" + stop.truck.id + "' class='pull-left'><img class='img-responsive img-rounded' src='" + stop.truck.iconUrl + "'/></a><div class='media-body' >" +
-        "<div><strong>" + stop.truck.name + "</strong></div><div>" + buildTimeRange(stop.stop, Clock.now()) + " </div></div></div>";
+    return "<div class='media'><a href='/trucks/" + stop.truck.id
+        + "' class='pull-left'><img class='img-responsive img-rounded' src='" + makeRelative(stop.truck.iconUrl)
+        + "'/></a><div class='media-body' >" + "<div><strong>" + stop.truck.name + "</strong></div><div>"
+        + buildTimeRange(stop.stop, Clock.now()) + " </div></div></div>";
   }
 
   function buildInfoWindow(marker, stops) {
@@ -323,7 +329,7 @@ var FoodTruckLocator = function () {
       }
       $div.append($("<div class='media'><a class='pull-left truckLink' truck-id='" + stop.truck.id
           + "' href='#'><img class='media-object img-responsive img-rounded' src='"
-          + stop.truck.iconUrl + "'/></a><div class='media-body'><a class='truckLink' href='#' truck-id='" + stop.truck.id
+          + makeRelative(stop.truck.iconUrl) + "'/></a><div class='media-body'><a class='truckLink' href='#' truck-id='" + stop.truck.id
           + "'><strong>" + stop.truck.name + "</strong><div>"
           + buildTimeRange(stop.stop, now)
           + "</div>" + special
