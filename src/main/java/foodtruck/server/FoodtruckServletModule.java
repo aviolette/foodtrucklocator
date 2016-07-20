@@ -1,5 +1,6 @@
 package foodtruck.server;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Provides;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
@@ -93,6 +94,10 @@ class FoodtruckServletModule extends ServletModule {
     serve("/admin/lookouts").with(ObserverServlet.class);
     serve("/admin/notificationTest").with(TestNotificationServlet.class);
     serve("/admin/event_at/*").with(CompoundEventServlet.class);
+    String redirect = System.getProperty("foodtrucklocator.ssl.admin.redirect", null);
+    if (!Strings.isNullOrEmpty(redirect)) {
+      filterRegex("/admin/*").through(SSLRedirectFilter.class, ImmutableMap.of("redirectTo", redirect));
+    }
 
     // Vendor dashboard endpoints
     serve("/vendor").with(VendorServlet.class);
@@ -105,6 +110,10 @@ class FoodtruckServletModule extends ServletModule {
     serve("/vendor/twitter").with(VendorTwitterRedirectServlet.class);
     serve("/vendor/callback").with(VendorCallbackServlet.class);
     serve("/vendor/logout").with(VendorLogoutServlet.class);
+    redirect = System.getProperty("foodtrucklocator.ssl.vendor.redirect", null);
+    if (!Strings.isNullOrEmpty(redirect)) {
+      filterRegex("/vendor/*").through(SSLRedirectFilter.class, ImmutableMap.of("redirectTo", redirect));
+    }
 
     // Front-page endpoints
     serve("/weekly-schedule").with(WeeklyScheduleServlet.class);
