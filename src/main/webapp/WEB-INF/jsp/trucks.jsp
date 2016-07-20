@@ -47,10 +47,14 @@
   (function() {
     var truckData = [], $truckList = $("#truckList");
 
+    function makeRelative(url) {
+      return /^http:/.exec(url) ? url.substr(5) : url;
+    }
+
     function refreshTruckList(dataSet) {
       $truckList.empty();
       $.each(dataSet, function(i, datum) {
-        var icon = datum["previewIcon"];
+        var icon = makeRelative(datum["previewIcon"]);
         var $section = $("<div class='col-xs-6 col-md-3'></div>");
         var thumbnailId ="thumbnail-" + i;
         var $thumbnail = $("<div class='thumbnail' id='" + thumbnailId + "'></div>");

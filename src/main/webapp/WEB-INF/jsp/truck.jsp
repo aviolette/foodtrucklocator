@@ -32,16 +32,16 @@
       <p class="lead">${truck.description}</p>
       <div>
         <c:if test="${!empty(truck.facebook)}"><a target="_blank" href="http://facebook.com${truck.facebook}"><img
-            alt="Facebook" src="http://storage.googleapis.com/ftf_static/img/facebook32x32.png"></a></c:if>
+            alt="Facebook" src="//storage.googleapis.com/ftf_static/img/facebook32x32.png"></a></c:if>
         <c:if test="${!empty(truck.twitterHandle)}"><a target="_blank"
                                                        href="http://twitter.com/${truck.twitterHandle}"><img
-            alt="@${truck.twitterHandle} on twitter" src="http://storage.googleapis.com/ftf_static/img/twitter32x32.png"></a></c:if>
+            alt="@${truck.twitterHandle} on twitter" src="//storage.googleapis.com/ftf_static/img/twitter32x32.png"></a></c:if>
         <c:if test="${!empty(truck.foursquareUrl)}"><a target="_blank"
                                                        href="http://foursquare.com/venue/${truck.foursquareUrl}"><img
-            alt="Check in on foursquare" src="http://storage.googleapis.com/ftf_static/img/foursquare32x32.png"></a></c:if>
+            alt="Check in on foursquare" src="//storage.googleapis.com/ftf_static/img/foursquare32x32.png"></a></c:if>
         <c:if test="${!empty(truck.instagramId)}"><a target="_blank"
                                                        href="http://instagram.com/${truck.instagramId}"><img
-            alt="View on instagram" src="http://storage.googleapis.com/ftf_static/img/instagram32x32.png"></a></c:if>
+            alt="View on instagram" src="//storage.googleapis.com/ftf_static/img/instagram32x32.png"></a></c:if>
       </div>
       <div style="padding-top:20px">
         <ul class="list-unstyled">
