@@ -1,7 +1,7 @@
 <%@include file="../common.jsp" %>
 <%@include file="dashboardHeader.jsp" %>
 <script type="text/javascript"
-        src="http://maps.googleapis.com/maps/api/js?key=${googleApiKey}">
+        src="//maps.googleapis.com/maps/api/js?key=${googleApiKey}">
 </script>
 
 <div class="row" style="margin-bottom:20px">
