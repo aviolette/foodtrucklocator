@@ -1,6 +1,7 @@
 package foodtruck.server.job;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -19,6 +20,7 @@ import foodtruck.schedule.ScheduleCacher;
  */
 @Singleton
 public class InvalidateScheduleCache extends HttpServlet {
+  private static final Logger log = Logger.getLogger(InvalidateScheduleCache.class.getName());
   private final ScheduleCacher cacher;
 
   @Inject
@@ -28,6 +30,7 @@ public class InvalidateScheduleCache extends HttpServlet {
 
   @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
+    log.info("Forcing cache invalidation");
     cacher.invalidate();
   }
 }

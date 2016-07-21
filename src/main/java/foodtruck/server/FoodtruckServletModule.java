@@ -34,7 +34,6 @@ import foodtruck.server.job.RecacheServlet;
 import foodtruck.server.job.SendLunchNotificationsServlet;
 import foodtruck.server.job.TweetCacheUpdateServlet;
 import foodtruck.server.job.TwitterCachePurgeServlet;
-import foodtruck.server.job.UpdateAllTrucks;
 import foodtruck.server.job.UpdateLocationStats;
 import foodtruck.server.job.UpdateTruckStats;
 import foodtruck.server.resources.DailySpecialResourceFactory;
@@ -60,17 +59,14 @@ class FoodtruckServletModule extends ServletModule {
   @Override
   protected void configureServlets() {
     // Offline endpoints called via cron-jobs
-    serve("/cron/save_all_trucks").with(UpdateAllTrucks.class);
     serve("/cron/push_notifications").with(PushNotificationServlet.class);
     serve("/cron/recache").with(RecacheServlet.class);
     serve("/cron/tweets").with(TweetCacheUpdateServlet.class);
     serve("/cron/tweetPurge").with(TwitterCachePurgeServlet.class);
     serve("/cron/statPurge").with(PurgeStatsServlet.class);
     serve("/cron/notifications").with(SendLunchNotificationsServlet.class);
-    serve("/cron/profileSync").with(ProfileSyncServlet.class);
     serve("/cron/updateTruckStats").with(UpdateTruckStats.class);
     serve("/cron/updateLocationStats").with(UpdateLocationStats.class);
-    serve("/cron/invalidateCache").with(InvalidateScheduleCache.class);
     serve("/cron/error_stats").with(ErrorCountServlet.class);
 
     // Dashboard endpoints
@@ -91,6 +87,8 @@ class FoodtruckServletModule extends ServletModule {
     serve("/admin/lookouts").with(ObserverServlet.class);
     serve("/admin/notificationTest").with(TestNotificationServlet.class);
     serve("/admin/event_at/*").with(CompoundEventServlet.class);
+    serve("/admin/profileSync").with(ProfileSyncServlet.class);
+    serve("/admin/invalidateCache").with(InvalidateScheduleCache.class);
 
     // Vendor dashboard endpoints
     serve("/vendor").with(VendorServlet.class);

@@ -177,7 +177,7 @@
   $("#syncProfile").click(function(e) {
     e.preventDefault();
     $.ajax({
-      url: '/cron/profileSync?truckId=${truck.id }',
+      url: '/admin/profileSync?truckId=${truck.id }',
       type: 'POST',
       complete: function() {
         location.href='/trucks/${truck.id}';

@@ -313,7 +313,7 @@
     $("#profileSync").click(function(e) {
       e.preventDefault();
       $.ajax({
-        url: '/cron/profileSync',
+        url: '/admin/profileSync',
         type: 'POST',
         complete: function() {
           alert("Finished");
