@@ -11,8 +11,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import foodtruck.model.StaticConfig;
 import foodtruck.util.UrlBuilder;
 
 /**
@@ -21,6 +23,12 @@ import foodtruck.util.UrlBuilder;
  */
 @Singleton
 class SSLRedirectFilter implements Filter {
+  private final StaticConfig config;
+
+  @Inject
+  public SSLRedirectFilter(StaticConfig config) {
+    this.config = config;
+  }
 
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {
@@ -32,7 +40,11 @@ class SSLRedirectFilter implements Filter {
     if (!req.isSecure()) {
       HttpServletResponse resp = (HttpServletResponse) response;
       HttpServletRequest request = (HttpServletRequest) req;
-      resp.sendRedirect(new UrlBuilder(request).protocol("https").build());
+      resp.sendRedirect(new UrlBuilder(request)
+          .protocol("https")
+          .port(443)
+          .host(config.getBaseUrl())
+          .build());
       return;
     }
     filterChain.doFilter(req, response);
