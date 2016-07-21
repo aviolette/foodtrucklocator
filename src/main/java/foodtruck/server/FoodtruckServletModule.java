@@ -129,6 +129,7 @@ class FoodtruckServletModule extends ServletModule {
     if ("true".equals(System.getProperty("foodtrucklocator.supports.ssl"))) {
       filterRegex("/admin/.*", "/vendor.*").through(SSLRedirectFilter.class);
     }
+    filter("/*").through(SiteScraperFilter.class);
   }
 
   @Provides @Named("remote.tweet.update")
