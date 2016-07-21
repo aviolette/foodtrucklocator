@@ -37,7 +37,6 @@ import foodtruck.server.job.TwitterCachePurgeServlet;
 import foodtruck.server.job.UpdateLocationStats;
 import foodtruck.server.job.UpdateTruckStats;
 import foodtruck.server.resources.DailySpecialResourceFactory;
-import foodtruck.server.vendor.BeaconnaiseServlet;
 import foodtruck.server.vendor.LocationEditVendorServlet;
 import foodtruck.server.vendor.LocationStopDeleteServlet;
 import foodtruck.server.vendor.LocationVendorServlet;
@@ -107,7 +106,6 @@ class FoodtruckServletModule extends ServletModule {
     serve("/popular").with(PopularServlet.class);
     serve("/businesses").with(TruckBusinessesServlet.class);
     serve("/booze").with(BoozeAndTrucksServlet.class);
-    serve("/vendor/beaconnaise").with(BeaconnaiseServlet.class);
     serve("/trucks*").with(TrucksServlet.class);
     serve("/about").with(AboutServlet.class);
     serve("/locations*").with(LocationServlet.class);

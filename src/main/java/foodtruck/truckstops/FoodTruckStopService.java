@@ -9,7 +9,6 @@ import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
-import foodtruck.beaconnaise.BeaconSignal;
 import foodtruck.model.DailySchedule;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
@@ -110,13 +109,6 @@ public interface FoodTruckStopService {
    * @return the filtered dailyschedule
    */
   DailySchedule findStopsForDayAfter(DateTime dateTime);
-
-  /**
-   * Either updates an existing truckstop or creates a new one, based on the signal
-   * @param signal the beacon signal
-   * @return a new or existing truck stop created from the beacon
-   */
-  TruckStop handleBeacon(BeaconSignal signal);
 
   /**
    * Takes a truck off the road (mutes it for the day and removes its stops)
