@@ -8,9 +8,12 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.inject.Singleton;
+
+import foodtruck.util.UrlBuilder;
 
 /**
  * @author aviolette
@@ -18,19 +21,18 @@ import com.google.inject.Singleton;
  */
 @Singleton
 class SSLRedirectFilter implements Filter {
-  private String redirectTo;
 
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {
-    redirectTo = filterConfig.getInitParameter("redirectTo");
   }
 
   @Override
-  public void doFilter(ServletRequest req, ServletResponse response,
+  public void doFilter(final ServletRequest req, final ServletResponse response,
       FilterChain filterChain) throws IOException, ServletException {
     if (!req.isSecure()) {
       HttpServletResponse resp = (HttpServletResponse) response;
-      resp.sendRedirect(redirectTo);
+      HttpServletRequest request = (HttpServletRequest) req;
+      resp.sendRedirect(new UrlBuilder(request).protocol("https").build());
       return;
     }
     filterChain.doFilter(req, response);

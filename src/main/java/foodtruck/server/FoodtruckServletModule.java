@@ -1,6 +1,5 @@
 package foodtruck.server;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Provides;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
@@ -57,9 +56,9 @@ import foodtruck.server.vendor.VendorTwitterRedirectServlet;
  * @since Jul 12, 2011
  */
 class FoodtruckServletModule extends ServletModule {
+
   @Override
   protected void configureServlets() {
-
     // Offline endpoints called via cron-jobs
     serve("/cron/save_all_trucks").with(UpdateAllTrucks.class);
     serve("/cron/push_notifications").with(PushNotificationServlet.class);
@@ -73,8 +72,6 @@ class FoodtruckServletModule extends ServletModule {
     serve("/cron/updateLocationStats").with(UpdateLocationStats.class);
     serve("/cron/invalidateCache").with(InvalidateScheduleCache.class);
     serve("/cron/error_stats").with(ErrorCountServlet.class);
-    serve("/services/*").with(GuiceContainer.class,
-        ImmutableMap.of(PackagesResourceConfig.PROPERTY_PACKAGES, "foodtruck.server.resources"));
 
     // Dashboard endpoints
     serve("/admin").with(AdminDashboardServlet.class);
@@ -94,10 +91,6 @@ class FoodtruckServletModule extends ServletModule {
     serve("/admin/lookouts").with(ObserverServlet.class);
     serve("/admin/notificationTest").with(TestNotificationServlet.class);
     serve("/admin/event_at/*").with(CompoundEventServlet.class);
-    String redirect = System.getProperty("foodtrucklocator.ssl.admin.redirect", null);
-    if (!Strings.isNullOrEmpty(redirect)) {
-      filterRegex("/admin/*").through(SSLRedirectFilter.class, ImmutableMap.of("redirectTo", redirect));
-    }
 
     // Vendor dashboard endpoints
     serve("/vendor").with(VendorServlet.class);
@@ -110,10 +103,6 @@ class FoodtruckServletModule extends ServletModule {
     serve("/vendor/twitter").with(VendorTwitterRedirectServlet.class);
     serve("/vendor/callback").with(VendorCallbackServlet.class);
     serve("/vendor/logout").with(VendorLogoutServlet.class);
-    redirect = System.getProperty("foodtrucklocator.ssl.vendor.redirect", null);
-    if (!Strings.isNullOrEmpty(redirect)) {
-      filterRegex("/vendor/*").through(SSLRedirectFilter.class, ImmutableMap.of("redirectTo", redirect));
-    }
 
     // Front-page endpoints
     serve("/weekly-schedule").with(WeeklyScheduleServlet.class);
@@ -131,8 +120,15 @@ class FoodtruckServletModule extends ServletModule {
     serve("/.well-known/acme-challenge/*").with(SSLVerificationServlet.class);
     serveRegex("/[\\w]*").with(FoodTruckServlet.class);
 
+    // Services
     install(new FactoryModuleBuilder().build(DailySpecialResourceFactory.class));
+    serve("/services/*").with(GuiceContainer.class,
+        ImmutableMap.of(PackagesResourceConfig.PROPERTY_PACKAGES, "foodtruck.server.resources"));
 
+    // Filters
+    if ("true".equals(System.getProperty("foodtrucklocator.supports.ssl"))) {
+      filterRegex("/admin/.*", "/vendor.*").through(SSLRedirectFilter.class);
+    }
   }
 
   @Provides @Named("remote.tweet.update")
