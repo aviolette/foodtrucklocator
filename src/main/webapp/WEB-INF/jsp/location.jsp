@@ -24,10 +24,10 @@
 
     <div>
       <c:if test="${!empty(location.facebookUri)}"><a target="_blank" href="http://facebook.com${location.facebookUri}"><img
-          alt="Facebook" src="http://storage.googleapis.com/ftf_static/img/facebook32x32.png"></a></c:if>
+          alt="Facebook" src="//storage.googleapis.com/ftf_static/img/facebook32x32.png"></a></c:if>
       <c:if test="${!empty(location.twitterHandle)}"><a target="_blank"
                                                      href="http://twitter.com/${location.twitterHandle}"><img
-          alt="@${location.twitterHandle} on twitter" src="http://storage.googleapis.com/ftf_static/img/twitter32x32.png"></a></c:if>
+          alt="@${location.twitterHandle} on twitter" src="//storage.googleapis.com/ftf_static/img/twitter32x32.png"></a></c:if>
     </div>
   </div>
   <div class="col-md-6">
@@ -49,7 +49,7 @@
           </c:if>
           <div class="media">
             <a class="pull-left" href="/trucks/${stop.truck.id}">
-              <img class="media-object" src="${stop.truck.iconUrl}" alt="${stop.truck.name} icon"/>
+              <img class="media-object" src="${stop.truck.iconUrlObj.protocolRelative}" alt="${stop.truck.name} icon"/>
             </a>
             <div class="media-body">
               <a href="/trucks/${stop.truck.id}" class="truckLink">
@@ -75,7 +75,7 @@
 
 <%@ include file="include/core_js.jsp" %>
 <script type="text/javascript"
-        src="http://maps.google.com/maps/api/js?key=${googleApiKey}&libraries=geometry"></script>
+        src="//maps.google.com/maps/api/js?key=${googleApiKey}&libraries=geometry"></script>
 <%@include file="include/graph_libraries.jsp" %>
 
 <script type="text/javascript">

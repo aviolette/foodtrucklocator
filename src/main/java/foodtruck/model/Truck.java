@@ -213,6 +213,13 @@ public class Truck extends ModelEntity implements Serializable {
     return iconUrl;
   }
 
+  public Url getIconUrlObj() {
+    if (Strings.isNullOrEmpty(iconUrl)) {
+      return null;
+    }
+    return new Url(iconUrl);
+  }
+
   public String getId() {
     return id;
   }
