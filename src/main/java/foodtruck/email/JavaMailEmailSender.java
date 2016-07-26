@@ -71,10 +71,7 @@ class JavaMailEmailSender implements EmailSender {
       msg.setSubject(subject);
       msg.setText(msgBody);
       Transport.send(msg);
-    } catch (MessagingException e) {
-      log.log(Level.WARNING, e.getMessage(), e);
-      return false;
-    } catch (UnsupportedEncodingException e) {
+    } catch (MessagingException | UnsupportedEncodingException e) {
       log.log(Level.WARNING, e.getMessage(), e);
       return false;
     }
