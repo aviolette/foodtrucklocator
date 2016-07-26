@@ -10,6 +10,7 @@ import foodtruck.dao.memcached.MemcachedModule;
 import foodtruck.email.EmailModule;
 import foodtruck.geolocation.GeolocationModule;
 import foodtruck.googleapi.GoogleApiModule;
+import foodtruck.linxup.LinxupModule;
 import foodtruck.monitoring.MonitoringModule;
 import foodtruck.notifications.NotificationModule;
 import foodtruck.schedule.ScheduleModule;
@@ -42,6 +43,7 @@ public class FoodtruckConfig extends GuiceServletContextListener {
         new SocialMediaModule(),
         new MonitoringModule(),
         new NotificationModule(),
+        new LinxupModule(),
         new FoodtruckServletModule()
     };
   }

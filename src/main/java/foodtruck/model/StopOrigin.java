@@ -5,5 +5,5 @@ package foodtruck.model;
  * @since 3/16/14
  */
 public enum StopOrigin {
-  VENDORCAL, MANUAL, TWITTER, OBSERVER, BEACONNAISE, UNKNOWN
+  VENDORCAL, MANUAL, TWITTER, OBSERVER, BEACONNAISE, UNKNOWN, LINXUP
 }
