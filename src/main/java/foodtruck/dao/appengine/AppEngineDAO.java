@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableList;
 
 import foodtruck.dao.DAO;
 import foodtruck.model.ModelEntity;
+import foodtruck.model.TruckStop;
 
 /**
  * @author aviolette@gmail.com
@@ -224,6 +225,10 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
     public AQ sort(String nameField, Query.SortDirection direction) {
       query.addSort(nameField, direction);
       return this;
+    }
+
+    public List<T> execute(Predicate<Entity> predicate) {
+      return executeQuery(query, predicate);
     }
   }
 }
