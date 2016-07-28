@@ -5,10 +5,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Query;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
@@ -18,6 +15,9 @@ import org.joda.time.LocalDate;
 import foodtruck.dao.DailyDataDAO;
 import foodtruck.model.DailyData;
 
+import static com.google.appengine.api.datastore.Query.CompositeFilterOperator.and;
+import static com.google.appengine.api.datastore.Query.FilterOperator.EQUAL;
+import static com.google.appengine.api.datastore.Query.FilterOperator.NOT_EQUAL;
 import static foodtruck.dao.appengine.Attributes.getDateTime;
 import static foodtruck.dao.appengine.Attributes.getStringProperty;
 import static foodtruck.dao.appengine.Attributes.setDateProperty;
@@ -38,6 +38,33 @@ class DailyDataDAOAppEngine extends AppEngineDAO<Long, DailyData> implements Dai
   public DailyDataDAOAppEngine(DatastoreServiceProvider provider, DateTimeZone zone) {
     super(SPECIALS_KIND, provider);
     this.defaultZone = zone;
+  }
+
+  @Override
+  public @Nullable DailyData findByLocationAndDay(String locationId, LocalDate date) {
+    return aq()
+        .filter(and(
+            predicate(SPECIALS_LOCATION_ID, EQUAL, locationId),
+            predicate(SPECIALS_DATE, EQUAL, date.toDateTimeAtStartOfDay(defaultZone).toDate())))
+        .findOne();
+  }
+
+  @Override
+  public @Nullable DailyData findByTruckAndDay(String truckId, LocalDate date) {
+    return aq()
+        .filter(and(
+            predicate(SPECIALS_TRUCK_ID, EQUAL, truckId),
+            predicate(SPECIALS_DATE, EQUAL, date.toDateTimeAtStartOfDay(defaultZone).toDate())))
+        .findOne();
+  }
+
+  @Override
+  public List<DailyData> findTruckSpecialsByDay(LocalDate day) {
+    return aq()
+        .filter(and(
+            predicate(SPECIALS_TRUCK_ID, NOT_EQUAL, null),
+            predicate(SPECIALS_DATE, EQUAL, day.toDateTimeAtStartOfDay(defaultZone).toDate())))
+        .execute();
   }
 
   @Override
@@ -69,46 +96,5 @@ class DailyDataDAOAppEngine extends AppEngineDAO<Long, DailyData> implements Dai
       }
     }
     return builder.build();
-  }
-
-  @Override
-  public @Nullable DailyData findByLocationAndDay(String locationId, LocalDate date) {
-    DatastoreService dataStore = provider.get();
-    Query q = new Query(SPECIALS_KIND);
-    List<Query.Filter> filters = ImmutableList.<Query.Filter>of(
-        new Query.FilterPredicate(SPECIALS_LOCATION_ID, Query.FilterOperator.EQUAL, locationId),
-        new Query.FilterPredicate(SPECIALS_DATE, Query.FilterOperator.EQUAL, date.toDateTimeAtStartOfDay(defaultZone).toDate()));
-    q.setFilter(Query.CompositeFilterOperator.and(filters));
-    Entity entity = dataStore.prepare(q).asSingleEntity();
-    if (entity == null) {
-      return null;
-    }
-    return fromEntity(entity);
-  }
-
-  @Override
-  public @Nullable DailyData findByTruckAndDay(String truckId, LocalDate date) {
-    DatastoreService dataStore = provider.get();
-    Query q = new Query(SPECIALS_KIND);
-    List<Query.Filter> filters = ImmutableList.<Query.Filter>of(
-        new Query.FilterPredicate(SPECIALS_TRUCK_ID, Query.FilterOperator.EQUAL, truckId),
-        new Query.FilterPredicate(SPECIALS_DATE, Query.FilterOperator.EQUAL, date.toDateTimeAtStartOfDay(defaultZone).toDate()));
-    q.setFilter(Query.CompositeFilterOperator.and(filters));
-    Entity entity = dataStore.prepare(q).asSingleEntity();
-    if (entity == null) {
-      return null;
-    }
-    return fromEntity(entity);
-  }
-
-  @Override
-  public List<DailyData> findTruckSpecialsByDay(LocalDate day) {
-    DatastoreService dataStore = provider.get();
-    Query q = new Query(SPECIALS_KIND);
-    List<Query.Filter> filters = ImmutableList.<Query.Filter>of(
-        new Query.FilterPredicate(SPECIALS_TRUCK_ID, Query.FilterOperator.NOT_EQUAL, null),
-        new Query.FilterPredicate(SPECIALS_DATE, Query.FilterOperator.EQUAL, day.toDateTimeAtStartOfDay(defaultZone).toDate()));
-    q.setFilter(Query.CompositeFilterOperator.and(filters));
-    return executeQuery(dataStore, q, null);
   }
 }

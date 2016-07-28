@@ -23,6 +23,11 @@ import foodtruck.dao.TimeSeriesDAO;
 import foodtruck.model.SystemStats;
 import foodtruck.util.Slots;
 
+import static com.google.appengine.api.datastore.Query.CompositeFilterOperator.and;
+import static com.google.appengine.api.datastore.Query.FilterOperator.GREATER_THAN_OR_EQUAL;
+import static com.google.appengine.api.datastore.Query.FilterOperator.LESS_THAN;
+import static com.google.appengine.api.datastore.Query.SortDirection.ASCENDING;
+
 /**
  * @author aviolette
  * @since 2/27/14
@@ -37,25 +42,27 @@ abstract class TimeSeriesDAOAppEngine extends AppEngineDAO<Long, SystemStats> im
     this.slotter = slotter;
   }
 
-  @Override public List<SystemStats> findWithinRange(long startTime, long endTime, String[] statList) {
-    DatastoreService dataStore = provider.get();
-    Query q = new Query(getKind())
-        .setFilter(Query.CompositeFilterOperator.and(
-            new Query.FilterPredicate(PARAM_TIMESTAMP, Query.FilterOperator.GREATER_THAN_OR_EQUAL, startTime),
-            new Query.FilterPredicate(PARAM_TIMESTAMP, Query.FilterOperator.LESS_THAN, endTime)))
-        .addSort(PARAM_TIMESTAMP, Query.SortDirection.ASCENDING);
-    return executeQuery(dataStore, q, null);
+  @Override
+  public List<SystemStats> findWithinRange(long startTime, long endTime, String[] statList) {
+    return aq()
+        .filter(and(
+            predicate(PARAM_TIMESTAMP, GREATER_THAN_OR_EQUAL, startTime),
+            predicate(PARAM_TIMESTAMP, LESS_THAN, endTime)))
+        .sort(PARAM_TIMESTAMP, ASCENDING)
+        .execute();
   }
 
-  @Override public void updateCount(DateTime timestamp, String key) {
+  @Override
+  public void updateCount(DateTime timestamp, String key) {
     updateCount(timestamp, key, 1L);
   }
 
-  @Override public void deleteBefore(LocalDate localDate) {
+  @Override
+  public void deleteBefore(LocalDate localDate) {
     DatastoreService dataStore = provider.get();
     long ts = localDate.toDateTimeAtStartOfDay().getMillis();
-    Query q = new Query(getKind())
-        .setFilter(new Query.FilterPredicate(PARAM_TIMESTAMP, Query.FilterOperator.LESS_THAN, ts));
+    Query q = new Query(getKind()).setFilter(
+        new Query.FilterPredicate(PARAM_TIMESTAMP, LESS_THAN, ts));
     List<Key> entities = Lists.newLinkedList();
     for (Entity e : dataStore.prepare(q).asIterable()) {
       entities.add(e.getKey());
@@ -64,12 +71,14 @@ abstract class TimeSeriesDAOAppEngine extends AppEngineDAO<Long, SystemStats> im
     dataStore.delete(entities);
   }
 
-  @Override public void updateCount(DateTime timestamp, String statName, long by) {
+  @Override
+  public void updateCount(DateTime timestamp, String statName, long by) {
     long slot = slotter.getSlot(timestamp.getMillis());
     updateCount(slot, statName, by);
   }
 
-  @Override public void updateCount(long slot, String statName, long by) {
+  @Override
+  public void updateCount(long slot, String statName, long by) {
     DatastoreService dataStore = provider.get();
     Transaction txn = dataStore.beginTransaction();
     try {
@@ -123,7 +132,8 @@ abstract class TimeSeriesDAOAppEngine extends AppEngineDAO<Long, SystemStats> im
     return Iterables.getFirst(dataStore.prepare(q).asIterable(), null);
   }
 
-  @Override protected Entity toEntity(SystemStats obj, Entity entity) {
+  @Override
+  protected Entity toEntity(SystemStats obj, Entity entity) {
     entity.setProperty(PARAM_TIMESTAMP, obj.getTimeStamp());
     for (Map.Entry<String, Long> entry : obj.getAttributes().entrySet()) {
       entity.setProperty(entry.getKey(), entry.getValue());
@@ -131,15 +141,15 @@ abstract class TimeSeriesDAOAppEngine extends AppEngineDAO<Long, SystemStats> im
     return entity;
   }
 
-  @Override protected SystemStats fromEntity(Entity entity) {
+  @Override
+  protected SystemStats fromEntity(Entity entity) {
     ImmutableMap.Builder<String, Long> entries = ImmutableMap.builder();
     for (Map.Entry<String, Object> entry : entity.getProperties().entrySet()) {
       if (!entry.getKey().equals(PARAM_TIMESTAMP)) {
         entries.put(entry.getKey(), (Long) entry.getValue());
       }
     }
-    return new SystemStats(entity.getKey().getId(), (Long) entity.getProperty(PARAM_TIMESTAMP),
-        entries.build());
+    return new SystemStats(entity.getKey().getId(), (Long) entity.getProperty(PARAM_TIMESTAMP), entries.build());
   }
 
 }

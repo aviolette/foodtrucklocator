@@ -2,14 +2,13 @@ package foodtruck.dao.appengine;
 
 import java.util.Collection;
 
-import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Query;
 import com.google.inject.Inject;
 
 import foodtruck.dao.ApplicationDAO;
 import foodtruck.model.Application;
 
+import static com.google.appengine.api.datastore.Query.FilterOperator.EQUAL;
 import static foodtruck.dao.appengine.Attributes.getStringProperty;
 
 /**
@@ -29,7 +28,8 @@ class ApplicationDAOAppEngine extends AppEngineDAO<String, Application> implemen
     super(KIND, provider);
   }
 
-  @Override protected Entity toEntity(Application obj, Entity entity) {
+  @Override
+  protected Entity toEntity(Application obj, Entity entity) {
     entity.setProperty(PROP_NAME, obj.getName());
     entity.setProperty(PROP_DESCRIPTION, obj.getDescription());
     entity.setProperty(PROP_ENABLED, obj.isEnabled());
@@ -38,7 +38,8 @@ class ApplicationDAOAppEngine extends AppEngineDAO<String, Application> implemen
     return entity;
   }
 
-  @Override protected Application fromEntity(Entity entity) {
+  @Override
+  protected Application fromEntity(Entity entity) {
     return Application.builder()
         .name(getStringProperty(entity, PROP_NAME))
         .rateLimit(getBooleanProperty(entity, RATE_LIMIT, false))
@@ -49,10 +50,8 @@ class ApplicationDAOAppEngine extends AppEngineDAO<String, Application> implemen
         .build();
   }
 
-  @Override public Collection<Application> findActive() {
-    DatastoreService dataStore = provider.get();
-    Query q = new Query(getKind());
-    q.setFilter(new Query.FilterPredicate(PROP_ENABLED, Query.FilterOperator.EQUAL, true));
-    return executeQuery(dataStore, q, null);
+  @Override
+  public Collection<Application> findActive() {
+    return aq().filter(predicate(PROP_ENABLED, EQUAL, true)).execute();
   }
 }

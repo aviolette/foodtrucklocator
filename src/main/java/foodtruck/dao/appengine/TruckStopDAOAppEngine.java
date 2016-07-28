@@ -66,8 +66,7 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
   private final TruckDAO truckDAO;
 
   @Inject
-  public TruckStopDAOAppEngine(DatastoreServiceProvider provider,
-      DateTimeZone zone, TruckDAO truckDAO) {
+  public TruckStopDAOAppEngine(DatastoreServiceProvider provider, DateTimeZone zone, TruckDAO truckDAO) {
     super(STOP_KIND, provider);
     this.zone = zone;
     this.truckDAO = truckDAO;
@@ -119,9 +118,10 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
         .confidence(Strings.isNullOrEmpty(confidence) ? Confidence.HIGH : Confidence.valueOf(confidence))
         .lastUpdated(Attributes.getDateTime(entity, LAST_UPDATED, zone))
         .fromBeacon(Attributes.getDateTime(entity, BEACON_FIELD, zone))
-        .location(Location.builder().lat((Double) entity.getProperty(LATITUDE_FIELD))
-            .lng((Double) entity.getProperty(
-                LONGITUDE_FIELD)).name((String) entity.getProperty(LOCATION_NAME_FIELD))
+        .location(Location.builder()
+            .lat((Double) entity.getProperty(LATITUDE_FIELD))
+            .lng((Double) entity.getProperty(LONGITUDE_FIELD))
+            .name((String) entity.getProperty(LOCATION_NAME_FIELD))
             .description((String) entity.getProperty(DESCRIPTION_FIELD))
             .url((String) entity.getProperty(URL_FIELD))
             .build())
@@ -132,16 +132,15 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
 
   @Override
   public List<TruckStop> findDuring(@Nullable String truckId, LocalDate day) {
-    DatastoreService dataStore = provider.get();
     Query q = new Query(STOP_KIND);
     final DateTime midnight = day.toDateTimeAtStartOfDay(zone);
     // This opens up a 6 hour window before the specified day to get any stops that start on the prior day
     // This is not the best way to do this.  This code needs to be refactored
-    List<Query.Filter> filters = trucksOverRange(truckId, new Interval(midnight.toDateTime().minusHours(6),
-        day.plusDays(1).toDateTimeAtStartOfDay(zone)));
+    List<Query.Filter> filters = trucksOverRange(truckId,
+        new Interval(midnight.toDateTime().minusHours(6), day.plusDays(1).toDateTimeAtStartOfDay(zone)));
     q.setFilter(Query.CompositeFilterOperator.and(filters));
     q.addSort(START_TIME_FIELD, Query.SortDirection.ASCENDING);
-    return executeQuery(dataStore, q, new Predicate<Entity>() {
+    return executeQuery(q, new Predicate<Entity>() {
       public boolean apply(Entity entity) {
         final DateTime startTime = new DateTime(entity.getProperty(START_TIME_FIELD), zone);
         final DateTime endTime = getDateTime(entity, END_TIME_FIELD, zone);
@@ -155,8 +154,8 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
   public void deleteAfter(DateTime startTime) {
     DatastoreService dataStore = provider.get();
     Query q = new Query(STOP_KIND);
-    q.setFilter(new Query.FilterPredicate(START_TIME_FIELD,
-        Query.FilterOperator.GREATER_THAN_OR_EQUAL, startTime.toDate()));
+    q.setFilter(
+        new Query.FilterPredicate(START_TIME_FIELD, Query.FilterOperator.GREATER_THAN_OR_EQUAL, startTime.toDate()));
     deleteFromQuery(dataStore, q);
   }
 
@@ -172,16 +171,17 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
 
   @Override
   public List<TruckStop> findOverRange(@Nullable String truckId, Interval range) {
-    DatastoreService dataStore = provider.get();
     Query q = new Query(STOP_KIND);
     List<Query.Filter> filters = trucksOverRange(truckId, range);
     q.setFilter(Query.CompositeFilterOperator.and(filters));
     q.addSort(START_TIME_FIELD, Query.SortDirection.ASCENDING);
-    return executeQuery(dataStore, q, null);
+    return executeQuery(q, null);
   }
 
   @Override
-  public @Nullable TruckStop findFirstStop(String truckId) {
+  public
+  @Nullable
+  TruckStop findFirstStop(String truckId) {
     DatastoreService dataStore = provider.get();
     Query q = new Query(STOP_KIND);
     q.addSort(START_TIME_FIELD, Query.SortDirection.ASCENDING);
@@ -197,8 +197,8 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
   @Override
   public List<TruckStop> findAfter(String truckId, DateTime endTime) {
     List<Query.Filter> filters = Lists.newLinkedList();
-    filters.add(new Query.FilterPredicate(START_TIME_FIELD,
-        Query.FilterOperator.GREATER_THAN_OR_EQUAL, endTime.toDate()));
+    filters.add(
+        new Query.FilterPredicate(START_TIME_FIELD, Query.FilterOperator.GREATER_THAN_OR_EQUAL, endTime.toDate()));
     filters.add(new Query.FilterPredicate(TRUCK_ID_FIELD, Query.FilterOperator.EQUAL, truckId));
     DatastoreService dataStore = provider.get();
     Query q = new Query(STOP_KIND);
@@ -218,28 +218,23 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
 
   @Override
   public List<TruckStop> findVendorStopsAfter(DateTime start, String truckId) {
-    return FluentIterable.from(findAfter(truckId, start))
-        .filter(new Predicate<TruckStop>() {
-          public boolean apply(TruckStop truckStop) {
-            return truckStop.getOrigin() == StopOrigin.VENDORCAL;
-          }
-        })
-        .toList();
+    return FluentIterable.from(findAfter(truckId, start)).filter(new Predicate<TruckStop>() {
+      public boolean apply(TruckStop truckStop) {
+        return truckStop.getOrigin() == StopOrigin.VENDORCAL;
+      }
+    }).toList();
   }
 
   @Override
   public List<TruckStop> findVendorStopsAfter(DateTime start) {
-    return FluentIterable.from(findAfter(start))
-        .filter(VENDOR_STOP_PREDICATE)
-        .toList();
+    return FluentIterable.from(findAfter(start)).filter(VENDOR_STOP_PREDICATE).toList();
   }
 
   private List<Query.Filter> trucksOverRange(@Nullable String truckId, Interval range) {
     List<Query.Filter> filters = Lists.newLinkedList();
-    filters.add(new Query.FilterPredicate(START_TIME_FIELD,
-        Query.FilterOperator.GREATER_THAN_OR_EQUAL, range.getStart().toDate()));
-    filters.add(new Query.FilterPredicate(START_TIME_FIELD,
-        Query.FilterOperator.LESS_THAN, range.getEnd().toDate()));
+    filters.add(new Query.FilterPredicate(START_TIME_FIELD, Query.FilterOperator.GREATER_THAN_OR_EQUAL,
+        range.getStart().toDate()));
+    filters.add(new Query.FilterPredicate(START_TIME_FIELD, Query.FilterOperator.LESS_THAN, range.getEnd().toDate()));
     if (truckId != null) {
       filters.add(new Query.FilterPredicate(TRUCK_ID_FIELD, Query.FilterOperator.EQUAL, truckId));
     }

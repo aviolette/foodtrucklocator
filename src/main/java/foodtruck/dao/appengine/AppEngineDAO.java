@@ -32,14 +32,18 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
 
   @Override
   public List<T> findAll() {
-    DatastoreService dataStore = provider.get();
-    Query q = new Query(getKind());
+    Query q = query();
     modifyFindAllQuery(q);
-    return executeQuery(dataStore, q, null);
+    return executeQuery(q, null);
   }
 
 
-  List<T> executeQuery(DatastoreService dataStore, Query q, @Nullable Predicate<Entity> predicate) {
+  List<T> executeQuery(Query q) {
+    return executeQuery(q, null);
+  }
+
+  List<T> executeQuery(Query q, @Nullable Predicate<Entity> predicate) {
+    DatastoreService dataStore = provider.get();
     ImmutableList.Builder<T> objs = ImmutableList.builder();
     for (Entity entity : dataStore.prepare(q).asIterable()) {
       if (predicate != null && !predicate.apply(entity)) {
@@ -138,6 +142,20 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
 
   protected abstract T fromEntity(Entity entity);
 
+  protected Query query() {
+    return new Query(getKind());
+  }
+
+
+  protected Query.FilterPredicate predicate(String name, Query.FilterOperator operator, Object value) {
+    return new Query.FilterPredicate(name, operator, value);
+  }
+
+
+  protected AQ aq() {
+    return new AQ();
+  }
+
   public String getKind() {
     return kind;
   }
@@ -147,8 +165,7 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
     return findSingleItemByFilter(new Query.FilterPredicate(attributeName, Query.FilterOperator.EQUAL, attributeValue));
   }
 
-  @Nullable
-  private T findSingleItemByFilter(Query.Filter filter) {
+  protected @Nullable T findSingleItemByFilter(Query.Filter filter) {
     DatastoreService dataStore = provider.get();
     Query q = new Query(getKind());
     q.setFilter(filter);
@@ -175,6 +192,38 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
       return fromEntity(entity);
     } catch (EntityNotFoundException e) {
       return null;
+    }
+  }
+
+  protected class AQ {
+    private Query query;
+
+    private AQ() {
+      query = new Query(getKind());
+    }
+
+    public List<T> execute() {
+      return executeQuery(query, null);
+    }
+
+    public @Nullable T findOne() {
+      Entity entity = provider.get().prepare(query).asSingleEntity();
+      return (entity == null) ? null : fromEntity(entity);
+    }
+
+    public AQ filter(Query.Filter filter) {
+      query.setFilter(filter);
+      return this;
+    }
+
+    public AQ sort(String nameField) {
+      query.addSort(nameField);
+      return this;
+    }
+
+    public AQ sort(String nameField, Query.SortDirection direction) {
+      query.addSort(nameField, direction);
+      return this;
     }
   }
 }

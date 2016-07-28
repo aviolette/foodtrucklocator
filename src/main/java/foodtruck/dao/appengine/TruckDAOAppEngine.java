@@ -155,8 +155,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
         .beaconnaiseEmails(getSetProperty(entity, TRUCK_BEACONNAISE_EMAILS))
         .timezoneOffset(getIntProperty(entity, TIMEZONE_OFFSET, 0))
         .url((String) entity.getProperty(TRUCK_URL))
-        .categories(categoriesList == null ? ImmutableSet.<String>of() :
-            ImmutableSet.copyOf(categoriesList))
+        .categories(categoriesList == null ? ImmutableSet.<String>of() : ImmutableSet.copyOf(categoriesList))
         .useTwittalyzer((Boolean) entity.getProperty(TRUCK_TWITTALYZER_FIELD))
         .twitterGeolocationDataValid(getBooleanProperty(entity, TRUCK_TWITTER_GEOLOCATION, false))
         .calendarUrl((String) entity.getProperty(TRUCK_CALENDAR_URL))
@@ -165,11 +164,13 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
         .build();
   }
 
-  @Override protected void modifyFindAllQuery(Query q) {
+  @Override
+  protected void modifyFindAllQuery(Query q) {
     q.addSort(TRUCK_CANONICAL_NAME);
   }
 
-  @Override public Collection<Truck> findByTwitterId(String screenName) {
+  @Override
+  public Collection<Truck> findByTwitterId(String screenName) {
     DatastoreService dataStore = provider.get();
     Query q = new Query(TRUCK_KIND);
     q.setFilter(new Query.FilterPredicate(TRUCK_TWITTER_HANDLE, Query.FilterOperator.EQUAL, screenName));
@@ -181,44 +182,39 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     return trucks.build();
   }
 
-  @Override public Collection<Truck> findInactiveTrucks() {
-    DatastoreService dataStore = provider.get();
-    return executeQuery(dataStore,
-        new Query(getKind())
-            .addSort(TRUCK_CANONICAL_NAME)
-            .setFilter(new Query.FilterPredicate(INACTIVE_FIELD, Query.FilterOperator.EQUAL, true)), null);
+  @Override
+  public Collection<Truck> findInactiveTrucks() {
+    return executeQuery(new Query(getKind()).addSort(TRUCK_CANONICAL_NAME)
+        .setFilter(new Query.FilterPredicate(INACTIVE_FIELD, Query.FilterOperator.EQUAL, true)), null);
   }
 
-  @Override public Collection<Truck> findActiveTrucks() {
-    DatastoreService dataStore = provider.get();
-    return executeQuery(dataStore,
-        new Query(getKind())
-          .addSort(TRUCK_CANONICAL_NAME)
-          .setFilter(new Query.FilterPredicate(INACTIVE_FIELD, Query.FilterOperator.EQUAL, false)), null);
+  @Override
+  public Collection<Truck> findActiveTrucks() {
+    return executeQuery(new Query(getKind()).addSort(TRUCK_CANONICAL_NAME)
+        .setFilter(new Query.FilterPredicate(INACTIVE_FIELD, Query.FilterOperator.EQUAL, false)), null);
   }
 
   public List<Truck> findVisibleTrucks() {
-    DatastoreService dataStore = provider.get();
-    return executeQuery(dataStore,
-        new Query(TRUCK_KIND)
-            .setFilter(new Query.FilterPredicate(TRUCK_HIDDEN, Query.FilterOperator.EQUAL, false))
+    return executeQuery(
+        new Query(TRUCK_KIND).setFilter(new Query.FilterPredicate(TRUCK_HIDDEN, Query.FilterOperator.EQUAL, false))
             .addSort(TRUCK_CANONICAL_NAME), null);
   }
 
   @Override
   public List<Truck> findFacebookTrucks() {
-    DatastoreService dataStore = provider.get();
-    return executeQuery(dataStore,
-        new Query(TRUCK_KIND)
-            .setFilter(new Query.FilterPredicate(SCAN_FACEBOOK, Query.FilterOperator.EQUAL, true))
+    return executeQuery(
+        new Query(TRUCK_KIND).setFilter(new Query.FilterPredicate(SCAN_FACEBOOK, Query.FilterOperator.EQUAL, true))
             .addSort(TRUCK_CANONICAL_NAME), null);
   }
 
-  @Nullable @Override public Truck findFirst() {
+  @Nullable
+  @Override
+  public Truck findFirst() {
     return Iterables.getFirst(findAll(), null);
   }
 
-  @Override public Collection<Truck> findByCategory(String tag) {
+  @Override
+  public Collection<Truck> findByCategory(String tag) {
     ImmutableList.Builder<Truck> trucks = ImmutableList.builder();
     for (Truck truck : findVisibleTrucks()) {
       if (truck.getCategories().contains(tag)) {
@@ -228,7 +224,8 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     return trucks.build();
   }
 
-  @Override public Set<Truck> findByBeaconnaiseEmail(String email) {
+  @Override
+  public Set<Truck> findByBeaconnaiseEmail(String email) {
     DatastoreService dataStore = provider.get();
     Query q = new Query(TRUCK_KIND);
     q.setFilter(new Query.FilterPredicate(TRUCK_BEACONNAISE_EMAILS, Query.FilterOperator.IN, ImmutableSet.of(email)));
@@ -240,15 +237,17 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     return trucks.build();
   }
 
-  @Override public Iterable<Truck> findTrucksWithEmail() {
-    DatastoreService dataStore = provider.get();
+  @Override
+  public Iterable<Truck> findTrucksWithEmail() {
     Query q = new Query(TRUCK_KIND);
-    q.setFilter(Query.CompositeFilterOperator.and(new Query.FilterPredicate(TRUCK_EMAIL, Query.FilterOperator.NOT_EQUAL, null),
-        new Query.FilterPredicate(TRUCK_ALLOW_SYSTEM_NOTIFICATIONS, Query.FilterOperator.EQUAL, true)));
-    return executeQuery(dataStore, q, null);
+    q.setFilter(
+        Query.CompositeFilterOperator.and(new Query.FilterPredicate(TRUCK_EMAIL, Query.FilterOperator.NOT_EQUAL, null),
+            new Query.FilterPredicate(TRUCK_ALLOW_SYSTEM_NOTIFICATIONS, Query.FilterOperator.EQUAL, true)));
+    return executeQuery(q, null);
   }
 
-  @Override public void deleteAll() {
+  @Override
+  public void deleteAll() {
     DatastoreService dataStore = provider.get();
     Query q = new Query(getKind());
     ImmutableList.Builder<Key> keys = ImmutableList.builder();
@@ -258,7 +257,8 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     dataStore.delete(keys.build());
   }
 
-  @Override public Set<Truck> findTrucksWithCalendars() {
+  @Override
+  public Set<Truck> findTrucksWithCalendars() {
     DatastoreService dataStore = provider.get();
     Query q = new Query(TRUCK_KIND);
     q.setFilter(new Query.FilterPredicate(TRUCK_CALENDAR_URL, Query.FilterOperator.NOT_EQUAL, null));

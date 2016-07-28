@@ -2,7 +2,6 @@ package foodtruck.dao.appengine;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,6 +21,10 @@ import foodtruck.dao.LocationDAO;
 import foodtruck.model.Location;
 import foodtruck.util.Clock;
 
+import static com.google.appengine.api.datastore.Query.CompositeFilterOperator.or;
+import static com.google.appengine.api.datastore.Query.FilterOperator.EQUAL;
+import static com.google.appengine.api.datastore.Query.FilterOperator.IN;
+import static com.google.appengine.api.datastore.Query.FilterOperator.NOT_EQUAL;
 import static foodtruck.dao.appengine.Attributes.getIntProperty;
 import static foodtruck.dao.appengine.Attributes.getSetProperty;
 import static foodtruck.dao.appengine.Attributes.getStringProperty;
@@ -71,10 +74,9 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
   @Override
   public @Nullable Location findByAddress(String keyword) {
     DatastoreService dataStore = provider.get();
-    Query q = locationQuery(keyword);
     Entity entity = null;
     try {
-      entity = dataStore.prepare(q).asSingleEntity();
+      entity = dataStore.prepare(locationQuery(keyword)).asSingleEntity();
     } catch (PreparedQuery.TooManyResultsException tmr) {
       log.log(Level.WARNING, "Got too many results exception for: {0}", keyword);
       try {
@@ -89,73 +91,52 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
     return null;
   }
 
-  @Override public Set<Location> findPopularLocations() {
-    DatastoreService dataStore = provider.get();
-    Query q = new Query(LOCATION_KIND);
-    Query.Filter popularFilter = new Query.FilterPredicate(POPULAR_FIELD, Query.FilterOperator.EQUAL, true);
-    q.setFilter(popularFilter);
-    q.addSort(NAME_FIELD);
-    return ImmutableSet.copyOf(executeQuery(dataStore, q, null));
+  @Override
+  public List<Location> findPopularLocations() {
+    return aq().filter(predicate(POPULAR_FIELD, EQUAL, true)).sort(NAME_FIELD).execute();
   }
 
-  @Override public List<Location> findAutocompleteLocations() {
-    DatastoreService dataStore = provider.get();
-    Query q = new Query(LOCATION_KIND);
-    Query.Filter popularFilter = new Query.FilterPredicate(POPULAR_FIELD, Query.FilterOperator.EQUAL, true);
-    Query.Filter autoCompleteFilter = new Query.FilterPredicate(AUTOCOMPLETE, Query.FilterOperator.EQUAL, true);
-    q.setFilter(Query.CompositeFilterOperator.or(popularFilter, autoCompleteFilter));
-    q.addSort(NAME_FIELD);
-    return executeQuery(dataStore, q, null);
+  @Override
+  public List<Location> findAutocompleteLocations() {
+    return aq().filter(or(predicate(POPULAR_FIELD, EQUAL, true), predicate(AUTOCOMPLETE, EQUAL, true)))
+        .sort(NAME_FIELD)
+        .execute();
   }
 
   @Override
   public List<Location> findLocationsOwnedByFoodTrucks() {
-    DatastoreService dataStore = provider.get();
-    Query q = new Query(LOCATION_KIND);
-    q.setFilter(new Query.FilterPredicate(OWNED_BY, Query.FilterOperator.NOT_EQUAL, null));
-    return executeQuery(dataStore, q, null);
+    return aq().filter(predicate(OWNED_BY, NOT_EQUAL, null)).execute();
   }
 
-  @Override public List<Location> findAliasesFor(String locationName) {
-    return executeQuery(provider.get(), new Query(LOCATION_KIND)
-        .setFilter(new Query.FilterPredicate(ALIAS, Query.FilterOperator.EQUAL, locationName)), null);
+  @Override
+  public List<Location> findAliasesFor(String locationName) {
+    return aq().filter(predicate(ALIAS, EQUAL, locationName)).execute();
   }
 
-  @Override public Collection<Location> findDesignatedStops() {
-    DatastoreService dataStore = provider.get();
-    Query q = new Query(LOCATION_KIND);
-    q.setFilter(new Query.FilterPredicate(DESIGNATED_STOP, Query.FilterOperator.EQUAL, true));
-    return ImmutableSet.copyOf(executeQuery(dataStore, q, null));
+  @Override
+  public Collection<Location> findDesignatedStops() {
+    return aq().filter(predicate(DESIGNATED_STOP, EQUAL, true)).execute();
   }
 
-  @Override public Iterable<Location> findBoozyLocations() {
-    DatastoreService dataStore = provider.get();
-    Query q = new Query(LOCATION_KIND);
-    Query.Filter popularFilter = new Query.FilterPredicate(HAS_BOOZE, Query.FilterOperator.EQUAL, true);
-    q.setFilter(popularFilter);
-    return ImmutableSet.copyOf(executeQuery(dataStore, q, null));
+  @Override
+  public Iterable<Location> findBoozyLocations() {
+    return aq().filter(predicate(HAS_BOOZE, EQUAL, true)).execute();
   }
 
   @Override
   public Collection<Location> findByTwitterId(String twitterId) {
-    DatastoreService dataStore = provider.get();
-    Query q = new Query(LOCATION_KIND);
-    q.setFilter(new Query.FilterPredicate(TWITTERHANDLE, Query.FilterOperator.EQUAL, twitterId.toLowerCase()));
-    return executeQuery(dataStore, q, null);
+    return aq().filter(predicate(TWITTERHANDLE, EQUAL, twitterId.toLowerCase())).execute();
   }
 
   @Override
   public Collection<Location> findByManagerEmail(String email) {
-    DatastoreService dataStore = provider.get();
-    Query q = new Query(LOCATION_KIND);
-    q.setFilter(new Query.FilterPredicate(MANAGER_EMAILS, Query.FilterOperator.IN, ImmutableSet.of(email)));
-    return executeQuery(dataStore, q, null);
+    return aq().filter(predicate(MANAGER_EMAILS, IN, ImmutableSet.of(email))).execute();
   }
 
   @Override
   public @Nullable Location findByAlias(String location) {
     // max of three marches up the alias-tree
-    for (int i=0; i < 3; i++) {
+    for (int i = 0; i < 3; i++) {
       Location loc = findByAddress(location);
       if (loc == null || Strings.isNullOrEmpty(loc.getAlias())) {
         return loc;
@@ -166,10 +147,7 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
   }
 
   private Query locationQuery(String keyword) {
-    Query q = new Query(LOCATION_KIND);
-    Query.Filter nameFilter = new Query.FilterPredicate(NAME_FIELD, Query.FilterOperator.EQUAL, keyword);
-    q.setFilter(nameFilter);
-    return q;
+    return query().setFilter(predicate(NAME_FIELD, EQUAL, keyword));
   }
 
   private Entity deleteDuplicates(String keyword, DatastoreService dataStore) {
@@ -192,7 +170,8 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
     return location.withKey(id);
   }
 
-  @Override protected Entity toEntity(Location location, Entity entity) {
+  @Override
+  protected Entity toEntity(Location location, Entity entity) {
     entity.setProperty(NAME_FIELD, location.getName());
     entity.setProperty(LAT_FIELD, location.getLatitude());
     entity.setProperty(LNG_FIELD, location.getLongitude());
@@ -220,13 +199,13 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
     return entity;
   }
 
-  @Override protected Location fromEntity(Entity entity) {
+  @Override
+  protected Location fromEntity(Entity entity) {
     Double lat = (Double) entity.getProperty(LAT_FIELD);
     Double lng = (Double) entity.getProperty(LNG_FIELD);
     Boolean valid = (Boolean) entity.getProperty(VALID_FIELD);
     Object key = entity.getKey().getId();
-    Location.Builder builder =
-        Location.builder().name((String) entity.getProperty(NAME_FIELD)).key(key);
+    Location.Builder builder = Location.builder().name((String) entity.getProperty(NAME_FIELD)).key(key);
     builder.description((String) entity.getProperty(DESCRIPTION_FIELD));
     builder.url((String) entity.getProperty(URL_FIELD));
     builder.popular(getBooleanProperty(entity, POPULAR_FIELD, false));

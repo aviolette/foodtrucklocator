@@ -2,7 +2,6 @@ package foodtruck.dao;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -15,6 +14,7 @@ import foodtruck.model.Location;
 public interface LocationDAO extends DAO<Long, Location> {
   /**
    * Looks up a location by an address.
+   *
    * @param keyword an address to search on
    * @return the location or null if it could not be found
    */
@@ -23,15 +23,16 @@ public interface LocationDAO extends DAO<Long, Location> {
   /**
    * Saves a location to the datastore.  Location object with new key is returned if
    * this is a new object.
+   *
    * @param location the location to save
    * @return the location object with a new key
    */
   Location saveAndFetch(Location location);
 
   /**
-   * Finds all the popular locations
+   * Finds all the popular locations, sorted by name (ascending)
    */
-  Set<Location> findPopularLocations();
+  List<Location> findPopularLocations();
 
   /**
    * Finds all the locations that should be in the autocomplete list, sorted by name

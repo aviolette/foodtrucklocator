@@ -20,6 +20,7 @@ import foodtruck.schedule.Confidence;
 
 /**
  * Specifies an truck at a location at a date and time.
+ *
  * @author aviolette@gmail.com
  * @since Jul 12, 2011
  */
@@ -35,6 +36,7 @@ public class TruckStop extends ModelEntity {
   private final Confidence matchConfidence;
   private final List<String> notes;
   private final StopOrigin origin;
+
   private TruckStop(Builder builder) {
     super(builder.key);
     truck = builder.truck;
@@ -151,8 +153,7 @@ public class TruckStop extends ModelEntity {
   }
 
   public boolean activeDuring(DateTime dateTime) {
-    return startTime.equals(dateTime) ||
-        (dateTime.isAfter(startTime) && dateTime.isBefore(endTime));
+    return startTime.equals(dateTime) || (dateTime.isAfter(startTime) && dateTime.isBefore(endTime));
   }
 
   public TruckStop withLocation(Location location) {
@@ -190,7 +191,9 @@ public class TruckStop extends ModelEntity {
     private Confidence matchConfidence = Confidence.MEDIUM;
     private List<String> notes = Lists.newLinkedList();
     private StopOrigin origin = StopOrigin.UNKNOWN;
-    private Builder() {}
+
+    private Builder() {
+    }
 
     private Builder(TruckStop stop) {
       truck = stop.getTruck();
