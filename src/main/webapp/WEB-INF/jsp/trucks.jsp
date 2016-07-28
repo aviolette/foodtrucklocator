@@ -65,7 +65,7 @@
         if (!icon) {
           icon = "//storage.googleapis.com/truckpreviews/truck_holder.svg";
         }
-        $("<img width='180' height='180' src='" + icon + "'/>").appendTo($thumbnail);
+        $("<img width='180' height='180' class='img-rounded img-responsive' src='" + icon + "'/>").appendTo($thumbnail);
         $thumbnail.append("<p class='text-center'><strong>" + datum['name']+"</strong></p>")
       });
     }

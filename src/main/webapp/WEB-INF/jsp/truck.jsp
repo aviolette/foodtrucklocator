@@ -20,7 +20,7 @@
 
   <div class="row top-row" style="padding-bottom: 0;">
     <div class="col-md-6">
-      <img class="previewIcon" src="${truck.previewIconUrl.protocolRelative}" width="150" height="150"/>
+      <img class="img-rounded previewIcon" src="${truck.previewIconUrl.protocolRelative}" width="150" height="150"/>
     </div>
   </div>
   <div class="row second-top-row">

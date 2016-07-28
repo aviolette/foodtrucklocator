@@ -36,7 +36,7 @@
         <c:forEach items="${weeklyStops}" var="day" varStatus="dayStatus">
           <h3><joda:format value="${day.day}" pattern="EEEE"/></h3>
           <c:forEach items="${day.stops}" var="stop">
-            <a href="/trucks/${stop.truck.id}"><img src="${stop.truck.iconUrlObj.protocolRelative}" alt=""
+            <a href="/trucks/${stop.truck.id}"><img src="${stop.truck.iconUrlObj.protocolRelative}" alt="" class="img-rounded"
                                                     title="<joda:format pattern="hh:mm a" value="${stop.startTime}"/> - <joda:format pattern="hh:mm a" value="${stop.endTime}"/> ${stop.truck.name}"/></a>
           </c:forEach>
         </c:forEach>
@@ -49,7 +49,7 @@
           </c:if>
           <div class="media">
             <a class="pull-left" href="/trucks/${stop.truck.id}">
-              <img class="media-object" src="${stop.truck.iconUrlObj.protocolRelative}" alt="${stop.truck.name} icon"/>
+              <img class="media-object img-rounded" src="${stop.truck.iconUrlObj.protocolRelative}" alt="${stop.truck.name} icon"/>
             </a>
             <div class="media-body">
               <a href="/trucks/${stop.truck.id}" class="truckLink">

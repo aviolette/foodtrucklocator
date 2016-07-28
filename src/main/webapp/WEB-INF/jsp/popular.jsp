@@ -10,7 +10,7 @@
   <c:if test="${locationStatus.index % 4 == 0}"><c:if test="${locationStatus.index !=0 }"></div></c:if><div class="row"></c:if>
   <div class='col-xs-6 col-md-3 text-center'>
     <a href='/locations/${location.key}'>
-      <img width='180' height='180' src='${location.imageUrl.protocolRelative}'/>
+      <img width='180' height='180' class='img-rounded' src='${location.imageUrl.protocolRelative}'/>
       <div><strong>${location.name}</strong></div>
     </a>
   </div>
