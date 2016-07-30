@@ -16,7 +16,6 @@ import com.google.common.collect.ImmutableList;
 
 import foodtruck.dao.DAO;
 import foodtruck.model.ModelEntity;
-import foodtruck.model.TruckStop;
 
 /**
  * @author aviolette@gmail.com
@@ -35,11 +34,6 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
   public List<T> findAll() {
     Query q = query();
     modifyFindAllQuery(q);
-    return executeQuery(q, null);
-  }
-
-
-  List<T> executeQuery(Query q) {
     return executeQuery(q, null);
   }
 
@@ -166,7 +160,8 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
     return findSingleItemByFilter(new Query.FilterPredicate(attributeName, Query.FilterOperator.EQUAL, attributeValue));
   }
 
-  protected @Nullable T findSingleItemByFilter(Query.Filter filter) {
+  @Nullable
+  private T findSingleItemByFilter(Query.Filter filter) {
     DatastoreService dataStore = provider.get();
     Query q = new Query(getKind());
     q.setFilter(filter);
@@ -174,7 +169,8 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
     return (entity == null) ? null : fromEntity(entity);
   }
 
-  public @Nullable T findById(Long id) {
+  @Nullable
+  public T findById(Long id) {
     DatastoreService dataStore = provider.get();
     Key key = KeyFactory.createKey(getKind(), id);
     try {
@@ -185,7 +181,8 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
     }
   }
 
-  public @Nullable T findById(String id) {
+  @Nullable
+  public T findById(String id) {
     DatastoreService dataStore = provider.get();
     Key key = KeyFactory.createKey(getKind(), id);
     try {
@@ -196,6 +193,7 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
     }
   }
 
+  @SuppressWarnings("WeakerAccess")
   protected class AQ {
     private Query query;
 
@@ -207,7 +205,8 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
       return executeQuery(query, null);
     }
 
-    public @Nullable T findOne() {
+    @Nullable
+    T findOne() {
       Entity entity = provider.get().prepare(query).asSingleEntity();
       return (entity == null) ? null : fromEntity(entity);
     }

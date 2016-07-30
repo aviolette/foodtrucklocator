@@ -1,6 +1,6 @@
 package foodtruck.dao;
 
-import java.util.Collection;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -14,7 +14,7 @@ public interface DAO<K, T extends ModelEntity> {
   /**
    * Finds all the entities.
    */
-  Collection<T> findAll();
+  List<T> findAll();
 
   /**
    * Saves the entity to persistent storage

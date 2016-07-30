@@ -12,6 +12,7 @@ import foodtruck.dao.MessageDAO;
 import foodtruck.dao.NotificationDeviceProfileDAO;
 import foodtruck.dao.RetweetsDAO;
 import foodtruck.dao.StoryDAO;
+import foodtruck.dao.TrackingDeviceDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckObserverDAO;
 import foodtruck.dao.TruckStopDAO;
@@ -25,23 +26,25 @@ import foodtruck.util.Secondary;
  * @since Jul 13, 2011
  */
 public class AppEngineDAOModule extends AbstractModule {
+
   @Override
   protected void configure() {
     bind(AddressRuleScriptDAO.class).to(AddressRuleScriptDAOAppEngine.class);
     bind(ApplicationDAO.class).to(ApplicationDAOAppEngine.class);
+    bind(DailyDataDAO.class).to(DailyDataDAOAppEngine.class);
+    bind(DailyRollupDAO.class).to(DailyRollupDAOAppEngine.class);
+    bind(FifteenMinuteRollupDAO.class).to(FifteenMinuteRollupDAOAppEngine.class);
     bind(LocationDAO.class).to(LocationDAOAppEngine.class);
     bind(MessageDAO.class).to(MessageDAOAppEngine.class);
+    bind(NotificationDeviceProfileDAO.class).to(NotificationDeviceProfileDAOAppEngine.class);
     bind(RetweetsDAO.class).to(RetweetDAOAppEngine.class);
-    bind(FifteenMinuteRollupDAO.class).to(FifteenMinuteRollupDAOAppEngine.class);
+    bind(StoryDAO.class).to(StoryDAOAppEngine.class);
+    bind(TrackingDeviceDAO.class).to(TrackingDeviceDAOAppEngine.class);
     bind(TruckDAO.class).annotatedWith(Secondary.class).to(TruckDAOAppEngine.class);
     bind(TruckObserverDAO.class).to(TruckObserverDAOAppEngine.class);
-    bind(StoryDAO.class).to(StoryDAOAppEngine.class);
     bind(TruckStopDAO.class).to(TruckStopDAOAppEngine.class);
     bind(TwitterNotificationAccountDAO.class).to(TwitterNotificationAccountDAOAppEngine.class);
-    bind(WeeklyRollupDAO.class).to(WeeklyRollupDAOAppEngine.class);
-    bind(DailyRollupDAO.class).to(DailyRollupDAOAppEngine.class);
     bind(WeeklyLocationStatsRollupDAO.class).to(WeeklyLocationStatsRollupDAOAppEngine.class);
-    bind(DailyDataDAO.class).to(DailyDataDAOAppEngine.class);
-    bind(NotificationDeviceProfileDAO.class).to(NotificationDeviceProfileDAOAppEngine.class);
+    bind(WeeklyRollupDAO.class).to(WeeklyRollupDAOAppEngine.class);
   }
 }

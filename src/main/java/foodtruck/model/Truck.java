@@ -418,7 +418,6 @@ public class Truck extends ModelEntity implements Serializable {
     return name;
   }
 
-
   public static class Stats implements Serializable {
     private DateTime lastUpdated;
     private DateTime lastSeen;

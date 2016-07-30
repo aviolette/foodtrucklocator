@@ -46,7 +46,7 @@ public class TwitterNotificationAccountResource {
   @GET
   public JResponse<Collection<TwitterNotificationAccount>> findAll() {
     requiresAdmin();
-    return noCache(JResponse.ok(dao.findAll())).build();
+    return noCache(JResponse.ok((Collection<TwitterNotificationAccount>)dao.findAll())).build();
   }
 
   @POST

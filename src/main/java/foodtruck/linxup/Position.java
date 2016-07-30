@@ -11,6 +11,7 @@ import org.joda.time.DateTime;
  * @author aviolette
  * @since 7/24/16
  */
+@SuppressWarnings("WeakerAccess")
 public class Position {
   private final DateTime date;
   private final String vehicleLabel;
@@ -21,6 +22,10 @@ public class Position {
   private final boolean speeding;
   private final int estimatedSpeedLimit;
   private final @Nullable BehaviorCode behaviorCode;
+  private final String deviceNumber;
+  private final String driverId;
+  private final String simDeviceNumber;
+  private final String deviceTypeDescription;
 
   private Position(Builder builder) {
     this.date = builder.date;
@@ -32,6 +37,10 @@ public class Position {
     this.speeding = builder.speeding;
     this.estimatedSpeedLimit = builder.estimatedSpeedLimit;
     this.behaviorCode = builder.behaviorCode;
+    this.deviceNumber = builder.deviceNumber;
+    this.driverId = builder.driverId;
+    this.simDeviceNumber = builder.simDeviceNumber;
+    this.deviceTypeDescription = builder.deviceTypeDescription;
   }
 
   public static Builder builder() {
@@ -85,7 +94,13 @@ public class Position {
         .add("Speed (in mph)", speedMph)
         .add("Speeding", speeding)
         .add("Estimated speed limit", estimatedSpeedLimit)
+        .add("Device ID", deviceNumber)
+        .add("Device Type", deviceTypeDescription)
         .toString();
+  }
+
+  public String getDeviceNumber() {
+    return deviceNumber;
   }
 
   public static class Builder {
@@ -98,6 +113,10 @@ public class Position {
     private boolean speeding;
     private int estimatedSpeedLimit;
     private @Nullable BehaviorCode behaviorCode;
+    private String deviceNumber;
+    private String driverId;
+    private String simDeviceNumber;
+    private String deviceTypeDescription;
 
     public Builder() {}
 
@@ -110,6 +129,10 @@ public class Position {
       this.speedMph = position.speedMph;
       this.speeding = position.speeding;
       this.estimatedSpeedLimit = position.estimatedSpeedLimit;
+      this.deviceNumber = position.deviceNumber;
+      this.driverId = position.driverId;
+      this.simDeviceNumber = position.simDeviceNumber;
+      this.deviceTypeDescription = position.deviceTypeDescription;
     }
 
     public Builder date(DateTime date) {
@@ -117,42 +140,62 @@ public class Position {
       return this;
     }
 
-    public Builder speeding(boolean speeding) {
+    Builder deviceNumber(String deviceNumber) {
+      this.deviceNumber = deviceNumber;
+      return this;
+    }
+
+    Builder driverId(String driverId) {
+      this.driverId = driverId;
+      return this;
+    }
+
+    Builder simDeviceNumber(String deviceNumber) {
+      this.simDeviceNumber = deviceNumber;
+      return this;
+    }
+
+    Builder deviceTypeDescription(String deviceTypeDescription) {
+      this.deviceTypeDescription = deviceTypeDescription;
+      return this;
+    }
+
+    Builder speeding(boolean speeding) {
       this.speeding = speeding;
       return this;
     }
 
-    public Builder vehicleLabel(String vehicleLabel) {
+    Builder vehicleLabel(String vehicleLabel) {
       this.vehicleLabel = vehicleLabel;
       return this;
     }
 
-    public Builder latLng(LatLng position) {
+    Builder latLng(LatLng position) {
       this.latLng = position;
       return this;
     }
 
-    public Builder altitude(long altitude) {
+    Builder altitude(long altitude) {
       this.altitude = altitude;
       return this;
     }
 
-    public Builder direction(int direction) {
+    Builder direction(int direction) {
       this.direction = direction;
       return this;
     }
 
-    public Builder speedMph(int speedMph) {
+    Builder speedMph(int speedMph) {
       this.speedMph = speedMph;
       return this;
     }
 
-    public Builder estimatedSpeedLimit(int estimatedSpeedLimit) {
+    Builder estimatedSpeedLimit(int estimatedSpeedLimit) {
       this.estimatedSpeedLimit = estimatedSpeedLimit;
       return this;
     }
 
-    public Builder behaviorCode(BehaviorCode behaviorCode) {
+    Builder behaviorCode(BehaviorCode behaviorCode) {
       this.behaviorCode = behaviorCode;
       return this;
     }

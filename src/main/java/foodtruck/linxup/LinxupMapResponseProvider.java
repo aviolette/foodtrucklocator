@@ -27,6 +27,7 @@ import foodtruck.server.resources.json.JSONSerializer;
  */
 @SuppressWarnings("WeakerAccess")
 public class LinxupMapResponseProvider implements MessageBodyReader<LinxupMapResponse> {
+
   @Override
   public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
     return type.equals(LinxupMapResponse.class);
@@ -55,6 +56,10 @@ public class LinxupMapResponseProvider implements MessageBodyReader<LinxupMapRes
               .speeding(posObj.optBoolean("speeding"))
               .estimatedSpeedLimit(posObj.optInt("estSpeedLimit"))
               .latLng(new LatLng(lat, lng))
+              .driverId(posObj.optString("driverId"))
+              .deviceNumber(posObj.optString("deviceNbr"))
+              .simDeviceNumber(posObj.optString("simDeviceNumber"))
+              .deviceTypeDescription(posObj.optString("deviceTypeDescription"))
               .vehicleLabel(posObj.getString("label"));
           positions.add(positionBuilder.build());
         }

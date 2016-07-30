@@ -100,7 +100,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
     truckDAO = createMock(TruckDAO.class);
     expect(truckDAO.findById(TRUCK_1_ID)).andStubReturn(truck1);
     expect(truckDAO.findById(TRUCK_1_ID)).andStubReturn(truck2);
-    expect(truckDAO.findAll()).andStubReturn(ImmutableSet.of(truck2));
+    expect(truckDAO.findAll()).andStubReturn(ImmutableList.of(truck2));
     terminationDetector = createMock(TerminationDetector.class);
     specialsUpdater = createMock(SpecialUpdater.class);
     specialsUpdater.update(EasyMock.anyObject(Truck.class), EasyMock.anyObject(List.class));
