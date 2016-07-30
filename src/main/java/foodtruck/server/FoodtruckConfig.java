@@ -1,5 +1,8 @@
 package foodtruck.server;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
@@ -46,5 +49,21 @@ public class FoodtruckConfig extends GuiceServletContextListener {
         new LinxupModule(),
         new FoodtruckServletModule()
     };
+  }
+
+  // These two methods are overriden to provide the injector to the JSP tags
+  @Override
+  public void contextDestroyed(ServletContextEvent servletContextEvent) {
+    ServletContext servletContext = servletContextEvent.getServletContext();
+    servletContext.removeAttribute(Injector.class.getName());
+    super.contextDestroyed(servletContextEvent);
+  }
+
+  @Override
+  public void contextInitialized(ServletContextEvent servletContextEvent) {
+    Injector injector = getInjector();
+    ServletContext servletContext = servletContextEvent.getServletContext();
+    servletContext.setAttribute(Injector.class.getName(), injector);
+    super.contextInitialized(servletContextEvent);
   }
 }

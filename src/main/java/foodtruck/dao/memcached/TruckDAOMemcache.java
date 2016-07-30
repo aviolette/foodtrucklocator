@@ -44,9 +44,9 @@ public class TruckDAOMemcache extends AbstractMemcachedDAO<TruckDAO> implements 
   }
 
   @Override
-  public Collection<Truck> findActiveTrucks() {
-    return delegateIf(ACTIVE_TRUCKS, new Function<TruckDAO, Collection<Truck>>() {
-      public Collection<Truck> apply(TruckDAO truckDAO) {
+  public List<Truck> findActiveTrucks() {
+    return delegateIf(ACTIVE_TRUCKS, new Function<TruckDAO, List<Truck>>() {
+      public List<Truck> apply(TruckDAO truckDAO) {
         return truckDAO.findActiveTrucks();
       }
     });

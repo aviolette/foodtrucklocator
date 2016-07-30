@@ -12,6 +12,22 @@
     <description>Format tweets for display</description>
   </tag>
   <tag>
+    <name>truck</name>
+    <tag-class>foodtruck.tld.TruckFormatTag</tag-class>
+    <body-content>empty</body-content>
+    <description>Format truck links for display</description>
+    <attribute>
+      <name>admin</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>truckId</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  <tag>
     <name>location</name>
     <tag-class>foodtruck.tld.LocationFormatTag</tag-class>
     <body-content>empty</body-content>

@@ -31,6 +31,7 @@ public class BeaconsServlet extends HttpServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     req = new GuiceHackRequestWrapper(req, JSP_PATH);
     req.setAttribute("nav", "beacons");
+    req.setAttribute("title", "Beacons");
     req.setAttribute("devices",  trackingDeviceDAO.findAll());
     req.getRequestDispatcher(JSP_PATH).forward(req, resp);
   }

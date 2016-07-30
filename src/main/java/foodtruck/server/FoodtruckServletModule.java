@@ -12,6 +12,7 @@ import foodtruck.server.dashboard.AddressRuleServlet;
 import foodtruck.server.dashboard.AdminDashboardServlet;
 import foodtruck.server.dashboard.ApplicationDetailServlet;
 import foodtruck.server.dashboard.ApplicationServlet;
+import foodtruck.server.dashboard.BeaconServlet;
 import foodtruck.server.dashboard.BeaconsServlet;
 import foodtruck.server.dashboard.CompoundEventServlet;
 import foodtruck.server.dashboard.LocationEditServlet;
@@ -74,6 +75,7 @@ class FoodtruckServletModule extends ServletModule {
     // Dashboard endpoints
     serve("/admin").with(AdminDashboardServlet.class);
     serve("/admin/addresses").with(AddressRuleServlet.class);
+    serveRegex("/admin/beacons/[\\w]+").with(BeaconServlet.class);
     serve("/admin/beacons").with(BeaconsServlet.class);
     serveRegex("/admin/trucks/[\\S]*/stops/[\\w]*").with(TruckStopServlet.class);
     serve("/admin/trucks/*").with(TruckServlet.class);

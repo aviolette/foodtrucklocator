@@ -8,6 +8,7 @@ import foodtruck.model.Location;
 import foodtruck.model.TrackingDevice;
 import foodtruck.util.Clock;
 
+import static foodtruck.dao.appengine.Attributes.getDateTime;
 import static foodtruck.dao.appengine.Attributes.getDoubleProperty;
 import static foodtruck.dao.appengine.Attributes.getStringProperty;
 import static foodtruck.dao.appengine.Attributes.setDateProperty;
@@ -63,6 +64,7 @@ class TrackingDeviceDAOAppEngine extends AppEngineDAO<Long, TrackingDevice> impl
         .truckOwnerId(getStringProperty(entity, TRUCK_OWNER_ID))
         .deviceNumber(getStringProperty(entity, DEVICE_NUMBER))
         .label(getStringProperty(entity, LABEL))
+        .lastBroadcast(getDateTime(entity, LAST_BROADCAST, clock.zone()))
         .enabled(getBooleanProperty(entity, ENABLED, false))
         .key(entity.getKey().getId())
         .build();

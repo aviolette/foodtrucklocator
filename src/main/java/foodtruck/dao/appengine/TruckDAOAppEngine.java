@@ -189,7 +189,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
   }
 
   @Override
-  public Collection<Truck> findActiveTrucks() {
+  public List<Truck> findActiveTrucks() {
     return executeQuery(new Query(getKind()).addSort(TRUCK_CANONICAL_NAME)
         .setFilter(new Query.FilterPredicate(INACTIVE_FIELD, Query.FilterOperator.EQUAL, false)), null);
   }

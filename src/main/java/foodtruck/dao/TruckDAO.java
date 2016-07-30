@@ -25,7 +25,7 @@ public interface TruckDAO extends DAO<String, Truck> {
   /**
    * Find all trucks that have not been marked inactive.
    */
-  Collection<Truck> findActiveTrucks();
+  List<Truck> findActiveTrucks();
 
   /**
    * Find all trucks that have not been marked inactive.
