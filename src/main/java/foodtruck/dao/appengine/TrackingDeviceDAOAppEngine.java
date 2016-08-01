@@ -1,5 +1,7 @@
 package foodtruck.dao.appengine;
 
+import java.util.List;
+
 import com.google.appengine.api.datastore.Entity;
 import com.google.inject.Inject;
 
@@ -8,6 +10,7 @@ import foodtruck.model.Location;
 import foodtruck.model.TrackingDevice;
 import foodtruck.util.Clock;
 
+import static com.google.appengine.api.datastore.Query.FilterOperator.EQUAL;
 import static foodtruck.dao.appengine.Attributes.getDateTime;
 import static foodtruck.dao.appengine.Attributes.getDoubleProperty;
 import static foodtruck.dao.appengine.Attributes.getStringProperty;
@@ -68,5 +71,12 @@ class TrackingDeviceDAOAppEngine extends AppEngineDAO<Long, TrackingDevice> impl
         .enabled(getBooleanProperty(entity, ENABLED, false))
         .key(entity.getKey().getId())
         .build();
+  }
+
+  @Override
+  public List<TrackingDevice> findByTruckId(String truckId) {
+    return aq()
+        .filter(predicate(TRUCK_OWNER_ID, EQUAL, truckId))
+        .execute();
   }
 }

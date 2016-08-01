@@ -18,6 +18,7 @@ import com.google.inject.Singleton;
 import org.codehaus.jettison.json.JSONArray;
 
 import foodtruck.dao.LocationDAO;
+import foodtruck.dao.TrackingDeviceDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
@@ -31,12 +32,14 @@ import foodtruck.util.Session;
 public class VendorServlet extends VendorServletSupport {
   private static final String JSP = "/WEB-INF/jsp/vendor/vendordash.jsp";
   private final LocationDAO locationDAO;
+  private final TrackingDeviceDAO trackingDeviceDAO;
 
   @Inject
   public VendorServlet(TruckDAO dao, LocationDAO locationDAO, Provider<Session> sessionProvider,
-      UserService userService) {
+      UserService userService, TrackingDeviceDAO trackingDeviceDAO) {
     super(dao, sessionProvider, userService, locationDAO);
     this.locationDAO = locationDAO;
+    this.trackingDeviceDAO = trackingDeviceDAO;
   }
 
   @Override protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable Truck truck)
@@ -48,6 +51,9 @@ public class VendorServlet extends VendorServletSupport {
     List<String> locationNames = ImmutableList.copyOf(Iterables.transform(autocompleteLocations, Location.TO_NAME));
     req.setAttribute("locations", new JSONArray(locationNames).toString());
     req.setAttribute("tab", "vendorhome");
+    if (truck != null) {
+      req.setAttribute("beacons", trackingDeviceDAO.findByTruckId(truck.getId()));
+    }
     req.getRequestDispatcher(JSP).forward(req, resp);
   }
 }

@@ -7,7 +7,7 @@
 </div>
 
 
-<table class="table">
+<table class="table table-hover">
   <thead>
   <th>Label</th>
   <th>Device ID</th>

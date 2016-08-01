@@ -42,6 +42,37 @@
     <%@ include file="../include/truck_schedule_widget.jsp" %>
   </div>
 </div>
+<div class="row">
+  <div class="col-md-12">
+    <h2>Beacons</h2>
+    <c:choose>
+      <c:when test="${empty(beacons)}">
+        <p>Put stuff here</p>
+      </c:when>
+      <c:otherwise>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Device Id</th>
+              <th>Last Broadcast</th>
+              <th>&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+          <c:forEach var="beacon" items="${beacons}">
+            <tr>
+              <td><a href="/vendor/beacons/${beacon.key}">${beacon.label}</a></td>
+              <td>${beacon.deviceNumber}</td>
+              <td><c:if test="${!empty(beacon.lastLocation)}"><ftl:location location="${beacon.lastLocation}" admin="false"/> at <joda:format value="${beacon.lastBroadcast}" style="MM"/></c:if></td>
+            </tr>
+          </c:forEach>
+          </tbody>
+        </table>
+      </c:otherwise>
+    </c:choose>
+  </div>
+</div>
 <%@ include file="../include/core_js.jsp" %>
 <script type="text/javascript" src="/script/truck_edit_widget.js"></script>
 <script src="/script/lib/typeahead.bundle.js"></script>
