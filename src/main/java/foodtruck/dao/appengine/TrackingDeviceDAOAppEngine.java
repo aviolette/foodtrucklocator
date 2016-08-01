@@ -11,10 +11,6 @@ import foodtruck.model.TrackingDevice;
 import foodtruck.util.Clock;
 
 import static com.google.appengine.api.datastore.Query.FilterOperator.EQUAL;
-import static foodtruck.dao.appengine.Attributes.getDateTime;
-import static foodtruck.dao.appengine.Attributes.getDoubleProperty;
-import static foodtruck.dao.appengine.Attributes.getStringProperty;
-import static foodtruck.dao.appengine.Attributes.setDateProperty;
 
 /**
  * @author aviolette
@@ -40,36 +36,38 @@ class TrackingDeviceDAOAppEngine extends AppEngineDAO<Long, TrackingDevice> impl
 
   @Override
   protected Entity toEntity(TrackingDevice obj, Entity entity) {
-    entity.setProperty(LABEL, obj.getLabel());
-    entity.setProperty(DEVICE_NUMBER, obj.getDeviceNumber());
-    entity.setProperty(ENABLED, obj.isEnabled());
-    entity.setProperty(TRUCK_OWNER_ID, obj.getTruckOwnerId());
-    setDateProperty(LAST_MODIFIED, entity, clock.now());
-    setDateProperty(LAST_BROADCAST, entity, obj.getLastBroadcast());
+    FluidEntity fe = new FluidEntity(entity)
+        .prop(LABEL, obj.getLabel())
+        .prop(DEVICE_NUMBER, obj.getDeviceNumber())
+        .prop(TRUCK_OWNER_ID, obj.getTruckOwnerId())
+        .prop(LAST_MODIFIED, clock.now())
+        .prop(LAST_BROADCAST, obj.getLastBroadcast())
+        .prop(ENABLED, obj.isEnabled());
     if (obj.getLastLocation() != null) {
-      entity.setProperty(LAST_LOCATION_NAME, obj.getLastLocation().getName());
-      entity.setProperty(LAST_LOCATION_LAT, obj.getLastLocation().getLatitude());
-      entity.setProperty(LAST_LOCATION_LNG, obj.getLastLocation().getLongitude());
+      fe.prop(LAST_LOCATION_NAME, obj.getLastLocation().getName())
+          .prop(LAST_LOCATION_LAT, obj.getLastLocation().getLatitude())
+          .prop(LAST_LOCATION_LNG, obj.getLastLocation().getLongitude());
     }
-    return entity;
+    return fe.toEntity();
   }
 
   @Override
   protected TrackingDevice fromEntity(Entity entity) {
-    double lat = getDoubleProperty(entity, LAST_LOCATION_LAT, 0),
-        lng = getDoubleProperty(entity, LAST_LOCATION_LNG, 0);
-    String name = getStringProperty(entity, LAST_LOCATION_NAME);
+    FluidEntity fe = new FluidEntity(entity);
+    double lat = fe.doubleVal(LAST_LOCATION_LAT),
+        lng = fe.doubleVal(LAST_LOCATION_LNG);
+    String name = fe.stringVal(LAST_LOCATION_NAME);
     TrackingDevice.Builder builder =  TrackingDevice.builder();
     if (lat != 0 || lng != 0) {
       builder.lastLocation(Location.builder().name(name).lat(lat).lng(lng).build());
     }
     return builder
-        .truckOwnerId(getStringProperty(entity, TRUCK_OWNER_ID))
-        .deviceNumber(getStringProperty(entity, DEVICE_NUMBER))
-        .label(getStringProperty(entity, LABEL))
-        .lastBroadcast(getDateTime(entity, LAST_BROADCAST, clock.zone()))
-        .enabled(getBooleanProperty(entity, ENABLED, false))
-        .key(entity.getKey().getId())
+        .truckOwnerId(fe.stringVal(TRUCK_OWNER_ID))
+        .deviceNumber(fe.stringVal(DEVICE_NUMBER))
+        .label(fe.stringVal(LABEL))
+        .lastBroadcast(fe.dateVal(LAST_BROADCAST))
+        .enabled(fe.booleanVal(ENABLED))
+        .key(fe.longId())
         .build();
   }
 
