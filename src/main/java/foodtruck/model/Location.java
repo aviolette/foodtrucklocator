@@ -190,6 +190,10 @@ public class Location extends ModelEntity implements Serializable {
     return equals(loc) || loc.getRadius() != 0 && within(loc.getRadius()).milesOf(loc);
   }
 
+  public boolean sameName(Location loc) {
+    return name.equals(loc.getName());
+  }
+
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)

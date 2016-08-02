@@ -60,6 +60,7 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
   private static final String MATCH_CONFIDENCE = "match_confidence";
   private static final String NOTES = "notes";
   private static final String ORIGIN = "origin";
+  private static final String DEVICE_ID = "device_id";
   private static final Predicate<TruckStop> VENDOR_STOP_PREDICATE = new Predicate<TruckStop>() {
     public boolean apply(TruckStop truckStop) {
       return truckStop.getOrigin() == StopOrigin.VENDORCAL;
@@ -88,23 +89,25 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
 
   @Override
   protected Entity toEntity(TruckStop stop, Entity truckStop) {
-    truckStop.setProperty(TRUCK_ID_FIELD, stop.getTruck().getId());
-    truckStop.setProperty(START_TIME_FIELD, stop.getStartTime().toDate());
-    truckStop.setProperty(END_TIME_FIELD, stop.getEndTime().toDate());
-    truckStop.setProperty(LATITUDE_FIELD, stop.getLocation().getLatitude());
-    truckStop.setProperty(LONGITUDE_FIELD, stop.getLocation().getLongitude());
-    truckStop.setProperty(LOCATION_NAME_FIELD, stop.getLocation().getName());
-    truckStop.setProperty(DESCRIPTION_FIELD, stop.getLocation().getDescription());
-    truckStop.setProperty(URL_FIELD, stop.getLocation().getUrl());
-    truckStop.setProperty(LOCKED_FIELD, stop.isLocked());
-    truckStop.setProperty(MATCH_CONFIDENCE, stop.getConfidence().toString());
-    truckStop.setProperty(ORIGIN, stop.getOrigin().toString());
-    truckStop.setProperty(NOTES, stop.getNotes());
-    Attributes.setDateProperty(BEACON_FIELD, truckStop, stop.getBeaconTime());
-    Attributes.setDateProperty(LAST_UPDATED, truckStop, stop.getLastUpdated());
-    truckStop.setProperty(END_TIMESTAMP, stop.getEndTime().getMillis());
-    truckStop.setProperty(START_TIMESTAMP, stop.getStartTime().getMillis());
-    return truckStop;
+    return new FluidEntity(truckStop)
+        .prop(TRUCK_ID_FIELD, stop.getTruck().getId())
+        .prop(START_TIME_FIELD, stop.getStartTime().toDate())
+        .prop(END_TIME_FIELD, stop.getEndTime().toDate())
+        .prop(LATITUDE_FIELD, stop.getLocation().getLatitude())
+        .prop(LONGITUDE_FIELD, stop.getLocation().getLongitude())
+        .prop(LOCATION_NAME_FIELD, stop.getLocation().getName())
+        .prop(DESCRIPTION_FIELD, stop.getLocation().getDescription())
+        .prop(URL_FIELD, stop.getLocation().getUrl())
+        .prop(LOCKED_FIELD, stop.isLocked())
+        .prop(MATCH_CONFIDENCE, stop.getConfidence().toString())
+        .prop(ORIGIN, stop.getOrigin().toString())
+        .prop(NOTES, stop.getNotes())
+        .prop(BEACON_FIELD, stop.getBeaconTime())
+        .prop(LAST_UPDATED, stop.getLastUpdated())
+        .prop(END_TIMESTAMP, stop.getEndTime().getMillis())
+        .prop(START_TIMESTAMP, stop.getStartTime().getMillis())
+        .prop(DEVICE_ID, stop.getCreatedWithDeviceId())
+        .toEntity();
   }
 
   @Override
@@ -122,6 +125,7 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
         .confidence(Strings.isNullOrEmpty(confidence) ? Confidence.HIGH : Confidence.valueOf(confidence))
         .lastUpdated(Attributes.getDateTime(entity, LAST_UPDATED, zone))
         .fromBeacon(Attributes.getDateTime(entity, BEACON_FIELD, zone))
+        .createdWithDeviceId((Long)entity.getProperty(DEVICE_ID))
         .location(Location.builder()
             .lat((Double) entity.getProperty(LATITUDE_FIELD))
             .lng((Double) entity.getProperty(LONGITUDE_FIELD))
@@ -154,10 +158,8 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
   @Override
   public void deleteAfter(DateTime startTime) {
     DatastoreService dataStore = provider.get();
-    Query q = new Query(STOP_KIND);
-    q.setFilter(
-        new Query.FilterPredicate(START_TIME_FIELD, GREATER_THAN_OR_EQUAL, startTime.toDate()));
-    deleteFromQuery(dataStore, q);
+    deleteFromQuery(dataStore, query()
+        .setFilter(predicate(START_TIME_FIELD, GREATER_THAN_OR_EQUAL, startTime.toDate())));
   }
 
   @Override

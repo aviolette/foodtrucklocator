@@ -71,6 +71,15 @@ public class TrackingDevice extends ModelEntity {
     return enabled && !Strings.isNullOrEmpty(truckOwnerId);
   }
 
+  public boolean isOpenForBusiness() {
+    // TODO: implement
+    return isEnabled();
+  }
+
+  public Long getId() {
+    return (Long) getKey();
+  }
+
   public static class Builder {
     private long key;
     private String label;

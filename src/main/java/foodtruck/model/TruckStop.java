@@ -36,6 +36,7 @@ public class TruckStop extends ModelEntity {
   private final Confidence matchConfidence;
   private final List<String> notes;
   private final StopOrigin origin;
+  private final @Nullable Long createdWithDeviceId;
 
   private TruckStop(Builder builder) {
     super(builder.key);
@@ -49,6 +50,7 @@ public class TruckStop extends ModelEntity {
     matchConfidence = builder.matchConfidence;
     notes = ImmutableList.copyOf(builder.notes);
     origin = builder.origin;
+    createdWithDeviceId = builder.createdWithDeviceId;
   }
 
   public static Builder builder() {
@@ -57,6 +59,10 @@ public class TruckStop extends ModelEntity {
 
   public static Builder builder(TruckStop stop) {
     return new Builder(stop);
+  }
+
+  public Long getCreatedWithDeviceId() {
+    return createdWithDeviceId;
   }
 
   public StopOrigin getOrigin() {
@@ -191,6 +197,7 @@ public class TruckStop extends ModelEntity {
     private Confidence matchConfidence = Confidence.MEDIUM;
     private List<String> notes = Lists.newLinkedList();
     private StopOrigin origin = StopOrigin.UNKNOWN;
+    private @Nullable Long createdWithDeviceId;
 
     private Builder() {
     }
@@ -206,6 +213,12 @@ public class TruckStop extends ModelEntity {
       lastUpdated = stop.getLastUpdated();
       notes = Lists.newLinkedList(stop.getNotes());
       origin = stop.getOrigin();
+      createdWithDeviceId = stop.createdWithDeviceId;
+    }
+
+    public Builder createdWithDeviceId(Long deviceId) {
+      this.createdWithDeviceId = deviceId;
+      return this;
     }
 
     public Builder origin(StopOrigin origin) {
