@@ -83,6 +83,10 @@ public class Position {
     return behaviorCode;
   }
 
+  public boolean isParked() {
+    return speedMph == 0;
+  }
+
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)

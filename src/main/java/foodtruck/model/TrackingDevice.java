@@ -19,6 +19,7 @@ public class TrackingDevice extends ModelEntity {
   private @Nullable DateTime lastBroadcast;
   private @Nullable DateTime lastModified;
   private @Nullable Location lastLocation;
+  private boolean parked;
 
   private TrackingDevice(Builder builder) {
     super(builder.key);
@@ -29,6 +30,7 @@ public class TrackingDevice extends ModelEntity {
     this.lastBroadcast = builder.lastBroadcast;
     this.lastModified = builder.lastModified;
     this.lastLocation = builder.lastLocation;
+    this.parked = builder.parked;
   }
 
   public static Builder builder() {
@@ -37,6 +39,10 @@ public class TrackingDevice extends ModelEntity {
 
   public static Builder builder(@Nullable TrackingDevice device) {
     return (device == null) ?  new Builder() : new Builder(device);
+  }
+
+  public boolean isParked() {
+    return parked;
   }
 
   @Nullable
@@ -89,6 +95,7 @@ public class TrackingDevice extends ModelEntity {
     private @Nullable DateTime lastBroadcast;
     private @Nullable DateTime lastModified;
     private @Nullable Location lastLocation;
+    private boolean parked;
 
     public Builder() {
     }
@@ -102,6 +109,12 @@ public class TrackingDevice extends ModelEntity {
       this.lastModified = device.lastModified;
       this.lastBroadcast = device.lastBroadcast;
       this.lastLocation = device.lastLocation;
+      this.parked = device.parked;
+    }
+
+    public Builder parked(boolean parked) {
+      this.parked = parked;
+      return this;
     }
 
     public Builder truckOwnerId(String truckOwnerId) {

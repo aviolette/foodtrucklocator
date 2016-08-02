@@ -82,7 +82,7 @@ public class TruckMonitorServlet extends HttpServlet {
       }
     });
     for (TrackingDevice device : devices) {
-      if (!device.isEnabled()) {
+      if (!device.isEnabled() || !device.isParked()) {
         continue;
       }
       // TODO: cancel stops that were previously active under this device
@@ -198,6 +198,7 @@ public class TruckMonitorServlet extends HttpServlet {
           .build();
       builder.deviceNumber(position.getDeviceNumber())
           .lastLocation(locator.reverseLookup(location))
+          .parked(position.isParked())
           .lastBroadcast(position.getDate())
           .label(position.getVehicleLabel());
       TrackingDevice theDevice = builder.build();

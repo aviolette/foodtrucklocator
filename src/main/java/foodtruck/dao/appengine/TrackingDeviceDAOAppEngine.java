@@ -26,6 +26,7 @@ class TrackingDeviceDAOAppEngine extends AppEngineDAO<Long, TrackingDevice> impl
   private static final String LAST_LOCATION_NAME = "last_location_name";
   private static final String LAST_LOCATION_LAT = "last_location_lat";
   private static final String LAST_LOCATION_LNG = "last_location_lng";
+  private static final String PARKED = "parked";
   private final Clock clock;
 
   @Inject
@@ -42,6 +43,7 @@ class TrackingDeviceDAOAppEngine extends AppEngineDAO<Long, TrackingDevice> impl
         .prop(TRUCK_OWNER_ID, obj.getTruckOwnerId())
         .prop(LAST_MODIFIED, clock.now())
         .prop(LAST_BROADCAST, obj.getLastBroadcast())
+        .prop(PARKED, obj.isParked())
         .prop(ENABLED, obj.isEnabled());
     if (obj.getLastLocation() != null) {
       fe.prop(LAST_LOCATION_NAME, obj.getLastLocation().getName())
@@ -62,6 +64,7 @@ class TrackingDeviceDAOAppEngine extends AppEngineDAO<Long, TrackingDevice> impl
       builder.lastLocation(Location.builder().name(name).lat(lat).lng(lng).build());
     }
     return builder
+        .parked(fe.booleanVal(PARKED))
         .truckOwnerId(fe.stringVal(TRUCK_OWNER_ID))
         .deviceNumber(fe.stringVal(DEVICE_NUMBER))
         .label(fe.stringVal(LABEL))
