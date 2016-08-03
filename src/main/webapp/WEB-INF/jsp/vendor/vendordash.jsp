@@ -2,7 +2,19 @@
 <script type="text/javascript"
         src="//maps.googleapis.com/maps/api/js?key=${googleApiKey}">
 </script>
+<style type="text/css">
+  @media (max-width:990px) {
+    .location-related {
+      display:none;
+    }
+  }
 
+  @media (min-width:990px) {
+    .location-related {
+      display:block;
+    }
+  }
+</style>
 <div class="row">
   <div class="col-md-6">
     <h1>${truck.name} <a type="button" class="btn btn-default" aria-label="Edit" href="/vendor/settings/${truck.id}">
@@ -12,8 +24,8 @@
     <p class="lead">${truck.description}</p>
   </div>
   <div class="col-md-6">
-    <h3>Current Location</h3>
-    <div id="map_canvas" style="width:100%; height:300px; padding-bottom:20px;"></div>
+    <h3 class="location-related">Current Location</h3>
+    <div id="map_canvas" style="width:100%; height:300px; padding-bottom:20px;" class="location-related"></div>
   </div>
 </div>
 <div class="row">
@@ -81,7 +93,7 @@
         }
       });
     });
-    var map, markers = [], bounds = new google.maps.LatLngBounds();
+    var map, markers = [], bounds = new google.maps.LatLngBounds(),openInfoWindow;
     if (!(typeof google == "undefined")) {
       var markerLat = new google.maps.LatLng(41.8807438, -87.6293867);
       var myOptions = {
@@ -93,6 +105,34 @@
       map = new google.maps.Map(document.getElementById("map_canvas"),
           myOptions);
     }
+
+    function buildInfoWindow(marker, map, stop) {
+
+      var $content = $("<div>"),
+          $masterDiv = $("<div>");
+      $masterDiv.append($("<h4>" + stop.location.name + "<h4>"));
+      $masterDiv.append($("<div>Estimated departure: " + stop.endTime + "</div>"));
+      if (stop.notes.length > 0) {
+        $masterDiv.append("<h5>Notes</h5>");
+        var $notesList = $("<ul></ul>");
+        $.each(stop.notes, function(i, note) {
+          $notesList.append($("<li>" + note + "</li>"));
+        });
+        $masterDiv.append($notesList);
+      }
+      $content.append($masterDiv);
+      var infowindow = new google.maps.InfoWindow({
+        content: $content.html()
+      });
+      google.maps.event.addListener(marker, 'click', function () {
+        if (openInfoWindow) {
+          openInfoWindow.close();
+        }
+        openInfoWindow = infowindow;
+        infowindow.open(map, marker);
+      });
+    }
+
     runEditWidget("${truck.id}", ${locations}, ${categories}, {
       addCallback: function(stop) {
       if (!map) {
@@ -107,6 +147,7 @@
         });
         markers.push(marker);
         bounds.extend(marker.getPosition());
+        buildInfoWindow(marker, map, stop);
         map.fitBounds(bounds);
       }
     }, refreshCallback: function() {
