@@ -1,40 +1,19 @@
 <%@ include file="vendorheader.jsp" %>
-<h1>${truck.name}</h1>
-<div class="row">
-  <div class="col-md-3">
-    <img src="${truck.previewIcon}" width="180" height="180"/>
-  </div>
-  <div class="col-md-4">
-    <a type="button" class="btn btn-default" aria-label="Edit" href="/vendor/settings/${truck.id}">
-      <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-    </a>
+<script type="text/javascript"
+        src="//maps.googleapis.com/maps/api/js?key=${googleApiKey}">
+</script>
 
-    <dl>
-      <dt>Description</dt>
-      <dd><p class="lead">${truck.description}</p></dd>
-      <dt>Website</dt>
-      <dd><c:if test="${!empty(truck.url)}"><a href="${truck.url}">${truck.url}</a></c:if></dd>
-      <dt>Phone</dt>
-      <dd>${truck.phone}</dd>
-      <dt>Email</dt>
-      <dd>${truck.email}</dd>
-    </dl>
+<div class="row">
+  <div class="col-md-6">
+    <h1>${truck.name} <a type="button" class="btn btn-default" aria-label="Edit" href="/vendor/settings/${truck.id}">
+      <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+    </a></h1>
+    <img src="${truck.previewIcon}" width="180" height="180"/>
+    <p class="lead">${truck.description}</p>
   </div>
-  <div class="col-md-4">
-    <c:if test="${!empty(truck.facebook)}"><a target="_blank" href="http://facebook.com${truck.facebook}"><img
-        alt="Facebook" src="http://storage.googleapis.com/ftf_static/img/facebook32x32.png"></a></c:if>
-    <c:if test="${!empty(truck.twitterHandle)}"><a target="_blank"
-                                                   href="http://twitter.com/${truck.twitterHandle}"><img
-        alt="@${truck.twitterHandle} on twitter" src="http://storage.googleapis.com/ftf_static/img/twitter32x32.png"></a></c:if>
-    <c:if test="${!empty(truck.foursquareUrl)}"><a target="_blank"
-                                                   href="http://foursquare.com/venue/${truck.foursquareUrl}"><img
-        alt="Check in on foursquare" src="http://storage.googleapis.com/ftf_static/img/foursquare32x32.png"></a></c:if>
-    <c:if test="${!empty(truck.instagramId)}"><a target="_blank"
-                                                 href="http://instagram.com/${truck.instagramId}"><img
-        alt="View on instagram" src="http://storage.googleapis.com/ftf_static/img/instagram32x32.png"></a></c:if>
-    <c:if test="${!empty(truck.yelpSlug)}"><a target="_blank"
-                                              href="http://yelp.com/biz/${truck.yelpSlug}"><img alt="Yelp"
-                                                                                                src="http://storage.googleapis.com/ftf_static/img/yelp32x32.png"></a></c:if>
+  <div class="col-md-6">
+    <h3>Current Location</h3>
+    <div id="map_canvas" style="width:100%; height:300px; padding-bottom:20px;"></div>
   </div>
 </div>
 <div class="row">
@@ -47,7 +26,7 @@
     <h2>Beacons</h2>
     <c:choose>
       <c:when test="${empty(beacons)}">
-        <p>Put stuff here</p>
+        <p>Coming Soon!</p>
       </c:when>
       <c:otherwise>
         <table class="table">
@@ -65,6 +44,7 @@
               <td><a href="/vendor/beacons/${beacon.key}">${beacon.label}</a></td>
               <td>${beacon.deviceNumber}</td>
               <td><c:if test="${!empty(beacon.lastLocation)}"><ftl:location location="${beacon.lastLocation}" admin="false"/> at <joda:format value="${beacon.lastBroadcast}" style="MM"/></c:if></td>
+              <td><button class="beacon-button btn <c:choose><c:when test="${beacon.enabled}">btn-danger</c:when><c:otherwise>btn-success</c:otherwise></c:choose>" id="beacon-button-${beacon.key}"><c:choose><c:when test="${beacon.enabled}">Disable</c:when><c:otherwise>Enable</c:otherwise></c:choose></button></td>
             </tr>
           </c:forEach>
           </tbody>
@@ -77,6 +57,66 @@
 <script type="text/javascript" src="/script/truck_edit_widget.js"></script>
 <script src="/script/lib/typeahead.bundle.js"></script>
 <script type="text/javascript">
-  runEditWidget("${truck.id}", ${locations}, ${categories}, {vendorEndpoints: true, hasCalendar: ${not empty(truck.calendarUrl)}});
+  (function() {
+    $(".beacon-button").click(function(e) {
+      var $self = $(e.target);
+      var item = $self.attr("id").substr(14);
+      var action = $self.text().toLowerCase();
+      $.ajax({
+        url: "/services/beacons/" + item + "/" + action,
+        type: 'POST',
+        contentType: 'application/json',
+        complete : function() {
+        },
+        success: function(e) {
+          if (action == "disable") {
+            $self.text("Enable");
+            $self.removeClass("btn-danger");
+            $self.addClass("btn-success");
+          } else {
+            $self.text("Disable");
+            $self.addClass("btn-danger");
+            $self.removeClass("btn-success");
+          }
+        }
+      });
+    });
+    var map, markers = [], bounds = new google.maps.LatLngBounds();
+    if (!(typeof google == "undefined")) {
+      var markerLat = new google.maps.LatLng(41.8807438, -87.6293867);
+      var myOptions = {
+        center: markerLat,
+        zoom: 14,
+        maxZoom: 14,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      };
+      map = new google.maps.Map(document.getElementById("map_canvas"),
+          myOptions);
+    }
+    runEditWidget("${truck.id}", ${locations}, ${categories}, {
+      addCallback: function(stop) {
+      if (!map) {
+        return;
+      }
+      var now = new Date().getTime();
+      if (stop.startMillis <= now && stop.endMillis > now) {
+        var marker = new google.maps.Marker({
+          draggable: true,
+          position: new google.maps.LatLng(stop.location.latitude, stop.location.longitude),
+          map: map
+        });
+        markers.push(marker);
+        bounds.extend(marker.getPosition());
+        map.fitBounds(bounds);
+      }
+    }, refreshCallback: function() {
+        $.each(markers, function(i, marker) {
+          marker.setMap(null);
+        });
+        markers = [];
+        bounds = new google.maps.LatLngBounds()
+      },
+      vendorEndpoints: true, hasCalendar: ${not empty(truck.calendarUrl)}});
+  })();
 </script>
 <%@ include file="vendorfooter.jsp" %>

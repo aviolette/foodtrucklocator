@@ -211,6 +211,9 @@ runEditWidget = function(truckId, locations, categories, options) {
       success: function (schedule) {
         var now = new Date().getTime(), numStops = schedule.length;
         var prevHadStart = false;
+        if (options["refreshCallback"]) {
+          options["refreshCallback"]();
+        }
         $.each(schedule, function (truckIndex, stop) {
           if (stop.startMillis < tomorrow) {
             lastStop = stop;
@@ -253,6 +256,10 @@ runEditWidget = function(truckId, locations, categories, options) {
               invokeEditDialog(stop, refreshSchedule);
             }
           });
+
+          if (options["addCallback"]) {
+            options["addCallback"](stop);
+          }
 
           function timeUpdateMaker(useStart) {
             return function (e) {

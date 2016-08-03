@@ -36,7 +36,7 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.schedule.Confidence;
 import foodtruck.util.Clock;
-import foodtruck.util.FriendlyDateOnlyFormat;
+import foodtruck.util.FriendlyDateTimeFormat;
 
 /**
  * Called periodically to query for updates on the beacon.
@@ -57,7 +57,7 @@ public class TruckMonitorServlet extends HttpServlet {
   @Inject
   public TruckMonitorServlet(TruckStopDAO truckStopDAO, LinxupConnector connector,
       TrackingDeviceDAO trackingDeviceDAO, GeoLocator locator, Clock clock, TruckDAO truckDAO,
-      @FriendlyDateOnlyFormat DateTimeFormatter formatter) {
+      @FriendlyDateTimeFormat DateTimeFormatter formatter) {
     this.connector = connector;
     this.truckStopDAO = truckStopDAO;
     this.trackingDeviceDAO = trackingDeviceDAO;
@@ -102,7 +102,7 @@ public class TruckMonitorServlet extends HttpServlet {
       if (current.getLocation().sameName(device.getLastLocation())) {
         if (current.getEndTime().isBefore(now.plusMinutes(15))) {
           stop = TruckStop.builder(current)
-              .appendNote("Extended time by 20 minutes")
+              .appendNote("Extended time by 15 minutes")
               .fromBeacon(device.getLastBroadcast())
               .build();
         } else {
