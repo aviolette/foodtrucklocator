@@ -53,7 +53,7 @@
           <tbody>
           <c:forEach var="beacon" items="${beacons}">
             <tr>
-              <td><a href="/vendor/beacons/${beacon.key}">${beacon.label}</a></td>
+              <td>${beacon.label}</td>
               <td>${beacon.deviceNumber}</td>
               <td><c:if test="${!empty(beacon.lastLocation)}"><ftl:location location="${beacon.lastLocation}" admin="false"/> at <joda:format value="${beacon.lastBroadcast}" style="MM"/></c:if></td>
               <td><button class="beacon-button btn <c:choose><c:when test="${beacon.enabled}">btn-danger</c:when><c:otherwise>btn-success</c:otherwise></c:choose>" id="beacon-button-${beacon.key}"><c:choose><c:when test="${beacon.enabled}">Disable</c:when><c:otherwise>Enable</c:otherwise></c:choose></button></td>
