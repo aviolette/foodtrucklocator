@@ -81,7 +81,12 @@ class CacheAndForwardLocator implements GeoLocator {
     try {
       // TODO: in the case where the result does not equal the default value, save location to DB
       log.log(Level.INFO, "Looking up location: {0}", location);
-      return secondaryLocator.reverseLookup(location);
+      Location loc = secondaryLocator.reverseLookup(location);
+      if (loc != null) {
+        loc = Location.builder(loc).valid(true).build();
+        return dao.saveAndFetch(loc).wasJustResolved();
+      }
+      return loc;
     } catch (UnsupportedOperationException use) {
       return null;
     }
