@@ -33,11 +33,12 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="/vendor">Vendor Dashboard</a>
+        <span class="navbar-brand">Vendor Dashboard</span>
       </div>
       <div class="collapse navbar-collapse">
         <c:if test="${!empty(logoutUrl)}">
           <ul class="nav navbar-nav">
+            <li <c:if test="${tab == 'vendorhome'}"> class="active"</c:if>><a href="/vendor">Dashboard</a></li>
             <li><a href="/">Main Site &raquo;</a></li>
           </ul>
           <ul class="nav navbar-nav pull-right">
