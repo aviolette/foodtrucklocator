@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import org.easymock.EasyMockSupport;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,6 +16,7 @@ import foodtruck.model.Story;
 import foodtruck.model.Truck;
 import foodtruck.schedule.Spot;
 import foodtruck.schedule.TruckStopMatch;
+import foodtruck.util.Clock;
 
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
@@ -29,6 +31,7 @@ public class BeaverMatcherTest extends EasyMockSupport {
   private Truck truck;
   private DateTime tweetTime;
   private Location loc1, loc2, loc3;
+  private Clock clock;
 
   @Before
   public void setup() {
@@ -42,12 +45,15 @@ public class BeaverMatcherTest extends EasyMockSupport {
         new Spot("wabash/vanburen", "Wabash and Van Buren, Chicago, IL"),
         new Spot("wacker/adams", "Wacker and Adams, Chicago, IL"),
         new Spot("clark/adams", "Clark and Adams, Chicago, IL"),
+        new Spot("clark/jackson", "Clark and Jackson, Chicago, IL"),
         new Spot("harrison/michigan", "Michigan and Harrison, Chicago, IL"),
         new Spot("lasalle/adams", "Lasalle and Adams, Chicago, IL"),
         new Spot("clark/monroe", "Clark and Monroe, Chicago, IL"),
         new Spot("wabash/jackson", "Wabash and Jackson, Chicago, IL"), new Spot("uchicago", "University of Chicago"),
         new Spot("58th/ellis", "University of Chicago"));
-    beaverMatch = new BeaverMatcher(geoLocator, commonSpots);
+    clock = createMock(Clock.class);
+    expect(clock.now()).andStubReturn(new DateTime(1470237365629L));
+    beaverMatch = new BeaverMatcher(geoLocator, commonSpots, DateTimeFormat.forStyle("SS"), clock);
   }
 
   @Test
@@ -136,6 +142,7 @@ public class BeaverMatcherTest extends EasyMockSupport {
     assertEquals(tweetTime.withTime(7, 0, 0, 0), match.getAdditionalStops().get(0).getStartTime());
     assertEquals(tweetTime.withTime(18, 0, 0, 0), match.getAdditionalStops().get(0).getEndTime());
     assertEquals(loc1,  match.getAdditionalStops().get(0).getLocation());
+    assertEquals("Stop added from twitter story: 'Hot.Fresh.Made To Order Open Now On Wacker & Madison Wacker & Adams And Inside @ChiFrenchMarket #DamGoodDonuts' at 8/3/16 10:16 AM", match.getStop().getNotes().get(0));
     verifyAll();
   }
 

@@ -56,6 +56,11 @@ public class Story extends ModelEntity {
     return text.replaceAll(" ", " ");
   }
 
+  public String getFlattenedText() {
+    String s = getSanitizedText();
+    return s.replaceAll("\n", " ").trim();
+  }
+
   public String getText() {
     return text;
   }

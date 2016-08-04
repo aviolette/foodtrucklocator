@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import org.easymock.EasyMockSupport;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,6 +16,7 @@ import foodtruck.model.Story;
 import foodtruck.model.Truck;
 import foodtruck.schedule.Spot;
 import foodtruck.schedule.TruckStopMatch;
+import foodtruck.util.Clock;
 
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
@@ -53,7 +55,9 @@ public class BobChaMatcherTest extends EasyMockSupport {
         new Spot("uchicago", "University of Chicago"),
         new Spot("uofc", "University of Chicago"),
         new Spot("58th/ellis", "University of Chicago"));
-    matcher = new BobChaMatcher(geoLocator, commonSpots);
+    Clock clock = createMock(Clock.class);
+    expect(clock.now()).andStubReturn(new DateTime(1470237365629L));
+    matcher = new BobChaMatcher(geoLocator, commonSpots, DateTimeFormat.forStyle("SS"), clock);
   }
 
   @Test

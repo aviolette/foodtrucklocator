@@ -3,6 +3,7 @@ package foodtruck.schedule.custom;
 import org.easymock.EasyMockSupport;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -13,6 +14,7 @@ import foodtruck.model.Location;
 import foodtruck.model.Story;
 import foodtruck.model.Truck;
 import foodtruck.schedule.TruckStopMatch;
+import foodtruck.util.Clock;
 
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
@@ -37,7 +39,9 @@ public class AmanecerTacosMatcherTest extends EasyMockSupport {
     loc2 = Location.builder().name("Location 3").lat(1).lng(1).build();
     geoLocator = createMock(GeoLocator.class);
     tweetTime = new DateTime(2016, 1, 11, 7, 30, 0, 0, DateTimeZone.UTC);
-    matcher = new AmanecerTacosMatcher(geoLocator);
+    Clock clock = createMock(Clock.class);
+    expect(clock.now()).andStubReturn(new DateTime(1470237365629L));
+    matcher = new AmanecerTacosMatcher(geoLocator, DateTimeFormat.forStyle("SS"), clock);
   }
 
   @Test

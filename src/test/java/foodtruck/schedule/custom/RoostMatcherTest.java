@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import org.easymock.EasyMockSupport;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,7 +16,9 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.schedule.Spot;
 import foodtruck.schedule.TruckStopMatch;
+import foodtruck.util.Clock;
 
+import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -35,7 +38,9 @@ public class RoostMatcherTest extends EasyMockSupport {
     tweetTime = new DateTime(2016, 1, 8, 7, 30, 0, 0, DateTimeZone.UTC);
     truck = Truck.builder().id("theroosttruck").build();
     ImmutableList<Spot> commonSpots = ImmutableList.of(new Spot("600w", "600 West Chicago Avenue, Chicago, IL"));
-    roostMatch = new RoostMatcher(geoLocator, commonSpots);
+    Clock clock = createMock(Clock.class);
+    expect(clock.now()).andStubReturn(new DateTime(1470237365629L));
+    roostMatch = new RoostMatcher(geoLocator, commonSpots, DateTimeFormat.forStyle("SS"), clock);
   }
 
   @Test

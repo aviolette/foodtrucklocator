@@ -2,26 +2,29 @@ package foodtruck.schedule.custom;
 
 import com.google.common.collect.ImmutableList;
 
+import org.joda.time.format.DateTimeFormatter;
+
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.DayOfWeek;
-import foodtruck.model.StopOrigin;
 import foodtruck.model.Story;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.schedule.AbstractSpecialMatcher;
 import foodtruck.schedule.Spot;
 import foodtruck.schedule.TruckStopMatch;
+import foodtruck.util.Clock;
 
 /**
  * @author aviolette
  * @since 4/12/16
  */
-public abstract class MultipleTruckMatcher extends AbstractSpecialMatcher {
+abstract class MultipleTruckMatcher extends AbstractSpecialMatcher {
   private String truckId;
 
-  protected MultipleTruckMatcher(String truckId, GeoLocator geoLocator, ImmutableList<Spot> commonSpots) {
-    super(geoLocator, commonSpots);
+  MultipleTruckMatcher(String truckId, GeoLocator geoLocator, ImmutableList<Spot> commonSpots,
+      DateTimeFormatter formatter, Clock clock) {
+    super(geoLocator, commonSpots, formatter, clock);
     this.truckId = truckId;
   }
 
@@ -40,12 +43,9 @@ public abstract class MultipleTruckMatcher extends AbstractSpecialMatcher {
     ImmutableList.Builder<TruckStop> stops = ImmutableList.builder();
     for (Spot spot : getCommonSpots()) {
       if (spot.contains(stripped)) {
-        stops.add(TruckStop.builder()
+        stops.add(truckStop(story, truck)
             .startTime(story.getTime().withTime(11, 0, 0, 0))
             .endTime(story.getTime().withTime(14, 0, 0, 0))
-            .origin(StopOrigin.TWITTER)
-            .truck(truck)
-            .locked(true)
             .location(getGeoLocator().locate(spot.getCanonicalForm(), GeolocationGranularity.NARROW))
             .build());
         if ("University of Chicago".equals(spot.getCanonicalForm())) {

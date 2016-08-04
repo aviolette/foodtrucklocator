@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import org.easymock.EasyMockSupport;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,6 +17,7 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.schedule.Spot;
 import foodtruck.schedule.TruckStopMatch;
+import foodtruck.util.Clock;
 
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
@@ -40,7 +42,9 @@ public class CajunConMatcherTest extends EasyMockSupport {
     loc2 = Location.builder().name("Location 3").lat(1).lng(1).build();
     geoLocator = createMock(GeoLocator.class);
     tweetTime = new DateTime(2016, 1, 11, 7, 30, 0, 0, DateTimeZone.UTC);
-    matcher = new CajunConMatcher(geoLocator, ImmutableList.<Spot>of());
+    Clock clock = createMock(Clock.class);
+    expect(clock.now()).andStubReturn(new DateTime(1470237365629L));
+    matcher = new CajunConMatcher(geoLocator, ImmutableList.<Spot>of(), DateTimeFormat.forStyle("SS"), clock);
   }
 
   @Test
