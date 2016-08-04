@@ -196,9 +196,12 @@ public class TruckMonitorServlet extends HttpServlet {
           .lng(position.getLatLng().getLongitude())
           .name("UNKNOWN")
           .build();
+      // TODO: it would be nice if the actual device could calculate this, but for now we look to see if it changed.
+      boolean parked = position.getSpeedMph() == 0 &&
+          (device.getLastLocation() == null || device.getLastLocation().within(0.05).milesOf(location));
       builder.deviceNumber(position.getDeviceNumber())
           .lastLocation(locator.reverseLookup(location))
-          .parked(position.isParked())
+          .parked(parked)
           .lastBroadcast(position.getDate())
           .label(position.getVehicleLabel());
       TrackingDevice theDevice = builder.build();
