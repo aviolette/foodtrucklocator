@@ -92,6 +92,7 @@
             $self.addClass("btn-danger");
             $self.removeClass("btn-success");
           }
+
         }
       });
     });

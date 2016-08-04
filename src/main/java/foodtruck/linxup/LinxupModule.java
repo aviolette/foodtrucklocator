@@ -20,6 +20,8 @@ public class LinxupModule extends PrivateModule {
   protected void configure() {
     bind(LinxupConnector.class).to(LinxupConnectorImpl.class);
     expose(LinxupConnector.class);
+    bind(TruckMonitorService.class).to(TruckMonitorServiceImpl.class);
+    expose(TruckMonitorService.class);
   }
 
   @Provides @Exposed
