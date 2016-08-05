@@ -107,7 +107,8 @@ public class TruckMonitorServiceImpl implements TruckMonitorService {
       if (stop.activeDuring(clock.now()) && device.getId().equals(stop.getCreatedWithDeviceId())) {
         truckStopDAO.save(TruckStop.builder(stop)
             .endTime(clock.now())
-            .appendNote("Ended stop since beacon was disabled")
+            .appendNote(device.isEnabled() ? "Ended stop since because truck is moving" :
+                "Ended stop since beacon was disabled")
             .build());
         return;
       }
