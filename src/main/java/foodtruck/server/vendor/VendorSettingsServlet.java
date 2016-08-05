@@ -64,7 +64,7 @@ public class VendorSettingsServlet extends VendorServletSupport {
       truck = Truck.builder(truck)
           .name(escaper.escape(name))
           .url(url)
-          .phone(phone == null ? null : escaper.escape(phone))
+          .normalizePhone(escaper.escape(Strings.nullToEmpty(phone)))
           .email(email == null ? null : escaper.escape(email))
           .description(description == null ? null : escaper.escape(description)).build();
       log.log(Level.INFO, "Saving truck {0}", truck);
