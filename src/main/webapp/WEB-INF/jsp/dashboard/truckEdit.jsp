@@ -123,6 +123,12 @@
            value="${truck.beaconnaiseList}"/>
   </div>
 
+  <div class="form-group">
+    <label for="blacklistLocations">Blacklist Locations (use ; as a separator)</label>
+    <input type="text" class="form-control" id="blacklistLocations" name="blacklistLocations"
+           value="${truck.blacklistLocationsList}"/>
+  </div>
+
   <div class="checkbox">
     <label><input type="checkbox" name="options"
                   value="twittalyzer" ${truck.usingTwittalyzer ? "checked='checked'" : ""}/> Use twittalyzer</label>

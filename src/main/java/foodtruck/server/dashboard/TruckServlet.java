@@ -42,6 +42,7 @@ import foodtruck.util.Link;
  */
 @Singleton
 public class TruckServlet extends HttpServlet {
+  private static final Splitter BLACK_LIST_SPLITTER = Splitter.on(";").omitEmptyStrings().trimResults();
   private static final Logger log = Logger.getLogger(TruckServlet.class.getName());
   private final FoodTruckStopService truckService;
   private final Clock clock;
@@ -222,6 +223,7 @@ public class TruckServlet extends HttpServlet {
     Splitter splitter = Splitter.on(",").omitEmptyStrings().trimResults();
     builder.categories(ImmutableSet.copyOf(splitter.split(request.getParameter("categories"))));
     builder.beaconnaiseEmails(ImmutableSet.copyOf(splitter.split(request.getParameter("beaconnaiseEmails"))));
+    builder.blacklistLocationNames(BLACK_LIST_SPLITTER.splitToList(request.getParameter("blacklistLocations")));
     try {
       builder.fleetSize(Integer.parseInt(request.getParameter("fleetSize")));
     } catch (NumberFormatException ignored) {

@@ -26,6 +26,7 @@ import foodtruck.model.Truck;
 import static foodtruck.dao.appengine.Attributes.getDateTime;
 import static foodtruck.dao.appengine.Attributes.getDoubleProperty;
 import static foodtruck.dao.appengine.Attributes.getIntProperty;
+import static foodtruck.dao.appengine.Attributes.getListProperty;
 import static foodtruck.dao.appengine.Attributes.getLongProperty;
 import static foodtruck.dao.appengine.Attributes.getSetProperty;
 import static foodtruck.dao.appengine.Attributes.getStringProperty;
@@ -83,6 +84,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
   private static final String BACKGROUND_IMAGE = "background_image";
   private static final String BACKGROUND_IMAGE_LARGE = "background_image_large";
   private static final String MENU_URL = "menu_url";
+  private static final String BLACKLIST_LOCATION_NAMES = "blacklist_location_names";
 
   private DateTimeZone zone;
 
@@ -155,6 +157,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
         .beaconnaiseEmails(getSetProperty(entity, TRUCK_BEACONNAISE_EMAILS))
         .timezoneOffset(getIntProperty(entity, TIMEZONE_OFFSET, 0))
         .url((String) entity.getProperty(TRUCK_URL))
+        .blacklistLocationNames(getListProperty(entity, BLACKLIST_LOCATION_NAMES))
         .categories(categoriesList == null ? ImmutableSet.<String>of() : ImmutableSet.copyOf(categoriesList))
         .useTwittalyzer((Boolean) entity.getProperty(TRUCK_TWITTALYZER_FIELD))
         .twitterGeolocationDataValid(getBooleanProperty(entity, TRUCK_TWITTER_GEOLOCATION, false))
@@ -306,6 +309,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     entity.setProperty(TRUCK_ALLOW_SYSTEM_NOTIFICATIONS, truck.isAllowSystemNotifications());
     entity.setProperty(TRUCK_FACEBOOK_PAGE_ID, truck.getFacebookPageId());
     entity.setProperty(TRUCK_TWITTER_GEOLOCATION, truck.isTwitterGeolocationDataValid());
+    entity.setProperty(BLACKLIST_LOCATION_NAMES, truck.getBlacklistLocationNames());
     Attributes.setDateProperty(TRUCK_MUTE_UNTIL, entity, truck.getMuteUntil());
     Truck.Stats stats = truck.getStats();
     if (stats == null) {

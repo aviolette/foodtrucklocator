@@ -1,6 +1,7 @@
 package foodtruck.model;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,6 +14,7 @@ import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import org.joda.time.DateTime;
@@ -26,6 +28,7 @@ import static com.google.common.base.Preconditions.checkState;
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class Truck extends ModelEntity implements Serializable {
+  private static final Joiner BLACKLIST_JOINER = Joiner.on("; ");
   private String id;
   private String name;
   private String twitterHandle;
@@ -62,8 +65,9 @@ public class Truck extends ModelEntity implements Serializable {
   private String backgroundImage;
   private String backgroundImageLarge;
   private @Nullable String menuUrl;
+  private List<String> blacklistLocationNames;
 
-  // For serialization
+  // For serialization (for storage in memcached)
   private Truck() {
   }
 
@@ -105,6 +109,7 @@ public class Truck extends ModelEntity implements Serializable {
     this.backgroundImage = builder.backgroundImage;
     this.backgroundImageLarge = builder.backgroundImageLarge;
     this.menuUrl = builder.menuUrl;
+    this.blacklistLocationNames = builder.blacklistLocationNames;
   }
 
   public static Builder builder() {
@@ -113,6 +118,14 @@ public class Truck extends ModelEntity implements Serializable {
 
   public static Builder builder(Truck t) {
     return new Builder(t);
+  }
+
+  public List<String> getBlacklistLocationNames() {
+    return blacklistLocationNames;
+  }
+
+  public String getBlacklistLocationsList() {
+    return BLACKLIST_JOINER.join(blacklistLocationNames);
   }
 
   public @Nullable String getMenuUrl() {
@@ -583,6 +596,7 @@ public class Truck extends ModelEntity implements Serializable {
     private String backgroundImage;
     private String backgroundImageLarge;
     private @Nullable String menuUrl;
+    private List<String> blacklistLocationNames = ImmutableList.of();
 
     public Builder() {
     }
@@ -624,6 +638,12 @@ public class Truck extends ModelEntity implements Serializable {
       this.backgroundImage = truck.backgroundImage;
       this.backgroundImageLarge = truck.backgroundImageLarge;
       this.menuUrl = truck.menuUrl;
+      this.blacklistLocationNames = truck.blacklistLocationNames;
+    }
+
+    public Builder blacklistLocationNames(List<String> locationNames) {
+      this.blacklistLocationNames = locationNames;
+      return this;
     }
 
     public Builder id(String id) {
