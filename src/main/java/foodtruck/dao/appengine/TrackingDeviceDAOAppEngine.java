@@ -68,6 +68,7 @@ class TrackingDeviceDAOAppEngine extends AppEngineDAO<Long, TrackingDevice> impl
         .truckOwnerId(fe.stringVal(TRUCK_OWNER_ID))
         .deviceNumber(fe.stringVal(DEVICE_NUMBER))
         .label(fe.stringVal(LABEL))
+        .lastModified(fe.dateVal(LAST_MODIFIED))
         .lastBroadcast(fe.dateVal(LAST_BROADCAST))
         .enabled(fe.booleanVal(ENABLED))
         .key(fe.longId())
