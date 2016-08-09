@@ -165,7 +165,7 @@
 
     TruckMap.init()
 
-    TruckScheduleWidget.run("${truck.id}", ${locations}, ${categories}, {
+    TruckScheduleWidget.init("${truck.id}", ${locations}, ${categories}, {
       addCallback: TruckMap.addStop,
       refreshCallback: function() {
         TruckMap.clear();
