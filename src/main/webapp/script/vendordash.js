@@ -1,6 +1,6 @@
 var TruckMap = function() {
   var MILES_TO_METERS = 1609.34;
-  var map, markers = [], bounds = new google.maps.LatLngBounds(),openInfoWindow;
+  var map, markers = [], beacons=[], bounds = new google.maps.LatLngBounds(),openInfoWindow;
   function buildInfoWindow(marker, map, stop) {
     var $content = $("<div>"),
         $masterDiv = $("<div>");
@@ -48,15 +48,17 @@ var TruckMap = function() {
       });
     },
     addBeacon: function(lat, lng, enabled, parked) {
+      var latLng = new google.maps.LatLng(lat, lng);
+      beacons.push(latLng);
       var suffix = "";
       if (parked && enabled) {
-        suffix = "_green";
-      } else if(!enabled) {
+        return;
+      } else if(parked) {
         suffix = "_grey";
       }
       marker = new google.maps.Marker({
         draggable: false,
-        position: new google.maps.LatLng(lat, lng),
+        position: latLng,
         icon: "//maps.google.com/mapfiles/marker" + suffix + ".png",
         map: map
       });
@@ -67,9 +69,11 @@ var TruckMap = function() {
     addStop: function(stop) {
       var now = new Date().getTime();
       if (stop.startMillis <= now && stop.endMillis > now) {
+        var pos = new google.maps.LatLng(stop.location.latitude, stop.location.longitude);
         var marker = new google.maps.Marker({
           draggable: true,
-          position: new google.maps.LatLng(stop.location.latitude, stop.location.longitude),
+          position: pos,
+          icon: "//maps.google.com/mapfiles/marker_green.png",
           map: map
         });
         markers.push(marker);
@@ -83,6 +87,7 @@ var TruckMap = function() {
         marker.setMap(null);
       });
       markers = [];
+      // TODO: extend around beacons
       bounds = new google.maps.LatLngBounds()
     }
   };
