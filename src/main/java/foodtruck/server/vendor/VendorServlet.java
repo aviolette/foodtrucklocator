@@ -9,6 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.users.UserService;
+import com.google.common.base.Function;
+import com.google.common.base.Predicates;
+import com.google.common.base.Throwables;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
@@ -16,6 +20,8 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TrackingDeviceDAO;
@@ -57,6 +63,26 @@ public class VendorServlet extends VendorServletSupport {
     req.setAttribute("tab", "vendorhome");
     if (truck != null) {
       req.setAttribute("beacons", trackingDeviceDAO.findByTruckId(truck.getId()));
+      req.setAttribute("blacklist", new JSONArray(FluentIterable.from(truck.getBlacklistLocationNames())
+          .transform(new Function<String, JSONObject>() {
+            public JSONObject apply(String input) {
+              Location location = locationDAO.findByAddress(input);
+              if (location == null) {
+                return null;
+              }
+              try {
+                return new JSONObject()
+                    .put("name", input)
+                    .put("latitude", location.getLatitude())
+                    .put("longitude", location.getLongitude())
+                    .put("radius", location.getRadius());
+              } catch (JSONException e) {
+                throw Throwables.propagate(e);
+              }
+            }
+          })
+          .filter(Predicates.notNull())
+          .toList()));
     }
     req.getRequestDispatcher(JSP).forward(req, resp);
   }
