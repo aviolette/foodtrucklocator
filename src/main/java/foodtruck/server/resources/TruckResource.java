@@ -2,9 +2,7 @@ package foodtruck.server.resources;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Logger;
 
-import javax.annotation.Nullable;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -42,12 +40,11 @@ import static foodtruck.server.resources.Resources.requiresAdmin;
  */
 @Path("/trucks{view : (\\.[a-z]{3})?}")
 public class TruckResource {
-  public static final Predicate<Truck> NOT_HIDDEN = new Predicate<Truck>() {
-    @Override public boolean apply(@Nullable Truck truck) {
+  private static final Predicate<Truck> NOT_HIDDEN = new Predicate<Truck>() {
+    @Override public boolean apply(Truck truck) {
       return !truck.isHidden();
     }
   };
-  private static final Logger log = Logger.getLogger(TruckResource.class.getName());
   private final TruckDAO truckDAO;
   private final Clock clock;
   private final DateTimeZone zone;
