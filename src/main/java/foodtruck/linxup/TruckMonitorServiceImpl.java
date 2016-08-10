@@ -34,6 +34,7 @@ import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.schedule.Confidence;
+import foodtruck.server.security.SecurityChecker;
 import foodtruck.util.Clock;
 import foodtruck.util.FriendlyDateTimeFormat;
 
@@ -50,11 +51,12 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
   private final TruckStopDAO truckStopDAO;
   private final Clock clock;
   private final DateTimeFormatter formatter;
+  private final SecurityChecker securityChecker;
 
   @Inject
   public TruckMonitorServiceImpl(TruckStopDAO truckStopDAO, LinxupConnector connector,
       TrackingDeviceDAO trackingDeviceDAO, GeoLocator locator, Clock clock, TruckDAO truckDAO,
-      @FriendlyDateTimeFormat DateTimeFormatter formatter, LocationDAO locationDAO) {
+      @FriendlyDateTimeFormat DateTimeFormatter formatter, LocationDAO locationDAO, SecurityChecker securityChecker) {
     this.connector = connector;
     this.truckStopDAO = truckStopDAO;
     this.trackingDeviceDAO = trackingDeviceDAO;
@@ -63,6 +65,7 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
     this.truckDAO = truckDAO;
     this.formatter = formatter;
     this.locationDAO = locationDAO;
+    this.securityChecker = securityChecker;
   }
 
   @Override
@@ -74,9 +77,10 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
   @Override
   public void enableDevice(Long beaconId, boolean enabled) {
     TrackingDevice device = trackingDeviceDAO.findById(beaconId);
-    if (device == null) {
+    if (device == null || Strings.isNullOrEmpty(device.getTruckOwnerId())) {
       throw new WebApplicationException(404);
     }
+    securityChecker.requiresLoggedInAs(device.getTruckOwnerId());
     trackingDeviceDAO.save(TrackingDevice.builder(device).enabled(enabled).build());
     if (enabled) {
       // TODO: probably not what we want to do here.
