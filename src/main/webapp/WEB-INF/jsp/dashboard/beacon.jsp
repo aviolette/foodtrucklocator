@@ -16,6 +16,7 @@
         <label for="associated-truck">Associated Food Truck</label>
         <%--suppress CheckTagEmptyBody --%>
         <select id="associated-truck" name="associatedTruck">
+          <option value="unset" <c:if test="${empty(beacon.truckOwnerId)}">selected</c:if>>&nbsp;</option>
           <c:forEach var="truck" items="${trucks}">
             <option value="${truck.id}" <c:if test="${beacon.truckOwnerId == truck.id}">selected</c:if>>${truck.name}</option>
           </c:forEach>

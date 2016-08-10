@@ -60,8 +60,12 @@ public class BeaconServlet extends HttpServlet {
       resp.sendError(404);
       return;
     }
+    String associatedTruck = req.getParameter("associatedTruck");
+    if ("unset".equals(associatedTruck)) {
+      associatedTruck = null;
+    }
     trackingDeviceDAO.save(TrackingDevice.builder(device)
-        .truckOwnerId(req.getParameter("associatedTruck"))
+        .truckOwnerId(associatedTruck)
         .enabled("on".equals(req.getParameter("enabled")))
         .build());
     resp.sendRedirect("/admin/beacons");
