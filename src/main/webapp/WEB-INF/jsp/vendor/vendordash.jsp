@@ -36,11 +36,6 @@
 <div class="row">
   <div class="col-md-12">
     <h2>Beacons</h2>
-    <c:choose>
-      <c:when test="${empty(beacons)}">
-        <p>Coming Soon!</p>
-      </c:when>
-      <c:otherwise>
         <table class="table">
           <thead>
             <tr>
@@ -52,21 +47,9 @@
               <th>&nbsp;</th>
             </tr>
           </thead>
-          <tbody>
-          <c:forEach var="beacon" items="${beacons}">
-            <tr>
-              <td>${beacon.label}</td>
-              <td>${beacon.deviceNumber}</td>
-              <td><c:if test="${!empty(beacon.lastLocation)}"><ftl:location location="${beacon.lastLocation}" admin="false"/> at <joda:format value="${beacon.lastBroadcast}" style="MM"/></c:if></td>
-              <td><joda:format value="${beacon.lastModified}" style="MM"/></td>
-              <td><c:choose><c:when test="${beacon.parked}">PARKED</c:when><c:otherwise>MOVING</c:otherwise></c:choose></td>
-              <td><button class="beacon-button btn <c:choose><c:when test="${beacon.enabled}">btn-danger</c:when><c:otherwise>btn-success</c:otherwise></c:choose>" id="beacon-button-${beacon.key}"><c:choose><c:when test="${beacon.enabled}">Disable</c:when><c:otherwise>Enable</c:otherwise></c:choose></button></td>
-            </tr>
-          </c:forEach>
+          <tbody id="beacons">
           </tbody>
         </table>
-      </c:otherwise>
-    </c:choose>
   </div>
 </div>
 <%@ include file="../include/core_js.jsp" %>
@@ -77,6 +60,65 @@
   (function() {
     TruckMap.init()
 
+    function refreshBeacons() {
+      $.ajax({
+        url: "/services/trucks/${truck.id}/beacons",
+        type: 'GET',
+        dataType: 'json',
+        success: function (beacons) {
+          $("#beacons").empty();
+          $.each(beacons, function(i, item) {
+            TruckMap.addBeacon(item.lastLocation.latitude, item.lastLocation.longitude,
+                item.enabled, item.parked, item.blacklisted);
+            var $tr = $("<tr></tr>");
+            $tr.append("<td>" + item.label + "</td>");
+            $tr.append("<td>" + item.deviceNumber + "</td>");
+            if (item.lastLocation) {
+              $tr.append("<td><a href=\"/locations/" + item.lastLocation.key + "\">" + item.lastLocation.name + "</a> at " + item.lastBroadcast + "</td>");
+            }
+            $tr.append("<td>" + item.lastModified + "</td>");
+            $tr.append("<td>" + (item.parked ? "PARKED" : "MOVING") + "</td>");
+
+            var $button = $("<button class='beacon-button btn' id='beacon-button-" + item.id +"'>" + (item.enabled ? "Disable" : "Enable") + "</button>");
+            if (item.enabled) {
+              $button.addClass("btn-danger");
+            } else {
+              $button.addClass("btn-success");
+            }
+            var $td = $("<td></td>");
+            $td.append($button);
+            $tr.append($td)
+            $("#beacons").append($tr);
+          });
+          $(".beacon-button").click(function(e) {
+            var $self = $(e.target);
+            var item = $self.attr("id").substr(14);
+            var action = $self.text().toLowerCase();
+            $.ajax({
+              url: "/services/beacons/" + item + "/" + action,
+              type: 'POST',
+              contentType: 'application/json',
+              complete : function() {
+              },
+              success: function(e) {
+                if (action == "disable") {
+                  $self.text("Enable");
+                  $self.removeClass("btn-danger");
+                  $self.addClass("btn-success");
+                } else {
+                  $self.text("Disable");
+                  $self.addClass("btn-danger");
+                  $self.removeClass("btn-success");
+                }
+                TruckScheduleWidget.refresh();
+                refreshBeacons();
+              }
+            });
+          });
+        }
+      })
+    }
+
     TruckScheduleWidget.init("${truck.id}", ${locations}, ${categories}, {
       addCallback: TruckMap.addStop,
       refreshCallback: function() {
@@ -84,45 +126,19 @@
         refreshBeacons();
       },
       vendorEndpoints: true,
-      hasCalendar: ${not empty(truck.calendarUrl)}});
+      hasCalendar: ${not empty(truck.calendarUrl)}
+    });
 
     $.each(${blacklist}, function(i, location) {
       TruckMap.addBlacklisted(location);
     });
 
-    function refreshBeacons() {
-      // TODO: this should actually be done by AJAX so that we can refresh this list without refreshing the page...
-      <c:forEach var="beacon" items="${beacons}">
-      TruckMap.addBeacon(${beacon.lastLocation.latitude}, ${beacon.lastLocation.longitude}, ${beacon.enabled}, ${beacon.parked});
-      </c:forEach>
-    }
     refreshBeacons();
 
-    $(".beacon-button").click(function(e) {
-      var $self = $(e.target);
-      var item = $self.attr("id").substr(14);
-      var action = $self.text().toLowerCase();
-      $.ajax({
-        url: "/services/beacons/" + item + "/" + action,
-        type: 'POST',
-        contentType: 'application/json',
-        complete : function() {
-        },
-        success: function(e) {
-          if (action == "disable") {
-            $self.text("Enable");
-            $self.removeClass("btn-danger");
-            $self.addClass("btn-success");
-          } else {
-            $self.text("Disable");
-            $self.addClass("btn-danger");
-            $self.removeClass("btn-success");
-          }
-          TruckScheduleWidget.refresh();
-          refreshBeacons();
-        }
-      });
-    });
+    setInterval(function() {
+      console.log("Refreshing...");
+      TruckScheduleWidget.refresh();
+    }, 60000);
 
 
   })();

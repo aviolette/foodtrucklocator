@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import javax.annotation.Nullable;
 import javax.ws.rs.WebApplicationException;
 
 import com.google.common.base.Function;
@@ -98,23 +99,9 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
             return truckStopDAO.findDuring(truckId, clock.currentDay());
           }
         });
-    LoadingCache<String, List<Location>> blacklistCache = CacheBuilder.newBuilder()
-        .build(new CacheLoader<String, List<Location>>() {
-          public List<Location> load(String key) throws Exception {
-            Truck truck = truckDAO.findById(key);
-            return FluentIterable.from(truck.getBlacklistLocationNames())
-                .transform(new Function<String, Location>() {
-                  public Location apply(String name) {
-                    Location location = locationDAO.findByAddress(name);
-                    return location;
-                  }
-                })
-                .filter(Predicates.<Location>notNull())
-                .toList();
-          }
-        });
     for (TrackingDevice device : devices) {
-      if (!device.isEnabled() || !device.isParked() || atBlacklistedLocation(device, blacklistCache)) {
+      if (!device.isEnabled() || !device.isParked() || device.isAtBlacklistedLocation() ||
+          device.getLastLocation() == null) {
         try {
           //noinspection ConstantConditions
           cancelAnyStops(device, stopCache.get(device.getTruckOwnerId()));
@@ -127,17 +114,18 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
     }
   }
 
-  private boolean atBlacklistedLocation(TrackingDevice device, LoadingCache<String, List<Location>> blacklistCache) {
+  private boolean atBlacklistedLocation(@Nullable String ownerId, @Nullable Location lastLocation,
+      LoadingCache<String, List<Location>> blacklistCache) {
     try {
-      if (Strings.isNullOrEmpty(device.getTruckOwnerId())) {
+      if (Strings.isNullOrEmpty(ownerId)) {
         return false;
       }
-      List<Location> locations = blacklistCache.get(device.getTruckOwnerId());
-      if (locations == null || device.getLastLocation() == null) {
+      List<Location> locations = blacklistCache.get(ownerId);
+      if (locations == null || lastLocation == null) {
         return false;
       }
       for (Location location : locations) {
-        if (location.within(location.getRadius()).milesOf(device.getLastLocation())) {
+        if (location.within(location.getRadius()).milesOf(lastLocation)) {
           return true;
         }
       }
@@ -258,6 +246,21 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
       deviceMap.put(device.getDeviceNumber(), device);
     }
     ImmutableList.Builder<TrackingDevice> devices = ImmutableList.builder();
+    LoadingCache<String, List<Location>> blacklistCache = CacheBuilder.newBuilder()
+        .build(new CacheLoader<String, List<Location>>() {
+          public List<Location> load(String key) throws Exception {
+            Truck truck = truckDAO.findById(key);
+            return FluentIterable.from(truck.getBlacklistLocationNames())
+                .transform(new Function<String, Location>() {
+                  public Location apply(String name) {
+                    Location location = locationDAO.findByAddress(name);
+                    return location;
+                  }
+                })
+                .filter(Predicates.<Location>notNull())
+                .toList();
+          }
+        });
     for (Position position : positions) {
       TrackingDevice device = deviceMap.get(position.getDeviceNumber());
       TrackingDevice.Builder builder = TrackingDevice.builder(device);
@@ -271,6 +274,7 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
       builder.deviceNumber(position.getDeviceNumber())
           .lastLocation(locator.reverseLookup(location))
           .parked(parked)
+          .atBlacklistedLocation(atBlacklistedLocation(device.getTruckOwnerId(), device.getLastLocation(), blacklistCache))
           .lastBroadcast(position.getDate())
           .label(position.getVehicleLabel());
       TrackingDevice theDevice = builder.build();

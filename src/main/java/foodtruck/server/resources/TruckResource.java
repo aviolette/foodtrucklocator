@@ -1,6 +1,7 @@
 package foodtruck.server.resources;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
@@ -24,8 +25,11 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormatter;
 
+import foodtruck.dao.TrackingDeviceDAO;
 import foodtruck.dao.TruckDAO;
+import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
+import foodtruck.server.security.SecurityChecker;
 import foodtruck.socialmedia.ProfileSyncService;
 import foodtruck.util.Clock;
 import foodtruck.util.DateOnlyFormatter;
@@ -50,16 +54,21 @@ public class TruckResource {
   private final DateTimeFormatter formatter;
   private final ProfileSyncService profileSyncService;
   private final DailySpecialResourceFactory dailySpecialResourceFactory;
+  private final TrackingDeviceDAO trackingDeviceDAO;
+  private final SecurityChecker securityChecker;
 
   @Inject
   public TruckResource(TruckDAO truckDAO, Clock clock, DateTimeZone zone, @DateOnlyFormatter DateTimeFormatter formatter,
-      ProfileSyncService profileSyncService, DailySpecialResourceFactory dailySpecialResourceFactory) {
+      ProfileSyncService profileSyncService, DailySpecialResourceFactory dailySpecialResourceFactory,
+      TrackingDeviceDAO trackingDeviceDAO, SecurityChecker securityChecker) {
     this.truckDAO = truckDAO;
     this.clock = clock;
     this.zone = zone;
     this.formatter = formatter;
     this.profileSyncService = profileSyncService;
     this.dailySpecialResourceFactory = dailySpecialResourceFactory;
+    this.trackingDeviceDAO = trackingDeviceDAO;
+    this.securityChecker = securityChecker;
   }
 
   @GET
@@ -117,6 +126,12 @@ public class TruckResource {
   @Path("{truckId}/specials")
   public DailySpecialResource getDailySpecialResource(@PathParam("truckId") String truckId) {
     return dailySpecialResourceFactory.create(truckDAO.findById(truckId));
+  }
+
+  @GET @Path("{truckId}/beacons")
+  public List<TrackingDevice> findBeacons(@PathParam("truckId") String truckId) {
+    securityChecker.requiresLoggedInAs(truckId);
+    return trackingDeviceDAO.findByTruckId(truckId);
   }
 
   @POST @Consumes(MediaType.APPLICATION_JSON) @Produces(MediaType.APPLICATION_JSON)

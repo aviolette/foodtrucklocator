@@ -20,6 +20,7 @@ public class TrackingDevice extends ModelEntity {
   private @Nullable DateTime lastModified;
   private @Nullable Location lastLocation;
   private boolean parked;
+  private boolean atBlacklistedLocation;
 
   private TrackingDevice(Builder builder) {
     super(builder.key);
@@ -31,6 +32,7 @@ public class TrackingDevice extends ModelEntity {
     this.lastModified = builder.lastModified;
     this.lastLocation = builder.lastLocation;
     this.parked = builder.parked;
+    this.atBlacklistedLocation = builder.atBlacklistedLocation;
   }
 
   public static Builder builder() {
@@ -73,6 +75,10 @@ public class TrackingDevice extends ModelEntity {
     return deviceNumber;
   }
 
+  public boolean isAtBlacklistedLocation() {
+    return atBlacklistedLocation;
+  }
+
   public boolean isEnabled() {
     return enabled && !Strings.isNullOrEmpty(truckOwnerId);
   }
@@ -96,6 +102,7 @@ public class TrackingDevice extends ModelEntity {
     private @Nullable DateTime lastModified;
     private @Nullable Location lastLocation;
     private boolean parked;
+    private boolean atBlacklistedLocation;
 
     public Builder() {
     }
@@ -110,6 +117,12 @@ public class TrackingDevice extends ModelEntity {
       this.lastBroadcast = device.lastBroadcast;
       this.lastLocation = device.lastLocation;
       this.parked = device.parked;
+      this.atBlacklistedLocation = device.atBlacklistedLocation;
+    }
+
+    public Builder atBlacklistedLocation(boolean atBlacklistedLocation) {
+      this.atBlacklistedLocation = atBlacklistedLocation;
+      return this;
     }
 
     public Builder parked(boolean parked) {

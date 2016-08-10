@@ -1,6 +1,6 @@
 var TruckMap = function() {
   var MILES_TO_METERS = 1609.34;
-  var map, markers = [], beacons=[], bounds = new google.maps.LatLngBounds(),openInfoWindow;
+  var map, markers = [], bounds = new google.maps.LatLngBounds(),openInfoWindow;
   function buildInfoWindow(marker, map, stop) {
     var $content = $("<div>"),
         $masterDiv = $("<div>");
@@ -47,11 +47,10 @@ var TruckMap = function() {
         map: map
       });
     },
-    addBeacon: function(lat, lng, enabled, parked) {
+    addBeacon: function(lat, lng, enabled, parked, blacklisted) {
       var latLng = new google.maps.LatLng(lat, lng);
-      beacons.push(latLng);
       var suffix = "";
-      if (parked && enabled) {
+      if (parked && enabled && !blacklisted) {
         return;
       } else if(parked) {
         suffix = "_grey";

@@ -24,7 +24,6 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import foodtruck.dao.LocationDAO;
-import foodtruck.dao.TrackingDeviceDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
@@ -39,15 +38,13 @@ import foodtruck.util.Session;
 public class VendorServlet extends VendorServletSupport {
   private static final String JSP = "/WEB-INF/jsp/vendor/vendordash.jsp";
   private final LocationDAO locationDAO;
-  private final TrackingDeviceDAO trackingDeviceDAO;
   private final StaticConfig config;
 
   @Inject
   public VendorServlet(TruckDAO dao, LocationDAO locationDAO, Provider<Session> sessionProvider,
-      UserService userService, TrackingDeviceDAO trackingDeviceDAO, StaticConfig config) {
+      UserService userService, StaticConfig config) {
     super(dao, sessionProvider, userService, locationDAO);
     this.locationDAO = locationDAO;
-    this.trackingDeviceDAO = trackingDeviceDAO;
     this.config = config;
   }
 
@@ -62,7 +59,6 @@ public class VendorServlet extends VendorServletSupport {
     req.setAttribute("googleApiKey", config.getGoogleJavascriptApiKey());
     req.setAttribute("tab", "vendorhome");
     if (truck != null) {
-      req.setAttribute("beacons", trackingDeviceDAO.findByTruckId(truck.getId()));
       req.setAttribute("blacklist", new JSONArray(FluentIterable.from(truck.getBlacklistLocationNames())
           .transform(new Function<String, JSONObject>() {
             public JSONObject apply(String input) {

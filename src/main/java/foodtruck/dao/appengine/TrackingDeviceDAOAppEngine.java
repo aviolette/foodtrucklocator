@@ -26,6 +26,7 @@ class TrackingDeviceDAOAppEngine extends AppEngineDAO<Long, TrackingDevice> impl
   private static final String LAST_LOCATION_NAME = "last_location_name";
   private static final String LAST_LOCATION_LAT = "last_location_lat";
   private static final String LAST_LOCATION_LNG = "last_location_lng";
+  private static final String BLACKLISTED = "blacklisted";
   private static final String PARKED = "parked";
   private final Clock clock;
 
@@ -44,6 +45,7 @@ class TrackingDeviceDAOAppEngine extends AppEngineDAO<Long, TrackingDevice> impl
         .prop(LAST_MODIFIED, clock.now())
         .prop(LAST_BROADCAST, obj.getLastBroadcast())
         .prop(PARKED, obj.isParked())
+        .prop(BLACKLISTED, obj.isAtBlacklistedLocation())
         .prop(ENABLED, obj.isEnabled());
     if (obj.getLastLocation() != null) {
       fe.prop(LAST_LOCATION_NAME, obj.getLastLocation().getName())
@@ -68,6 +70,7 @@ class TrackingDeviceDAOAppEngine extends AppEngineDAO<Long, TrackingDevice> impl
         .truckOwnerId(fe.stringVal(TRUCK_OWNER_ID))
         .deviceNumber(fe.stringVal(DEVICE_NUMBER))
         .label(fe.stringVal(LABEL))
+        .atBlacklistedLocation(fe.booleanVal(BLACKLISTED))
         .lastModified(fe.dateVal(LAST_MODIFIED))
         .lastBroadcast(fe.dateVal(LAST_BROADCAST))
         .enabled(fe.booleanVal(ENABLED))
