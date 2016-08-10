@@ -13,6 +13,7 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 
 import foodtruck.dao.DAO;
 import foodtruck.model.ModelEntity;
@@ -208,6 +209,12 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
     @Nullable
     T findOne() {
       Entity entity = provider.get().prepare(query).asSingleEntity();
+      return (entity == null) ? null : fromEntity(entity);
+    }
+
+    @Nullable
+    T findFirst() {
+      Entity entity = Iterables.getFirst(provider.get().prepare(query).asIterable(FetchOptions.Builder.withLimit(1)), null);
       return (entity == null) ? null : fromEntity(entity);
     }
 

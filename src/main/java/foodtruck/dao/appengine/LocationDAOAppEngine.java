@@ -1,7 +1,9 @@
 package foodtruck.dao.appengine;
 
 import java.util.Collection;
+import java.util.Formatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -61,6 +63,7 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
   private static final String IMAGE_URL = "image_url";
   private static final String EVENT_URL = "event_url";
   private static final String MANAGER_EMAILS = "manager_emails";
+  private static final String REVERSE_LOOKUP_KEY = "reverse_lookup_key";
 
   private static final Logger log = Logger.getLogger(LocationDAOAppEngine.class.getName());
   private final Clock clock;
@@ -89,6 +92,12 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
       return fromEntity(entity);
     }
     return null;
+  }
+
+  @Nullable
+  @Override
+  public Location findByLatLng(Location location) {
+    return aq().filter(predicate(REVERSE_LOOKUP_KEY, EQUAL, reverseLookupKey(location))).findFirst();
   }
 
   @Override
@@ -194,9 +203,17 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
     entity.setProperty(EMAIL, location.getEmail());
     entity.setProperty(FACEBOOK_URI, location.getFacebookUri());
     entity.setProperty(CLOSED, location.isClosed());
+    entity.setProperty(REVERSE_LOOKUP_KEY, reverseLookupKey(location));
     setUrlProperty(entity, IMAGE_URL, location.getImageUrl());
     entity.setProperty(EVENT_URL, location.getEventCalendarUrl());
     return entity;
+  }
+
+  private String reverseLookupKey(Location location) {
+    StringBuilder builder = new StringBuilder();
+    Formatter formatter = new Formatter(builder, Locale.US);
+    formatter.format("%10.4f %10.4f", location.getLatitude(), location.getLongitude());
+    return builder.toString();
   }
 
   @Override
