@@ -33,6 +33,7 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckObserver;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TwitterNotificationAccount;
+import foodtruck.notifications.NotificationService;
 import foodtruck.schedule.OffTheRoadDetector;
 import foodtruck.schedule.OffTheRoadResponse;
 import foodtruck.schedule.TerminationDetector;
@@ -74,10 +75,10 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
   private RetweetsDAO retweetDAO;
   private TwitterNotificationAccountDAO notificationDAO;
   private SpecialUpdater specialsUpdater;
+  private NotificationService notificationService;
 
   @Before
   public void before() {
-    final TwitterFactoryWrapper twitterFactory = createMock(TwitterFactoryWrapper.class);
     tweetDAO = createMock(StoryDAO.class);
     retweetDAO = createNiceMock(RetweetsDAO.class);
     truck1 = new Truck.Builder().id(TRUCK_1_ID).twitterHandle(TRUCK_1_ID)
@@ -111,9 +112,10 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
     DateTimeFormatter timeFormatter = DateTimeFormat.longTime();
     expect(clock.nowFormattedAsTime()).andStubReturn(timeFormatter.print(now));
     Set<SocialMediaConnector> connectors = ImmutableSet.of();
+    notificationService = createNiceMock(NotificationService.class);
     service = new SocialMediaCacherImpl( tweetDAO, matcher,
         truckStopDAO, clock, terminationDetector, truckDAO, emailNotifier, offTheRoadDetector, locator,
-        truckObserverDAO, null, timeFormatter, new StaticConfig(), connectors, specialsUpdater, null);
+        truckObserverDAO, null, timeFormatter, new StaticConfig(), connectors, specialsUpdater, notificationService);
     loca = Location.builder().lat(1).lng(2).name("a").build();
     locb = Location.builder().lat(3).lng(4).name("b").build();
     basicTweet = new Story.Builder().time(now.minusHours(2)).text(
