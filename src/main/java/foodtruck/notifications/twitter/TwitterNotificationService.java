@@ -9,8 +9,8 @@ import com.google.api.client.util.Strings;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 
 import foodtruck.dao.RetweetsDAO;
@@ -53,23 +53,21 @@ public class TwitterNotificationService implements NotificationService {
   public void sendLunchtimeNotifications() {
     for (TwitterNotificationAccount account : findTwitterNotificationAccounts()) {
       if (!account.isActive()) {
-        log.log(Level.INFO, "Skipping notifications for {0} because it is not active", account.getName());
+        log.log(Level.FINE, "Skipping notifications for {0} because it is not active", account.getName());
         continue;
       }
       try {
         Set<Truck> trucks = truckService.findTrucksNearLocation(account.getLocation(), clock.now());
         if (!trucks.isEmpty()) {
-          Iterable<String> twitterHandles = Iterables.transform(trucks, new Function<Truck, String>() {
-            @Override
-            public String apply(Truck input) {
-              if (Strings.isNullOrEmpty(input.getTwitterHandle())) {
-                return input.getName();
-              }
-              return "@" + input.getTwitterHandle();
-            }
-          });
-          updateStatus(account,
-              String.format("Trucks at %s today: %s ", account.getName(), HANDLE_JOINER.join(twitterHandles)));
+          updateStatus(account, String.format("Trucks at %s today: %s ", account.getName(),
+              FluentIterable.from(trucks).transform(new Function<Truck, String>() {
+                public String apply(Truck input) {
+                  if (Strings.isNullOrEmpty(input.getTwitterHandle())) {
+                    return input.getName();
+                  }
+                  return "@" + input.getTwitterHandle();
+                }
+              }).join(HANDLE_JOINER)));
         }
       } catch (Exception e) {
         log.log(Level.WARNING, "An exception occurred", e);
@@ -89,6 +87,15 @@ public class TwitterNotificationService implements NotificationService {
 
   @Override
   public void notifyStopStart(TruckStop truckStop) {
+    messageAtStop(truckStop, "%s is now open at %s");
+  }
+
+  @Override
+  public void notifyStopEnd(TruckStop truckStop) {
+    messageAtStop(truckStop, "%s is leaving %s");
+  }
+
+  private void messageAtStop(TruckStop truckStop, String messageFormat) {
     for (TwitterNotificationAccount account : notificationAccountDAO.findAll()) {
       if (truckStop.getLocation().containedWithRadiusOf(account.getLocation()) && !retweetsDAO.hasBeenRetweeted(
           truckStop.getTruck().getId(), account.getTwitterHandle())) {

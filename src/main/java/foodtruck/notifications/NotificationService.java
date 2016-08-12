@@ -30,6 +30,13 @@ public interface NotificationService {
   void notifyStopStart(TruckStop truckStop);
 
   /**
+   * Sends out a notification that a truck has ended at a particular location.
+   *
+   * @param truckStop the truck stop
+   */
+  void notifyStopEnd(TruckStop truckStop);
+
+  /**
    * Shares the story (if possible) associated with the matched truck stop.
    */
   void share(Story story, TruckStop stop);

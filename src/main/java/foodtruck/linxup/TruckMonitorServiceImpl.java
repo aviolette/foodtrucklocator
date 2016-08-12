@@ -162,7 +162,7 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
         .appendNote("Created by beacon on " + formatter.print(now))
         .lastUpdated(clock.now())
         .startTime(device.getLastBroadcast())
-        .endTime(now.plusHours(2))
+        .endTime(now.plusHours(2)).createdWithDeviceId(device.getId())
         .fromBeacon(device.getLastBroadcast())
         .location(device.getLastLocation())
         .origin(StopOrigin.LINXUP)
