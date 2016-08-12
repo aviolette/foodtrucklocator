@@ -41,12 +41,6 @@ public interface EmailNotifier {
   void systemNotifyAutoCanceled(Truck truck, Story tweet);
 
   /**
-   * Sends out a system notification when a stop is added after 1:30 for a lunch truck via the twittalyzer
-   */
-
-  void systemNotifiyWeirdStopAdded(TruckStop truckStop, String tweetText);
-
-  /**
    * Sends out an email when an error occurs
    * @param error the error
    */

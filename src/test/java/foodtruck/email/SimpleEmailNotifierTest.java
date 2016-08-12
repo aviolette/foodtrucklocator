@@ -30,11 +30,10 @@ public class SimpleEmailNotifierTest extends EasyMockSupport {
   @Before
   public void before() {
     DateTimeZone zone = DateTimeZone.forID("America/Chicago");
-    DateTimeFormatter timeOnlyFormatter = DateTimeFormat.forPattern("hh:mm a").withZone(zone);
     DateTimeFormatter timeFormatter = DateTimeFormat.forPattern("YYYYMMdd-HHmm").withZone(zone);
     config = createMock(StaticConfig.class);
     sender = createMock(EmailSender.class);
-    notifier = new SimpleEmailNotifier(timeOnlyFormatter, config, timeFormatter, sender);
+    notifier = new SimpleEmailNotifier(config, timeFormatter, sender);
   }
 
   @Test

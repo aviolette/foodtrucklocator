@@ -113,12 +113,8 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
     for (TrackingDevice device : devices) {
       if (!device.isEnabled() || !device.isParked() || device.isAtBlacklistedLocation() ||
           device.getLastLocation() == null) {
-        try {
           //noinspection ConstantConditions
           cancelAnyStops(device, stopCache.get(device.getTruckOwnerId()));
-        } catch (ExecutionException e) {
-          throw Throwables.propagate(e);
-        }
         continue;
       }
       mergeTruck(device, stopCache);
@@ -161,8 +157,7 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
     return TruckStop.builder()
         .appendNote("Created by beacon on " + formatter.print(now))
         .lastUpdated(clock.now())
-        .startTime(device.getLastBroadcast())
-        .endTime(now.plusHours(2)).createdWithDeviceId(device.getId())
+        .startTime(device.getLastBroadcast()).endTime(now.plusHours(2)).createdWithDeviceId(device.getId())
         .fromBeacon(device.getLastBroadcast())
         .location(device.getLastLocation())
         .origin(StopOrigin.LINXUP)
