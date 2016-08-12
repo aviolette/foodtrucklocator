@@ -39,7 +39,6 @@ public class TruckStopWriter implements JSONWriter<TruckStop> {
         .put("id", stop.getKey())
         .put("truckId", stop.getTruck().getId())
         .put("duration", period(p))
-        .put("confidence", stop.getConfidence())
         .put("origin", stop.getOrigin())
         .put("locked", stop.isLocked())
         .put("fromBeacon", stop.isFromBeacon())

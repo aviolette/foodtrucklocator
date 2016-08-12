@@ -22,7 +22,7 @@ import foodtruck.util.Clock;
  * @author aviolette
  * @since 10/28/15
  */
-public class SpecialUpdater {
+class SpecialUpdater {
   private static final Logger log = Logger.getLogger(SpecialUpdater.class.getName());
   private final DailyDataDAO dailyDataDAO;
   private final Pattern oldFashionedPattern = Pattern.compile("(\\w+)\\s+(\\w+) old fashioned(.*)");

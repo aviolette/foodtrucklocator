@@ -33,7 +33,7 @@ import foodtruck.model.StopOrigin;
 import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
-import foodtruck.schedule.Confidence;
+import foodtruck.notifications.NotificationService;
 import foodtruck.server.security.SecurityChecker;
 import foodtruck.util.Clock;
 import foodtruck.util.FriendlyDateTimeFormat;
@@ -52,11 +52,13 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
   private final Clock clock;
   private final DateTimeFormatter formatter;
   private final SecurityChecker securityChecker;
+  private final NotificationService notificationService;
 
   @Inject
   public TruckMonitorServiceImpl(TruckStopDAO truckStopDAO, LinxupConnector connector,
       TrackingDeviceDAO trackingDeviceDAO, GeoLocator locator, Clock clock, TruckDAO truckDAO,
-      @FriendlyDateTimeFormat DateTimeFormatter formatter, LocationDAO locationDAO, SecurityChecker securityChecker) {
+      @FriendlyDateTimeFormat DateTimeFormatter formatter, LocationDAO locationDAO, SecurityChecker securityChecker,
+      NotificationService notificationService) {
     this.connector = connector;
     this.truckStopDAO = truckStopDAO;
     this.trackingDeviceDAO = trackingDeviceDAO;
@@ -66,6 +68,7 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
     this.formatter = formatter;
     this.locationDAO = locationDAO;
     this.securityChecker = securityChecker;
+    this.notificationService = notificationService;
   }
 
   @Override
@@ -177,7 +180,6 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
             .lastUpdated(clock.now())
             .startTime(device.getLastBroadcast())
             .endTime(now.plusHours(2))
-            .confidence(Confidence.HIGH)
             .fromBeacon(device.getLastBroadcast())
             .location(device.getLastLocation())
             .origin(StopOrigin.LINXUP)
@@ -198,7 +200,6 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
           .lastUpdated(clock.now())
           .startTime(device.getLastBroadcast())
           .endTime(endTime)
-          .confidence(Confidence.HIGH)
           .fromBeacon(device.getLastBroadcast())
           .location(device.getLastLocation())
           .createdWithDeviceId(device.getId())
@@ -207,6 +208,9 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
           .build();
     }
     truckStopDAO.save(stop);
+    if (stop.isNew()) {
+      notificationService.notifyStopStart(stop);
+    }
   }
 
   private Matches matchTruck(LoadingCache<String, List<TruckStop>> stopCache, TrackingDevice device) {
@@ -257,8 +261,7 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
             return FluentIterable.from(truck.getBlacklistLocationNames())
                 .transform(new Function<String, Location>() {
                   public Location apply(String name) {
-                    Location location = locationDAO.findByAddress(name);
-                    return location;
+                    return locationDAO.findByAddress(name);
                   }
                 })
                 .filter(Predicates.<Location>notNull())

@@ -1,4 +1,4 @@
-package foodtruck.notifications;
+package foodtruck.notifications.twitter;
 
 import java.util.List;
 
@@ -15,17 +15,17 @@ import static org.junit.Assert.assertEquals;
  * @author aviolette
  * @since 12/6/12
  */
-public class NotificationServiceImplTest  {
+public class TwitterNotificationServiceTest {
 
   private TwitterNotificationAccountDAO notificationDAO;
   private Clock clock;
   private FoodTruckStopService truckService;
-  private NotificationServiceImpl service;
+  private TwitterNotificationService service;
 
   @Before
   public void before() {
     truckService = null; clock = null; notificationDAO = null;
-    service = new NotificationServiceImpl(truckService, clock, notificationDAO);
+    service = new TwitterNotificationService(truckService, clock, notificationDAO, null);
   }
 
   @Test

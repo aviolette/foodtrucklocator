@@ -19,8 +19,8 @@ import foodtruck.notifications.NotificationService;
  */
 @Singleton
 public class SendLunchNotificationsServlet extends HttpServlet {
-  private final NotificationService notificationService;
   private static final Logger log = Logger.getLogger(SendLunchNotificationsServlet.class.getName());
+  private final NotificationService notificationService;
 
   @Inject
   public SendLunchNotificationsServlet(NotificationService notificationService) {
@@ -30,6 +30,6 @@ public class SendLunchNotificationsServlet extends HttpServlet {
   @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     log.info("Sending out notifications...");
-    notificationService.sendNotifications();
+    notificationService.sendLunchtimeNotifications();
   }
 }

@@ -111,9 +111,8 @@ public class TruckStopMatcher {
       TruckStopMatch.Builder builder = TruckStopMatch.builder()
             .stop(truckStopBuilder.notes(
                 ImmutableList.of(String.format("Tweet received for location: '%s'", story.getText()))).build())
-            .text(story.getText())
-            .softEnding(softEnding)
-            .tweetId(story.getId());
+          .story(story)
+          .softEnding(softEnding);
 
       for (SpecialMatcher matcher : specialMatchers) {
         matcher.handle(builder, story, truck);

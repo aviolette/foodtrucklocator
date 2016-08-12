@@ -9,29 +9,25 @@ import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
+import foodtruck.model.Story;
 import foodtruck.model.TruckStop;
 
 /**
  * Represents a matching of a truck to a tweet.
+ *
  * @author aviolette@gmail.com
  * @since 9/19/11
  */
 public class TruckStopMatch {
-  private final Confidence confidence;
   private final TruckStop stop;
-  private final String text;
-  private final boolean terminated;
   private final boolean softEnding;
-  private final long tweetId;
+  private final Story story;
   private final ImmutableList<TruckStop> additionalStops;
 
   private TruckStopMatch(Builder builder) {
-    this.confidence = builder.confidence;
     this.stop = builder.getPrimaryStop();
-    this.text = builder.text;
-    this.terminated = builder.terminated;
     this.softEnding = builder.softEnding;
-    this.tweetId = builder.tweetId;
+    this.story = builder.story;
     this.additionalStops = builder.getAdditionalStops();
   }
 
@@ -41,14 +37,6 @@ public class TruckStopMatch {
 
   public ImmutableList<TruckStop> getAdditionalStops() {
     return additionalStops;
-  }
-
-  public boolean isTerminated() {
-    return terminated;
-  }
-
-  public Confidence getConfidence() {
-    return confidence;
   }
 
   public TruckStop getStop() {
@@ -62,46 +50,41 @@ public class TruckStopMatch {
     return softEnding;
   }
 
-  public String getText() {
-    return text;
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this).add("stop", stop).add("text", story.getText()).toString();
   }
 
-  @Override public String toString() {
-    return MoreObjects.toStringHelper(this).add("confidence", confidence).add("stop", stop)
-        .add("text", text).toString();
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(stop, story.getText());
   }
 
-  @Override public int hashCode() {
-    return Objects.hashCode(confidence, stop, text);
-  }
-
-  @Override public boolean equals(Object o) {
+  @Override
+  public boolean equals(Object o) {
     if (o == this) {
       return true;
     } else if (o == null || !(o instanceof TruckStopMatch)) {
       return false;
     }
     TruckStopMatch match = (TruckStopMatch) o;
-    return confidence == match.confidence && stop.equals(match.stop) && text.equals(match.text);
+    return stop.equals(match.stop) && story.getText().equals(match.story.getText());
   }
 
-  public long getTweetId() {
-    return tweetId;
+  public Story getStory() {
+    return story;
   }
 
   public static class Builder {
     public List<TruckStop> stops = Lists.newLinkedList();
-    private String text;
-    private Confidence confidence = Confidence.HIGH;
-    private boolean terminated;
     private boolean softEnding;
-    private long tweetId;
+    private Story story;
 
     public Builder() {
     }
 
-    public Builder tweetId(long tweetId) {
-      this.tweetId = tweetId;
+    public Builder story(Story story) {
+      this.story = story;
       return this;
     }
 
@@ -122,18 +105,8 @@ public class TruckStopMatch {
       return this;
     }
 
-    public Builder text(String text) {
-      this.text = text;
-      return this;
-    }
-
     public Builder stops(ImmutableList<TruckStop> stops) {
       this.stops = Lists.newLinkedList(stops);
-      return this;
-    }
-
-    public Builder confidence(Confidence confidence) {
-      this.confidence = confidence;
       return this;
     }
 
@@ -142,23 +115,19 @@ public class TruckStopMatch {
       return this;
     }
 
-    public Builder terminated(boolean terminated) {
-      this.terminated = terminated;
-      return this;
-    }
-
     public TruckStopMatch build() {
       return new TruckStopMatch(this);
     }
 
-    public @Nullable TruckStop getPrimaryStop() {
+    @Nullable
+    public TruckStop getPrimaryStop() {
       if (stops.isEmpty()) {
         return null;
       }
       return stops.get(0);
     }
 
-    public ImmutableList<TruckStop> getAdditionalStops() {
+    ImmutableList<TruckStop> getAdditionalStops() {
       if (stops.size() < 2) {
         return ImmutableList.of();
       }

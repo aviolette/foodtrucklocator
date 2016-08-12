@@ -15,9 +15,6 @@ import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
-import foodtruck.schedule.Confidence;
-
-
 /**
  * Specifies an truck at a location at a date and time.
  *
@@ -33,7 +30,6 @@ public class TruckStop extends ModelEntity {
   private final boolean locked;
   private final @Nullable DateTime lastUpdated;
   private final @Nullable DateTime fromBeacon;
-  private final Confidence matchConfidence;
   private final List<String> notes;
   private final StopOrigin origin;
   private final @Nullable Long createdWithDeviceId;
@@ -47,7 +43,6 @@ public class TruckStop extends ModelEntity {
     locked = builder.locked;
     fromBeacon = builder.fromBeacon;
     lastUpdated = builder.lastUpdated;
-    matchConfidence = builder.matchConfidence;
     notes = ImmutableList.copyOf(builder.notes);
     origin = builder.origin;
     createdWithDeviceId = builder.createdWithDeviceId;
@@ -71,10 +66,6 @@ public class TruckStop extends ModelEntity {
 
   public List<String> getNotes() {
     return notes;
-  }
-
-  public Confidence getConfidence() {
-    return matchConfidence;
   }
 
   public boolean isLocked() {
@@ -194,7 +185,6 @@ public class TruckStop extends ModelEntity {
     private @Nullable DateTime fromBeacon;
     private @Nullable Long key;
     private @Nullable DateTime lastUpdated;
-    private Confidence matchConfidence = Confidence.MEDIUM;
     private List<String> notes = Lists.newLinkedList();
     private StopOrigin origin = StopOrigin.UNKNOWN;
     private @Nullable Long createdWithDeviceId;
@@ -233,11 +223,6 @@ public class TruckStop extends ModelEntity {
 
     public Builder appendNote(String note) {
       this.notes.add(note);
-      return this;
-    }
-
-    public Builder confidence(Confidence matchConfidence) {
-      this.matchConfidence = matchConfidence;
       return this;
     }
 

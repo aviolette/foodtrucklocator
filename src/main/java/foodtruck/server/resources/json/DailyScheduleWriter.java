@@ -83,8 +83,7 @@ public class DailyScheduleWriter implements MessageBodyWriter<DailySchedule>, JS
         JSONObject truckStop = new JSONObject()
             .put("key", stop.getKey().toString())
             .put("location", locations.get(stop.getLocation()))
-            .put("truckId", stop.getTruck().getId())
-            .put("confidence", stop.getConfidence())
+            .put("truckId", stop.getTruck().getId()).put("confidence", "MEDIUM")
             .put("startTime", formatter.print(stop.getStartTime()))
             .put("startMillis", stop.getStartTime().getMillis())
             .put("endMillis", stop.getEndTime().getMillis())
@@ -131,6 +130,5 @@ public class DailyScheduleWriter implements MessageBodyWriter<DailySchedule>, JS
     } catch (JSONException e) {
       throw new BadRequestException(e, MediaType.APPLICATION_JSON_TYPE);
     }
-
   }
 }

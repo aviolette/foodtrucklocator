@@ -38,7 +38,6 @@ import foodtruck.schedule.OffTheRoadResponse;
 import foodtruck.schedule.TerminationDetector;
 import foodtruck.schedule.TruckStopMatch;
 import foodtruck.schedule.TruckStopMatcher;
-import foodtruck.truckstops.LoggingTruckStopNotifier;
 import foodtruck.util.Clock;
 
 import static org.easymock.EasyMock.expect;
@@ -113,10 +112,8 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
     expect(clock.nowFormattedAsTime()).andStubReturn(timeFormatter.print(now));
     Set<SocialMediaConnector> connectors = ImmutableSet.of();
     service = new SocialMediaCacherImpl( tweetDAO, matcher,
-        truckStopDAO,
-        clock, terminationDetector, truckDAO,
-        new LoggingTruckStopNotifier(), emailNotifier, offTheRoadDetector, locator, truckObserverDAO,
-        notificationDAO, retweetDAO, null, timeFormatter, new StaticConfig(), connectors, specialsUpdater);
+        truckStopDAO, clock, terminationDetector, truckDAO, emailNotifier, offTheRoadDetector, locator,
+        truckObserverDAO, null, timeFormatter, new StaticConfig(), connectors, specialsUpdater, null);
     loca = Location.builder().lat(1).lng(2).name("a").build();
     locb = Location.builder().lat(3).lng(4).name("b").build();
     basicTweet = new Story.Builder().time(now.minusHours(2)).text(
@@ -135,8 +132,9 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
   }
 
   private void expectMatched(boolean softEnding) {
-    final TruckStopMatch matched =
-        TruckStopMatch.builder().stop(matchedStop).text(basicTweet.getText()).terminated(false)
+    final TruckStopMatch matched = TruckStopMatch.builder()
+        .stop(matchedStop)
+        .story(Story.builder().text(basicTweet.getText()).build())
             .softEnding(softEnding)
             .build();
     expect(matcher.match(truck2, basicTweet)).andStubReturn(matched);
@@ -370,8 +368,9 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
 
   @Test
   public void testHandleNotificationsForMentionedTrucksNoneMentioned() {
-    final TruckStopMatch matched =
-        TruckStopMatch.builder().stop(matchedStop).text(basicTweet.getText()).terminated(false)
+    final TruckStopMatch matched = TruckStopMatch.builder()
+        .stop(matchedStop)
+        .story(Story.builder().text(basicTweet.getText()).build())
             .build();
     replayAll();
     service.handleAdditionalTrucks(matchedStop, matched);
@@ -381,8 +380,9 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
   @Test
   public void testHandleNotificationsForMentionedTrucksMentionsNonTruck() {
     basicTweet = Story.builder(basicTweet).text("We are here at @foobar on Clark and Monroe").build();
-    final TruckStopMatch matched =
-        TruckStopMatch.builder().stop(matchedStop).text(basicTweet.getText()).terminated(false)
+    final TruckStopMatch matched = TruckStopMatch.builder()
+        .stop(matchedStop)
+        .story(Story.builder().text(basicTweet.getText()).build())
             .build();
     expect(truckDAO.findByTwitterId("foobar")).andReturn(ImmutableSet.<Truck>of());
     replayAll();
@@ -393,8 +393,9 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
   @Test
   public void testHandleNotificationsForMentionedTrucksMentionsTruck() {
     basicTweet = Story.builder(basicTweet).text("We are here at @truck1 on Clark and Monroe").build();
-    final TruckStopMatch matched =
-        TruckStopMatch.builder().stop(matchedStop).text(basicTweet.getText()).terminated(false)
+    final TruckStopMatch matched = TruckStopMatch.builder()
+        .stop(matchedStop)
+        .story(Story.builder().text(basicTweet.getText()).build())
             .build();
     expect(truckDAO.findByTwitterId("truck1")).andReturn(ImmutableSet.of(truck1));
     expect(truckStopDAO.findOverRange("truck1", matchedStop.getInterval()))

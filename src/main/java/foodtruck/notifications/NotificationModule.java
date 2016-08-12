@@ -15,6 +15,7 @@ import com.notnoop.apns.ApnsService;
 
 import foodtruck.notifications.apple.APNSProcessor;
 import foodtruck.notifications.email.EmailNotificationProcessor;
+import foodtruck.notifications.twitter.TwitterNotificationService;
 
 /**
  * @author aviolette
@@ -24,7 +25,7 @@ public class NotificationModule extends AbstractModule {
   private static final Logger log = Logger.getLogger(NotificationModule.class.getName());
 
   @Override protected void configure() {
-    bind(NotificationService.class).to(NotificationServiceImpl.class);
+    bind(NotificationService.class).to(TwitterNotificationService.class);
     Multibinder<NotificationProcessor> binder = Multibinder.newSetBinder(binder(), NotificationProcessor.class);
     binder.addBinding().to(EmailNotificationProcessor.class);
     if (Strings.isNullOrEmpty(System.getProperty("foodtrucklocator.apns.password"))) {

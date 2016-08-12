@@ -32,7 +32,7 @@ import foodtruck.util.Clock;
  * @author aviolette
  * @since 11/20/14
  */
-public class GoogleCalendarV3Consumer implements ScheduleStrategy {
+class GoogleCalendarV3Consumer implements ScheduleStrategy {
   private static final Logger log = Logger.getLogger(GoogleCalendarV3Consumer.class.getName());
   private final Calendar calendarClient;
   private final TruckDAO truckDAO;
@@ -152,11 +152,9 @@ public class GoogleCalendarV3Consumer implements ScheduleStrategy {
       endTime = new DateTime(event.getEnd().getDateTime().getValue(), clock.zone()).plusHours(timezoneAdjustment);
     }
     String note = "Stop added from vendor's calendar";
-    Confidence confidence = Confidence.MEDIUM;
     final TruckStop truckStop = TruckStop.builder().truck(truck)
         .origin(StopOrigin.VENDORCAL)
         .location(location)
-        .confidence(confidence)
         .appendNote(note)
         .startTime(startTime)
         .endTime(endTime)

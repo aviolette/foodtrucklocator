@@ -26,12 +26,10 @@ import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 
-import foodtruck.dao.RetweetsDAO;
 import foodtruck.dao.StoryDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckObserverDAO;
 import foodtruck.dao.TruckStopDAO;
-import foodtruck.dao.TwitterNotificationAccountDAO;
 import foodtruck.email.EmailNotifier;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
@@ -42,29 +40,23 @@ import foodtruck.model.Story;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckObserver;
 import foodtruck.model.TruckStop;
-import foodtruck.model.TwitterNotificationAccount;
 import foodtruck.monitoring.Monitored;
-import foodtruck.schedule.Confidence;
+import foodtruck.notifications.NotificationService;
 import foodtruck.schedule.OffTheRoadDetector;
 import foodtruck.schedule.OffTheRoadResponse;
 import foodtruck.schedule.TerminationDetector;
 import foodtruck.schedule.TruckStopMatch;
 import foodtruck.schedule.TruckStopMatcher;
 import foodtruck.truckstops.FoodTruckStopService;
-import foodtruck.truckstops.TruckStopNotifier;
 import foodtruck.util.Clock;
 import foodtruck.util.TimeOnlyFormatter;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
 
 /**
  * @author aviolette@gmail.com
  * @since 10/11/11
  */
 class SocialMediaCacherImpl implements SocialMediaCacher {
-  @VisibleForTesting
-  static final int HOURS_BACK_TO_SEARCH = 6;
+  @VisibleForTesting static final int HOURS_BACK_TO_SEARCH = 6;
   private static final Logger log = Logger.getLogger(SocialMediaCacherImpl.class.getName());
   private static final Pattern TWITTER_PATTERN = Pattern.compile("@([\\w|\\d|_]+)");
   private final StoryDAO storyDAO;
@@ -73,47 +65,43 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
   private final Clock clock;
   private final TerminationDetector terminationDetector;
   private final TruckDAO truckDAO;
-  private final TruckStopNotifier notifier;
   private final EmailNotifier emailNotifier;
   private final OffTheRoadDetector offTheRoadDetector;
   private final GeoLocator locator;
   private final TruckObserverDAO truckObserverDAO;
-  private final TwitterNotificationAccountDAO notificationAccountDAO;
-  private final RetweetsDAO retweetsDAO;
   private final FoodTruckStopService truckStopService;
   private final DateTimeFormatter timeFormatter;
   private final StaticConfig staticConfig;
   private final Set<SocialMediaConnector> connectors;
   private final SpecialUpdater specialUpdater;
+  private final NotificationService notificationService;
 
   @Inject
   public SocialMediaCacherImpl(StoryDAO storyDAO, TruckStopMatcher matcher, TruckStopDAO truckStopDAO, Clock clock,
-      TerminationDetector detector, TruckDAO truckDAO, TruckStopNotifier truckStopNotifier, EmailNotifier notifier,
-      OffTheRoadDetector offTheRoadDetector, GeoLocator locator, TruckObserverDAO truckObserverDAO,
-      TwitterNotificationAccountDAO notificationAccountDAO, RetweetsDAO retweetsDAO,
-      FoodTruckStopService truckStopService, @TimeOnlyFormatter DateTimeFormatter timeFormatter,
-      StaticConfig staticConfig, Set<SocialMediaConnector> connectors, SpecialUpdater specialUpdater) {
+      TerminationDetector detector, TruckDAO truckDAO, EmailNotifier notifier, OffTheRoadDetector offTheRoadDetector,
+      GeoLocator locator, TruckObserverDAO truckObserverDAO, FoodTruckStopService truckStopService,
+      @TimeOnlyFormatter DateTimeFormatter timeFormatter, StaticConfig staticConfig,
+      Set<SocialMediaConnector> connectors, SpecialUpdater specialUpdater, NotificationService notificationService) {
     this.storyDAO = storyDAO;
     this.matcher = matcher;
     this.truckStopDAO = truckStopDAO;
     this.clock = clock;
     this.terminationDetector = detector;
     this.truckDAO = truckDAO;
-    this.notifier = truckStopNotifier;
     this.emailNotifier = notifier;
     this.offTheRoadDetector = offTheRoadDetector;
     this.locator = locator;
     this.truckObserverDAO = truckObserverDAO;
-    this.notificationAccountDAO = notificationAccountDAO;
-    this.retweetsDAO = retweetsDAO;
     this.truckStopService = truckStopService;
     this.timeFormatter = timeFormatter;
     this.staticConfig = staticConfig;
     this.connectors = connectors;
     this.specialUpdater = specialUpdater;
+    this.notificationService = notificationService;
   }
 
-  @Override @Monitored
+  @Override
+  @Monitored
   public void update() {
     List<Story> summaries = Lists.newLinkedList();
     for (SocialMediaConnector connector : connectors) {
@@ -171,17 +159,19 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
             List<TruckStop> trucks = truckStopDAO.findDuring(truck.getId(), today);
             if (trucks.isEmpty()) {
               DateTime startTime = now;
-              if (now.getHourOfDay() < 11 && (!truck.getCategories().contains("Breakfast") || lowerText.contains("lunch"))) {
+              if (now.getHourOfDay() < 11 && (!truck.getCategories().contains("Breakfast") || lowerText.contains(
+                  "lunch"))) {
                 startTime = now.withTime(11, 0, 0, 0);
               }
-              truckStops.add(
-                  TruckStop.builder().origin(StopOrigin.OBSERVER)
-                      .truck(truck).startTime(startTime).endTime(startTime.plusHours(2))
-                      .location(uofc)
-                      .appendNote("Added by @" + observer.getTwitterHandle() + " at " +
-                          clock.nowFormattedAsTime()
-                          + " from tweet '" + tweet.getText() + "'")
-                      .build());
+              truckStops.add(TruckStop.builder()
+                  .origin(StopOrigin.OBSERVER)
+                  .truck(truck)
+                  .startTime(startTime)
+                  .endTime(startTime.plusHours(2))
+                  .location(uofc)
+                  .appendNote("Added by @" + observer.getTwitterHandle() + " at " +
+                      clock.nowFormattedAsTime() + " from tweet '" + tweet.getText() + "'")
+                  .build());
               trucksAdded.put(truck, tweet);
             }
           }
@@ -216,10 +206,8 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
       // TODO: this is kind of hacky. it presumes all trucks have a twitter handle.
       // But for now its kind of needed because there is a many to one relationship
       // between trucks and twitter handle
-      List<Story> stories =
-          storyDAO.findTweetsAfter(clock.now().minusHours(HOURS_BACK_TO_SEARCH),
-              truck.getTwitterHandle(),
-              false);
+      List<Story> stories = storyDAO.findTweetsAfter(clock.now().minusHours(HOURS_BACK_TO_SEARCH),
+          truck.getTwitterHandle(), false);
       notifyIfOffTheRoad(stories, truck);
       if (!truck.shouldAnalyzeStories()) {
         log.log(Level.FINE, "Twittalyzer isn't enabled for {0}", truck.getId());
@@ -250,8 +238,8 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
   private void handleStopMatch(Truck truck, TruckStopMatch match) {
     log.log(Level.INFO, "Found match {0}", match);
     List<TruckStop> currentStops = truckStopDAO.findDuring(truck.getId(), clock.currentDay()),
-                    deleteStops = Lists.newLinkedList(),
-                    addStops = Lists.newLinkedList();
+        deleteStops = Lists.newLinkedList(),
+        addStops = Lists.newLinkedList();
     TruckStop matchedStop = match.getStop();
     for (TruckStop stop : currentStops) {
       boolean locationsSame = stop.getLocation().equals(matchedStop.getLocation());
@@ -274,12 +262,10 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
           if (match.isSoftEnding()) {
             if (!stopEnd.equals(matchedStop.getEndTime())) {
               matchBuilder.appendNote(String.format("Changed end time to %s from %s ", timeFormatter.print(stopEnd),
-                  timeFormatter.print(matchedStop.getEndTime())))
-                .endTime(stopEnd);
+                  timeFormatter.print(matchedStop.getEndTime()))).endTime(stopEnd);
             }
             if (clock.now().isAfter(stopStart) && !stopStart.equals(matchedStart)) {
-              matchBuilder.appendNote("Setting start time to " + timeFormatter.print(stopStart))
-                  .startTime(stopStart);
+              matchBuilder.appendNote("Setting start time to " + timeFormatter.print(stopStart)).startTime(stopStart);
             }
             matchedStop = matchBuilder.build();
           } else {
@@ -289,7 +275,10 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
             matchedStop = matchBuilder.startTime(stopStart).build();
           }
         } else {
-          addStops.add(TruckStop.builder(stop).endTime(matchedStart).appendNote(String.format("Truncated stop based on tweet: '%s'", match.getText())).build());
+          addStops.add(TruckStop.builder(stop)
+              .endTime(matchedStart)
+              .appendNote(String.format("Truncated stop based on tweet: '%s'", match.getStory().getText()))
+              .build());
         }
       } else {
         final DateTime matchedEnd = matchedStop.getEndTime();
@@ -299,9 +288,7 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
             break;
           }
           deleteStops.add(stop);
-          if ((locationsSame && !match.isTerminated()) ||
-              (stopStart.getHourOfDay() == 11
-                  && stopStart.getMinuteOfHour() == 30)) {
+          if (locationsSame || (stopStart.getHourOfDay() == 11 && stopStart.getMinuteOfHour() == 30)) {
             if (!matchedEnd.equals(stopEnd)) {
               matchBuilder.appendNote("Changed end time to " + timeFormatter.print(stopEnd));
             }
@@ -312,10 +299,8 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
             }
             matchedStop = matchBuilder.endTime(stopStart).build();
           }
-        } else if ((stopStart.equals(matchedStart) ||
-            stopStart.isAfter(matchedStart)) &&
-            (stopEnd.equals(matchedEnd) ||
-                stopEnd.isBefore(matchedEnd))) {
+        } else if ((stopStart.equals(matchedStart) || stopStart.isAfter(matchedStart)) && (stopEnd.equals(
+            matchedEnd) || stopEnd.isBefore(matchedEnd))) {
           if (stop.isLocked()) {
             matchedStop = null;
             break;
@@ -330,7 +315,7 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
     }
     if (!deleteStops.isEmpty()) {
       for (TruckStop stop : deleteStops) {
-        notifier.removed(stop);
+        log.log(Level.INFO, "Stop removed: {0}", stop);
       }
       truckStopDAO.deleteStops(deleteStops);
     }
@@ -340,10 +325,9 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
         addStops.addAll(match.getAdditionalStops());
       }
       for (TruckStop stop : addStops) {
-        checkForRetweet(stop, match);
-        checkIsWeird(stop, match);
+        notificationService.share(match.getStory(), stop);
         handleAdditionalTrucks(stop, match);
-        notifier.added(stop);
+        log.log(Level.INFO, "Stop added: {0}", stop);
       }
       truckStopDAO.addStops(addStops);
     }
@@ -354,7 +338,7 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
   void handleAdditionalTrucks(TruckStop stop, TruckStopMatch match) {
     Set<String> truckIds = Sets.newHashSet();
     Interval theInterval = stop.getInterval();
-    for (String twitterHandle : parseHandles(match.getText())) {
+    for (String twitterHandle : parseHandles(match.getStory().getText())) {
       if (twitterHandle.equals(stop.getTruck().getTwitterHandle())) {
         continue;
       }
@@ -363,17 +347,17 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
       if (truck == null) {
         continue;
       }
-      if (!hasOverlappingStops(theInterval, truck, stop)) {
+      if (!hasOverlappingStops(theInterval, truck)) {
         truckIds.add(truck.getId());
       }
     }
     if (truckIds.isEmpty()) {
       return;
     }
-    emailNotifier.notifyAddMentionedTrucks(truckIds, stop, match.getText());
+    emailNotifier.notifyAddMentionedTrucks(truckIds, stop, match.getStory().getText());
   }
 
-  private boolean hasOverlappingStops(Interval theInterval, Truck truck, TruckStop stop) {
+  private boolean hasOverlappingStops(Interval theInterval, Truck truck) {
     List<TruckStop> stops = truckStopDAO.findOverRange(truck.getId(), theInterval);
     for (TruckStop aStop : stops) {
       if (aStop.getInterval().overlap(theInterval) != null) {
@@ -381,43 +365,6 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
       }
     }
     return false;
-  }
-
-  private void checkIsWeird(TruckStop stop, TruckStopMatch match) {
-    if (stop.getOrigin() == StopOrigin.TWITTER &&
-        match.getConfidence() == Confidence.LOW &&
-        stop.getTruck().getCategories().contains("Lunch") &&
-        stop.getStartTime().isAfter(clock.timeAt(13, 30))) {
-      log.info("STOP TIME: " + stop.getStartTime() + ", FOO: " + clock.timeAt(13,30));
-      emailNotifier.systemNotifiyWeirdStopAdded(stop, match.getText());
-    }
-  }
-
-  private void checkForRetweet(TruckStop stop, TruckStopMatch match) {
-    try {
-      log.log(Level.INFO, "Checking for retweets against {0} {1}", new Object[] {stop, match});
-      for (TwitterNotificationAccount account : notificationAccountDAO.findAll()) {
-        if (retweetsDAO.hasBeenRetweeted(stop.getTruck().getId(), account.getTwitterHandle())) {
-          log.log(Level.INFO, "Already retweeted at {0} {1}", new Object[] {stop.getTruck().getId(), account.getTwitterHandle()});
-          continue;
-        }
-        if (stop.getLocation().containedWithRadiusOf(account.getLocation())) {
-          Twitter twitter = new TwitterFactory(account.twitterCredentials()).getInstance();
-          try {
-            log.log(Level.INFO, "RETWEETING:" + match.getText());
-            retweetsDAO.markRetweeted(stop.getTruck().getId(), account.getTwitterHandle());
-            twitter.retweetStatus(match.getTweetId());
-          } catch (TwitterException e) {
-            log.log(Level.SEVERE, e.getMessage(), e);
-          }
-        } else {
-          log.log(Level.INFO, "{0} not contained within radius of {1}",
-              new Object[] {stop.getLocation(), account.getLocation()});
-        }
-      }
-    } catch (Exception e) {
-      log.log(Level.WARNING, e.getMessage(), e);
-    }
   }
 
   private void capLastMatchingStop(Truck truck, DateTime terminationTime) {
@@ -429,8 +376,9 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
           // This logic is to test the case where a cupcake truck or some truck with a lot of stops might say
           // 'thanks' at one spot like 3 minutes into their next scheduled spot, capping the next scheduled spot
           // when they were really saying thans for the previous spot.
-          log.log(Level.INFO, "Didn't cap spot since it was w/in a threshold of ten minutes for stop {0} " +
-              "and termination time {1}", new Object[] {stop, terminationTime});
+          log.log(Level.INFO,
+              "Didn't cap spot since it was w/in a threshold of ten minutes for stop {0} " + "and termination time {1}",
+              new Object[]{stop, terminationTime});
           return;
         }
         found = stop;
@@ -441,10 +389,9 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
       log.log(Level.INFO, "No Matching stop found to terminate");
       return;
     }
-    log.log(Level.INFO, "Capping {0} with new termination time {1}", new Object[]{found,
-        terminationTime});
+    log.log(Level.INFO, "Capping {0} with new termination time {1}", new Object[]{found, terminationTime});
     found = found.withEndTime(terminationTime);
-    notifier.terminated(found);
+    log.log(Level.INFO, "Stop terminated: {0}", found);
     log.log(Level.INFO, "New stop {0}", found);
     truckStopDAO.save(found);
   }
@@ -473,7 +420,7 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
       if (offTheRoadResponse.isOffTheRoad()) {
         if (offTheRoadResponse.isConfidenceHigh() && staticConfig.isAutoOffRoad()) {
           log.log(Level.INFO, "Auto canceling stops for truck {0} based on tweet: {1}",
-              new Object[] { truck.getId(), tweet.getText()} );
+              new Object[]{truck.getId(), tweet.getText()});
           int count = truckStopService.cancelRemainingStops(truck.getId(), clock.now());
           if (count > 0) {
             emailNotifier.systemNotifyAutoCanceled(truck, tweet);
@@ -500,7 +447,8 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
     }
   }
 
-  private @Nullable DateTime findTermination(List<Story> tweets, Truck truck) {
+  @Nullable
+  private DateTime findTermination(List<Story> tweets, Truck truck) {
     for (Story tweet : tweets) {
       if (tweet.getIgnoreInTwittalyzer()) {
         continue;
@@ -517,6 +465,7 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
     return null;
   }
 
+  @Nullable
   private TruckStopMatch findMatch(List<Story> tweets, Truck truck) {
     for (Story tweet : tweets) {
       if (tweet.getIgnoreInTwittalyzer()) {
@@ -536,22 +485,19 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
   }
 
   private void compressAdjacentStops(String truckId, LocalDate day) {
-    TruckStop previousStop =  null;
+    TruckStop previousStop = null;
     for (TruckStop stop : truckStopDAO.findDuring(truckId, day)) {
       if (previousStop != null) {
         DateTime pEnd = previousStop.getEndTime(), cStart = stop.getStartTime();
         // If two stops are adjacent, then combine them
-        if (pEnd.getHourOfDay() == cStart.getHourOfDay() && pEnd.getMinuteOfDay() == cStart.getMinuteOfDay()
-            && stop.getLocation().containedWithRadiusOf(previousStop.getLocation())) {
+        if (pEnd.getHourOfDay() == cStart.getHourOfDay() && pEnd.getMinuteOfDay() == cStart.getMinuteOfDay() && stop.getLocation()
+            .containedWithRadiusOf(previousStop.getLocation())) {
           truckStopDAO.delete((Long) previousStop.getKey());
-          stop = TruckStop.builder(stop)
-              .startTime(previousStop.getStartTime())
-              .build();
+          stop = TruckStop.builder(stop).startTime(previousStop.getStartTime()).build();
           truckStopDAO.save(stop);
-        // If two stops are the exact same time and location, then delete the previousStop
-        } else if (previousStop.getStartTime().equals(stop.getStartTime())
-            && previousStop.getEndTime().equals(stop.getEndTime())
-            && stop.getLocation().containedWithRadiusOf(previousStop.getLocation())) {
+          // If two stops are the exact same time and location, then delete the previousStop
+        } else if (previousStop.getStartTime().equals(stop.getStartTime()) && previousStop.getEndTime()
+            .equals(stop.getEndTime()) && stop.getLocation().containedWithRadiusOf(previousStop.getLocation())) {
           truckStopDAO.delete((Long) previousStop.getKey());
         }
       }

@@ -28,7 +28,6 @@ import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.Location;
 import foodtruck.model.StopOrigin;
 import foodtruck.model.TruckStop;
-import foodtruck.schedule.Confidence;
 
 import static com.google.appengine.api.datastore.Query.CompositeFilterOperator.and;
 import static com.google.appengine.api.datastore.Query.FilterOperator.EQUAL;
@@ -99,7 +98,6 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
         .prop(DESCRIPTION_FIELD, stop.getLocation().getDescription())
         .prop(URL_FIELD, stop.getLocation().getUrl())
         .prop(LOCKED_FIELD, stop.isLocked())
-        .prop(MATCH_CONFIDENCE, stop.getConfidence().toString())
         .prop(ORIGIN, stop.getOrigin().toString())
         .prop(NOTES, stop.getNotes())
         .prop(BEACON_FIELD, stop.getBeaconTime())
@@ -122,7 +120,6 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
         .notes(notes == null ? ImmutableList.<String>of() : ImmutableList.copyOf(notes))
         .endTime(getDateTime(entity, END_TIME_FIELD, zone))
         .origin(Strings.isNullOrEmpty(origin) ? StopOrigin.UNKNOWN : StopOrigin.valueOf(origin))
-        .confidence(Strings.isNullOrEmpty(confidence) ? Confidence.HIGH : Confidence.valueOf(confidence))
         .lastUpdated(Attributes.getDateTime(entity, LAST_UPDATED, zone))
         .fromBeacon(Attributes.getDateTime(entity, BEACON_FIELD, zone))
         .createdWithDeviceId((Long)entity.getProperty(DEVICE_ID))
