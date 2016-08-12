@@ -90,8 +90,16 @@ public class TwitterNotificationService implements NotificationService {
   @Override
   public void notifyStopStart(TruckStop truckStop) {
     for (TwitterNotificationAccount account : notificationAccountDAO.findAll()) {
-      if (truckStop.getLocation().containedWithRadiusOf(account.getLocation())) {
-        // TODO:
+      if (truckStop.getLocation().containedWithRadiusOf(account.getLocation()) && !retweetsDAO.hasBeenRetweeted(
+          truckStop.getTruck().getId(), account.getTwitterHandle())) {
+        Twitter twitter = new TwitterFactory(account.twitterCredentials()).getInstance();
+        try {
+          twitter.updateStatus(
+              String.format("%s is now open at %s", truckStop.getTruck().getName(), truckStop.getLocation().getName()));
+          retweetsDAO.markRetweeted(truckStop.getTruck().getId(), account.getTwitterHandle());
+        } catch (TwitterException e) {
+          log.log(Level.SEVERE, e.getMessage(), e);
+        }
       }
     }
   }

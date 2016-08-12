@@ -74,7 +74,11 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
   @Override
   public void synchronize() {
     List<Position> positionList = connector.findPositions();
-    merge(synchronize(positionList));
+    try {
+      merge(synchronize(positionList));
+    } catch (ExecutionException e) {
+      throw Throwables.propagate(e);
+    }
   }
 
   @Override
@@ -98,7 +102,7 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
    * @param devices the list of devices retrieved
    */
 
-  private void merge(List<TrackingDevice> devices) {
+  private void merge(List<TrackingDevice> devices) throws ExecutionException {
     LoadingCache<String, List<TruckStop>> stopCache = CacheBuilder.newBuilder()
         .build(new CacheLoader<String, List<TruckStop>>() {
           @SuppressWarnings("NullableProblems")
@@ -122,22 +126,18 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
   }
 
   private boolean atBlacklistedLocation(@Nullable String ownerId, @Nullable Location lastLocation,
-      LoadingCache<String, List<Location>> blacklistCache) {
-    try {
-      if (Strings.isNullOrEmpty(ownerId)) {
-        return false;
+      LoadingCache<String, List<Location>> blacklistCache) throws ExecutionException {
+    if (Strings.isNullOrEmpty(ownerId)) {
+      return false;
+    }
+    List<Location> locations = blacklistCache.get(ownerId);
+    if (locations == null || lastLocation == null) {
+      return false;
+    }
+    for (Location location : locations) {
+      if (location.within(location.getRadius()).milesOf(lastLocation)) {
+        return true;
       }
-      List<Location> locations = blacklistCache.get(ownerId);
-      if (locations == null || lastLocation == null) {
-        return false;
-      }
-      for (Location location : locations) {
-        if (location.within(location.getRadius()).milesOf(lastLocation)) {
-          return true;
-        }
-      }
-    } catch (ExecutionException e) {
-      throw Throwables.propagate(e);
     }
     return false;
   }
@@ -156,7 +156,21 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
     }
   }
 
-  private void mergeTruck(TrackingDevice device, LoadingCache<String, List<TruckStop>> stopCache) {
+  private TruckStop.Builder stop(Truck truck, TrackingDevice device) {
+    DateTime now = clock.now();
+    return TruckStop.builder()
+        .appendNote("Created by beacon on " + formatter.print(now))
+        .lastUpdated(clock.now())
+        .startTime(device.getLastBroadcast())
+        .endTime(now.plusHours(2))
+        .fromBeacon(device.getLastBroadcast())
+        .location(device.getLastLocation())
+        .origin(StopOrigin.LINXUP)
+        .truck(truck);
+  }
+
+  private void mergeTruck(TrackingDevice device,
+      LoadingCache<String, List<TruckStop>> stopCache) throws ExecutionException {
     Matches matches = matchTruck(stopCache, device);
     DateTime now = clock.now();
     TruckStop stop;
@@ -175,16 +189,7 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
         }
       } else {
         truckStopDAO.save(current.withEndTime(device.getLastBroadcast()));
-        stop = TruckStop.builder()
-            .appendNote("Created by beacon on " + formatter.print(now))
-            .lastUpdated(clock.now())
-            .startTime(device.getLastBroadcast())
-            .endTime(now.plusHours(2))
-            .fromBeacon(device.getLastBroadcast())
-            .location(device.getLastLocation())
-            .origin(StopOrigin.LINXUP)
-            .truck(matches.getTruck())
-            .build();
+        stop = stop(matches.getTruck(), device).build();
       }
     } else {
       DateTime endTime;
@@ -195,17 +200,7 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
       } else {
         endTime = now.plusHours(2);
       }
-      stop = TruckStop.builder()
-          .appendNote("Created by beacon on " + formatter.print(now))
-          .lastUpdated(clock.now())
-          .startTime(device.getLastBroadcast())
-          .endTime(endTime)
-          .fromBeacon(device.getLastBroadcast())
-          .location(device.getLastLocation())
-          .createdWithDeviceId(device.getId())
-          .origin(StopOrigin.LINXUP)
-          .truck(matches.getTruck())
-          .build();
+      stop = stop(matches.getTruck(), device).endTime(endTime).build();
     }
     truckStopDAO.save(stop);
     if (stop.isNew()) {
@@ -213,14 +208,11 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
     }
   }
 
-  private Matches matchTruck(LoadingCache<String, List<TruckStop>> stopCache, TrackingDevice device) {
+  private Matches matchTruck(LoadingCache<String, List<TruckStop>> stopCache,
+      TrackingDevice device) throws ExecutionException {
     List<TruckStop> truckStops;
-    try {
-      //noinspection ConstantConditions
-      truckStops = stopCache.get(device.getTruckOwnerId());
-    } catch (ExecutionException e) {
-      throw Throwables.propagate(e);
-    }
+    //noinspection ConstantConditions
+    truckStops = stopCache.get(device.getTruckOwnerId());
 
     Truck truck = null;
     TruckStop currentStop = null, aCurrentStop = null, afterStop = null;
@@ -247,17 +239,19 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
    * Synchronize what is returned with existing tracking devices in the DB.  If there is new information, update it in
    * DB.
    */
-  private List<TrackingDevice> synchronize(List<Position> positions) {
+  private List<TrackingDevice> synchronize(List<Position> positions) throws ExecutionException {
     // wish I had streams here
     Map<String, TrackingDevice> deviceMap = Maps.newHashMap();
     for (TrackingDevice device : trackingDeviceDAO.findAll()) {
       deviceMap.put(device.getDeviceNumber(), device);
     }
     ImmutableList.Builder<TrackingDevice> devices = ImmutableList.builder();
+    //noinspection NullableProblems
     LoadingCache<String, List<Location>> blacklistCache = CacheBuilder.newBuilder()
         .build(new CacheLoader<String, List<Location>>() {
           public List<Location> load(String key) throws Exception {
             Truck truck = truckDAO.findById(key);
+            //noinspection ConstantConditions,ConstantConditions
             return FluentIterable.from(truck.getBlacklistLocationNames())
                 .transform(new Function<String, Location>() {
                   public Location apply(String name) {
