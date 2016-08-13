@@ -45,6 +45,10 @@ public class LocationVendorServlet extends VendorServletSupport {
   protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable Location location) throws ServletException, IOException {
     req = new GuiceHackRequestWrapper(req, JSP);
     DateTime dt = clock.now();
+    if (location != null && location.getImageUrl() != null) {
+      req.setAttribute("vendorIconUrl", location.getImageUrl());
+      req.setAttribute("vendorIconDescription", location.getName());
+    }
     req.setAttribute("stops", service.findStopsAtLocationOverRange(location, new Interval(dt, dt.plusDays(365))));
     req.getRequestDispatcher(JSP).forward(req, resp);
   }

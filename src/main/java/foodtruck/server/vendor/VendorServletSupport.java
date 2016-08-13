@@ -83,6 +83,8 @@ public abstract class VendorServletSupport extends HttpServlet {
       req.setAttribute("logoutUrl", getLogoutUrl(userPrincipal));
       Truck truck = Iterables.getFirst(trucks, null);
       req.setAttribute("truck", truck);
+      req.setAttribute("vendorIconUrl", truck.getPreviewIconUrl());
+      req.setAttribute("vendorIconDescription", truck.getName());
       log.log(Level.INFO, "User {0}", userPrincipal.getName());
       dispatchGet(req, resp, truck);
     }

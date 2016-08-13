@@ -15,15 +15,9 @@
     }
   }
 </style>
+<h1>${truck.name}</h1>
 <div class="row">
-  <div class="col-md-6">
-    <h1>${truck.name} <a type="button" class="btn btn-default" aria-label="Edit" href="/vendor/settings/${truck.id}">
-      <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-    </a></h1>
-    <img src="${truck.previewIcon}" width="180" height="180"/>
-    <p class="lead">${truck.description}</p>
-  </div>
-  <div class="col-md-6">
+  <div class="col-md-12">
     <h3 class="location-related">Current Location</h3>
     <div id="map_canvas" style="width:100%; height:300px; padding-bottom:20px;" class="location-related"></div>
   </div>

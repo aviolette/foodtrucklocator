@@ -39,10 +39,14 @@
         <c:if test="${!empty(logoutUrl)}">
           <ul class="nav navbar-nav">
             <li <c:if test="${tab == 'vendorhome'}"> class="active"</c:if>><a href="/vendor">Dashboard</a></li>
-            <li><a href="/">Main Site &raquo;</a></li>
+            <li><a href="/">Front Page</a></li>
           </ul>
           <ul class="nav navbar-nav pull-right">
-            <li><a href="${logoutUrl}">Logout</a></li>
+            <c:if test="${!empty(vendorIconUrl)}">
+              <li><img src="${vendorIconUrl.protocolRelative}" alt="${vendorIconDescription}" class="img-circle"
+                       width="48" height="48"></li>
+            </c:if>
+            <li><a href="${logoutUrl}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
           </ul>
         </c:if>
       </div>
