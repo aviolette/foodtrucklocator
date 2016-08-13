@@ -34,6 +34,7 @@ var TruckMap = function() {
         center: markerLat,
         zoom: 14,
         maxZoom: 14,
+        scrollwheel: false,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       };
       map = new google.maps.Map(document.getElementById("map_canvas"),
