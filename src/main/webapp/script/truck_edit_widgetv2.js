@@ -295,13 +295,15 @@ var TruckScheduleWidget = function() {
           $("#truckEndNow" + truckIndex).click(timeUpdateMaker(false));
           $("#truckDelete" + truckIndex).click(function (e) {
             e.preventDefault();
-            $.ajax({
-              url: "/services/v2/stops/" + stop.id,
-              type: 'DELETE',
-              complete: function () {
-                refreshSchedule();
-              }
-            })
+            if (confirm("Are you sure you want to delete this stop?")) {
+              $.ajax({
+                url: "/services/v2/stops/" + stop.id,
+                type: 'DELETE',
+                complete: function () {
+                  refreshSchedule();
+                }
+              })
+            }
           });
         });
         $(function () {
