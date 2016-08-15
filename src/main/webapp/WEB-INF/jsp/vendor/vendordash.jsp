@@ -34,9 +34,9 @@
           <thead>
             <tr>
               <th>Name</th>
-              <th>Device Id</th>
+              <th class="large-screen-only">Device Id</th>
               <th>Last Broadcast</th>
-              <th>Last Checked</th>
+              <th class="large-screen-only">Last Checked</th>
               <th>Status</th>
               <th>&nbsp;</th>
             </tr>
@@ -66,11 +66,11 @@
                 item.enabled, item.parked, item.blacklisted);
             var $tr = $("<tr></tr>");
             $tr.append("<td>" + item.label + "</td>");
-            $tr.append("<td>" + item.deviceNumber + "</td>");
+            $tr.append("<td class='large-screen-only'>" + item.deviceNumber + "</td>");
             if (item.lastLocation) {
               $tr.append("<td><a href=\"/locations/" + item.lastLocation.key + "\">" + item.lastLocation.name + "</a> at " + item.lastBroadcast + "</td>");
             }
-            $tr.append("<td>" + item.lastModified + "</td>");
+            $tr.append("<td class='large-screen-only'>" + item.lastModified + "</td>");
             $tr.append("<td>" + (item.parked ? "PARKED" : "MOVING") + "</td>");
 
             var $button = $("<button class='beacon-button btn' id='beacon-button-" + item.id +"'>" + (item.enabled ? "Disable" : "Enable") + "</button>");
