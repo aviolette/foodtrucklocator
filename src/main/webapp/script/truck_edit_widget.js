@@ -243,8 +243,8 @@ runEditWidget = function(truckId, locations, categories, options) {
           buf += "&nbsp;</td><td>";
           if (showControls) {
             buf = buf + "<div class='btn-group'><button class='btn btn-default' id='truckDelete" + truckIndex +
-            "' class='btn '><span class='glyphicon glyphicon-remove'></span> Delete</button>&nbsp;<button class='btn btn-default' id='truckEdit" +
-            truckIndex + "'><span class='glyphicon glyphicon-pencil'></span> Edit</button></div></td></tr>";
+                "' class='btn '><span class='glyphicon glyphicon-remove'></span> </button>&nbsp;<button class='btn btn-default' id='truckEdit" +
+                truckIndex + "'><span class='glyphicon glyphicon-pencil'></span> </button></div></td></tr>";
           }
           scheduleTable.append(buf);
           $("#truckEdit" + truckIndex).click(function (e) {

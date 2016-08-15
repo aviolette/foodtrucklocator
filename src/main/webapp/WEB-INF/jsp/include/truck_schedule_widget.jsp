@@ -18,12 +18,19 @@
     <tbody id="scheduleTable">
     </tbody>
 </table>
-<div class="btn-group">
-    <button class="btn btn-default" id="addButton"><span class="glyphicon glyphicon-calendar"></span>&nbsp;New Event</button>
-    <button class="btn btn-default" id="offRoadButton"><span class="glyphicon glyphicon-trash"></span> Off the Road</button>
-    <button class="btn btn-default" id="recacheButton"><span class="glyphicon glyphicon-refresh"></span>&nbsp;Reload from calendar</button>
+<div class="btn-toolbar">
+    <div class="btn-group">
+        <button class="btn btn-default" id="addButton"><span class="glyphicon glyphicon-plus"></span>&nbsp;New Event
+        </button>
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-default" id="offRoadButton"><span class="glyphicon glyphicon-trash"></span> Off the Road
+        </button>
+        <button class="btn btn-default" id="recacheButton"><span class="glyphicon glyphicon-refresh"></span>&nbsp;Reload
+            from calendar
+        </button>
+    </div>
 </div>
-
 <div id="edit-stop" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
