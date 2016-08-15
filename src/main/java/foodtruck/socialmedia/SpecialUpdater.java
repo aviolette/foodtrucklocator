@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -26,7 +27,7 @@ class SpecialUpdater {
   private static final Logger log = Logger.getLogger(SpecialUpdater.class.getName());
   private final DailyDataDAO dailyDataDAO;
   private final Pattern oldFashionedPattern = Pattern.compile("(\\w+)\\s+(\\w+) old fashioned(.*)");
-  private final Pattern cakeMatcher = Pattern.compile("(\\w+)\\s+(\\w+) cake");
+  private final Pattern cakeMatcher = Pattern.compile("(\\w+)[\\s&]*\\s+([\\w|']+) (short)?cake");
   private final Pattern jellyPattern = Pattern.compile("filled is (\\w+)");
   private final Clock clock;
 
@@ -151,9 +152,11 @@ class SpecialUpdater {
         builder.append(first).append(" ");
       }
       builder.append(matcher.group(2));
-      builder.append(" cake");
+      builder.append(" ");
+      builder.append(MoreObjects.firstNonNull(matcher.group(3), ""));
+      builder.append("cake");
       String name = builder.toString();
-      if (name.toLowerCase().contains("n cream")) {
+      if (name.toLowerCase().contains("n cream") || name.toLowerCase().equals("cookies cream cake")) {
         name = "Cookies n' Cream Cake";
       }
       dailyData = specialsBuilder.clearSpecials().addSpecial(name, false)

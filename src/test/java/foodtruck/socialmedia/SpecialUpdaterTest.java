@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableList;
 import org.easymock.EasyMockSupport;
 import org.joda.time.LocalDate;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import foodtruck.dao.DailyDataDAO;
@@ -129,25 +128,6 @@ public class SpecialUpdaterTest extends EasyMockSupport {
     specialUpdater.update(THEVAULTVAN, ImmutableList.of(Story.builder().text("#CanalVault is sold out.").build()));
     verifyAll();
   }
-/*
-  #FranklinVault has root beer old fashioned and the filled is strawberry jelly.
-  Good morning, #CanalVault has the root beer old fashioned special today.
-  #VaultVan is at Wabash & Jackson today and our special is root beer old fashioned.
-  #CanalVault is sold out.
-  Happy Monday! #CanalVault has pineapple old fashioned for special today.
-  The special of today is Apple cider old fashioned! #FranklinVault
-  Happy Friday! The special of today is Blueberry Old Fashioned at #FranklinVault
-  Happy Thursday, #CanalVault has the sweet melon old fashioned special.
-  #FranklinVault has birthday cake on special and the filled is raspberry jelly.
-  Morning! #CanalVault has birthday cake special today!
-  #VaultVan is open in 10 at Wabash and Jackson with our birthday cake special.
-  #VaultVan is done for the day
-  #FranklinVault has Butterscotch Crunch old fashioned and the filled is raspberry jelly.
-  Happy Friday, #CanalVault has the praline pecan old fashioned special.
-  Happy Saturday! The special of today is white chocolate cake and the jelly is blackberry at #FranklinVault
-  #FranklinVault is open. Raspberry is the jelly and pumpkin cake with cream cheese glaze is the special
-  The special of today is Salted Carmel Old Fashioned #FranklinVault happy Monday!
-   */
 
   @Test
   public void addFranklinSpecial() {
@@ -252,6 +232,36 @@ public class SpecialUpdaterTest extends EasyMockSupport {
   }
 
   @Test
+  public void smoresCake() {
+    expect(dailyDataDAO.save(DailyData.builder()
+        .truckId(THEVAULTVANID)
+        .onDate(localDate)
+        .addSpecial("S'mores Cake", false)
+        .build())).andReturn(1L);
+    expect(dailyDataDAO.findByTruckAndDay(THEVAULTVANID, localDate)).andReturn(null);
+    replayAll();
+    specialUpdater.update(THEVAULTVAN, ImmutableList.of(
+        Story.builder().text("#VaultVan is at Adams and Wacker with our s'mores cake special.").build()));
+    verifyAll();
+  }
+
+  // #VaultVan has cookies & cream cake and strawberry old fashioned with crumble at LaSalle & Adams.
+
+  @Test
+  public void cookiesAndCream() {
+    expect(dailyDataDAO.save(DailyData.builder()
+        .truckId(THEVAULTVANID)
+        .onDate(localDate)
+        .addSpecial("Cookies n' Cream Cake", false)
+        .build())).andReturn(1L);
+    expect(dailyDataDAO.findByTruckAndDay(THEVAULTVANID, localDate)).andReturn(null);
+    replayAll();
+    specialUpdater.update(THEVAULTVAN, ImmutableList.of(Story.builder()
+        .text("#VaultVan has cookies & cream cake and strawberry old fashioned with crumble at LaSalle & Adams.")
+        .build()));
+    verifyAll();
+  }
+  @Test
   public void doubleChocolateYellowCake() {
     expect(dailyDataDAO.save(DailyData.builder()
         .truckId(THEVAULTVANID)
@@ -290,7 +300,7 @@ public class SpecialUpdaterTest extends EasyMockSupport {
   }
 
 
-  @Test @Ignore
+  @Test
   public void shortCake() {
     expect(dailyDataDAO.save(DailyData.builder()
         .truckId(THEVAULTVANID)
@@ -300,7 +310,7 @@ public class SpecialUpdaterTest extends EasyMockSupport {
     expect(dailyDataDAO.findByTruckAndDay(THEVAULTVANID, localDate)).andReturn(null);
     replayAll();
     specialUpdater.update(THEVAULTVAN, ImmutableList.of(
-        Story.builder().text("Happy Friday, #CanalVault has the strawberry shortcake with crumble.").build()));
+        Story.builder().text("Happy Friday, #VaultVan has the strawberry shortcake with crumble.").build()));
     verifyAll();
   }
 }
