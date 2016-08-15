@@ -243,10 +243,10 @@ var TruckScheduleWidget = function() {
             if (!prevHadStart && now < stop.startMillis) {
               prevHadStart = true;
               buf = buf + "<button class='btn btn-default' id='truckStartNow" + truckIndex +
-                  "' class='btn success'>Start Now</button>"
+                  "' class='btn success'>Start<span class='large-screen-only'> Now</span></button>"
             } else if (now >= stop.startMillis && now < stop.endMillis) {
               buf = buf + "<button class='btn btn-default' id='truckEndNow" + truckIndex +
-                  "' class='btn warning'>End Now</button>";
+                  "' class='btn warning'>End <span class='large-screen-only'> Now</span></button>";
             }
           }
           buf += "&nbsp;</td><td>";
