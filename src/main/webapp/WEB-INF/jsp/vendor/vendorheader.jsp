@@ -19,6 +19,7 @@
   </c:choose>
   <link href="/css/foodtruckfinder.css?ver=11" rel="stylesheet"/>
   <link rel="stylesheet" href="//storage.googleapis.com/ftf_static/css/typeahead.css"/>
+  <link rel="stylesheet" href="/css/truck_edit_widget.css"/>
   <style type="text/css">
   </style>
 </head>

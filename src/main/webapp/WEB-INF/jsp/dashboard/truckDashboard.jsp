@@ -149,12 +149,14 @@
 &nbsp;
 
 
-
-<script src="/script/truck_edit_widget.js"></script>
+<script src="/script/truck_edit_widgetv2.js"></script>
 
 <script type="text/javascript">
 
-  runEditWidget("${truckId}", ${locations},[<c:forEach var="category" varStatus="categoryIndex" items="${truck.categories}">"${category}"<c:if test="${!categoryIndex.last}">,</c:if></c:forEach>], {hasCalendar : ${not empty(truck.calendarUrl)}});
+  TruckScheduleWidget.init("${truck.id}", ${locations},
+      [<c:forEach var="category" varStatus="categoryIndex" items="${truck.categories}">"${category}"<c:if test="${!categoryIndex.last}">, </c:if></c:forEach>], {hasCalendar: ${not empty(truck.calendarUrl)}});
+
+
   $(".retweet-button").click(function(e) {
     e.preventDefault();
     var id = $(e.target).attr('id').substring(8);

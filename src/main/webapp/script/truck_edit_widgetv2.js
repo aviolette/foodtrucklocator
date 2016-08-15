@@ -235,10 +235,10 @@ var TruckScheduleWidget = function() {
           labels += (stop.fromBeacon) ? "&nbsp;<span class=\"label important\">beacon</span>" : "";
           var truckCountLink = stop.totalTruckCount < 2 ? "" : "<span class='badge truck-info-badge' data-toggle='popover' data-content='" + truckNames +"'>" + stop.totalTruckCount + "</span>";
           var notes = stop.notes ? stop.notes.join('. ').replace(/\'/g, "") : "";
-          var buf = "<tr " + (crazyDuration ? " class='error'" : "") + "><td>" + stop.startDate + "</td><td>" + stop.startTime + "</td><td>" + stop.endTime +
-              "</td><td>" + stop.duration + "</td><td class=\"origin\"><a href='#' data-toggle='popover' data-content='" + notes + "'>" + stop.origin + "</a></td><td><a href='" + _locationEndpoint + "?q=" + encodeURIComponent(stop.location.name) +
+          var buf = "<tr " + (crazyDuration ? " class='error'" : "") + "><td>" + stop.startDate + "<br/>" + stop.startTime + " - " + stop.endTime +
+              "<br/>" + stop.duration + " hours</td><td class=\"origin large-screen-only\"><a href='#' data-toggle='popover' data-content='" + notes + "'>" + stop.origin + "</a></td><td><a href='" + _locationEndpoint + "?q=" + encodeURIComponent(stop.location.name) +
               "'>"
-              + stop.location.name + "</a>" + labels + "</td><td>" + truckCountLink +"</td><td>";
+              + stop.location.name + "</a>" + labels + "</td><td class='large-screen-only'>" + truckCountLink + "</td><td>";
           if (showControls) {
             if (!prevHadStart && now < stop.startMillis) {
               prevHadStart = true;
@@ -252,8 +252,8 @@ var TruckScheduleWidget = function() {
           buf += "&nbsp;</td><td>";
           if (showControls) {
             buf = buf + "<div class='btn-group'><button class='btn btn-default' id='truckDelete" + truckIndex +
-                "' class='btn '><span class='glyphicon glyphicon-remove'></span> Delete</button>&nbsp;<button class='btn btn-default' id='truckEdit" +
-                truckIndex + "'><span class='glyphicon glyphicon-pencil'></span> Edit</button></div></td></tr>";
+                "' class='btn '><span class='glyphicon glyphicon-remove'></span> </button>&nbsp;<button class='btn btn-default' id='truckEdit" +
+                truckIndex + "'><span class='glyphicon glyphicon-pencil'></span> </button></div></td></tr>";
           }
           scheduleTable.append(buf);
           $("#truckEdit" + truckIndex).click(function (e) {

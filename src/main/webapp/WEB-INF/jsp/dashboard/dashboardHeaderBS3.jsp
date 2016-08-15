@@ -10,6 +10,7 @@
   <%@ include file="../include/bootstrap_css.jsp" %>
   <link href="/css/foodtruckfinder.css" rel="stylesheet"/>
   <link rel="stylesheet" href="/css/dashboard.css"/>
+  <link rel="stylesheet" href="/css/truck_edit_widget.css"/>
   <%@include file="../include/core_js.jsp" %>
   <script src="/script/dashboard.js" type="text/javascript"></script>
   <script src="/script/lib/typeahead.bundle.js"></script>

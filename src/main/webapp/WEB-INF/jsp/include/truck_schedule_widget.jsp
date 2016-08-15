@@ -4,15 +4,12 @@
 <table class="table table-striped">
     <thead>
     <tr>
-        <td>Date</td>
-        <td>Start Time</td>
-        <td>End Time</td>
-        <td>Duration</td>
-        <td class="origin">Origin</td>
+      <td>When</td>
+      <td class="origin large-screen-only">Origin</td>
         <td>Location</td>
-        <td># Trucks</td>
+      <td class="large-screen-only"># Trucks</td>
         <td>&nbsp;</td>
-        <td>&nbsp;</td>
+      <td class="edit-button-bar">&nbsp;</td>
     </tr>
     </thead>
     <tbody id="scheduleTable">
