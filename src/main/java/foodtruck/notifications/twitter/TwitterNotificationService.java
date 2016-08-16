@@ -102,7 +102,7 @@ public class TwitterNotificationService implements NotificationService {
         Twitter twitter = new TwitterFactory(account.twitterCredentials()).getInstance();
         try {
           twitter.updateStatus(
-              String.format("%s is now open at %s", truckStop.getTruck().getName(), truckStop.getLocation().getName()));
+              String.format(messageFormat, truckStop.getTruck().getName(), truckStop.getLocation().getName()));
           retweetsDAO.markRetweeted(truckStop.getTruck().getId(), account.getTwitterHandle());
         } catch (TwitterException e) {
           log.log(Level.SEVERE, e.getMessage(), e);
