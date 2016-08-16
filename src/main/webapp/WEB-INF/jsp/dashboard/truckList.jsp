@@ -27,11 +27,7 @@
         <th class="gutter">&nbsp;</th>
         <th>Truck</th>
         <th>Current Location</th>
-        <th>Last Updated</th>
-        <th>Ends At</th>
-        <th>Starts At</th>
         <th>Next Location</th>
-        <th>Twittalyzer</th>
       </tr>
       </thead>
       <tbody>
@@ -41,38 +37,26 @@
           <tr class="rowItem">
             <td class="gutter">&nbsp;</td>
             <td><a class="truckLink" href="/admin/trucks/${truckStops.truck.id}">${truckStops.truck.name}</a></td>
-            <td>
-              <c:choose>
+            <td><c:choose>
               <c:when
                   test="${!empty(truckStops.currentStop)}">
-              <c:url value="/admin/locations"
-                     var="locationUrl">
-                <c:param name="q" value="${truckStops.currentStop.location.name}"/>
-              </c:url> <a
-                href="${locationUrl}">${truckStops.currentStop.location.name}</a></td>
-            <td><joda:format value="${truckStops.currentStop.lastUpdated}" style="-S"/></td>
-            <td><joda:format value="${truckStops.currentStop.endTime}" style="-S"/></c:when><c:otherwise>
-              Not Active
-            </td><td>&nbsp;</td>
-            <td>&nbsp;</c:otherwise>
-              </c:choose>
-
+                <ftl:location admin="true" location="${truckStops.currentStop.location}"/><br/>
+                Departs: <joda:format value="${truckStops.currentStop.endTime}" style="-S"/>
+              </c:when>
+              <c:otherwise>
+                None
+              </c:otherwise>
+            </c:choose>
             </td>
             <td>
               <c:choose>
               <c:when
-                  test="${!empty(truckStops.nextStop)}">
-              <c:url value="/admin/locations" var="locationUrl">
-                <c:param name="q" value="${truckStops.nextStop.location.name}"/>
-              </c:url> <joda:format value="${truckStops.nextStop.startTime}" style="-S"/></td>
-            <td><a
-                href="${locationUrl}">${truckStops.nextStop.location.name}</a></c:when>
-              <c:otherwise></td><td>None</c:otherwise>
-            </c:choose>
+                  test="${!empty(truckStops.nextStop)}"><ftl:location location="${truckStops.nextStop.location}"
+                                                                      admin="true"/><br/>Starts: <joda:format
+                  value="${truckStops.nextStop.startTime}"
+                  style="-S"/></c:when><c:otherwise>None</c:otherwise></c:choose>
+
           </td>
-            <td><c:choose><c:when
-                test="${truckStops.truck.usingTwittalyzer}"></c:when><c:otherwise><span
-                class="label warning">off</span></c:otherwise></c:choose></td>
           </tr>
         </c:if>
       </c:forEach>
