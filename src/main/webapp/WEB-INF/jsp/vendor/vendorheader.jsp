@@ -40,14 +40,20 @@
         <c:if test="${!empty(logoutUrl)}">
           <ul class="nav navbar-nav">
             <li <c:if test="${tab == 'vendorhome'}"> class="active"</c:if>><a href="/vendor">Dashboard</a></li>
-            <li><a href="/">Front Page</a></li>
           </ul>
           <ul class="nav navbar-nav pull-right">
             <c:if test="${!empty(vendorIconUrl)}">
               <li><img src="${vendorIconUrl.protocolRelative}" alt="${vendorIconDescription}" class="img-circle"
                        width="48" height="48"></li>
             </c:if>
-            <li><a href="${logoutUrl}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+            <c:if test="${!empty(truck)}">
+              <li><a title="profile" href="/vendor/settings/${truck.id}" class="btn btn-block"><span
+                  class="glyphicon glyphicon-user"></span> </a></li>
+            </c:if>
+            <li><a title="home page" class="btn btn-block" href="/"><span class="glyphicon glyphicon-home"></span> </a>
+            </li>
+            <li><a title="logoff" class="btn btn-block" href="${logoutUrl}"><span
+                class="glyphicon glyphicon-log-out"></span> </a></li>
           </ul>
         </c:if>
       </div>
