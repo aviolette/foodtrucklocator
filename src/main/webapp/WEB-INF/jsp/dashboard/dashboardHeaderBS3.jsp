@@ -26,7 +26,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="/">FTF Admin Dashboard</a>
+        <span class="navbar-brand" href="/">FTF Admin Dashboard</span>
       </div>
       <div class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
@@ -54,9 +54,12 @@
           <li class="<c:if test="${nav == 'beacons'}"> active</c:if>"><a href="/admin/beacons">Beacons</a>
           </li>
         </ul>
-        <ul class="nav navbar-nav pull-right button-group-xs">
-          <button class="btn btn-default btn-xs" style="margin: 10px 0 0 0" id="twitterButton"><span class="glyphicon glyphicon-refresh"></span> Refresh</button>
-          <button class="btn btn-default btn-xs" style="margin: 10px 0 0 0" id="invalidateButton"><span class="glyphicon glyphicon-ban-circle"></span> Invalidate</button>
+        <ul class="nav navbar-right navbar-nav">
+          <li><a href="#" class="btn btn-block" id="twitterButton"><span class="glyphicon glyphicon-refresh"></span>
+          </a></li>
+          <li><a href="#" class="btn btn-block" id="invalidateButton"><span
+              class="glyphicon glyphicon-ban-circle"></span> </a></li>
+          <li><a title="home page" class="btn btn-block" href="/"><span class="glyphicon glyphicon-home"></span> </a>
         </ul>
       </div>
     </div>
