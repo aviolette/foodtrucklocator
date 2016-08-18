@@ -16,7 +16,8 @@
     <li class="active">${truck.name}</li>
   </ol>
 
-  <img src="${truck.biggestBackgroundImageUrl.protocolRelative}" width="100%" height="300"/>
+  <div
+      style="height:300px;background-image:url('${truck.biggestBackgroundImageUrl.protocolRelative}');background-size:100% auto"></div>
 
   <div class="row top-row" style="padding-bottom: 0;">
     <div class="col-md-6">
