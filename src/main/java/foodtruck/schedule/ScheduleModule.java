@@ -1,5 +1,6 @@
 package foodtruck.schedule;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -67,6 +68,15 @@ public class ScheduleModule extends AbstractModule {
         new Spot("uofc", "University of Chicago"),
         new Spot("58th/ellis", "University of Chicago"));
   }
+
+  @Provides
+  @Singleton
+  @Named("exemptLocations")
+  public List<String> providesExemptLocations() {
+    // TODO: probably should make this a system property
+    return ImmutableList.of("Flower Truck", "Lincoln Square Open 10-8");
+  }
+
 
   @Provides @Singleton
   public MemcacheService provideMemcacheService() {

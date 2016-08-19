@@ -15,6 +15,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -39,15 +40,17 @@ class GoogleCalendarV3Consumer implements ScheduleStrategy {
   private final AddressExtractor addressExtractor;
   private final GeoLocator geoLocator;
   private final Clock clock;
+  private final List<String> exemptLocations;
 
   @Inject
   public GoogleCalendarV3Consumer(AddressExtractor addressExtractor, Calendar calendarClient, TruckDAO truckDAO,
-      GeoLocator geoLocator, Clock clock) {
+      GeoLocator geoLocator, Clock clock, @Named("exemptLocations") List<String> exemptLocationNames) {
     this.calendarClient = calendarClient;
     this.truckDAO = truckDAO;
     this.addressExtractor = addressExtractor;
     this.geoLocator = geoLocator;
     this.clock = clock;
+    this.exemptLocations = exemptLocationNames;
   }
 
   @Override
@@ -72,7 +75,7 @@ class GoogleCalendarV3Consumer implements ScheduleStrategy {
         return;
       }
       log.log(Level.INFO, "Custom calendar search for truck {0} with calendar {1}: ",
-          new Object[] {truck.getName(), calendarUrl});
+          new Object[]{truck.getName(), calendarUrl});
       stops.addAll(performTruckSearch(range, truck));
     } catch (RuntimeException rte) {
       log.info("Search truck: " + truck.getId());
@@ -90,8 +93,12 @@ class GoogleCalendarV3Consumer implements ScheduleStrategy {
       String pageToken = null;
       int timezoneAdjustment = truck.getTimezoneAdjustment();
       do {
-        Calendar.Events.List query = calendarClient.events().list(calendarId).setSingleEvents(true).setTimeMin(
-            toGoogleDateTime(range.getStart())).setTimeMax(toGoogleDateTime(range.getEnd())).setPageToken(pageToken);
+        Calendar.Events.List query = calendarClient.events()
+            .list(calendarId)
+            .setSingleEvents(true)
+            .setTimeMin(toGoogleDateTime(range.getStart()))
+            .setTimeMax(toGoogleDateTime(range.getEnd()))
+            .setPageToken(pageToken);
         Events events = query.execute();
         List<Event> items = events.getItems();
         for (Event event : items) {
@@ -128,20 +135,23 @@ class GoogleCalendarV3Consumer implements ScheduleStrategy {
       }
       builder.add(truckStop);
     } else {
-      if (where != null) {
-        log.log(Level.WARNING, "Location could not be resolved for {0}, {1} between {2} and {3}. Link: {4}",
+      // TODO: this shouldn't be hard-coded
+      if (where != null && !exemptLocations.contains(where)) {
+        log.log(Level.SEVERE, "Location could not be resolved for {0}, {1} between {2} and {3}. Link: {4}",
             new Object[]{truck.getId(), where, range.getStart(), range.getEnd(), event.getHtmlLink()});
       }
     }
   }
 
-  private @Nullable TruckStop buildTruckStopFromLocation(Location location, Truck truck, Event event,
-      int timezoneAdjustment) {
+  private
+  @Nullable
+  TruckStop buildTruckStopFromLocation(Location location, Truck truck, Event event, int timezoneAdjustment) {
     DateTime startTime, endTime;
     if (event.getStart().getDateTime() == null) {
       if (truck.getCategories().contains("AssumeNoTimeEqualsLunch")) {
         String dcs[] = event.getStart().getDate().toStringRfc3339().split("-");
-        startTime = new DateTime(Integer.parseInt(dcs[0]), Integer.parseInt(dcs[1]), Integer.parseInt(dcs[2]), 11, 0, clock.zone());
+        startTime = new DateTime(Integer.parseInt(dcs[0]), Integer.parseInt(dcs[1]), Integer.parseInt(dcs[2]), 11, 0,
+            clock.zone());
         endTime = startTime.plusHours(2);
       } else {
         log.log(Level.WARNING, "Skipping {0} {1} because no time is specified", new Object[]{truck.getId(), location});
@@ -163,7 +173,9 @@ class GoogleCalendarV3Consumer implements ScheduleStrategy {
     return truckStop;
   }
 
-  private @Nullable Location locationFromTitleText(String titleText, Truck truck) {
+  private
+  @Nullable
+  Location locationFromTitleText(String titleText, Truck truck) {
     log.info("Trying title text: " + titleText);
     final List<String> parsed = addressExtractor.parse(titleText, truck);
     String locString = Iterables.getFirst(parsed, null);
@@ -177,7 +189,9 @@ class GoogleCalendarV3Consumer implements ScheduleStrategy {
     return null;
   }
 
-  private @Nullable Location locationFromWhereField(Event event, Truck truck) {
+  private
+  @Nullable
+  Location locationFromWhereField(Event event, Truck truck) {
     String where = event.getLocation();
     if (!Strings.isNullOrEmpty(where)) {
       if (where.endsWith(", United States")) {
@@ -189,9 +203,7 @@ class GoogleCalendarV3Consumer implements ScheduleStrategy {
       // HACK Alert, the address extractor doesn't handle non-Chicago addresses well, so
       // if it is a fully qualified address written by me, it will probably end in City, IL
       if (!where.endsWith(", IL")) {
-        where =
-            coalesce(Iterables.getFirst(addressExtractor.parse(where, truck), null),
-                where);
+        where = coalesce(Iterables.getFirst(addressExtractor.parse(where, truck), null), where);
       }
       return geoLocator.locate(where, GeolocationGranularity.NARROW);
     }
@@ -201,7 +213,8 @@ class GoogleCalendarV3Consumer implements ScheduleStrategy {
   private boolean hasInvalidTitle(String titleText) {
     if (!Strings.isNullOrEmpty(titleText)) {
       String lowerTitle = titleText.toLowerCase();
-      if (lowerTitle.contains("private") || lowerTitle.contains("catering") || lowerTitle.contains("downtown chicago") || titleText.contains("TBD") || titleText.contains("TBA")) {
+      if (lowerTitle.contains("private") || lowerTitle.contains("catering") || lowerTitle.contains(
+          "downtown chicago") || titleText.contains("TBD") || titleText.contains("TBA")) {
         return true;
       }
     }
