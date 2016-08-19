@@ -8,7 +8,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
@@ -38,8 +40,7 @@ public class LocationListServlet extends HttpServlet {
   }
 
   @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     final String jsp = "/WEB-INF/jsp/dashboard/locationDashboard.jsp";
     req = new GuiceHackRequestWrapper(req, jsp);
     req.setAttribute("localFrameworks", "true".equals(System.getProperty("use.local.frameworks", "false")));
@@ -57,10 +58,14 @@ public class LocationListServlet extends HttpServlet {
       // TODO: add error message if we get here
     }
     final List<Location> autocompleteLocations = locationDAO.findAutocompleteLocations();
-    List<String> locationNames = ImmutableList.copyOf(
-        Iterables.transform(autocompleteLocations, Location.TO_NAME));
+    List<String> locationNames = ImmutableList.copyOf(Iterables.transform(autocompleteLocations, Location.TO_NAME));
     req.setAttribute("locations", new JSONArray(locationNames).toString());
-    req.setAttribute("allLocations", autocompleteLocations);
+    req.setAttribute("allLocations", FluentIterable.from(autocompleteLocations).filter(new Predicate<Location>() {
+      @Override
+      public boolean apply(Location input) {
+        return input.isPopular();
+      }
+    }).toList());
     req.setAttribute("nav", "locations");
     req.getRequestDispatcher(jsp).forward(req, resp);
   }
