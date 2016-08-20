@@ -43,6 +43,7 @@ import foodtruck.server.resources.DailySpecialResourceFactory;
 import foodtruck.server.vendor.LocationEditVendorServlet;
 import foodtruck.server.vendor.LocationStopDeleteServlet;
 import foodtruck.server.vendor.LocationVendorServlet;
+import foodtruck.server.vendor.MenuServlet;
 import foodtruck.server.vendor.VendorCallbackServlet;
 import foodtruck.server.vendor.VendorLogoutServlet;
 import foodtruck.server.vendor.VendorOffTheRoadServlet;
@@ -106,6 +107,7 @@ class FoodtruckServletModule extends ServletModule {
     serve("/vendor/twitter").with(VendorTwitterRedirectServlet.class);
     serve("/vendor/callback").with(VendorCallbackServlet.class);
     serve("/vendor/logout").with(VendorLogoutServlet.class);
+    serve("/vendor/menu/*").with(MenuServlet.class);
 
     // Front-page endpoints
     serve("/weekly-schedule").with(WeeklyScheduleServlet.class);
