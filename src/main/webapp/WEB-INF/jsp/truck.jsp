@@ -60,13 +60,21 @@
           </c:if>
         </ul>
       </div>
-      <c:if test="${!empty(truck.menuUrl)}">
-        <h2>Menu</h2>
-        <div>
-          <a target="_blank" href="${truck.menuUrl}">Click here to see this truck's current menu!</a>
-        </div>
-        <small><em>*disclaimer - this data may or may not be accurate or up-to-date.</em></small>
-      </c:if>
+      <c:choose>
+        <c:when test="${!empty(truck.menuUrl)}">
+          <h2>Menu</h2>
+          <div>
+            <a target="_blank" href="${truck.menuUrl}">Click here to see this truck's current menu!</a>
+          </div>
+          <small><em>*disclaimer - this data may or may not be accurate or up-to-date.</em></small>
+        </c:when>
+        <c:when test="${!empty(menu)}">
+          <h2>Menu</h2>
+          <div id="menu">
+
+          </div>
+        </c:when>
+      </c:choose>
       <c:if test="${!empty(dailyData)}">
         <h2>Today's Specials</h2>
         <ul class="list-unstyled">
@@ -169,6 +177,30 @@
     resize();
     </c:if>
   })();
+  <c:if test="${!empty(menu)}">
+  (function () {
+    var menuJSON = ${menu.payload}, $menu = $("#menu");
+
+    function addSection(sectionName, description) {
+      var body = (description) ? "<div class='panel-body'><p>" + description + " </p></div>" : "";
+      var $panelSection = $("<div class='panel panel-default'><div class='panel-heading'><h3 class='panel-title'>" + sectionName + "</h3></div>" + body + "<div class='list-group'></div></div>")
+      $menu.append($panelSection);
+      var $item = $($menu.find("div.list-group")[0]);
+      return $item;
+    }
+
+    function addItem($dl, name, description) {
+      $dl.append("<span class='list-group-item'><h4>" + name + "</h4><p>" + description + "</p></span>");
+    }
+
+    $.each(menuJSON["sections"], function (i, section) {
+      var $section = addSection(section["section"], section["description"]);
+      $.each(section["items"], function (j, item) {
+        addItem($section, item["name"], item["description"]);
+      });
+    });
+  })();
+  </c:if>
 </script>
 
 

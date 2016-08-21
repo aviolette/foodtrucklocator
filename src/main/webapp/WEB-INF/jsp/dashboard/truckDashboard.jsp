@@ -6,14 +6,24 @@
 
 <%@include file="../include/truck_schedule_widget.jsp"%>
 
-<h2>Daily Specials</h2>
 
-<table class="table table-striped">
-  <tbody id="specialTable">
-  </tbody>
-</table>
-<div class="btn-group">
-  <button class="btn btn-default" id="addSpecial"><span class="glyphicon glyphicon-plus"></span>&nbsp;New Daily Special</button>
+<div class="row">
+  <div class="col-md-6">
+    <h2>Menu</h2>
+    <a class="btn btn-default" href="/admin/trucks/${truckId}/menu">Edit Menu</a>
+  </div>
+  <div class="col-md-6">
+    <h2>Daily Specials</h2>
+    <table class="table table-striped">
+      <tbody id="specialTable">
+      </tbody>
+    </table>
+    <div class="btn-group">
+      <button class="btn btn-default" id="addSpecial"><span class="glyphicon glyphicon-plus"></span>&nbsp;New Daily
+        Special
+      </button>
+    </div>
+  </div>
 </div>
 
 <div class="row">

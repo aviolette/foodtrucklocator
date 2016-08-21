@@ -19,6 +19,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.DailyDataDAO;
+import foodtruck.dao.MenuDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.DailySchedule;
 import foodtruck.model.StaticConfig;
@@ -38,16 +39,18 @@ public class TrucksServlet extends FrontPageServlet {
   private final Clock clock;
   private final DateTimeZone zone;
   private final DailyDataDAO dailyDataDAO;
+  private final MenuDAO menuDAO;
 
   @Inject
-  public TrucksServlet(TruckDAO trucks, FoodTruckStopService stops,
-      Clock clock, DateTimeZone zone, StaticConfig staticConfig, DailyDataDAO dailyDataDAO) {
+  public TrucksServlet(TruckDAO trucks, FoodTruckStopService stops, Clock clock, DateTimeZone zone,
+      StaticConfig staticConfig, DailyDataDAO dailyDataDAO, MenuDAO menuDAO) {
     super(staticConfig);
     this.truckDAO = trucks;
     this.stops = stops;
     this.clock = clock;
     this.zone = zone;
     this.dailyDataDAO = dailyDataDAO;
+    this.menuDAO = menuDAO;
   }
 
   @Override protected void doGetProtected(HttpServletRequest req, HttpServletResponse resp)
@@ -75,6 +78,7 @@ public class TrucksServlet extends FrontPageServlet {
       req.setAttribute("enableGraphs", staticConfig.getShowTruckGraphs());
       req.setAttribute("title", truck.getName());
       req.setAttribute("suffix", "-fluid");
+      req.setAttribute("menu", menuDAO.findByTruck(truckId));
       req.setAttribute("dailyData", dailyDataDAO.findByTruckAndDay(truck.getId(), clock.currentDay()));
       req.setAttribute("description", Strings.isNullOrEmpty(truck.getDescription()) ? truck.getName() : truck.getDescription());
     } else {

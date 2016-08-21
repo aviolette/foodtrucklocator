@@ -79,6 +79,7 @@ class FoodtruckServletModule extends ServletModule {
     serveRegex("/admin/beacons/[\\w]+").with(BeaconServlet.class);
     serve("/admin/beacons").with(BeaconsServlet.class);
     serveRegex("/admin/trucks/[\\S]*/stops/[\\w]*").with(TruckStopServlet.class);
+    serveRegex("/admin/trucks/[\\S]*/menu").with(foodtruck.server.dashboard.MenuServlet.class);
     serve("/admin/trucks/*").with(TruckServlet.class);
     serve("/admin/trucks").with(TruckListServlet.class);
     serve("/admin/locations/*").with(LocationEditServlet.class);
