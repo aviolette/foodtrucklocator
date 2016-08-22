@@ -60,21 +60,6 @@
           </c:if>
         </ul>
       </div>
-      <c:choose>
-        <c:when test="${!empty(truck.menuUrl)}">
-          <h2>Menu</h2>
-          <div>
-            <a target="_blank" href="${truck.menuUrl}">Click here to see this truck's current menu!</a>
-          </div>
-          <small><em>*disclaimer - this data may or may not be accurate or up-to-date.</em></small>
-        </c:when>
-        <c:when test="${!empty(menu)}">
-          <h2>Menu</h2>
-          <div id="menu">
-
-          </div>
-        </c:when>
-      </c:choose>
       <c:if test="${!empty(dailyData)}">
         <h2>Today's Specials</h2>
         <ul class="list-unstyled">
@@ -104,6 +89,30 @@
     </div>
    </div>
 </div>
+
+<c:choose>
+  <c:when test="${!empty(truck.menuUrl)}">
+    <div class="row" id="menu">
+      <div class="col-md-6">
+        <h2>Menu</h2>
+        <div>
+          <a target="_blank" href="${truck.menuUrl}">Click here to see this truck's current menu!</a>
+        </div>
+        <small><em>*disclaimer - this data may or may not be accurate or up-to-date.</em></small>
+      </div>
+    </div>
+  </c:when>
+  <c:when test="${!empty(menu)}">
+    <div class="row">
+      <div class="col-md-12">
+        <h2>Menu</h2>
+      </div>
+    </div>
+    <div class="row" id="menu">
+
+    </div>
+  </c:when>
+</c:choose>
 
 
   <div class="row">
@@ -183,7 +192,7 @@
 
     function addSection(sectionName, description) {
       var body = (description) ? "<div class='panel-body'><p>" + description + " </p></div>" : "";
-      var $panelSection = $("<div class='panel panel-default'><div class='panel-heading'><h3 class='panel-title'>" + sectionName + "</h3></div>" + body + "<div class='list-group'></div></div>")
+      var $panelSection = $("<div class='col-md-6'><div class='panel panel-default'><div class='panel-heading'><h3 class='panel-title'>" + sectionName + "</h3></div>" + body + "<div class='list-group'></div></div></div>")
       $menu.append($panelSection);
       var items = $menu.find("div.list-group");
       return $(items[items.length - 1]);
