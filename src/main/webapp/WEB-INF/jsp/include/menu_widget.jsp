@@ -1,5 +1,5 @@
 <style>
-  .form-group {
+  .form-group, .btn-group {
     padding-top: 20px;
   }
 </style>
@@ -11,14 +11,9 @@
       The Chicago Food Truck Finder.
     </p>
 
-    <div class="btn-toolbar">
       <div class="btn-group">
         <button id="add-section-button" class="btn"><span class="glyphicon glyphicon-plus"></span> Menu Section</button>
       </div>
-      <div class="btn-group">
-        <button id="save-button" class="btn"><span class="glyphicon glyphicon-save"></span> Save</button>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -26,6 +21,11 @@
   <div class="col-md-12">
     <form id="menu" class="form-horizontal">
     </form>
+    <div class="btn-group">
+      <button id="save-button" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-save"></span> Save
+      </button>
+    </div>
+
   </div>
 </div>
 
@@ -41,8 +41,15 @@
       if (typeof(description) == "undefined") {
         description = "";
       }
-      $parentSection.append("<div class='form-group item-form-group'><label class='col-sm-2 control-label'/><div class='col-sm-3'> <input class='form-control item-name' type='text' placeholder='Item Name' value='" + name + "'/></div><div class='col-sm-7'> <input class='form-control item-description" +
-          "' type='text' placeholder='Description' value='" + description + "'/></div></div>");
+      var $item = $("<div class='form-group item-form-group'><label class='col-sm-2 control-label'/><div class='col-sm-3'> <input class='form-control item-name' type='text' placeholder='Item Name' value='" + name + "'/></div><div class='col-sm-7'> <div class='input-group'><input class='form-control item-description" +
+          "' type='text' placeholder='Description' value='" + description + "'/><span class='input-group-btn'><button class='delete-button btn btn-default'><span class='glyphicon glyphicon-minus'></span></button></span></div></div></div>");
+      $parentSection.append($item);
+      $item.find('.delete-button').click(function (e) {
+        e.preventDefault();
+        if (confirm("Are you sure you want to delete this item?")) {
+          $item.remove();
+        }
+      })
     }
 
     function addSection(name, description) {
@@ -52,8 +59,8 @@
       }
       var secId = sectionId;
       $("#menu").append($("<div class='menu-section' id='menu-section-" + secId + "'><div class='form-group form-group-lg'>"
-          + "<div class='col-sm-6'><div class='input-group'><input class='form-control section-name' placeholder='Section name' type='text' value='" + name + "'/><span class='input-group-btn'><button id='menu-section-delete-" + secId + "' class='btn btn-default' type='button'><span class='glyphicon glyphicon-minus'></span></button></span></div></div>"
-          + "<div class='col-sm-6'><input type='text' class='form-control section-description' placeholder='Section Description' value='" + description + "'/></div>"
+          + "<div class='col-sm-6'><div class='input-group input-group-lg'><input class='form-control section-name' placeholder='Section name' type='text' value='" + name + "'/><span class='input-group-btn'><button id='menu-section-delete-" + secId + "' class='btn btn-default' type='button'><span class='glyphicon glyphicon-minus'></span></button></span></div></div>"
+          + "<div class='col-sm-6'><input type='text' class='form-control section-description input-lg' placeholder='Section Description' value='" + description + "'/></div>"
           + "</div>"
           + "<button id='add-menu-item-button-" + sectionId + "' class='btn btn-default'><span class='glyphicon glyphicon-plus'></span> Menu Item</button></div>"));
       var $section = $("#menu-section-" + secId);
@@ -63,7 +70,9 @@
       });
       $("#menu-section-delete-" + sectionId).click(function (e) {
         e.preventDefault();
-        $section.remove();
+        if (confirm("Are you sure you want to delete this section and all it's menu items?")) {
+          $section.remove();
+        }
       });
       return $section;
     }
