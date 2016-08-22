@@ -43,7 +43,6 @@ public class LocationListServlet extends HttpServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     final String jsp = "/WEB-INF/jsp/dashboard/locationDashboard.jsp";
     req = new GuiceHackRequestWrapper(req, jsp);
-    req.setAttribute("localFrameworks", "true".equals(System.getProperty("use.local.frameworks", "false")));
 
     String searchField = req.getParameter("q");
     if (!Strings.isNullOrEmpty(searchField)) {

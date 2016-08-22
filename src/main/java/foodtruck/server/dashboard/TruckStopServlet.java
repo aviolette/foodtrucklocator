@@ -68,7 +68,6 @@ public class TruckStopServlet extends HttpServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     final String requestURI = req.getRequestURI();
-    req.setAttribute("localFrameworks", "true".equals(System.getProperty("use.local.frameworks", "false")));
     String truckId = requestURI.substring(14);
     if (Strings.isNullOrEmpty(truckId)) {
       resp.sendRedirect("/trucks");

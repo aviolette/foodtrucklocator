@@ -15,7 +15,6 @@ public class SpecialsServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     req.setAttribute("nav", "specials");
-    req.setAttribute("localFrameworks", "true".equals(System.getProperty("use.local.frameworks", "false")));
     req.getRequestDispatcher("/WEB-INF/jsp/dashboard/specials.jsp").forward(req, resp);
   }
 }

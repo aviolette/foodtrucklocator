@@ -31,7 +31,6 @@ public abstract class FrontPageServlet extends HttpServlet {
       throws ServletException, IOException {
     // TODO: inject Provider<UserService>; not doing now since it would require updating a gazillion files
     UserService userService = UserServiceFactory.getUserService();
-    req.setAttribute("localFrameworks", "true".equals(System.getProperty("use.local.frameworks", "false")));
     req.setAttribute("isAdmin", userService.isUserLoggedIn() && userService.isUserAdmin());
     String title = System.getProperty("foodtrucklocator.title", "Chicago Food Truck Finder");
     req.setAttribute("title", title);

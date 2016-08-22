@@ -47,7 +47,6 @@ public abstract class VendorServletSupport extends HttpServlet {
 
   @Override protected final void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-    req.setAttribute("localFrameworks", "true".equals(System.getProperty("use.local.frameworks", "false")));
     final Principal userPrincipal = getPrincipal(req);
     String thisURL = req.getRequestURI();
     if (userPrincipal == null) {

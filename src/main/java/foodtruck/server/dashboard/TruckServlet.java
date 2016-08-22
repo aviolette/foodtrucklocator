@@ -66,7 +66,6 @@ public class TruckServlet extends HttpServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     final String requestURI = req.getRequestURI();
-    req.setAttribute("localFrameworks", "true".equals(System.getProperty("use.local.frameworks", "false")));
     String truckId = requestURI.substring(14);
     if (Strings.isNullOrEmpty(truckId)) {
       resp.sendRedirect("/trucks");
@@ -148,7 +147,6 @@ public class TruckServlet extends HttpServlet {
     req.setAttribute("truck", truck);
     req.setAttribute("suffix", "-fluid");
     req.setAttribute("nav", "trucks");
-    req.setAttribute("localFrameworks", "true".equals(System.getProperty("use.local.frameworks", "false")));
     req.setAttribute("breadcrumbs", ImmutableList.of(new Link("Trucks", "/admin/trucks"),
         new Link(name, "/admin/trucks" + truckId)));
     req.setAttribute("locations", locationNamesAsJsonArray());

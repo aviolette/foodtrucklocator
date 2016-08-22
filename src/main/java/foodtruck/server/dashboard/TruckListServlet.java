@@ -36,7 +36,6 @@ public class TruckListServlet extends HttpServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     req.setAttribute("nav", "trucks");
-    req.setAttribute("localFrameworks", "true".equals(System.getProperty("use.local.frameworks", "false")));
     String tab = MoreObjects.firstNonNull(req.getParameter("tab"), "home");
     req.setAttribute("tab", tab);
     req.setAttribute("trucks", stopService.findCurrentAndPreviousStop(clock.currentDay()));

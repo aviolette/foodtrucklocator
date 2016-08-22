@@ -135,6 +135,7 @@ class FoodtruckServletModule extends ServletModule {
       filterRegex("/admin/.*", "/vendor.*").through(SSLRedirectFilter.class);
     }
     filter("/*").through(SiteScraperFilter.class);
+    filter("/*").through(CommonConfigFilter.class);
   }
 
   @Provides @Named("remote.tweet.update")
