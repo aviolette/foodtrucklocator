@@ -8,6 +8,10 @@
   dl.schedule dd {
     padding-bottom: 10px;
   }
+
+  h3.panel-title {
+    font-size: 20px;
+  }
 </style>
 
 <div id="content" >
