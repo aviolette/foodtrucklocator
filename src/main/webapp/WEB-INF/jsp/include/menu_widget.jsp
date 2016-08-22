@@ -34,6 +34,18 @@
   (function (truckId, loadedMenu, endpoint) {
     var sectionId = 1;
 
+
+    function stale() {
+      $(window).off('beforeunload');
+      $(window).on('beforeunload', function () {
+        return "You have unsaved changes.  Are you sure you want to leave?";
+      })
+    }
+
+    function fresh() {
+      $(window).off('beforeunload');
+    }
+
     function addItem($parentSection, name, description) {
       if (typeof(name) == "undefined") {
         name = "";
@@ -44,9 +56,13 @@
       var $item = $("<div class='form-group item-form-group'><label class='col-sm-2 control-label'/><div class='col-sm-3'> <input class='form-control item-name' type='text' placeholder='Item Name' value='" + name + "'/></div><div class='col-sm-7'> <div class='input-group'><input class='form-control item-description" +
           "' type='text' placeholder='Description' value='" + description + "'/><span class='input-group-btn'><button class='delete-button btn btn-default'><span class='glyphicon glyphicon-minus'></span></button></span></div></div></div>");
       $parentSection.append($item);
+      $item.find("input").blur(function (e) {
+        stale();
+      });
       $item.find('.delete-button').click(function (e) {
         e.preventDefault();
         if (confirm("Are you sure you want to delete this item?")) {
+          stale();
           $item.remove();
         }
       })
@@ -64,13 +80,18 @@
           + "</div>"
           + "<button id='add-menu-item-button-" + sectionId + "' class='btn btn-default'><span class='glyphicon glyphicon-plus'></span> Menu Item</button></div>"));
       var $section = $("#menu-section-" + secId);
+      $section.find("input").blur(function (e) {
+        stale();
+      });
       $("#add-menu-item-button-" + sectionId).click(function (e) {
         e.preventDefault();
+        stale();
         addItem($section);
       });
       $("#menu-section-delete-" + sectionId).click(function (e) {
         e.preventDefault();
         if (confirm("Are you sure you want to delete this section and all it's menu items?")) {
+          stale();
           $section.remove();
         }
       });
@@ -78,6 +99,7 @@
     }
 
     $("#add-section-button").click(function () {
+      stale();
       addSection("", "");
     });
 
@@ -108,6 +130,7 @@
         contentType: 'application/json',
         data: JSON.stringify(menuJson),
         complete: function () {
+          fresh();
         },
         success: function (e) {
         }
