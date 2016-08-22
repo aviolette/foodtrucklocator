@@ -40,6 +40,9 @@
         <c:if test="${!empty(logoutUrl)}">
           <ul class="nav navbar-nav">
             <li <c:if test="${tab == 'vendorhome'}"> class="active"</c:if>><a href="/vendor">Dashboard</a></li>
+            <c:if test="${!empty(truck)}">
+              <li <c:if test="${tab == 'menu'}"> class="active"</c:if>><a href="/vendor/menu/${truck.id}">Menu</a></li>
+            </c:if>
           </ul>
           <ul class="nav navbar-nav pull-right">
             <c:if test="${!empty(vendorIconUrl)}">
