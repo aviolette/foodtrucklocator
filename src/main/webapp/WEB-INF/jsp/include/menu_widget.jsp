@@ -46,6 +46,7 @@
       $(window).off('beforeunload');
     }
 
+
     function addItem($parentSection, name, description) {
       if (typeof(name) == "undefined") {
         name = "";
@@ -53,12 +54,14 @@
       if (typeof(description) == "undefined") {
         description = "";
       }
-      var $item = $("<div class='form-group item-form-group'><label class='col-sm-2 control-label'/><div class='col-sm-3'> <input class='form-control item-name' type='text' placeholder='Item Name' value='" + name + "'/></div><div class='col-sm-7'> <div class='input-group'><input class='form-control item-description" +
-          "' type='text' placeholder='Description' value='" + description + "'/><span class='input-group-btn'><button class='delete-button btn btn-default'><span class='glyphicon glyphicon-minus'></span></button></span></div></div></div>");
+      var $item = $("<div class='form-group item-form-group'><label class='col-sm-2 control-label'/><div class='col-sm-3'> <input class='form-control item-name' type='text' placeholder='Item Name' value=''/></div><div class='col-sm-7'> <div class='input-group'><input class='form-control item-description" +
+          "' type='text' placeholder='Description' value=''/><span class='input-group-btn'><button class='delete-button btn btn-default'><span class='glyphicon glyphicon-minus'></span></button></span></div></div></div>");
       $parentSection.append($item);
       $item.find("input").blur(function (e) {
         stale();
       });
+      $item.find("input.item-name").val(name);
+      $item.find("input.item-description").val(name);
       $item.find('.delete-button').click(function (e) {
         e.preventDefault();
         if (confirm("Are you sure you want to delete this item?")) {
@@ -68,6 +71,7 @@
       })
     }
 
+
     function addSection(name, description) {
       sectionId++;
       if (typeof(description) == "undefined") {
@@ -75,11 +79,13 @@
       }
       var secId = sectionId;
       $("#menu").append($("<div class='menu-section' id='menu-section-" + secId + "'><div class='form-group form-group-lg'>"
-          + "<div class='col-sm-6'><div class='input-group input-group-lg'><input class='form-control section-name' placeholder='Section name' type='text' value='" + name + "'/><span class='input-group-btn'><button id='menu-section-delete-" + secId + "' class='btn btn-default' type='button'><span class='glyphicon glyphicon-minus'></span></button></span></div></div>"
-          + "<div class='col-sm-6'><input type='text' class='form-control section-description input-lg' placeholder='Section Description' value='" + description + "'/></div>"
+          + "<div class='col-sm-6'><div class='input-group input-group-lg'><input id='section-name-" + secId + "' class='form-control section-name' placeholder='Section name' type='text' value=''/><span class='input-group-btn'><button id='menu-section-delete-" + secId + "' class='btn btn-default' type='button'><span class='glyphicon glyphicon-minus'></span></button></span></div></div>"
+          + "<div class='col-sm-6'><input id='section-description-" + secId + "' type='text' class='form-control section-description input-lg' placeholder='Section Description' value=''/></div>"
           + "</div>"
           + "<button id='add-menu-item-button-" + sectionId + "' class='btn btn-default'><span class='glyphicon glyphicon-plus'></span> Menu Item</button></div>"));
       var $section = $("#menu-section-" + secId);
+      $("#section-name-" + secId).val(name);
+      $("#seciton-description-" + secId).val(description);
       $section.find("input").blur(function (e) {
         stale();
       });

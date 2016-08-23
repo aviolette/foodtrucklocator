@@ -26,6 +26,8 @@ import foodtruck.model.Truck;
 import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.util.Session;
 
+import static foodtruck.server.dashboard.MenuServlet.scrub;
+
 /**
  * @author aviolette
  * @since 8/17/16
@@ -59,6 +61,7 @@ public class MenuServlet extends VendorServletSupport {
   protected void dispatchPost(HttpServletRequest req, HttpServletResponse resp, String truckId) throws IOException {
     try {
       JSONObject jsonPayload = new JSONObject(new String(ByteStreams.toByteArray(req.getInputStream())));
+      jsonPayload = scrub(jsonPayload);
       Menu menu = Menu.builder(menuDAO.findByTruck(truckId)).payload(jsonPayload.toString()).truckId(truckId).build();
       menuDAO.save(menu);
     } catch (JSONException je) {
