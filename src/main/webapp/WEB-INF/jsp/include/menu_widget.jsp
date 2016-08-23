@@ -61,7 +61,7 @@
         stale();
       });
       $item.find("input.item-name").val(name);
-      $item.find("input.item-description").val(name);
+      $item.find("input.item-description").val(description);
       $item.find('.delete-button').click(function (e) {
         e.preventDefault();
         if (confirm("Are you sure you want to delete this item?")) {
@@ -85,7 +85,7 @@
           + "<button id='add-menu-item-button-" + sectionId + "' class='btn btn-default'><span class='glyphicon glyphicon-plus'></span> Menu Item</button></div>"));
       var $section = $("#menu-section-" + secId);
       $("#section-name-" + secId).val(name);
-      $("#seciton-description-" + secId).val(description);
+      $("#section-description-" + secId).val(description);
       $section.find("input").blur(function (e) {
         stale();
       });

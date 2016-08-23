@@ -111,5 +111,4 @@ public class TrucksServlet extends FrontPageServlet {
     }
     return builder.build();
   }
-
 }

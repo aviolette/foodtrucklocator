@@ -63,8 +63,7 @@ public class TruckServlet extends HttpServlet {
   }
 
   @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     final String requestURI = req.getRequestURI();
     String truckId = requestURI.substring(14);
     if (Strings.isNullOrEmpty(truckId)) {
@@ -83,8 +82,7 @@ public class TruckServlet extends HttpServlet {
   }
 
   @Override
-  protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     if (req.getRequestURI().endsWith("/configuration")) {
       handleConfigurationPost(req, resp);
     } else if (req.getRequestURI().endsWith("/offtheroad")) {
@@ -95,8 +93,8 @@ public class TruckServlet extends HttpServlet {
   }
 
 
-  private void offTheRoad(String truckId, HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+  private void offTheRoad(String truckId, HttpServletRequest req,
+      HttpServletResponse resp) throws ServletException, IOException {
     final String jsp = "/WEB-INF/jsp/dashboard/offTheRoad.jsp";
     req = new GuiceHackRequestWrapper(req, jsp);
     final Truck truck = truckDAO.findById(truckId);
@@ -105,8 +103,8 @@ public class TruckServlet extends HttpServlet {
     req.getRequestDispatcher(jsp).forward(req, resp);
   }
 
-  private void editConfiguration(String truckId, HttpServletRequest req, HttpServletResponse resp)
-      throws IOException, ServletException {
+  private void editConfiguration(String truckId, HttpServletRequest req,
+      HttpServletResponse resp) throws IOException, ServletException {
     log.info("Loading configuration for " + truckId);
     final String jsp = "/WEB-INF/jsp/dashboard/truckEdit.jsp";
     // hack required when using * patterns in guice
@@ -119,14 +117,14 @@ public class TruckServlet extends HttpServlet {
     }
     req.setAttribute("truck", truck);
     req.setAttribute("nav", "trucks");
-    req.setAttribute("breadcrumbs", ImmutableList.of(new Link("Trucks", "/admin/trucks"),
-        new Link(truck.getName(), "/admin/trucks/" + truckId),
-        new Link("Edit", "/admin/trucks/" + truckId + "/configuration")));
+    req.setAttribute("breadcrumbs",
+        ImmutableList.of(new Link("Trucks", "/admin/trucks"), new Link(truck.getName(), "/admin/trucks/" + truckId),
+            new Link("Edit", "/admin/trucks/" + truckId + "/configuration")));
     req.getRequestDispatcher(jsp).forward(req, resp);
   }
 
-  private void loadDashboard(String truckId, HttpServletRequest req, HttpServletResponse resp)
-      throws IOException, ServletException {
+  private void loadDashboard(String truckId, HttpServletRequest req,
+      HttpServletResponse resp) throws IOException, ServletException {
     log.info("Loading dashboard for " + truckId);
     final String jsp = "/WEB-INF/jsp/dashboard/truckDashboard.jsp";
     // hack required when using * patterns in guice
@@ -141,14 +139,14 @@ public class TruckServlet extends HttpServlet {
 
     req.setAttribute("tweets", stories);
     final String name = truck.getName();
-    req.setAttribute("specials",  dailyDataDAO.findByTruckAndDay(truck.getId(), clock.currentDay()));
+    req.setAttribute("specials", dailyDataDAO.findByTruckAndDay(truck.getId(), clock.currentDay()));
     req.setAttribute("headerName", name);
     req.setAttribute("truckId", truckId);
     req.setAttribute("truck", truck);
     req.setAttribute("suffix", "-fluid");
     req.setAttribute("nav", "trucks");
-    req.setAttribute("breadcrumbs", ImmutableList.of(new Link("Trucks", "/admin/trucks"),
-        new Link(name, "/admin/trucks" + truckId)));
+    req.setAttribute("breadcrumbs",
+        ImmutableList.of(new Link("Trucks", "/admin/trucks"), new Link(name, "/admin/trucks" + truckId)));
     req.setAttribute("locations", locationNamesAsJsonArray());
     req.getRequestDispatcher(jsp).forward(req, resp);
   }
@@ -168,8 +166,7 @@ public class TruckServlet extends HttpServlet {
 
   }
 
-  private void handleConfigurationPost(HttpServletRequest req, HttpServletResponse resp)
-      throws IOException {
+  private void handleConfigurationPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     String contentType = req.getContentType();
     String truckId = req.getRequestURI().substring(14);
     if (truckId.endsWith("/configuration")) {
@@ -229,8 +226,7 @@ public class TruckServlet extends HttpServlet {
     return builder.build();
   }
 
-  private void handleTweetUpdate(HttpServletRequest req, HttpServletResponse resp)
-      throws IOException {
+  private void handleTweetUpdate(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     String body = new String(ByteStreams.toByteArray(req.getInputStream()));
     body = URLDecoder.decode(body, "UTF-8");
     try {
@@ -242,8 +238,7 @@ public class TruckServlet extends HttpServlet {
         resp.setStatus(404);
         return;
       }
-      summary = new Story.Builder(summary)
-          .ignoreInTwittalyzer(bodyObj.getBoolean("ignore")).build();
+      summary = new Story.Builder(summary).ignoreInTwittalyzer(bodyObj.getBoolean("ignore")).build();
       tweetDAO.saveOrUpdate(summary);
     } catch (JSONException e) {
       throw new RuntimeException(e);

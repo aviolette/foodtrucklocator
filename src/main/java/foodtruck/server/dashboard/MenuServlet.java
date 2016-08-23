@@ -9,15 +9,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import com.google.common.escape.Escaper;
-import com.google.common.html.HtmlEscapers;
 import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -44,24 +40,6 @@ public class MenuServlet extends HttpServlet {
   public MenuServlet(MenuDAO menuDAO, TruckDAO truckDAO) {
     this.menuDAO = menuDAO;
     this.truckDAO = truckDAO;
-  }
-
-  public static JSONObject scrub(JSONObject payload) throws JSONException {
-    Escaper escaper = HtmlEscapers.htmlEscaper();
-    JSONArray sections = payload.getJSONArray("sections");
-    for (int i = 0; i < sections.length(); i++) {
-      JSONObject section = sections.getJSONObject(i);
-      section.put("section", escaper.escape(section.getString("section")));
-      String description = Strings.nullToEmpty(section.optString("description"));
-      section.put("description", escaper.escape(description));
-      JSONArray items = section.getJSONArray("items");
-      for (int j = 0; j < items.length(); j++) {
-        JSONObject item = items.getJSONObject(j);
-        item.put("name", escaper.escape(item.getString("name")));
-        item.put("description", escaper.escape(Strings.nullToEmpty(item.optString("description"))));
-      }
-    }
-    return payload;
   }
 
   @Override
@@ -91,8 +69,6 @@ public class MenuServlet extends HttpServlet {
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     try {
       JSONObject jsonPayload = new JSONObject(new String(ByteStreams.toByteArray(req.getInputStream())));
-      jsonPayload = scrub(jsonPayload);
-      log.info(jsonPayload.toString(2));
       String truckId = truckId(req);
       Menu menu = Menu.builder(menuDAO.findByTruck(truckId)).payload(jsonPayload.toString()).truckId(truckId).build();
       menuDAO.save(menu);

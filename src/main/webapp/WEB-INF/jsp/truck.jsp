@@ -192,11 +192,11 @@
   })();
   <c:if test="${!empty(menu)}">
   (function () {
-    var menuJSON = ${menu.payload}, $menu = $("#menu");
+    var menuJSON = ${menu.scrubbedPayload}, $menu = $("#menu");
 
     function addSection(sectionName, description) {
       var body = (description) ? "<div class='panel-body'><p>" + description + " </p></div>" : "";
-      var $panelSection = $("<div class='col-md-6'><div class='panel panel-default'><div class='panel-heading'><h3 class='panel-title'>" + sectionName + "</h3></div>" + body + "<div class='list-group'></div></div></div>")
+      var $panelSection = $("<div class='col-md-4'><div class='panel panel-default'><div class='panel-heading'><h3 class='panel-title'>" + sectionName + "</h3></div>" + body + "<div class='list-group'></div></div></div>")
       $menu.append($panelSection);
       var items = $menu.find("div.list-group");
       return $(items[items.length - 1]);
