@@ -99,6 +99,7 @@
   <c:when test="${!empty(menu)}">
     <div class="row">
       <div class="col-md-12">
+        <a name="truckmenu"></a>
         <h2>Menu</h2>
       </div>
     </div>
@@ -109,6 +110,7 @@
   <c:when test="${empty(meny) && !empty(truck.menuUrl)}">
     <div class="row" id="menu">
       <div class="col-md-6">
+        <a name="menulink"></a>
         <h2>Menu</h2>
         <div>
           <a target="_blank" href="${truck.menuUrl}">Click here to see this truck's current menu!</a>
