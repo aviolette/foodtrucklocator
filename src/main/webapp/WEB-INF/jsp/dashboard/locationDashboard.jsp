@@ -1,28 +1,26 @@
-<%@include file="../common.jsp" %>
-<%@include file="dashboardHeader.jsp" %>
-<form method="GET" action="">
-  <fieldset>
-    <div>
-      <label for="locationSearch">Location</label>
+<%@include file="dashboardHeaderBS3.jsp" %>
 
-      <div class="controls">
-        <div class="input-prepend">
-          <span class="add-on"><i class="icon-search"></i></span>
-          <input id="locationSearch" class="span6" name="q" utocomplete="off" type="text" value="" data-provide="typeahead"
-                 data-items="4"/>
-          <input type="submit" class="btn primary" value="Search" title="Search"/>
+<div class="row">
+  <div class="col-md-12">
+
+    <form method="GET" action="">
+      <div class="form-group">
+        <label for="locationSearch">Location</label>
+        <div class="input-group">
+          <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+          <input id="locationSearch" class="form-control" name="q" type="text"/>
+        <span class="input-group-btn">
+          <input type="submit" class="btn btn-default" value="Search" title="Search"/>
+        </span>
         </div>
       </div>
-    </div>
-  </fieldset>
-</form>
+    </form>
+  </div>
+</div>
 
-<ul class="unstyled">
-<c:forEach var="loc" items="${allLocations}">
-  <li><ftl:location admin="true" location="${loc}"/></li>
-</c:forEach>
+<ul class="list-unstyled">
+  <c:forEach var="loc" items="${allLocations}">
+    <li><ftl:location admin="true" location="${loc}"/></li>
+  </c:forEach>
 </ul>
-<script type="text/javascript">
-  $("#locationSearch").typeahead({source:${locations}});
-</script>
-<%@include file="dashboardFooter.jsp" %>
+<%@include file="dashboardFooterBS3.jsp" %>
