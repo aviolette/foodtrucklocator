@@ -153,6 +153,10 @@ public class TruckStop extends ModelEntity {
     return startTime.equals(dateTime) || (dateTime.isAfter(startTime) && dateTime.isBefore(endTime));
   }
 
+  public boolean isActiveNow() {
+    return activeDuring(new DateTime(startTime.getZone()));
+  }
+
   public TruckStop withLocation(Location location) {
     return TruckStop.builder(this).location(location).build();
   }
