@@ -21,7 +21,7 @@
         </button>
     </div>
     <div class="btn-group">
-        <button class="btn btn-default" id="offRoadButton"><span class="glyphicon glyphicon-trash"></span> Off the Road
+        <button class="btn btn-default" id="offRoadButton"><span class="glyphicon glyphicon-road"></span> Off the Road
         </button>
         <button class="btn btn-default" id="recacheButton"><span class="glyphicon glyphicon-refresh"></span>&nbsp;Reload
             from calendar
@@ -62,7 +62,9 @@
             </div>
             <div class="modal-footer">
                 <button id="cancelButton" class="btn btn-default">Cancel</button>
-                <button id="saveButton"  class="btn btn-primary" type="button" autocomplete="off" data-loading-text="Saving...">Save</button>
+                <button id="saveButton" class="btn btn-primary" type="button" autocomplete="off"
+                        data-loading-text="Saving..."><span class="glyphicon glyphicon-save"></span> Save
+                </button>
             </div>
         </div>
     </div>

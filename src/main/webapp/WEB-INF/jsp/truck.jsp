@@ -31,7 +31,7 @@
   <div class="row second-top-row">
     <div class="col-md-6">
       <h1>${truck.name}<c:if test="${isAdmin}">
-        <a class="btn btn-default" href="/admin/trucks/${truck.id}">Edit</a>
+        <a class="btn btn-default" href="/admin/trucks/${truck.id}"><span class='glyphicon glyphicon-pencil'></span></a>
       </c:if></h1>
       <c:if test="${truck.popupVendor}"><p><span class="badge badge-info">Popup Vendor</span></p></c:if>
       <p class="lead">${truck.description}</p>

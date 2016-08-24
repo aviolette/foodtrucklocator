@@ -2,17 +2,24 @@
 <style type="text/css">
 </style>
 <h1>${truck.name}</h1>
-<a href="/trucks/${truckId}">View Public Page</a>
+<div class="row">
+  <div class="col-md-12">
+    <div class="btn-toolbar">
+      <div class="btn-group">
+        <a class="btn btn-default" href="/admin/trucks/${truckId}/menu">Edit Menu</a>
+      </div>
+      <div class="btn-group">
+        <a class="btn btn-default" href="/trucks/${truckId}">View Public Page</a>
+      </div>
+    </div>
+  </div>
+</div>
 
 <%@include file="../include/truck_schedule_widget.jsp"%>
 
 
 <div class="row">
-  <div class="col-md-6">
-    <h2>Menu</h2>
-    <a class="btn btn-default" href="/admin/trucks/${truckId}/menu">Edit Menu</a>
-  </div>
-  <div class="col-md-6">
+  <div class="col-md-12">
     <h2>Daily Specials</h2>
     <table class="table table-striped">
       <tbody id="specialTable">
@@ -201,7 +208,7 @@
         var $specialsTable = $("#specialTable");
         $specialsTable.html("");
         $.each(specials["specials"], function(idx, foo) {
-          $specialsTable.append($("<tr><td>"+ foo["special"] +"</td><td><button row-idx=" + idx + " class='specialDeleteButton btn btn-default'><span class='glyphicon glyphicon-remove'></span>Delete</tr>"));
+          $specialsTable.append($("<tr><td>" + foo["special"] + "</td><td><button row-idx=" + idx + " class='specialDeleteButton btn btn-default'><span class='glyphicon glyphicon-remove'></span></tr>"));
         });
         $(".specialDeleteButton").click(function(e) {
           var $target = $(e.target);
