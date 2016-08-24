@@ -1,153 +1,168 @@
-<%@include file="../common.jsp" %>
-<%@include file="dashboardHeader.jsp" %>
-<script type="text/javascript"
-        src="//maps.googleapis.com/maps/api/js?key=${googleApiKey}">
-</script>
+<%@include file="dashboardHeaderBS3.jsp" %>
+<style>
+  .form-inline {
+    margin-bottom: 15px;
+  }
+</style>
+<c:if test="${!empty(locationId)}">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="btn-toolbar">
+        <div class="btn-group">
+          <a href="/admin/event_at/${locationId}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>
+            New Event</a>
+        </div>
+        <div class="btn-group">
+          <a id="locationViewButton" href="/locations/${locationId}" class="btn btn-default">View</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</c:if>
 
-<div class="row" style="margin-bottom:20px">
-  <div class="span8">
+<div class="row" style="padding-top: 20px">
+  <div class="col-md-8">
     <div id="map_canvas" style="width:100%; height:300px; padding-bottom:20px;"></div>
   </div>
-  <div class="span4">
+  <div class="col-md-4">
     <div>
-      <a id="locationSearchButton" href="#" class="btn">Search for a location</a>
-      <c:if test="${!empty(locationId)}"><a href="/admin/event_at/${locationId}" class="btn">New Event</a> <a id="locationViewButton" href="/locations/${locationId}" class="btn">View</a> </c:if>
+      <a id="locationSearchButton" href="#" class="btn btn-default">Search for a location</a>
     </div>
     <ul id="searchLocations">
-
     </ul>
-
     <div>
       <h4>Current Aliases</h4>
-          <ul>
-            <c:forEach var="alias" items="${aliases}">
-              <li><a href="/admin/locations/${alias.key}">${alias.name}</a></li>
-            </c:forEach>
-          </ul>
+      <ul>
+        <c:forEach var="alias" items="${aliases}">
+          <li><a href="/admin/locations/${alias.key}">${alias.name}</a></li>
+        </c:forEach>
+      </ul>
     </div>
+  </div>
+</div>
 
+<div class="row">
+  <div class="col-md-12">
+    <div class="">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input id="name" class="form-control" placeholder="Location Name" type="text"/>
+      </div>
+    </div>
+    <div class="form-inline">
+      <div class="form-group">
+        <label for="latitude">Latitude</label>
+        <input id="latitude" class="form-control" type="text"/>
+      </div>
+      <div class="form-group">
+        <label for="longitude">Longitude</label>
+        <input id="longitude" class="form-control" type="text"/>
+      </div>
+    </div>
+    <div>
+      <div class="form-group">
+        <label for="radius">Radius</label>
+        <input id="radius" class="form-control" type="text"/>
+      </div>
+      <div class="form-group">
+        <label for="radiateTo">Radiate Direction</label>
+        <input id="radiateTo" class="form-control" type="text"/>
+      </div>
+      <div class="form-group">
+        <label for="alias">Alias for</label>
+        <input id="alias" class="form-control" type="text" data-provider="typeahead" data-items="4"/>
+        <a href="#" id="viewAlias">View</a>
+      </div>
+      <div class="form-group">
+        <label for="ownedBy">Owned By</label>
+        <input class="form-control" id="ownedBy" type="text"/>
+      </div>
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea class="form-control" id="description" rows="5" cols="80"></textarea>
+
+      </div>
+      <div class="form-group">
+        <label for="url">URL</label>
+        <div class="input-group">
+          <input id="url" class="form-control" type="url"/>
+          <span class="input-group-btn">
+            <button id="viewUrl" class="btn btn-default"><span class="glyphicon glyphicon-new-window"></span></button>
+          </span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="twitterHandle">Twitter Handle</label>
+        <div>
+          <div class="input-group">
+            <span class="input-group-addon">@</span>
+            <input id="twitterHandle" class="form-control" type="text"/>
+            <span class="input-group-btn">
+              <button id="viewTwitter" class="btn btn-default"><span
+                  class="glyphicon glyphicon-new-window"></span></button>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="facebookUri">Facebook</label>
+        <input id="facebookUri" class="form-control" type="text"/>
+      </div>
+      <div class="form-group">
+        <label for="imageUrl">Image Url</label>
+        <input id="imageUrl" class="form-control" type="url"/>
+      </div>
+      <div class="form-group">
+        <label for="eventUrl">Event Url</label>
+        <input id="eventUrl" class="form-control" type="text"/>
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input id="email" class="form-control" type="text"/>
+      </div>
+      <div class="form-group">
+        <label for="managerEmails">Manager Emails (comma separated)</label>
+        <input id="managerEmails" class="form-control" type="text"/>
+      </div>
+      <div class="form-group">
+        <label for="phone" class="control-label">Phone</label>
+        <input id="phone" class="form-control" type="tel"/>
+      </div>
+      <div class="checkbox">
+        <label><input id="invalidLoc" type="checkbox">&nbsp;Ignore in geolocation lookups</label>
+      </div>
+      <div class="checkbox">
+        <label><input id="designatedStop" type="checkbox">&nbsp;Designated food truck stop</label>
+      </div>
+      <div class="checkbox">
+        <label><input id="popular" type="checkbox">&nbsp;Popular?</label>
+      </div>
+      <div class="checkbox">
+        <label><input id="autocomplete" type="checkbox">&nbsp;Autocomplete?</label>
+      </div>
+      <div class="checkbox">
+        <label><input id="hasBooze" type="checkbox">&nbsp;Serves Alcohol?</label>
+      </div>
+      <div class="checkbox">
+        <label><input id="closed" type="checkbox">&nbsp;Closed?</label>
+      </div>
+      <div class="btn-group>">
+        <button id="submitButton" class="btn btn-primary"><span class="glyphicon glyphicon-save"></span> Save</button>
+      </div>
+    </div>
   </div>
 </div>
 
 
-<form class="form-horizontal">
-  <fieldset>
-    <div class="control-group">
-      <label class="control-label" for="name">Name</label>
-      <div class="controls">
-        <input id="name" class="span6" type="text"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="latitude">Lat / Long</label>
-      <div class="controls">
-        <input id="latitude" class="span2" type="text"/>
-        <input id="longitude" type="text"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="radius">Radius</label>
-      <div class="controls">
-        <input id="radius" type="text"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="radiateTo">Radiate Direction</label>
-      <div class="controls">
-        <input id="radiateTo" type="text"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="alias">Alias for</label>
-      <div class="controls">
-        <input id="alias" class="span6" type="text" data-provider="typeahead" data-items="4"/>
-        <a href="#" id="viewAlias">View</a>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="ownedBy">Owned By</label>
-      <div class="controls">
-        <input id="ownedBy" type="text"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label for="description" class="control-label">Description</label>
-      <div class="controls">
-        <textarea class="span6" id="description" rows="5" cols="80"></textarea>
-      </div>
-    </div>
-    <div class="control-group">
-      <label for="url" class="control-label">URL</label>
-      <div class="controls">
-        <input id="url" class="span6" type="text"/>
-        <a href="#" id="viewUrl">View</a>
-      </div>
-    </div>
-    <div class="control-group">
-      <label for="twitterHandle" class="control-label">Twitter Handle</label>
-      <div class="controls">
-        <div class="input-prepend">
-          <span class="add-on">@</span>
-          <input id="twitterHandle" class="span5" type="text"/>
-        </div>
-        <a href="#" id="viewTwitter">View</a>
-      </div>
-    </div>
-    <div class="control-group">
-      <label for="facebookUri" class="control-label">Facebook</label>
-      <div class="controls">
-        <input id="facebookUri" class="span5" type="text"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label for="imageUrl" class="control-label">Image Url</label>
-      <div class="controls">
-        <input id="imageUrl" class="span5" type="text"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label for="eventUrl" class="control-label">Event Url</label>
-      <div class="controls">
-        <input id="eventUrl" class="span5" type="text"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label for="email" class="control-label">Email</label>
-      <div class="controls">
-        <input id="email" class="span5" type="text"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label for="managerEmails" class="control-label">Manager Emails (comma separated)</label>
-      <div class="controls">
-        <input id="managerEmails" class="span5" type="text"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label for="phone" class="control-label">Phone</label>
-      <div class="controls">
-        <input id="phone" class="span5" type="text"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <div class="controls">
-        <label><input id="invalidLoc" type="checkbox">&nbsp;Ignore in geolocation lookups</label>
-        <label><input id="designatedStop" type="checkbox">&nbsp;Designated food truck stop</label>
-        <label><input id="popular" type="checkbox">&nbsp;Popular?</label>
-        <label><input id="autocomplete" type="checkbox">&nbsp;Autocomplete?</label>
-        <label><input id="hasBooze" type="checkbox">&nbsp;Serves Alcohol?</label>
-        <label><input id="closed" type="checkbox">&nbsp;Closed?</label>
-        <input id="submitButton" type="submit" class="btn primary" value="Save"/>&nbsp;
-      </div>
-    </div>
-  </fieldset>
-</form>
-
+<script type="text/javascript"
+        src="//maps.googleapis.com/maps/api/js?key=${googleApiKey}">
+</script>
+<script type="text/javascript" src="/script/typeahead-addon.js"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     var MILES_TO_METERS = 1609.34;
 
-    $("#alias").typeahead({source:${locations}});
+    locationMatching(${locations}, "alias");
 
     $("#viewAlias").click(function(e) {
       e.preventDefault();
@@ -170,28 +185,28 @@
       if (typeof loc == "undefined") {
         return;
       }
-      $("#latitude").attr("value", loc.latitude);
-      $("#longitude").attr("value", loc.longitude);
-      $("#radius").attr("value", loc.radius);
-      $("#radiateTo").attr("value", loc.radiateTo);
-      $("#name").attr("value", loc.name);
-      $("#alias").attr("value", loc.alias);
-      $("#twitterHandle").attr("value", loc.twitterHandle);
+      $("#latitude").val(loc.latitude);
+      $("#longitude").val(loc.longitude);
+      $("#radius").val(loc.radius);
+      $("#radiateTo").val(loc.radiateTo);
+      $("#name").val(loc.name);
+      $("#alias").val(loc.alias);
+      $("#twitterHandle").val(loc.twitterHandle);
       $("#invalidLoc").attr("checked", !loc.valid);
-      $("#description").attr("value", loc.description);
+      $("#description").val(loc.description);
       $("#popular").attr("checked", loc.popular);
       $("#hasBooze").attr("checked", loc.hasBooze);
       $("#closed").attr("checked", loc.closed);
       $("#designatedStop").attr("checked", loc.designatedStop);
       $("#autocomplete").attr("checked", loc.autocomplete);
-      $("#url").attr("value", loc.url);
-      $("#ownedBy").attr("value", loc.ownedBy);
-      $("#facebooKUri").attr("value", loc.facebookUri);
-      $("#imageUrl").attr("value", loc.imageUrl);
-      $("#eventUrl").attr("value", loc.eventUrl);
-      $("#managerEmails").attr("value", loc.managerEmails);
-      $("#email").attr("value", loc.email);
-      $("#phone").attr("value", loc.phone);
+      $("#url").val(loc.url);
+      $("#ownedBy").val(loc.ownedBy);
+      $("#facebookUri").val(loc.facebookUri);
+      $("#imageUrl").val(loc.imageUrl);
+      $("#eventUrl").val(loc.eventUrl);
+      $("#managerEmails").val(loc.managerEmails);
+      $("#email").val(loc.email);
+      $("#phone").val(loc.phone);
     }
 
     loadLocation(loc);
@@ -208,6 +223,7 @@
       var myOptions = {
         center: markerLat,
         zoom: 14,
+        scrollwheel: false,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       };
       var map = new google.maps.Map(document.getElementById("map_canvas"),
@@ -284,28 +300,28 @@
       });
     }
     $submitButton.click(function(e) {
-      loc.latitude = parseFloat($("#latitude").attr("value"));
-      loc.longitude = parseFloat($("#longitude").attr("value"));
-      loc.name = $("#name").attr("value");
-      loc.alias = $("#alias").attr("value");
-      loc.twitterHandle = $("#twitterHandle").attr("value");
-      loc.radius = parseFloat($("#radius").attr("value"));
+      loc.latitude = parseFloat($("#latitude").val());
+      loc.longitude = parseFloat($("#longitude").val());
+      loc.name = $("#name").val();
+      loc.alias = $("#alias").val();
+      loc.twitterHandle = $("#twitterHandle").val();
+      loc.radius = parseFloat($("#radius").val());
       loc.valid = !$("#invalidLoc").is(":checked");
-      loc.description = $("#description").attr("value");
-      loc.url = $("#url").attr("value");
+      loc.description = $("#description").val();
+      loc.url = $("#url").val();
       loc.popular = $("#popular").is(":checked");
       loc.hasBooze = $("#hasBooze").is(":checked");
       loc.closed = $("#closed").is(":checked");
       loc.designatedStop = $("#designatedStop").is(":checked");
       loc.autocomplete = $("#autocomplete").is(":checked");
-      loc.ownedBy = $("#ownedBy").attr("value");
-      loc.radiateTo = parseInt($("#radiateTo").attr("value"));
-      loc.email = $("#email").attr("value");
-      loc.phone = $("#phone").attr("value");
-      loc.facebookUri = $("#facebookUri").attr("value");
-      loc.imageUrl = $("#imageUrl").attr("value");
-      loc.eventUrl = $("#eventUrl").attr("value");
-      loc.managerEmails = $("#managerEmails").attr("value");
+      loc.ownedBy = $("#ownedBy").val();
+      loc.radiateTo = parseInt($("#radiateTo").val());
+      loc.email = $("#email").val();
+      loc.phone = $("#phone").val();
+      loc.facebookUri = $("#facebookUri").val();
+      loc.imageUrl = $("#imageUrl").val();
+      loc.eventUrl = $("#eventUrl").val();
+      loc.managerEmails = $("#managerEmails").val();
       e.preventDefault();
       $submitButton.addClass("disabled");
       $.ajax({
@@ -328,4 +344,4 @@
   });
 </script>
 
-<%@include file="dashboardFooter.jsp" %>
+<%@include file="dashboardFooterBS3.jsp" %>
