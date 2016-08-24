@@ -60,15 +60,17 @@
       $item.find("input").blur(function (e) {
         stale();
       });
-      $item.find("input.item-name").val(name);
+      var $nameField = $item.find("input.item-name");
+      $nameField.val(name);
       $item.find("input.item-description").val(description);
       $item.find('.delete-button').click(function (e) {
         e.preventDefault();
-        if (confirm("Are you sure you want to delete this item?")) {
+        if ($nameField.val().length == 0 || confirm("Are you sure you want to delete this item?")) {
           stale();
           $item.remove();
         }
       })
+      return $nameField;
     }
 
 
@@ -83,8 +85,8 @@
           + "<div class='col-sm-6'><input id='section-description-" + secId + "' type='text' class='form-control section-description input-lg' placeholder='Section Description' value=''/></div>"
           + "</div>"
           + "<button id='add-menu-item-button-" + sectionId + "' class='btn btn-default'><span class='glyphicon glyphicon-plus'></span> Menu Item</button></div>"));
-      var $section = $("#menu-section-" + secId);
-      $("#section-name-" + secId).val(name);
+      var $section = $("#menu-section-" + secId), $nameControl = $("#section-name-" + secId);
+      $nameControl.val(name);
       $("#section-description-" + secId).val(description);
       $section.find("input").blur(function (e) {
         stale();
@@ -92,11 +94,11 @@
       $("#add-menu-item-button-" + sectionId).click(function (e) {
         e.preventDefault();
         stale();
-        addItem($section);
+        addItem($section).focus();
       });
       $("#menu-section-delete-" + sectionId).click(function (e) {
         e.preventDefault();
-        if (confirm("Are you sure you want to delete this section and all it's menu items?")) {
+        if ($nameControl.val().length == 0 || confirm("Are you sure you want to delete this section and all it's menu items?")) {
           stale();
           $section.remove();
         }
@@ -107,6 +109,7 @@
     $("#add-section-button").click(function () {
       stale();
       addSection("", "");
+      $("#section-name-" + sectionId).focus();
     });
 
     $("#save-button").click(function () {
