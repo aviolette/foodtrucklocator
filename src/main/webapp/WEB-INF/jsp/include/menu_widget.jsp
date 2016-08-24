@@ -12,7 +12,9 @@
     </p>
 
       <div class="btn-group">
-        <button id="add-section-button" class="btn"><span class="glyphicon glyphicon-plus"></span> Menu Section</button>
+        <button id="add-section-button" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Menu
+          Section
+        </button>
       </div>
   </div>
 </div>
