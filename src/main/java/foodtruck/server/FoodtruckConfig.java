@@ -8,6 +8,7 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.servlet.GuiceServletContextListener;
 
+import foodtruck.alexa.AlexaModule;
 import foodtruck.dao.appengine.AppEngineDAOModule;
 import foodtruck.dao.memcached.MemcachedModule;
 import foodtruck.email.EmailModule;
@@ -33,7 +34,7 @@ public class FoodtruckConfig extends GuiceServletContextListener {
   }
 
   private Module[] modules() {
-    return new Module[] {
+    return new Module[] {new AlexaModule(),
         new GoogleApiModule(),
         new AppEngineDAOModule(),
         new MemcachedModule(),

@@ -125,6 +125,9 @@ class FoodtruckServletModule extends ServletModule {
     serve("/.well-known/acme-challenge/*").with(SSLVerificationServlet.class);
     serveRegex("/[\\w]*").with(FoodTruckServlet.class);
 
+    // Alexa integration
+    serve("/amazonalexa").with(AlexaServlet.class);
+
     // Services
     install(new FactoryModuleBuilder().build(DailySpecialResourceFactory.class));
     serve("/services/*").with(GuiceContainer.class,
