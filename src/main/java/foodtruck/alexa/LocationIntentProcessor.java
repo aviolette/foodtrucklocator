@@ -17,7 +17,6 @@ import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
-import org.joda.time.Interval;
 
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
@@ -56,8 +55,7 @@ public class LocationIntentProcessor implements IntentProcessor {
     } else {
       DateTime start = clock.now();
       DateTime end = clock.timeAt(23, 59);
-      List<TruckStop> stops = service.findStopsAtLocationOverRange(location,
-          new Interval(clock.now(), clock.timeAt(23, 59)));
+      List<TruckStop> stops = service.findStopsNearALocation(location, clock.currentDay());
       log.log(Level.INFO, "Requested food trucks at {0} {1} {2} {3}",
           new Object[]{location.getName(), start, end, stops});
       Set<String> truckNames = FluentIterable.from(stops)
