@@ -110,6 +110,9 @@ class FoodtruckServletModule extends ServletModule {
     serve("/vendor/logout").with(VendorLogoutServlet.class);
     serve("/vendor/menu/*").with(MenuServlet.class);
 
+    // Alexa integration
+    serve("/amazonalexa").with(AlexaServlet.class);
+
     // Front-page endpoints
     serve("/weekly-schedule").with(WeeklyScheduleServlet.class);
     serve("/popular").with(PopularServlet.class);
@@ -125,8 +128,6 @@ class FoodtruckServletModule extends ServletModule {
     serve("/.well-known/acme-challenge/*").with(SSLVerificationServlet.class);
     serveRegex("/[\\w]*").with(FoodTruckServlet.class);
 
-    // Alexa integration
-    serve("/amazonalexa").with(AlexaServlet.class);
 
     // Services
     install(new FactoryModuleBuilder().build(DailySpecialResourceFactory.class));
