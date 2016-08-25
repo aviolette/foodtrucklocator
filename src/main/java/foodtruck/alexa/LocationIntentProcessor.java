@@ -1,6 +1,8 @@
 package foodtruck.alexa;
 
+import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.amazon.speech.slu.Intent;
@@ -54,9 +56,11 @@ public class LocationIntentProcessor implements IntentProcessor {
     } else {
       DateTime start = clock.now();
       DateTime end = clock.timeAt(23, 59);
-      log.info("Requested food trucks at " + location.getName() + " " + start + " " + end);
-      Set<String> truckNames = FluentIterable.from(
-          service.findStopsAtLocationOverRange(location, new Interval(clock.now(), clock.timeAt(23, 59))))
+      List<TruckStop> stops = service.findStopsAtLocationOverRange(location,
+          new Interval(clock.now(), clock.timeAt(23, 59)));
+      log.log(Level.INFO, "Requested food trucks at {0} {1} {2} {3}",
+          new Object[]{location.getName(), start, end, stops});
+      Set<String> truckNames = FluentIterable.from(stops)
           .transform(new Function<TruckStop, String>() {
             public String apply(TruckStop input) {
               return input.getTruck().getName();
