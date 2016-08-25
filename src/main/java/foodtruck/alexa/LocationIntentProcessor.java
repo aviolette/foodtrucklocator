@@ -14,6 +14,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 
+import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
 import foodtruck.geolocation.GeoLocator;
@@ -51,7 +52,9 @@ public class LocationIntentProcessor implements IntentProcessor {
       log.severe("Could not find location " + slot.getValue() + " that is specified in alexa");
       speechText = "There are no trucks at this location";
     } else {
-      log.info("Requested food trucks at " + location.getName());
+      DateTime start = clock.now();
+      DateTime end = clock.timeAt(23, 59);
+      log.info("Requested food trucks at " + location.getName() + " " + start + " " + end);
       Set<String> truckNames = FluentIterable.from(
           service.findStopsAtLocationOverRange(location, new Interval(clock.now(), clock.timeAt(23, 59))))
           .transform(new Function<TruckStop, String>() {
