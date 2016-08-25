@@ -70,18 +70,19 @@
         <c:if test="${showBlog}">
         <li><a href="http://blog.chicagofoodtruckfinder.com/">Blog</a></li>
         </c:if>
-        <c:if test="${isAdmin}">
-          <li><a href="/admin">Admin</a></li>
-        </c:if>
       </ul>
       <ul class="nav navbar-right navbar-nav">
-        <li><a style="padding: 10px 0 0 0" href="http://twitter.com/${twitterHandle}"><img src="//storage.googleapis.com/ftf_static/img/twitter02_dark.png"/></a></li>
-        <li><a style="padding: 10px 0 0 0" href="http://facebook.com/${facebookPage}"><img src="//storage.googleapis.com/ftf_static/img/facebook_dark.png"/></a></li>
         <c:if test="${!empty(user)}">
-          <%--          <li><a href="#">${user}</a></li> --%>
+          <c:if test="${isAdmin}">
+            <li><a href="/admin" class="btn btn-block"><span class="glyphicon glyphicon-dashboard"></span></a></li>
+          </c:if>
           <li><a title="Logout" class="btn btn-block" href="${signoutUrl}"><span
               class="glyphicon glyphicon-log-out"></span> </a></li>
         </c:if>
+        <li><a style="padding: 10px 0 0 0" href="http://twitter.com/${twitterHandle}"><img
+            src="//storage.googleapis.com/ftf_static/img/twitter02_dark.png"/></a></li>
+        <li><a style="padding: 10px 0 0 0" href="http://facebook.com/${facebookPage}"><img
+            src="//storage.googleapis.com/ftf_static/img/facebook_dark.png"/></a></li>
 
       </ul>
     </div>
