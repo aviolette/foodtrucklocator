@@ -3,7 +3,9 @@
 
 <div class="btn-toolbar">
   <div class="btn-group">
-    <button class="btn btn-primary" data-loading-text="Saving..." id="scriptSaveButton"><span class="glyphicon glyphicon-upload"></span> Save</button>
+    <button class="btn btn-primary" data-loading-text="Saving..." id="scriptSaveButton"><span
+        class="glyphicon glyphicon-save"></span> Save
+    </button>
   </div>
 </div>
 <div class="row" >
