@@ -1,5 +1,7 @@
 package foodtruck.alexa;
 
+import java.util.Map;
+
 import com.amazon.speech.speechlet.IntentRequest;
 import com.amazon.speech.speechlet.LaunchRequest;
 import com.amazon.speech.speechlet.Session;
@@ -15,11 +17,11 @@ import com.google.inject.Inject;
  * @since 8/25/16
  */
 public class FTFSpeechlet implements Speechlet {
-  private final IntentProcessor locationProcessor;
+  private final Map<String, IntentProcessor> processors;
 
   @Inject
-  public FTFSpeechlet(IntentProcessor processor) {
-    this.locationProcessor = processor;
+  public FTFSpeechlet(Map<String, IntentProcessor> processors) {
+    this.processors = processors;
   }
 
   @Override
@@ -34,8 +36,9 @@ public class FTFSpeechlet implements Speechlet {
 
   @Override
   public SpeechletResponse onIntent(IntentRequest intentRequest, Session session) throws SpeechletException {
-
-    return locationProcessor.process(intentRequest.getIntent(), session);
+    IntentProcessor processor = processors.get(intentRequest.getIntent().getName());
+    // handle null
+    return processor.process(intentRequest.getIntent(), session);
   }
 
   @Override
