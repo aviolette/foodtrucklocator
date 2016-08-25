@@ -1,12 +1,5 @@
 <%@include file="dashboardHeaderBS3.jsp" %>
 
-<div class="btn-toolbar">
-  <div class="btn-group">
-    <a href="/admin/messages/new" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> New Tracking Device</a>
-  </div>
-</div>
-
-
 <table class="table table-hover">
   <thead>
   <th>Label</th>
@@ -23,9 +16,5 @@
   </c:forEach>
   </tbody>
 </table>
-
-<script type="text/javascript">
-</script>
-
 
 <%@include file="dashboardFooterBS3.jsp" %>
