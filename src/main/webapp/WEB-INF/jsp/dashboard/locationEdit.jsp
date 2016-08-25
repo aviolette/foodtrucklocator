@@ -26,7 +26,7 @@
   </div>
   <div class="col-md-4">
     <div>
-      <a id="locationSearchButton" href="#" class="btn btn-default">Search for a location</a>
+      <a id="locationSearchButton" href="#" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Search for a location</a>
     </div>
     <ul id="searchLocations">
     </ul>
@@ -242,8 +242,8 @@
       });
 
       google.maps.event.addListener(marker, 'dragend', function(evt) {
-        $("#latitude").attr("value", marker.position.lat());
-        $("#longitude").attr("value", marker.position.lng());
+        $("#latitude").val(marker.position.lat());
+        $("#longitude").val(marker.position.lng());
         circle.setCenter(marker.position);
       });
 
@@ -287,8 +287,8 @@
                   lng = $(e.target).attr("lng");
               var newPos = new google.maps.LatLng(parseFloat(lat),
                   parseFloat(lng));
-              $("#latitude").attr("value", lat);
-              $("#longitude").attr("value", lng);
+              $("#latitude").val(lat);
+              $("#longitude").val(lng);
               marker.setPosition(newPos);
 
             });
