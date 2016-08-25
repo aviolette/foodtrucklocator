@@ -6,7 +6,8 @@
   <div class="col-md-12">
     <div class="btn-toolbar">
       <div class="btn-group">
-        <a class="btn btn-default" href="/admin/trucks/${truckId}/menu">Edit Menu</a>
+        <a class="btn btn-default" href="/admin/trucks/${truckId}/menu"><span class="glyphicon glyphicon-pencil"></span>
+          Edit Menu</a>
       </div>
       <div class="btn-group">
         <a class="btn btn-default" href="/trucks/${truckId}">View Public Page</a>
