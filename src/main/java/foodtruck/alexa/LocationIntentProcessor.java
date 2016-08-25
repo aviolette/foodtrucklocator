@@ -51,6 +51,7 @@ public class LocationIntentProcessor implements IntentProcessor {
       log.severe("Could not find location " + slot.getValue() + " that is specified in alexa");
       speechText = "There are no trucks at this location";
     } else {
+      log.info("Requested food trucks at " + location.getName());
       Set<String> truckNames = FluentIterable.from(
           service.findStopsAtLocationOverRange(location, new Interval(clock.now(), clock.timeAt(23, 59))))
           .transform(new Function<TruckStop, String>() {
