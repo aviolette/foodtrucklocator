@@ -10,11 +10,13 @@ import com.google.inject.multibindings.MapBinder;
  * @since 8/25/16
  */
 public class AlexaModule extends AbstractModule {
+  static final String GET_FOOD_TRUCKS_AT_LOCATION = "GetFoodTrucksAtLocation";
+
   @Override
   protected void configure() {
     bind(Speechlet.class).to(FTFSpeechlet.class);
     MapBinder<String, IntentProcessor> intentProcessorMapBinder = MapBinder.newMapBinder(binder(), String.class,
         IntentProcessor.class);
-    intentProcessorMapBinder.addBinding("GetFoodTrucksAtLocation").to(LocationIntentProcessor.class);
+    intentProcessorMapBinder.addBinding(GET_FOOD_TRUCKS_AT_LOCATION).to(LocationIntentProcessor.class);
   }
 }

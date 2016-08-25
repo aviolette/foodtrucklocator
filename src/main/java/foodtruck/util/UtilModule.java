@@ -62,6 +62,12 @@ public class UtilModule extends AbstractModule {
     return DateTimeFormat.forPattern("YYYYMMdd").withZone(zone);
   }
 
+  @AlexaDateFormat
+  @Provides
+  public DateTimeFormatter providesAlexDateTimeFormat(DateTimeZone zone) {
+    return DateTimeFormat.forPattern("YYYY-MM-dd").withZone(zone);
+  }
+
   @HttpHeaderFormat @Provides
   public DateTimeFormatter providesHttpHeaderFormat(DateTimeZone zone) {
     return DateTimeFormat.forPattern("EEE, dd-MMM-YYYY hh:mm:ss a").withZone(zone);
