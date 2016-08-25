@@ -2,7 +2,7 @@ package foodtruck.server.resources;
 
 import java.io.IOException;
 
-import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 
 import com.amazon.speech.json.SpeechletResponseEnvelope;
@@ -18,7 +18,7 @@ import com.google.common.base.Throwables;
 @Path("/amazonalexa")
 public class AlexaResource {
 
-  @GET
+  @POST
   public String getRequest() {
     String speechText = "Hello world";
 
