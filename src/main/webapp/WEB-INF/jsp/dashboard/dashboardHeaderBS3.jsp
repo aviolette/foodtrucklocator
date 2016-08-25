@@ -60,6 +60,9 @@
           <li><a href="#" class="btn btn-block" id="invalidateButton"><span
               class="glyphicon glyphicon-ban-circle"></span> </a></li>
           <li><a title="home page" class="btn btn-block" href="/"><span class="glyphicon glyphicon-home"></span> </a>
+          <li><a title="Logout" class="btn btn-block" href="${signoutUrl}"><span
+              class="glyphicon glyphicon-log-out"></span> </a></li>
+
         </ul>
       </div>
     </div>
