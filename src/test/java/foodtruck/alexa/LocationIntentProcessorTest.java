@@ -253,4 +253,69 @@ public class LocationIntentProcessorTest extends EasyMockSupport {
         "There are 3 trucks scheduled to be at Clark and Monroe tomorrow: Beavers Donuts, Chicagos Finest, and The Fat Pickle");
     verifyAll();
   }
+
+  @Test
+  public void processOneSomeFutureDate() throws Exception {
+    Intent intent = Intent.builder()
+        .withName(AlexaModule.GET_FOOD_TRUCKS_AT_LOCATION)
+        .withSlots(
+            ImmutableMap.of(SLOT_LOCATION, Slot.builder().withName(SLOT_LOCATION).withValue("Clark and Monroe").build(),
+                SLOT_WHEN, Slot.builder().withName(SLOT_WHEN).withValue("2016-07-18").build()))
+        .build();
+    date = date.withDayOfMonth(18);
+    expect(locator.locate("Clark and Monroe", GeolocationGranularity.NARROW)).andReturn(location);
+    expect(service.findStopsNearALocation(location, date.toLocalDate())).andReturn(
+        ImmutableList.of(TruckStop.builder().truck(Truck.builder().name("The Fat Pickle").build()).build()));
+    replayAll();
+    SpeechletResponse response = processor.process(intent, null);
+    assertThat(response.getCard().getTitle()).isEqualTo("Food Trucks at Clark and Monroe");
+    assertThat(((PlainTextOutputSpeech) response.getOutputSpeech()).getText()).isEqualTo(
+        "The Fat Pickle is the only food truck scheduled to be at Clark and Monroe on that date");
+    verifyAll();
+  }
+
+  @Test
+  public void processTwoSomeFutureDate() throws Exception {
+    Intent intent = Intent.builder()
+        .withName(AlexaModule.GET_FOOD_TRUCKS_AT_LOCATION)
+        .withSlots(
+            ImmutableMap.of(SLOT_LOCATION, Slot.builder().withName(SLOT_LOCATION).withValue("Clark and Monroe").build(),
+                SLOT_WHEN, Slot.builder().withName(SLOT_WHEN).withValue("2016-07-18").build()))
+        .build();
+    date = date.withDayOfMonth(18);
+    expect(locator.locate("Clark and Monroe", GeolocationGranularity.NARROW)).andReturn(location);
+    expect(service.findStopsNearALocation(location, date.toLocalDate())).andReturn(
+        ImmutableList.of(TruckStop.builder().truck(Truck.builder().name("Beavers Donuts").build()).build(),
+            TruckStop.builder().truck(Truck.builder().name("The Fat Pickle").build()).build()));
+    replayAll();
+    SpeechletResponse response = processor.process(intent, null);
+    assertThat(response.getCard().getTitle()).isEqualTo("Food Trucks at Clark and Monroe");
+    assertThat(((PlainTextOutputSpeech) response.getOutputSpeech()).getText()).isEqualTo(
+        "Beavers Donuts and The Fat Pickle are scheduled to be at Clark and Monroe on that date");
+    verifyAll();
+  }
+
+  @Test
+  public void processThreeSomeFutureDate() throws Exception {
+    Intent intent = Intent.builder()
+        .withName(AlexaModule.GET_FOOD_TRUCKS_AT_LOCATION)
+        .withSlots(
+            ImmutableMap.of(SLOT_LOCATION, Slot.builder().withName(SLOT_LOCATION).withValue("Clark and Monroe").build(),
+                SLOT_WHEN, Slot.builder().withName(SLOT_WHEN).withValue("2016-07-18").build()))
+        .build();
+    date = date.withDayOfMonth(18);
+    expect(locator.locate("Clark and Monroe", GeolocationGranularity.NARROW)).andReturn(location);
+    expect(service.findStopsNearALocation(location, date.toLocalDate())).andReturn(
+        ImmutableList.of(TruckStop.builder().truck(Truck.builder().name("Beavers Donuts").build()).build(),
+            TruckStop.builder().truck(Truck.builder().name("Chicagos Finest").build()).build(),
+            TruckStop.builder().truck(Truck.builder().name("The Fat Pickle").build()).build()));
+    replayAll();
+    SpeechletResponse response = processor.process(intent, null);
+    assertThat(response.getCard().getTitle()).isEqualTo("Food Trucks at Clark and Monroe");
+    assertThat(((PlainTextOutputSpeech) response.getOutputSpeech()).getText()).isEqualTo(
+        "There are 3 trucks scheduled to be at Clark and Monroe on that date: Beavers Donuts, Chicagos Finest, and The Fat Pickle");
+    verifyAll();
+  }
+
+
 }
