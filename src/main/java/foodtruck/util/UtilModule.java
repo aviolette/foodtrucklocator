@@ -7,6 +7,8 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import static org.joda.time.DateTimeZone.UTC;
+
 /**
  * @author aviolette@gmail.com
  * @since 9/22/11
@@ -65,7 +67,7 @@ public class UtilModule extends AbstractModule {
   @AlexaDateFormat
   @Provides
   public DateTimeFormatter providesAlexDateTimeFormat(DateTimeZone zone) {
-    return DateTimeFormat.forPattern("YYYY-MM-dd").withZone(zone);
+    return DateTimeFormat.forPattern("YYYY-MM-dd").withZone(UTC);
   }
 
   @HttpHeaderFormat @Provides

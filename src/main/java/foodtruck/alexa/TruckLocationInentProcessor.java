@@ -21,4 +21,6 @@ public class TruckLocationInentProcessor implements IntentProcessor {
     speech.setText(speechText);
     return SpeechletResponse.newTellResponse(speech, card);
   }
+
+
 }
