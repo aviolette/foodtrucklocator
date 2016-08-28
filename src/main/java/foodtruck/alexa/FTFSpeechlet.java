@@ -16,7 +16,7 @@ import com.google.inject.Inject;
  * @author aviolette
  * @since 8/25/16
  */
-public class FTFSpeechlet implements Speechlet {
+class FTFSpeechlet implements Speechlet {
   private final Map<String, IntentProcessor> processors;
 
   @Inject

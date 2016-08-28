@@ -8,6 +8,6 @@ import com.amazon.speech.speechlet.SpeechletResponse;
  * @author aviolette
  * @since 8/25/16
  */
-public interface IntentProcessor {
+interface IntentProcessor {
   SpeechletResponse process(Intent intent, Session session);
 }

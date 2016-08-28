@@ -11,7 +11,7 @@ import com.amazon.speech.ui.SimpleCard;
  * @author aviolette
  * @since 8/28/16
  */
-public class HelpIntentProcessor implements IntentProcessor {
+class HelpIntentProcessor implements IntentProcessor {
   @Override
   public SpeechletResponse process(Intent intent, Session session) {
     String speechText = "Food Truck Finder.  You can ask me what trucks will be at a location or where a specific truck is today";
