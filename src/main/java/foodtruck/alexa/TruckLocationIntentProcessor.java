@@ -1,0 +1,242 @@
+package foodtruck.alexa;
+
+import com.amazon.speech.slu.Intent;
+import com.amazon.speech.slu.Slot;
+import com.amazon.speech.speechlet.Session;
+import com.amazon.speech.speechlet.SpeechletResponse;
+import com.amazon.speech.ui.PlainTextOutputSpeech;
+import com.amazon.speech.ui.SimpleCard;
+import com.google.common.base.Function;
+import com.google.common.base.Strings;
+import com.google.common.collect.FluentIterable;
+import com.google.inject.Inject;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import foodtruck.dao.TruckDAO;
+import foodtruck.model.Truck;
+import foodtruck.model.TruckSchedule;
+import foodtruck.model.TruckStop;
+import foodtruck.truckstops.FoodTruckStopService;
+import foodtruck.util.Clock;
+
+/**
+ * @author aviolette
+ * @since 8/25/16
+ */
+class TruckLocationIntentProcessor implements IntentProcessor {
+  static final String SLOT_TRUCK = "Truck";
+  static final String SLOT_TIME_OF_DAY = "TimeOfDay";
+  private static final Function<TruckStop, String> TO_NAME = new Function<TruckStop, String>() {
+    @Override
+    public String apply(TruckStop input) {
+      return input.getLocation().getShortenedName();
+    }
+  };
+  private static final Function<TruckStop, String> TO_NAME_WITH_TIME = new Function<TruckStop, String>() {
+    private final DateTimeFormatter formatter = DateTimeFormat.forStyle("-S");
+
+    @Override
+    public String apply(TruckStop input) {
+      return input.getLocation().getShortenedName() + " at " + formatter.print(input.getStartTime());
+    }
+  };
+  private final FoodTruckStopService service;
+  private final TruckDAO truckDAO;
+  private final Clock clock;
+
+  @Inject
+  public TruckLocationIntentProcessor(FoodTruckStopService service, TruckDAO truckDAO, Clock clock) {
+    this.service = service;
+    this.truckDAO = truckDAO;
+    this.clock = clock;
+  }
+
+  @Override
+  public SpeechletResponse process(Intent intent, Session session) {
+    Slot truckSlot = intent.getSlot(SLOT_TRUCK),
+        timeOfDaySlot = intent.getSlot(SLOT_TIME_OF_DAY);
+    Truck truck = truckDAO.findByName(truckSlot.getValue());
+    String when = timeOfDaySlot.getValue();
+    TimeOfDay tod = TimeOfDay.fromValue(when);
+    String speechText = speech(truck, when, tod);
+    SimpleCard card = new SimpleCard();
+    card.setTitle(truck.getName());
+    card.setContent(speechText);
+    PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
+    speech.setText(speechText);
+    return SpeechletResponse.newTellResponse(speech, card);
+  }
+
+  private String speech(Truck truck, String when, TimeOfDay tod) {
+
+    String speechText, currentStops = "", laterStops = "";
+    TruckSchedule schedule = service.findStopsForDay(truck.getId(), clock.currentDay());
+    final DateTime requestTime = tod.requestTime(clock);
+    DateTime now = clock.now();
+    if (tod.isApplicableNow(requestTime)) {
+      currentStops = AlexaUtils.toAlexaList(FluentIterable.from(schedule.getStops())
+          .filter(new TruckStop.ActiveDuringPredicate(requestTime))
+          .transform(TO_NAME)
+          .toList());
+    }
+    if (tod.isApplicableLater(now)) {
+      laterStops = AlexaUtils.toAlexaList(FluentIterable.from(schedule.getStops())
+          .filter(new TruckStop.ActiveAfterPredicate(requestTime))
+          .transform(TO_NAME_WITH_TIME)
+          .toList());
+    }
+    if (currentStops.length() > 0 && laterStops.isEmpty()) {
+      String verbPhrase = tod.isOver(now) ? "was" : "is currently";
+      String qualifier = tod.isOver(now) ? " for " + tod.toString().toLowerCase() : "";
+      speechText = String.format("%s %s at %s%s", truck.getName(), verbPhrase, currentStops, qualifier);
+    } else if (currentStops.isEmpty() && laterStops.length() > 0) {
+      speechText = String.format("%s will be at %s", truck.getName(), laterStops);
+    } else if (currentStops.length() > 0 && laterStops.length() > 0) {
+      speechText = String.format("%s is currently at %s and will be at %s", truck.getName(), currentStops, laterStops);
+    } else if ("now".equals(when)) {
+      speechText = String.format("%s is not currently on the road", truck.getName());
+    } else {
+      speechText = String.format("%s is not on the road for the remainder of the day", truck.getName());
+    }
+    return speechText;
+  }
+
+  private enum TimeOfDay {
+    TODAY {
+      @Override
+      public boolean isApplicableNow(DateTime dateTime) {
+        return true;
+      }
+
+      @Override
+      public boolean isApplicableLater(DateTime now) {
+        return true;
+      }
+    }, NOW {
+      @Override
+      public boolean isApplicableNow(DateTime dateTime) {
+        return true;
+      }
+    }, LATER {
+      @Override
+      public boolean isApplicableNow(DateTime dateTime) {
+        return false;
+      }
+
+      @Override
+      public boolean isApplicableLater(DateTime now) {
+        return true;
+      }
+    }, LUNCH {
+      @Override
+      public boolean isApplicableNow(DateTime dateTime) {
+        int hourOfDay = dateTime.getHourOfDay();
+        return hourOfDay >= 11 && hourOfDay < 14;
+      }
+
+      @Override
+      public DateTime requestTime(Clock clock) {
+        return clock.timeAt(12, 0);
+      }
+
+      @Override
+      public boolean isApplicableLater(DateTime now) {
+        int hourOfDay = now.getHourOfDay();
+        return hourOfDay < 14;
+      }
+
+      @Override
+      public boolean isOver(DateTime now) {
+        return now.getHourOfDay() >= 14;
+      }
+
+    }, ELEVENSES {
+      @Override
+      public boolean isApplicableNow(DateTime dateTime) {
+        int hourOfDay = dateTime.getHourOfDay();
+        return hourOfDay >= 10 && hourOfDay < 12;
+      }
+
+      @Override
+      public DateTime requestTime(Clock clock) {
+        return clock.timeAt(11, 0);
+      }
+
+      @Override
+      public boolean isApplicableLater(DateTime now) {
+        int hourOfDay = now.getHourOfDay();
+        return hourOfDay < 12;
+      }
+
+      @Override
+      public boolean isOver(DateTime now) {
+        return now.getHourOfDay() >= 12;
+      }
+    }, BREAKFAST {
+      @Override
+      public boolean isApplicableNow(DateTime dateTime) {
+        int hourOfDay = dateTime.getHourOfDay();
+        return hourOfDay >= 5 && hourOfDay < 11;
+      }
+
+      @Override
+      public DateTime requestTime(Clock clock) {
+        return clock.timeAt(8, 0);
+      }
+
+      @Override
+      public boolean isOver(DateTime now) {
+        return now.getHourOfDay() >= 11;
+      }
+    }, DINNER {
+      @Override
+      public boolean isApplicableNow(DateTime dateTime) {
+        int hourOfDay = dateTime.getHourOfDay();
+        return hourOfDay >= 16 && hourOfDay < 20;
+      }
+
+      @Override
+      public DateTime requestTime(Clock clock) {
+        return clock.timeAt(17, 0);
+      }
+
+      @Override
+      public boolean isApplicableLater(DateTime now) {
+        int hourOfDay = now.getHourOfDay();
+        return hourOfDay < 20;
+      }
+
+      @Override
+      public boolean isOver(DateTime now) {
+        return now.getHourOfDay() > 20;
+      }
+    };
+
+    public static TimeOfDay fromValue(String keyword) {
+      if (Strings.isNullOrEmpty(keyword)) {
+        return TODAY;
+      } else if (keyword.startsWith("for ")) {
+        return valueOf(keyword.substring(4).toUpperCase());
+      } else {
+        return valueOf(keyword.toUpperCase());
+      }
+    }
+
+    public boolean isOver(DateTime now) {
+      return false;
+    }
+
+    public boolean isApplicableLater(DateTime now) {
+      return false;
+    }
+
+    public abstract boolean isApplicableNow(DateTime dateTime);
+
+    public DateTime requestTime(Clock clock) {
+      return clock.now();
+    }
+  }
+}

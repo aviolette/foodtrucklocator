@@ -260,6 +260,12 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     dataStore.delete(keys.build());
   }
 
+  @Nullable
+  @Override
+  public Truck findByName(String name) {
+    return aq().filter(predicate(TRUCK_CANONICAL_NAME, Query.FilterOperator.EQUAL, Truck.canonize(name))).findFirst();
+  }
+
   @Override
   public Set<Truck> findTrucksWithCalendars() {
     DatastoreService dataStore = provider.get();

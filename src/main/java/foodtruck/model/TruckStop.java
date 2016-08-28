@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
@@ -178,6 +179,32 @@ public class TruckStop extends ModelEntity {
 
   public Interval getInterval() {
     return new Interval(getStartTime(), getEndTime());
+  }
+
+  public static class ActiveAfterPredicate implements Predicate<TruckStop> {
+    private DateTime requestTime;
+
+    public ActiveAfterPredicate(DateTime requestTime) {
+      this.requestTime = requestTime;
+    }
+
+    @Override
+    public boolean apply(TruckStop input) {
+      return input.getStartTime().isAfter(requestTime);
+    }
+  }
+
+  public static class ActiveDuringPredicate implements Predicate<TruckStop> {
+    private DateTime requestTime;
+
+    public ActiveDuringPredicate(DateTime requestTime) {
+      this.requestTime = requestTime;
+    }
+
+    @Override
+    public boolean apply(TruckStop input) {
+      return input.activeDuring(requestTime);
+    }
   }
 
   public static class Builder {

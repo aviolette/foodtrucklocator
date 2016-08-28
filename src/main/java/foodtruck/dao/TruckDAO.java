@@ -64,4 +64,7 @@ public interface TruckDAO extends DAO<String, Truck> {
   Iterable<Truck> findTrucksWithEmail();
 
   void deleteAll();
+
+  @Nullable
+  Truck findByName(String name);
 }

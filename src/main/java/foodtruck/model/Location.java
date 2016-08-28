@@ -253,6 +253,13 @@ public class Location extends ModelEntity implements Serializable {
     return managerEmails;
   }
 
+  public String getShortenedName() {
+    if (name.endsWith(", Chicago, IL")) {
+      return name.substring(0, name.length() - 13);
+    }
+    return name;
+  }
+
   public static class Builder {
     private Object key;
     private double lat;

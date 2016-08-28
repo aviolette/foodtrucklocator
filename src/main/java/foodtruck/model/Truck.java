@@ -120,6 +120,14 @@ public class Truck extends ModelEntity implements Serializable {
     return new Builder(t);
   }
 
+  public static String canonize(String name) {
+    name = name.toLowerCase();
+    if (name.startsWith("the ")) {
+      name = name.substring(4);
+    }
+    return name;
+  }
+
   public List<String> getBlacklistLocationNames() {
     return blacklistLocationNames;
   }
@@ -163,7 +171,6 @@ public class Truck extends ModelEntity implements Serializable {
   public String getDefaultCity() {
     return defaultCity;
   }
-
 
   public @Nullable String getPreviewIcon() {
     return previewIcon;
@@ -423,12 +430,7 @@ public class Truck extends ModelEntity implements Serializable {
   }
 
   public String canonicalName() {
-    String name = getName();
-    name = name.toLowerCase();
-    if(name.startsWith("the ")) {
-      name = name.substring(4);
-    }
-    return name;
+    return canonize(getName());
   }
 
   public static class Stats implements Serializable {

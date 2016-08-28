@@ -10,7 +10,6 @@ import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.PlainTextOutputSpeech;
 import com.amazon.speech.ui.SimpleCard;
 import com.google.common.base.Function;
-import com.google.common.base.Joiner;
 import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 
@@ -31,7 +30,6 @@ class LocationIntentProcessor implements IntentProcessor {
   static final String SLOT_LOCATION = "Location";
   static final String SLOT_WHEN = "When";
   private static final Logger log = Logger.getLogger(LocationIntentProcessor.class.getName());
-  private static final Joiner JOINER = Joiner.on(", ");
   private final GeoLocator locator;
   private final FoodTruckStopService service;
   private final Clock clock;
@@ -86,8 +84,7 @@ class LocationIntentProcessor implements IntentProcessor {
             .append(" ")
             .append(dateRepresentation);
       } else {
-        String joined = JOINER.join(truckNames.subList(0, truckNames.size() - 1));
-        joined = joined + ", and " + truckNames.get(truckNames.size() - 1);
+        String joined = AlexaUtils.toAlexaList(truckNames);
         speechTextBuilder.append("There are ")
             .append(count)
             .append(" trucks ")

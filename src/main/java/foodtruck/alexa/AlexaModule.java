@@ -19,6 +19,6 @@ public class AlexaModule extends AbstractModule {
     MapBinder<String, IntentProcessor> intentProcessorMapBinder = MapBinder.newMapBinder(binder(), String.class,
         IntentProcessor.class);
     intentProcessorMapBinder.addBinding(GET_FOOD_TRUCKS_AT_LOCATION).to(LocationIntentProcessor.class);
-    intentProcessorMapBinder.addBinding(WHERE_IS_TRUCK).to(TruckLocationInentProcessor.class);
+    intentProcessorMapBinder.addBinding(WHERE_IS_TRUCK).to(TruckLocationIntentProcessor.class);
   }
 }
