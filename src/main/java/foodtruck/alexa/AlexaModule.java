@@ -20,5 +20,8 @@ public class AlexaModule extends AbstractModule {
         IntentProcessor.class);
     intentProcessorMapBinder.addBinding(GET_FOOD_TRUCKS_AT_LOCATION).to(LocationIntentProcessor.class);
     intentProcessorMapBinder.addBinding(WHERE_IS_TRUCK).to(TruckLocationIntentProcessor.class);
+    intentProcessorMapBinder.addBinding("AMAZON.HelpIntent").to(HelpIntentProcessor.class);
+    intentProcessorMapBinder.addBinding("AMAZON.CancelIntent").to(CancelProcessor.class);
+    intentProcessorMapBinder.addBinding("AMAZON.StopIntent").to(CancelProcessor.class);
   }
 }
