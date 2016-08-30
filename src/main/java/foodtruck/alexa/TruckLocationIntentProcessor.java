@@ -1,11 +1,8 @@
 package foodtruck.alexa;
 
 import com.amazon.speech.slu.Intent;
-import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
-import com.amazon.speech.ui.PlainTextOutputSpeech;
-import com.amazon.speech.ui.SimpleCard;
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
@@ -56,22 +53,20 @@ class TruckLocationIntentProcessor implements IntentProcessor {
 
   @Override
   public SpeechletResponse process(Intent intent, Session session) {
-    Slot truckSlot = intent.getSlot(SLOT_TRUCK),
-        timeOfDaySlot = intent.getSlot(SLOT_TIME_OF_DAY);
-    Truck truck = truckDAO.findByName(truckSlot.getValue());
-    String when = timeOfDaySlot.getValue();
-    TimeOfDay tod = TimeOfDay.fromValue(when);
-    String speechText = speech(truck, when, tod);
-    SimpleCard card = new SimpleCard();
-    card.setTitle(truck.getName());
-    card.setContent(speechText);
-    PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
-    speech.setText(speechText);
-    return SpeechletResponse.newTellResponse(speech, card);
+    Truck truck = truckDAO.findByName(intent.getSlot(SLOT_TRUCK).getValue());
+    if (truck == null) {
+      String speechText = "I currently provide information for food trucks that operate in and around Chicago. Can you try a different one?";
+      return SpeechletResponseBuilder.builder().speechText(speechText).repromptText(speechText).ask();
+    } else {
+      String when = intent.getSlot(SLOT_TIME_OF_DAY).getValue();
+      return SpeechletResponseBuilder.builder()
+          .speechText(speech(truck, when, TimeOfDay.fromValue(when)))
+          .simpleCard(truck.getName())
+          .tell();
+    }
   }
 
   private String speech(Truck truck, String when, TimeOfDay tod) {
-
     String speechText, currentStops = "", laterStops = "";
     TruckSchedule schedule = service.findStopsForDay(truck.getId(), clock.currentDay());
     final DateTime requestTime = tod.requestTime(clock);

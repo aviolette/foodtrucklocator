@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
@@ -23,6 +24,11 @@ import org.joda.time.Interval;
  * @since Jul 12, 2011
  */
 public class TruckStop extends ModelEntity {
+  public static final Function TO_TRUCK_NAME = new Function<TruckStop, String>() {
+    public String apply(TruckStop input) {
+      return input.getTruck().getName();
+    }
+  };
   private static final Logger log = Logger.getLogger(TruckStop.class.getName());
   private final Truck truck;
   private final DateTime startTime;
