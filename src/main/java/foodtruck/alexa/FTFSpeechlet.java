@@ -45,7 +45,7 @@ class FTFSpeechlet implements Speechlet {
 
   @Override
   public SpeechletResponse onIntent(IntentRequest intentRequest, Session session) throws SpeechletException {
-    log.log(Level.INFO, "Received intent {} ", AlexaUtils.intentToString(intentRequest.getIntent()));
+    log.log(Level.INFO, "Received intent {0} ", AlexaUtils.intentToString(intentRequest.getIntent()));
     IntentProcessor processor = processors.get(intentRequest.getIntent().getName());
     if (processor == null) {
       throw new SpeechletException("Invalid intent: " + intentRequest.getIntent().getName());
