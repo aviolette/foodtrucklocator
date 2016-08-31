@@ -67,7 +67,7 @@ class SpeechletResponseBuilder {
   private OutputSpeech buildOutput(String text, boolean ssml) {
     if (ssml) {
       SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
-      outputSpeech.setSsml(speechText);
+      outputSpeech.setSsml("<speak>" + speechText + "</speak>");
       return outputSpeech;
     } else {
       PlainTextOutputSpeech outputSpeech = new PlainTextOutputSpeech();
