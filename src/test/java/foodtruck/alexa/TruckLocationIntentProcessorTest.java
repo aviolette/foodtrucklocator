@@ -1,11 +1,14 @@
 package foodtruck.alexa;
 
+import java.util.List;
+
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.PlainTextOutputSpeech;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 
 import org.easymock.EasyMockSupport;
 import org.joda.time.DateTime;
@@ -39,6 +42,7 @@ public class TruckLocationIntentProcessorTest extends EasyMockSupport {
   private Truck cornerfarmacy;
   private ImmutableList<TruckStop> twoStops;
   private ImmutableList<TruckStop> fourStops;
+  private ImmutableList<TruckStop> fiveStops;
 
   @Before
   public void before() {
@@ -52,6 +56,7 @@ public class TruckLocationIntentProcessorTest extends EasyMockSupport {
     this.truckDAO = createMock(TruckDAO.class);
     this.processor = new TruckLocationIntentProcessor(service, truckDAO, clock);
     Location wackerAndAdams = Location.builder().name("Wacker and Adams, Chicago, IL").lat(1).lng(2).build();
+    Location sixhundred = Location.builder().name("600 West Chicago Avenue, Chicago, IL").lat(1).lng(2).build();
     Location clarkMonroe = Location.builder().name("Clark and Monroe, Chicago, IL").lat(1).lng(2).build();
     Location begyleBrewing = Location.builder().name("Begyle Brewing").lat(1).lng(2).build();
     Location urbanLegend = Location.builder().name("Urban Legend Brewery").lat(1).lng(2).build();
@@ -71,15 +76,31 @@ public class TruckLocationIntentProcessorTest extends EasyMockSupport {
         .startTime(date.withTime(6, 0, 0, 0))
         .endTime(date.withTime(6, 58, 0, 0))
         .truck(cornerfarmacy)
-        .location(wackerAndAdams)
-        .build(), twoStops.get(0), twoStops.get(1), TruckStop.builder()
+        .location(wackerAndAdams).build(), TruckStop.builder()
+        .startTime(date.withTime(7, 30, 0, 0))
+        .endTime(date.withTime(9, 30, 0, 0))
+        .truck(cornerfarmacy)
+        .location(clarkMonroe)
+        .build(), TruckStop.builder()
+        .startTime(date.withTime(11, 30, 0, 0))
+        .endTime(date.withTime(13, 30, 0, 0))
+        .truck(cornerfarmacy)
+        .location(sixhundred)
+        .build(), TruckStop.builder()
         .startTime(date.withTime(17, 0, 0, 0))
         .endTime(date.withTime(21, 0, 0, 0))
         .truck(cornerfarmacy)
         .location(urbanLegend)
         .build());
+    List<TruckStop> fiveStops = Lists.newLinkedList(this.fourStops);
+    fiveStops.add(TruckStop.builder()
+        .startTime(date.withTime(17, 0, 0, 0))
+        .endTime(date.withTime(21, 0, 0, 0))
+        .truck(cornerfarmacy)
+        .location(begyleBrewing)
+        .build());
+    this.fiveStops = ImmutableList.copyOf(fiveStops);
   }
-
   @Test
   public void process_NoTimeSpecified_HasOneStop() {
     expect(clock.now()).andStubReturn(date);
@@ -99,10 +120,22 @@ public class TruckLocationIntentProcessorTest extends EasyMockSupport {
   }
 
   @Test
-  public void process_Today_HasFourStops() {
+  public void process_Today_HasFiveStops() {
     expect(clock.now()).andStubReturn(date);
-    runIt("today", fourStops,
-        "Corner Farmacy is currently at Clark and Monroe and will be at Begyle Brewing at 5:00 PM and Urban Legend Brewery at 5:00 PM");
+    runIt("today", fiveStops,
+        "Corner Farmacy will be at 600 West Chicago Avenue at 11:30 AM, Urban Legend Brewery at 5:00 PM, and Begyle Brewing at 5:00 PM");
+  }
+
+  @Test
+  public void process_LunchInFuture_HasFiveStops() {
+    expect(clock.now()).andStubReturn(date.withTime(10, 0, 0, 0));
+    runIt("lunch", fiveStops, "Corner Farmacy will be at 600 West Chicago Avenue at 11:30 AM");
+  }
+
+  @Test
+  public void process_LunchInPast_HasFiveStops() {
+    expect(clock.now()).andStubReturn(date.withTime(15, 0, 0, 1));
+    runIt("lunch", fiveStops, "Corner Farmacy was at 600 West Chicago Avenue for lunch");
   }
 
   @Test

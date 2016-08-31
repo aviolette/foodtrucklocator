@@ -4,6 +4,7 @@ import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
@@ -71,14 +72,20 @@ class TruckLocationIntentProcessor implements IntentProcessor {
     TruckSchedule schedule = service.findStopsForDay(truck.getId(), clock.currentDay());
     final DateTime requestTime = tod.requestTime(clock);
     DateTime now = clock.now();
-    if (tod.isApplicableNow(requestTime)) {
+    boolean considerLater = true;
+    if (tod.isOver(now) && tod.isSpecific()) {
       currentStops = AlexaUtils.toAlexaList(FluentIterable.from(schedule.getStops())
           .filter(new TruckStop.ActiveDuringPredicate(requestTime))
+          .transform(TO_NAME)
+          .toList(), false);
+      considerLater = false;
+    } else if (tod.isApplicableNow(now)) {
+      currentStops = AlexaUtils.toAlexaList(FluentIterable.from(schedule.getStops())
+          .filter(new TruckStop.ActiveDuringPredicate(now))
           .transform(TO_NAME).toList(), false);
     }
-    if (tod.isApplicableLater(now)) {
-      laterStops = AlexaUtils.toAlexaList(FluentIterable.from(schedule.getStops())
-          .filter(new TruckStop.ActiveAfterPredicate(requestTime))
+    if (considerLater && tod.isApplicableAfter(requestTime)) {
+      laterStops = AlexaUtils.toAlexaList(FluentIterable.from(schedule.getStops()).filter(tod.filterFuture(now))
           .transform(TO_NAME_WITH_TIME).toList(), false);
     }
     if (currentStops.length() > 0 && laterStops.isEmpty()) {
@@ -105,12 +112,17 @@ class TruckLocationIntentProcessor implements IntentProcessor {
       }
 
       @Override
-      public boolean isApplicableLater(DateTime now) {
+      public boolean isApplicableAfter(DateTime now) {
         return true;
       }
     }, NOW {
       @Override
       public boolean isApplicableNow(DateTime dateTime) {
+        return true;
+      }
+
+      @Override
+      public boolean isSpecific() {
         return true;
       }
     }, LATER {
@@ -120,7 +132,7 @@ class TruckLocationIntentProcessor implements IntentProcessor {
       }
 
       @Override
-      public boolean isApplicableLater(DateTime now) {
+      public boolean isApplicableAfter(DateTime now) {
         return true;
       }
     }, LUNCH {
@@ -131,12 +143,17 @@ class TruckLocationIntentProcessor implements IntentProcessor {
       }
 
       @Override
+      public boolean isSpecific() {
+        return true;
+      }
+
+      @Override
       public DateTime requestTime(Clock clock) {
         return clock.timeAt(12, 0);
       }
 
       @Override
-      public boolean isApplicableLater(DateTime now) {
+      public boolean isApplicableAfter(DateTime now) {
         int hourOfDay = now.getHourOfDay();
         return hourOfDay < 14;
       }
@@ -146,6 +163,10 @@ class TruckLocationIntentProcessor implements IntentProcessor {
         return now.getHourOfDay() >= 14;
       }
 
+      @Override
+      public Predicate<TruckStop> filterFuture(DateTime now) {
+        return new TruckStop.ActiveDuringPredicate(now.withTime(12, 0, 0, 0));
+      }
     }, ELEVENSES {
       @Override
       public boolean isApplicableNow(DateTime dateTime) {
@@ -159,7 +180,12 @@ class TruckLocationIntentProcessor implements IntentProcessor {
       }
 
       @Override
-      public boolean isApplicableLater(DateTime now) {
+      public boolean isSpecific() {
+        return true;
+      }
+
+      @Override
+      public boolean isApplicableAfter(DateTime now) {
         int hourOfDay = now.getHourOfDay();
         return hourOfDay < 12;
       }
@@ -184,6 +210,38 @@ class TruckLocationIntentProcessor implements IntentProcessor {
       public boolean isOver(DateTime now) {
         return now.getHourOfDay() >= 11;
       }
+
+      @Override
+      public boolean isSpecific() {
+        return true;
+      }
+    }, TONIGHT {
+      @Override
+      public boolean isApplicableNow(DateTime dateTime) {
+        int hourOfDay = dateTime.getHourOfDay();
+        return hourOfDay >= 16 && hourOfDay < 25;
+      }
+
+      @Override
+      public DateTime requestTime(Clock clock) {
+        return clock.timeAt(17, 0);
+      }
+
+      @Override
+      public boolean isApplicableAfter(DateTime now) {
+        int hourOfDay = now.getHourOfDay();
+        return hourOfDay < 20;
+      }
+
+      @Override
+      public boolean isOver(DateTime now) {
+        return now.getHourOfDay() > 20;
+      }
+
+      @Override
+      public boolean isSpecific() {
+        return true;
+      }
     }, DINNER {
       @Override
       public boolean isApplicableNow(DateTime dateTime) {
@@ -197,7 +255,7 @@ class TruckLocationIntentProcessor implements IntentProcessor {
       }
 
       @Override
-      public boolean isApplicableLater(DateTime now) {
+      public boolean isApplicableAfter(DateTime now) {
         int hourOfDay = now.getHourOfDay();
         return hourOfDay < 20;
       }
@@ -205,6 +263,11 @@ class TruckLocationIntentProcessor implements IntentProcessor {
       @Override
       public boolean isOver(DateTime now) {
         return now.getHourOfDay() > 20;
+      }
+
+      @Override
+      public boolean isSpecific() {
+        return true;
       }
     };
 
@@ -222,7 +285,7 @@ class TruckLocationIntentProcessor implements IntentProcessor {
       return false;
     }
 
-    public boolean isApplicableLater(DateTime now) {
+    public boolean isApplicableAfter(DateTime now) {
       return false;
     }
 
@@ -230,6 +293,14 @@ class TruckLocationIntentProcessor implements IntentProcessor {
 
     public DateTime requestTime(Clock clock) {
       return clock.now();
+    }
+
+    public boolean isSpecific() {
+      return false;
+    }
+
+    public Predicate<TruckStop> filterFuture(DateTime now) {
+      return new TruckStop.ActiveAfterPredicate(now);
     }
   }
 }
