@@ -156,7 +156,8 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
         .donotMatchIf((String) entity.getProperty(DONT_MATCH_REGEX_FIELD))
         .beaconnaiseEmails(getSetProperty(entity, TRUCK_BEACONNAISE_EMAILS))
         .timezoneOffset(getIntProperty(entity, TIMEZONE_OFFSET, 0))
-        .url((String) entity.getProperty(TRUCK_URL)).phoneticMarkup((String) entity.getProperty(PHONETIC_MARKUP))
+        .url((String) entity.getProperty(TRUCK_URL))
+        .phoneticMarkup(Strings.emptyToNull((String) entity.getProperty(PHONETIC_MARKUP)))
         .blacklistLocationNames(getListProperty(entity, BLACKLIST_LOCATION_NAMES))
         .categories(categoriesList == null ? ImmutableSet.<String>of() : ImmutableSet.copyOf(categoriesList))
         .useTwittalyzer((Boolean) entity.getProperty(TRUCK_TWITTALYZER_FIELD))
@@ -307,7 +308,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     entity.setProperty(BACKGROUND_IMAGE_LARGE, truck.getBackgroundImageLarge());
     entity.setProperty(MENU_URL, truck.getMenuUrl());
     entity.setProperty(TRUCK_PHONE, truck.getPhone());
-    entity.setProperty(PHONETIC_MARKUP, truck.getPhoneticMarkup());
+    entity.setProperty(PHONETIC_MARKUP, Strings.emptyToNull(truck.getPhoneticMarkup()));
     entity.setProperty(TRUCK_HIDDEN, truck.isHidden());
     entity.setProperty(TRUCK_INSTAGRAM, truck.getInstagramId());
     entity.setProperty(TRUCK_FULL_SIZE, truck.getFullsizeImage());
