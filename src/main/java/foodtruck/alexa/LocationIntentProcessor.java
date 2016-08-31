@@ -42,10 +42,16 @@ class LocationIntentProcessor implements IntentProcessor {
   public SpeechletResponse process(Intent intent, Session session) {
     Slot locationSlot = intent.getSlot(SLOT_LOCATION);
     Location location = locator.locate(locationSlot.getValue(), GeolocationGranularity.NARROW);
+    if (location == null) {
+      return SpeechletResponseBuilder.builder()
+          .speechText(
+              "I'm sorry but I don't recognize that location.  You can ask about popular food truck stops in Chicago, such as Clark and Monroe.")
+          .useSpeechTextForReprompt()
+          .ask();
+    }
     // TODO: what if location cannot be found?
     LocalDate requestDate = "tomorrow".equals(intent.getSlot(SLOT_WHEN).getValue()) ? clock.currentDay()
         .plusDays(1) : clock.currentDay();
-    // TODO: What if slot is different than either of these two values
     boolean inFuture = requestDate.isAfter(clock.currentDay());
     String dateRepresentation = toDate(requestDate);
     String noTrucks = "There are no trucks at " + locationSlot.getValue() + " " + dateRepresentation;
