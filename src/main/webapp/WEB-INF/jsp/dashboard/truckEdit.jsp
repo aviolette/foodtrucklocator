@@ -122,6 +122,11 @@
     <input type="text" class="form-control" id="beaconnaiseEmails" name="beaconnaiseEmails"
            value="${truck.beaconnaiseList}"/>
   </div>
+  <div class="form-group">
+    <label for="phoneticMarkup">Phonetic Markup</label>
+    <input type="text" class="form-control" id="phoneticMarkup" name="phoneticMarkup"
+           value="<c:out value="${truck.phoneticMarkup}" escapeXml="true"/>"/>
+  </div>
 
   <div class="form-group">
     <label for="blacklistLocations">Blacklist Locations (use ; as a separator)</label>

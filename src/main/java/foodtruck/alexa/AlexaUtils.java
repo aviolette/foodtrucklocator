@@ -15,8 +15,9 @@ import com.google.common.collect.FluentIterable;
  */
 class AlexaUtils {
   private static final Joiner JOINER = Joiner.on(", ");
+  private static final Joiner JOINER_WITH_PAUSE = Joiner.on(",<break time=\"0.3s\"/> ");
 
-  static String toAlexaList(List<String> list) {
+  static String toAlexaList(List<String> list, boolean insertPause) {
     if (list.isEmpty()) {
       return "";
     }
@@ -24,7 +25,12 @@ class AlexaUtils {
     if (list.size() == 1) {
       return rac;
     }
-    String rdc = JOINER.join(list.subList(0, list.size() - 1));
+    String rdc;
+    if (insertPause) {
+      rdc = JOINER_WITH_PAUSE.join(list.subList(0, list.size() - 1));
+    } else {
+      rdc = JOINER.join(list.subList(0, list.size() - 1));
+    }
     String oxfordComma = (list.size() == 2) ? "" : ",";
     return rdc + oxfordComma + " and " + rac;
   }
@@ -42,6 +48,5 @@ class AlexaUtils {
           }
         }).join(Joiner.on("\n")))
         .toString();
-
   }
 }

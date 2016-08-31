@@ -31,9 +31,13 @@ class SpeechletResponseBuilder {
   SpeechletResponseBuilder simpleCard(String title) {
     SimpleCard card = new SimpleCard();
     card.setTitle(title);
-    card.setContent(speechText);
+    card.setContent(scrub(speechText));
     this.card = card;
     return this;
+  }
+
+  private String scrub(String speechText) {
+    return speechSSML ? speechText.replaceAll("\\<[^>]*>", "") : speechText;
   }
 
   SpeechletResponseBuilder speechText(String text) {

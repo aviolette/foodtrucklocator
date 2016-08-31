@@ -55,6 +55,6 @@ class FTFSpeechlet implements Speechlet {
 
   @Override
   public void onSessionEnded(SessionEndedRequest sessionEndedRequest, Session session) throws SpeechletException {
-    log.fine("Alexa session ended:" + session.getSessionId());
+    log.fine("Alexa session ended: " + session.getSessionId());
   }
 }

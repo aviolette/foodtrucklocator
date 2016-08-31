@@ -74,14 +74,12 @@ class TruckLocationIntentProcessor implements IntentProcessor {
     if (tod.isApplicableNow(requestTime)) {
       currentStops = AlexaUtils.toAlexaList(FluentIterable.from(schedule.getStops())
           .filter(new TruckStop.ActiveDuringPredicate(requestTime))
-          .transform(TO_NAME)
-          .toList());
+          .transform(TO_NAME).toList(), false);
     }
     if (tod.isApplicableLater(now)) {
       laterStops = AlexaUtils.toAlexaList(FluentIterable.from(schedule.getStops())
           .filter(new TruckStop.ActiveAfterPredicate(requestTime))
-          .transform(TO_NAME_WITH_TIME)
-          .toList());
+          .transform(TO_NAME_WITH_TIME).toList(), false);
     }
     if (currentStops.length() > 0 && laterStops.isEmpty()) {
       String verbPhrase = tod.isOver(now) ? "was" : "is currently";

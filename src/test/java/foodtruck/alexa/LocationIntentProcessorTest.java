@@ -4,6 +4,8 @@ import com.amazon.speech.slu.Intent;
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.PlainTextOutputSpeech;
+import com.amazon.speech.ui.SimpleCard;
+import com.amazon.speech.ui.SsmlOutputSpeech;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -82,7 +84,7 @@ public class LocationIntentProcessorTest extends EasyMockSupport {
     replayAll();
     SpeechletResponse response = processor.process(intent, null);
     assertThat(response.getCard().getTitle()).isEqualTo("Food Trucks at Clark and Monroe");
-    assertThat(((PlainTextOutputSpeech) response.getOutputSpeech()).getText()).isEqualTo(
+    assertThat(((SsmlOutputSpeech) response.getOutputSpeech()).getSsml()).isEqualTo(
         "The Fat Pickle is the only food truck at Clark and Monroe today");
     verifyAll();
   }
@@ -102,7 +104,7 @@ public class LocationIntentProcessorTest extends EasyMockSupport {
     replayAll();
     SpeechletResponse response = processor.process(intent, null);
     assertThat(response.getCard().getTitle()).isEqualTo("Food Trucks at Clark and Monroe");
-    assertThat(((PlainTextOutputSpeech) response.getOutputSpeech()).getText()).isEqualTo(
+    assertThat(((SsmlOutputSpeech) response.getOutputSpeech()).getSsml()).isEqualTo(
         "Beavers Donuts and The Fat Pickle are at Clark and Monroe today");
     verifyAll();
   }
@@ -123,8 +125,8 @@ public class LocationIntentProcessorTest extends EasyMockSupport {
     replayAll();
     SpeechletResponse response = processor.process(intent, null);
     assertThat(response.getCard().getTitle()).isEqualTo("Food Trucks at Clark and Monroe");
-    assertThat(((PlainTextOutputSpeech) response.getOutputSpeech()).getText()).isEqualTo(
-        "There are 3 trucks at Clark and Monroe today: Beavers Donuts, Chicagos Finest, and The Fat Pickle");
+    assertThat(((SsmlOutputSpeech) response.getOutputSpeech()).getSsml()).isEqualTo(
+        "There are 3 trucks at Clark and Monroe today: Beavers Donuts,<break time=\"0.3s\"/> Chicagos Finest, and The Fat Pickle");
     verifyAll();
   }
 
@@ -142,7 +144,7 @@ public class LocationIntentProcessorTest extends EasyMockSupport {
     replayAll();
     SpeechletResponse response = processor.process(intent, null);
     assertThat(response.getCard().getTitle()).isEqualTo("Food Trucks at Clark and Monroe");
-    assertThat(((PlainTextOutputSpeech) response.getOutputSpeech()).getText()).isEqualTo(
+    assertThat(((SsmlOutputSpeech) response.getOutputSpeech()).getSsml()).isEqualTo(
         "The Fat Pickle is the only food truck at Clark and Monroe today");
     verifyAll();
   }
@@ -162,7 +164,7 @@ public class LocationIntentProcessorTest extends EasyMockSupport {
     replayAll();
     SpeechletResponse response = processor.process(intent, null);
     assertThat(response.getCard().getTitle()).isEqualTo("Food Trucks at Clark and Monroe");
-    assertThat(((PlainTextOutputSpeech) response.getOutputSpeech()).getText()).isEqualTo(
+    assertThat(((SsmlOutputSpeech) response.getOutputSpeech()).getSsml()).isEqualTo(
         "Beavers Donuts and The Fat Pickle are at Clark and Monroe today");
     verifyAll();
   }
@@ -183,8 +185,8 @@ public class LocationIntentProcessorTest extends EasyMockSupport {
     replayAll();
     SpeechletResponse response = processor.process(intent, null);
     assertThat(response.getCard().getTitle()).isEqualTo("Food Trucks at Clark and Monroe");
-    assertThat(((PlainTextOutputSpeech) response.getOutputSpeech()).getText()).isEqualTo(
-        "There are 3 trucks at Clark and Monroe today: Beavers Donuts, Chicagos Finest, and The Fat Pickle");
+    assertThat(((SsmlOutputSpeech) response.getOutputSpeech()).getSsml()).isEqualTo(
+        "There are 3 trucks at Clark and Monroe today: Beavers Donuts,<break time=\"0.3s\"/> Chicagos Finest, and The Fat Pickle");
     verifyAll();
   }
 
@@ -203,7 +205,7 @@ public class LocationIntentProcessorTest extends EasyMockSupport {
     replayAll();
     SpeechletResponse response = processor.process(intent, null);
     assertThat(response.getCard().getTitle()).isEqualTo("Food Trucks at Clark and Monroe");
-    assertThat(((PlainTextOutputSpeech) response.getOutputSpeech()).getText()).isEqualTo(
+    assertThat(((SsmlOutputSpeech) response.getOutputSpeech()).getSsml()).isEqualTo(
         "The Fat Pickle is the only food truck scheduled to be at Clark and Monroe tomorrow");
     verifyAll();
   }
@@ -224,7 +226,7 @@ public class LocationIntentProcessorTest extends EasyMockSupport {
     replayAll();
     SpeechletResponse response = processor.process(intent, null);
     assertThat(response.getCard().getTitle()).isEqualTo("Food Trucks at Clark and Monroe");
-    assertThat(((PlainTextOutputSpeech) response.getOutputSpeech()).getText()).isEqualTo(
+    assertThat(((SsmlOutputSpeech) response.getOutputSpeech()).getSsml()).isEqualTo(
         "Beavers Donuts and The Fat Pickle are scheduled to be at Clark and Monroe tomorrow");
     verifyAll();
   }
@@ -246,7 +248,10 @@ public class LocationIntentProcessorTest extends EasyMockSupport {
     replayAll();
     SpeechletResponse response = processor.process(intent, null);
     assertThat(response.getCard().getTitle()).isEqualTo("Food Trucks at Clark and Monroe");
-    assertThat(((PlainTextOutputSpeech) response.getOutputSpeech()).getText()).isEqualTo(
+    assertThat(((SsmlOutputSpeech) response.getOutputSpeech()).getSsml()).isEqualTo(
+        "There are 3 trucks scheduled to be at Clark and Monroe tomorrow: Beavers Donuts,<break time=\"0.3s\"/> Chicagos Finest, and The Fat Pickle");
+    assertThat(response.getCard().getTitle()).isEqualTo("Food Trucks at Clark and Monroe");
+    assertThat(((SimpleCard) response.getCard()).getContent()).isEqualTo(
         "There are 3 trucks scheduled to be at Clark and Monroe tomorrow: Beavers Donuts, Chicagos Finest, and The Fat Pickle");
     verifyAll();
   }

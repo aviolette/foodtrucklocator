@@ -63,18 +63,18 @@ class LocationIntentProcessor implements IntentProcessor {
           builder.speechText(noTrucks);
           break;
         case 1:
-          builder.speechText(String.format("%s is the only food truck %sat %s %s", truckNames.get(0), futurePhrase,
+          builder.speechSSML(String.format("%s is the only food truck %sat %s %s", truckNames.get(0), futurePhrase,
               locationSlot.getValue(), dateRepresentation));
           break;
         case 2:
-          builder.speechText(
+          builder.speechSSML(
               String.format("%s and %s are %sat %s %s", truckNames.get(0), truckNames.get(1), futurePhrase,
                   locationSlot.getValue(), dateRepresentation));
           break;
         default:
-          builder.speechText(
+          builder.speechSSML(
               String.format("There are %s trucks %sat %s %s: %s", count, futurePhrase, locationSlot.getValue(),
-                  dateRepresentation, AlexaUtils.toAlexaList(truckNames)));
+                  dateRepresentation, AlexaUtils.toAlexaList(truckNames, true)));
       }
       return builder.simpleCard("Food Trucks at " + locationSlot.getValue()).tell();
     }

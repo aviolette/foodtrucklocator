@@ -66,6 +66,7 @@ public class Truck extends ModelEntity implements Serializable {
   private String backgroundImageLarge;
   private @Nullable String menuUrl;
   private List<String> blacklistLocationNames;
+  private @Nullable String phoneticMarkup;
 
   // For serialization (for storage in memcached)
   private Truck() {
@@ -110,6 +111,7 @@ public class Truck extends ModelEntity implements Serializable {
     this.backgroundImageLarge = builder.backgroundImageLarge;
     this.menuUrl = builder.menuUrl;
     this.blacklistLocationNames = builder.blacklistLocationNames;
+    this.phoneticMarkup = builder.phoneticMarkup;
   }
 
   public static Builder builder() {
@@ -126,6 +128,15 @@ public class Truck extends ModelEntity implements Serializable {
       name = name.substring(4);
     }
     return name;
+  }
+
+  @Nullable
+  public String getPhoneticMarkup() {
+    return phoneticMarkup;
+  }
+
+  public String getNameInSSML() {
+    return MoreObjects.firstNonNull(phoneticMarkup, name);
   }
 
   public List<String> getBlacklistLocationNames() {
@@ -599,6 +610,7 @@ public class Truck extends ModelEntity implements Serializable {
     private String backgroundImageLarge;
     private @Nullable String menuUrl;
     private List<String> blacklistLocationNames = ImmutableList.of();
+    private @Nullable String phoneticMarkup;
 
     public Builder() {
     }
@@ -641,6 +653,12 @@ public class Truck extends ModelEntity implements Serializable {
       this.backgroundImageLarge = truck.backgroundImageLarge;
       this.menuUrl = truck.menuUrl;
       this.blacklistLocationNames = truck.blacklistLocationNames;
+      this.phoneticMarkup = truck.phoneticMarkup;
+    }
+
+    public Builder phoneticMarkup(String markup) {
+      this.phoneticMarkup = markup;
+      return this;
     }
 
     public Builder blacklistLocationNames(List<String> locationNames) {

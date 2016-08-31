@@ -26,7 +26,7 @@ import org.joda.time.Interval;
 public class TruckStop extends ModelEntity {
   public static final Function TO_TRUCK_NAME = new Function<TruckStop, String>() {
     public String apply(TruckStop input) {
-      return input.getTruck().getName();
+      return input.getTruck().getNameInSSML();
     }
   };
   private static final Logger log = Logger.getLogger(TruckStop.class.getName());

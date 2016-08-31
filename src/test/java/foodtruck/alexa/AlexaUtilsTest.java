@@ -15,22 +15,22 @@ public class AlexaUtilsTest {
 
   @Test
   public void toAlexaList_NoVals() {
-    assertThat(AlexaUtils.toAlexaList(ImmutableList.<String>of())).isEqualTo("");
+    assertThat(AlexaUtils.toAlexaList(ImmutableList.<String>of(), false)).isEqualTo("");
   }
 
   @Test
   public void toAlexaList_OneVal() {
-    assertThat(AlexaUtils.toAlexaList(ImmutableList.<String>of("red"))).isEqualTo("red");
+    assertThat(AlexaUtils.toAlexaList(ImmutableList.of("red"), false)).isEqualTo("red");
   }
 
   @Test
   public void toAlexaList_TwoVal() {
-    assertThat(AlexaUtils.toAlexaList(ImmutableList.<String>of("red", "blue"))).isEqualTo("red and blue");
+    assertThat(AlexaUtils.toAlexaList(ImmutableList.of("red", "blue"), false)).isEqualTo("red and blue");
   }
 
   @Test
   public void toAlexaList_ThreeVal() {
-    assertThat(AlexaUtils.toAlexaList(ImmutableList.<String>of("red", "blue", "green"))).isEqualTo(
+    assertThat(AlexaUtils.toAlexaList(ImmutableList.of("red", "blue", "green"), false)).isEqualTo(
         "red, blue, and green");
   }
 }

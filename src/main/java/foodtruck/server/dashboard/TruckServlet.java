@@ -184,7 +184,7 @@ public class TruckServlet extends HttpServlet {
     builder.id(truckId)
         .defaultCity(request.getParameter("defaultCity"))
         .description(request.getParameter("description"))
-        .calendarUrl(request.getParameter("calendarUrl"))
+        .calendarUrl(request.getParameter("calendarUrl")).phoneticMarkup(request.getParameter("phoneticMarkup"))
         .menuUrl(request.getParameter("menuUrl"))
         .previewIcon(request.getParameter("previewIcon"))
         .fullsizeImage(request.getParameter("fullsizeImage"))
