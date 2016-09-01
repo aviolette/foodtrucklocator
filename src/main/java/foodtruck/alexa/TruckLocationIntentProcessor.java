@@ -27,6 +27,7 @@ import foodtruck.util.Clock;
 class TruckLocationIntentProcessor implements IntentProcessor {
   static final String SLOT_TRUCK = "Truck";
   static final String SLOT_TIME_OF_DAY = "TimeOfDay";
+  static final String TRUCK_NOT_FOUND = "I currently provide information for food trucks that operate in " + "and around Chicago.  Can you try a different food truck?";
   private static final Function<TruckStop, String> TO_NAME = new Function<TruckStop, String>() {
     @Override
     public String apply(TruckStop input) {
@@ -56,8 +57,10 @@ class TruckLocationIntentProcessor implements IntentProcessor {
   public SpeechletResponse process(Intent intent, Session session) {
     Truck truck = truckDAO.findByName(intent.getSlot(SLOT_TRUCK).getValue());
     if (truck == null) {
-      String speechText = "I currently provide information for food trucks that operate in and around Chicago. Can you try a different one?";
-      return SpeechletResponseBuilder.builder().speechText(speechText).repromptText(speechText).ask();
+      return SpeechletResponseBuilder.builder()
+          .speechText(TRUCK_NOT_FOUND)
+          .useSpeechTextForReprompt()
+          .ask();
     } else {
       String when = intent.getSlot(SLOT_TIME_OF_DAY).getValue();
       return SpeechletResponseBuilder.builder()
@@ -82,11 +85,14 @@ class TruckLocationIntentProcessor implements IntentProcessor {
     } else if (tod.isApplicableNow(now)) {
       currentStops = AlexaUtils.toAlexaList(FluentIterable.from(schedule.getStops())
           .filter(new TruckStop.ActiveDuringPredicate(now))
-          .transform(TO_NAME).toList(), false);
+          .transform(TO_NAME)
+          .toList(), false);
     }
     if (considerLater && tod.isApplicableAfter(requestTime)) {
-      laterStops = AlexaUtils.toAlexaList(FluentIterable.from(schedule.getStops()).filter(tod.filterFuture(now))
-          .transform(TO_NAME_WITH_TIME).toList(), false);
+      laterStops = AlexaUtils.toAlexaList(FluentIterable.from(schedule.getStops())
+          .filter(tod.filterFuture(now))
+          .transform(TO_NAME_WITH_TIME)
+          .toList(), false);
     }
     if (currentStops.length() > 0 && laterStops.isEmpty()) {
       String verbPhrase = tod.isOver(now) ? "was" : "is currently";

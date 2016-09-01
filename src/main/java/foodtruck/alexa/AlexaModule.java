@@ -12,6 +12,7 @@ import com.google.inject.multibindings.MapBinder;
 public class AlexaModule extends AbstractModule {
   static final String GET_FOOD_TRUCKS_AT_LOCATION = "GetFoodTrucksAtLocation";
   static final String WHERE_IS_TRUCK = "WhereIsTruck";
+  static final String DAILY_SPECIALS = "DailySpecials";
 
   @Override
   protected void configure() {
