@@ -11,8 +11,8 @@ import static com.google.common.truth.Truth.assertThat;
  * @author aviolette
  * @since 9/1/16
  */
-public class AlexaTestingUtils {
-  public static StringSubject assertSpeech(OutputSpeech speech) {
+class AlexaTestingUtils {
+  static StringSubject assertSpeech(OutputSpeech speech) {
     return (speech instanceof PlainTextOutputSpeech) ? assertThat(
         ((PlainTextOutputSpeech) speech).getText()) : assertThat(((SsmlOutputSpeech) speech).getSsml());
   }

@@ -4,6 +4,13 @@ import java.util.List;
 
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.slu.Slot;
+import com.amazon.speech.speechlet.SpeechletResponse;
+import com.amazon.speech.ui.Card;
+import com.amazon.speech.ui.OutputSpeech;
+import com.amazon.speech.ui.PlainTextOutputSpeech;
+import com.amazon.speech.ui.Reprompt;
+import com.amazon.speech.ui.SimpleCard;
+import com.amazon.speech.ui.SsmlOutputSpeech;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
@@ -38,15 +45,63 @@ class AlexaUtils {
   static String intentToString(Intent intent) {
     return MoreObjects.toStringHelper(intent)
         .add("name", intent.getName())
-        .add("slots", FluentIterable.from(intent.getSlots().values()).transform(new Function<Slot, String>() {
-          @Override
-          public String apply(Slot input) {
-            return MoreObjects.toStringHelper(input)
-                .add("slot", input.getName())
-                .add("value", input.getValue())
-                .toString();
-          }
-        }).join(Joiner.on("\n")))
+        .add("slots", FluentIterable.from(intent.getSlots()
+            .values())
+            .transform(new Function<Slot, String>() {
+              @Override
+              public String apply(Slot input) {
+                return MoreObjects.toStringHelper(input)
+                    .add("slot", input.getName())
+                    .add("value", input.getValue())
+                    .toString();
+              }
+            })
+            .join(Joiner.on("\n")))
         .toString();
   }
+
+  static String speechletResponseToString(SpeechletResponse response) {
+    String outputSpeech = response.getOutputSpeech() == null ? null : outputSpeech(response.getOutputSpeech());
+    String card = response.getCard() == null ? null : cardToString(response.getCard());
+    String reprompt = response.getReprompt() == null ? null : repromptToString(response.getReprompt());
+    return MoreObjects.toStringHelper(response)
+        .add("speech", outputSpeech)
+        .add("reprompt", reprompt)
+        .add("card", card)
+        .toString();
+  }
+
+  private static String repromptToString(Reprompt reprompt) {
+    return outputSpeech(reprompt.getOutputSpeech());
+  }
+
+  private static String cardToString(Card card) {
+    if (card instanceof SimpleCard) {
+      SimpleCard simpleCard = (SimpleCard) card;
+      return MoreObjects.toStringHelper(card)
+          .add("title", simpleCard.getTitle())
+          .add("content", simpleCard.getContent())
+          .toString();
+    }
+    return null;
+  }
+
+  private static String outputSpeech(OutputSpeech outputSpeech) {
+    if (outputSpeech instanceof PlainTextOutputSpeech) {
+      return plainText((PlainTextOutputSpeech) outputSpeech);
+    } else if (outputSpeech instanceof SsmlOutputSpeech) {
+      return ssml((SsmlOutputSpeech) outputSpeech);
+    }
+    return null;
+  }
+
+  private static String ssml(SsmlOutputSpeech outputSpeech) {
+    return outputSpeech.getSsml();
+  }
+
+  private static String plainText(PlainTextOutputSpeech outputSpeech) {
+    return outputSpeech.getText();
+  }
+
+
 }

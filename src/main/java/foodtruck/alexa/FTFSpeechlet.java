@@ -50,7 +50,9 @@ class FTFSpeechlet implements Speechlet {
     if (processor == null) {
       throw new SpeechletException("Invalid intent: " + intentRequest.getIntent().getName());
     }
-    return processor.process(intentRequest.getIntent(), session);
+    SpeechletResponse response = processor.process(intentRequest.getIntent(), session);
+    log.log(Level.INFO, "Response {0}", AlexaUtils.speechletResponseToString(response));
+    return response;
   }
 
   @Override
