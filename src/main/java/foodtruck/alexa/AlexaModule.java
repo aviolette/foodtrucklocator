@@ -19,10 +19,17 @@ public class AlexaModule extends AbstractModule {
     bind(Speechlet.class).to(FTFSpeechlet.class);
     MapBinder<String, IntentProcessor> intentProcessorMapBinder = MapBinder.newMapBinder(binder(), String.class,
         IntentProcessor.class);
-    intentProcessorMapBinder.addBinding(GET_FOOD_TRUCKS_AT_LOCATION).to(LocationIntentProcessor.class);
-    intentProcessorMapBinder.addBinding(WHERE_IS_TRUCK).to(TruckLocationIntentProcessor.class);
-    intentProcessorMapBinder.addBinding("AMAZON.HelpIntent").to(HelpIntentProcessor.class);
-    intentProcessorMapBinder.addBinding("AMAZON.CancelIntent").to(CancelProcessor.class);
-    intentProcessorMapBinder.addBinding("AMAZON.StopIntent").to(CancelProcessor.class);
+    intentProcessorMapBinder.addBinding(GET_FOOD_TRUCKS_AT_LOCATION)
+        .to(LocationIntentProcessor.class);
+    intentProcessorMapBinder.addBinding(WHERE_IS_TRUCK)
+        .to(TruckLocationIntentProcessor.class);
+    intentProcessorMapBinder.addBinding(DAILY_SPECIALS)
+        .to(SpecialIntentProcessor.class);
+    intentProcessorMapBinder.addBinding("AMAZON.HelpIntent")
+        .to(HelpIntentProcessor.class);
+    intentProcessorMapBinder.addBinding("AMAZON.CancelIntent")
+        .to(CancelProcessor.class);
+    intentProcessorMapBinder.addBinding("AMAZON.StopIntent")
+        .to(CancelProcessor.class);
   }
 }
