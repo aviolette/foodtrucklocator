@@ -35,6 +35,7 @@ class FTFSpeechlet implements Speechlet {
 
   @Override
   public SpeechletResponse onLaunch(LaunchRequest launchRequest, Session session) throws SpeechletException {
+    log.log(Level.INFO, "Alexa launched: {0}", session.getSessionId());
     return SpeechletResponseBuilder.builder()
         .speechText("Food Truck Finder.  What would you like to find?")
         .repromptText("With Food Truck Finder you can find out where individual food trucks are, or find out what " +
@@ -48,6 +49,8 @@ class FTFSpeechlet implements Speechlet {
     log.log(Level.INFO, "Received intent {0} ", AlexaUtils.intentToString(intentRequest.getIntent()));
     IntentProcessor processor = processors.get(intentRequest.getIntent().getName());
     if (processor == null) {
+      log.log(Level.WARNING, "Invalid intent requested: {0}", intentRequest.getIntent()
+          .getName());
       throw new SpeechletException("Invalid intent: " + intentRequest.getIntent().getName());
     }
     SpeechletResponse response = processor.process(intentRequest.getIntent(), session);
