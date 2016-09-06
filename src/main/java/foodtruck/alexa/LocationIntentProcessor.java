@@ -70,7 +70,7 @@ class LocationIntentProcessor implements IntentProcessor {
               "You can ask me about a specific location in Chicago.  For example, you can say: What food trucks are at %s today?",
               locations.get(0)))
           .useSpeechTextForReprompt()
-          .ask();
+          .tell();
     }
     Location location = locator.locate(locationSlot.getValue(), GeolocationGranularity.NARROW);
     boolean tomorrow = "tomorrow".equals(intent.getSlot(SLOT_WHEN)
@@ -109,7 +109,7 @@ class LocationIntentProcessor implements IntentProcessor {
           builder.speechSSML(noTrucks);
         } else {
           return builder.speechSSML(String.format(
-              "There are no trucks %sat %s %s.  These nearby locations have food trucks %s.  You can ask me what food trucks are those locations.",
+              "There are no trucks %sat %s %s.  These nearby locations have food trucks: %s.  You can ask me what food trucks are those locations.",
               futurePhrase, locationSlot.getValue(), dateRepresentation, nearby))
               .useSpeechTextForReprompt()
               .ask();
