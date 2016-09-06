@@ -60,7 +60,18 @@ class LocationIntentProcessor implements IntentProcessor {
   @Override
   public SpeechletResponse process(Intent intent, Session session) {
     Slot locationSlot = intent.getSlot(SLOT_LOCATION);
-    // IF null, display help
+    if (locationSlot.getValue() == null) {
+      List<String> locations = findAlternateLocations(false, null, clock.currentDay());
+      if (locations.isEmpty()) {
+        locations = ImmutableList.of("Clark and Monroe");
+      }
+      return SpeechletResponseBuilder.builder()
+          .speechSSML(String.format(
+              "You can ask me about a specific location in Chicago.  For example, you can say: What food trucks are at %s today?",
+              locations.get(0)))
+          .useSpeechTextForReprompt()
+          .ask();
+    }
     Location location = locator.locate(locationSlot.getValue(), GeolocationGranularity.NARROW);
     boolean tomorrow = "tomorrow".equals(intent.getSlot(SLOT_WHEN)
         .getValue());
@@ -99,8 +110,7 @@ class LocationIntentProcessor implements IntentProcessor {
         } else {
           return builder.speechSSML(String.format(
               "There are no trucks %sat %s %s.  These nearby locations have food trucks %s.  You can ask me what food trucks are those locations.",
-              futurePhrase,
-                  locationSlot.getValue(), dateRepresentation, nearby))
+              futurePhrase, locationSlot.getValue(), dateRepresentation, nearby))
               .useSpeechTextForReprompt()
               .ask();
         }
