@@ -23,6 +23,7 @@ import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.schedule.ScheduleCacher;
+import foodtruck.server.resources.json.DailyScheduleWriter;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 
@@ -45,19 +46,21 @@ public class LocationIntentProcessorTest extends EasyMockSupport {
   private Location location;
   private LocationDAO locationDAO;
   private ScheduleCacher cacher;
+  private DailyScheduleWriter dailyScheduleWriter;
 
   @Before
   public void before() {
     locator = createMock(GeoLocator.class);
     service = createMock(FoodTruckStopService.class);
     clock = createMock(Clock.class);
+    dailyScheduleWriter = createMock(DailyScheduleWriter.class);
     locationDAO = createMock(LocationDAO.class);
     cacher = createMock(ScheduleCacher.class);
     date = new DateTime(2016, 7, 15, 10, 10);
     location = Location.builder().name("Clark and Monroe").lat(12).lng(13).build();
     expect(clock.now()).andStubReturn(date);
     expect(clock.currentDay()).andStubReturn(date.toLocalDate());
-    processor = new LocationIntentProcessor(locator, service, clock, locationDAO, cacher);
+    processor = new LocationIntentProcessor(locator, service, clock, locationDAO, cacher, dailyScheduleWriter);
   }
 
   @Test

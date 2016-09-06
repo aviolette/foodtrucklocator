@@ -8,12 +8,12 @@ import com.amazon.speech.slu.Intent;
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
+import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 
 import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.LocalDate;
 
@@ -23,6 +23,7 @@ import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
 import foodtruck.model.TruckStop;
 import foodtruck.schedule.ScheduleCacher;
+import foodtruck.server.resources.json.DailyScheduleWriter;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 
@@ -39,15 +40,17 @@ class LocationIntentProcessor implements IntentProcessor {
   private final Clock clock;
   private final ScheduleCacher scheduleCacher;
   private final LocationDAO locationDAO;
+  private final DailyScheduleWriter dailyScheduleWriter;
 
   @Inject
   public LocationIntentProcessor(GeoLocator locator, FoodTruckStopService service, Clock clock, LocationDAO locationDAO,
-      ScheduleCacher cacher) {
+      ScheduleCacher cacher, DailyScheduleWriter dailyScheduleWriter) {
     this.locator = locator;
     this.service = service;
     this.clock = clock;
     this.locationDAO = locationDAO;
     scheduleCacher = cacher;
+    this.dailyScheduleWriter = dailyScheduleWriter;
   }
 
   @Override
@@ -60,7 +63,7 @@ class LocationIntentProcessor implements IntentProcessor {
     LocalDate requestDate = tomorrow ? clock.currentDay()
         .plusDays(1) : clock.currentDay();
     if (location == null || !location.isResolved()) {
-      List<String> locations = findAlternateLocations(tomorrow, null);
+      List<String> locations = findAlternateLocations(tomorrow, null, requestDate);
       log.log(Level.SEVERE, "Could not find location {0} that is specified in alexa", locationSlot.getValue());
       String messageText = String.format(
           "I'm sorry but I don't recognize that location.  You can ask about popular " + "food truck stops in Chicago, such as %s",
@@ -82,7 +85,7 @@ class LocationIntentProcessor implements IntentProcessor {
     switch (count) {
       case 0:
         String noTrucks = "There are no trucks at " + locationSlot.getValue() + " " + dateRepresentation +
-            ".  Perhaps try " + AlexaUtils.toAlexaList(findAlternateLocations(tomorrow, location), true,
+            ".  Perhaps try " + AlexaUtils.toAlexaList(findAlternateLocations(tomorrow, location, requestDate), true,
             Conjunction.or);
         builder.speechSSML(noTrucks);
         break;
@@ -103,9 +106,14 @@ class LocationIntentProcessor implements IntentProcessor {
         .tell();
   }
 
-  private List<String> findAlternateLocations(boolean tomorrow, Location currentLocation) {
-    String schedule = tomorrow ? scheduleCacher.findTomorrowsSchedule() : scheduleCacher.findSchedule();
+  private List<String> findAlternateLocations(boolean tomorrow, Location currentLocation, LocalDate theDate) {
     try {
+      String schedule = tomorrow ? scheduleCacher.findTomorrowsSchedule() : scheduleCacher.findSchedule();
+      if (tomorrow && Strings.isNullOrEmpty(schedule)) {
+        schedule = dailyScheduleWriter.asJSON(service.findStopsForDay(theDate))
+            .toString();
+        scheduleCacher.saveTomorrowsSchedule(schedule);
+      }
       JSONObject jsonObject = new JSONObject(schedule);
       log.log(Level.INFO, "Schedule {0}", jsonObject);
       JSONArray locationArr = jsonObject.getJSONArray("locations");
@@ -119,7 +127,8 @@ class LocationIntentProcessor implements IntentProcessor {
         }
       }
       return builder.build();
-    } catch (JSONException e) {
+    } catch (Exception e) {
+      log.log(Level.WARNING, "Could not parse daily schedule {0} {1}", new Object[]{tomorrow, e.getMessage()});
       return ImmutableList.of("Clark and Monroe");
     }
   }
