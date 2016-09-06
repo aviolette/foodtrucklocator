@@ -48,7 +48,6 @@ class LocationIntentProcessor implements IntentProcessor {
     this.clock = clock;
     this.locationDAO = locationDAO;
     scheduleCacher = cacher;
-
   }
 
   @Override
@@ -83,8 +82,8 @@ class LocationIntentProcessor implements IntentProcessor {
     switch (count) {
       case 0:
         String noTrucks = "There are no trucks at " + locationSlot.getValue() + " " + dateRepresentation +
-            "Perhaps try " + AlexaUtils.toAlexaList(findAlternateLocations(tomorrow, location), true);
-        builder.speechText(noTrucks);
+            ".  Perhaps try " + AlexaUtils.toAlexaList(findAlternateLocations(tomorrow, location), true);
+        builder.speechSSML(noTrucks);
         break;
       case 1:
         builder.speechSSML(String.format("%s is the only food truck %sat %s %s", truckNames.get(0), futurePhrase,
