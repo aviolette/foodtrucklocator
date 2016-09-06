@@ -115,11 +115,10 @@ class LocationIntentProcessor implements IntentProcessor {
         scheduleCacher.saveTomorrowsSchedule(schedule);
       }
       JSONObject jsonObject = new JSONObject(schedule);
-      log.log(Level.INFO, "Schedule {0}", jsonObject);
+      log.log(Level.FINE, "Schedule {0}", jsonObject);
       JSONArray locationArr = jsonObject.getJSONArray("locations");
       ImmutableList.Builder<String> builder = ImmutableList.builder();
-      ImmutableList.Builder<String> alternate = ImmutableList.builder();
-
+      int count = 0;
       for (int i = 0; i < locationArr.length(); i++) {
         Long key = locationArr.getJSONObject(i)
             .getLong("key");
@@ -127,8 +126,13 @@ class LocationIntentProcessor implements IntentProcessor {
         if (loc == null) {
           continue;
         }
-        if (loc.isAlexaProvided()) {
+        if (loc.isAlexaProvided() && (currentLocation == null || currentLocation.within(5)
+            .milesOf(loc))) {
           builder.add(loc.getShortenedName());
+          count++;
+          if (count > 3) {
+            break;
+          }
         }
       }
       return builder.build();
