@@ -146,6 +146,9 @@
       <div class="checkbox">
         <label><input id="closed" type="checkbox">&nbsp;Closed?</label>
       </div>
+      <div class="checkbox">
+        <label><input id="alexaProvided" type="checkbox">&nbsp;Available to Alexa?</label>
+      </div>
       <div class="btn-group>">
         <button id="submitButton" class="btn btn-primary"><span class="glyphicon glyphicon-save"></span> Save</button>
       </div>
@@ -203,6 +206,7 @@
       $("#ownedBy").val(loc.ownedBy);
       $("#facebookUri").val(loc.facebookUri);
       $("#imageUrl").val(loc.imageUrl);
+      $("#alexaProvided").attr("checked", loc.alexaProvided);
       $("#eventUrl").val(loc.eventUrl);
       $("#managerEmails").val(loc.managerEmails);
       $("#email").val(loc.email);
@@ -312,6 +316,7 @@
       loc.popular = $("#popular").is(":checked");
       loc.hasBooze = $("#hasBooze").is(":checked");
       loc.closed = $("#closed").is(":checked");
+      loc.alexaProvided = $("#alexaProvided").is(":checked");
       loc.designatedStop = $("#designatedStop").is(":checked");
       loc.autocomplete = $("#autocomplete").is(":checked");
       loc.ownedBy = $("#ownedBy").val();

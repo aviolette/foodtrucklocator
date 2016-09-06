@@ -64,6 +64,7 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
   private static final String EVENT_URL = "event_url";
   private static final String MANAGER_EMAILS = "manager_emails";
   private static final String REVERSE_LOOKUP_KEY = "reverse_lookup_key";
+  private static final String ALEXA_PROVIDED = "alexa_provided";
 
   private static final Logger log = Logger.getLogger(LocationDAOAppEngine.class.getName());
   private final Clock clock;
@@ -74,12 +75,14 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
     this.clock = clock;
   }
 
+  @Nullable
   @Override
-  public @Nullable Location findByAddress(String keyword) {
+  public Location findByAddress(String keyword) {
     DatastoreService dataStore = provider.get();
     Entity entity = null;
     try {
-      entity = dataStore.prepare(locationQuery(keyword)).asSingleEntity();
+      entity = dataStore.prepare(locationQuery(keyword))
+          .asSingleEntity();
     } catch (PreparedQuery.TooManyResultsException tmr) {
       log.log(Level.WARNING, "Got too many results exception for: {0}", keyword);
       try {
@@ -97,12 +100,15 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
   @Nullable
   @Override
   public Location findByLatLng(Location location) {
-    return aq().filter(predicate(REVERSE_LOOKUP_KEY, EQUAL, reverseLookupKey(location))).findFirst();
+    return aq().filter(predicate(REVERSE_LOOKUP_KEY, EQUAL, reverseLookupKey(location)))
+        .findFirst();
   }
 
   @Override
   public List<Location> findPopularLocations() {
-    return aq().filter(predicate(POPULAR_FIELD, EQUAL, true)).sort(NAME_FIELD).execute();
+    return aq().filter(predicate(POPULAR_FIELD, EQUAL, true))
+        .sort(NAME_FIELD)
+        .execute();
   }
 
   @Override
@@ -114,36 +120,50 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
 
   @Override
   public List<Location> findLocationsOwnedByFoodTrucks() {
-    return aq().filter(predicate(OWNED_BY, NOT_EQUAL, null)).execute();
+    return aq().filter(predicate(OWNED_BY, NOT_EQUAL, null))
+        .execute();
   }
 
   @Override
   public List<Location> findAliasesFor(String locationName) {
-    return aq().filter(predicate(ALIAS, EQUAL, locationName)).execute();
+    return aq().filter(predicate(ALIAS, EQUAL, locationName))
+        .execute();
   }
 
   @Override
   public Collection<Location> findDesignatedStops() {
-    return aq().filter(predicate(DESIGNATED_STOP, EQUAL, true)).execute();
+    return aq().filter(predicate(DESIGNATED_STOP, EQUAL, true))
+        .execute();
   }
 
   @Override
   public Iterable<Location> findBoozyLocations() {
-    return aq().filter(predicate(HAS_BOOZE, EQUAL, true)).execute();
+    return aq().filter(predicate(HAS_BOOZE, EQUAL, true))
+        .execute();
   }
 
   @Override
   public Collection<Location> findByTwitterId(String twitterId) {
-    return aq().filter(predicate(TWITTERHANDLE, EQUAL, twitterId.toLowerCase())).execute();
+    return aq().filter(predicate(TWITTERHANDLE, EQUAL, twitterId.toLowerCase()))
+        .execute();
   }
 
   @Override
   public Collection<Location> findByManagerEmail(String email) {
-    return aq().filter(predicate(MANAGER_EMAILS, IN, ImmutableSet.of(email))).execute();
+    return aq().filter(predicate(MANAGER_EMAILS, IN, ImmutableSet.of(email)))
+        .execute();
   }
 
   @Override
-  public @Nullable Location findByAlias(String location) {
+  public List<Location> findAlexaStops() {
+    return aq().filter(predicate(ALEXA_PROVIDED, EQUAL, true))
+        .sort(NAME_FIELD)
+        .execute();
+  }
+
+  @Nullable
+  @Override
+  public Location findByAlias(String location) {
     // max of three marches up the alias-tree
     for (int i = 0; i < 3; i++) {
       Location loc = findByAddress(location);
@@ -162,7 +182,8 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
   private Entity deleteDuplicates(String keyword, DatastoreService dataStore) {
     ImmutableList.Builder<Key> keys = ImmutableList.builder();
     Entity firstEntity = null;
-    for (Entity entity : dataStore.prepare(locationQuery(keyword)).asIterable()) {
+    for (Entity entity : dataStore.prepare(locationQuery(keyword))
+        .asIterable()) {
       if (firstEntity != null) {
         keys.add(entity.getKey());
       } else {
@@ -184,12 +205,14 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
     entity.setProperty(NAME_FIELD, location.getName());
     entity.setProperty(LAT_FIELD, location.getLatitude());
     entity.setProperty(LNG_FIELD, location.getLongitude());
-    entity.setProperty(TIMESTAMP_FIELD, clock.now().toDate());
+    entity.setProperty(TIMESTAMP_FIELD, clock.now()
+        .toDate());
     entity.setProperty(VALID_FIELD, location.isValid());
     entity.setProperty(DESCRIPTION_FIELD, location.getDescription());
     entity.setProperty(URL_FIELD, location.getUrl());
     entity.setProperty(RADIAL_FIELD, location.getRadius());
-    entity.setProperty(LOCATION_LOOKUP_FIELD, location.getName().toLowerCase());
+    entity.setProperty(LOCATION_LOOKUP_FIELD, location.getName()
+        .toLowerCase());
     entity.setProperty(POPULAR_FIELD, location.isPopular());
     entity.setProperty(AUTOCOMPLETE, location.isAutocomplete());
     entity.setProperty(ALIAS, location.getAlias());
@@ -206,6 +229,7 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
     entity.setProperty(REVERSE_LOOKUP_KEY, reverseLookupKey(location));
     setUrlProperty(entity, IMAGE_URL, location.getImageUrl());
     entity.setProperty(EVENT_URL, location.getEventCalendarUrl());
+    entity.setProperty(ALEXA_PROVIDED, location.isAlexaProvided());
     return entity;
   }
 
@@ -221,8 +245,11 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
     Double lat = (Double) entity.getProperty(LAT_FIELD);
     Double lng = (Double) entity.getProperty(LNG_FIELD);
     Boolean valid = (Boolean) entity.getProperty(VALID_FIELD);
-    Object key = entity.getKey().getId();
-    Location.Builder builder = Location.builder().name((String) entity.getProperty(NAME_FIELD)).key(key);
+    Object key = entity.getKey()
+        .getId();
+    Location.Builder builder = Location.builder()
+        .name((String) entity.getProperty(NAME_FIELD))
+        .key(key);
     builder.description((String) entity.getProperty(DESCRIPTION_FIELD));
     builder.url((String) entity.getProperty(URL_FIELD));
     builder.popular(getBooleanProperty(entity, POPULAR_FIELD, false));
@@ -241,11 +268,14 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
     builder.facebookUri(getStringProperty(entity, FACEBOOK_URI));
     builder.closed(getBooleanProperty(entity, CLOSED, false));
     builder.imageUrl(getUrlProperty(entity, IMAGE_URL));
+    builder.alexaProvided(getBooleanProperty(entity, ALEXA_PROVIDED, false));
     boolean isValid = valid == null || valid;
     if (lat == null || lng == null) {
       builder.valid(false);
     } else {
-      builder.lat(lat).lng(lng).valid(isValid);
+      builder.lat(lat)
+          .lng(lng)
+          .valid(isValid);
     }
     return builder.build();
   }

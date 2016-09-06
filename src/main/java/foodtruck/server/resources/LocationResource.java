@@ -11,6 +11,9 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 import com.sun.jersey.api.JResponse;
 
@@ -25,6 +28,8 @@ import foodtruck.monitoring.Monitored;
 import foodtruck.util.Clock;
 import foodtruck.util.ServiceException;
 
+import static foodtruck.server.resources.Resources.requiresAdmin;
+
 /**
  * @author aviolette
  * @since 3/6/13
@@ -32,7 +37,7 @@ import foodtruck.util.ServiceException;
 @Path("/locations") @Produces(MediaType.APPLICATION_JSON)
 public class LocationResource {
   private static final Logger log = Logger.getLogger(LocationResource.class.getName());
-
+  private static final Joiner JOINER = Joiner.on("\n");
   private final GeoLocator locator;
   private final AuthorizationChecker authorizationChecker;
   private final LocationDAO locationDAO;
@@ -47,6 +52,20 @@ public class LocationResource {
     this.locationDAO = locationDAO;
     this.dailyDataDAO = dailyDataDAO;
     this.clock = clock;
+  }
+
+  @GET
+  @Path("alexa")
+  @Produces("text/plain")
+  public String findAlexaStops() {
+    requiresAdmin();
+    return FluentIterable.from(locationDAO.findAlexaStops())
+        .transform(new Function<Location, String>() {
+          public String apply(Location input) {
+            return input.getShortenedName();
+          }
+        })
+        .join(JOINER);
   }
 
   @GET @Path("designated")

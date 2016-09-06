@@ -48,6 +48,7 @@ public class Location extends ModelEntity implements Serializable {
   private @Nullable Url imageUrl;
   private @Nullable String eventCalendarUrl;
   private ImmutableSet<String> managerEmails;
+  private boolean alexaProvided;
 
   // For serializable
   public Location() {
@@ -79,6 +80,7 @@ public class Location extends ModelEntity implements Serializable {
     imageUrl = builder.imageUrl;
     eventCalendarUrl = builder.eventCalendarUrl;
     managerEmails = ImmutableSet.copyOf(builder.managerEmails);
+    alexaProvided = builder.alexaProvided;
   }
 
   public static Builder builder() {
@@ -95,6 +97,10 @@ public class Location extends ModelEntity implements Serializable {
 
   public @Nullable Url getImageUrl() {
     return imageUrl;
+  }
+
+  public boolean isAlexaProvided() {
+    return alexaProvided;
   }
 
   public boolean isClosed() {
@@ -286,6 +292,7 @@ public class Location extends ModelEntity implements Serializable {
     private @Nullable Url imageUrl;
     private @Nullable String eventCalendarUrl;
     private Set<String> managerEmails = ImmutableSet.of();
+    private boolean alexaProvided;
 
     public Builder(Location location) {
       key = location.getKey();
@@ -313,9 +320,15 @@ public class Location extends ModelEntity implements Serializable {
       imageUrl = location.imageUrl;
       eventCalendarUrl = location.eventCalendarUrl;
       managerEmails = location.managerEmails;
+      alexaProvided = location.alexaProvided;
     }
 
     public Builder() {
+    }
+
+    public Builder alexaProvided(boolean alexaProvided) {
+      this.alexaProvided = alexaProvided;
+      return this;
     }
 
     public Builder eventCalendarUrl(String eventCalendarUrl) {

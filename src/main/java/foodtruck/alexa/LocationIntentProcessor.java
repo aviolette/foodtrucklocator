@@ -118,11 +118,16 @@ class LocationIntentProcessor implements IntentProcessor {
       log.log(Level.INFO, "Schedule {0}", jsonObject);
       JSONArray locationArr = jsonObject.getJSONArray("locations");
       ImmutableList.Builder<String> builder = ImmutableList.builder();
+      ImmutableList.Builder<String> alternate = ImmutableList.builder();
+
       for (int i = 0; i < locationArr.length(); i++) {
         Long key = locationArr.getJSONObject(i)
             .getLong("key");
         Location loc = locationDAO.findById(key);
-        if (loc != null && loc.isPopular()) {
+        if (loc == null) {
+          continue;
+        }
+        if (loc.isAlexaProvided()) {
           builder.add(loc.getShortenedName());
         }
       }
