@@ -86,7 +86,6 @@ class LocationIntentProcessor implements IntentProcessor {
         .toList();
     String futurePhrase = inFuture ? "scheduled to be " : "";
     int count = truckNames.size();
-    builder.simpleCard("Food Trucks at " + location.getShortenedName());
     switch (count) {
       case 0:
         String nearby = AlexaUtils.toAlexaList(findAlternateLocations(tomorrow, location, requestDate), true,
@@ -118,7 +117,8 @@ class LocationIntentProcessor implements IntentProcessor {
             String.format("There are %s trucks %sat %s %s: %s", count, futurePhrase, locationSlot.getValue(),
                 dateRepresentation, AlexaUtils.toAlexaList(truckNames, true)));
     }
-    return builder.tell();
+    return builder.simpleCard("Food Trucks at " + location.getShortenedName())
+        .tell();
   }
 
   private List<String> findAlternateLocations(boolean tomorrow, Location currentLocation, LocalDate theDate) {

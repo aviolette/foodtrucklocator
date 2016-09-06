@@ -28,6 +28,7 @@ import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 
 import static com.google.common.truth.Truth.assertThat;
+import static foodtruck.alexa.AlexaTestingUtils.assertSpeech;
 import static foodtruck.alexa.LocationIntentProcessor.SLOT_LOCATION;
 import static foodtruck.alexa.LocationIntentProcessor.SLOT_WHEN;
 import static org.easymock.EasyMock.expect;
@@ -261,7 +262,7 @@ public class LocationIntentProcessorTest extends EasyMockSupport {
     replayAll();
     SpeechletResponse response = processor.process(intent, null);
     assertThat(response.getCard().getTitle()).isEqualTo("Food Trucks at Clark and Monroe");
-    assertThat(((SsmlOutputSpeech) response.getOutputSpeech()).getSsml()).isEqualTo(
+    assertSpeech(response.getOutputSpeech()).isEqualTo(
         "<speak>There are 3 trucks scheduled to be at Clark and Monroe tomorrow: Beavers Donuts,<break time=\"0.3s\"/> Chicagos Finest, and The Fat Pickle</speak>");
     assertThat(response.getCard().getTitle()).isEqualTo("Food Trucks at Clark and Monroe");
     assertThat(((SimpleCard) response.getCard()).getContent()).isEqualTo(
