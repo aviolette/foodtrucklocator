@@ -25,6 +25,10 @@ class AlexaUtils {
   private static final Joiner JOINER_WITH_PAUSE = Joiner.on(",<break time=\"0.3s\"/> ");
 
   static String toAlexaList(List<String> list, boolean insertPause) {
+    return toAlexaList(list, insertPause, Conjunction.and);
+  }
+
+  static String toAlexaList(List<String> list, boolean insertPause, Conjunction conjunction) {
     if (list.isEmpty()) {
       return "";
     }
@@ -39,7 +43,7 @@ class AlexaUtils {
       rdc = JOINER.join(list.subList(0, list.size() - 1));
     }
     String oxfordComma = (list.size() == 2) ? "" : ",";
-    return rdc + oxfordComma + " and " + rac;
+    return rdc + oxfordComma + " " + conjunction.toString() + " " + rac;
   }
 
   static String intentToString(Intent intent) {

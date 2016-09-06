@@ -64,7 +64,7 @@ class LocationIntentProcessor implements IntentProcessor {
       log.log(Level.SEVERE, "Could not find location {0} that is specified in alexa", locationSlot.getValue());
       String messageText = String.format(
           "I'm sorry but I don't recognize that location.  You can ask about popular " + "food truck stops in Chicago, such as %s",
-          AlexaUtils.toAlexaList(locations, true));
+          AlexaUtils.toAlexaList(locations, true, Conjunction.or));
       return SpeechletResponseBuilder.builder()
           .speechSSML(messageText)
           .useSpeechTextForReprompt()
@@ -82,7 +82,8 @@ class LocationIntentProcessor implements IntentProcessor {
     switch (count) {
       case 0:
         String noTrucks = "There are no trucks at " + locationSlot.getValue() + " " + dateRepresentation +
-            ".  Perhaps try " + AlexaUtils.toAlexaList(findAlternateLocations(tomorrow, location), true);
+            ".  Perhaps try " + AlexaUtils.toAlexaList(findAlternateLocations(tomorrow, location), true,
+            Conjunction.or);
         builder.speechSSML(noTrucks);
         break;
       case 1:
@@ -106,14 +107,14 @@ class LocationIntentProcessor implements IntentProcessor {
     String schedule = tomorrow ? scheduleCacher.findTomorrowsSchedule() : scheduleCacher.findSchedule();
     try {
       JSONObject jsonObject = new JSONObject(schedule);
-      log.log(Level.INFO, "Schedule {0}", jsonObject.toString(2));
+      log.log(Level.INFO, "Schedule {0}", jsonObject);
       JSONArray locationArr = jsonObject.getJSONArray("locations");
       ImmutableList.Builder<String> builder = ImmutableList.builder();
       for (int i = 0; i < locationArr.length(); i++) {
         Long key = locationArr.getJSONObject(i)
             .getLong("key");
         Location loc = locationDAO.findById(key);
-        if (loc != null) {
+        if (loc != null && loc.isPopular()) {
           builder.add(loc.getShortenedName());
         }
       }
