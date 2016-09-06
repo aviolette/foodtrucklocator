@@ -97,8 +97,9 @@ class LocationIntentProcessor implements IntentProcessor {
               locationSlot.getValue(), dateRepresentation);
           builder.speechSSML(noTrucks);
         } else {
-          return builder.speechSSML(
-              String.format("There are no trucks %sat %s %s.  Would you like to try  %s", futurePhrase,
+          return builder.speechSSML(String.format(
+              "There are no trucks %sat %s %s.  These nearby locations have food trucks %s.  You can ask me what food trucks are those locations.",
+              futurePhrase,
                   locationSlot.getValue(), dateRepresentation, nearby))
               .useSpeechTextForReprompt()
               .ask();

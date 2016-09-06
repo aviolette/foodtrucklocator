@@ -282,7 +282,7 @@ public class Location extends ModelEntity implements Serializable {
             o2Val = o2.distanceFrom(Location.this);
         if (o1Val == o2Val) {
           return 0;
-        } else if (o1Val > o2Val) {
+        } else if (o1Val < o2Val) {
           return -1;
         } else {
           return 1;

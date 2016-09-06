@@ -106,6 +106,4 @@ class AlexaUtils {
   private static String plainText(PlainTextOutputSpeech outputSpeech) {
     return outputSpeech.getText();
   }
-
-
 }
