@@ -1,5 +1,6 @@
 package foodtruck.alexa;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -8,9 +9,12 @@ import com.amazon.speech.slu.Intent;
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 import org.codehaus.jettison.json.JSONArray;
@@ -66,7 +70,7 @@ class LocationIntentProcessor implements IntentProcessor {
       List<String> locations = findAlternateLocations(tomorrow, null, requestDate);
       log.log(Level.SEVERE, "Could not find location {0} that is specified in alexa", locationSlot.getValue());
       String messageText = String.format(
-          "I'm sorry but I don't recognize that location.  You can ask about popular " + "food truck stops in Chicago, such as %s",
+          "I'm sorry but I don't recognize that location.  You can ask about popular food truck stops in Chicago, such as %s",
           AlexaUtils.toAlexaList(locations, true, Conjunction.or));
       return SpeechletResponseBuilder.builder()
           .speechSSML(messageText)
@@ -82,12 +86,24 @@ class LocationIntentProcessor implements IntentProcessor {
         .toList();
     String futurePhrase = inFuture ? "scheduled to be " : "";
     int count = truckNames.size();
+    builder.simpleCard("Food Trucks at " + location.getShortenedName());
     switch (count) {
       case 0:
-        String noTrucks = "There are no trucks at " + locationSlot.getValue() + " " + dateRepresentation +
-            ".  Perhaps try " + AlexaUtils.toAlexaList(findAlternateLocations(tomorrow, location, requestDate), true,
+        String nearby = AlexaUtils.toAlexaList(findAlternateLocations(tomorrow, location, requestDate), true,
             Conjunction.or);
-        builder.speechSSML(noTrucks);
+        String noTrucks;
+        if (Strings.isNullOrEmpty(nearby)) {
+          noTrucks = String.format(
+              "There are no trucks %sat %s %s and there don't appear to be any nearby that location.", futurePhrase,
+              locationSlot.getValue(), dateRepresentation);
+          builder.speechSSML(noTrucks);
+        } else {
+          return builder.speechSSML(
+              String.format("There are no trucks %sat %s %s.  Would you like to try  %s", futurePhrase,
+                  locationSlot.getValue(), dateRepresentation, nearby))
+              .useSpeechTextForReprompt()
+              .ask();
+        }
         break;
       case 1:
         builder.speechSSML(String.format("%s is the only food truck %sat %s %s", truckNames.get(0), futurePhrase,
@@ -102,8 +118,7 @@ class LocationIntentProcessor implements IntentProcessor {
             String.format("There are %s trucks %sat %s %s: %s", count, futurePhrase, locationSlot.getValue(),
                 dateRepresentation, AlexaUtils.toAlexaList(truckNames, true)));
     }
-    return builder.simpleCard("Food Trucks at " + locationSlot.getValue())
-        .tell();
+    return builder.tell();
   }
 
   private List<String> findAlternateLocations(boolean tomorrow, Location currentLocation, LocalDate theDate) {
@@ -117,8 +132,7 @@ class LocationIntentProcessor implements IntentProcessor {
       JSONObject jsonObject = new JSONObject(schedule);
       log.log(Level.FINE, "Schedule {0}", jsonObject);
       JSONArray locationArr = jsonObject.getJSONArray("locations");
-      ImmutableList.Builder<String> builder = ImmutableList.builder();
-      int count = 0;
+      List<Location> locations = Lists.newLinkedList();
       for (int i = 0; i < locationArr.length(); i++) {
         Long key = locationArr.getJSONObject(i)
             .getLong("key");
@@ -126,16 +140,19 @@ class LocationIntentProcessor implements IntentProcessor {
         if (loc == null) {
           continue;
         }
-        if (loc.isAlexaProvided() && (currentLocation == null || currentLocation.within(5)
-            .milesOf(loc))) {
-          builder.add(loc.getShortenedName());
-          count++;
-          if (count > 3) {
-            break;
-          }
-        }
+        locations.add(loc);
       }
-      return builder.build();
+
+      Predicate<Location> filterPredicate = Predicates.alwaysTrue();
+      if (currentLocation != null) {
+        Collections.sort(locations, currentLocation.distanceFromComparator());
+        filterPredicate = currentLocation.rangedPredicate(5);
+      }
+      return FluentIterable.from(locations)
+          .filter(filterPredicate)
+          .transform(Location.TO_SPOKEN_NAME)
+          .limit(3)
+          .toList();
     } catch (Exception e) {
       log.log(Level.WARNING, "Could not parse daily schedule {0} {1}", new Object[]{tomorrow, e.getMessage()});
       return ImmutableList.of("Clark and Monroe");

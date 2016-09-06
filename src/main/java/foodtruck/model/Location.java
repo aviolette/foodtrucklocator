@@ -1,12 +1,14 @@
 package foodtruck.model;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Set;
 
 import javax.annotation.Nullable;
 
 import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
 import com.javadocmd.simplelatlng.LatLng;
 import com.javadocmd.simplelatlng.LatLngTool;
@@ -24,6 +26,12 @@ public class Location extends ModelEntity implements Serializable {
       return input.getName();
     }
   };
+  public static final Function<Location, String> TO_SPOKEN_NAME = new Function<Location, String>() {
+    public String apply(Location input) {
+      return input.getShortenedName();
+    }
+  };
+
   private static final long serialVersionUID = 1L;
   private LatLng latLng;
   private String name;
@@ -264,6 +272,33 @@ public class Location extends ModelEntity implements Serializable {
       return name.substring(0, name.length() - 13);
     }
     return name;
+  }
+
+  public Comparator<Location> distanceFromComparator() {
+    return new Comparator<Location>() {
+      @Override
+      public int compare(Location o1, Location o2) {
+        double o1Val = o1.distanceFrom(Location.this),
+            o2Val = o2.distanceFrom(Location.this);
+        if (o1Val == o2Val) {
+          return 0;
+        } else if (o1Val > o2Val) {
+          return -1;
+        } else {
+          return 1;
+        }
+      }
+    };
+  }
+
+  public Predicate<Location> rangedPredicate(final double distance) {
+    return new Predicate<Location>() {
+      @Override
+      public boolean apply(@Nullable Location input) {
+        return input != null && input.within(distance)
+            .milesOf(Location.this);
+      }
+    };
   }
 
   public static class Builder {
