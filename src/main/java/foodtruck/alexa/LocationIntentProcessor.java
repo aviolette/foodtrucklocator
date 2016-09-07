@@ -19,6 +19,7 @@ import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.LocalDate;
 
@@ -64,16 +65,7 @@ class LocationIntentProcessor implements IntentProcessor {
   public SpeechletResponse process(Intent intent, Session session) {
     Slot locationSlot = intent.getSlot(SLOT_LOCATION);
     if (locationSlot.getValue() == null) {
-      List<String> locations = findAlternateLocations(false, null, clock.currentDay());
-      if (locations.isEmpty()) {
-        locations = ImmutableList.of("Clark and Monroe");
-      }
-      return SpeechletResponseBuilder.builder()
-          .speechSSML(String.format(
-              "You can ask me about a specific location in Chicago.  For example, you can say: What food trucks are at %s today?",
-              locations.get(0)))
-          .useSpeechTextForReprompt()
-          .ask();
+      return provideHelp();
     }
     Location location = locator.locate(locationSlot.getValue(), GeolocationGranularity.NARROW);
     boolean tomorrow = "tomorrow".equals(intent.getSlot(SLOT_WHEN)
@@ -81,15 +73,7 @@ class LocationIntentProcessor implements IntentProcessor {
     LocalDate requestDate = tomorrow ? clock.currentDay()
         .plusDays(1) : clock.currentDay();
     if (location == null || !location.isResolved()) {
-      List<String> locations = findAlternateLocations(tomorrow, null, requestDate);
-      log.log(Level.SEVERE, "Could not find location {0} that is specified in alexa", locationSlot.getValue());
-      String messageText = locations.isEmpty() ? "I'm sorry but I don't recognize that location.  There don't appear to be any open food trucks in Chicago now that I can suggest as alternates" : String.format(
-          "I'm sorry but I don't recognize that location.  You can ask about popular food truck stops in Chicago, such as %s",
-          AlexaUtils.toAlexaList(locations, true, Conjunction.or));
-      return SpeechletResponseBuilder.builder()
-          .speechSSML(messageText)
-          .useSpeechTextForReprompt()
-          .ask();
+      return locationNotFound(locationSlot, tomorrow, requestDate);
     }
     boolean inFuture = requestDate.isAfter(clock.currentDay());
     String dateRepresentation = toDate(requestDate);
@@ -111,11 +95,9 @@ class LocationIntentProcessor implements IntentProcessor {
               locationSlot.getValue(), dateRepresentation);
           builder.speechSSML(noTrucks);
         } else {
-          return builder.speechSSML(String.format(
-              "There are no trucks %sat %s %s.  These nearby locations have food trucks: %s.  You can ask me what food trucks are at those locations.",
-              futurePhrase, locationSlot.getValue(), dateRepresentation, nearby))
-              .useSpeechTextForReprompt()
-              .ask();
+          builder.speechSSML(
+              String.format("There are no trucks %sat %s %s.  These nearby locations have food trucks: %s.",
+                  futurePhrase, locationSlot.getValue(), dateRepresentation, nearby));
         }
         break;
       case 1:
@@ -135,6 +117,31 @@ class LocationIntentProcessor implements IntentProcessor {
         .tell();
   }
 
+  private SpeechletResponse provideHelp() {
+    List<String> locations = findAlternateLocations(false, null, clock.currentDay());
+    if (locations.isEmpty()) {
+      locations = ImmutableList.of("Clark and Monroe");
+    }
+    return SpeechletResponseBuilder.builder()
+        .speechSSML(String.format(
+            "You can ask me about a specific location in Chicago.  For example, you can say: What food trucks are at %s today?",
+            locations.get(0)))
+        .useSpeechTextForReprompt()
+        .ask();
+  }
+
+  private SpeechletResponse locationNotFound(Slot locationSlot, boolean tomorrow, LocalDate requestDate) {
+    List<String> locations = findAlternateLocations(tomorrow, null, requestDate);
+    log.log(Level.SEVERE, "Could not find location {0} that is specified in alexa", locationSlot.getValue());
+    String messageText = locations.isEmpty() ? "I'm sorry but I don't recognize that location.  There don't appear to be any open food trucks in Chicago now that I can suggest as alternates" : String.format(
+        "I'm sorry but I don't recognize that location.  You can ask about popular food truck stops in Chicago, such as %s",
+        AlexaUtils.toAlexaList(locations, true, Conjunction.or));
+    return SpeechletResponseBuilder.builder()
+        .speechSSML(messageText)
+        .useSpeechTextForReprompt()
+        .ask();
+  }
+
   private List<String> findAlternateLocations(boolean tomorrow, Location currentLocation, LocalDate theDate) {
     try {
       String schedule = tomorrow ? scheduleCacher.findTomorrowsSchedule() : scheduleCacher.findSchedule();
@@ -143,20 +150,7 @@ class LocationIntentProcessor implements IntentProcessor {
             .toString();
         scheduleCacher.saveTomorrowsSchedule(schedule);
       }
-      JSONObject jsonObject = new JSONObject(schedule);
-      log.log(Level.FINE, "Schedule {0}", jsonObject);
-      JSONArray locationArr = jsonObject.getJSONArray("locations");
-      List<Location> locations = Lists.newLinkedList();
-      for (int i = 0; i < locationArr.length(); i++) {
-        Long key = locationArr.getJSONObject(i)
-            .getLong("key");
-        Location loc = locationDAO.findById(key);
-        if (loc == null) {
-          continue;
-        }
-        locations.add(loc);
-      }
-
+      List<Location> locations = extractLocations(schedule);
       Predicate<Location> filterPredicate = Predicates.alwaysTrue();
       Location searchLocation = MoreObjects.firstNonNull(currentLocation, defaultCenter);
       if (searchLocation != null) {
@@ -174,6 +168,23 @@ class LocationIntentProcessor implements IntentProcessor {
       log.log(Level.WARNING, "Could not parse daily schedule {0} {1}", new Object[]{tomorrow, e.getMessage()});
       return ImmutableList.of("Clark and Monroe");
     }
+  }
+
+  private List<Location> extractLocations(String schedule) throws JSONException {
+    JSONObject jsonObject = new JSONObject(schedule);
+    log.log(Level.FINE, "Schedule {0}", jsonObject);
+    JSONArray locationArr = jsonObject.getJSONArray("locations");
+    List<Location> locations = Lists.newLinkedList();
+    for (int i = 0; i < locationArr.length(); i++) {
+      Long key = locationArr.getJSONObject(i)
+          .getLong("key");
+      Location loc = locationDAO.findById(key);
+      if (loc == null) {
+        continue;
+      }
+      locations.add(loc);
+    }
+    return locations;
   }
 
   private String toDate(LocalDate date) {
