@@ -9,6 +9,7 @@ import com.amazon.speech.slu.Intent;
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
@@ -45,16 +46,18 @@ class LocationIntentProcessor implements IntentProcessor {
   private final ScheduleCacher scheduleCacher;
   private final LocationDAO locationDAO;
   private final DailyScheduleWriter dailyScheduleWriter;
+  private final Location defaultCenter;
 
   @Inject
   public LocationIntentProcessor(GeoLocator locator, FoodTruckStopService service, Clock clock, LocationDAO locationDAO,
-      ScheduleCacher cacher, DailyScheduleWriter dailyScheduleWriter) {
+      ScheduleCacher cacher, DailyScheduleWriter dailyScheduleWriter, @DefaultCenter Location center) {
     this.locator = locator;
     this.service = service;
     this.clock = clock;
     this.locationDAO = locationDAO;
     scheduleCacher = cacher;
     this.dailyScheduleWriter = dailyScheduleWriter;
+    this.defaultCenter = center;
   }
 
   @Override
@@ -70,7 +73,7 @@ class LocationIntentProcessor implements IntentProcessor {
               "You can ask me about a specific location in Chicago.  For example, you can say: What food trucks are at %s today?",
               locations.get(0)))
           .useSpeechTextForReprompt()
-          .tell();
+          .ask();
     }
     Location location = locator.locate(locationSlot.getValue(), GeolocationGranularity.NARROW);
     boolean tomorrow = "tomorrow".equals(intent.getSlot(SLOT_WHEN)
@@ -80,7 +83,7 @@ class LocationIntentProcessor implements IntentProcessor {
     if (location == null || !location.isResolved()) {
       List<String> locations = findAlternateLocations(tomorrow, null, requestDate);
       log.log(Level.SEVERE, "Could not find location {0} that is specified in alexa", locationSlot.getValue());
-      String messageText = String.format(
+      String messageText = locations.isEmpty() ? "I'm sorry but I don't recognize that location.  There don't appear to be any open food trucks in Chicago now that I can suggest as alternates" : String.format(
           "I'm sorry but I don't recognize that location.  You can ask about popular food truck stops in Chicago, such as %s",
           AlexaUtils.toAlexaList(locations, true, Conjunction.or));
       return SpeechletResponseBuilder.builder()
@@ -109,7 +112,7 @@ class LocationIntentProcessor implements IntentProcessor {
           builder.speechSSML(noTrucks);
         } else {
           return builder.speechSSML(String.format(
-              "There are no trucks %sat %s %s.  These nearby locations have food trucks: %s.  You can ask me what food trucks are those locations.",
+              "There are no trucks %sat %s %s.  These nearby locations have food trucks: %s.  You can ask me what food trucks are at those locations.",
               futurePhrase, locationSlot.getValue(), dateRepresentation, nearby))
               .useSpeechTextForReprompt()
               .ask();
@@ -155,9 +158,12 @@ class LocationIntentProcessor implements IntentProcessor {
       }
 
       Predicate<Location> filterPredicate = Predicates.alwaysTrue();
-      if (currentLocation != null) {
-        Collections.sort(locations, currentLocation.distanceFromComparator());
-        filterPredicate = currentLocation.rangedPredicate(5);
+      Location searchLocation = MoreObjects.firstNonNull(currentLocation, defaultCenter);
+      if (searchLocation != null) {
+        Collections.sort(locations, searchLocation.distanceFromComparator());
+        if (currentLocation != null) {
+          filterPredicate = currentLocation.rangedPredicate(5);
+        }
       }
       return FluentIterable.from(locations)
           .filter(filterPredicate)

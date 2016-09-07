@@ -1,8 +1,14 @@
 package foodtruck.alexa;
 
+import java.util.List;
+
 import com.amazon.speech.speechlet.Speechlet;
+import com.google.common.base.Splitter;
 import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
 import com.google.inject.multibindings.MapBinder;
+
+import foodtruck.model.Location;
 
 
 /**
@@ -13,6 +19,9 @@ public class AlexaModule extends AbstractModule {
   static final String GET_FOOD_TRUCKS_AT_LOCATION = "GetFoodTrucksAtLocation";
   static final String WHERE_IS_TRUCK = "WhereIsTruck";
   static final String DAILY_SPECIALS = "DailySpecials";
+  private static final Splitter LOCATION_SPLITTER = Splitter.on(";")
+      .omitEmptyStrings()
+      .trimResults();
 
   @Override
   protected void configure() {
@@ -31,5 +40,21 @@ public class AlexaModule extends AbstractModule {
         .to(CancelProcessor.class);
     intentProcessorMapBinder.addBinding("AMAZON.StopIntent")
         .to(CancelProcessor.class);
+  }
+
+  // TODO: probably should actually be somewhere else (such as the servlet config) but this isn't used
+  // anywhere else yet, so its here.
+
+  @Provides
+  @DefaultCenter
+  public Location provideDefaultLocation() {
+    String location = System.getProperty("foodtrucklocator.map.center",
+        "Clark and Monroe, Chicago, IL; 41.880187; -87.63083499999999");
+    List<String> splitInfo = LOCATION_SPLITTER.splitToList(location);
+    return Location.builder()
+        .name(splitInfo.get(0))
+        .lat(Double.parseDouble(splitInfo.get(1)))
+        .lng(Double.parseDouble(splitInfo.get(2)))
+        .build();
   }
 }
