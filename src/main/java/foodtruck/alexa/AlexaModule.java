@@ -19,6 +19,7 @@ public class AlexaModule extends AbstractModule {
   static final String GET_FOOD_TRUCKS_AT_LOCATION = "GetFoodTrucksAtLocation";
   static final String WHERE_IS_TRUCK = "WhereIsTruck";
   static final String DAILY_SPECIALS = "DailySpecials";
+  static final String ABOUT_TRUCK = "AboutTruck";
   private static final Splitter LOCATION_SPLITTER = Splitter.on(";")
       .omitEmptyStrings()
       .trimResults();
@@ -40,6 +41,8 @@ public class AlexaModule extends AbstractModule {
         .to(CancelProcessor.class);
     intentProcessorMapBinder.addBinding("AMAZON.StopIntent")
         .to(CancelProcessor.class);
+    intentProcessorMapBinder.addBinding(ABOUT_TRUCK)
+        .to(AboutIntentProcessor.class);
   }
 
   // TODO: probably should actually be somewhere else (such as the servlet config) but this isn't used
