@@ -46,7 +46,8 @@ class AboutIntentProcessor implements IntentProcessor {
       lastSeenPart = String.format("%s has never been seen on the road.", truck.getNameInSSML());
     } else {
       Period period = new Period(lastSeen, clock.now());
-      lastSeenPart = String.format("%s was last seen %d days ago at %s", truck.getNameInSSML(), period.getDays(),
+      String formatPart = period.getDays() == 0 ? "yesterday" : String.format("%d days ago", period.getDays());
+      lastSeenPart = String.format("%s was last seen %s at %s", truck.getNameInSSML(), formatPart,
           whereLastSeen.getName());
     }
     return SpeechletResponseBuilder.builder()
