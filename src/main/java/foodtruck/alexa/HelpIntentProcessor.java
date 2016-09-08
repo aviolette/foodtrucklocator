@@ -13,7 +13,7 @@ class HelpIntentProcessor implements IntentProcessor {
   public SpeechletResponse process(Intent intent, Session session) {
     return SpeechletResponseBuilder.builder()
         .speechText(
-            "Food Truck Finder.  You can ask me what trucks will be at a location or where a specific truck is today")
+            "Food Truck Finder.  You can ask me what trucks will be at a location or where a specific truck is today.  For example, you can say What trucks are on Clark and Monroe?  Or Where will Cheesies be for lunch today?")
         .useSpeechTextForReprompt()
         .simpleCard("Food Truck Finder Help")
         .ask();
