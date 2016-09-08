@@ -69,12 +69,14 @@ public class TruckResource {
   }
 
   @GET
-  @Produces({"application/json", "text/csv"})
+  @Produces({"application/json", "text/csv", "text/plain"})
   public JResponse<Collection<Truck>> getTrucks(@PathParam("view") String view, @QueryParam("active") final String active,
       @QueryParam("tag") final String filteredBy) {
     MediaType mediaType = MediaType.APPLICATION_JSON_TYPE;
     if (".csv".equals(view)) {
       mediaType = new MediaType("text", "csv");
+    } else if (".txt".equals(view)) {
+      mediaType = MediaType.TEXT_PLAIN_TYPE;
     }
     Collection<Truck> response;
     if ("false".equals(active)) {
