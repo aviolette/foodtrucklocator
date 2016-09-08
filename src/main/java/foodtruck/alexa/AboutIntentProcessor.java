@@ -50,7 +50,7 @@ class AboutIntentProcessor implements IntentProcessor {
           whereLastSeen.getName());
     }
     return SpeechletResponseBuilder.builder()
-        .speechSSML(String.format("%s <break time=\"0.3s\" %s", truck.getDescription(), lastSeenPart))
+        .speechSSML(String.format("%s <break time=\"0.3s\"/> %s", truck.getDescription(), lastSeenPart))
         .simpleCard(truck.getName())
         .tell();
   }
