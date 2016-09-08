@@ -6,7 +6,7 @@ import com.amazon.speech.speechlet.SpeechletResponse;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
-import org.joda.time.Period;
+import org.joda.time.Duration;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Location;
@@ -69,11 +69,11 @@ class AboutIntentProcessor implements IntentProcessor {
               .minusDays(1))) {
         formatPart = "yesterday";
       } else {
-        Period period = new Period(lastSeen, now);
-        formatPart = String.format("%d days ago", period.getDays());
+        Duration d = new Duration(lastSeen, now);
+        formatPart = String.format("%d days ago", d.getStandardDays());
       }
       lastSeenPart = String.format("%s was last seen %s at %s", truck.getNameInSSML(), formatPart,
-          whereLastSeen.getName());
+          whereLastSeen.getShortenedName());
     }
     return SpeechletResponseBuilder.builder()
         .speechSSML(String.format("%s <break time=\"0.3s\"/> %s", truck.getDescription(), lastSeenPart))
