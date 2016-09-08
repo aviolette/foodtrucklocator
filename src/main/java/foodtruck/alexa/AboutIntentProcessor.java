@@ -11,6 +11,9 @@ import org.joda.time.Period;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
+import foodtruck.model.TruckSchedule;
+import foodtruck.model.TruckStop;
+import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 
 /**
@@ -21,11 +24,13 @@ class AboutIntentProcessor implements IntentProcessor {
   private static final String TRUCK_SLOT = "Truck";
   private final TruckDAO truckDAO;
   private final Clock clock;
+  private final FoodTruckStopService service;
 
   @Inject
-  public AboutIntentProcessor(TruckDAO truckDAO, Clock clock) {
+  public AboutIntentProcessor(TruckDAO truckDAO, Clock clock, FoodTruckStopService service) {
     this.truckDAO = truckDAO;
     this.clock = clock;
+    this.service = service;
   }
 
   @Override
@@ -38,15 +43,35 @@ class AboutIntentProcessor implements IntentProcessor {
           .useSpeechTextForReprompt()
           .ask();
     }
+    DateTime lastSeen = null, now = clock.now();
+    Location whereLastSeen = null;
+    TruckSchedule schedule = service.findStopsForDay(truck.getId(), clock.currentDay());
+    TruckStop lastActive = schedule.findLastActive(now);
     Truck.Stats stats = truck.getStats();
-    DateTime lastSeen = stats != null ? stats.getLastSeen() : null;
-    Location whereLastSeen = stats != null ? stats.getWhereLastSeen() : null;
+    if (lastActive != null) {
+      lastSeen = (lastActive.getEndTime()
+          .isAfter(now)) ? now : lastActive.getEndTime();
+      whereLastSeen = lastActive.getLocation();
+    } else if (stats != null) {
+      lastSeen = stats.getLastSeen();
+      whereLastSeen = stats.getWhereLastSeen();
+    }
     String lastSeenPart;
     if (lastSeen == null || whereLastSeen == null) {
       lastSeenPart = String.format("%s has never been seen on the road.", truck.getNameInSSML());
     } else {
-      Period period = new Period(lastSeen, clock.now());
-      String formatPart = period.getDays() == 0 ? "yesterday" : String.format("%d days ago", period.getDays());
+      String formatPart;
+      if (lastSeen.toLocalDate()
+          .equals(now.toLocalDate())) {
+        formatPart = "today";
+      } else if (lastSeen.toLocalDate()
+          .equals(now.toLocalDate()
+              .minusDays(1))) {
+        formatPart = "yesterday";
+      } else {
+        Period period = new Period(lastSeen, now);
+        formatPart = String.format("%d days ago", period.getDays());
+      }
       lastSeenPart = String.format("%s was last seen %s at %s", truck.getNameInSSML(), formatPart,
           whereLastSeen.getName());
     }

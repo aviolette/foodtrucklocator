@@ -2,6 +2,9 @@ package foodtruck.model;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 /**
@@ -30,5 +33,19 @@ public class TruckSchedule {
 
   public LocalDate getDate() {
     return date;
+  }
+
+  @Nullable
+  public TruckStop findLastActive(DateTime now) {
+    TruckStop candidate = null;
+    for (TruckStop stop : stops) {
+      if (stop.activeDuring(now) || stop.getEndTime()
+          .isBefore(now)) {
+        candidate = stop;
+      } else {
+        break;
+      }
+    }
+    return candidate;
   }
 }
