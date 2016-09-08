@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
@@ -28,6 +29,11 @@ import static com.google.common.base.Preconditions.checkState;
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class Truck extends ModelEntity implements Serializable {
+  public static final Function<Truck, String> TO_NAME = new Function<Truck, String>() {
+    public String apply(Truck input) {
+      return input.getName();
+    }
+  };
   private static final Joiner BLACKLIST_JOINER = Joiner.on("; ");
   private String id;
   private String name;
