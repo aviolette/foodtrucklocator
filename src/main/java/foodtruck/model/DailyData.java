@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 import com.google.api.client.util.Sets;
+import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableSet;
@@ -19,6 +20,11 @@ import foodtruck.util.MoreStrings;
  * @since 10/26/15
  */
 public class DailyData extends ModelEntity {
+  public static final Function<SpecialInfo, String> TO_NAME = new Function<SpecialInfo, String>() {
+    public String apply(SpecialInfo input) {
+      return input.getSpecial();
+    }
+  };
   private @Nullable String locationId;
   private LocalDate onDate;
   private Set<SpecialInfo> specials;

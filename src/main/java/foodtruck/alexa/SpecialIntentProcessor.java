@@ -3,7 +3,6 @@ package foodtruck.alexa;
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
-import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 
@@ -46,18 +45,16 @@ class SpecialIntentProcessor implements IntentProcessor {
       speechText = String.format("There are no specials for %s today", truck.getNameInSSML());
     } else if (dailyData.getSpecials()
         .size() == 1) {
-      speechText = String.format("%s's special for today is %s", truck.getNameInSSML(), dailyData.getSpecials()
+      DailyData.SpecialInfo specialInfo = dailyData.getSpecials()
           .iterator()
-          .next()
-          .getSpecial());
+          .next();
+      String soldOutText = specialInfo.isSoldOut() ? " but it appears to be sold out" : "";
+      speechText = String.format("%s's special for today is %s%s.", truck.getNameInSSML(), specialInfo.getSpecial(),
+          soldOutText);
     } else {
       speechText = String.format("%s's specials for today are %s", truck.getNameInSSML(), AlexaUtils.toAlexaList(
           FluentIterable.from(dailyData.getSpecials())
-              .transform(new Function<DailyData.SpecialInfo, String>() {
-                public String apply(DailyData.SpecialInfo input) {
-                  return input.getSpecial();
-                }
-              })
+              .transform(DailyData.TO_NAME)
               .toList(), true));
     }
     return SpeechletResponseBuilder.builder()

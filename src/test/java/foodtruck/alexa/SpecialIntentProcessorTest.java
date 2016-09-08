@@ -84,9 +84,25 @@ public class SpecialIntentProcessorTest extends EasyMockSupport {
     replayAll();
     SpeechletResponse response = processor.process(intent, null);
     assertSpeech(response.getOutputSpeech()).isEqualTo(
-        "<speak>Foobar's special for today is Mexican Hot Chocolate Cake Donut</speak>");
+        "<speak>Foobar's special for today is Mexican Hot Chocolate Cake Donut.</speak>");
     verifyAll();
   }
+
+  @Test
+  public void oneSpecialSoldOut() {
+    expect(truckDAO.findByName("Foobar")).andReturn(truck);
+    DailyData dailyData = DailyData.builder()
+        .addSpecial("Mexican Hot Chocolate Cake Donut", true)
+        .build();
+    expect(dailyDataDAO.findByTruckAndDay("foobar", date)).andReturn(dailyData);
+    replayAll();
+    SpeechletResponse response = processor.process(intent, null);
+    assertSpeech(response.getOutputSpeech()).isEqualTo(
+        "<speak>Foobar's special for today is Mexican Hot Chocolate Cake Donut but it appears to be sold out.</speak>");
+    verifyAll();
+  }
+
+
 
   @Test
   public void twoSpecials() {
