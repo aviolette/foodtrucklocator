@@ -1,0 +1,31 @@
+GetFoodTrucksAtLocation who is on {Location}
+GetFoodTrucksAtLocation who is on {Location} {When}
+GetFoodTrucksAtLocation what food trucks are at {Location}
+GetFoodTrucksAtLocation what trucks are at {Location}
+GetFoodTrucksAtLocation what food trucks are at {Location} {When}
+GetFoodTrucksAtLocation what trucks are at {Location} {When}
+GetFoodTrucksAtLocation what food trucks are near {Location}
+GetFoodTrucksAtLocation what trucks are near {Location}
+GetFoodTrucksAtLocation what food trucks are near {Location} {When}
+GetFoodTrucksAtLocation what trucks are near {Location}
+GetFoodTrucksAtLocation what food trucks are on {Location}
+GetFoodTrucksAtLocation what food trucks are on {Location} {When}
+GetFoodTrucksAtLocation what trucks are on {Location}
+GetFoodTrucksAtLocation what trucks are {Location} {When}
+GetFoodTrucksAtLocation what food trucks will be at {Location} {When}
+GetFoodTrucksAtLocation what food trucks will be on {Location} {When}
+GetFoodTrucksAtLocation what food trucks were at {Location} today
+GetFoodTrucksAtLocation what food trucks were on {Location} today
+GetFoodTrucksAtLocation what food trucks are going to be at {Location} {When}
+WhereIsTruck where is {Truck} {TimeOfDay}
+WhereIsTruck where {Truck} is {TimeOfDay}
+WhereIsTruck where will {Truck} be {TimeOfDay}
+WhereIsTruck where was {Truck} {TimeOfDay}
+DailySpecials what is the special for {Truck}
+DailySpecials what is the special for {Truck} today
+DailySpecials what is the special at {Truck}
+DailySpecials what is the special at {Truck} today
+DailySpecials what are the specials at {Truck}
+DailySpecials what are the specials at {Truck} today
+DailySpecials what are {Truck} specials today
+AboutTruck tell me about {Truck}

@@ -1,0 +1,57 @@
+{
+  "intents": [
+    {
+      "intent": "GetFoodTrucksAtLocation",
+      "slots": [
+        {
+          "name": "Location",
+          "type": "LIST_OF_POPULAR_SPOTS"
+        },
+        {
+          "name": "When",
+          "type": "RELATIVE_DATE"
+        }
+      ]
+    },
+    {
+      "intent": "DailySpecials",
+      "slots": [
+        {
+          "name": "Truck",
+          "type": "LIST_OF_TRUCKS"
+        }
+      ]
+    },
+    {
+      "intent": "AboutTruck",
+      "slots": [
+        {
+          "name": "Truck",
+          "type": "LIST_OF_TRUCKS"
+        }
+      ]
+    },
+    {
+      "intent": "WhereIsTruck",
+      "slots": [
+        {
+          "name": "Truck",
+          "type": "LIST_OF_TRUCKS"
+        },
+        {
+          "name": "TimeOfDay",
+          "type": "LIST_OF_FOOD_TIMES"
+        }
+      ]
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "intent": "AMAZON.CancelIntent"
+    }
+  ]
+}
