@@ -39,4 +39,8 @@ public class Url {
   public String toString() {
     return url;
   }
+
+  public String secure() {
+    return "https:" + getProtocolRelative();
+  }
 }

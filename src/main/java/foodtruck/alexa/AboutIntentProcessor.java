@@ -13,6 +13,7 @@ import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStop;
+import foodtruck.model.Url;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 
@@ -75,9 +76,12 @@ class AboutIntentProcessor implements IntentProcessor {
       lastSeenPart = String.format("%s was last seen %s at %s", truck.getNameInSSML(), formatPart,
           whereLastSeen.getShortenedName());
     }
+    Url previewIcon = truck.getPreviewIconUrl();
+    Url thumbnail = truck.getIconUrlObj();
     return SpeechletResponseBuilder.builder()
         .speechSSML(String.format("%s <break time=\"0.3s\"/> %s", truck.getDescription(), lastSeenPart))
-        .imageCard(truck.getName(), truck.getPreviewIcon(), truck.getIconUrl())
+        .imageCard(truck.getName(), previewIcon == null ? null : previewIcon.secure(),
+            thumbnail == null ? null : thumbnail.secure())
         .tell();
   }
 }
