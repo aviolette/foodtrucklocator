@@ -628,7 +628,7 @@ public class Truck extends ModelEntity implements Serializable {
     private @Nullable String menuUrl;
     private List<String> blacklistLocationNames = ImmutableList.of();
     private @Nullable String phoneticMarkup;
-    private List<String> phoneticAliases;
+    private List<String> phoneticAliases = ImmutableList.of();
 
     public Builder() {
     }
