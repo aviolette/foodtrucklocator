@@ -5,6 +5,7 @@ import java.util.List;
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
+import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 
@@ -26,7 +27,7 @@ import foodtruck.util.Clock;
  * @since 9/7/16
  */
 class AboutIntentProcessor implements IntentProcessor {
-  private static final String TRUCK_SLOT = "Truck";
+  static final String TRUCK_SLOT = "Truck";
   private final TruckDAO truckDAO;
   private final Clock clock;
   private final FoodTruckStopService service;
@@ -40,13 +41,14 @@ class AboutIntentProcessor implements IntentProcessor {
 
   @Override
   public SpeechletResponse process(Intent intent, Session session) {
-    Truck truck = truckDAO.findByNameOrAlias(intent.getSlot(TRUCK_SLOT)
-        .getValue());
+    String truckValue = intent.getSlot(TRUCK_SLOT)
+        .getValue();
+    if (Strings.isNullOrEmpty(truckValue)) {
+      return notFound();
+    }
+    Truck truck = truckDAO.findByNameOrAlias(truckValue);
     if (truck == null) {
-      return SpeechletResponseBuilder.builder()
-          .speechText(TruckLocationIntentProcessor.TRUCK_NOT_FOUND)
-          .useSpeechTextForReprompt()
-          .ask();
+      return notFound();
     }
     DateTime now = clock.now();
     TruckSchedule schedule = service.findStopsForDay(truck.getId(), clock.currentDay());
@@ -68,13 +70,21 @@ class AboutIntentProcessor implements IntentProcessor {
     } else {
       schedulePart = lastSeen(truck, now, schedule);
     }
+    String largeIconUrl = truck.getFullsizeImage() == null ? truck.getBackgroundImage() : truck.getFullsizeImage();
     Url previewIcon = truck.getPreviewIconUrl(),
-        thumbnail = truck.getIconUrlObj();
+        largeIcon = largeIconUrl == null ? null : new Url(largeIconUrl);
     return SpeechletResponseBuilder.builder()
-        .speechSSML(String.format("%s <break time=\"0.3s\"/>\n %s", truck.getDescription(), schedulePart))
-        .imageCard(truck.getName(), previewIcon == null ? null : previewIcon.secure(),
-            thumbnail == null ? null : thumbnail.secure())
+        .speechSSML(String.format("%s<break time=\"0.3s\"/>\n%s", truck.getDescription(), schedulePart.trim()))
+        .imageCard(truck.getName(), largeIcon == null ? null : largeIcon.secure(),
+            previewIcon == null ? null : previewIcon.secure())
         .tell();
+  }
+
+  private SpeechletResponse notFound() {
+    return SpeechletResponseBuilder.builder()
+        .speechText(TruckLocationIntentProcessor.TRUCK_NOT_FOUND)
+        .repromptText(TruckLocationIntentProcessor.TRUCK_NOT_FOUND_REPROMPT)
+        .ask();
   }
 
   private String lastSeen(Truck truck, DateTime now, TruckSchedule schedule) {
@@ -104,7 +114,7 @@ class AboutIntentProcessor implements IntentProcessor {
         Duration d = new Duration(lastSeen, now);
         formatPart = String.format("%d days ago", d.getStandardDays());
       }
-      return String.format("%s was last seen %s at %s", truck.getNameInSSML(), formatPart,
+      return String.format("%s was last seen %s at %s.", truck.getNameInSSML(), formatPart,
           whereLastSeen.getShortenedName());
     }
   }

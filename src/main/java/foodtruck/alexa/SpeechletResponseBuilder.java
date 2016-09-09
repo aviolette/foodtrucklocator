@@ -41,9 +41,13 @@ class SpeechletResponseBuilder {
   }
 
   SpeechletResponseBuilder simpleCard(String title) {
+    return simpleCardWithText(title, speechText);
+  }
+
+  SpeechletResponseBuilder simpleCardWithText(String title, String bodyText) {
     SimpleCard card = new SimpleCard();
     card.setTitle(title);
-    card.setContent(scrub(speechText));
+    card.setContent(scrub(bodyText));
     this.card = card;
     return this;
   }
@@ -77,13 +81,14 @@ class SpeechletResponseBuilder {
   }
 
   private OutputSpeech buildOutput(String text, boolean ssml) {
+    text = text.replaceAll("\n", " ");
     if (ssml) {
       SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
-      outputSpeech.setSsml("<speak>" + speechText + "</speak>");
+      outputSpeech.setSsml("<speak>" + text + "</speak>");
       return outputSpeech;
     } else {
       PlainTextOutputSpeech outputSpeech = new PlainTextOutputSpeech();
-      outputSpeech.setText(speechText);
+      outputSpeech.setText(text);
       return outputSpeech;
     }
   }
@@ -106,9 +111,10 @@ class SpeechletResponseBuilder {
     }
   }
 
-  public SpeechletResponseBuilder useSpeechTextForReprompt() {
+  SpeechletResponseBuilder useSpeechTextForReprompt() {
     repromptText = speechText;
     repromptSSML = speechSSML;
     return this;
   }
+
 }

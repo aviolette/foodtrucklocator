@@ -133,13 +133,21 @@ class LocationIntentProcessor implements IntentProcessor {
   private SpeechletResponse locationNotFound(Slot locationSlot, boolean tomorrow, LocalDate requestDate) {
     List<String> locations = findAlternateLocations(tomorrow, null, requestDate);
     log.log(Level.SEVERE, "Could not find location {0} that is specified in alexa", locationSlot.getValue());
-    String messageText = locations.isEmpty() ? "I'm sorry but I don't recognize that location.  There don't appear to be any open food trucks in Chicago now that I can suggest as alternates" : String.format(
-        "I'm sorry but I don't recognize that location.  You can ask about popular food truck stops in Chicago, such as %s",
-        AlexaUtils.toAlexaList(locations, true, Conjunction.or));
-    return SpeechletResponseBuilder.builder()
-        .speechSSML(messageText)
-        .useSpeechTextForReprompt()
-        .ask();
+    SpeechletResponseBuilder builder = SpeechletResponseBuilder.builder();
+    if (locations.isEmpty()) {
+      return builder.speechSSML(
+          "I'm sorry but I don't recognize that location.  There don't appear to be any open food trucks in Chicago now that I can suggest as alternates")
+          .useSpeechTextForReprompt()
+          .tell();
+    } else {
+      return builder.speechSSML(String.format(
+          "I'm sorry but I don't recognize that location.  You can ask about popular food truck stops in Chicago, such as 'What trucks are at %s?'",
+          locations.get(0)))
+          .repromptText(String.format(
+              "I did not recognize the location you mentioned.  Some locations that have trucks today are %s.  Which location are you interested in?",
+              AlexaUtils.toAlexaList(locations, true, Conjunction.or)))
+          .ask();
+    }
   }
 
   private List<String> findAlternateLocations(boolean tomorrow, Location currentLocation, LocalDate theDate) {

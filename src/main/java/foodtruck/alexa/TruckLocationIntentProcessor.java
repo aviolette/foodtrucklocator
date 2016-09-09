@@ -26,7 +26,8 @@ import static foodtruck.model.TruckStop.TO_LOCATION_NAME;
 class TruckLocationIntentProcessor implements IntentProcessor {
   static final String SLOT_TRUCK = "Truck";
   static final String SLOT_TIME_OF_DAY = "TimeOfDay";
-  static final String TRUCK_NOT_FOUND = "I currently provide information for food trucks that operate in " + "and around Chicago.  Can you try a different food truck?";
+  static final String TRUCK_NOT_FOUND = "Sorry, I did not recognize that food truck.  Which food truck would you like to know about?";
+  static final String TRUCK_NOT_FOUND_REPROMPT = "I currently provide information for food trucks that operate in and around Chicago.  Which food truck would you like to know about?";
   private final FoodTruckStopService service;
   private final TruckDAO truckDAO;
   private final Clock clock;
