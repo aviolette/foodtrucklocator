@@ -28,6 +28,18 @@ class SpeechletResponseBuilder {
     return this;
   }
 
+  SpeechletResponseBuilder imageCard(String title, @Nullable String largeImage, @Nullable String smallImage) {
+    ImageCard card = new ImageCard();
+    card.setTitle(title);
+    card.setText(scrub(speechText));
+    ImageSet imageSet = new ImageSet();
+    imageSet.setLargeImageUrl(largeImage);
+    imageSet.setSmallImageUrl(smallImage);
+    card.setImage(imageSet);
+    this.card = card;
+    return this;
+  }
+
   SpeechletResponseBuilder simpleCard(String title) {
     SimpleCard card = new SimpleCard();
     card.setTitle(title);

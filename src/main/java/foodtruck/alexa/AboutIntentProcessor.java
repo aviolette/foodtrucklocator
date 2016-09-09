@@ -77,7 +77,7 @@ class AboutIntentProcessor implements IntentProcessor {
     }
     return SpeechletResponseBuilder.builder()
         .speechSSML(String.format("%s <break time=\"0.3s\"/> %s", truck.getDescription(), lastSeenPart))
-        .simpleCard(truck.getName())
+        .imageCard(truck.getName(), truck.getPreviewIcon(), truck.getIconUrl())
         .tell();
   }
 }
