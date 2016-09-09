@@ -126,8 +126,7 @@ public class LocationIntentProcessorTest extends EasyMockSupport {
     expect(locationDAO.findById(1835344L)).andReturn(null);
     replayAll();
     SpeechletResponse response = processor.process(intent, null);
-    assertSpeech(response.getOutputSpeech()).isEqualTo(
-        "<speak>I'm sorry but I don't recognize that location.  There don't appear to be any open food trucks in Chicago now that I can suggest as alternates</speak>");
+    assertSpeech(response.getOutputSpeech()).isEqualTo("<speak>What location was that?</speak>");
     verifyAll();
   }
 
@@ -172,8 +171,7 @@ public class LocationIntentProcessorTest extends EasyMockSupport {
         .build());
     replayAll();
     SpeechletResponse response = processor.process(intent, null);
-    assertSpeech(response.getOutputSpeech()).isEqualTo(
-        "<speak>I don't recognize that location.  Which location would you like information on?</speak>");
+    assertSpeech(response.getOutputSpeech()).isEqualTo("<speak>What location was that?</speak>");
     assertSpeech(response.getReprompt()
         .getOutputSpeech()).isEqualTo(
         "<speak>You can ask about popular food truck stops in Chicago, for example: 'What trucks are at Foobar?'  Which location would you like information on?</speak>");

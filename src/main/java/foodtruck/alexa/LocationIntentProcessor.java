@@ -134,15 +134,13 @@ class LocationIntentProcessor implements IntentProcessor {
     List<String> locations = findAlternateLocations(tomorrow, null, requestDate);
     log.log(Level.SEVERE, "Could not find location {0} that is specified in alexa", locationSlot.getValue());
     SpeechletResponseBuilder builder = SpeechletResponseBuilder.builder();
+    // See "Don’t Blame the User" https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/alexa-skills-kit-voice-design-best-practices
     if (locations.isEmpty()) {
-      return builder.speechSSML(
-          "I'm sorry but I don't recognize that location.  There don't appear to be any open food trucks in Chicago now that I can suggest as alternates")
+      return builder.speechSSML("What location was that?")
           .useSpeechTextForReprompt()
           .tell();
     } else {
-      return builder.speechSSML(String.format(
-          "I'm sorry but I don't recognize that location.  You can ask about popular food truck stops in Chicago, such as 'What trucks are at %s?'",
-          locations.get(0)))
+      return builder.speechSSML("What location was that?")
           .repromptText(String.format(
               "I did not recognize the location you mentioned.  Some locations that have trucks today are %s.  Which location are you interested in?",
               AlexaUtils.toAlexaList(locations, true, Conjunction.or)))

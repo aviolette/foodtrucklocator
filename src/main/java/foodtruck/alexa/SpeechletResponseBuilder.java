@@ -23,11 +23,6 @@ class SpeechletResponseBuilder {
     return new SpeechletResponseBuilder();
   }
 
-  SpeechletResponseBuilder card(@Nullable Card card) {
-    this.card = card;
-    return this;
-  }
-
   SpeechletResponseBuilder imageCard(String title, @Nullable String largeImage, @Nullable String smallImage) {
     ImageCard card = new ImageCard();
     card.setTitle(title);
@@ -62,7 +57,7 @@ class SpeechletResponseBuilder {
     return this;
   }
 
-  public SpeechletResponseBuilder speechSSML(String text) {
+  SpeechletResponseBuilder speechSSML(String text) {
     this.speechText = text;
     this.speechSSML = true;
     return this;
@@ -116,5 +111,4 @@ class SpeechletResponseBuilder {
     repromptSSML = speechSSML;
     return this;
   }
-
 }
