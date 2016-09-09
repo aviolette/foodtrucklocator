@@ -35,7 +35,7 @@ class AboutIntentProcessor implements IntentProcessor {
 
   @Override
   public SpeechletResponse process(Intent intent, Session session) {
-    Truck truck = truckDAO.findByName(intent.getSlot(TRUCK_SLOT)
+    Truck truck = truckDAO.findByNameOrAlias(intent.getSlot(TRUCK_SLOT)
         .getValue());
     if (truck == null) {
       return SpeechletResponseBuilder.builder()
