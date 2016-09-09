@@ -86,6 +86,17 @@ class AlexaUtils {
           .add("title", simpleCard.getTitle())
           .add("content", simpleCard.getContent())
           .toString();
+    } else if (card instanceof ImageCard) {
+      ImageCard imageCard = (ImageCard) card;
+      return MoreObjects.toStringHelper(imageCard)
+          .add("title", imageCard.getTitle())
+          .add("text", imageCard.getText())
+          .add("image", MoreObjects.toStringHelper(imageCard.getImage())
+              .add("small", imageCard.getImage()
+                  .getSmallImageUrl())
+              .add("large", imageCard.getImage()
+                  .getLargeImageUrl()))
+          .toString();
     }
     return null;
   }
