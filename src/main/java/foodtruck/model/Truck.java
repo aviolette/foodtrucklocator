@@ -73,6 +73,7 @@ public class Truck extends ModelEntity implements Serializable {
   private @Nullable String menuUrl;
   private List<String> blacklistLocationNames;
   private @Nullable String phoneticMarkup;
+  private ImmutableList<String> phoneticAliases;
 
   // For serialization (for storage in memcached)
   private Truck() {
@@ -118,6 +119,7 @@ public class Truck extends ModelEntity implements Serializable {
     this.menuUrl = builder.menuUrl;
     this.blacklistLocationNames = builder.blacklistLocationNames;
     this.phoneticMarkup = builder.phoneticMarkup;
+    this.phoneticAliases = ImmutableList.copyOf(builder.phoneticAliases);
   }
 
   public static Builder builder() {
@@ -134,6 +136,10 @@ public class Truck extends ModelEntity implements Serializable {
       name = name.substring(4);
     }
     return name;
+  }
+
+  public ImmutableList<String> getPhoneticAliases() {
+    return phoneticAliases;
   }
 
   @Nullable
@@ -219,6 +225,11 @@ public class Truck extends ModelEntity implements Serializable {
   @SuppressWarnings("UnusedDeclaration")
   public String getCategoryList() {
     return Joiner.on(", ").join(categories);
+  }
+
+  public String getPhoneticAliasesList() {
+    return Joiner.on(", ")
+        .join(phoneticAliases);
   }
 
   public Set<String> getCategories() {
@@ -617,6 +628,7 @@ public class Truck extends ModelEntity implements Serializable {
     private @Nullable String menuUrl;
     private List<String> blacklistLocationNames = ImmutableList.of();
     private @Nullable String phoneticMarkup;
+    private List<String> phoneticAliases;
 
     public Builder() {
     }
@@ -660,6 +672,7 @@ public class Truck extends ModelEntity implements Serializable {
       this.menuUrl = truck.menuUrl;
       this.blacklistLocationNames = truck.blacklistLocationNames;
       this.phoneticMarkup = truck.phoneticMarkup;
+      this.phoneticAliases = truck.phoneticAliases;
     }
 
     public Builder phoneticMarkup(String markup) {
@@ -846,6 +859,11 @@ public class Truck extends ModelEntity implements Serializable {
 
     public Builder fleetSize(int size) {
       this.fleetSize = size;
+      return this;
+    }
+
+    public Builder phoneticAliases(List<String> phoneticAliases) {
+      this.phoneticAliases = phoneticAliases;
       return this;
     }
 

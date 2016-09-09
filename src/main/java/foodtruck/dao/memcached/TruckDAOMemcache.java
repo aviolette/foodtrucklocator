@@ -112,6 +112,12 @@ public class TruckDAOMemcache extends AbstractMemcachedDAO<TruckDAO> implements 
     return delegate().findByName(name);
   }
 
+  @Nullable
+  @Override
+  public Truck findByNameOrAlias(String name) {
+    return delegate().findByNameOrAlias(name);
+  }
+
 
   @Override
   public List<Truck> findAll() {

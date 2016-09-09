@@ -218,6 +218,7 @@ public class TruckServlet extends HttpServlet {
     Splitter splitter = Splitter.on(",").omitEmptyStrings().trimResults();
     builder.categories(ImmutableSet.copyOf(splitter.split(request.getParameter("categories"))));
     builder.beaconnaiseEmails(ImmutableSet.copyOf(splitter.split(request.getParameter("beaconnaiseEmails"))));
+    builder.phoneticAliases(ImmutableList.copyOf(splitter.split(request.getParameter("phoneticAliases"))));
     builder.blacklistLocationNames(BLACK_LIST_SPLITTER.splitToList(request.getParameter("blacklistLocations")));
     try {
       builder.fleetSize(Integer.parseInt(request.getParameter("fleetSize")));

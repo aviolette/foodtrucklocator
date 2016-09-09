@@ -127,6 +127,11 @@
     <input type="text" class="form-control" id="phoneticMarkup" name="phoneticMarkup"
            value="<c:out value="${truck.phoneticMarkup}" escapeXml="true"/>"/>
   </div>
+  <div class="form-group">
+    <label for="phoneticAliases">Phonetic Aliases</label>
+    <input type="text" class="form-control" id="phoneticAliases" name="phoneticAliases"
+           value="${truck.phoneticAliasesList}"/>
+  </div>
 
   <div class="form-group">
     <label for="blacklistLocations">Blacklist Locations (use ; as a separator)</label>

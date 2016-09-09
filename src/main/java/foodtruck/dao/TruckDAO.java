@@ -67,4 +67,7 @@ public interface TruckDAO extends DAO<String, Truck> {
 
   @Nullable
   Truck findByName(String name);
+
+  @Nullable
+  Truck findByNameOrAlias(String name);
 }

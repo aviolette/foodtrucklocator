@@ -86,6 +86,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
   private static final String MENU_URL = "menu_url";
   private static final String BLACKLIST_LOCATION_NAMES = "blacklist_location_names";
   private static final String PHONETIC_MARKUP = "phonetic_markup";
+  private static final String PHONETIC_ALIASES = "phonetic_aliases";
   private DateTimeZone zone;
 
   @Inject
@@ -159,6 +160,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
         .url((String) entity.getProperty(TRUCK_URL))
         .phoneticMarkup(Strings.emptyToNull((String) entity.getProperty(PHONETIC_MARKUP)))
         .blacklistLocationNames(getListProperty(entity, BLACKLIST_LOCATION_NAMES))
+        .phoneticAliases(getListProperty(entity, PHONETIC_ALIASES))
         .categories(categoriesList == null ? ImmutableSet.<String>of() : ImmutableSet.copyOf(categoriesList))
         .useTwittalyzer((Boolean) entity.getProperty(TRUCK_TWITTALYZER_FIELD))
         .twitterGeolocationDataValid(getBooleanProperty(entity, TRUCK_TWITTER_GEOLOCATION, false))
@@ -267,6 +269,17 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     return aq().filter(predicate(TRUCK_CANONICAL_NAME, Query.FilterOperator.EQUAL, Truck.canonize(name))).findFirst();
   }
 
+  @Nullable
+  @Override
+  public Truck findByNameOrAlias(String name) {
+    Truck t = findByName(name);
+    if (t == null) {
+      return aq().filter(predicate(PHONETIC_ALIASES, Query.FilterOperator.IN, name.toLowerCase()))
+          .findFirst();
+    }
+    return t;
+  }
+
   @Override
   public Set<Truck> findTrucksWithCalendars() {
     DatastoreService dataStore = provider.get();
@@ -318,6 +331,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     entity.setProperty(TRUCK_FACEBOOK_PAGE_ID, truck.getFacebookPageId());
     entity.setProperty(TRUCK_TWITTER_GEOLOCATION, truck.isTwitterGeolocationDataValid());
     entity.setProperty(BLACKLIST_LOCATION_NAMES, truck.getBlacklistLocationNames());
+    entity.setProperty(PHONETIC_ALIASES, truck.getPhoneticAliases());
     Attributes.setDateProperty(TRUCK_MUTE_UNTIL, entity, truck.getMuteUntil());
     Truck.Stats stats = truck.getStats();
     if (stats == null) {
