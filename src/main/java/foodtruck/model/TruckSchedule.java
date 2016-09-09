@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import com.google.common.collect.ImmutableList;
+
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
@@ -47,5 +49,9 @@ public class TruckSchedule {
       }
     }
     return candidate;
+  }
+
+  public ImmutableList<TruckStop> remainingStops(DateTime now) {
+    return null;
   }
 }

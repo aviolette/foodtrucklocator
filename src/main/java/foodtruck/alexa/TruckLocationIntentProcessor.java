@@ -3,15 +3,12 @@ package foodtruck.alexa;
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
-import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
@@ -19,6 +16,8 @@ import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStop;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
+
+import static foodtruck.model.TruckStop.TO_LOCATION_NAME;
 
 /**
  * @author aviolette
@@ -28,20 +27,6 @@ class TruckLocationIntentProcessor implements IntentProcessor {
   static final String SLOT_TRUCK = "Truck";
   static final String SLOT_TIME_OF_DAY = "TimeOfDay";
   static final String TRUCK_NOT_FOUND = "I currently provide information for food trucks that operate in " + "and around Chicago.  Can you try a different food truck?";
-  private static final Function<TruckStop, String> TO_NAME = new Function<TruckStop, String>() {
-    @Override
-    public String apply(TruckStop input) {
-      return input.getLocation().getShortenedName();
-    }
-  };
-  private static final Function<TruckStop, String> TO_NAME_WITH_TIME = new Function<TruckStop, String>() {
-    private final DateTimeFormatter formatter = DateTimeFormat.forStyle("-S");
-
-    @Override
-    public String apply(TruckStop input) {
-      return input.getLocation().getShortenedName() + " at " + formatter.print(input.getStartTime());
-    }
-  };
   private final FoodTruckStopService service;
   private final TruckDAO truckDAO;
   private final Clock clock;
@@ -79,19 +64,19 @@ class TruckLocationIntentProcessor implements IntentProcessor {
     if (tod.isOver(now) && tod.isSpecific()) {
       currentStops = AlexaUtils.toAlexaList(FluentIterable.from(schedule.getStops())
           .filter(new TruckStop.ActiveDuringPredicate(requestTime))
-          .transform(TO_NAME)
+          .transform(TO_LOCATION_NAME)
           .toList(), false);
       considerLater = false;
     } else if (tod.isApplicableNow(now)) {
       currentStops = AlexaUtils.toAlexaList(FluentIterable.from(schedule.getStops())
           .filter(new TruckStop.ActiveDuringPredicate(now))
-          .transform(TO_NAME)
+          .transform(TO_LOCATION_NAME)
           .toList(), false);
     }
     if (considerLater && tod.isApplicableAfter(requestTime)) {
       laterStops = AlexaUtils.toAlexaList(FluentIterable.from(schedule.getStops())
           .filter(tod.filterFuture(now))
-          .transform(TO_NAME_WITH_TIME)
+          .transform(TruckStop.TO_NAME_WITH_TIME)
           .toList(), false);
     }
     if (currentStops.length() > 0 && laterStops.isEmpty()) {

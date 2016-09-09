@@ -16,6 +16,8 @@ import com.google.common.collect.Lists;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 /**
  * Specifies an truck at a location at a date and time.
@@ -27,6 +29,22 @@ public class TruckStop extends ModelEntity {
   public static final Function TO_TRUCK_NAME = new Function<TruckStop, String>() {
     public String apply(TruckStop input) {
       return input.getTruck().getNameInSSML();
+    }
+  };
+  public static final Function<TruckStop, String> TO_LOCATION_NAME = new Function<TruckStop, String>() {
+    @Override
+    public String apply(TruckStop input) {
+      return input.getLocation()
+          .getShortenedName();
+    }
+  };
+  public static final Function<TruckStop, String> TO_NAME_WITH_TIME = new Function<TruckStop, String>() {
+    private final DateTimeFormatter formatter = DateTimeFormat.forStyle("-S");
+
+    @Override
+    public String apply(TruckStop input) {
+      return input.getLocation()
+          .getShortenedName() + " at " + formatter.print(input.getStartTime());
     }
   };
   private static final Logger log = Logger.getLogger(TruckStop.class.getName());

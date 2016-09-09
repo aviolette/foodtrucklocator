@@ -1,12 +1,16 @@
 package foodtruck.alexa;
 
+import java.util.List;
+
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
+import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
+import org.joda.time.LocalDate;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Location;
@@ -44,9 +48,38 @@ class AboutIntentProcessor implements IntentProcessor {
           .useSpeechTextForReprompt()
           .ask();
     }
-    DateTime lastSeen = null, now = clock.now();
-    Location whereLastSeen = null;
+    DateTime now = clock.now();
     TruckSchedule schedule = service.findStopsForDay(truck.getId(), clock.currentDay());
+    String schedulePart;
+    List<String> remainingStops = FluentIterable.from(schedule.getStops())
+        .filter(new TruckStop.ActiveAfterPredicate(now))
+        .transform(TruckStop.TO_NAME_WITH_TIME)
+        .toList();
+    List<String> currentStops = FluentIterable.from(schedule.getStops())
+        .filter(new TruckStop.ActiveDuringPredicate(now))
+        .transform(TruckStop.TO_LOCATION_NAME)
+        .toList();
+    if (!remainingStops.isEmpty() || !currentStops.isEmpty()) {
+      String currentPart = currentStops.isEmpty() ? "" : String.format("%s is currently at %s.", truck.getNameInSSML(),
+          AlexaUtils.toAlexaList(currentStops, true));
+      String laterPart = remainingStops.isEmpty() ? "" : String.format("%s will be at %s.", truck.getNameInSSML(),
+          AlexaUtils.toAlexaList(remainingStops, true));
+      schedulePart = currentPart + " " + laterPart;
+    } else {
+      schedulePart = lastSeen(truck, now, schedule);
+    }
+    Url previewIcon = truck.getPreviewIconUrl(),
+        thumbnail = truck.getIconUrlObj();
+    return SpeechletResponseBuilder.builder()
+        .speechSSML(String.format("%s <break time=\"0.3s\"/>\n %s", truck.getDescription(), schedulePart))
+        .imageCard(truck.getName(), previewIcon == null ? null : previewIcon.secure(),
+            thumbnail == null ? null : thumbnail.secure())
+        .tell();
+  }
+
+  private String lastSeen(Truck truck, DateTime now, TruckSchedule schedule) {
+    DateTime lastSeen = null;
+    Location whereLastSeen = null;
     TruckStop lastActive = schedule.findLastActive(now);
     Truck.Stats stats = truck.getStats();
     if (lastActive != null) {
@@ -57,31 +90,22 @@ class AboutIntentProcessor implements IntentProcessor {
       lastSeen = stats.getLastSeen();
       whereLastSeen = stats.getWhereLastSeen();
     }
-    String lastSeenPart;
     if (lastSeen == null || whereLastSeen == null) {
-      lastSeenPart = String.format("%s has never been seen on the road.", truck.getNameInSSML());
+      return String.format("%s has never been seen on the road.", truck.getNameInSSML());
     } else {
       String formatPart;
-      if (lastSeen.toLocalDate()
-          .equals(now.toLocalDate())) {
+      LocalDate lastSeenDate = lastSeen.toLocalDate();
+      if (lastSeenDate.equals(now.toLocalDate())) {
         formatPart = "today";
-      } else if (lastSeen.toLocalDate()
-          .equals(now.toLocalDate()
-              .minusDays(1))) {
+      } else if (lastSeenDate.equals(now.toLocalDate()
+          .minusDays(1))) {
         formatPart = "yesterday";
       } else {
         Duration d = new Duration(lastSeen, now);
         formatPart = String.format("%d days ago", d.getStandardDays());
       }
-      lastSeenPart = String.format("%s was last seen %s at %s", truck.getNameInSSML(), formatPart,
+      return String.format("%s was last seen %s at %s", truck.getNameInSSML(), formatPart,
           whereLastSeen.getShortenedName());
     }
-    Url previewIcon = truck.getPreviewIconUrl();
-    Url thumbnail = truck.getIconUrlObj();
-    return SpeechletResponseBuilder.builder()
-        .speechSSML(String.format("%s <break time=\"0.3s\"/> %s", truck.getDescription(), lastSeenPart))
-        .imageCard(truck.getName(), previewIcon == null ? null : previewIcon.secure(),
-            thumbnail == null ? null : thumbnail.secure())
-        .tell();
   }
 }
