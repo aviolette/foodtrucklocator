@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
  * @author aviolette
  * @since 9/8/16
  */
-@JsonTypeName("ImageCard")
+@JsonTypeName("Standard")
 public class ImageCard extends Card {
   private String text;
   private ImageSet image;
