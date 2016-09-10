@@ -461,6 +461,18 @@ public class Truck extends ModelEntity implements Serializable {
     return canonize(getName());
   }
 
+  public static class HasCategoryPredicate implements Predicate<Truck> {
+    private String category;
+
+    public HasCategoryPredicate(String category) {
+      this.category = category;
+    }
+
+    public boolean apply(Truck input) {
+      return input.categories.contains(category);
+    }
+  }
+
   public static class Stats implements Serializable {
     private DateTime lastUpdated;
     private DateTime lastSeen;

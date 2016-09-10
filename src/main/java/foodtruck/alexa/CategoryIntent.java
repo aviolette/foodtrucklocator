@@ -39,13 +39,12 @@ public class CategoryIntent implements IntentProcessor {
           .repromptText("For example, you can say 'What trucks have tacos?'.  What would you like to find?")
           .ask();
     }
-
-    List<String> trucks = FluentIterable.from(truckDAO.findByCategory(MoreStrings.capitalize(category)))
+    List<String> trucks = FluentIterable.from(truckDAO.findActiveTrucks())
+        .filter(new Truck.HasCategoryPredicate(MoreStrings.capitalize(category)))
         .transform(Truck.TO_NAME)
         .toList();
     String result = trucks.isEmpty() ? "There are no trucks that have " + category : String.format(
         "These trucks have %s: %s", category, AlexaUtils.toAlexaList(trucks, true, and));
-
     return SpeechletResponseBuilder.builder()
         .simpleCard("Trucks that have " + category)
         .speechSSML(result)
