@@ -116,7 +116,8 @@ class LocationIntentProcessor implements IntentProcessor {
     if (location.getImageUrl() == null) {
       builder.simpleCard("Food Trucks at " + location.getShortenedName());
     } else {
-      builder.imageCard("Food Trucks at " + location.getShortenedName(), null, location.getImageUrl()
+      builder.imageCard("Food Trucks at " + location.getShortenedName(), location.getImageUrl()
+          .secure(), location.getImageUrl()
           .secure());
     }
     return builder.tell();
