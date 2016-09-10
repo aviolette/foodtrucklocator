@@ -113,8 +113,13 @@ class LocationIntentProcessor implements IntentProcessor {
             String.format("There are %s trucks %sat %s %s: %s", count, futurePhrase, locationSlot.getValue(),
                 dateRepresentation, AlexaUtils.toAlexaList(truckNames, true)));
     }
-    return builder.simpleCard("Food Trucks at " + location.getShortenedName())
-        .tell();
+    if (location.getImageUrl() == null) {
+      builder.simpleCard("Food Trucks at " + location.getShortenedName());
+    } else {
+      builder.imageCard("Food Trucks at " + location.getShortenedName(), null, location.getImageUrl()
+          .secure());
+    }
+    return builder.tell();
   }
 
   private SpeechletResponse provideHelp() {
