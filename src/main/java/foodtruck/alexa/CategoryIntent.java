@@ -46,8 +46,8 @@ public class CategoryIntent implements IntentProcessor {
     String result = trucks.isEmpty() ? "There are no trucks that have " + category : String.format(
         "These trucks have %s: %s", category, AlexaUtils.toAlexaList(trucks, true, and));
     return SpeechletResponseBuilder.builder()
-        .simpleCard("Trucks that have " + category)
         .speechSSML(result)
+        .simpleCard("Trucks that have " + category)
         .tell();
   }
 }

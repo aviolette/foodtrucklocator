@@ -1,5 +1,24 @@
 GetFoodTrucksAtLocation who is on {Location}
 GetFoodTrucksAtLocation who is on {Location} {When}
+GetFoodTrucksAtLocation who is at {Location}
+GetFoodTrucksAtLocation who is at {Location} {When}
+GetFoodTrucksAtLocation who is near {Location}
+GetFoodTrucksAtLocation who is near {Location} {When}
+GetFoodTrucksAtLocation who will be on {Location}
+GetFoodTrucksAtLocation who will be on {Location} {When}
+GetFoodTrucksAtLocation who will be at {Location}
+GetFoodTrucksAtLocation who will be at {Location} {When}
+GetFoodTrucksAtLocation who will be near {Location}
+GetFoodTrucksAtLocation who will be near {Location} {When}
+GetFoodTrucksAtLocation who is going to be on {Location}
+GetFoodTrucksAtLocation who is going to be on {Location} {When}
+GetFoodTrucksAtLocation who is going to be at {Location}
+GetFoodTrucksAtLocation who is going to be at {Location} {When}
+GetFoodTrucksAtLocation who is going to be near {Location}
+GetFoodTrucksAtLocation who is going to be near {Location} {When}
+GetFoodTrucksAtLocation who was on {Location} today
+GetFoodTrucksAtLocation who was at {Location} today
+GetFoodTrucksAtLocation who was near {Location} today
 GetFoodTrucksAtLocation what food trucks are at {Location}
 GetFoodTrucksAtLocation what trucks are at {Location}
 GetFoodTrucksAtLocation what food trucks are at {Location} {When}
@@ -27,5 +46,19 @@ DailySpecials what is the special at {Truck}
 DailySpecials what is the special at {Truck} today
 DailySpecials what are the specials at {Truck}
 DailySpecials what are the specials at {Truck} today
+DailySpecials what are the specials for {Truck}
+DailySpecials what are the specials for {Truck} today
 DailySpecials what are {Truck} specials today
 AboutTruck tell me about {Truck}
+CategorySearch what food trucks have {Category}
+CategorySearch what food trucks have {Category} food
+CategorySearch what trucks have {Category}
+CategorySearch what trucks have {Category} food
+CategorySearch what food trucks serve {Category}
+CategorySearch what trucks serve {Category}
+CategorySearch what food trucks serve {Category} food
+CategorySearch what trucks serve {Category} food
+CategorySearch who serves {Category}
+CategorySearch who serves {Category} food
+CategorySearch where can I get {Category}
+CategorySearch where can I get {Category} food
