@@ -12,6 +12,7 @@ import com.amazon.speech.speechlet.SessionStartedRequest;
 import com.amazon.speech.speechlet.Speechlet;
 import com.amazon.speech.speechlet.SpeechletException;
 import com.amazon.speech.speechlet.SpeechletResponse;
+import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 
 /**
@@ -53,9 +54,14 @@ class FTFSpeechlet implements Speechlet {
           .getName());
       throw new SpeechletException("Invalid intent: " + intentRequest.getIntent().getName());
     }
-    SpeechletResponse response = processor.process(intentRequest.getIntent(), session);
-    log.log(Level.INFO, "Response {0}", AlexaUtils.speechletResponseToString(response));
-    return response;
+    try {
+      SpeechletResponse response = processor.process(intentRequest.getIntent(), session);
+      log.log(Level.INFO, "Response {0}", AlexaUtils.speechletResponseToString(response));
+      return response;
+    } catch (Exception e) {
+      log.log(Level.SEVERE, e.getMessage(), e);
+      throw Throwables.propagate(e);
+    }
   }
 
   @Override

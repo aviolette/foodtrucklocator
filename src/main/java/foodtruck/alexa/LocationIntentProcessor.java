@@ -92,21 +92,21 @@ class LocationIntentProcessor implements IntentProcessor {
         if (Strings.isNullOrEmpty(nearby)) {
           noTrucks = String.format(
               "There are no trucks %sat %s %s and there don't appear to be any nearby that location.", futurePhrase,
-              locationSlot.getValue(), dateRepresentation);
+              location.getShortenedName(), dateRepresentation);
           builder.speechSSML(noTrucks);
         } else {
           builder.speechSSML(
               String.format("There are no trucks %sat %s %s.  These nearby locations have food trucks: %s.",
-                  futurePhrase, locationSlot.getValue(), dateRepresentation, nearby));
+                  futurePhrase, location.getShortenedName(), dateRepresentation, nearby));
         }
         break;
       case 1:
         builder.speechSSML(String.format("%s is the only food truck %sat %s %s", truckNames.get(0), futurePhrase,
-            locationSlot.getValue(), dateRepresentation));
+            location.getShortenedName(), dateRepresentation));
         break;
       case 2:
         builder.speechSSML(String.format("%s and %s are %sat %s %s", truckNames.get(0), truckNames.get(1), futurePhrase,
-            locationSlot.getValue(), dateRepresentation));
+            location.getShortenedName(), dateRepresentation));
         break;
       default:
         builder.speechSSML(
