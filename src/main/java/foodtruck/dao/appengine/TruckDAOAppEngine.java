@@ -220,7 +220,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
   }
 
   @Override
-  public Collection<Truck> findByCategory(String tag) {
+  public List<Truck> findByCategory(String tag) {
     ImmutableList.Builder<Truck> trucks = ImmutableList.builder();
     for (Truck truck : findVisibleTrucks()) {
       if (truck.getCategories().contains(tag)) {

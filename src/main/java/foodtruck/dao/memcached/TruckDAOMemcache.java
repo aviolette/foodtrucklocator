@@ -86,7 +86,7 @@ public class TruckDAOMemcache extends AbstractMemcachedDAO<TruckDAO> implements 
   }
 
   @Override
-  public Collection<Truck> findByCategory(String tag) {
+  public List<Truck> findByCategory(String tag) {
     return delegate().findByCategory(tag);
   }
 

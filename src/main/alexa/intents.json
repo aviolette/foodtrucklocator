@@ -14,6 +14,15 @@
       ]
     },
     {
+      "intent": "CategorySearch",
+      "slots": [
+        {
+          "name": "Category",
+          "type": "LIST_OF_CATEGORIES"
+        }
+      ]
+    },
+    {
       "intent": "DailySpecials",
       "slots": [
         {
