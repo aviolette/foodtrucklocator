@@ -23,6 +23,7 @@ import foodtruck.dao.TruckDAO;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
 
+import static com.google.appengine.api.datastore.Query.FilterOperator.EQUAL;
 import static foodtruck.dao.appengine.Attributes.getDateTime;
 import static foodtruck.dao.appengine.Attributes.getDoubleProperty;
 import static foodtruck.dao.appengine.Attributes.getIntProperty;
@@ -179,7 +180,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
   public Collection<Truck> findByTwitterId(String screenName) {
     DatastoreService dataStore = provider.get();
     Query q = new Query(TRUCK_KIND);
-    q.setFilter(new Query.FilterPredicate(TRUCK_TWITTER_HANDLE, Query.FilterOperator.EQUAL, screenName));
+    q.setFilter(new Query.FilterPredicate(TRUCK_TWITTER_HANDLE, EQUAL, screenName));
     ImmutableSet.Builder<Truck> trucks = ImmutableSet.builder();
     for (Entity entity : dataStore.prepare(q).asIterable()) {
       Truck truck = fromEntity(entity);
@@ -191,25 +192,23 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
   @Override
   public Collection<Truck> findInactiveTrucks() {
     return executeQuery(new Query(getKind()).addSort(TRUCK_CANONICAL_NAME)
-        .setFilter(new Query.FilterPredicate(INACTIVE_FIELD, Query.FilterOperator.EQUAL, true)), null);
+        .setFilter(new Query.FilterPredicate(INACTIVE_FIELD, EQUAL, true)), null);
   }
 
   @Override
   public List<Truck> findActiveTrucks() {
     return executeQuery(new Query(getKind()).addSort(TRUCK_CANONICAL_NAME)
-        .setFilter(new Query.FilterPredicate(INACTIVE_FIELD, Query.FilterOperator.EQUAL, false)), null);
+        .setFilter(new Query.FilterPredicate(INACTIVE_FIELD, EQUAL, false)), null);
   }
 
   public List<Truck> findVisibleTrucks() {
-    return executeQuery(
-        new Query(TRUCK_KIND).setFilter(new Query.FilterPredicate(TRUCK_HIDDEN, Query.FilterOperator.EQUAL, false))
+    return executeQuery(new Query(TRUCK_KIND).setFilter(new Query.FilterPredicate(TRUCK_HIDDEN, EQUAL, false))
             .addSort(TRUCK_CANONICAL_NAME), null);
   }
 
   @Override
   public List<Truck> findFacebookTrucks() {
-    return executeQuery(
-        new Query(TRUCK_KIND).setFilter(new Query.FilterPredicate(SCAN_FACEBOOK, Query.FilterOperator.EQUAL, true))
+    return executeQuery(new Query(TRUCK_KIND).setFilter(new Query.FilterPredicate(SCAN_FACEBOOK, EQUAL, true))
             .addSort(TRUCK_CANONICAL_NAME), null);
   }
 
@@ -248,7 +247,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     Query q = new Query(TRUCK_KIND);
     q.setFilter(
         Query.CompositeFilterOperator.and(new Query.FilterPredicate(TRUCK_EMAIL, Query.FilterOperator.NOT_EQUAL, null),
-            new Query.FilterPredicate(TRUCK_ALLOW_SYSTEM_NOTIFICATIONS, Query.FilterOperator.EQUAL, true)));
+            new Query.FilterPredicate(TRUCK_ALLOW_SYSTEM_NOTIFICATIONS, EQUAL, true)));
     return executeQuery(q, null);
   }
 
@@ -266,7 +265,8 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
   @Nullable
   @Override
   public Truck findByName(String name) {
-    return aq().filter(predicate(TRUCK_CANONICAL_NAME, Query.FilterOperator.EQUAL, Truck.canonize(name))).findFirst();
+    return aq().filter(predicate(TRUCK_CANONICAL_NAME, EQUAL, Truck.canonize(name)))
+        .findFirst();
   }
 
   @Nullable
@@ -274,7 +274,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
   public Truck findByNameOrAlias(String name) {
     Truck t = findByName(name);
     if (t == null) {
-      return aq().filter(predicate(PHONETIC_ALIASES, Query.FilterOperator.IN, name.toLowerCase()))
+      return aq().filter(predicate(PHONETIC_ALIASES, EQUAL, name.toLowerCase()))
           .findFirst();
     }
     return t;
