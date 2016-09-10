@@ -10,6 +10,7 @@ import com.google.inject.Inject;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
+import foodtruck.util.MoreStrings;
 
 import static foodtruck.alexa.Conjunction.and;
 
@@ -39,12 +40,15 @@ public class CategoryIntent implements IntentProcessor {
           .ask();
     }
 
-    List<String> trucks = FluentIterable.from(truckDAO.findByCategory(category))
+    List<String> trucks = FluentIterable.from(truckDAO.findByCategory(MoreStrings.capitalize(category)))
         .transform(Truck.TO_NAME)
         .toList();
+    String result = trucks.isEmpty() ? "There are no trucks that have " + category : String.format(
+        "These trucks have %s: %s", category, AlexaUtils.toAlexaList(trucks, true, and));
+
     return SpeechletResponseBuilder.builder()
         .simpleCard("Trucks that have " + category)
-        .speechSSML(String.format("These trucks have %s: %s", category, AlexaUtils.toAlexaList(trucks, true, and)))
+        .speechSSML(result)
         .tell();
   }
 }
