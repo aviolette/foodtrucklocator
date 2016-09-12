@@ -64,18 +64,21 @@ class LocationIntentProcessor implements IntentProcessor {
   @Override
   public SpeechletResponse process(Intent intent, Session session) {
     Slot locationSlot = intent.getSlot(SLOT_LOCATION);
-    if (locationSlot.getValue() == null) {
+    String locationName = locationSlot.getValue();
+    if (Strings.isNullOrEmpty(locationName)) {
       return provideHelp();
+    } else if (locationName.endsWith(" for")) {
+      locationName = locationName.substring(0, locationName.length() - 4);
     }
-    Location location = locator.locate(locationSlot.getValue(), GeolocationGranularity.NARROW);
+    Location location = locator.locate(locationName, GeolocationGranularity.NARROW);
     boolean tomorrow = "tomorrow".equals(intent.getSlot(SLOT_WHEN)
         .getValue());
-    LocalDate requestDate = tomorrow ? clock.currentDay()
-        .plusDays(1) : clock.currentDay();
+    LocalDate currentDay = clock.currentDay();
+    LocalDate requestDate = tomorrow ? currentDay.plusDays(1) : currentDay;
     if (location == null || !location.isResolved()) {
-      return locationNotFound(locationSlot, tomorrow, requestDate);
+      return locationNotFound(locationName, tomorrow, requestDate);
     }
-    boolean inFuture = requestDate.isAfter(clock.currentDay());
+    boolean inFuture = requestDate.isAfter(currentDay);
     String dateRepresentation = toDate(requestDate);
     SpeechletResponseBuilder builder = SpeechletResponseBuilder.builder();
     @SuppressWarnings("unchecked") List<String> truckNames = FluentIterable.from(
@@ -136,9 +139,9 @@ class LocationIntentProcessor implements IntentProcessor {
         .ask();
   }
 
-  private SpeechletResponse locationNotFound(Slot locationSlot, boolean tomorrow, LocalDate requestDate) {
+  private SpeechletResponse locationNotFound(String locationName, boolean tomorrow, LocalDate requestDate) {
     List<String> locations = findAlternateLocations(tomorrow, null, requestDate);
-    log.log(Level.SEVERE, "Could not find location {0} that is specified in alexa", locationSlot.getValue());
+    log.log(Level.SEVERE, "Could not find location {0} that is specified in alexa", locationName);
     SpeechletResponseBuilder builder = SpeechletResponseBuilder.builder();
     // See "Don’t Blame the User" https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/alexa-skills-kit-voice-design-best-practices
     if (locations.isEmpty()) {

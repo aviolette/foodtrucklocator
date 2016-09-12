@@ -104,6 +104,37 @@ public class LocationIntentProcessorTest extends EasyMockSupport {
   }
 
   /**
+   * Special case that happens a lot: Alexa sometimes includes 'for' at end of name.
+   */
+  @Test
+  public void processStripFor() throws Exception {
+    Intent intent = Intent.builder()
+        .withName(AlexaModule.GET_FOOD_TRUCKS_AT_LOCATION)
+        .withSlots(ImmutableMap.of(SLOT_LOCATION, Slot.builder()
+            .withName(SLOT_LOCATION)
+            .withValue("Clark and Monroe for")
+            .build(), SLOT_WHEN, Slot.builder()
+            .withName(SLOT_WHEN)
+            .build()))
+        .build();
+    expect(locator.locate("Clark and Monroe", GeolocationGranularity.NARROW)).andReturn(location);
+    expect(service.findStopsNearALocation(location, date.toLocalDate())).andReturn(ImmutableList.<TruckStop>of());
+    expect(cacher.findSchedule()).andReturn(DAILY_SCHEDULE);
+    dailyScheduleNullLocations();
+    expect(locationDAO.findById(28065L)).andReturn(null);
+    expect(locationDAO.findById(5732531110412288L)).andReturn(null);
+    expect(locationDAO.findById(50018L)).andReturn(null);
+    expect(locationDAO.findById(1835344L)).andReturn(null);
+    replayAll();
+    SpeechletResponse response = processor.process(intent, null);
+    assertThat(response.getCard()
+        .getTitle()).isEqualTo("Food Trucks at Clark and Monroe");
+    assertSpeech(response.getOutputSpeech()).isEqualTo(
+        "<speak>There are no trucks at Clark and Monroe today and there don't appear to be any nearby that location.</speak>");
+    verifyAll();
+  }
+
+  /**
    * Search location does not resolve.  There are no alternatives.
    */
   @Test
