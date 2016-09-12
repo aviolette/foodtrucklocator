@@ -104,15 +104,13 @@ class AboutIntentProcessor implements IntentProcessor {
       return String.format("%s has never been seen on the road.", truck.getNameInSSML());
     } else {
       String formatPart;
-      LocalDate lastSeenDate = lastSeen.toLocalDate();
-      if (lastSeenDate.equals(now.toLocalDate())) {
+      LocalDate lastSeenDate = lastSeen.toLocalDate(), nowDate = now.toLocalDate();
+      if (lastSeenDate.equals(nowDate)) {
         formatPart = "today";
-      } else if (lastSeenDate.equals(now.toLocalDate()
-          .minusDays(1))) {
+      } else if (lastSeenDate.equals(nowDate.minusDays(1))) {
         formatPart = "yesterday";
       } else {
-        Duration d = new Duration(lastSeen, now);
-        formatPart = String.format("%d days ago", d.getStandardDays());
+        formatPart = String.format("%d days ago", new Duration(lastSeen, now).getStandardDays());
       }
       return String.format("%s was last seen %s at %s.", truck.getNameInSSML(), formatPart,
           whereLastSeen.getShortenedName());

@@ -41,7 +41,7 @@ class FTFSpeechlet implements Speechlet {
         .speechText("Food Truck Finder.  What would you like to find?")
         .repromptText("With Food Truck Finder you can find out where individual food trucks are, or find out what " +
             "food trucks will be at a specific location.  For example, you can say What food trucks " +
-            "are on Wacker today.  What location would you like to know about?")
+            "are on Wacker today.  What truck or location would you like to know about?")
         .ask();
   }
 
