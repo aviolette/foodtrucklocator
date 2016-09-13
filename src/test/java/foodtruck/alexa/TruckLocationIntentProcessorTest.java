@@ -193,7 +193,7 @@ public class TruckLocationIntentProcessorTest extends EasyMockSupport {
             ImmutableMap.of(SLOT_TRUCK, Slot.builder().withName(SLOT_TRUCK).withValue(CORNERFARMACY_NAME).build(),
                 SLOT_TIME_OF_DAY, Slot.builder().withName(SLOT_TIME_OF_DAY).withValue(when).build()))
         .build();
-    expect(truckDAO.findByName(CORNERFARMACY_NAME)).andReturn(cornerfarmacy);
+    expect(truckDAO.findByNameOrAlias(CORNERFARMACY_NAME)).andReturn(cornerfarmacy);
     expect(service.findStopsForDay(cornerfarmacy.getId(), date.toLocalDate())).andReturn(
         new TruckSchedule(cornerfarmacy, date.toLocalDate(), stops));
     replayAll();

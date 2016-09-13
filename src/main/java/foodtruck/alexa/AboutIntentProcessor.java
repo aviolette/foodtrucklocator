@@ -13,6 +13,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 
+import foodtruck.dao.DailyDataDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
@@ -31,12 +32,14 @@ class AboutIntentProcessor implements IntentProcessor {
   private final TruckDAO truckDAO;
   private final Clock clock;
   private final FoodTruckStopService service;
+  private final DailyDataDAO dailyDataDAO;
 
   @Inject
-  public AboutIntentProcessor(TruckDAO truckDAO, Clock clock, FoodTruckStopService service) {
+  public AboutIntentProcessor(TruckDAO truckDAO, Clock clock, FoodTruckStopService service, DailyDataDAO dailyDataDAO) {
     this.truckDAO = truckDAO;
     this.clock = clock;
     this.service = service;
+    this.dailyDataDAO = dailyDataDAO;
   }
 
   @Override
@@ -73,8 +76,14 @@ class AboutIntentProcessor implements IntentProcessor {
     String largeIconUrl = truck.getFullsizeImage() == null ? truck.getBackgroundImage() : truck.getFullsizeImage();
     Url previewIcon = truck.getPreviewIconUrl(),
         largeIcon = largeIconUrl == null ? null : new Url(largeIconUrl);
+    String specialsPart = "";
+    if ("thevaultvan".equals(truck.getId())) {
+      specialsPart = "\n" + SpecialIntentProcessor.specialsText(truck,
+          dailyDataDAO.findByTruckAndDay(truck.getId(), clock.currentDay()));
+    }
     return SpeechletResponseBuilder.builder()
-        .speechSSML(String.format("%s<break time=\"0.3s\"/>\n%s", truck.getDescription(), schedulePart.trim()))
+        .speechSSML(
+            String.format("%s<break time=\"0.3s\"/>\n%s%s", truck.getDescription(), schedulePart.trim(), specialsPart))
         .imageCard(truck.getName(), largeIcon == null ? null : largeIcon.secure(),
             previewIcon == null ? null : previewIcon.secure())
         .tell();

@@ -30,19 +30,7 @@ class SpecialIntentProcessor implements IntentProcessor {
     this.clock = clock;
   }
 
-  @Override
-  public SpeechletResponse process(Intent intent, Session session) {
-    String truckName = intent.getSlot(TRUCK_SLOT)
-        .getValue();
-    if (Strings.isNullOrEmpty(truckName)) {
-      return notFound();
-    }
-    Truck truck = truckDAO.findByName(intent.getSlot(TRUCK_SLOT)
-        .getValue());
-    if (truck == null) {
-      return notFound();
-    }
-    DailyData dailyData = dailyDataDAO.findByTruckAndDay(truck.getId(), clock.currentDay());
+  static String specialsText(Truck truck, DailyData dailyData) {
     String speechText;
     if (dailyData == null || !dailyData.hasSpecials()) {
       speechText = String.format("There are no specials for %s today", truck.getNameInSSML());
@@ -60,6 +48,23 @@ class SpecialIntentProcessor implements IntentProcessor {
               .transform(DailyData.TO_NAME)
               .toList(), true));
     }
+    return speechText;
+  }
+
+  @Override
+  public SpeechletResponse process(Intent intent, Session session) {
+    String truckName = intent.getSlot(TRUCK_SLOT)
+        .getValue();
+    if (Strings.isNullOrEmpty(truckName)) {
+      return notFound();
+    }
+    Truck truck = truckDAO.findByName(intent.getSlot(TRUCK_SLOT)
+        .getValue());
+    if (truck == null) {
+      return notFound();
+    }
+    DailyData dailyData = dailyDataDAO.findByTruckAndDay(truck.getId(), clock.currentDay());
+    String speechText = specialsText(truck, dailyData);
     return SpeechletResponseBuilder.builder()
         .speechSSML(speechText)
         .tell();

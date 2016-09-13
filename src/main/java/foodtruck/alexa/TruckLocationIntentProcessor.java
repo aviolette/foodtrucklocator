@@ -46,7 +46,7 @@ class TruckLocationIntentProcessor implements IntentProcessor {
     if (Strings.isNullOrEmpty(truckName)) {
       return notFound();
     }
-    Truck truck = truckDAO.findByName(truckName);
+    Truck truck = truckDAO.findByNameOrAlias(truckName);
     if (truck == null) {
       return notFound();
     } else {

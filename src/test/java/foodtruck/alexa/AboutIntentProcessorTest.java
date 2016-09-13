@@ -79,7 +79,7 @@ public class AboutIntentProcessorTest extends EasyMockSupport {
         .build();
     expect(clock.now()).andStubReturn(date);
     expect(clock.currentDay()).andStubReturn(date.toLocalDate());
-    processor = new AboutIntentProcessor(truckDAO, clock, service);
+    processor = new AboutIntentProcessor(truckDAO, clock, service, null);
   }
 
   private Intent intent(String truckSlot) {

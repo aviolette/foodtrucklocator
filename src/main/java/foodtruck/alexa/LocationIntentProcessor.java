@@ -151,8 +151,8 @@ class LocationIntentProcessor implements IntentProcessor {
     } else {
       return builder.speechSSML("What location was that?")
           .repromptSSML(String.format(
-              "I did not recognize the location you mentioned.  Some locations that have trucks today are %s.  Which location are you interested in?",
-              AlexaUtils.toAlexaList(locations, true, Conjunction.or)))
+              "I did not recognize the location you mentioned.  Some locations that have trucks %s are %s.  Which location are you interested in?",
+              toDate(requestDate), AlexaUtils.toAlexaList(locations, true, Conjunction.or)))
           .ask();
     }
   }
