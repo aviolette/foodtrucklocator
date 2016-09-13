@@ -20,7 +20,7 @@ import static foodtruck.util.MoreStrings.capitalize;
  * @author aviolette
  * @since 9/9/16
  */
-public class CategoryIntent implements IntentProcessor {
+class CategoryIntent implements IntentProcessor {
 
   private static final String CATEGORY_NAME = "Category";
   private static final ImmutableList<String> NATIONALITIES = ImmutableList.of("asian", "mexican", "cajun", "german",

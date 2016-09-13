@@ -3,6 +3,7 @@ package foodtruck.alexa;
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
+import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 
@@ -31,13 +32,15 @@ class SpecialIntentProcessor implements IntentProcessor {
 
   @Override
   public SpeechletResponse process(Intent intent, Session session) {
+    String truckName = intent.getSlot(TRUCK_SLOT)
+        .getValue();
+    if (Strings.isNullOrEmpty(truckName)) {
+      return notFound();
+    }
     Truck truck = truckDAO.findByName(intent.getSlot(TRUCK_SLOT)
         .getValue());
     if (truck == null) {
-      return SpeechletResponseBuilder.builder()
-          .speechText(TruckLocationIntentProcessor.TRUCK_NOT_FOUND)
-          .useSpeechTextForReprompt()
-          .ask();
+      return notFound();
     }
     DailyData dailyData = dailyDataDAO.findByTruckAndDay(truck.getId(), clock.currentDay());
     String speechText;
@@ -60,5 +63,12 @@ class SpecialIntentProcessor implements IntentProcessor {
     return SpeechletResponseBuilder.builder()
         .speechSSML(speechText)
         .tell();
+  }
+
+  private SpeechletResponse notFound() {
+    return SpeechletResponseBuilder.builder()
+        .speechText(TruckLocationIntentProcessor.TRUCK_NOT_FOUND)
+        .useSpeechTextForReprompt()
+        .ask();
   }
 }

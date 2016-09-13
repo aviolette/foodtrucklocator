@@ -63,6 +63,21 @@ public class SpecialIntentProcessorTest extends EasyMockSupport {
     verifyAll();
   }
 
+
+  @Test
+  public void truckNull() {
+    intent = Intent.builder()
+        .withName(AlexaModule.DAILY_SPECIALS)
+        .withSlots(ImmutableMap.of(TRUCK_SLOT, Slot.builder()
+            .withName(TRUCK_SLOT)
+            .build()))
+        .build();
+    replayAll();
+    SpeechletResponse response = processor.process(intent, null);
+    assertSpeech(response.getOutputSpeech()).isEqualTo(TruckLocationIntentProcessor.TRUCK_NOT_FOUND);
+    verifyAll();
+  }
+
   @Test
   public void noSpecials() {
     expect(truckDAO.findByName("Foobar")).andReturn(truck);
