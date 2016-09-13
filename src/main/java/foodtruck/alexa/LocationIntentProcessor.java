@@ -9,6 +9,7 @@ import com.amazon.speech.slu.Intent;
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
+import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -16,12 +17,14 @@ import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.LocationDAO;
 import foodtruck.geolocation.GeoLocator;
@@ -32,6 +35,9 @@ import foodtruck.schedule.ScheduleCacher;
 import foodtruck.server.resources.json.DailyScheduleWriter;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
+import foodtruck.util.TimeOnlyFormatter;
+
+import static foodtruck.util.MoreStrings.capitalize;
 
 /**
  * @author aviolette
@@ -48,10 +54,12 @@ class LocationIntentProcessor implements IntentProcessor {
   private final LocationDAO locationDAO;
   private final DailyScheduleWriter dailyScheduleWriter;
   private final Location defaultCenter;
+  private final DateTimeFormatter formatter;
 
   @Inject
   public LocationIntentProcessor(GeoLocator locator, FoodTruckStopService service, Clock clock, LocationDAO locationDAO,
-      ScheduleCacher cacher, DailyScheduleWriter dailyScheduleWriter, @DefaultCenter Location center) {
+      ScheduleCacher cacher, DailyScheduleWriter dailyScheduleWriter, @DefaultCenter Location center,
+      @TimeOnlyFormatter DateTimeFormatter formatter) {
     this.locator = locator;
     this.service = service;
     this.clock = clock;
@@ -59,6 +67,7 @@ class LocationIntentProcessor implements IntentProcessor {
     scheduleCacher = cacher;
     this.dailyScheduleWriter = dailyScheduleWriter;
     this.defaultCenter = center;
+    this.formatter = formatter;
   }
 
   @Override
@@ -81,10 +90,17 @@ class LocationIntentProcessor implements IntentProcessor {
     boolean inFuture = requestDate.isAfter(currentDay);
     String dateRepresentation = toDate(requestDate);
     SpeechletResponseBuilder builder = SpeechletResponseBuilder.builder();
-    @SuppressWarnings("unchecked") List<String> truckNames = FluentIterable.from(
+    @SuppressWarnings("unchecked") List<TruckStop> trucks = FluentIterable.from(
         service.findStopsNearALocation(location, requestDate))
-        .transform(TruckStop.TO_TRUCK_NAME)
         .toList();
+    List<String> truckNames = Lists.transform(trucks, TruckStop.TO_TRUCK_NAME);
+    List<String> truckTimes = Lists.transform(trucks, new Function<TruckStop, String>() {
+      public String apply(TruckStop input) {
+        return formatter.print(input.getStartTime()) + " to " + formatter.print(input.getEndTime());
+      }
+    });
+    boolean allSame = Sets.newHashSet(truckTimes)
+        .size() == 1;
     String futurePhrase = inFuture ? "scheduled to be " : "";
     int count = truckNames.size();
     switch (count) {
@@ -104,26 +120,42 @@ class LocationIntentProcessor implements IntentProcessor {
         }
         break;
       case 1:
-        builder.speechSSML(String.format("%s is the only food truck %sat %s %s", truckNames.get(0), futurePhrase,
-            location.getShortenedName(), dateRepresentation));
-        break;
-      case 2:
-        builder.speechSSML(String.format("%s and %s are %sat %s %s", truckNames.get(0), truckNames.get(1), futurePhrase,
-            location.getShortenedName(), dateRepresentation));
-        break;
-      default:
         builder.speechSSML(
-            String.format("There are %s trucks %sat %s %s: %s", count, futurePhrase, locationSlot.getValue(),
-                dateRepresentation, AlexaUtils.toAlexaList(truckNames, true)));
+            String.format("%s is %sat %s %s from %s", truckNames.get(0), futurePhrase, location.getShortenedName(),
+                dateRepresentation, truckTimes.get(0)));
+        break;
+      case 2: {
+        String schedulePart = allSame ? " from " + truckTimes.get(0) : buildSchedulePart(truckNames, truckTimes);
+        builder.speechSSML(
+            String.format("%s and %s are %sat %s %s%s", truckNames.get(0), truckNames.get(1), futurePhrase,
+                location.getShortenedName(), dateRepresentation, schedulePart));
+      }
+        break;
+      default: {
+        String schedulePart = allSame ? " from " + truckTimes.get(0) : buildSchedulePart(truckNames, truckTimes);
+        builder.speechSSML(
+            String.format("There are %s trucks %sat %s %s: %s%s", count, futurePhrase, locationSlot.getValue(),
+                dateRepresentation, AlexaUtils.toAlexaList(truckNames, true), schedulePart));
+      }
     }
+    String cardTitle = String.format("Food Trucks at %s %s", location.getShortenedName(),
+        capitalize(toDate(requestDate)));
     if (location.getImageUrl() == null) {
-      builder.simpleCard("Food Trucks at " + location.getShortenedName());
+      builder.simpleCard(cardTitle);
     } else {
-      builder.imageCard("Food Trucks at " + location.getShortenedName(), location.getImageUrl()
+      builder.imageCard(cardTitle, location.getImageUrl()
           .secure(), location.getImageUrl()
           .secure());
     }
     return builder.tell();
+  }
+
+  private String buildSchedulePart(List<String> truckNames, List<String> truckTimes) {
+    List<String> combined = Lists.newLinkedList();
+    for (int i = 0; i < truckNames.size(); i++) {
+      combined.add(truckNames.get(i) + " from " + truckTimes.get(i));
+    }
+    return ". " + AlexaUtils.toAlexaList(combined, true);
   }
 
   private SpeechletResponse provideHelp() {

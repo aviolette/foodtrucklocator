@@ -11,6 +11,7 @@ import com.google.common.collect.ImmutableMap;
 import org.easymock.EasyMockSupport;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -45,18 +46,24 @@ public class LocationIntentProcessorTest extends EasyMockSupport {
       .build();
   private static final TruckStop BEAVERS_STOP = TruckStop.builder()
       .truck(BEAVERS)
+      .startTime(new DateTime(2016, 9, 1, 7, 0))
+      .endTime(new DateTime(2016, 9, 1, 10, 0))
       .build();
   private static final Truck THE_FAT_PICKLE = Truck.builder()
       .name("The Fat Pickle")
       .build();
   private static final TruckStop FAT_PICKLE_STOP = TruckStop.builder()
       .truck(THE_FAT_PICKLE)
+      .startTime(new DateTime(2016, 9, 1, 11, 0))
+      .endTime(new DateTime(2016, 9, 1, 13, 0))
       .build();
   private static final Truck CHICAGOS_FINEST = Truck.builder()
       .name("Chicagos Finest")
       .build();
   private static final TruckStop CHICAGOS_FINEST_STOP = TruckStop.builder()
       .truck(CHICAGOS_FINEST)
+      .startTime(new DateTime(2016, 9, 1, 11, 0))
+      .endTime(new DateTime(2016, 9, 1, 13, 0))
       .build();
   private GeoLocator locator;
   private FoodTruckStopService service;
@@ -88,7 +95,7 @@ public class LocationIntentProcessorTest extends EasyMockSupport {
     expect(clock.now()).andStubReturn(date);
     expect(clock.currentDay()).andStubReturn(date.toLocalDate());
     processor = new LocationIntentProcessor(locator, service, clock, locationDAO, cacher, dailyScheduleWriter,
-        defaultCenter);
+        defaultCenter, DateTimeFormat.forPattern("hh:mm a"));
   }
 
   /**
@@ -108,7 +115,7 @@ public class LocationIntentProcessorTest extends EasyMockSupport {
     replayAll();
     SpeechletResponse response = processor.process(intent(CLARK_N_MONROE, null), null);
     assertThat(response.getCard()
-        .getTitle()).isEqualTo("Food Trucks at Clark and Monroe");
+        .getTitle()).isEqualTo("Food Trucks at Clark and Monroe Today");
     assertSpeech(response.getOutputSpeech()).isEqualTo(
         "<speak>There are no trucks at Clark and Monroe today and there don't appear to be any nearby that location.</speak>");
     verifyAll();
@@ -130,7 +137,7 @@ public class LocationIntentProcessorTest extends EasyMockSupport {
     replayAll();
     SpeechletResponse response = processor.process(intent("Clark and Monroe for", null), null);
     assertThat(response.getCard()
-        .getTitle()).isEqualTo("Food Trucks at Clark and Monroe");
+        .getTitle()).isEqualTo("Food Trucks at Clark and Monroe Today");
     assertSpeech(response.getOutputSpeech()).isEqualTo(
         "<speak>There are no trucks at Clark and Monroe today and there don't appear to be any nearby that location.</speak>");
     verifyAll();
@@ -167,15 +174,13 @@ public class LocationIntentProcessorTest extends EasyMockSupport {
   @Test
   public void procesWithNoDateOneTruck() throws Exception {
     expect(locator.locate(CLARK_N_MONROE, GeolocationGranularity.NARROW)).andReturn(location);
-    expect(service.findStopsNearALocation(location, date.toLocalDate())).andReturn(ImmutableList.of(TruckStop.builder()
-        .truck(THE_FAT_PICKLE)
-        .build()));
+    expect(service.findStopsNearALocation(location, date.toLocalDate())).andReturn(ImmutableList.of(FAT_PICKLE_STOP));
     replayAll();
     SpeechletResponse response = processor.process(intent(CLARK_N_MONROE, null), null);
     assertThat(response.getCard()
-        .getTitle()).isEqualTo("Food Trucks at Clark and Monroe");
+        .getTitle()).isEqualTo("Food Trucks at Clark and Monroe Today");
     assertThat(((SsmlOutputSpeech) response.getOutputSpeech()).getSsml()).isEqualTo(
-        "<speak>The Fat Pickle is the only food truck at Clark and Monroe today</speak>");
+        "<speak>The Fat Pickle is at Clark and Monroe today from 11:00 AM to 01:00 PM</speak>");
     verifyAll();
   }
 
@@ -187,77 +192,81 @@ public class LocationIntentProcessorTest extends EasyMockSupport {
     replayAll();
     SpeechletResponse response = processor.process(intent(CLARK_N_MONROE, null), null);
     assertThat(response.getCard()
-        .getTitle()).isEqualTo("Food Trucks at Clark and Monroe");
+        .getTitle()).isEqualTo("Food Trucks at Clark and Monroe Today");
     assertThat(((SsmlOutputSpeech) response.getOutputSpeech()).getSsml()).isEqualTo(
-        "<speak>Beavers Donuts and The Fat Pickle are at Clark and Monroe today</speak>");
+        "<speak>Beavers Donuts and The Fat Pickle are at Clark and Monroe today. Beavers Donuts from 07:00 AM to 10:00 AM and The Fat Pickle from 11:00 AM to 01:00 PM</speak>");
     verifyAll();
   }
+
+
+  @Test
+  public void processWithNoDateTwoTrucksSameTime() throws Exception {
+    expect(locator.locate(CLARK_N_MONROE, GeolocationGranularity.NARROW)).andReturn(location);
+    expect(service.findStopsNearALocation(location, date.toLocalDate())).andReturn(
+        ImmutableList.of(CHICAGOS_FINEST_STOP, FAT_PICKLE_STOP));
+    replayAll();
+    SpeechletResponse response = processor.process(intent(CLARK_N_MONROE, null), null);
+    assertThat(response.getCard()
+        .getTitle()).isEqualTo("Food Trucks at Clark and Monroe Today");
+    assertThat(((SsmlOutputSpeech) response.getOutputSpeech()).getSsml()).isEqualTo(
+        "<speak>Chicagos Finest and The Fat Pickle are at Clark and Monroe today from 11:00 AM to 01:00 PM</speak>");
+    verifyAll();
+  }
+
 
   @Test
   public void processWithNoDateThreeTrucks() throws Exception {
     ;
     expect(locator.locate(CLARK_N_MONROE, GeolocationGranularity.NARROW)).andReturn(location);
-    expect(service.findStopsNearALocation(location, date.toLocalDate())).andReturn(ImmutableList.of(BEAVERS_STOP,
-        TruckStop.builder()
-            .truck(CHICAGOS_FINEST)
-            .build(), FAT_PICKLE_STOP));
+    expect(service.findStopsNearALocation(location, date.toLocalDate())).andReturn(
+        ImmutableList.of(BEAVERS_STOP, CHICAGOS_FINEST_STOP, FAT_PICKLE_STOP));
     replayAll();
     SpeechletResponse response = processor.process(intent(CLARK_N_MONROE, null), null);
     assertThat(response.getCard()
-        .getTitle()).isEqualTo("Food Trucks at Clark and Monroe");
+        .getTitle()).isEqualTo("Food Trucks at Clark and Monroe Today");
     assertThat(((SsmlOutputSpeech) response.getOutputSpeech()).getSsml()).isEqualTo(
-        "<speak>There are 3 trucks at Clark and Monroe today: Beavers Donuts,<break time=\"0.3s\"/> Chicagos Finest, and The Fat Pickle</speak>");
+        "<speak>There are 3 trucks at Clark and Monroe today: Beavers Donuts,<break time=\"0.3s\"/> Chicagos Finest, and The Fat Pickle. Beavers Donuts from 07:00 AM to 10:00 AM,<break time=\"0.3s\"/> Chicagos Finest from 11:00 AM to 01:00 PM, and The Fat Pickle from 11:00 AM to 01:00 PM</speak>");
     verifyAll();
   }
 
   @Test
   public void processOneToday() throws Exception {
     expect(locator.locate(CLARK_N_MONROE, GeolocationGranularity.NARROW)).andReturn(location);
-    expect(service.findStopsNearALocation(location, date.toLocalDate())).andReturn(ImmutableList.of(TruckStop.builder()
-        .truck(THE_FAT_PICKLE)
-        .build()));
+    expect(service.findStopsNearALocation(location, date.toLocalDate())).andReturn(ImmutableList.of(FAT_PICKLE_STOP));
     replayAll();
     SpeechletResponse response = processor.process(intent(CLARK_N_MONROE, TODAY), null);
     assertThat(response.getCard()
-        .getTitle()).isEqualTo("Food Trucks at Clark and Monroe");
+        .getTitle()).isEqualTo("Food Trucks at Clark and Monroe Today");
     assertSpeech(response.getOutputSpeech()).isEqualTo(
-        "<speak>The Fat Pickle is the only food truck at Clark and Monroe today</speak>");
+        "<speak>The Fat Pickle is at Clark and Monroe today from 11:00 AM to 01:00 PM</speak>");
     verifyAll();
   }
 
   @Test
   public void processTwoToday() throws Exception {
     expect(locator.locate(CLARK_N_MONROE, GeolocationGranularity.NARROW)).andReturn(location);
-    expect(service.findStopsNearALocation(location, date.toLocalDate())).andReturn(ImmutableList.of(TruckStop.builder()
-        .truck(BEAVERS)
-        .build(), TruckStop.builder()
-        .truck(THE_FAT_PICKLE)
-        .build()));
+    expect(service.findStopsNearALocation(location, date.toLocalDate())).andReturn(
+        ImmutableList.of(BEAVERS_STOP, FAT_PICKLE_STOP));
     replayAll();
     SpeechletResponse response = processor.process(intent(CLARK_N_MONROE, TODAY), null);
     assertThat(response.getCard()
-        .getTitle()).isEqualTo("Food Trucks at Clark and Monroe");
+        .getTitle()).isEqualTo("Food Trucks at Clark and Monroe Today");
     assertSpeech(response.getOutputSpeech()).isEqualTo(
-        "<speak>Beavers Donuts and The Fat Pickle are at Clark and Monroe today</speak>");
+        "<speak>Beavers Donuts and The Fat Pickle are at Clark and Monroe today. Beavers Donuts from 07:00 AM to 10:00 AM and The Fat Pickle from 11:00 AM to 01:00 PM</speak>");
     verifyAll();
   }
 
   @Test
   public void processThreeToday() throws Exception {
     expect(locator.locate(CLARK_N_MONROE, GeolocationGranularity.NARROW)).andReturn(location);
-    expect(service.findStopsNearALocation(location, date.toLocalDate())).andReturn(ImmutableList.of(TruckStop.builder()
-        .truck(BEAVERS)
-        .build(), TruckStop.builder()
-        .truck(CHICAGOS_FINEST)
-        .build(), TruckStop.builder()
-        .truck(THE_FAT_PICKLE)
-        .build()));
+    expect(service.findStopsNearALocation(location, date.toLocalDate())).andReturn(
+        ImmutableList.of(BEAVERS_STOP, CHICAGOS_FINEST_STOP, FAT_PICKLE_STOP));
     replayAll();
     SpeechletResponse response = processor.process(intent(CLARK_N_MONROE, TODAY), null);
     assertThat(response.getCard()
-        .getTitle()).isEqualTo("Food Trucks at Clark and Monroe");
+        .getTitle()).isEqualTo("Food Trucks at Clark and Monroe Today");
     assertSpeech(response.getOutputSpeech()).isEqualTo(
-        "<speak>There are 3 trucks at Clark and Monroe today: Beavers Donuts,<break time=\"0.3s\"/> Chicagos Finest, and The Fat Pickle</speak>");
+        "<speak>There are 3 trucks at Clark and Monroe today: Beavers Donuts,<break time=\"0.3s\"/> Chicagos Finest, and The Fat Pickle. Beavers Donuts from 07:00 AM to 10:00 AM,<break time=\"0.3s\"/> Chicagos Finest from 11:00 AM to 01:00 PM, and The Fat Pickle from 11:00 AM to 01:00 PM</speak>");
     verifyAll();
   }
 
@@ -267,15 +276,13 @@ public class LocationIntentProcessorTest extends EasyMockSupport {
     LocalDate localDate = date.toLocalDate()
         .withDayOfMonth(16);
     expect(locator.locate(CLARK_N_MONROE, GeolocationGranularity.NARROW)).andReturn(location);
-    expect(service.findStopsNearALocation(location, localDate)).andReturn(ImmutableList.of(TruckStop.builder()
-        .truck(THE_FAT_PICKLE)
-        .build()));
+    expect(service.findStopsNearALocation(location, localDate)).andReturn(ImmutableList.of(FAT_PICKLE_STOP));
     replayAll();
     SpeechletResponse response = processor.process(intent, null);
     assertThat(response.getCard()
-        .getTitle()).isEqualTo("Food Trucks at Clark and Monroe");
+        .getTitle()).isEqualTo("Food Trucks at Clark and Monroe Tomorrow");
     assertSpeech(response.getOutputSpeech()).isEqualTo(
-        "<speak>The Fat Pickle is the only food truck scheduled to be at Clark and Monroe tomorrow</speak>");
+        "<speak>The Fat Pickle is scheduled to be at Clark and Monroe tomorrow from 11:00 AM to 01:00 PM</speak>");
     verifyAll();
   }
 
@@ -284,17 +291,14 @@ public class LocationIntentProcessorTest extends EasyMockSupport {
     Intent intent = intent(CLARK_N_MONROE, TOMORROW);
     date = date.withDayOfMonth(16);
     expect(locator.locate(CLARK_N_MONROE, GeolocationGranularity.NARROW)).andReturn(location);
-    expect(service.findStopsNearALocation(location, date.toLocalDate())).andReturn(ImmutableList.of(TruckStop.builder()
-        .truck(BEAVERS)
-        .build(), TruckStop.builder()
-        .truck(THE_FAT_PICKLE)
-        .build()));
+    expect(service.findStopsNearALocation(location, date.toLocalDate())).andReturn(
+        ImmutableList.of(BEAVERS_STOP, FAT_PICKLE_STOP));
     replayAll();
     SpeechletResponse response = processor.process(intent, null);
     assertThat(response.getCard()
-        .getTitle()).isEqualTo("Food Trucks at Clark and Monroe");
+        .getTitle()).isEqualTo("Food Trucks at Clark and Monroe Tomorrow");
     assertSpeech(response.getOutputSpeech()).isEqualTo(
-        "<speak>Beavers Donuts and The Fat Pickle are scheduled to be at Clark and Monroe tomorrow</speak>");
+        "<speak>Beavers Donuts and The Fat Pickle are scheduled to be at Clark and Monroe tomorrow. Beavers Donuts from 07:00 AM to 10:00 AM and The Fat Pickle from 11:00 AM to 01:00 PM</speak>");
     verifyAll();
   }
 
@@ -303,29 +307,16 @@ public class LocationIntentProcessorTest extends EasyMockSupport {
     Intent intent = intent(CLARK_N_MONROE, TOMORROW);
     date = date.withDayOfMonth(16);
     expect(locator.locate(CLARK_N_MONROE, GeolocationGranularity.NARROW)).andReturn(location);
-    expect(service.findStopsNearALocation(location, date.toLocalDate())).andReturn(ImmutableList.of(TruckStop.builder()
-        .truck(Truck.builder()
-            .name("Beavers Donuts")
-            .build())
-        .build(), TruckStop.builder()
-        .truck(Truck.builder()
-            .name("Chicagos Finest")
-            .build())
-        .build(), TruckStop.builder()
-        .truck(Truck.builder()
-            .name("The Fat Pickle")
-            .build())
-        .build()));
+    expect(service.findStopsNearALocation(location, date.toLocalDate())).andReturn(
+        ImmutableList.of(BEAVERS_STOP, CHICAGOS_FINEST_STOP, FAT_PICKLE_STOP));
     replayAll();
     SpeechletResponse response = processor.process(intent, null);
     assertThat(response.getCard()
-        .getTitle()).isEqualTo("Food Trucks at Clark and Monroe");
+        .getTitle()).isEqualTo("Food Trucks at Clark and Monroe Tomorrow");
     assertSpeech(response.getOutputSpeech()).isEqualTo(
-        "<speak>There are 3 trucks scheduled to be at Clark and Monroe tomorrow: Beavers Donuts,<break time=\"0.3s\"/> Chicagos Finest, and The Fat Pickle</speak>");
-    assertThat(response.getCard()
-        .getTitle()).isEqualTo("Food Trucks at Clark and Monroe");
+        "<speak>There are 3 trucks scheduled to be at Clark and Monroe tomorrow: Beavers Donuts,<break time=\"0.3s\"/> Chicagos Finest, and The Fat Pickle. Beavers Donuts from 07:00 AM to 10:00 AM,<break time=\"0.3s\"/> Chicagos Finest from 11:00 AM to 01:00 PM, and The Fat Pickle from 11:00 AM to 01:00 PM</speak>");
     assertThat(((SimpleCard) response.getCard()).getContent()).isEqualTo(
-        "There are 3 trucks scheduled to be at Clark and Monroe tomorrow: Beavers Donuts, Chicagos Finest, and The Fat Pickle");
+        "There are 3 trucks scheduled to be at Clark and Monroe tomorrow: Beavers Donuts, Chicagos Finest, and The Fat Pickle. Beavers Donuts from 07:00 AM to 10:00 AM, Chicagos Finest from 11:00 AM to 01:00 PM, and The Fat Pickle from 11:00 AM to 01:00 PM");
     verifyAll();
   }
 
