@@ -41,12 +41,14 @@ class TruckLocationIntentProcessor implements IntentProcessor {
 
   @Override
   public SpeechletResponse process(Intent intent, Session session) {
-    Truck truck = truckDAO.findByName(intent.getSlot(SLOT_TRUCK).getValue());
+    String truckName = intent.getSlot(SLOT_TRUCK)
+        .getValue();
+    if (Strings.isNullOrEmpty(truckName)) {
+      return notFound();
+    }
+    Truck truck = truckDAO.findByName(truckName);
     if (truck == null) {
-      return SpeechletResponseBuilder.builder()
-          .speechText(TRUCK_NOT_FOUND)
-          .useSpeechTextForReprompt()
-          .ask();
+      return notFound();
     } else {
       String when = intent.getSlot(SLOT_TIME_OF_DAY).getValue();
       return SpeechletResponseBuilder.builder()
@@ -54,6 +56,13 @@ class TruckLocationIntentProcessor implements IntentProcessor {
           .simpleCard(truck.getName())
           .tell();
     }
+  }
+
+  private SpeechletResponse notFound() {
+    return SpeechletResponseBuilder.builder()
+        .speechText(TRUCK_NOT_FOUND)
+        .useSpeechTextForReprompt()
+        .ask();
   }
 
   private String speech(Truck truck, String when, TimeOfDay tod) {
