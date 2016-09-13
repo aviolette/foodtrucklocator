@@ -23,7 +23,7 @@ import com.google.common.collect.FluentIterable;
 class AlexaUtils {
   private static final Joiner JOINER = Joiner.on(", ");
   private static final Joiner JOINER_WITH_PAUSE = Joiner.on(",<break time=\"0.3s\"/> ");
-
+  private static final Joiner NEWLINE = Joiner.on("\n");
   static String toAlexaList(List<String> list, boolean insertPause) {
     return toAlexaList(list, insertPause, Conjunction.and);
   }
@@ -60,7 +60,7 @@ class AlexaUtils {
                     .toString();
               }
             })
-            .join(Joiner.on("\n")))
+            .join(NEWLINE))
         .toString();
   }
 
