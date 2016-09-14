@@ -56,7 +56,7 @@ public class SpecialIntentProcessorTest extends EasyMockSupport {
 
   @Test
   public void noTruck() {
-    expect(truckDAO.findByName("Foobar")).andReturn(null);
+    expect(truckDAO.findByNameOrAlias("Foobar")).andReturn(null);
     replayAll();
     SpeechletResponse response = processor.process(intent, null);
     assertSpeech(response.getOutputSpeech()).isEqualTo(TruckLocationIntentProcessor.TRUCK_NOT_FOUND);
@@ -80,7 +80,7 @@ public class SpecialIntentProcessorTest extends EasyMockSupport {
 
   @Test
   public void noSpecials() {
-    expect(truckDAO.findByName("Foobar")).andReturn(truck);
+    expect(truckDAO.findByNameOrAlias("Foobar")).andReturn(truck);
     expect(dailyDataDAO.findByTruckAndDay("foobar", date)).andReturn(null);
     replayAll();
     SpeechletResponse response = processor.process(intent, null);
@@ -90,7 +90,7 @@ public class SpecialIntentProcessorTest extends EasyMockSupport {
 
   @Test
   public void oneSpecial() {
-    expect(truckDAO.findByName("Foobar")).andReturn(truck);
+    expect(truckDAO.findByNameOrAlias("Foobar")).andReturn(truck);
     DailyData dailyData = DailyData.builder()
         .addSpecial("Mexican Hot Chocolate Cake Donut", false)
         .build();
@@ -104,7 +104,7 @@ public class SpecialIntentProcessorTest extends EasyMockSupport {
 
   @Test
   public void oneSpecialSoldOut() {
-    expect(truckDAO.findByName("Foobar")).andReturn(truck);
+    expect(truckDAO.findByNameOrAlias("Foobar")).andReturn(truck);
     DailyData dailyData = DailyData.builder()
         .addSpecial("Mexican Hot Chocolate Cake Donut", true)
         .build();
@@ -120,7 +120,7 @@ public class SpecialIntentProcessorTest extends EasyMockSupport {
 
   @Test
   public void twoSpecials() {
-    expect(truckDAO.findByName("Foobar")).andReturn(truck);
+    expect(truckDAO.findByNameOrAlias("Foobar")).andReturn(truck);
     DailyData dailyData = DailyData.builder()
         .addSpecial("Mexican Hot Chocolate Cake Donut", false)
         .addSpecial("Cherry Old Fashioned", false)
