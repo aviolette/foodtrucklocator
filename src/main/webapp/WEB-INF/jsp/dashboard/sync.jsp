@@ -1,16 +1,15 @@
-<%@include file="../common.jsp" %>
-<%@include file="dashboardHeader.jsp" %>
+<%@include file="dashboardHeaderBS3.jsp" %>
 
 <c:choose>
   <c:when test="${syncEnabled}">
     <form method="POST" action="">
-      <div class="input">
-        <ul class="unstyled">
-          <li><label><input name="trucks"
-                            type="checkbox"/> <span>Download trucks</span></label></li>
-          <li><label><input name="schedule"
-                            type="checkbox"/> <span>Download schedule</span></label></li>
-        </ul>
+      <div class="checkbox">
+        <label><input name="trucks"
+                      type="checkbox"/> <span>Download trucks</span></label>
+      </div>
+      <div class="checkbox">
+        <label><input name="schedule"
+                      type="checkbox"/> <span>Download schedule</span></label>
       </div>
       <button type="submit" class="btn btn-primary">Sync</button>
     </form>
@@ -22,4 +21,4 @@
   </c:otherwise>
 </c:choose>
 
-<%@include file="dashboardFooter.jsp" %>
+<%@include file="dashboardFooterBS3.jsp" %>
