@@ -1,39 +1,27 @@
-<%@include file="dashboardHeader.jsp" %>
+<%@include file="dashboardHeaderBS3.jsp" %>
 
-<form class="form-horizontal" action="" method="POST">
-  <fieldset>
-    <div class="control-group">
-      <label for="description" class="control-label">Description</label>
+<form class="" action="" method="POST">
 
-      <div class="controls">
-        <textarea name="description" class="span6" id="description" rows="5" cols="80">${event.description}</textarea>
-      </div>
-    </div>
-    <div class="control-group">
-      <label for="startTime" class="control-label">Start</label>
-
-      <div class="controls">
-        <input id="startTime" name="startTime" placeholder="MM/dd/YYYY" value="<joda:format value="${event.startTime}" pattern="YYYYMMdd-HHmm"/>"
-               class="span6" type="text"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label for="endTime" class="control-label">End</label>
-
-      <div class="controls">
-        <input id="endTime" name="endTime" placeholder="MM/dd/YYYY" value="<joda:format value="${event.endTime}" pattern="YYYYMMdd-HHmm"/>"
-               class="span6" type="text"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <div class="controls">
-        <input id="submitButton" type="submit" class="btn btn-primary" name="action" value="Save"/>&nbsp;
-        <c:if test="${!event.new}">
-          <input id="delete" type="submit" class="btn btn-danger" name="action" value="Delete"/>&nbsp;
-        </c:if>
-      </div>
-    </div>
-  </fieldset>
+  <div class="form-group">
+    <label for="description" class="control-label">Description</label>
+    <textarea name="description" class="form-control" id="description" rows="5" cols="80">${message.message}</textarea>
+  </div>
+  <div class="form-group">
+    <label for="startTime" class="control-label">Start</label>
+    <input id="startTime" name="startTime" value="<joda:format value="${message.startTime}" pattern="YYYY-MM-dd"/>"
+           class="form-control" type="date"/>
+  </div>
+  <div class="form-group">
+    <label for="endTime" class="control-label">End</label>
+    <input id="endTime" name="endTime" value="<joda:format value="${message.endTime}" pattern="YYYY-MM-dd"/>"
+           class="form-control" type="date"/>
+  </div>
+  <div>
+    <a href="/admin/messages" class="btn btn-default">Cancel</a>
+    <button type="submit" class="btn btn-primary" name="action" value="Save"><span
+        class="glyphicon glyphicon-save"></span> Save
+    </button>
+  </div>
 </form>
 
-<%@include file="dashboardFooter.jsp" %>
+<%@include file="dashboardFooterBS3.jsp" %>

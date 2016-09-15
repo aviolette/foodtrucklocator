@@ -50,7 +50,7 @@
               </li>
             </ul>
           </li>
-          <li class="<c:if test="${nav == 'lookouts'}"> active</c:if>"><a href="/admin/messages">Messages</a>
+          <li class="<c:if test="${nav == 'messages'}"> active</c:if>"><a href="/admin/messages">Messages</a>
           <li class="<c:if test="${nav == 'beacons'}"> active</c:if>"><a href="/admin/beacons">Beacons</a>
           </li>
         </ul>

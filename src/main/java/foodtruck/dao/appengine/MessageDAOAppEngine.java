@@ -1,5 +1,7 @@
 package foodtruck.dao.appengine;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import com.google.appengine.api.datastore.Entity;
@@ -47,25 +49,39 @@ class MessageDAOAppEngine extends AppEngineDAO<Long, Message> implements Message
 
   @Override
   protected Message fromEntity(Entity entity) {
-    return new Message(entity.getKey().getId(), (String) entity.getProperty("message"),
-        getDateTime(entity, "startTime", zone), getDateTime(entity, "endTime", zone));
+    return new Message(entity.getKey()
+        .getId(), (String) entity.getProperty("message"), getDateTime(entity, "startTime", zone),
+        getDateTime(entity, "endTime", zone));
   }
 
 
   @Override
-  public @Nullable Message findByDay(LocalDate day) {
+  public
+  @Nullable
+  Message findByDay(LocalDate day) {
     DateTime instant = day.toDateTimeAtStartOfDay(zone),
-        tomorrowExclusive = instant.plusDays(1).minusMillis(1);
+        tomorrowExclusive = instant.plusDays(1)
+            .minusMillis(1);
     // TODO: this code is wildly inefficient
     for (Message m : aq().filter(predicate("endTime", GREATER_THAN_OR_EQUAL, instant.toDate()))
         .sort("endTime", ASCENDING)
         .execute()) {
-      boolean endsAfterTomorrow = m.getEndTime().plusDays(1).isAfter(tomorrowExclusive);
-      boolean startsBeforeToday = m.getStartTime().isBefore(instant.plusMinutes(1));
+      boolean endsAfterTomorrow = m.getEndTime()
+          .plusDays(1)
+          .isAfter(tomorrowExclusive);
+      boolean startsBeforeToday = m.getStartTime()
+          .isBefore(instant.plusMinutes(1));
       if (endsAfterTomorrow && startsBeforeToday) {
         return m;
       }
     }
     return null;
+  }
+
+  @Override
+  public List<Message> findExpiresAfter(LocalDate dateTime) {
+    return aq().filter(predicate("endTime", GREATER_THAN_OR_EQUAL, dateTime.toDateTimeAtCurrentTime()
+        .toDate()))
+        .execute();
   }
 }
