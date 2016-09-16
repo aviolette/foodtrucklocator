@@ -1,8 +1,8 @@
-<%@include file="dashboardHeader.jsp" %>
+<%@include file="dashboardHeaderBS3.jsp" %>
 
 <div class="btn-toolbar">
   <div class="btn-group">
-    <a href="#" class="btn" id="newLookout">New Lookout</a>&nbsp;
+    <a href="#" class="btn btn-primary" id="newLookout"><span class="glyphicon glyphicon-plus"></span> New Lookout</a>
   </div>
 </div>
 
@@ -20,46 +20,49 @@
   </tbody>
 </table>
 
-<div id="edit-lookout" class="modal hide fade">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 
-    <h3>Edit Lookout</h3>
-  </div>
-  <div class="modal-body">
-    <form>
-      <fieldset>
-        <div class="control-group">
-          <label class="control-label" for="twitterHandle">Twitter ID</label>
-
-          <div class="controls">
-            <input id="twitterHandle" class="span6" type="text"/>
+<div id="edit-lookout" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <div class="media">
+          <div class="text-center">
+            <img id="truckIcon" class="center-block img-thumbnail" src=""/>
+          </div>
+          <div class="media-body">
+            <h3 class=" text-center">Edit Lookout</h3>
           </div>
         </div>
-        <div class="control-group">
+      </div>
+      <div class="modal-body">
+
+
+        <div class="form-group">
+          <label class="control-label" for="twitterHandle">Twitter ID</label>
+          <input id="twitterHandle" class="form-control" type="text"/>
+        </div>
+        <div class="form-group">
           <label class="control-label" for="location">Location</label>
 
-          <div class="controls">
-            <input id="location" class="span6" type="text"/>
-          </div>
+          <input id="location" class="form-control" type="text"/>
         </div>
-        <div class="control-group">
+        <div class="form-group">
           <label class="control-label" for="location">Keywords</label>
 
-          <div class="controls">
-            <input id="keywords" class="span6" type="text"/>
-          </div>
+          <input id="keywords" class="form-control" type="text"/>
         </div>
-      </fieldset>
-    </form>
-  </div>
-  <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-    <button id="saveButton" class="btn primary">Save</button>
+
+        <div class="modal-footer">
+          <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+          <button id="saveButton" class="btn btn-primary">Save</button>
+        </div>
+      </div>
   </div>
 </div>
 
-<script type="text/javascript">
+
+  <script type="text/javascript">
   function saveItem(item) {
     $.ajax({
       url: "/services/lookouts/" + item.id,
@@ -85,7 +88,7 @@
           var btnClass = datum["active"] ? "btn-success" : "btn-danger";
           var btnLabel = datum["active"] ? "Active" : "Inactive";
           var buttons = "<td><button id='deleteBtn-" + i +
-              "' class='btn'>Delete</button></td>";
+              "' class='btn btn-default'><span class='glyphicon glyphicon-remove'></span> Delete</button></td>";
           $("#lookouts").append("<tr>" + buttons + "<td><a target='_blank' href='http://twitter.com/" + datum['twitterHandle']
               + "'>@" + datum["twitterHandle"] + "</a></td><td><a href='/admin/locations?q=" +
               encodeURIComponent(datum["location"]["name"]) + "'>" + datum["location"]["name"] + "</a></td><td>" +
@@ -122,18 +125,18 @@
   }
 
   function invokeEditDialog(lookout) {
-    $("#twitterHandle").attr("value", lookout.twitterHandle);
-    $("#location").attr("value", lookout.location);
-    $("#keywords").attr("value", lookout.keywords);
+    $("#twitterHandle").val(lookout.twitterHandle);
+    $("#location").val(lookout.location);
+    $("#keywords").val(lookout.keywords);
     $("#edit-lookout").modal({ show: true, keyboard: true, backdrop: true});
     var $saveButton = $("#saveButton");
     $saveButton.unbind('click');
     $saveButton.click(function (e) {
       e.preventDefault();
       delete lookout["location"];
-      lookout.twitterHandle = $("#twitterHandle").attr("value");
-      lookout.locationName = $("#location").attr("value");
-      lookout.keywords = $("#keywords").attr("value");
+      lookout.twitterHandle = $("#twitterHandle").val();
+      lookout.locationName = $("#location").val();
+      lookout.keywords = $("#keywords").val();
       $.ajax({
         url: "/services/lookouts",
         type: 'POST',
@@ -155,4 +158,4 @@
   });
   refreshList();
 </script>
-<%@include file="dashboardFooter.jsp" %>
+  <%@include file="dashboardFooterBS3.jsp" %>
