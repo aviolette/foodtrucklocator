@@ -52,6 +52,7 @@
           </li>
           <li class="<c:if test="${nav == 'messages'}"> active</c:if>"><a href="/admin/messages">Messages</a>
           <li class="<c:if test="${nav == 'beacons'}"> active</c:if>"><a href="/admin/beacons">Beacons</a>
+          <li class="visible-desktop<c:if test="${nav == 'stats'}"> active</c:if>"><a href="/admin/stats">Stats</a></li>
           </li>
         </ul>
         <ul class="nav navbar-right navbar-nav">
