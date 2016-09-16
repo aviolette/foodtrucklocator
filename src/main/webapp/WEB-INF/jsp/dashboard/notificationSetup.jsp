@@ -1,8 +1,9 @@
-<%@include file="dashboardHeader.jsp" %>
+<%@include file="dashboardHeaderBS3.jsp" %>
 
 <div class="btn-toolbar">
   <div class="btn-group">
-    <a href="#" class="btn" id="newNotification">New Notification Group</a>&nbsp;
+    <a href="#" class="btn btn-primary" id="newNotification"><span class="glyphicon glyphicon-plus"></span> New
+      Notification Group</a>&nbsp;
   </div>
 </div>
 
@@ -20,56 +21,48 @@
   </tbody>
 </table>
 
-<div id="edit-notification" class="modal hide fade">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-
-    <h3>Edit Notification Group</h3>
-  </div>
-  <div class="modal-body">
-    <form>
-      <fieldset>
-        <div class="clearfix">
+<div id="edit-notification" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <div class="media">
+          <div class="text-center">
+            <img id="truckIcon" class="center-block img-thumbnail" src=""/>
+          </div>
+          <div class="media-body">
+            <h3 id="truckTitle" class=" text-center"></h3>
+            <p class="text-center hidden" id="truck-url"></p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
           <label for="name">Name</label>
-
-          <div class="input">
-            <input id="name" type="text"/>
-          </div>
+          <input class="form-control" id="name" type="text"/>
         </div>
-        <div class="clearfix">
+        <div class="form-group">
           <label for="twitterHandle">Twitter Handle</label>
-
-          <div class="input">
-            <input id="twitterHandle" type="text"/>
-          </div>
+          <input class="form-control" id="twitterHandle" type="text"/>
         </div>
-        <div class="clearfix">
+        <div class="form-group">
           <label for="location">Location</label>
-
-          <div class="input">
-            <input id="location" class="span5" type="text"/>
-          </div>
+          <input id="location" class="form-control" type="text"/>
         </div>
-        <div class="clearfix">
+        <div class="form-group">
           <label for="token">Token</label>
-
-          <div class="input">
-            <input id="token" type="text"/>
-          </div>
+          <input class="form-control" id="token" type="text"/>
         </div>
-        <div class="clearfix">
+        <div class="form-group">
           <label for="tokenSecret">Secret</label>
-
-          <div class="input">
-            <input id="tokenSecret" type="text"/>
-          </div>
+          <input class="form-control" id="tokenSecret" type="text"/>
         </div>
-      </fieldset>
-    </form>
-  </div>
-  <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-    <button id="saveButton" class="btn primary">Save</button>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+        <button id="saveButton" class="btn btn-primary">Save</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -99,7 +92,7 @@
           var btnClass = datum["active"] ? "btn-success" : "btn-danger";
           var btnLabel = datum["active"] ? "Active" : "Inactive";
           var buttons = "<td><button id='deleteBtn-" + i +
-              "' class='btn'>Delete</button>&nbsp;<button id='activeBtn-" + i +"' class='btn " + btnClass +
+              "' class='btn btn-default'>Delete</button>&nbsp;<button id='activeBtn-" + i + "' class='btn " + btnClass +
               "' data-toggle='button' type='button'>" + btnLabel + "</button></td>";
           $("#notificationGroups").append("<tr>" + buttons + "<td>" + datum["name"] + "</td><td><a target='_blank' href='http://twitter.com/" + datum['twitterHandle']
               +"'>@" + datum["twitterHandle"] + "</a></td><td><a href='/admin/locations?q=" +
@@ -136,21 +129,21 @@
   }
 
   function invokeEditDialog(notification) {
-    $("#name").attr("value", notification.name);
-    $("#twitterHandle").attr("value", notification.twitterHandle);
-    $("#location").attr("value", notification.location);
-    $("#token").attr("value", notification.token);
-    $("#tokenSecret").attr("value", notification.tokenSecret);
+    $("#name").val(notification.name);
+    $("#twitterHandle").val(notification.twitterHandle);
+    $("#location").val(notification.location);
+    $("#token").val(notification.token);
+    $("#tokenSecret").val(notification.tokenSecret);
     $("#edit-notification").modal({ show: true, keyboard : true, backdrop: true});
     var $saveButton = $("#saveButton");
     $saveButton.unbind('click');
     $saveButton.click(function(e) {
       e.preventDefault();
-      notification.name = $("#name").attr("value");
-      notification.twitterHandle = $("#twitterHandle").attr("value");
-      notification.location = $("#location").attr("value");
-      notification.token = $("#token").attr("value");
-      notification.tokenSecret = $("#tokenSecret").attr("value");
+      notification.name = $("#name").val();
+      notification.twitterHandle = $("#twitterHandle").val();
+      notification.location = $("#location").val();
+      notification.token = $("#token").val();
+      notification.tokenSecret = $("#tokenSecret").val();
       $.ajax({
         url: "/services/notifications",
         type: 'POST',
@@ -174,4 +167,4 @@
 </script>
 
 
-<%@include file="dashboardFooter.jsp" %>
+<%@include file="dashboardFooterBS3.jsp" %>
