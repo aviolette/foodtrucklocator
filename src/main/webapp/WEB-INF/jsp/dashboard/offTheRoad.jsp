@@ -1,9 +1,14 @@
-<%@include file="dashboardHeader.jsp" %>
+<%@include file="dashboardHeaderBS3.jsp" %>
 
-Would you like to take <a href="/admin/trucks/${truck.id}">${truck.name}</a> off the road for today?
+<p class="lead">
+  Would you like to take <a href="/admin/trucks/${truck.id}">${truck.name}</a> off the road for today?
+</p>
 
 <form action="" method="POST">
-  <input type="submit" value="Do it!"/>
+
+  <div class="btn-group">
+    <input type="submit" class="btn btn-primary" value="Do it!"/>
+  </div>
 </form>
 
-<%@include file="dashboardFooter.jsp" %>
+<%@include file="dashboardFooterBS3.jsp" %>
