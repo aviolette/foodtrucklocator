@@ -20,7 +20,7 @@
           <td><joda:format value="${row.startTime}" pattern="MM/dd/YYYY"/></td>
           <td><joda:format value="${row.endTime}" pattern="MM/dd/YYYY"/></td>
           <td>${row.message}</td>
-          <td>
+          <td style="min-width: 100px">
             <div class="btn-group">
               <button class="btn btn-default delete-button" row-data="${row.key}" id="delete-${rowStatus.index}"><span
                   class="glyphicon glyphicon-remove"></span></button>
