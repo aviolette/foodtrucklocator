@@ -13,6 +13,9 @@ import javax.ws.rs.core.MediaType;
 import com.amazon.speech.json.SpeechletResponseEnvelope;
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.slu.Slot;
+import com.amazon.speech.speechlet.IntentRequest;
+import com.amazon.speech.speechlet.Speechlet;
+import com.amazon.speech.speechlet.SpeechletException;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
@@ -25,6 +28,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import foodtruck.alexa.IntentProcessor;
+import foodtruck.util.Clock;
 
 /**
  * @author aviolette
@@ -34,10 +38,14 @@ import foodtruck.alexa.IntentProcessor;
 public class AlexaTestServlet extends HttpServlet {
   private static final String JSP_PATH = "/WEB-INF/jsp/dashboard/alexaTest.jsp";
   private final Map<String, IntentProcessor> processors;
+  private final Speechlet speechlet;
+  private final Clock clock;
 
   @Inject
-  public AlexaTestServlet(Map<String, IntentProcessor> processors) {
+  public AlexaTestServlet(Map<String, IntentProcessor> processors, Speechlet speechlet, Clock clock) {
     this.processors = processors;
+    this.clock = clock;
+    this.speechlet = speechlet;
   }
 
   @Override
@@ -62,9 +70,12 @@ public class AlexaTestServlet extends HttpServlet {
     try {
       JSONObject jsonPayload = new JSONObject(json);
       Intent intent = buildIntent(jsonPayload);
-
-      IntentProcessor processor = processors.get(intent.getName());
-      SpeechletResponse response = processor.process(intent, null);
+      SpeechletResponse response = speechlet.onIntent(IntentRequest.builder()
+          .withIntent(intent)
+          .withRequestId("dummy")
+          .withTimestamp(clock.now()
+              .toDate())
+          .build(), null);
       SpeechletResponseEnvelope envelope = new SpeechletResponseEnvelope();
       envelope.setResponse(response);
       envelope.setSessionAttributes(Maps.<String, Object>newHashMap());
@@ -72,10 +83,9 @@ public class AlexaTestServlet extends HttpServlet {
       resp.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
       resp.getOutputStream()
           .print(envelope.toJsonString());
-    } catch (JSONException e) {
+    } catch (JSONException | SpeechletException e) {
       throw Throwables.propagate(e);
     }
-
   }
 
   private Intent buildIntent(JSONObject jsonPayload) throws JSONException {

@@ -15,6 +15,10 @@ import com.amazon.speech.speechlet.SpeechletResponse;
 import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 
+import foodtruck.dao.AlexaExchangeDAO;
+import foodtruck.model.AlexaExchange;
+import foodtruck.util.Clock;
+
 /**
  * @author aviolette
  * @since 8/25/16
@@ -23,10 +27,14 @@ class FTFSpeechlet implements Speechlet {
   private static final Logger log = Logger.getLogger(FTFSpeechlet.class.getName());
 
   private final Map<String, IntentProcessor> processors;
+  private final Clock clock;
+  private final AlexaExchangeDAO alexaExchangeDAO;
 
   @Inject
-  public FTFSpeechlet(Map<String, IntentProcessor> processors) {
+  public FTFSpeechlet(Map<String, IntentProcessor> processors, Clock clock, AlexaExchangeDAO alexaExchangeDAO) {
     this.processors = processors;
+    this.clock = clock;
+    this.alexaExchangeDAO = alexaExchangeDAO;
   }
 
   @Override
@@ -56,12 +64,22 @@ class FTFSpeechlet implements Speechlet {
     }
     try {
       SpeechletResponse response = processor.process(intentRequest.getIntent(), session);
+      record(intentRequest, response);
       log.log(Level.INFO, "Response {0}", AlexaUtils.speechletResponseToString(response));
       return response;
     } catch (Exception e) {
       log.log(Level.SEVERE, e.getMessage(), e);
       throw Throwables.propagate(e);
     }
+  }
+
+  private void record(IntentRequest intentRequest, SpeechletResponse response) {
+    AlexaExchange exchange = AlexaExchange.builder()
+        .intent(intentRequest)
+        .sessionEnded(response.getShouldEndSession())
+        .completeTime(clock.now())
+        .build();
+    alexaExchangeDAO.save(exchange);
   }
 
   @Override
