@@ -2,6 +2,7 @@ package foodtruck.alexa;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,6 +17,7 @@ import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
@@ -68,6 +70,11 @@ class LocationIntentProcessor implements IntentProcessor {
     this.dailyScheduleWriter = dailyScheduleWriter;
     this.defaultCenter = center;
     this.formatter = formatter;
+  }
+
+  @Override
+  public Set<String> getSlotNames() {
+    return ImmutableSet.of(SLOT_LOCATION, SLOT_WHEN);
   }
 
   @Override

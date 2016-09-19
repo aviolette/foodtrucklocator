@@ -21,7 +21,7 @@ import foodtruck.util.Urls;
  */
 @Singleton
 public class ApplicationDetailServlet extends HttpServlet {
-  public static final String JSP_PATH = "/WEB-INF/jsp/dashboard/application.jsp";
+  private static final String JSP_PATH = "/WEB-INF/jsp/dashboard/application.jsp";
   private final ApplicationDAO applicationDAO;
 
   @Inject

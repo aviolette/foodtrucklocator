@@ -10,6 +10,7 @@ import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 
 import foodtruck.server.dashboard.AddressRuleServlet;
 import foodtruck.server.dashboard.AdminDashboardServlet;
+import foodtruck.server.dashboard.AlexaTestServlet;
 import foodtruck.server.dashboard.ApplicationDetailServlet;
 import foodtruck.server.dashboard.ApplicationServlet;
 import foodtruck.server.dashboard.BeaconServlet;
@@ -75,6 +76,7 @@ class FoodtruckServletModule extends ServletModule {
 
     // Dashboard endpoints
     serve("/admin").with(AdminDashboardServlet.class);
+    serve("/admin/alexa_test").with(AlexaTestServlet.class);
     serve("/admin/addresses").with(AddressRuleServlet.class);
     serveRegex("/admin/beacons/[\\w]+").with(BeaconServlet.class);
     serve("/admin/beacons").with(BeaconsServlet.class);

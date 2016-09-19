@@ -1,6 +1,7 @@
 package foodtruck.alexa;
 
 import java.util.List;
+import java.util.Set;
 
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
@@ -8,6 +9,7 @@ import com.amazon.speech.speechlet.SpeechletResponse;
 import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 
 import foodtruck.dao.TruckDAO;
@@ -30,6 +32,11 @@ class CategoryIntent implements IntentProcessor {
   @Inject
   public CategoryIntent(TruckDAO truckDAO) {
     this.truckDAO = truckDAO;
+  }
+
+  @Override
+  public Set<String> getSlotNames() {
+    return ImmutableSet.of(CATEGORY_NAME);
   }
 
   @Override

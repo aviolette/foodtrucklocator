@@ -1,11 +1,14 @@
 package foodtruck.alexa;
 
+import java.util.Set;
+
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
@@ -37,6 +40,11 @@ class TruckLocationIntentProcessor implements IntentProcessor {
     this.service = service;
     this.truckDAO = truckDAO;
     this.clock = clock;
+  }
+
+  @Override
+  public Set<String> getSlotNames() {
+    return ImmutableSet.of(SLOT_TRUCK, SLOT_TIME_OF_DAY);
   }
 
   @Override

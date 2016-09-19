@@ -1,10 +1,13 @@
 package foodtruck.alexa;
 
+import java.util.Set;
+
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 
 import foodtruck.dao.DailyDataDAO;
@@ -49,6 +52,11 @@ class SpecialIntentProcessor implements IntentProcessor {
               .toList(), true));
     }
     return speechText;
+  }
+
+  @Override
+  public Set<String> getSlotNames() {
+    return ImmutableSet.of(TRUCK_SLOT);
   }
 
   @Override

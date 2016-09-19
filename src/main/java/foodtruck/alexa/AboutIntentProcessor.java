@@ -1,12 +1,14 @@
 package foodtruck.alexa;
 
 import java.util.List;
+import java.util.Set;
 
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
@@ -40,6 +42,11 @@ class AboutIntentProcessor implements IntentProcessor {
     this.clock = clock;
     this.service = service;
     this.dailyDataDAO = dailyDataDAO;
+  }
+
+  @Override
+  public Set<String> getSlotNames() {
+    return ImmutableSet.of(TRUCK_SLOT);
   }
 
   @Override
