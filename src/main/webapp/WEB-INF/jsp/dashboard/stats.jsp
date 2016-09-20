@@ -3,83 +3,70 @@
 <%@ include file="../include/rickshaw_css.jsp" %>
 <%@ include file="../include/graph_libraries.jsp"%>
 
-<h2>Errors</h2>
 <div class="row">
-  <div class="col-md-6">
-    <h3>System Errors</h3>
-    <div id="systemErrors"></div>
-  </div>
-</div>
-<h2>System Stats</h2>
-<div class="row">
-  <div class="col-md-6">
-    <h3>Trucks</h3>
-    <div id="trucksOnRoad"></div>
-  </div>
-  <div class="col-md-6">
-    <h3>Database Cache Lookups</h3>
-    <div id="databaseCache"></div>
+  <div class="col-md-12">
+    <div class="form-group">
+      <label for="statList">Stats</label>
+      <select id="statList" class="form-control">
+        <option>System Errors</option>
+        <option>Google Lookups</option>
+        <option>Yahoo Lookups</option>
+        <option>Database Geolocation Hits</option>
+        <option>Trucks on the Road</option>
+      </select>
+    </div>
   </div>
 </div>
 <div class="row">
-  <div class="col-md-6">
-    <h3>Google Geolocation Lookups</h3>
-    <div id="googlelookups"></div>
-  </div>
-  <div class="col-md-6">
-    <h3>Yahoo Geolocation Lookups</h3>
-    <div id="yahoolookups"></div>
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-6">
-    <h3>Twitter Connector</h3>
-    <div id="twitterCache"></div>
-  </div>
-  <div class="col-md-6">
-    <h3>Google Calendar Connector</h3>
-    <div id="calendarCache"></div>
+  <div class="col-md-12 form-inline">
+    <div class="form-group">
+      <label for="startDate">Start</label>
+      <input type="datetime-local" class="form-control" id="startDate"/>
+    </div>
+    <div class="form-group">
+      <label for="endDate">End</label>
+      <input type="datetime-local" class="form-control" id="endDate"/>
+    </div>
+    <button class="btn btn-primary" id="applyButton">Apply</button>
   </div>
 </div>
-
-<h2>End Point Requests</h2>
-<div class="row">
-  <div class="col-md-6">
-    <h3>Schedule Service - /services/daily_schedule</h3>
-    <div id="dailySchedule"></div>
-  </div>
-  <div class="col-md-6">
-    <h3>Location Lookup - /services/locations/<code>location</code></h3>
-    <div id="locationLookup"></div>
+<div class="row" style="margin-top:30px">
+  <div class="col-md-12">
+    <div id="statGraph"></div>
   </div>
 </div>
 
 <script type="text/javascript">
   var colors = ["steelblue", "red", "green", "yellow", "orange", "cyan", "darkgray", "lawngreen", "midnightblue", "cadetblue"];
+  var DAY_IN_MILLIS = 24 * 60 * 60 * 1000;
 
-  function drawGraphs(statNames, containerId) {
+  var endDate = new Date(), startDate = new Date(endDate.getTime() - DAY_IN_MILLIS);
+  $("#startDate").val(startDate.toISOString().substring(0, 16));
+  $("#endDate").val(endDate.toISOString().substring(0, 16));
+
+  function drawGraphs(statNames) {
     if (typeof(statNames) == "string") {
-      drawGraph([statNames], containerId);
+      drawGraph([statNames]);
     } else {
-      drawGraph(statNames, containerId);
+      drawGraph(statNames);
     }
   }
 
-  function drawGraph(statNames, containerId) {
+  function drawGraph(statNames) {
+    $("#statGraph").empty();
     var series = [];
     $.each(statNames, function(i, statName) {
       series.push({name : statName, color : colors[i]});
     });
-    var DAY_IN_MILLIS = 24 * 60 * 60 * 1000;
-    var end = new Date();
-    var start = new Date(end.getTime() - DAY_IN_MILLIS);
+    var end = new Date($("#endDate").val());
+    var start = new Date($("#startDate").val());
     var url = "/services/stats/counts/" + encodeURIComponent(statNames.join(",")) + "?start=" +
         start.getTime() +
         "&end=" + end.getTime();
     new Rickshaw.Graph.Ajax({
-      element: document.getElementById(containerId),
-      width: 500,
-      height: 100,
+      element: document.getElementById("statGraph"),
+      width: 920,
+      height: 300,
       renderer: 'area',
       stroke: true,
       dataURL: url,
@@ -98,21 +85,48 @@
       series: series
     });
   }
+
+  function drawSystemErrors() {
+    drawGraphs("app_error_count", "statGraph");
+  }
+
+  function drawSelectedGraph() {
+    var val = $("#statList").val();
+    switch (val) {
+      case "System Errors":
+        drawSystemErrors();
+        break;
+      case "Google Lookups":
+        drawGraphs(["foodtruck.geolocation.GoogleGeolocator_locate_total",
+          "foodtruck.geolocation.GoogleGeolocator_locate_failed"]);
+        break;
+      case "Yahoo Lookups":
+        drawGraphs(["foodtruck.geolocation.YahooGeolocator_locate_total",
+          "foodtruck.geolocation.YahooGeolocator_locate_failed"]);
+        break;
+      case "Twitter Hits":
+        drawGraphs(["foodtruck.twitter.TwitterServiceImpl_updateTwitterCache_total",
+          "foodtruck.twitter.TwitterServiceImpl_updateTwitterCache_failed"]);
+        break;
+      case "Database Geolocation Hits":
+        drawGraphs(["cacheLookup_total", "cacheLookup_failed"]);
+        break;
+      case "Trucks on the Road":
+        drawGraphs("trucksOnRoad");
+        break;
+    }
+  }
+
+  $("#applyButton").click(function () {
+    drawSelectedGraph();
+  });
+
   $(document).ready(function() {
-    drawGraphs("app_error_count", "systemErrors");
-    drawGraphs(["foodtruck.geolocation.GoogleGeolocator_locate_total",
-      "foodtruck.geolocation.GoogleGeolocator_locate_failed"], "googlelookups");
-    drawGraphs(["foodtruck.geolocation.YahooGeolocator_locate_total",
-      "foodtruck.geolocation.YahooGeolocator_locate_failed"], "yahoolookups");
-    drawGraphs(["foodtruck.twitter.TwitterServiceImpl_updateTwitterCache_total",
-      "foodtruck.twitter.TwitterServiceImpl_updateTwitterCache_failed"], "twitterCache");
-    drawGraphs("foodtruck.schedule.GoogleCalendar_findForTime_total", "calendarCache");
-    drawGraphs(["cacheLookup_total","cacheLookup_failed"], "databaseCache");
-    drawGraphs(["foodtruck.server.api.FoodTruckScheduleServlet_doGet_total"], "scheduleService");
-    drawGraphs([<c:forEach items="${applications}" var="app" varStatus="idx">"${app}"<c:if test="${!idx.last}">,</c:if></c:forEach>], "dailySchedule");
-    drawGraphs(["foodtruck.server.resources.LocationResource_findLocation_total",
-      "foodtruck.server.resources.LocationResource_findLocation_failed"], "locationLookup");
-    drawGraphs("trucksOnRoad", "trucksOnRoad");
+    drawSystemErrors();
+  });
+
+  $("#statList").change(function () {
+    drawSelectedGraph();
   });
 </script>
 
