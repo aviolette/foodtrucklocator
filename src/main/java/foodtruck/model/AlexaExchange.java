@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.IntentRequest;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 
 import org.joda.time.DateTime;
@@ -86,7 +87,7 @@ public class AlexaExchange extends ModelEntity implements Serializable {
       for (Slot slot : intent.getIntent()
           .getSlots()
           .values()) {
-        slotBuilder.put(slot.getName(), slot.getValue());
+        slotBuilder.put(slot.getName(), Strings.nullToEmpty(slot.getValue()));
       }
       slots = slotBuilder.build();
       requestTime = new DateTime(intent.getTimestamp());
