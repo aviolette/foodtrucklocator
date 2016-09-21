@@ -126,7 +126,7 @@
           "alexa_intent_AboutTruck", "alexa_intent_CategorySearch"]);
         break;
       case "Trucks on the Road":
-        drawGraphs(["truck_stops", "unique_vendors"]);
+        drawGraphs("trucks_on_the_road");
         break;
     }
   }

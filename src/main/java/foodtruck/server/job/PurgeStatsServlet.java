@@ -35,6 +35,8 @@ import foodtruck.util.Clock;
  */
 @Singleton
 public class PurgeStatsServlet extends HttpServlet {
+  public static final String TRUCK_STOPS = "trucks_on_the_road";
+  public static final String UNIQUE_TRUCKS = "unique_trucks_on_the_road";
   private static final Logger log = Logger.getLogger(PurgeStatsServlet.class.getName());
   private final TruckStopDAO truckStopDAO;
   private final Clock clock;
@@ -84,10 +86,10 @@ public class PurgeStatsServlet extends HttpServlet {
         .transform(TruckStop.TO_TRUCK_NAME)
         .toSet()
         .size();
-    dailyDAO.updateCount(startTime.plusMinutes(1), "truck_stops", truckStops.size());
-    dailyDAO.updateCount(startTime.plusMinutes(1), "unique_vendors", vendorCount);
-    weeklyRollupDAO.updateCount(startTime.plusMinutes(1), "truck_stops", truckStops.size());
-    weeklyRollupDAO.updateCount(startTime.plusMinutes(1), "unique_vendors", vendorCount);
+    dailyDAO.updateCount(startTime.plusMinutes(1), TRUCK_STOPS, truckStops.size());
+    dailyDAO.updateCount(startTime.plusMinutes(1), UNIQUE_TRUCKS, vendorCount);
+    weeklyRollupDAO.updateCount(startTime.plusMinutes(1), TRUCK_STOPS, truckStops.size());
+    weeklyRollupDAO.updateCount(startTime.plusMinutes(1), UNIQUE_TRUCKS, vendorCount);
   }
 
 

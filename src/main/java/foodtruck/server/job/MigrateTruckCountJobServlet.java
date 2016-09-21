@@ -22,6 +22,9 @@ import foodtruck.dao.TruckStopDAO;
 import foodtruck.dao.WeeklyRollupDAO;
 import foodtruck.model.TruckStop;
 
+import static foodtruck.server.job.PurgeStatsServlet.TRUCK_STOPS;
+import static foodtruck.server.job.PurgeStatsServlet.UNIQUE_TRUCKS;
+
 /**
  * One-off to migrate truck count
  *
@@ -50,19 +53,23 @@ public class MigrateTruckCountJobServlet extends HttpServlet {
     DateTime initialStart = new DateTime(Long.parseLong(req.getParameter("startTime")));
     int days = Integer.parseInt(req.getParameter("days"));
     for (int i = 0; i < days; i++) {
-      DateTime startTime = initialStart.plusDays(i);
-      DateTime endTime = startTime.plusDays(1);
-      log.log(Level.INFO, "Migrating truck stops over range: {0} ", new Interval(startTime, endTime));
-      List<TruckStop> truckStops = truckStopDAO.findOverRange(null, new Interval(startTime, endTime));
-      //noinspection unchecked
-      int vendorCount = FluentIterable.from(truckStops)
-          .transform(TruckStop.TO_TRUCK_NAME)
-          .toSet()
-          .size();
-      dailyDAO.updateCount(startTime.plusMinutes(1), "truck_stops", truckStops.size());
-      dailyDAO.updateCount(startTime.plusMinutes(1), "unique_vendors", vendorCount);
-      weeklyRollupDAO.updateCount(startTime.plusMinutes(1), "truck_stops", truckStops.size());
-      weeklyRollupDAO.updateCount(startTime.plusMinutes(1), "unique_vendors", vendorCount);
+      try {
+        DateTime startTime = initialStart.plusDays(i);
+        DateTime endTime = startTime.plusDays(1);
+        log.log(Level.INFO, "Migrating truck stops over range: {0} ", new Interval(startTime, endTime));
+        List<TruckStop> truckStops = truckStopDAO.findOverRange(null, new Interval(startTime, endTime));
+        //noinspection unchecked
+        int vendorCount = FluentIterable.from(truckStops)
+            .transform(TruckStop.TO_TRUCK_NAME)
+            .toSet()
+            .size();
+        dailyDAO.updateCount(startTime.plusMinutes(1), TRUCK_STOPS, truckStops.size());
+        dailyDAO.updateCount(startTime.plusMinutes(1), UNIQUE_TRUCKS, vendorCount);
+        weeklyRollupDAO.updateCount(startTime.plusMinutes(1), TRUCK_STOPS, truckStops.size());
+        weeklyRollupDAO.updateCount(startTime.plusMinutes(1), UNIQUE_TRUCKS, vendorCount);
+      } catch (Throwable t) {
+        log.log(Level.WARNING, t.getMessage(), t);
+      }
     }
   }
 }
