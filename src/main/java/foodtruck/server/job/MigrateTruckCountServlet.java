@@ -49,18 +49,18 @@ public class MigrateTruckCountServlet extends HttpServlet {
         .toDateTimeAtStartOfDay();
 
     DateTime startTime = new DateTime(2011, 8, 1, 1, 1, clock.zone());
-    DateTime endTime = startTime.plusDays(INTERVAL_IN_DAYS);
+    int days = INTERVAL_IN_DAYS;
     Queue queue = queueProvider.get();
     while (startTime.isBefore(finalEnd)) {
       queue.add(TaskOptions.Builder.withUrl("/cron/update_trucks_count_over_range")
           .param("startTime", String.valueOf(startTime.getMillis()))
-          .param("endTime", String.valueOf(endTime.getMillis())));
+          .param("days", String.valueOf(days)));
       startTime = startTime.plusDays(INTERVAL_IN_DAYS);
-      Duration duration = new Duration(endTime, finalEnd);
+      Duration duration = new Duration(startTime.plusDays(days), finalEnd);
       if (duration.getStandardDays() < 0) {
-        endTime = finalEnd;
+        days = Ints.checkedCast(Math.abs(duration.getStandardDays()));
       } else {
-        endTime = startTime.plusDays(Ints.checkedCast(Math.min(INTERVAL_IN_DAYS, duration.getStandardDays())));
+        days = Ints.checkedCast(Math.min(INTERVAL_IN_DAYS, duration.getStandardDays()));
       }
     }
     resp.sendRedirect("/admin/trucks");

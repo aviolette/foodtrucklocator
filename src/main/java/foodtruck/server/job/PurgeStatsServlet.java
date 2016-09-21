@@ -84,10 +84,10 @@ public class PurgeStatsServlet extends HttpServlet {
         .transform(TruckStop.TO_TRUCK_NAME)
         .toSet()
         .size();
-    dailyDAO.updateCount(startTime.plusMinutes(1), "truckstops", truckStops.size());
-    dailyDAO.updateCount(startTime.plusMinutes(1), "vendor_stops", truckStops.size());
-    weeklyRollupDAO.updateCount(startTime.plusMinutes(1), "vendor_stops", vendorCount);
-    weeklyRollupDAO.updateCount(startTime.plusMinutes(1), "truckstops", vendorCount);
+    dailyDAO.updateCount(startTime.plusMinutes(1), "truck_stops", truckStops.size());
+    dailyDAO.updateCount(startTime.plusMinutes(1), "unique_vendors", vendorCount);
+    weeklyRollupDAO.updateCount(startTime.plusMinutes(1), "truck_stops", truckStops.size());
+    weeklyRollupDAO.updateCount(startTime.plusMinutes(1), "unique_vendors", vendorCount);
   }
 
 

@@ -47,18 +47,22 @@ public class MigrateTruckCountJobServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    DateTime startTime = new DateTime(Long.parseLong(req.getParameter("startTime")));
-    DateTime endTime = new DateTime(Long.parseLong(req.getParameter("endTime")));
-    log.log(Level.INFO, "Migrating truck stops over range: {0} ", new Interval(startTime, endTime));
-    List<TruckStop> truckStops = truckStopDAO.findOverRange(null, new Interval(startTime, endTime));
-    //noinspection unchecked
-    int vendorCount = FluentIterable.from(truckStops)
-        .transform(TruckStop.TO_TRUCK_NAME)
-        .toSet()
-        .size();
-    dailyDAO.updateCount(startTime.plusMinutes(1), "truckstops", truckStops.size());
-    dailyDAO.updateCount(startTime.plusMinutes(1), "vendor_stops", truckStops.size());
-    weeklyRollupDAO.updateCount(startTime.plusMinutes(1), "vendor_stops", vendorCount);
-    weeklyRollupDAO.updateCount(startTime.plusMinutes(1), "truckstops", vendorCount);
+    DateTime initialStart = new DateTime(Long.parseLong(req.getParameter("startTime")));
+    int days = Integer.parseInt(req.getParameter("days"));
+    for (int i = 0; i < days; i++) {
+      DateTime startTime = initialStart.plusDays(i);
+      DateTime endTime = startTime.plusDays(1);
+      log.log(Level.INFO, "Migrating truck stops over range: {0} ", new Interval(startTime, endTime));
+      List<TruckStop> truckStops = truckStopDAO.findOverRange(null, new Interval(startTime, endTime));
+      //noinspection unchecked
+      int vendorCount = FluentIterable.from(truckStops)
+          .transform(TruckStop.TO_TRUCK_NAME)
+          .toSet()
+          .size();
+      dailyDAO.updateCount(startTime.plusMinutes(1), "truck_stops", truckStops.size());
+      dailyDAO.updateCount(startTime.plusMinutes(1), "unique_vendors", vendorCount);
+      weeklyRollupDAO.updateCount(startTime.plusMinutes(1), "truck_stops", truckStops.size());
+      weeklyRollupDAO.updateCount(startTime.plusMinutes(1), "unique_vendors", vendorCount);
+    }
   }
 }
