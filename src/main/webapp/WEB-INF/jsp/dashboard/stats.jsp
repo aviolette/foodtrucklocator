@@ -70,7 +70,7 @@
     }
     var url = "/services/stats/counts/" + encodeURIComponent(statNames.join(",")) + "?start=" +
         start.getTime() +
-        "&end=" + end.getTime() + interval;
+        "&end=" + end.getTime() + interval + "&nocache=true";
     new Rickshaw.Graph.Ajax({
       element: document.getElementById("statGraph"),
       width: 920,
