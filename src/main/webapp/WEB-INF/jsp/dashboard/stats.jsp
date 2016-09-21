@@ -28,7 +28,7 @@
       <label for="endDate">End</label>
       <input type="datetime-local" class="form-control" id="endDate"/>
     </div>
-    <button class="btn btn-primary" id="applyButton">Apply</button>
+    <button style="margin-top:25px" class="btn btn-primary" id="applyButton">Apply</button>
   </div>
 </div>
 <div class="row" style="margin-top:30px">
