@@ -1,6 +1,7 @@
 package foodtruck.server.job;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -10,13 +11,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.memcache.MemcacheService;
+import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
 
 import foodtruck.dao.ApplicationDAO;
 import foodtruck.dao.DailyRollupDAO;
 import foodtruck.dao.FifteenMinuteRollupDAO;
+import foodtruck.dao.TruckStopDAO;
+import foodtruck.dao.WeeklyRollupDAO;
 import foodtruck.model.Application;
+import foodtruck.model.TruckStop;
 import foodtruck.monitoring.Counter;
 import foodtruck.monitoring.DailyScheduleCounter;
 import foodtruck.util.Clock;
@@ -28,28 +36,62 @@ import foodtruck.util.Clock;
 @Singleton
 public class PurgeStatsServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(PurgeStatsServlet.class.getName());
-  private Clock clock;
-  private FifteenMinuteRollupDAO dao;
-  private MemcacheService memcache;
-  private ApplicationDAO appDAO;
-  private DailyRollupDAO dailyDAO;
-  private Counter dailyCounter;
+  private final TruckStopDAO truckStopDAO;
+  private final Clock clock;
+  private final FifteenMinuteRollupDAO dao;
+  private final MemcacheService memcache;
+  private final ApplicationDAO appDAO;
+  private final DailyRollupDAO dailyDAO;
+  private final Counter dailyCounter;
+  private final WeeklyRollupDAO weeklyRollupDAO;
 
   @Inject
   public PurgeStatsServlet(FifteenMinuteRollupDAO dao, Clock clock, MemcacheService service, ApplicationDAO appDAO,
-      DailyRollupDAO dailyRollupDAO, @DailyScheduleCounter Counter dailyCounter) {
+      DailyRollupDAO dailyRollupDAO, @DailyScheduleCounter Counter dailyCounter, TruckStopDAO truckStopDAO,
+      WeeklyRollupDAO weeklyRollupDAO) {
     this.dao = dao;
     this.clock = clock;
     this.memcache = service;
     this.appDAO = appDAO;
     this.dailyDAO = dailyRollupDAO;
     this.dailyCounter = dailyCounter;
+    this.truckStopDAO = truckStopDAO;
+    this.weeklyRollupDAO = weeklyRollupDAO;
   }
 
   @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     log.info("Purging stats");
+
+    purge15minStats();
+    updateApplicationStatsCount();
+    updateTrucksOnRoadCount();
+  }
+
+  private void purge15minStats() {
     dao.deleteBefore(clock.currentDay().minusDays(2));
+  }
+
+  private void updateTrucksOnRoadCount() {
+    DateTime startTime = clock.currentDay()
+        .minusDays(1)
+        .toDateTimeAtStartOfDay();
+    DateTime endTime = clock.currentDay()
+        .toDateTimeAtStartOfDay();
+    List<TruckStop> truckStops = truckStopDAO.findOverRange(null, new Interval(startTime, endTime));
+    //noinspection unchecked
+    int vendorCount = FluentIterable.from(truckStops)
+        .transform(TruckStop.TO_TRUCK_NAME)
+        .toSet()
+        .size();
+    dailyDAO.updateCount(startTime.plusMinutes(1), "truckstops", truckStops.size());
+    dailyDAO.updateCount(startTime.plusMinutes(1), "vendor_stops", truckStops.size());
+    weeklyRollupDAO.updateCount(startTime.plusMinutes(1), "vendor_stops", vendorCount);
+    weeklyRollupDAO.updateCount(startTime.plusMinutes(1), "truckstops", vendorCount);
+  }
+
+
+  private void updateApplicationStatsCount() {
     // Need to roll these stats up, but for now just cancel
     for (Application application : appDAO.findAll()) {
       String key = "service.count.daily." + application.getKey();

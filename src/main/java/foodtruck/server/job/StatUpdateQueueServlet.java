@@ -12,6 +12,7 @@ import com.google.inject.Singleton;
 
 import foodtruck.dao.DailyRollupDAO;
 import foodtruck.dao.FifteenMinuteRollupDAO;
+import foodtruck.dao.WeeklyRollupDAO;
 import foodtruck.util.Clock;
 
 /**
@@ -23,14 +24,16 @@ public class StatUpdateQueueServlet extends HttpServlet {
 
   private final DailyRollupDAO dailyRollupDAO;
   private final FifteenMinuteRollupDAO fifteenMinuteRollupDAO;
+  private final WeeklyRollupDAO weeklyRollupDAO;
   private final Clock clock;
 
   @Inject
   public StatUpdateQueueServlet(DailyRollupDAO dailyRollupDAO, FifteenMinuteRollupDAO fifteenMinuteRollupDAO,
-      Clock clock) {
+      Clock clock, WeeklyRollupDAO weeklyRollupDAO) {
     this.dailyRollupDAO = dailyRollupDAO;
     this.fifteenMinuteRollupDAO = fifteenMinuteRollupDAO;
     this.clock = clock;
+    this.weeklyRollupDAO = weeklyRollupDAO;
   }
 
   @Override
@@ -38,5 +41,6 @@ public class StatUpdateQueueServlet extends HttpServlet {
     String param = req.getParameter("statName");
     fifteenMinuteRollupDAO.updateCount(clock.now(), param);
     dailyRollupDAO.updateCount(clock.now(), param);
+    weeklyRollupDAO.updateCount(clock.now(), param);
   }
 }

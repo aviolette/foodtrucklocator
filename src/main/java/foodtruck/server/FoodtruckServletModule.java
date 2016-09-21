@@ -30,6 +30,8 @@ import foodtruck.server.dashboard.TruckServlet;
 import foodtruck.server.dashboard.TruckStopServlet;
 import foodtruck.server.job.ErrorCountServlet;
 import foodtruck.server.job.InvalidateScheduleCache;
+import foodtruck.server.job.MigrateTruckCountJobServlet;
+import foodtruck.server.job.MigrateTruckCountServlet;
 import foodtruck.server.job.ProfileSyncServlet;
 import foodtruck.server.job.PurgeStatsServlet;
 import foodtruck.server.job.PushNotificationServlet;
@@ -77,6 +79,9 @@ class FoodtruckServletModule extends ServletModule {
 
     // Queue activated servlets
     serve("/cron/update_count").with(StatUpdateQueueServlet.class);
+    // one-off migration
+    serve("/cron/migrate_truck_count").with(MigrateTruckCountServlet.class);
+    serve("/cron/update_trucks_count_over_range").with(MigrateTruckCountJobServlet.class);
 
     // Dashboard endpoints
     serve("/admin").with(AdminDashboardServlet.class);

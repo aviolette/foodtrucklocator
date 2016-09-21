@@ -62,7 +62,10 @@
     var end = new Date($("#endDate").val());
     var start = new Date($("#startDate").val());
     var interval = "";
-    if (end.getTime() - start.getTime() > 172800000) {
+    var duration = end.getTime() - start.getTime();
+    if (duration > 5184000000) {
+      interval = "&interval=604800000";
+    } else if (duration > 172800000) {
       interval = "&interval=86400000"
     }
     var url = "/services/stats/counts/" + encodeURIComponent(statNames.join(",")) + "?start=" +
@@ -123,7 +126,7 @@
           "alexa_intent_AboutTruck", "alexa_intent_CategorySearch"]);
         break;
       case "Trucks on the Road":
-        drawGraphs("trucksOnRoad");
+        drawGraphs(["truckstops", "vendor_stops"]);
         break;
     }
   }
