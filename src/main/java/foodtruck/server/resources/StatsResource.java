@@ -19,25 +19,14 @@ import com.google.inject.Inject;
 import com.sun.jersey.api.JResponse;
 
 import org.joda.time.DateTime;
-import org.joda.time.Interval;
 
-import foodtruck.dao.DailyRollupDAO;
-import foodtruck.dao.FifteenMinuteRollupDAO;
 import foodtruck.dao.TimeSeriesDAO;
-import foodtruck.dao.TruckStopDAO;
-import foodtruck.dao.WeeklyLocationStatsRollupDAO;
-import foodtruck.dao.WeeklyRollupDAO;
 import foodtruck.model.StatVector;
 import foodtruck.model.SystemStats;
-import foodtruck.model.TimeValue;
-import foodtruck.model.TruckStop;
 import foodtruck.monitoring.Counter;
 import foodtruck.monitoring.DailyScheduleCounter;
 import foodtruck.util.Clock;
-import foodtruck.util.DailyRollup;
-import foodtruck.util.FifteenMinuteRollup;
 import foodtruck.util.Slots;
-import foodtruck.util.WeeklyRollup;
 
 /**
  * @author aviolette@gmail.com
@@ -47,56 +36,18 @@ import foodtruck.util.WeeklyRollup;
 public class StatsResource {
   private static final Logger log = Logger.getLogger(StatsResource.class.getName());
   private static final long DAY_IN_MILLIS = 86400000L;
-  private final FifteenMinuteRollupDAO fifteenMinuteRollupDAO;
-  private final TruckStopDAO truckStopDAO;
-  private final Slots fifteenMinuteRollups;
-  private final Slots weeklyRollups;
-  private final WeeklyRollupDAO weeklyRollupDAO;
-  private final WeeklyLocationStatsRollupDAO weeklyLocationStatsRollupDAO;
-  private final DailyRollupDAO dailyRollupDAO;
   private final MemcacheService cache;
-  private final Slots dailyRollups;
   private final Counter scheduleCounter;
   private final Clock clock;
+  private final TimeSeriesSelector seriesSelector;
 
   @Inject
-  public StatsResource(FifteenMinuteRollupDAO fifteenMinuteRollupDAO, TruckStopDAO truckStopDAO,
-      WeeklyRollupDAO weeklyRollupDAO, WeeklyLocationStatsRollupDAO weeklyLocationStatsRollupDAO,
-      @FifteenMinuteRollup Slots fifteenMinuteRollups, @WeeklyRollup Slots weeklyRollups, MemcacheService cache,
-      DailyRollupDAO dailyRollupDAO, @DailyRollup Slots dailyRollups, @DailyScheduleCounter Counter counter,
-      Clock clock) {
-    this.fifteenMinuteRollupDAO = fifteenMinuteRollupDAO;
-    this.truckStopDAO = truckStopDAO;
-    this.fifteenMinuteRollups = fifteenMinuteRollups;
-    this.weeklyRollups = weeklyRollups;
-    this.weeklyRollupDAO = weeklyRollupDAO;
-    this.weeklyLocationStatsRollupDAO = weeklyLocationStatsRollupDAO;
-    this.dailyRollupDAO = dailyRollupDAO;
-    this.dailyRollups = dailyRollups;
+  public StatsResource(TimeSeriesSelector seriesSelector, Clock clock, MemcacheService cache,
+      @DailyScheduleCounter Counter counter) {
     this.cache = cache;
-    this.scheduleCounter = counter;
     this.clock = clock;
-  }
-
-  private TimeSeriesDAO dao(long interval, boolean location) {
-    // TODO: this is a really stupid way to do it
-    if (interval == 604800000L) {
-      return location ? weeklyLocationStatsRollupDAO : weeklyRollupDAO;
-    } else if (interval == DAY_IN_MILLIS) {
-      return dailyRollupDAO;
-    } else {
-      return fifteenMinuteRollupDAO;
-    }
-  }
-
-  private Slots slots(long interval) {
-    if (interval == 604800000L) {
-      return weeklyRollups;
-    } else if (interval == DAY_IN_MILLIS) {
-      return dailyRollups;
-    } else {
-      return fifteenMinuteRollups;
-    }
+    this.seriesSelector = seriesSelector;
+    this.scheduleCounter = counter;
   }
 
   @GET @Path("counts/{statList}") @Produces(MediaType.APPLICATION_JSON)
@@ -104,13 +55,9 @@ public class StatsResource {
       @QueryParam("start") final long startTime, @QueryParam("end") final long endTime,
       @QueryParam("interval") final long interval, @QueryParam("nocache") boolean nocache) {
     String[] statList = statNames.split(",");
-    Slots slots = slots(interval);
-    boolean location = false;
-    if (statList.length > 0 && statList[0].equals("trucksOnRoad")) {
-      return trucksOnRoad(startTime, endTime, slots);
-    } else if (statList.length > 0 && statList[0].contains("location")) {
-      location = true;
-    }
+    //TODO: what if statList empty?
+    TimeSeriesDAO timeSeriesDAO = seriesSelector.select(interval, statList[0]);
+    Slots slots = timeSeriesDAO.getSlots();
     if (statList.length  == 1 && !nocache) {
       List<StatVector> vectors = (List<StatVector>) cache.get(statList[0]);
       if (vectors != null) {
@@ -120,7 +67,7 @@ public class StatsResource {
       }
     }
     log.log(Level.INFO, "Requested stats: {0}", ImmutableList.copyOf(statList));
-    List<SystemStats> stats = dao(interval, location).findWithinRange(startTime, endTime, statList);
+    List<SystemStats> stats = timeSeriesDAO.findWithinRange(startTime, endTime, statList);
     ImmutableList.Builder<StatVector> builder = ImmutableList.builder();
     for (String statName : statList) {
       //TODO: hack
@@ -159,28 +106,5 @@ public class StatsResource {
       builder.add(new SystemStats(0, timeSlot, ImmutableMap.of(statName, count)));
     }
     return builder.build();
-  }
-
-  private JResponse<List<StatVector>> trucksOnRoad(long startTime, long endTime, Slots slots) {
-    StatVector vector = slots.fillIn(ImmutableList.<SystemStats>of(), "trucksOnRoad", startTime, endTime);
-    List<TruckStop> truckStops =
-        truckStopDAO.findOverRange(null, new Interval(startTime, endTime));
-    for (TimeValue timeValue : vector.getDataPoints()) {
-      // inefficient!!!!
-      timeValue.setCount(countWithinRange(truckStops, new DateTime(timeValue.getTimestamp())));
-    }
-    List<StatVector> statVectors = ImmutableList.of(vector);
-    return JResponse.ok(statVectors).build();
-
-  }
-
-  private long countWithinRange(List<TruckStop> truckStops, DateTime dateTime) {
-    long count = 0;
-    for (TruckStop stop : truckStops) {
-      if (stop.activeDuring(dateTime)) {
-        count++;
-      }
-    }
-    return count;
   }
 }

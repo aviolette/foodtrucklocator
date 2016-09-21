@@ -20,9 +20,11 @@ import org.joda.time.Interval;
 
 import foodtruck.dao.ApplicationDAO;
 import foodtruck.dao.DailyRollupDAO;
+import foodtruck.dao.DailyTruckStopDAO;
 import foodtruck.dao.FifteenMinuteRollupDAO;
+import foodtruck.dao.TimeSeriesDAO;
 import foodtruck.dao.TruckStopDAO;
-import foodtruck.dao.WeeklyRollupDAO;
+import foodtruck.dao.WeeklyTruckStopDAO;
 import foodtruck.model.Application;
 import foodtruck.model.TruckStop;
 import foodtruck.monitoring.Counter;
@@ -45,12 +47,13 @@ public class PurgeStatsServlet extends HttpServlet {
   private final ApplicationDAO appDAO;
   private final DailyRollupDAO dailyDAO;
   private final Counter dailyCounter;
-  private final WeeklyRollupDAO weeklyRollupDAO;
+  private final TimeSeriesDAO weeklyTruckStopDAO;
+  private final TimeSeriesDAO dailyTruckStopDAO;
 
   @Inject
   public PurgeStatsServlet(FifteenMinuteRollupDAO dao, Clock clock, MemcacheService service, ApplicationDAO appDAO,
       DailyRollupDAO dailyRollupDAO, @DailyScheduleCounter Counter dailyCounter, TruckStopDAO truckStopDAO,
-      WeeklyRollupDAO weeklyRollupDAO) {
+      WeeklyTruckStopDAO weeklyRollupDAO, DailyTruckStopDAO dailyTruckStopDAO) {
     this.dao = dao;
     this.clock = clock;
     this.memcache = service;
@@ -58,7 +61,8 @@ public class PurgeStatsServlet extends HttpServlet {
     this.dailyDAO = dailyRollupDAO;
     this.dailyCounter = dailyCounter;
     this.truckStopDAO = truckStopDAO;
-    this.weeklyRollupDAO = weeklyRollupDAO;
+    this.weeklyTruckStopDAO = weeklyRollupDAO;
+    this.dailyTruckStopDAO = dailyTruckStopDAO;
   }
 
   @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -86,10 +90,10 @@ public class PurgeStatsServlet extends HttpServlet {
         .transform(TruckStop.TO_TRUCK_NAME)
         .toSet()
         .size();
-    dailyDAO.updateCount(startTime.plusMinutes(1), TRUCK_STOPS, truckStops.size());
-    dailyDAO.updateCount(startTime.plusMinutes(1), UNIQUE_TRUCKS, vendorCount);
-    weeklyRollupDAO.updateCount(startTime.plusMinutes(1), TRUCK_STOPS, truckStops.size());
-    weeklyRollupDAO.updateCount(startTime.plusMinutes(1), UNIQUE_TRUCKS, vendorCount);
+    dailyTruckStopDAO.updateCount(startTime.plusMinutes(1), TRUCK_STOPS, truckStops.size());
+    dailyTruckStopDAO.updateCount(startTime.plusMinutes(1), UNIQUE_TRUCKS, vendorCount);
+    weeklyTruckStopDAO.updateCount(startTime.plusMinutes(1), TRUCK_STOPS, truckStops.size());
+    weeklyTruckStopDAO.updateCount(startTime.plusMinutes(1), UNIQUE_TRUCKS, vendorCount);
   }
 
 

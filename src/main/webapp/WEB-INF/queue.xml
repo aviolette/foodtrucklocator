@@ -1,0 +1,7 @@
+<queue-entries>
+  <queue>
+    <name>default</name>
+    <max-concurrent-requests>1</max-concurrent-requests>
+    <rate>1/s</rate>
+  </queue>
+</queue-entries>

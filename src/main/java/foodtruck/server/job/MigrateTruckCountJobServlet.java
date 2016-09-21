@@ -17,9 +17,9 @@ import com.google.inject.Singleton;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
-import foodtruck.dao.DailyRollupDAO;
+import foodtruck.dao.DailyTruckStopDAO;
 import foodtruck.dao.TruckStopDAO;
-import foodtruck.dao.WeeklyRollupDAO;
+import foodtruck.dao.WeeklyTruckStopDAO;
 import foodtruck.model.TruckStop;
 
 import static foodtruck.server.job.PurgeStatsServlet.TRUCK_STOPS;
@@ -37,12 +37,12 @@ public class MigrateTruckCountJobServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(MigrateTruckCountJobServlet.class.getName());
 
   private final TruckStopDAO truckStopDAO;
-  private final DailyRollupDAO dailyDAO;
-  private final WeeklyRollupDAO weeklyRollupDAO;
+  private final DailyTruckStopDAO dailyDAO;
+  private final WeeklyTruckStopDAO weeklyRollupDAO;
 
   @Inject
-  public MigrateTruckCountJobServlet(TruckStopDAO truckStopDAO, DailyRollupDAO dailyRollupDAO,
-      WeeklyRollupDAO weeklyRollupDAO) {
+  public MigrateTruckCountJobServlet(TruckStopDAO truckStopDAO, DailyTruckStopDAO dailyRollupDAO,
+      WeeklyTruckStopDAO weeklyRollupDAO) {
     this.truckStopDAO = truckStopDAO;
     this.dailyDAO = dailyRollupDAO;
     this.weeklyRollupDAO = weeklyRollupDAO;

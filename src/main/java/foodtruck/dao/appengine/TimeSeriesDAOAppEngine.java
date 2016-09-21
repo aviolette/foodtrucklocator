@@ -42,6 +42,10 @@ abstract class TimeSeriesDAOAppEngine extends AppEngineDAO<Long, SystemStats> im
     this.slotter = slotter;
   }
 
+  public Slots getSlots() {
+    return slotter;
+  }
+
   @Override
   public List<SystemStats> findWithinRange(long startTime, long endTime, String[] statList) {
     return aq()

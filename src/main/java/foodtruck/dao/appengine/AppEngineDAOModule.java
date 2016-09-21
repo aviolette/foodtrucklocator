@@ -7,6 +7,7 @@ import foodtruck.dao.AlexaExchangeDAO;
 import foodtruck.dao.ApplicationDAO;
 import foodtruck.dao.DailyDataDAO;
 import foodtruck.dao.DailyRollupDAO;
+import foodtruck.dao.DailyTruckStopDAO;
 import foodtruck.dao.FifteenMinuteRollupDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.MenuDAO;
@@ -21,6 +22,7 @@ import foodtruck.dao.TruckStopDAO;
 import foodtruck.dao.TwitterNotificationAccountDAO;
 import foodtruck.dao.WeeklyLocationStatsRollupDAO;
 import foodtruck.dao.WeeklyRollupDAO;
+import foodtruck.dao.WeeklyTruckStopDAO;
 import foodtruck.util.Secondary;
 
 /**
@@ -50,5 +52,8 @@ public class AppEngineDAOModule extends AbstractModule {
     bind(TwitterNotificationAccountDAO.class).to(TwitterNotificationAccountDAOAppEngine.class);
     bind(WeeklyLocationStatsRollupDAO.class).to(WeeklyLocationStatsRollupDAOAppEngine.class);
     bind(WeeklyRollupDAO.class).to(WeeklyRollupDAOAppEngine.class);
+
+    bind(DailyTruckStopDAO.class).to(DailyTruckStopDAOAppEngine.class);
+    bind(WeeklyTruckStopDAO.class).to(WeeklyTruckStopDAOAppEngine.class);
   }
 }

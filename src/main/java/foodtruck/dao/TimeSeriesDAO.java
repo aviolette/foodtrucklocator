@@ -6,6 +6,7 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import foodtruck.model.SystemStats;
+import foodtruck.util.Slots;
 
 /**
  * @author aviolette
@@ -33,4 +34,6 @@ public interface TimeSeriesDAO extends DAO<Long, SystemStats>{
   void deleteStat(String statName);
 
   SystemStats findBySlot(long slot);
+
+  Slots getSlots();
 }
