@@ -12,8 +12,11 @@ import com.amazon.speech.speechlet.SessionStartedRequest;
 import com.amazon.speech.speechlet.Speechlet;
 import com.amazon.speech.speechlet.SpeechletException;
 import com.amazon.speech.speechlet.SpeechletResponse;
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.common.base.Throwables;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import foodtruck.dao.AlexaExchangeDAO;
 import foodtruck.model.AlexaExchange;
@@ -29,12 +32,15 @@ class FTFSpeechlet implements Speechlet {
   private final Map<String, IntentProcessor> processors;
   private final Clock clock;
   private final AlexaExchangeDAO alexaExchangeDAO;
+  private final Provider<Queue> monitorQueueProvider;
 
   @Inject
-  public FTFSpeechlet(Map<String, IntentProcessor> processors, Clock clock, AlexaExchangeDAO alexaExchangeDAO) {
+  public FTFSpeechlet(Map<String, IntentProcessor> processors, Clock clock, AlexaExchangeDAO alexaExchangeDAO,
+      Provider<Queue> monitorQueue) {
     this.processors = processors;
     this.clock = clock;
     this.alexaExchangeDAO = alexaExchangeDAO;
+    this.monitorQueueProvider = monitorQueue;
   }
 
   @Override
@@ -76,10 +82,14 @@ class FTFSpeechlet implements Speechlet {
   private void record(IntentRequest intentRequest, SpeechletResponse response) {
     AlexaExchange exchange = AlexaExchange.builder()
         .intent(intentRequest)
-        .sessionEnded(response.getShouldEndSession())
+        .response(response)
         .completeTime(clock.now())
         .build();
     alexaExchangeDAO.save(exchange);
+    Queue queue = monitorQueueProvider.get();
+    queue.add(TaskOptions.Builder.withUrl("/cron/update_count")
+        .param("statName", "alexa_intent_" + intentRequest.getIntent()
+            .getName()));
   }
 
   @Override

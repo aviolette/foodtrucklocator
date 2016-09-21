@@ -35,6 +35,7 @@ import foodtruck.server.job.PurgeStatsServlet;
 import foodtruck.server.job.PushNotificationServlet;
 import foodtruck.server.job.RecacheServlet;
 import foodtruck.server.job.SendLunchNotificationsServlet;
+import foodtruck.server.job.StatUpdateQueueServlet;
 import foodtruck.server.job.TruckMonitorServlet;
 import foodtruck.server.job.TweetCacheUpdateServlet;
 import foodtruck.server.job.TwitterCachePurgeServlet;
@@ -73,6 +74,9 @@ class FoodtruckServletModule extends ServletModule {
     serve("/cron/updateLocationStats").with(UpdateLocationStats.class);
     serve("/cron/error_stats").with(ErrorCountServlet.class);
     serve("/cron/activate_beacon").with(TruckMonitorServlet.class);
+
+    // Queue activated servlets
+    serve("/cron/update_count").with(StatUpdateQueueServlet.class);
 
     // Dashboard endpoints
     serve("/admin").with(AdminDashboardServlet.class);

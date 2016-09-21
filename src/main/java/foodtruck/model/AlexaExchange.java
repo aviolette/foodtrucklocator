@@ -1,9 +1,8 @@
 package foodtruck.model;
 
-import java.io.Serializable;
-
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.IntentRequest;
+import com.amazon.speech.speechlet.SpeechletResponse;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 
@@ -13,15 +12,14 @@ import org.joda.time.DateTime;
  * @author aviolette
  * @since 9/16/16
  */
-public class AlexaExchange extends ModelEntity implements Serializable {
+public class AlexaExchange extends ModelEntity {
   private ImmutableMap<String, String> slots;
   private String intentName;
   private boolean sessionEnded;
   private DateTime requestTime;
   private DateTime completeTime;
-
-  private AlexaExchange() {
-  }
+  private boolean hadReprompt;
+  private boolean hadCard;
 
   private AlexaExchange(Builder builder) {
     super(builder.key);
@@ -30,6 +28,8 @@ public class AlexaExchange extends ModelEntity implements Serializable {
     this.sessionEnded = builder.sessionEnded;
     this.requestTime = builder.requestTime;
     this.completeTime = builder.completeTime;
+    this.hadCard = builder.hadCard;
+    this.hadReprompt = builder.hadReprompt;
   }
 
   public static Builder builder() {
@@ -56,6 +56,14 @@ public class AlexaExchange extends ModelEntity implements Serializable {
     return completeTime;
   }
 
+  public boolean getHadCard() {
+    return hadCard;
+  }
+
+  public boolean getHadReprompt() {
+    return hadReprompt;
+  }
+
   public static class Builder {
     private Long key = -1L;
     private String intentName;
@@ -63,6 +71,8 @@ public class AlexaExchange extends ModelEntity implements Serializable {
     private boolean sessionEnded;
     private DateTime requestTime;
     private DateTime completeTime;
+    private boolean hadReprompt;
+    private boolean hadCard;
 
     public Builder() {
     }
@@ -109,17 +119,29 @@ public class AlexaExchange extends ModelEntity implements Serializable {
       return this;
     }
 
-    public Builder sessionEnded(boolean sessionEnded) {
-      this.sessionEnded = sessionEnded;
-      return this;
-    }
-
     public AlexaExchange build() {
       return new AlexaExchange(this);
     }
 
     public Builder requested(DateTime requested) {
       this.requestTime = requested;
+      return this;
+    }
+
+    public Builder hadCard(boolean hadCard) {
+      this.hadCard = hadCard;
+      return this;
+    }
+
+    public Builder hadReprompt(boolean hadReprompt) {
+      this.hadReprompt = hadReprompt;
+      return this;
+    }
+
+    public Builder response(SpeechletResponse response) {
+      this.hadReprompt = response.getReprompt() != null;
+      this.hadCard = response.getCard() != null;
+      this.sessionEnded = response.getShouldEndSession();
       return this;
     }
   }

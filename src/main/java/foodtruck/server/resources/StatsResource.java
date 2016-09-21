@@ -46,7 +46,7 @@ import foodtruck.util.WeeklyRollup;
 @Path("/stats")
 public class StatsResource {
   private static final Logger log = Logger.getLogger(StatsResource.class.getName());
-  public static final long DAY_IN_MILLIS = 86400000L;
+  private static final long DAY_IN_MILLIS = 86400000L;
   private final FifteenMinuteRollupDAO fifteenMinuteRollupDAO;
   private final TruckStopDAO truckStopDAO;
   private final Slots fifteenMinuteRollups;

@@ -19,7 +19,11 @@ import static foodtruck.dao.appengine.Attributes.setDateProperty;
  * @since 9/16/16
  */
 class AlexaExchangeDAOAppEngine extends AppEngineDAO<Long, AlexaExchange> implements AlexaExchangeDAO {
-
+  private static final String INTENT = "intent";
+  private static final String REQUESTED = "requested";
+  private static final String COMPLETED = "completed";
+  private static final String HAD_CARD = "had_card";
+  private static final String HAD_REPROMPT = "had_reprompt";
   private final DateTimeZone zone;
 
   @Inject
@@ -30,9 +34,11 @@ class AlexaExchangeDAOAppEngine extends AppEngineDAO<Long, AlexaExchange> implem
 
   @Override
   protected Entity toEntity(AlexaExchange obj, Entity entity) {
-    entity.setProperty("intent", obj.getIntentName());
-    setDateProperty("requested", entity, obj.getRequestTime());
-    setDateProperty("completed", entity, obj.getCompleteTime());
+    entity.setProperty(INTENT, obj.getIntentName());
+    setDateProperty(REQUESTED, entity, obj.getRequestTime());
+    setDateProperty(COMPLETED, entity, obj.getCompleteTime());
+    entity.setProperty(HAD_CARD, obj.getHadCard());
+    entity.setProperty(HAD_REPROMPT, obj.getHadReprompt());
     for (Map.Entry<String, String> slot : obj.getSlots()
         .entrySet()) {
       entity.setProperty("prop_" + slot.getKey(), slot.getValue());
@@ -57,8 +63,10 @@ class AlexaExchangeDAOAppEngine extends AppEngineDAO<Long, AlexaExchange> implem
       }
     }
     alexaBuilder.slots(builder.build());
-    return alexaBuilder.requested(getDateTime(entity, "requested", zone))
-        .completeTime(getDateTime(entity, "completed", zone))
+    return alexaBuilder.requested(getDateTime(entity, REQUESTED, zone))
+        .hadCard(getBooleanProperty(entity, HAD_CARD, false))
+        .hadReprompt(getBooleanProperty(entity, HAD_REPROMPT, false))
+        .completeTime(getDateTime(entity, COMPLETED, zone))
         .build();
   }
 }
