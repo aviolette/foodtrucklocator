@@ -77,12 +77,12 @@ public class MigrateTruckCountServlet extends HttpServlet {
     }
     resp.sendRedirect("/admin/trucks");
     */
-    DateTime startTime = new DateTime(2016, 9, 9, 1, 1, clock.zone());
+    DateTime startTime = new DateTime(2016, 9, 20, 1, 1, clock.zone());
 
     Queue queue = queueProvider.get();
     queue.add(TaskOptions.Builder.withUrl("/cron/update_trucks_count_over_range")
         .param("startTime", String.valueOf(startTime.getMillis()))
-        .param("days", String.valueOf(11)));
+        .param("days", String.valueOf(1)));
     resp.sendRedirect("/admin/trucks");
 
 

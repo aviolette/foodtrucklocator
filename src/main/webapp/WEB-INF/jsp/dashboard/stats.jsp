@@ -14,6 +14,7 @@
         <option>Database Geolocation Hits</option>
         <option>Trucks on the Road</option>
         <option>Truck Stops</option>
+        <option>Trucks Stops and Uniques</option>
         <option>Alexa Requests</option>
       </select>
     </div>
@@ -129,6 +130,8 @@
         break;
       case "Truck Stops":
         drawGraphs("trucks_on_the_road");
+      case "Trucks Stops and Uniques":
+        drawGraph(["trucks_on_the_road", "unique_trucks_on_the_road"]);
         break;
     }
   }
