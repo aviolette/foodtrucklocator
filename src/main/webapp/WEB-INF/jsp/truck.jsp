@@ -83,8 +83,9 @@
               <dt><joda:format value="${stop.startTime}" pattern="EEEE MM/dd"/>
               </dt>
             </c:if>
-            <dd <c:if test="${stop.activeNow}">class="alert-success"</c:if>><joda:format value="${stop.startTime}"
-                                                                                         style="-S"/> -
+            <dd <c:if test="${stop.activeNow}">class="alert-success"</c:if>><!-- ${stop.key} --><joda:format
+                value="${stop.startTime}"
+                style="-S"/> -
               <ftl:location at="${stop.startTime}" location="${stop.location}"/>
             </dd>
           </c:forEach>
