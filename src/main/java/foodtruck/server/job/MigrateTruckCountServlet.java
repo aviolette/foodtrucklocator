@@ -1,6 +1,7 @@
 package foodtruck.server.job;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -17,6 +18,8 @@ import com.google.inject.Singleton;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
+import foodtruck.dao.DailyTruckStopDAO;
+import foodtruck.dao.WeeklyTruckStopDAO;
 import foodtruck.util.Clock;
 
 /**
@@ -25,14 +28,21 @@ import foodtruck.util.Clock;
  */
 @Singleton
 public class MigrateTruckCountServlet extends HttpServlet {
+  private static final Logger log = Logger.getLogger(MigrateTruckCountServlet.class.getName());
+
   private static final int INTERVAL_IN_DAYS = 10;
   private final Clock clock;
   private final Provider<Queue> queueProvider;
+  private final WeeklyTruckStopDAO weekly;
+  private final DailyTruckStopDAO daily;
 
   @Inject
-  public MigrateTruckCountServlet(Clock clock, Provider<Queue> queueProvider) {
+  public MigrateTruckCountServlet(Clock clock, Provider<Queue> queueProvider, DailyTruckStopDAO dailyTruckStopDAO,
+      WeeklyTruckStopDAO weeklyTruckStopDAO) {
     this.clock = clock;
     this.queueProvider = queueProvider;
+    this.weekly = weeklyTruckStopDAO;
+    this.daily = dailyTruckStopDAO;
   }
 
   @Override
@@ -47,7 +57,10 @@ public class MigrateTruckCountServlet extends HttpServlet {
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     DateTime finalEnd = clock.currentDay()
         .toDateTimeAtStartOfDay();
-
+    log.info("Deleting old stats data");
+    weekly.deleteBefore(clock.currentDay());
+    daily.deleteBefore(clock.currentDay());
+    log.info("Starting migration of stats data");
     DateTime startTime = new DateTime(2011, 8, 1, 1, 1, clock.zone());
     int days = INTERVAL_IN_DAYS;
     Queue queue = queueProvider.get();
