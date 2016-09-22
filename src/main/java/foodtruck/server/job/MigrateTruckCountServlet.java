@@ -10,13 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.TaskOptions;
-import com.google.common.primitives.Ints;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import org.joda.time.DateTime;
-import org.joda.time.Duration;
 
 import foodtruck.dao.DailyTruckStopDAO;
 import foodtruck.dao.WeeklyTruckStopDAO;
@@ -55,6 +53,7 @@ public class MigrateTruckCountServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+/*
     DateTime finalEnd = clock.currentDay()
         .toDateTimeAtStartOfDay();
     log.info("Deleting old stats data");
@@ -77,5 +76,15 @@ public class MigrateTruckCountServlet extends HttpServlet {
       }
     }
     resp.sendRedirect("/admin/trucks");
+    */
+    DateTime startTime = new DateTime(2016, 9, 9, 1, 1, clock.zone());
+
+    Queue queue = queueProvider.get();
+    queue.add(TaskOptions.Builder.withUrl("/cron/update_trucks_count_over_range")
+        .param("startTime", String.valueOf(startTime.getMillis()))
+        .param("days", String.valueOf(11)));
+    resp.sendRedirect("/admin/trucks");
+
+
   }
 }
