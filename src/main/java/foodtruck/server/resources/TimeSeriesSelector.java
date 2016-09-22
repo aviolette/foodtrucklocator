@@ -40,7 +40,7 @@ class TimeSeriesSelector {
     TimeSeriesDAO weekly = weeklyRollupDAO, daily = dailyRollupDAO;
     if (statName.contains("location")) {
       weekly = weeklyLocationDAO;
-    } else if (statName.equals(PurgeStatsServlet.TRUCK_STOPS)) {
+    } else if (statName.equals(PurgeStatsServlet.TRUCK_STOPS) || statName.equals(PurgeStatsServlet.UNIQUE_TRUCKS)) {
       weekly = weeklyTruckStopDAO;
       daily = dailyTruckStopDAO;
     }

@@ -13,6 +13,7 @@
         <option>Yahoo Lookups</option>
         <option>Database Geolocation Hits</option>
         <option>Trucks on the Road</option>
+        <option>Truck Stops</option>
         <option>Alexa Requests</option>
       </select>
     </div>
@@ -119,13 +120,14 @@
       case "Database Geolocation Hits":
         drawGraphs(["cacheLookup_total", "cacheLookup_failed"]);
         break;
-
-
       case "Alexa Requests":
         drawGraphs(["alexa_intent_GetFoodTrucksAtLocation", "alexa_intent_WhereIsTruck", "alexa_intent_DailySpecials",
           "alexa_intent_AboutTruck", "alexa_intent_CategorySearch"]);
         break;
       case "Trucks on the Road":
+        drawGraphs(["unique_trucks_on_the_road"]);
+        break;
+      case "Truck Stops":
         drawGraphs("trucks_on_the_road");
         break;
     }
