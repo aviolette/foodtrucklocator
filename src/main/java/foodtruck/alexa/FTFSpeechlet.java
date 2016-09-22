@@ -52,7 +52,8 @@ class FTFSpeechlet implements Speechlet {
   public SpeechletResponse onLaunch(LaunchRequest launchRequest, Session session) throws SpeechletException {
     log.log(Level.INFO, "Alexa launched: {0}", session.getSessionId());
     return SpeechletResponseBuilder.builder()
-        .speechText("Food Truck Finder.  What would you like to find?")
+        .speechText(
+            "Food Truck Finder.  You can ask me what food trucks are at a specific location or information about a specific food truck. What would you like to find?")
         .repromptText("With Food Truck Finder you can find out where individual food trucks are, or find out what " +
             "food trucks will be at a specific location.  For example, you can say What food trucks " +
             "are on Wacker today.  What truck or location would you like to know about?")
