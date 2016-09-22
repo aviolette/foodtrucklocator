@@ -120,9 +120,6 @@ class LocationIntentProcessor implements IntentProcessor {
               "There are no trucks %sat %s %s and there don't appear to be any nearby that location.", futurePhrase,
               location.getShortenedName(), dateRepresentation);
           builder.speechSSML(noTrucks);
-        } else if ("downtown".equalsIgnoreCase(locationName)) {
-          builder.speechSSML(
-              String.format("These trucks are %sat be downtown %s: %s", futurePhrase, dateRepresentation, nearby));
         } else {
           builder.speechSSML(
               String.format("There are no trucks %sat %s %s.  These nearby locations have food trucks: %s.",
@@ -140,7 +137,7 @@ class LocationIntentProcessor implements IntentProcessor {
             String.format("%s and %s are %sat %s %s%s", truckNames.get(0), truckNames.get(1), futurePhrase,
                 location.getShortenedName(), dateRepresentation, schedulePart));
       }
-      break;
+        break;
       default: {
         String schedulePart = allSame ? " from " + truckTimes.get(0) : buildSchedulePart(truckNames, truckTimes);
         builder.speechSSML(
@@ -148,8 +145,7 @@ class LocationIntentProcessor implements IntentProcessor {
                 dateRepresentation, AlexaUtils.toAlexaList(truckNames, true), schedulePart));
       }
     }
-    String prefix = "downtown".equalsIgnoreCase(locationName) ? "" : "at ";
-    String cardTitle = String.format("Food Trucks %s%s %s", prefix, location.getShortenedName(),
+    String cardTitle = String.format("Food Trucks at %s %s", location.getShortenedName(),
         capitalize(toDate(requestDate)));
     if (location.getImageUrl() == null) {
       builder.simpleCard(cardTitle);
