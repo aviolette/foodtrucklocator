@@ -207,109 +207,180 @@ var TruckScheduleWidget = function() {
   function refreshSchedule() {
     var scheduleTable = $("#scheduleTable");
     scheduleTable.empty();
-    _lastStop = null;
+    var d = new Date();
+    d.setDate(1);
+    var year = d.getFullYear(), month = padTime(d.getMonth() + 1), timeFormat = year + month + "01-0000";
+    $.ajax({
+      url: '/services/v2/stops?truck=' + _truckId + "&time=" + timeFormat,
+      type: 'GET',
+      dataType: 'json',
+      success: function (schedule) {
+        drawScheduleList(schedule);
+        drawCalendar(schedule);
+      }
+    });
+  }
+
+  function drawScheduleList(schedule) {
     var d = new Date();
     d.setHours(0);
     d.setMinutes(0);
     d.setSeconds(0);
     var tomorrow = d.getTime() + 86400000;
-    $.ajax({
-      url: '/services/v2/stops?truck=' + _truckId,
-      type: 'GET',
-      dataType: 'json',
-      success: function (schedule) {
-        var now = new Date().getTime(), numStops = schedule.length;
-        var prevHadStart = false;
-        if (_options["refreshCallback"]) {
-          _options["refreshCallback"]();
-        }
-        $.each(schedule, function (truckIndex, stop) {
-          if (stop.startMillis < tomorrow) {
-            _lastStop = stop;
-          }
-          var labels = (stop.locked) ? "&nbsp;&nbsp;<span class=\"glyphicon glyphicon-lock\"> </span>" :
-              "";
-          var crazyDuration = stop.durationMillis < 0 || stop.durationMillis > 43200000;
-          var showControls = stop.startMillis < tomorrow || stop.origin != 'VENDORCAL';
-          var truckNames = stop.truckNames.replace(/\'/g, "");
-          labels += (stop.fromBeacon) ? "&nbsp;<span class=\"label important\">beacon</span>" : "";
-          var truckCountLink = stop.totalTruckCount < 2 ? "" : "<span class='badge truck-info-badge' data-toggle='popover' data-content='" + truckNames +"'>" + stop.totalTruckCount + "</span>";
-          var notes = stop.notes ? stop.notes.join('. ').replace(/\'/g, "") : "";
-          var buf = "<tr " + (crazyDuration ? " class='error'" : "") + "><td>" + stop.startDate + "<br/>" + stop.startTime + " - " + stop.endTime +
-              "<br/>" + stop.duration + " hours</td><td class=\"origin large-screen-only\"><a href='#' data-toggle='popover' data-content='" + notes + "'>" + stop.origin + "</a></td><td><a href='" + _locationEndpoint + "?q=" + encodeURIComponent(stop.location.name) +
-              "'>"
-              + stop.location.name + "</a>" + labels + "</td><td class='large-screen-only'>" + truckCountLink + "</td><td>";
-          if (showControls) {
-            if (!prevHadStart && now < stop.startMillis) {
-              prevHadStart = true;
-              buf = buf + "<button class='btn btn-default' id='truckStartNow" + truckIndex +
-                  "' class='btn success'>Start</button>"
-            } else if (now >= stop.startMillis && now < stop.endMillis) {
-              buf = buf + "<button class='btn btn-default' id='truckEndNow" + truckIndex +
-                  "' class='btn warning'>End</button>";
-            }
-          }
-          buf += "&nbsp;</td><td>";
-          if (showControls) {
-            buf = buf + "<div class='btn-group'><button class='btn btn-default' id='truckDelete" + truckIndex +
-                "' class='btn '><span class='glyphicon glyphicon-remove'></span> </button>&nbsp;<button class='btn btn-default' id='truckEdit" +
-                truckIndex + "'><span class='glyphicon glyphicon-pencil'></span> </button></div></td></tr>";
-          }
-          scheduleTable.append(buf);
-          $("#truckEdit" + truckIndex).click(function (e) {
-            stop["startDate"] = toDate(new Date(stop["startMillis"]));
-            stop["endDate"] = toDate(new Date(stop["endMillis"]));
-            if (_useFormSubmitOnTouch) {
-              location.href = _baseEndpoint + '/stops/'+ stop.id;
-            } else {
-              invokeEditDialog(stop, refreshSchedule);
-            }
-          });
+    var scheduleTable = $("#scheduleTable");
+    scheduleTable.empty();
 
-          if (_options["addCallback"]) {
-            _options["addCallback"](stop);
-          }
-
-          function timeUpdateMaker(useStart) {
-            return function (e) {
-              e.preventDefault();
-              if (useStart) {
-                stop.startTime = toDate(new Date());
-                stop["endTime"] = toDate(new Date(stop["endMillis"]));
-              } else {
-                stop.startTime = toDate(new Date(stop["startMillis"]));
-                stop.endTime = toDate(new Date());
-              }
-              stop.truckId = _truckId;
-              $.ajax({
-                url: "/services/v2/stops",
-                type: 'PUT',
-                contentType: 'application/json',
-                data: JSON.stringify(stop),
-                success: refreshSchedule
-              });
-            }
-          }
-
-          $("#truckStartNow" + truckIndex).click(timeUpdateMaker(true));
-          $("#truckEndNow" + truckIndex).click(timeUpdateMaker(false));
-          $("#truckDelete" + truckIndex).click(function (e) {
-            e.preventDefault();
-            if (confirm("Are you sure you want to delete this stop?")) {
-              $.ajax({
-                url: "/services/v2/stops/" + stop.id,
-                type: 'DELETE',
-                complete: function () {
-                  refreshSchedule();
-                }
-              })
-            }
-          });
-        });
-        $(function () {
-          $('[data-toggle="popover"]').popover()
-        });
+    var now = new Date().getTime();
+    var prevHadStart = false;
+    if (_options["refreshCallback"]) {
+      _options["refreshCallback"]();
+    }
+    $.each(schedule, function (truckIndex, stop) {
+      if (stop.startMillis < tomorrow) {
+        _lastStop = stop;
       }
+      var labels = (stop.locked) ? "&nbsp;&nbsp;<span class=\"glyphicon glyphicon-lock\"> </span>" :
+          "";
+      var crazyDuration = stop.durationMillis < 0 || stop.durationMillis > 43200000;
+      var showControls = stop.startMillis < tomorrow || stop.origin != 'VENDORCAL';
+      var truckNames = stop.truckNames.replace(/\'/g, "");
+      labels += (stop.fromBeacon) ? "&nbsp;<span class=\"label important\">beacon</span>" : "";
+      var truckCountLink = stop.totalTruckCount < 2 ? "" : "<span class='badge truck-info-badge' data-toggle='popover' data-content='" + truckNames + "'>" + stop.totalTruckCount + "</span>";
+      var notes = stop.notes ? stop.notes.join('. ').replace(/\'/g, "") : "";
+      var buf = "<tr " + (crazyDuration ? " class='error'" : "") + "><td>" + stop.startDate + "<br/>" + stop.startTime + " - " + stop.endTime +
+          "<br/>" + stop.duration + " hours</td><td class=\"origin large-screen-only\"><a href='#' data-toggle='popover' data-content='" + notes + "'>" + stop.origin + "</a></td><td><a href='" + _locationEndpoint + "?q=" + encodeURIComponent(stop.location.name) +
+          "'>"
+          + stop.location.name + "</a>" + labels + "</td><td class='large-screen-only'>" + truckCountLink + "</td><td>";
+      if (showControls) {
+        if (!prevHadStart && now < stop.startMillis) {
+          prevHadStart = true;
+          buf = buf + "<button class='btn btn-default' id='truckStartNow" + truckIndex +
+              "' class='btn success'>Start</button>"
+        } else if (now >= stop.startMillis && now < stop.endMillis) {
+          buf = buf + "<button class='btn btn-default' id='truckEndNow" + truckIndex +
+              "' class='btn warning'>End</button>";
+        }
+      }
+      buf += "&nbsp;</td><td>";
+      if (showControls) {
+        buf = buf + "<div class='btn-group'><button class='btn btn-default' id='truckDelete" + truckIndex +
+            "' class='btn '><span class='glyphicon glyphicon-remove'></span> </button>&nbsp;<button class='btn btn-default' id='truckEdit" +
+            truckIndex + "'><span class='glyphicon glyphicon-pencil'></span> </button></div></td></tr>";
+      }
+      scheduleTable.append(buf);
+      $("#truckEdit" + truckIndex).click(function (e) {
+        stop["startDate"] = toDate(new Date(stop["startMillis"]));
+        stop["endDate"] = toDate(new Date(stop["endMillis"]));
+        if (_useFormSubmitOnTouch) {
+          location.href = _baseEndpoint + '/stops/' + stop.id;
+        } else {
+          invokeEditDialog(stop, refreshSchedule);
+        }
+      });
+
+      if (_options["addCallback"]) {
+        _options["addCallback"](stop);
+      }
+
+      function timeUpdateMaker(useStart) {
+        return function (e) {
+          e.preventDefault();
+          if (useStart) {
+            stop.startTime = toDate(new Date());
+            stop["endTime"] = toDate(new Date(stop["endMillis"]));
+          } else {
+            stop.startTime = toDate(new Date(stop["startMillis"]));
+            stop.endTime = toDate(new Date());
+          }
+          stop.truckId = _truckId;
+          $.ajax({
+            url: "/services/v2/stops",
+            type: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify(stop),
+            success: refreshSchedule
+          });
+        }
+      }
+
+      $("#truckStartNow" + truckIndex).click(timeUpdateMaker(true));
+      $("#truckEndNow" + truckIndex).click(timeUpdateMaker(false));
+      $("#truckDelete" + truckIndex).click(function (e) {
+        e.preventDefault();
+        if (confirm("Are you sure you want to delete this stop?")) {
+          $.ajax({
+            url: "/services/v2/stops/" + stop.id,
+            type: 'DELETE',
+            complete: function () {
+              refreshSchedule();
+            }
+          })
+        }
+      });
+    });
+    $(function () {
+      $('[data-toggle="popover"]').popover()
+    });
+  }
+
+  function monthName(mon) {
+    switch (mon) {
+      case 0:
+        return "January";
+      case 1:
+        return "February";
+      case 2:
+        return "March";
+      case 3:
+        return "April";
+      case 4:
+        return "May";
+      case 5:
+        return "June";
+      case 6:
+        return "July";
+      case 7:
+        return "August";
+      case 8:
+        return "September";
+      case 9:
+        return "October";
+      case 10:
+        return "November";
+      default:
+        return "December";
+    }
+  }
+
+  function drawCalendar(schedule) {
+    var d = new Date(), mon = d.getMonth(), $cal = $("#calendarTableBody"), day = 1, started = false;
+    d.setDate(day);
+    $("#month-header").empty().append(monthName(mon) + " " + d.getFullYear());
+    $cal.empty();
+    while (d.getMonth() == mon) {
+      var $tr = $("<tr></tr>");
+      for (var i = 0; i < 7; i++) {
+        if (d.getMonth() != mon) {
+          $tr.append("<td class='calendar-cell calendar-cell-other-month'>&nbsp;</td>");
+          continue;
+        }
+        if (!started && i == d.getDay()) {
+          started = true;
+        }
+        if (started) {
+          $tr.append("<td class='calendar-cell'><span class='calendar-day'>" + d.getDate() + "</span><div  id='calendar-day-" + day + "'></div></td>");
+          day++;
+          d.setDate(day);
+        } else {
+          $tr.append("<td class='calendar-cell calendar-cell-other-month'>&nbsp;</td>");
+        }
+      }
+      $cal.append($tr);
+    }
+    $.each(schedule, function (i, stop) {
+      var d = new Date(stop.startMillis), link = "<a href='" + _locationEndpoint + "?q=" + encodeURIComponent(stop.location.name) +
+          "'>" + stop.location.name + "</a><br/>";
+      $("#calendar-day-" + d.getDate()).append(link);
     });
   }
 
@@ -341,6 +412,20 @@ var TruckScheduleWidget = function() {
         }
       });
 
+      $("#scheduleCalendarButton").click(function () {
+        $("#calendarListTable").addClass("hidden");
+        $("#calendarTable").removeClass("hidden");
+        $(this).removeClass("btn-default");
+        $("#scheduleListButton").addClass("btn-default");
+      });
+
+      $("#scheduleListButton").click(function () {
+        $("#calendarListTable").removeClass("hidden");
+        $("#calendarTable").addClass("hidden");
+        $(this).removeClass("btn-default");
+        $("#scheduleCalendarButton").addClass("btn-default");
+      });
+      
       locationMatching(locations);
 
       $editStop.on("shown.bs.modal", function() {

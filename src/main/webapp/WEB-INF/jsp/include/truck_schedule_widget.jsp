@@ -1,7 +1,14 @@
 <%@include file="../common.jsp" %>
 <h2 id="truck-widget-header">Schedule</h2>
 <p>It may take up to <em>8 minutes</em> before the changes made here are reflected on the website.</p>
-<table class="table table-striped">
+
+<div class="btn-group" style="margin-bottom:20px">
+  <button class="btn" id="scheduleListButton"><span class="glyphicon glyphicon-list"></span></button>
+  <button class="btn btn-default" id="scheduleCalendarButton"><span class="glyphicon glyphicon-calendar"></span>
+  </button>
+</div>
+
+<table class="table table-striped" id="calendarListTable">
     <thead>
     <tr>
       <td>When</td>
@@ -15,6 +22,27 @@
     <tbody id="scheduleTable">
     </tbody>
 </table>
+
+<table id="calendarTable" class="table table-bordered hidden">
+  <thead>
+  <tr>
+    <td id="month-header" colspan="7" class="lead text-center" style="font-weight:bold">Month</td>
+  </tr>
+  <tr>
+    <th>Sunday</th>
+    <th>Monday</th>
+    <th>Tuesday</th>
+    <th>Wednesday</th>
+    <th>Thursday</th>
+    <th>Friday</th>
+    <th>Saturday</th>
+  </tr>
+  </thead>
+  <tbody id="calendarTableBody">
+
+  </tbody>
+</table>
+
 <div class="btn-toolbar">
     <div class="btn-group">
         <button class="btn btn-default" id="addButton"><span class="glyphicon glyphicon-plus"></span>&nbsp;New Event

@@ -13,3 +13,15 @@
 .edit-button-bar {
   min-width: 100px;
 }
+
+.calendar-cell {
+  min-width: 130px;
+}
+
+.calendar-cell-other-month {
+  background-color: #eee;
+}
+
+.calendar-day {
+  font-weight: bold;
+}
