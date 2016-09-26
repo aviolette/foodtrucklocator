@@ -227,6 +227,7 @@ var TruckScheduleWidget = function() {
     d.setMinutes(0);
     d.setSeconds(0);
     var tomorrow = d.getTime() + 86400000;
+    var today = d.getTime();
     var scheduleTable = $("#scheduleTable");
     scheduleTable.empty();
 
@@ -236,6 +237,9 @@ var TruckScheduleWidget = function() {
       _options["refreshCallback"]();
     }
     $.each(schedule, function (truckIndex, stop) {
+      if (stop.endMillis < today) {
+        return;
+      }
       if (stop.startMillis < tomorrow) {
         _lastStop = stop;
       }
