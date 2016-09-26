@@ -51,6 +51,9 @@ class FTFSpeechlet implements Speechlet {
   @Override
   public SpeechletResponse onLaunch(LaunchRequest launchRequest, Session session) throws SpeechletException {
     log.log(Level.INFO, "Alexa launched: {0}", session.getSessionId());
+    Queue queue = monitorQueueProvider.get();
+    queue.add(TaskOptions.Builder.withUrl("/cron/update_count")
+        .param("statName", "alexa_launch"));
     return SpeechletResponseBuilder.builder()
         .speechText(
             "Food Truck Finder.  You can ask me what food trucks are at a specific location or information about a specific food truck. What would you like to find?")
