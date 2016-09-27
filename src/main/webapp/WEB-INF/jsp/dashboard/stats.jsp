@@ -123,13 +123,14 @@
         break;
       case "Alexa Requests":
         drawGraphs(["alexa_intent_GetFoodTrucksAtLocation", "alexa_intent_WhereIsTruck", "alexa_intent_DailySpecials",
-          "alexa_intent_AboutTruck", "alexa_intent_CategorySearch"]);
+          "alexa_intent_AboutTruck", "alexa_intent_CategorySearch", "alexa_launch"]);
         break;
       case "Trucks on the Road":
         drawGraphs(["unique_trucks_on_the_road"]);
         break;
       case "Truck Stops":
         drawGraphs("trucks_on_the_road");
+        break;
       case "Trucks Stops and Uniques":
         drawGraph(["trucks_on_the_road", "unique_trucks_on_the_road"]);
         break;
