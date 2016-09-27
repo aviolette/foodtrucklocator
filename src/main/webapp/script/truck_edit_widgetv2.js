@@ -5,6 +5,7 @@ var TruckScheduleWidget = function() {
       _options,
       _calcStartDay,
       _calcEndDay,
+      _hasFullSchedule = false,
       _categories = null,
       $editStop = $("#edit-stop"),
       $startTimeInput = $("#startTimeInput"),
@@ -210,8 +211,13 @@ var TruckScheduleWidget = function() {
     var d = new Date();
     d.setDate(1);
     var year = d.getFullYear(), month = padTime(d.getMonth() + 1), timeFormat = year + month + "01-0000";
+    var timeQuery = "";
+    if ($("#calendarListTable").hasClass("hidden")) {
+      timeQuery = "&time=" + timeFormat;
+      _hasFullSchedule = true;
+    }
     $.ajax({
-      url: '/services/v2/stops?truck=' + _truckId + "&time=" + timeFormat,
+      url: '/services/v2/stops?truck=' + _truckId + timeQuery,
       type: 'GET',
       dataType: 'json',
       success: function (schedule) {
@@ -421,6 +427,9 @@ var TruckScheduleWidget = function() {
         $("#calendarTable").removeClass("hidden");
         $(this).removeClass("btn-default");
         $("#scheduleListButton").addClass("btn-default");
+        if (!_hasFullSchedule) {
+          refreshSchedule();
+        }
       });
 
       $("#scheduleListButton").click(function () {
