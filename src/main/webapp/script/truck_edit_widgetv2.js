@@ -378,7 +378,7 @@ var TruckScheduleWidget = function() {
           started = true;
         }
         if (started) {
-          $tr.append("<td class='calendar-cell'><span class='calendar-day'>" + d.getDate() + "</span><div  id='calendar-day-" + day + "'></div></td>");
+          $tr.append("<td class='calendar-cell'><span class='calendar-day'>" + d.getDate() + "</span><div  id='calendar-day-" + mon + "-" + day + "'></div></td>");
           day++;
           d.setDate(day);
         } else {
@@ -390,7 +390,7 @@ var TruckScheduleWidget = function() {
     $.each(schedule, function (i, stop) {
       var d = new Date(stop.startMillis), link = "<a href='" + _locationEndpoint + "?q=" + encodeURIComponent(stop.location.name) +
           "'>" + stop.location.name + "</a><br/>";
-      $("#calendar-day-" + d.getDate()).append(link);
+      $("#calendar-day-" + d.getMonth() + "-" + d.getDate()).append(link);
     });
   }
 
