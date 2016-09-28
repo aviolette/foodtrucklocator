@@ -2,6 +2,7 @@
 <script type="text/javascript"
         src="//maps.googleapis.com/maps/api/js?key=${googleApiKey}">
 </script>
+<script type="text/javascript" src="/script/lib/spin.min.js"></script>
 <style type="text/css">
   @media (max-width:990px) {
     .location-related {

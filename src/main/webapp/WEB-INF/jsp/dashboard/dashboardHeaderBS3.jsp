@@ -14,6 +14,7 @@
   <%@include file="../include/core_js.jsp" %>
   <script src="/script/dashboard.js" type="text/javascript"></script>
   <script src="/script/lib/typeahead.bundle.js"></script>
+  <script type="text/javascript" src="/script/lib/spin.min.js"></script>
 </head>
 <body>
 <div class="container  cftf-main-container">

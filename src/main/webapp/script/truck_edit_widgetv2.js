@@ -3,6 +3,7 @@ var TruckScheduleWidget = function() {
       _baseEndpoint,
       _truckId,
       _options,
+      _spinner = new Spinner(),
       _calcStartDay,
       _calcEndDay,
       _hasFullSchedule = false,
@@ -218,10 +219,14 @@ var TruckScheduleWidget = function() {
     } else {
       timeQuery = "&includeCounts=true";
     }
+    _spinner.spin($("#truck-schedule-spinner").get(0));
     $.ajax({
       url: '/services/v2/stops?truck=' + _truckId + timeQuery,
       type: 'GET',
       dataType: 'json',
+      complete: function () {
+        _spinner.stop();
+      },
       success: function (schedule) {
         drawScheduleList(schedule);
         drawCalendar(schedule);
