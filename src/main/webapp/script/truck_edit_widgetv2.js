@@ -506,14 +506,17 @@ var TruckScheduleWidget = function() {
         $("#truck-widget-header").html("Schedule for " + options["truckName"]);
       }
       $offTheRoadButton.click(function (evt) {
-        $.ajax({
-          url: "/admin/trucks/" + truckId + "/offtheroad",
-          type: 'POST',
-          context: document.body,
-          dataType: 'json',
-          complete: function (data) {
-            refreshSchedule();
-          }});
+        if (confirm("Are you sure you want to remove all remaining stops?")) {
+          $.ajax({
+            url: "/admin/trucks/" + truckId + "/offtheroad",
+            type: 'POST',
+            context: document.body,
+            dataType: 'json',
+            complete: function (data) {
+              refreshSchedule();
+            }
+          });
+        }
       });
 
       var $recacheButton = $("#recacheButton");
