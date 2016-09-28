@@ -7,8 +7,8 @@
   <button class="btn btn-default" id="scheduleCalendarButton"><span class="glyphicon glyphicon-calendar"></span>
   </button>
 
-  <div style="position:relative" style="right: 100px" id="truck-schedule-spinner"></div>
 </div>
+<div style="position:relative" style="right: 100px" id="truck-schedule-spinner"></div>
 
 <table class="table table-striped" id="calendarListTable">
     <thead>

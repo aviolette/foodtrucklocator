@@ -7,6 +7,7 @@ var TruckScheduleWidget = function() {
       _calcStartDay,
       _calcEndDay,
       _hasFullSchedule = false,
+      _counts = [],
       _categories = null,
       $editStop = $("#edit-stop"),
       $startTimeInput = $("#startTimeInput"),
@@ -213,9 +214,9 @@ var TruckScheduleWidget = function() {
     d.setDate(1);
     var year = d.getFullYear(), month = padTime(d.getMonth() + 1), timeFormat = year + month + "01-0000";
     var timeQuery = "";
-    if ($("#calendarListTable").hasClass("hidden")) {
+    var calendarQuery = $("#calendarListTable").hasClass("hidden");
+    if (calendarQuery) {
       timeQuery = "&time=" + timeFormat;
-      _hasFullSchedule = true;
     } else {
       timeQuery = "&includeCounts=true";
     }
@@ -228,12 +229,37 @@ var TruckScheduleWidget = function() {
         _spinner.stop();
       },
       success: function (schedule) {
+        if (calendarQuery) {
+          if (typeof _counts == "object") {
+            schedule = mergeCounts(schedule);
+          }
+          _hasFullSchedule = true;
+        } else {
+          saveCounts(schedule);
+        }
         drawScheduleList(schedule);
         drawCalendar(schedule);
       }
     });
   }
 
+  function mergeCounts(schedule) {
+    $.each(schedule, function (truckIndex, stop) {
+      var count = _counts[String(stop.id)];
+      if (count) {
+        stop.totalTruckCount = count.count;
+        stop.truckNames = count.truckNames;
+      }
+    });
+    return schedule;
+  }
+
+  function saveCounts(schedule) {
+    _counts = [];
+    $.each(schedule, function (truckIndex, stop) {
+      _counts[String(stop.id)] = {count: stop.totalTruckCount, truckNames: stop.truckNames};
+    });
+  }
   function drawScheduleList(schedule) {
     var d = new Date();
     d.setHours(0);
@@ -434,7 +460,9 @@ var TruckScheduleWidget = function() {
         $("#calendarTable").removeClass("hidden");
         $(this).removeClass("btn-default");
         $("#scheduleListButton").addClass("btn-default");
-        refreshSchedule();
+        if (!_hasFullSchedule) {
+          refreshSchedule();
+        }
       });
 
       $("#scheduleListButton").click(function () {
@@ -442,7 +470,6 @@ var TruckScheduleWidget = function() {
         $("#calendarTable").addClass("hidden");
         $(this).removeClass("btn-default");
         $("#scheduleCalendarButton").addClass("btn-default");
-        refreshSchedule();
       });
       
       locationMatching(locations);
