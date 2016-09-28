@@ -98,12 +98,23 @@ public class TruckStopResource {
   }
 
   @GET
-  public List<TruckStopWithCounts> getStops(@QueryParam("truck") String truckId, @Context DateTime startTime) {
+  public List<TruckStopWithCounts> getStops(@QueryParam("truck") String truckId, @Context DateTime startTime,
+      @QueryParam("includeCounts") boolean includeCounts) {
     if (Strings.isNullOrEmpty(truckId)) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
     startTime = (startTime == null) ? clock.currentDay().toDateTimeAtStartOfDay() : startTime;
-    return foodTruckService.findStopsForTruckAfter(truckId, startTime);
+    if (includeCounts) {
+      return foodTruckService.findStopsForTruckAfter(truckId, startTime);
+    } else {
+      return FluentIterable.from(foodTruckService.findStopsForTruckAfterWithoutCounts(truckId, startTime))
+          .transform(new Function<TruckStop, TruckStopWithCounts>() {
+            public TruckStopWithCounts apply(@Nullable TruckStop input) {
+              return new TruckStopWithCounts(input, ImmutableSet.<String>of());
+            }
+          })
+          .toList();
+    }
   }
 
   @GET @Path("{truckId}")
