@@ -215,6 +215,8 @@ var TruckScheduleWidget = function() {
     if ($("#calendarListTable").hasClass("hidden")) {
       timeQuery = "&time=" + timeFormat;
       _hasFullSchedule = true;
+    } else {
+      timeQuery = "&includeCounts=true";
     }
     $.ajax({
       url: '/services/v2/stops?truck=' + _truckId + timeQuery,
@@ -427,9 +429,7 @@ var TruckScheduleWidget = function() {
         $("#calendarTable").removeClass("hidden");
         $(this).removeClass("btn-default");
         $("#scheduleListButton").addClass("btn-default");
-        if (!_hasFullSchedule) {
-          refreshSchedule();
-        }
+        refreshSchedule();
       });
 
       $("#scheduleListButton").click(function () {
@@ -437,6 +437,7 @@ var TruckScheduleWidget = function() {
         $("#calendarTable").addClass("hidden");
         $(this).removeClass("btn-default");
         $("#scheduleCalendarButton").addClass("btn-default");
+        refreshSchedule();
       });
       
       locationMatching(locations);

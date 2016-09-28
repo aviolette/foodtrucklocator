@@ -201,6 +201,11 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
   }
 
   @Override
+  public List<TruckStop> findStopsForTruckAfterWithoutCounts(String truckId, DateTime startTime) {
+    return truckStopDAO.findAfter(truckId, startTime);
+  }
+
+  @Override
   public List<TruckStopWithCounts> findStopsForTruckAfter(final String truckId, DateTime startTime) {
     final List<TruckStop> stops = truckStopDAO.findAfter(startTime);
     return FluentIterable.from(stops).filter(new Predicate<TruckStop>() {

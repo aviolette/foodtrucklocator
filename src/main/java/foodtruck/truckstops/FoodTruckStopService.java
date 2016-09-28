@@ -140,4 +140,5 @@ public interface FoodTruckStopService {
 
   List<TruckStop> findStopsAtLocationOverRange(Location location, Interval range);
 
+  List<TruckStop> findStopsForTruckAfterWithoutCounts(String truckId, DateTime startTime);
 }
