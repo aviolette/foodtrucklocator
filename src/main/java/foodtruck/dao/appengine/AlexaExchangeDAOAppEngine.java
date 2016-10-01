@@ -1,8 +1,10 @@
 package foodtruck.dao.appengine;
 
+import java.util.List;
 import java.util.Map;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Query;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 
@@ -11,6 +13,7 @@ import org.joda.time.DateTimeZone;
 import foodtruck.dao.AlexaExchangeDAO;
 import foodtruck.model.AlexaExchange;
 
+import static com.google.appengine.api.datastore.Query.FilterOperator.EQUAL;
 import static foodtruck.dao.appengine.Attributes.getDateTime;
 import static foodtruck.dao.appengine.Attributes.setDateProperty;
 
@@ -68,5 +71,13 @@ class AlexaExchangeDAOAppEngine extends AppEngineDAO<Long, AlexaExchange> implem
         .hadReprompt(getBooleanProperty(entity, HAD_REPROMPT, false))
         .completeTime(getDateTime(entity, COMPLETED, zone))
         .build();
+  }
+
+  @Override
+  public List<AlexaExchange> findMostRecentOfIntent(String intentName) {
+    return aq().filter(predicate(INTENT, EQUAL, intentName))
+        .sort(REQUESTED, Query.SortDirection.DESCENDING)
+        .limit(50)
+        .execute();
   }
 }

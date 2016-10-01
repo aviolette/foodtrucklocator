@@ -4,7 +4,9 @@ import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.IntentRequest;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSortedMap;
 
 import org.joda.time.DateTime;
 
@@ -38,6 +40,11 @@ public class AlexaExchange extends ModelEntity {
 
   public ImmutableMap<String, String> getSlots() {
     return slots;
+  }
+
+  public ImmutableCollection<String> getSlotEntries() {
+    return ImmutableSortedMap.copyOf(slots)
+        .values();
   }
 
   public String getIntentName() {

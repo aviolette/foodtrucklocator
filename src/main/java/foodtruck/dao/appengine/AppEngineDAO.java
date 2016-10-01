@@ -197,6 +197,7 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
   @SuppressWarnings("WeakerAccess")
   protected class AQ {
     private Query query;
+    private int limit = -1;
 
     private AQ() {
       query = new Query(getKind());
@@ -234,7 +235,26 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
     }
 
     public List<T> execute(Predicate<Entity> predicate) {
-      return executeQuery(query, predicate);
+      DatastoreService dataStore = provider.get();
+      ImmutableList.Builder<T> objs = ImmutableList.builder();
+      FetchOptions fetchOptions = FetchOptions.Builder.withDefaults();
+      if (limit != -1) {
+        fetchOptions = fetchOptions.limit(limit);
+      }
+      for (Entity entity : dataStore.prepare(query)
+          .asIterable(fetchOptions)) {
+        if (predicate != null && !predicate.apply(entity)) {
+          continue;
+        }
+        T obj = fromEntity(entity);
+        objs.add(obj);
+      }
+      return objs.build();
+    }
+
+    public AQ limit(int amount) {
+      this.limit = amount;
+      return this;
     }
   }
 }

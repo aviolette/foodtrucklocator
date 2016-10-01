@@ -53,10 +53,12 @@
     <div class="btn-group">
         <button class="btn btn-default" id="offRoadButton"><span class="glyphicon glyphicon-road"></span> Off the Road
         </button>
-        <button class="btn btn-default" id="recacheButton"><span class="glyphicon glyphicon-refresh"></span>&nbsp;Reload
-            from calendar
-        </button>
     </div>
+  <div class="btn-group">
+    <button class="btn btn-default" id="recacheButton"><span class="glyphicon glyphicon-refresh"></span>&nbsp;Reload
+      from calendar
+    </button>
+  </div>
 </div>
 <div id="edit-stop" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">

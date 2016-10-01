@@ -60,6 +60,7 @@ public class AlexaTestServlet extends HttpServlet {
       }
     }
     req.setAttribute("intents", intentObj);
+    req.setAttribute("tab", "alexa");
     req.getRequestDispatcher(JSP_PATH)
         .forward(req, resp);
   }
