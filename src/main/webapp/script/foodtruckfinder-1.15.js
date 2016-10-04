@@ -553,40 +553,6 @@ var FoodTruckLocator = function () {
     return zoomDiv;
   }
 
-  function badgeWidget() {
-    var badgeDiv = document.createElement("div");
-    badgeDiv.index = 1;
-
-    // Setting padding to 5 px will offset the control
-    // from the edge of the map
-    badgeDiv.style.padding = '17px';
-
-    // Set CSS for the control border
-    var controlUI = document.createElement('div');
-    controlUI.style.backgroundColor = 'white';
-    controlUI.style.borderStyle = 'none';
-    controlUI.style.borderWidth = '0px';
-    controlUI.style.cursor = 'pointer';
-    controlUI.style.textAlign = 'center';
-    controlUI.title = '';
-    badgeDiv.appendChild(controlUI);
-
-    // Set CSS for the control interior
-    var controlText = document.createElement('div');
-    var androidBadge = '<a href="https://play.google.com/store/apps/details?id=net.andrewviolette.truckz"><img src="/img/en_generic_rgb_wo_45.png" title="Google Play Button"/></a>';
-    var iphoneBadge = '<a href="https://itunes.apple.com/us/app/chicago-food-truck-finder/id1002801516"><img height="45px" src="/img/Download_on_the_App_Store_Badge_US-UK_135x40.svg"/></a>';
-
-    if (isIOS()) {
-      controlText.innerHTML  = iphoneBadge;
-    } else if (isAndroid()) {
-      controlText.innerHTML  = androidBadge;
-    } else {
-      controlText.innerHTML  = androidBadge + " " + iphoneBadge;
-    }
-    controlUI.appendChild(controlText);
-    return badgeDiv;
-  }
-
   function fitAll() {
     var bounds = new google.maps.LatLngBounds();
     $.each(_trucks.openNowAndLater(), function (idx, stop) {
@@ -659,11 +625,6 @@ var FoodTruckLocator = function () {
       _center = center;
       resize();
       displayMessageOfTheDay(modelPayload);
-      if (isIOS()) {
-        $("#iphoneBadge").removeClass("hidden");
-      } else if (isAndroid()) {
-        $("#androidBadge").removeClass("hidden");
-      }
       _markers = new Markers();
       _trucks = new Trucks(modelPayload);
       _map = new google.maps.Map(document.getElementById("map_canvas"), {
@@ -677,7 +638,6 @@ var FoodTruckLocator = function () {
         displayWarningIfMarkersNotVisible();
       });
 
-      _map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(badgeWidget());
       _map.controls[google.maps.ControlPosition.TOP_LEFT].push(zoomWidget('University of Chicago', function() {
         _map.setZoom(16);
         _map.setCenter( new google.maps.LatLng(41.790628999999996, -87.60130099999999));
