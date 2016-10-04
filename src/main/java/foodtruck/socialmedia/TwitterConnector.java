@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 
@@ -50,8 +51,14 @@ public class TwitterConnector implements SocialMediaConnector {
     Twitter twitter = twitterFactory.create();
     try {
       Paging paging = determinePaging();
-      int twitterListId = Integer.parseInt(config.getPrimaryTwitterList());
-      List<Status> statuses = twitter.getUserListStatuses(twitterListId, paging);
+      List<Status> statuses;
+      String slug = config.getPrimaryTwitterListSlug();
+      if (Strings.isNullOrEmpty(slug)) {
+        int twitterListId = Integer.parseInt(config.getPrimaryTwitterList());
+        statuses = twitter.getUserListStatuses(twitterListId, paging);
+      } else {
+        statuses = twitter.getUserListStatuses(config.getPrimaryTwitterListOwner(), slug, paging);
+      }
       boolean first = true;
       for (Status status : statuses) {
         if (first) {
