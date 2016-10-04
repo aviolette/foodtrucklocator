@@ -21,6 +21,7 @@ import com.google.appengine.tools.cloudstorage.GcsOutputChannel;
 import com.google.appengine.tools.cloudstorage.GcsService;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 import com.sun.jersey.api.client.WebResource;
@@ -71,6 +72,8 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
         String website = user.getURLEntity().getExpandedURL();
         truck = Truck.builder(truck)
             .name(user.getName())
+            .defaultCity(staticConfig.getCityState())
+            .categories(ImmutableSet.of("Lunch"))
             .backgroundImage(user.getProfileBackgroundImageURL())
             .url(website)
             .iconUrl(url)
