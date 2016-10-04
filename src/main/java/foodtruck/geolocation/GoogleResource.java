@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import com.sun.jersey.api.client.WebResource;
 
 import org.codehaus.jettison.json.JSONObject;
@@ -20,18 +21,20 @@ class GoogleResource {
 
   private final WebResource geolocationResource;
   private final Optional<String> apiKey;
-
+  private final String state;
   @Inject
-  public GoogleResource(@GoogleEndPoint WebResource geolocationResource, @GoogleServerApiKey Optional<String> apiKey) {
+  public GoogleResource(@GoogleEndPoint WebResource geolocationResource, @GoogleServerApiKey Optional<String> apiKey,
+      @Named("foodtrucklocator.state") String state) {
     this.geolocationResource = geolocationResource;
     this.apiKey = apiKey;
+    this.state = state;
   }
 
   JSONObject findLocation(String location) {
     // TODO: make country and state configurable
     WebResource resource = geolocationResource.queryParam("address", location)
         .queryParam("sensor", "false")
-        .queryParam("components", "country:US|administrative_area:IL");
+        .queryParam("components", "country:US|administrative_area:" + state);
     if (apiKey.isPresent()) {
       String key = apiKey.get();
       resource = resource.queryParam("key",key);

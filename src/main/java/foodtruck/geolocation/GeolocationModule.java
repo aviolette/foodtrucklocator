@@ -5,6 +5,7 @@ import com.google.common.base.Strings;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 
@@ -26,6 +27,12 @@ public class GeolocationModule extends AbstractModule {
       return Optional.absent();
     }
     return Optional.of(key);
+  }
+
+  @Provides
+  @Named("foodtrucklocator.state")
+  public String providesState() {
+    return System.getProperty("foodtrucklocator.state", "IL");
   }
 
   @GoogleEndPoint @Provides @Singleton
