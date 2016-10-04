@@ -79,11 +79,12 @@
           <li><a title="Logout" class="btn btn-block" href="${signoutUrl}"><span
               class="glyphicon glyphicon-log-out"></span> </a></li>
         </c:if>
-        <li><a style="padding: 10px 0 0 0" href="http://twitter.com/${twitterHandle}"><img
-            src="//storage.googleapis.com/ftf_static/img/twitter02_dark.png"/></a></li>
-        <li><a style="padding: 10px 0 0 0" href="http://facebook.com/${facebookPage}"><img
-            src="//storage.googleapis.com/ftf_static/img/facebook_dark.png"/></a></li>
-
+        <c:if test="${city == 'Chicago'}">
+          <li><a style="padding: 10px 0 0 0" href="http://twitter.com/${twitterHandle}"><img
+              src="//storage.googleapis.com/ftf_static/img/twitter02_dark.png"/></a></li>
+          <li><a style="padding: 10px 0 0 0" href="http://facebook.com/${facebookPage}"><img
+              src="//storage.googleapis.com/ftf_static/img/facebook_dark.png"/></a></li>
+        </c:if>
       </ul>
     </div>
   </div>
