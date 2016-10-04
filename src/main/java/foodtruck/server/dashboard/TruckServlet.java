@@ -218,7 +218,11 @@ public class TruckServlet extends HttpServlet {
     Splitter splitter = Splitter.on(",").omitEmptyStrings().trimResults();
     builder.categories(ImmutableSet.copyOf(splitter.split(request.getParameter("categories"))));
     builder.beaconnaiseEmails(ImmutableSet.copyOf(splitter.split(request.getParameter("beaconnaiseEmails"))));
-    builder.phoneticAliases(ImmutableList.copyOf(splitter.split(request.getParameter("phoneticAliases"))));
+    ImmutableList.Builder<String> aliases = ImmutableList.builder();
+    for (String item : splitter.split(request.getParameter("phoneticAliases"))) {
+      aliases.add(item.toLowerCase());
+    }
+    builder.phoneticAliases(aliases.build());
     builder.blacklistLocationNames(BLACK_LIST_SPLITTER.splitToList(request.getParameter("blacklistLocations")));
     try {
       builder.fleetSize(Integer.parseInt(request.getParameter("fleetSize")));
