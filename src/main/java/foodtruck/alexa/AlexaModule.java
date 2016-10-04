@@ -7,6 +7,7 @@ import com.google.common.base.Splitter;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.multibindings.MapBinder;
+import com.google.inject.name.Named;
 
 import foodtruck.model.Location;
 
@@ -21,6 +22,7 @@ public class AlexaModule extends AbstractModule {
   static final String DAILY_SPECIALS = "DailySpecials";
   static final String ABOUT_TRUCK = "AboutTruck";
   static final String CATEGORY_SEARCH = "CategorySearch";
+  static final String TESTING_MODE = "foodtrucklocator.alexa.testing.mode";
 
   private static final Splitter LOCATION_SPLITTER = Splitter.on(";")
       .omitEmptyStrings()
@@ -63,5 +65,11 @@ public class AlexaModule extends AbstractModule {
         .lat(Double.parseDouble(splitInfo.get(1)))
         .lng(Double.parseDouble(splitInfo.get(2)))
         .build();
+  }
+
+  @Provides
+  @Named(TESTING_MODE)
+  public boolean providesTestingMode() {
+    return "true".equals(System.getProperty(TESTING_MODE, "false"));
   }
 }

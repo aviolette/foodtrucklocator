@@ -95,7 +95,7 @@ public class LocationIntentProcessorTest extends EasyMockSupport {
     expect(clock.now()).andStubReturn(date);
     expect(clock.currentDay()).andStubReturn(date.toLocalDate());
     processor = new LocationIntentProcessor(locator, service, clock, locationDAO, cacher, dailyScheduleWriter,
-        defaultCenter, DateTimeFormat.forPattern("hh:mm a"));
+        defaultCenter, DateTimeFormat.forPattern("hh:mm a"), false);
   }
 
   /**

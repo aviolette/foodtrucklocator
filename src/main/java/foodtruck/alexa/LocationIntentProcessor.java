@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -39,6 +40,7 @@ import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 import foodtruck.util.TimeOnlyFormatter;
 
+import static foodtruck.alexa.AlexaModule.TESTING_MODE;
 import static foodtruck.util.MoreStrings.capitalize;
 
 /**
@@ -57,11 +59,12 @@ class LocationIntentProcessor implements IntentProcessor {
   private final DailyScheduleWriter dailyScheduleWriter;
   private final Location defaultCenter;
   private final DateTimeFormatter formatter;
+  private final boolean testingMode;
 
   @Inject
   public LocationIntentProcessor(GeoLocator locator, FoodTruckStopService service, Clock clock, LocationDAO locationDAO,
       ScheduleCacher cacher, DailyScheduleWriter dailyScheduleWriter, @DefaultCenter Location center,
-      @TimeOnlyFormatter DateTimeFormatter formatter) {
+      @TimeOnlyFormatter DateTimeFormatter formatter, @Named(TESTING_MODE) boolean testingMode) {
     this.locator = locator;
     this.service = service;
     this.clock = clock;
@@ -70,6 +73,7 @@ class LocationIntentProcessor implements IntentProcessor {
     this.dailyScheduleWriter = dailyScheduleWriter;
     this.defaultCenter = center;
     this.formatter = formatter;
+    this.testingMode = testingMode;
   }
 
   @Override
@@ -91,6 +95,10 @@ class LocationIntentProcessor implements IntentProcessor {
         .getValue());
     LocalDate currentDay = clock.currentDay();
     LocalDate requestDate = tomorrow ? currentDay.plusDays(1) : currentDay;
+    if (testingMode && (location == null || !location.isResolved())) {
+      log.info("In testing mode.  Using Willis Tower for " + locationName);
+      location = locator.locate("Willis Tower", GeolocationGranularity.NARROW);
+    }
     if (location == null || !location.isResolved()) {
       return locationNotFound(locationName, tomorrow, requestDate);
     }
