@@ -615,7 +615,7 @@ var FoodTruckLocator = function () {
       });
       _map.fitBounds(bounds);
     },
-    run: function (mode, center, time, modelPayload, appKey, defaultCity) {
+    run: function (mode, center, time, modelPayload, appKey, defaultCity, buttons) {
       var self = this;
       var mobile = "mobile" == mode;
       _appKey = appKey;
@@ -623,6 +623,7 @@ var FoodTruckLocator = function () {
       _defaultCityRegex = new RegExp(", " + defaultCity + "$");
       _defaultCityLength = defaultCity.length;
       _center = center;
+      buttons = buttons || [];
       resize();
       displayMessageOfTheDay(modelPayload);
       _markers = new Markers();
@@ -638,16 +639,13 @@ var FoodTruckLocator = function () {
         displayWarningIfMarkersNotVisible();
       });
 
-      _map.controls[google.maps.ControlPosition.TOP_LEFT].push(zoomWidget('University of Chicago', function() {
-        _map.setZoom(16);
-        _map.setCenter( new google.maps.LatLng(41.790628999999996, -87.60130099999999));
-        refreshViewData();
-      }));
-      _map.controls[google.maps.ControlPosition.TOP_LEFT].push(zoomWidget('Downtown', function() {
-        _map.setZoom(14);
-        _map.setCenter( new google.maps.LatLng(41.888141, -87.635352));
-        refreshViewData();
-      }));
+      $.each(buttons, function (idx, button) {
+        _map.controls[google.maps.ControlPosition.TOP_LEFT].push(zoomWidget(button.name, function () {
+          _map.setZoom(16);
+          _map.setCenter(new google.maps.LatLng(button.latitude, button.longitude));
+          refreshViewData();
+        }));
+      });
       _map.controls[google.maps.ControlPosition.TOP_LEFT].push(zoomWidget('Show All Markers', function() {
         fitAll();
         refreshViewData();

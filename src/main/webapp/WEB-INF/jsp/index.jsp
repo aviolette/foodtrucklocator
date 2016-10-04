@@ -39,7 +39,7 @@
 <script type="text/javascript">
   $(document).ready(function() {
     FoodTruckLocator.run("${mode}", new google.maps.LatLng(${center.latitude}, ${center.longitude}),
-        new Date(${requestTimeInMillis}), ${payload}, "${appKey}", "${defaultCity}");
+        new Date(${requestTimeInMillis}), ${payload}, "${appKey}", "${defaultCity}", ${mapButtons});
   });
 </script>
 <%@ include file="footer.jsp" %>
