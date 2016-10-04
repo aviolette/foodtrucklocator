@@ -149,7 +149,7 @@ class LocationIntentProcessor implements IntentProcessor {
       default: {
         String schedulePart = allSame ? " from " + truckTimes.get(0) : buildSchedulePart(truckNames, truckTimes);
         builder.speechSSML(
-            String.format("There are %s trucks %sat %s %s: %s%s", count, futurePhrase, locationSlot.getValue(),
+            String.format("There are %s trucks %sat %s %s: %s%s", count, futurePhrase, location.getShortenedName(),
                 dateRepresentation, AlexaUtils.toAlexaList(truckNames, true), schedulePart));
       }
     }
