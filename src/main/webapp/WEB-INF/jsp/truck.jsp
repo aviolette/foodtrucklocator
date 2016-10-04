@@ -1,5 +1,5 @@
 <%@ include file="header.jsp" %>
-<%@ include file="include/rickshaw_css.jsp"%>
+<%@ include file="include/rickshaw_css.jsp" %>
 <style>
   dl.schedule {
     font-size: 125%;
@@ -14,7 +14,7 @@
   }
 </style>
 
-<div id="content" >
+<div id="content">
   <ol class="breadcrumb">
     <li><a href="/trucks">Trucks</a></li>
     <li class="active">${truck.name}</li>
@@ -32,7 +32,7 @@
     <div class="col-md-6">
       <h1>${truck.name}<c:if test="${isAdmin}">
         <a class="btn btn-default" href="/admin/trucks/${truck.id}"><span class='glyphicon glyphicon-pencil'></span></a>
-      </c:if></h1>
+        </c:if></h1>
       <c:if test="${truck.popupVendor}"><p><span class="badge badge-info">Popup Vendor</span></p></c:if>
       <p class="lead">${truck.description}</p>
       <div>
@@ -40,12 +40,13 @@
             alt="Facebook" src="//storage.googleapis.com/ftf_static/img/facebook32x32.png"></a></c:if>
         <c:if test="${!empty(truck.twitterHandle)}"><a target="_blank"
                                                        href="http://twitter.com/${truck.twitterHandle}"><img
-            alt="@${truck.twitterHandle} on twitter" src="//storage.googleapis.com/ftf_static/img/twitter32x32.png"></a></c:if>
+            alt="@${truck.twitterHandle} on twitter"
+            src="//storage.googleapis.com/ftf_static/img/twitter32x32.png"></a></c:if>
         <c:if test="${!empty(truck.foursquareUrl)}"><a target="_blank"
                                                        href="http://foursquare.com/venue/${truck.foursquareUrl}"><img
             alt="Check in on foursquare" src="//storage.googleapis.com/ftf_static/img/foursquare32x32.png"></a></c:if>
         <c:if test="${!empty(truck.instagramId)}"><a target="_blank"
-                                                       href="http://instagram.com/${truck.instagramId}"><img
+                                                     href="http://instagram.com/${truck.instagramId}"><img
             alt="View on instagram" src="//storage.googleapis.com/ftf_static/img/instagram32x32.png"></a></c:if>
       </div>
       <div style="padding-top:20px">
@@ -56,20 +57,21 @@
           <c:if test="${!empty(truck.publicEmail)}">
             <li><span class="glyphicon glyphicon-envelope"></span>&nbsp;
               <a target="_blank"
-                   href="mailto:${truck.publicEmail}">${truck.publicEmail}</a></li>
+                 href="mailto:${truck.publicEmail}">${truck.publicEmail}</a></li>
           </c:if>
           <c:if test="${!empty(truck.phone)}">
             <li><span class="glyphicon glyphicon-earphone"></span>&nbsp;
-              ${truck.phone}</li>
+                ${truck.phone}</li>
           </c:if>
         </ul>
       </div>
       <c:if test="${!empty(dailyData)}">
         <h2>Today's Specials</h2>
         <ul class="list-unstyled">
-        <c:forEach items="${dailyData.specials}" var="special">
-          <li class="lead">${special.special} <c:if test="${special.soldOut}"><span class="label label-danger">sold out!</span></c:if></li>
-        </c:forEach>
+          <c:forEach items="${dailyData.specials}" var="special">
+            <li class="lead">${special.special} <c:if test="${special.soldOut}"><span class="label label-danger">sold out!</span></c:if>
+            </li>
+          </c:forEach>
         </ul>
       </c:if>
     </div>
@@ -93,10 +95,10 @@
         </c:forEach>
       </dl>
     </div>
-   </div>
-</div>
+  </div>
 
-<c:choose>
+
+  <c:choose>
   <c:when test="${!empty(menu)}">
     <div class="row">
       <div class="col-md-12">
@@ -122,6 +124,8 @@
   </c:when>
 </c:choose>
 
+  <c:if test="${enableGraphs}">
+
 
   <div class="row">
     <div class="col-md-12">
@@ -132,14 +136,15 @@
 
   <div class="row" style="padding-top: 20px">
     <div class="col-md-3">
-    <div class="panel panel-primary" >
-      <div class="panel-heading">
-        <div class="panel-title text-center">First Seen</div>
-      </div>
-      <div class="panel-body">
-        <joda:format value="${truck.stats.firstSeen}" style="MS"/> <c:if test="${!empty(truck.stats.whereFirstSeen.name)}">@ <br/>
-        <ftl:location at="${truck.stats.firstSeen}" location="${truck.stats.whereFirstSeen}"/></c:if>
-      </div>
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <div class="panel-title text-center">First Seen</div>
+        </div>
+        <div class="panel-body">
+          <joda:format value="${truck.stats.firstSeen}" style="MS"/> <c:if
+            test="${!empty(truck.stats.whereFirstSeen.name)}">@ <br/>
+          <ftl:location at="${truck.stats.firstSeen}" location="${truck.stats.whereFirstSeen}"/></c:if>
+        </div>
       </div>
     </div>
     <div class="col-md-3">
@@ -148,7 +153,8 @@
           <div class="panel-title text-center">Last Seen</div>
         </div>
         <div class="panel-body">
-          <joda:format value="${truck.stats.lastSeen}" style="MS"/> <c:if test="${!empty(truck.stats.whereLastSeen.name)}">@ <br/>
+          <joda:format value="${truck.stats.lastSeen}" style="MS"/> <c:if
+            test="${!empty(truck.stats.whereLastSeen.name)}">@ <br/>
           <ftl:location at="${truck.stats.lastSeen}" location="${truck.stats.whereLastSeen}"/></c:if>
         </div>
       </div>
@@ -174,26 +180,27 @@
       </div>
     </div>
   </div>
-</div>
-
+  </c:if>
 </div>
 <%@include file="include/core_js.jsp" %>
 <%@include file="include/graph_libraries.jsp" %>
 <script>
-  (function() {
-    <c:if test="${enableGraphs}">
+  <c:if test="${enableGraphs}">
+  (function () {
     var loopId;
+
     function resize() {
       $("#chart").empty();
       drawGraphs(["count.${truck.id}"], "chart");
     }
+
     $(window).resize(function () {
       clearTimeout(loopId);
       loopId = setTimeout(resize, 500);
     });
     resize();
-    </c:if>
   })();
+  </c:if>
   <c:if test="${!empty(menu)}">
   (function () {
     var menuJSON = ${menu.scrubbedPayload}, $menu = $("#menu");
