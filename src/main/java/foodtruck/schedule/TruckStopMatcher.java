@@ -1,6 +1,7 @@
 package foodtruck.schedule;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,12 +60,12 @@ public class TruckStopMatcher {
       atTimePattern = Pattern.compile("\\b(be at|ETA|open at|opening at|opens at|arrive at|there at) (" + TIME_PATTERN_STRICT + ")"),
       schedulePattern = Pattern.compile(".*M:.+(\\b|\\n)T:.+(\\b|\\n)W:.+"),
       simpleDateParser = Pattern.compile("(\\d{1,2})/(\\d{1,2})");
-  private final Set<SpecialMatcher> specialMatchers;
+  private final Map<String, SpecialMatcher> specialMatchers;
 
   @Inject
   public TruckStopMatcher(AddressExtractor extractor, GeoLocator geoLocator, DateTimeZone defaultZone, Clock clock,
       EmailNotifier notifier, @Named("center") Location center, @DefaultStartTime LocalTime startTime,
-      Set<SpecialMatcher> specialMatchers) {
+      Map<String, SpecialMatcher> specialMatchers) {
     this.addressExtractor = extractor;
     this.geoLocator = geoLocator;
     this.center = center;
@@ -114,7 +115,8 @@ public class TruckStopMatcher {
           .story(story)
           .softEnding(softEnding);
 
-      for (SpecialMatcher matcher : specialMatchers) {
+      SpecialMatcher matcher = specialMatchers.get(truck.getId());
+      if (matcher != null) {
         matcher.handle(builder, story, truck);
       }
       return builder.build();

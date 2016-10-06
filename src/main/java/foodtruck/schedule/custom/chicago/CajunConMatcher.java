@@ -1,4 +1,4 @@
-package foodtruck.schedule.custom;
+package foodtruck.schedule.custom.chicago;
 
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
@@ -29,10 +29,6 @@ public class CajunConMatcher extends AbstractSpecialMatcher {
 
   @Override
   public void handle(TruckStopMatch.Builder builder, Story story, Truck truck) {
-    if (!"thecajuncon".equals(truck.getId())) {
-      return;
-    }
-
     if (story.getText().contains("27th California") && story.getText().contains("11th Hamilton") &&
         story.getTime().getHourOfDay() < 9) {
       builder.appendStop(truckStop(story, truck)

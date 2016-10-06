@@ -3,6 +3,7 @@ package foodtruck.schedule;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import org.easymock.EasyMockSupport;
@@ -47,7 +48,8 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     notifier = createMock(EmailNotifier.class);
     Location mapCenter = Location.builder().lat(41.8807438).lng(-87.6293867).build();
     expect(clock.dayOfWeek()).andStubReturn(DayOfWeek.sunday);
-    topic = new TruckStopMatcher(extractor, geolocator, DateTimeZone.UTC, clock, notifier, mapCenter, new LocalTime(11, 30), ImmutableSet.<SpecialMatcher>of());
+    topic = new TruckStopMatcher(extractor, geolocator, DateTimeZone.UTC, clock, notifier, mapCenter,
+        new LocalTime(11, 30), ImmutableMap.<String, SpecialMatcher>of());
     truck = Truck.builder().id("foobar").build();
     expect(clock.zone()).andStubReturn(DateTimeZone.UTC);
     expect(clock.currentDay()).andStubReturn(new LocalDate(2011, 11, 10));

@@ -1,4 +1,4 @@
-package foodtruck.schedule.custom;
+package foodtruck.schedule.custom.chicago;
 
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.geolocation.GeoLocator;
+import foodtruck.schedule.MultipleTruckMatcher;
 import foodtruck.schedule.Spot;
 import foodtruck.util.Clock;
 import foodtruck.util.FriendlyDateTimeFormat;
@@ -18,6 +19,6 @@ public class BobChaMatcher extends MultipleTruckMatcher {
 
   @Inject
   public BobChaMatcher(GeoLocator geoLocator, ImmutableList<Spot> commonSpots, @FriendlyDateTimeFormat DateTimeFormatter formatter, Clock clock) {
-    super("bobchafoodtruck", geoLocator, commonSpots, formatter, clock);
+    super(geoLocator, commonSpots, formatter, clock);
   }
 }

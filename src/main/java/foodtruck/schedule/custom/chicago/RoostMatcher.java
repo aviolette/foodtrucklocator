@@ -1,4 +1,4 @@
-package foodtruck.schedule.custom;
+package foodtruck.schedule.custom.chicago;
 
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;

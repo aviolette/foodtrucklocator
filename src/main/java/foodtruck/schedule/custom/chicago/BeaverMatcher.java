@@ -1,4 +1,4 @@
-package foodtruck.schedule.custom;
+package foodtruck.schedule.custom.chicago;
 
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
@@ -29,9 +29,6 @@ public class BeaverMatcher extends AbstractSpecialMatcher {
 
   @Override
   public void handle(TruckStopMatch.Builder builder, Story story, Truck truck) {
-    if (!"beaversdonuts".equals(truck.getId())) {
-      return;
-    }
     String lowerTweet = story.getText().toLowerCase();
     String stripped = lowerTweet.replace(" ", "");
     ImmutableList.Builder<TruckStop> stops = ImmutableList.builder();

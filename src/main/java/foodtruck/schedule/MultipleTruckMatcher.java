@@ -1,4 +1,4 @@
-package foodtruck.schedule.custom;
+package foodtruck.schedule;
 
 import com.google.common.collect.ImmutableList;
 
@@ -10,29 +10,21 @@ import foodtruck.model.DayOfWeek;
 import foodtruck.model.Story;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
-import foodtruck.schedule.AbstractSpecialMatcher;
-import foodtruck.schedule.Spot;
-import foodtruck.schedule.TruckStopMatch;
 import foodtruck.util.Clock;
 
 /**
  * @author aviolette
  * @since 4/12/16
  */
-abstract class MultipleTruckMatcher extends AbstractSpecialMatcher {
-  private String truckId;
+public abstract class MultipleTruckMatcher extends AbstractSpecialMatcher {
 
-  MultipleTruckMatcher(String truckId, GeoLocator geoLocator, ImmutableList<Spot> commonSpots,
-      DateTimeFormatter formatter, Clock clock) {
+  public MultipleTruckMatcher(GeoLocator geoLocator, ImmutableList<Spot> commonSpots, DateTimeFormatter formatter,
+      Clock clock) {
     super(geoLocator, commonSpots, formatter, clock);
-    this.truckId = truckId;
   }
 
   @Override
   public void handle(TruckStopMatch.Builder builder, Story story, Truck truck) {
-    if (!truckId.equals(truck.getId())) {
-      return;
-    }
     DayOfWeek dayOfWeek = DayOfWeek.fromConstant(story.getTime().getDayOfWeek());
     //noinspection ConstantConditions
     if (dayOfWeek.isWeekend() || story.getTime().getHourOfDay() > 13) {

@@ -1,4 +1,4 @@
-package foodtruck.schedule.custom;
+package foodtruck.schedule.custom.chicago;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,9 +43,6 @@ public class AmanecerTacosMatcher extends AbstractSpecialMatcher {
 
   @Override
   public void handle(TruckStopMatch.Builder builder, Story story, Truck truck) {
-    if (!"amanecertacos".equals(truck.getId())) {
-      return;
-    }
     String lowerTweet = story.getText().toLowerCase();
     String stripped = lowerTweet.replace(" ", "");
     stripped = stripped.replace("\n", "");

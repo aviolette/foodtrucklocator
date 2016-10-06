@@ -14,6 +14,7 @@ import foodtruck.model.Location;
 import foodtruck.model.Story;
 import foodtruck.model.Truck;
 import foodtruck.schedule.TruckStopMatch;
+import foodtruck.schedule.custom.chicago.AmanecerTacosMatcher;
 import foodtruck.util.Clock;
 
 import static org.easymock.EasyMock.expect;
