@@ -74,7 +74,7 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
             .name(user.getName())
             .defaultCity(staticConfig.getCityState())
             .categories(ImmutableSet.of("Lunch"))
-            .backgroundImage(user.getProfileBackgroundImageURL())
+            .useTwittalyzer(true)
             .url(website)
             .iconUrl(url)
             .build();
