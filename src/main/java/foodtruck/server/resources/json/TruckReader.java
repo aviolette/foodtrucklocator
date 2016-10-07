@@ -47,7 +47,8 @@ public class TruckReader implements MessageBodyReader<Truck> {
 
   public Truck asJSON(JSONObject json) throws JSONException {
     Truck.Builder builder = Truck.builder()
-        .id(json.getString("id"))
+        .id(json.getString("id")
+            .toLowerCase())
         .description(json.optString("description"))
         .facebook(json.optString("facebook"))
         .facebookPageId(json.optString("facebookPageId"))
@@ -56,7 +57,8 @@ public class TruckReader implements MessageBodyReader<Truck> {
         .previewIcon(json.optString("previewIcon"))
         .yelpSlug(json.optString("yelp"))
         .name(json.getString("name"))
-        .twitterHandle(json.getString("twitterHandle"));
+        .twitterHandle(json.getString("twitterHandle")
+            .toLowerCase());
     JSONArray arr = json.optJSONArray("categories");
     if (arr != null) {
       ImmutableSet.Builder<String> catBuilder = ImmutableSet.builder();

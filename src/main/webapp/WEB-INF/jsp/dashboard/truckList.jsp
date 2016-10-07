@@ -284,7 +284,7 @@
         contentType: "application/json",
         data : JSON.stringify({id : truckId, name : "UNNAMED-" + truckId, twitterHandle: truckId}),
         success : function() {
-          location.href = "/admin/trucks/" + truckId
+          location.href = "/admin/trucks/" + truckId.toLowerCase()
         }
       });
     }
