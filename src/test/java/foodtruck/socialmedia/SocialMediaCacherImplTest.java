@@ -314,7 +314,11 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
 
   @Test
   public void testObserverTwittalyzerTweetsNoExistingStops() {
-    Location uchicago = Location.builder().lat(-234).lng(-432).name("University of Chicago").build();
+    Location uchicago = Location.builder()
+        .lat(-40)
+        .lng(-80)
+        .name("University of Chicago")
+        .build();
     expect(truckObserverDAO.findAll()).andReturn(ImmutableList.of(
         new TruckObserver("uchinomgo", uchicago, ImmutableList.of("breakfast", "lunch")),
         new TruckObserver("mdw2mnl", uchicago, ImmutableList.of("breakfast", "lunch"))));
@@ -330,7 +334,12 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
     expect(truckDAO.findByTwitterId("threejsbbq")).andReturn(ImmutableList.of(truck2));
     expect(truckStopDAO.findDuring("threejsbbq", currentDay)).andReturn(ImmutableList.<TruckStop>of(matchedStop));
     expect(truckDAO.findByTwitterId("somethingelse")).andReturn(ImmutableList.<Truck>of());
-    truckStopDAO.addStops(ImmutableList.of(TruckStop.builder().truck(truck1).startTime(now).endTime(now.plusHours(2)).location(uofc).build()));
+    truckStopDAO.addStops(ImmutableList.of(TruckStop.builder()
+        .truck(truck1)
+        .startTime(now)
+        .endTime(now.plusHours(2))
+        .location(uchicago)
+        .build()));
     emailNotifier.systemNotifyTrucksAddedByObserver(ImmutableMap.of(truck1, tweet1));
     tweetDAO.save(ImmutableList.of(tweet1));
     replayAll();
@@ -340,7 +349,11 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
 
   @Test
   public void testMultiple() {
-    Location uchicago = Location.builder().lat(-234).lng(-432).name("University of Chicago").build();
+    Location uchicago = Location.builder()
+        .lat(-40)
+        .lng(-80)
+        .name("University of Chicago")
+        .build();
     expect(truckObserverDAO.findAll()).andReturn(ImmutableList.of(
         new TruckObserver("uchinomgo", uchicago, ImmutableList.of("breakfast", "#foodtrucks")),
         new TruckObserver("mdw2mnl", uchicago, ImmutableList.of("breakfast", "lunch"))));
@@ -359,7 +372,12 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
     expect(truckDAO.findByTwitterId("threejsbbq")).andReturn(ImmutableList.of(truck2));
     expect(truckStopDAO.findDuring("threejsbbq", currentDay)).andReturn(ImmutableList.<TruckStop>of(matchedStop));
     expect(truckDAO.findByTwitterId("somethingelse")).andReturn(ImmutableList.<Truck>of());
-    truckStopDAO.addStops(ImmutableList.of(TruckStop.builder().truck(truck1).startTime(now).endTime(now.plusHours(2)).location(uofc).build()));
+    truckStopDAO.addStops(ImmutableList.of(TruckStop.builder()
+        .truck(truck1)
+        .startTime(now)
+        .endTime(now.plusHours(2))
+        .location(uchicago)
+        .build()));
     emailNotifier.systemNotifyTrucksAddedByObserver(ImmutableMap.of(truck1, tweet1));
     tweetDAO.save(ImmutableList.of(tweet1));
     tweetDAO.save(ImmutableList.of(tweet2));

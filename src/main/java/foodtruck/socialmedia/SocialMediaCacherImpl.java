@@ -32,8 +32,6 @@ import foodtruck.dao.TruckObserverDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.email.EmailNotifier;
 import foodtruck.geolocation.GeoLocator;
-import foodtruck.geolocation.GeolocationGranularity;
-import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.StopOrigin;
 import foodtruck.model.Story;
@@ -138,7 +136,6 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
   void observerAnalyze() {
     LocalDate today = clock.currentDay();
     DateTime now = clock.now();
-    Location uofc = locator.locate("58th and Ellis, Chicago, IL", GeolocationGranularity.NARROW);
     Map<Truck, Story> trucksAdded = Maps.newHashMap();
     List<TruckStop> truckStops = Lists.newLinkedList();
     for (TruckObserver observer : truckObserverDAO.findAll()) {
@@ -168,7 +165,7 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
                   .truck(truck)
                   .startTime(startTime)
                   .endTime(startTime.plusHours(2))
-                  .location(uofc)
+                  .location(observer.getLocation())
                   .appendNote("Added by @" + observer.getTwitterHandle() + " at " +
                       clock.nowFormattedAsTime() + " from tweet '" + tweet.getText() + "'")
                   .build());
