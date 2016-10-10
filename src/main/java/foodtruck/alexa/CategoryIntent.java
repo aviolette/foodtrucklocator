@@ -26,7 +26,7 @@ class CategoryIntent implements IntentProcessor {
 
   private static final String CATEGORY_NAME = "Category";
   private static final ImmutableList<String> NATIONALITIES = ImmutableList.of("asian", "mexican", "cajun", "german",
-      "greek", "jamaican", "korean", "polish", "venezuelan", "vietnamese");
+      "greek", "indian", "jamaican", "korean", "polish", "venezuelan", "vietnamese");
   private final TruckDAO truckDAO;
 
   @Inject
