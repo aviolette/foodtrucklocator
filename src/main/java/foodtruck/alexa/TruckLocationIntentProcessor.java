@@ -59,8 +59,14 @@ class TruckLocationIntentProcessor implements IntentProcessor {
       return notFound();
     } else {
       String when = intent.getSlot(SLOT_TIME_OF_DAY).getValue();
+      TimeOfDay timeOfDay;
+      try {
+        timeOfDay = TimeOfDay.fromValue(when);
+      } catch (IllegalArgumentException ignored) {
+        timeOfDay = TimeOfDay.LATER;
+      }
       return SpeechletResponseBuilder.builder()
-          .speechText(speech(truck, when, TimeOfDay.fromValue(when)))
+          .speechText(speech(truck, when, timeOfDay))
           .simpleCard(truck.getName())
           .tell();
     }
