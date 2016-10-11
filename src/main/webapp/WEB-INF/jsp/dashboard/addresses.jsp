@@ -51,7 +51,7 @@
             $('#addressRuleModal').modal('hide');
           },
           error: function (e) {
-            flash(e.responseText, "alert-error");
+            flash(e.responseText, "alert-danger");
           },
           success: function (e) {
             flash("Successfully saved script");

@@ -73,6 +73,7 @@
   </div>
 
   <div class="content">
+    <div id="flash" class="alert" style="display:none"></div>
     <c:if test="${!empty(breadcrumbs)}">
     <div class="page-header">
       <ul class="breadcrumb">
