@@ -246,7 +246,7 @@ public class TruckStopMatcher {
   }
 
   private void handleTimeRange(Story tweet, TruckStop.Builder tsBuilder) {
-    Matcher m = timeRangePattern.matcher(tweet.getText() + " ");
+    Matcher m = timeRangePattern.matcher(removePhone(tweet.getText()) + " ");
     if (m.find()) {
       final LocalDate date = tweet.getTime().toLocalDate();
       tsBuilder.startTime(parseTime(m.group(1), date, null));
@@ -264,6 +264,10 @@ public class TruckStopMatcher {
         tsBuilder.endTime(tsBuilder.endTime().minusHours(12));
       }
     }
+  }
+
+  private String removePhone(String text) {
+    return text.replaceAll("\\(?\\d{3}(-|\\)\\s?)\\d{3}-\\d{4}", "");
   }
 
   private void verifyLocation(Location location) throws UnmatchedException {

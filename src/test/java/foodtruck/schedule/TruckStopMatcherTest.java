@@ -62,6 +62,23 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
   @Test
+  public void testMatch_removePhoneNumbers() {
+    TruckStopMatch match = tweet("Lunch 48th bet 6 and 7\n" +
+        "Ave\n" +
+        "\n" +
+        "DISOS ROAST BEEF SPECIAL TODAY!!\n" +
+        "\n" +
+        "Call in orders to: 917-756-4145").withTime(tweetTime)
+        .match();
+    assertThat(match).isNotNull();
+    assertThat(match.getStop()
+        .getStartTime()).isEqualTo(tweetTime);
+    assertThat(match.getStop()
+        .getEndTime()).isEqualTo(tweetTime.plusHours(2));
+
+  }
+
+  @Test
   public void testMatch_whenHardEndWithSoftStart() {
     truck = Truck.builder().id("foobar").name("FOO").twitterHandle("bar")
         .categories(ImmutableSet.of("Breakfast", "Lunch")).build();
