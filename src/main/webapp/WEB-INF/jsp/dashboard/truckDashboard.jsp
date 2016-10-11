@@ -99,6 +99,14 @@
         <td><c:forEach items="${truck.categories}" var="category"><span
             class="label label-info">${category}</span>&nbsp;</c:forEach></td>
       </tr>
+      <tr>
+        <td>Twittalyzer</td>
+        <td><c:choose><c:when test="${truck.usingTwittalyzer}">ON</c:when><c:otherwise>OFF</c:otherwise></c:choose></td>
+      </tr>
+      <tr>
+        <td>Phonetic Aliases</td>
+        <td>${truck.phoneticAliasCSV}</td>
+      </tr>
     </table>
   </div>
   <div class="col-md-6">

@@ -142,6 +142,11 @@ public class Truck extends ModelEntity implements Serializable {
     return phoneticAliases;
   }
 
+  public String getPhoneticAliasCSV() {
+    return Joiner.on(", ")
+        .join(phoneticAliases);
+  }
+
   @Nullable
   public String getPhoneticMarkup() {
     return phoneticMarkup;
