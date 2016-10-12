@@ -2,54 +2,86 @@
 <div class="row">
   <div class="col-md-12">
 
-    <p class="lead">The Chicago Food Truck Finder is a set of applications written by me,
-      <a href="http://www.andrewviolette.net">Andrew Violette</a>, to find food trucks in Chicago.
-      The website puts food trucks on a map with their location and estimated times.  My goal has always been to build a
-      truck locator, which not only has information about where food trucks are, but also includes schedule information for
-      later in the day and beyond. Accuracy has always been my number one goal.</p>
-
-    <p>This website is free to use and is supported without the use of advertising or sponsors (although I rule out the former, I don't necessarily rule out the latter).  I currently offset the costs of this
-      website by selling my iPhone application</p>
+    <p class="lead">The ${title} is used to find food trucks in realtime on the streets of ${city}. Food trucks are put
+      on the map by automatic aggregation of social media feeds, published food truck schedules, and from dedicated GPS
+      devices in trucks (this is an upcoming feature). Not only does this website publish food truck locations, it also
+      notifies you via regional twitter accounts and via browser notifications from Chrome.</p>
 
     <a name="notify"></a>
-    <h3>How can I receive alerts for food trucks near me?</h3>
+    <h2>How can I receive alerts for food trucks near me?</h2>
 
-    <p>Currently, I have three apps that proactively notify you when food trucks are near you:</p>
+    <p>I am currently working on some new ways to accomplish notifications, but these are your best bets:</p>
+    <h3>Chrome Extension</h3>
+    <p>The <a href="">Food Truck Finder Notifier</a> chrome extension is in the Chrome store. This puts an icon on your
+      Chrome toolbar that indicates how many food trucks are nearby.</p>
 
-    <dl>
-      <dt>Location-specific twitter accounts</dt>
-      <dd>I have a ton of twitter accounts that tweet trucks that tweet about specific locations.  I've created one of these accounts for most of the hot-spots that food trucks go.  You can view the complete list <a href="https://twitter.com/chifoodtruckz/notifications/members">here</a>.</dd>
-      <dt>Android Application</dt>
-      <dd>The <a href="https://play.google.com/store/apps/details?id=net.andrewviolette.truckz">Chicago Food Truck Finder Android application</a> in the Play store uses your phone's geolocation to notify you of any food trucks in the area.</dd>
-      <dt>iPhone Application</dt>
-      <dd>Although <a href="https://itunes.apple.com/us/app/chicago-food-truck-finder/id1002801516">my iphone app</a> does not support push notifications YET, it will in the near future.</a> </dd>
-      <dt>Chrome Extension</dt>
-      <dd>The <a href="">Chicago Food Truck Finder Notifier</a> chrome extension is in the Chrome store.  This puts an icon on your Chrome toolbar that indicates how many food trucks are nearby.</dd>
-    </dl>
+    <h3>Location-specific Twitter Accounts</h3>
+    <p>I have regional twitter accounts which retweets any truck that mentions a specific location, and sends out a
+      daily lunch-time summary tweet. Below is a map that lists them all.</p>
+    <div id="location_wrapper">
+      <div class="section" style="min-height:400px" id="location_canvas"></div>
+    </div>
 
     <a name="booking"></a>
-    <h3>"I need food trucks for my event, can you help me?"</h3>
+    <h2>"I need food trucks for my event, can you help me?"</h2>
 
-    This is not something I can currently do effectively, so your best bet is to use to peruse <a href="/trucks">the selection of trucks on this website</a> and contact them individually.
-
-    <a name="howdoesitwork"></a>
-    <h3>How Does it Work?</h3>
-
-    <p>The Chicago Food Truck Finder starts by coalescing vendor calendars and a global calendar that I create into one big schedule.
-      This schedule gets built every night.  In the morning, I go through every truck and verify that I haven't missed anything. As the
-      day goes on, my website scans all the twitter accounts for food trucks, and through the magic of Regular Expressions,
-      Google and Yahoo Geolocation APIs, and my own set of heuristics, I add stops to my website.  In addition, the CFTF also scans certain people's twitter accounts
-      to crowd-source adding stops (For instance, my website scans @uchinomgo's twitter account to add trucks at University of Chicago).
-    </p>
-
-    <a name="integration"></a>
-    <h3>How do I get my food truck and stops listed on your website?</h3>
-
-    <p>I have a separate page on how to do that <a href="http://blog.chicagofoodtruckfinder.com/page/integration-faq">here</a>.</p>
+    <p>This is not something I can currently do effectively, so your best bet is to use to peruse <a href="/trucks">the
+      selection of trucks on this website</a> and contact them individually.</p>
 
   </div>
 </div>
 
 <%@include file="include/core_js.jsp" %>
+<script type="text/javascript"
+        src="http://maps.google.com/maps/api/js?key=${googleApiKey}&libraries=geometry"></script>
 
+<script>
+  (function () {
+    var MILES_TO_METERS = 1609.34;
+
+    var map = new google.maps.Map(document.getElementById("location_canvas"), {
+      zoom: 11,
+      center: new google.maps.LatLng(41.880187, -87.63083499999999),
+      scrollwheel: false,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    });
+
+    function buildInfoWindow(marker, name, twitterHandle, locationId) {
+      var contentString = "<h3><a href='/locations/" + locationId + "'>" + name + "</a></h3>";
+      contentString += "<div><a href='http://twitter.com/" + twitterHandle + "'>@" + twitterHandle + "</a>"
+      var infoWindow = new google.maps.InfoWindow({
+        content: contentString
+      });
+      google.maps.event.addListener(marker, 'click', function () {
+        infoWindow.open(map, marker);
+      });
+    }
+
+    function drawItem(twitterHandle, name, lat, lng, radius, locationId) {
+      var markerLat = new google.maps.LatLng(lat, lng);
+
+      var marker = new google.maps.Marker({
+        draggable: true,
+        position: markerLat,
+        map: map
+      });
+
+      circle = new google.maps.Circle({
+        radius: radius * MILES_TO_METERS,
+        center: markerLat,
+        map: map
+      });
+
+      buildInfoWindow(marker, name, twitterHandle, locationId);
+
+    }
+
+    <c:forEach var="account" items="${accounts}">
+    drawItem("${account.twitterHandle}", "${account.location.name}", ${account.location.latitude}, ${account.location.longitude}, ${account.location.radius}, ${account.location.key});
+    </c:forEach>
+
+  })();
+
+
+</script>
 <%@ include file="footer.jsp" %>
