@@ -47,7 +47,7 @@
         <li <c:if test="${tab == 'map'}"> class="active"</c:if>><a href="/">Activity</a></li>
         <li <c:if test="${tab == 'trucks'}"> class="active"</c:if>><a href="/trucks">Trucks</a></li>
         <c:if test="${showWeekly}">
-          <li <c:if test="${tab == 'location'}"> class="active"</c:if> class="dropdown">
+          <li class="dropdown<c:if test="${tab == 'location'}"> active</c:if>">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Locations <b class="caret"></b></a>
             <ul class="dropdown-menu">
               <li><a href="/weekly-schedule">Popular Spots</a></li>
@@ -59,6 +59,13 @@
         <c:if test="${showAbout}">
           <li <c:if test="${tab == 'about'}"> class="active"</c:if>><a href="/about">About</a></li>
         </c:if>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cities <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><a href="http://www.chicagofoodtruckfinder.com">Chicago</a></li>
+            <li><a href="http://www.nycfoodtruckfinder.com">New York</a></li>
+          </ul>
+        </li>
         <c:if test="${showStats}">
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Stats <b class="caret"></b></a>
