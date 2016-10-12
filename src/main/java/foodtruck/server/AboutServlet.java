@@ -47,6 +47,7 @@ public class AboutServlet extends FrontPageServlet {
     }
     req.setAttribute("accounts", builder.build());
     req.setAttribute("tab", "about");
+    req.setAttribute("accountCenter", staticConfig.getCenter());
     req.getRequestDispatcher("/WEB-INF/jsp/about.jsp").forward(req, resp);
   }
 }
