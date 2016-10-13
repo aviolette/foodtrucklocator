@@ -13,3 +13,7 @@ src/main/resources
 
 
 src/main/webapp/WEB-INF/appengine-web.xml
+
+*.iml
+
+main/src/main/resources/twitter4j.properties
