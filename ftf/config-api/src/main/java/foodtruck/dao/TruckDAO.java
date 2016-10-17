@@ -30,12 +30,12 @@ public interface TruckDAO extends DAO<String, Truck> {
   /**
    * Find all trucks that have not been marked inactive.
    */
-  Collection<Truck> findInactiveTrucks();
+  List<Truck> findInactiveTrucks();
 
   /**
    * Find trucks with associated google calendars.
    */
-  Set<Truck> findTrucksWithCalendars();
+  Collection<Truck> findTrucksWithCalendars();
 
   /**
    * Find all the visible trucks, ordered by name
@@ -59,7 +59,7 @@ public interface TruckDAO extends DAO<String, Truck> {
    */
   List<Truck> findByCategory(String tag);
 
-  Set<Truck> findByBeaconnaiseEmail(String email);
+  Collection<Truck> findByBeaconnaiseEmail(String email);
 
   Iterable<Truck> findTrucksWithEmail();
 
