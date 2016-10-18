@@ -42,14 +42,11 @@ abstract class SingletonDAOAppEngine<E extends ModelEntity> implements Singleton
 
   @Override public void save(E obj) {
     E oldObj = find();
-    System.out.println("OLD: " + oldObj);
     if (oldObj != null && !oldObj.isNew()) {
-      System.out.println("HEW");
       Entity.Builder builder = Entity.builder(keyFactory.newKey((long)oldObj.getKey()));
       toEntity(obj, builder);
       datastore.update(builder.build());
     } else {
-      System.out.println("NEW");
       FullEntity.Builder builder = Entity.builder(keyFactory.newKey());
       toEntity(obj, builder);
       datastore.add(builder.build());

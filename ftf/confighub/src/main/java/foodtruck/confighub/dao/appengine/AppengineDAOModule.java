@@ -6,6 +6,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 
 import foodtruck.dao.AddressRuleScriptDAO;
+import foodtruck.dao.TruckDAO;
 
 /**
  * @author aviolette
@@ -15,6 +16,7 @@ public class AppengineDAOModule extends AbstractModule {
   @Override
   protected void configure() {
     bind(AddressRuleScriptDAO.class).to(AddressRuleScriptDAOAppEngine.class);
+    bind(TruckDAO.class).to(TruckDAOAppEngine.class);
   }
 
   @Provides

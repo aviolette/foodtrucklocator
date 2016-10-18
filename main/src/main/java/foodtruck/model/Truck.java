@@ -180,6 +180,7 @@ public class Truck extends ModelEntity implements Serializable {
     return this.displayEmailPublicly;
   }
 
+  @Deprecated
   public boolean isAllowSystemNotifications() {
     return this.allowSystemNotifications;
   }
@@ -188,6 +189,7 @@ public class Truck extends ModelEntity implements Serializable {
     return hidden;
   }
 
+  @Deprecated
   public boolean isTwitterGeolocationDataValid() {
     return twitterGeolocationDataValid;
   }

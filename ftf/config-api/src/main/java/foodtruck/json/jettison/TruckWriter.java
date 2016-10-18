@@ -12,8 +12,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
-import com.google.inject.Inject;
-
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -27,11 +25,6 @@ import foodtruck.model.Truck;
 public class TruckWriter implements JSONWriter<Truck>, MessageBodyWriter<Truck> {
 
   @Override public JSONObject asJSON(Truck truck) throws JSONException {
-    /*
-  private @Nullable String phoneticMarkup;
-  private ImmutableList<String> phoneticAliases;
-
-     */
     JSONObject obj = new JSONObject()
         .put("id", truck.getId())
         .put("iconUrl", truck.getIconUrl())
