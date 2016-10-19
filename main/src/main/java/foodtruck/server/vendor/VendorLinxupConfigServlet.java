@@ -69,9 +69,16 @@ public class VendorLinxupConfigServlet extends VendorServletSupport {
     }
     LinxupAccount account = accountDAO.findByTruck(truckId);
     if (account == null) {
-      account = new LinxupAccount(null, userName, password, truckId);
+      account = LinxupAccount.builder()
+          .username(userName)
+          .password(password)
+          .truckId(truckId)
+          .build();
     } else {
-      account = new LinxupAccount((Long) account.getKey(), userName, password, account.getTruckId());
+      account = LinxupAccount.builder(account)
+          .username(userName)
+          .password(password)
+          .build();
     }
     accountDAO.save(account);
     try {

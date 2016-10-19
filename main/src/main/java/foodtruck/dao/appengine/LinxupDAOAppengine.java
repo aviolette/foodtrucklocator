@@ -34,9 +34,13 @@ public class LinxupDAOAppengine extends AppEngineDAO<Long, LinxupAccount> implem
 
   @Override
   protected LinxupAccount fromEntity(Entity entity) {
-    return new LinxupAccount(entity.getKey()
-        .getId(), getStringProperty(entity, "username"), getStringProperty(entity, "password"),
-        getStringProperty(entity, "truck_id"));
+    return LinxupAccount.builder()
+        .key(entity.getKey()
+            .getId())
+        .username(getStringProperty(entity, "username"))
+        .password(getStringProperty(entity, "password"))
+        .truckId(getStringProperty(entity, "truck_id"))
+        .build();
   }
 
   @Nullable
