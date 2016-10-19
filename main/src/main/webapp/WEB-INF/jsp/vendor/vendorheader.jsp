@@ -70,5 +70,5 @@
       </div>
     </noscript>
 
-    <div id="flash" style="display:none" class="alert alert-info">
+    <div id="flash" class="alert alert-warning hidden">
     </div>

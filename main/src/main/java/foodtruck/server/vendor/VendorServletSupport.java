@@ -203,4 +203,8 @@ public abstract class VendorServletSupport extends HttpServlet {
     Principal principal = (Principal)session.getProperty("principal");
     return principal == null ? request.getUserPrincipal() : principal;
   }
+
+  protected void flash(String message, HttpServletResponse resp) {
+    resp.setHeader("Set-Cookie", "flash=" + message + ";Max-Age=30000");
+  }
 }

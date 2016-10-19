@@ -64,7 +64,8 @@ public class VendorLinxupConfigServlet extends VendorServletSupport {
     String userName = req.getParameter("username");
     String password = req.getParameter("password");
     if (Strings.isNullOrEmpty(userName) || Strings.isNullOrEmpty(password)) {
-      resp.sendError(400);
+      flash("Username and password need to be specified", resp);
+      resp.sendRedirect("/vendor/linxup/" + truckId);
       return;
     }
     LinxupAccount account = accountDAO.findByTruck(truckId);
@@ -84,7 +85,8 @@ public class VendorLinxupConfigServlet extends VendorServletSupport {
     try {
       service.synchronizeFor(account);
     } catch (ServiceException se) {
-      resp.sendError(400, se.getMessage());
+      flash(se.getMessage(), resp);
+      resp.sendRedirect("/vendor/linxup/" + truckId);
       return;
     }
     resp.sendRedirect("/vendor");

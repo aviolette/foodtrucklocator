@@ -12,7 +12,6 @@
     <label class="control-label" for="password">Password</label>
     <input class="form-control" name="password" id="password" type="password"/>
   </div>
-  <a href="/vendor">Back</a>
   <div class="btn-group">
     <input type="submit" class="btn btn-primary btn-lg" value="Save"/>
   </div>
