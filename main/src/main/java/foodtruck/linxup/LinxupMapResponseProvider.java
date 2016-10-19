@@ -49,7 +49,6 @@ public class LinxupMapResponseProvider implements MessageBodyReader<LinxupMapRes
           JSONObject posObj = positionsArr.getJSONObject(i);
           double lat = posObj.getDouble("latitude"), lng = posObj.getDouble("longitude");
           Position.Builder positionBuilder = Position.builder()
-              .altitude(posObj.getInt("altitude"))
               .date(new DateTime(posObj.getLong("date")))
               .direction(posObj.getInt("direction"))
               .speedMph(posObj.getInt("speed"))

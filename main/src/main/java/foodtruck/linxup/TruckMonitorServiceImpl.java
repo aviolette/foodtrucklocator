@@ -277,13 +277,18 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
           .name("UNKNOWN")
           .build();
       // TODO: it would be nice if the actual device could calculate this, but for now we look to see if it changed.
-      boolean parked = position.getSpeedMph() == 0 &&
-          (device.getLastLocation() == null || device.getLastLocation().within(0.05).milesOf(location));
+      boolean parked = position.getSpeedMph() == 0 && (device == null || device.getLastLocation() == null || device.getLastLocation()
+          .within(0.05)
+          .milesOf(location));
+      boolean atBlacklisted = false;
+      if (device != null) {
+        atBlacklisted = atBlacklistedLocation(device.getTruckOwnerId(), device.getLastLocation(), blacklistCache);
+      }
       builder.deviceNumber(position.getDeviceNumber())
           .lastLocation(locator.reverseLookup(location))
           .parked(parked)
           .truckOwnerId(truckId)
-          .atBlacklistedLocation(atBlacklistedLocation(device.getTruckOwnerId(), device.getLastLocation(), blacklistCache))
+          .atBlacklistedLocation(atBlacklisted)
           .lastBroadcast(position.getDate())
           .label(position.getVehicleLabel());
       TrackingDevice theDevice = builder.build();

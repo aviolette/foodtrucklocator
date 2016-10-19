@@ -16,7 +16,6 @@ public class Position {
   private final DateTime date;
   private final String vehicleLabel;
   private final LatLng latLng;
-  private final long altitude;
   private final int direction;
   private final int speedMph;
   private final boolean speeding;
@@ -31,7 +30,6 @@ public class Position {
     this.date = builder.date;
     this.vehicleLabel = builder.vehicleLabel;
     this.latLng = builder.latLng;
-    this.altitude = builder.altitude;
     this.direction = builder.direction;
     this.speedMph = builder.speedMph;
     this.speeding = builder.speeding;
@@ -57,10 +55,6 @@ public class Position {
 
   public LatLng getLatLng() {
     return latLng;
-  }
-
-  public long getAltitude() {
-    return altitude;
   }
 
   public int getDirection() {
@@ -93,7 +87,6 @@ public class Position {
         .add("Date", date)
         .add("Vehicle Label", vehicleLabel)
         .add("Lat / Lng", latLng)
-        .add("Altitude", altitude)
         .add("Direction", direction)
         .add("Speed (in mph)", speedMph)
         .add("Speeding", speeding)
@@ -111,7 +104,6 @@ public class Position {
     private DateTime date;
     private String vehicleLabel;
     private LatLng latLng;
-    private long altitude;
     private int direction;
     private int speedMph;
     private boolean speeding;
@@ -128,7 +120,6 @@ public class Position {
       this.date = position.date;
       this.vehicleLabel = position.vehicleLabel;
       this.latLng = position.latLng;
-      this.altitude = position.altitude;
       this.direction = position.direction;
       this.speedMph = position.speedMph;
       this.speeding = position.speeding;
@@ -176,11 +167,6 @@ public class Position {
 
     Builder latLng(LatLng position) {
       this.latLng = position;
-      return this;
-    }
-
-    Builder altitude(long altitude) {
-      this.altitude = altitude;
       return this;
     }
 

@@ -36,7 +36,6 @@ public class LinxupMapResponseProviderTest {
     Position pos = providerResponse.getPositions().get(0);
     assertEquals("Vehicle One", pos.getVehicleLabel());
     assertEquals(new LatLng(38.6558, -90.5618), pos.getLatLng());
-    assertEquals(174, pos.getAltitude());
     assertEquals(163, pos.getDirection());
     assertEquals(80, pos.getSpeedMph());
     assertEquals(true, pos.isSpeeding());
