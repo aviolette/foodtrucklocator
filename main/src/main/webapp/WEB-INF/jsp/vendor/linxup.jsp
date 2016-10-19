@@ -18,4 +18,5 @@
   </div>
 </form>
 
+<%@ include file="../include/core_js.jsp" %>
 <%@ include file="vendorfooter.jsp" %>
