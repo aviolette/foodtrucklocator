@@ -246,7 +246,8 @@ public class TruckStopMatcher {
   }
 
   private void handleTimeRange(Story tweet, TruckStop.Builder tsBuilder) {
-    Matcher m = timeRangePattern.matcher(removePhone(tweet.getText()) + " ");
+    String input = removePhone(tweet.getText()) + " ";
+    Matcher m = timeRangePattern.matcher(input);
     if (m.find()) {
       final LocalDate date = tweet.getTime().toLocalDate();
       tsBuilder.startTime(parseTime(m.group(1), date, null));
@@ -262,6 +263,16 @@ public class TruckStopMatcher {
       } else if (tsBuilder.hasTimes() && tweet.getTime().getHourOfDay() < 12 && tsBuilder.startTime().getHourOfDay() == 19 && tsBuilder.hasCategory("Breakfast")) {
         tsBuilder.startTime(tsBuilder.startTime().minusHours(12));
         tsBuilder.endTime(tsBuilder.endTime().minusHours(12));
+      }
+    } else if (input.replace(" ", "")
+        .contains("11:30-1:30")) {
+      final LocalDate date = tweet.getTime()
+          .toLocalDate();
+      DateTime elevenThirty = date.toDateTime(new LocalTime(11, 30), clock.zone());
+      if (tweet.getTime()
+          .isBefore(elevenThirty)) {
+        tsBuilder.startTime(elevenThirty);
+        tsBuilder.endTime(elevenThirty.plusHours(2));
       }
     }
   }
