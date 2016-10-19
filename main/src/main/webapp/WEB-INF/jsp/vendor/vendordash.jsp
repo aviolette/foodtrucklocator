@@ -31,20 +31,33 @@
 <div class="row">
   <div class="col-md-12">
     <h2>Beacons </h2>
-    <table class="table">
+    <c:choose>
+      <c:when test="${!empty(linxupAccount)}">
+        <table class="table">
           <thead>
-            <tr>
-              <th>Name</th>
-              <th class="large-screen-only">Device Id</th>
-              <th>Last Broadcast</th>
-              <th class="large-screen-only">Last Checked</th>
-              <th>Status</th>
-              <th>&nbsp;</th>
-            </tr>
+          <tr>
+            <th>Name</th>
+            <th class="large-screen-only">Device Id</th>
+            <th>Last Broadcast</th>
+            <th class="large-screen-only">Last Checked</th>
+            <th>Status</th>
+            <th>&nbsp;</th>
+          </tr>
           </thead>
           <tbody id="beacons">
           </tbody>
         </table>
+      </c:when>
+      <c:otherwise>
+        <div class="alert alert-info" role="alert">
+          <p>Beacons are hardware devices that you plug into your trucks' OBDII port or wire into their ignition.
+            These devices broadcast a GPS signal that allows my site to accurately track your truck as it moves about
+            the city. If you are interested in purchasing one of these devices for your truck, contact me at
+            847-863-4992 or aviolette@gmail.com. If you already purchased one, you must
+            <a href="/vendor/linxup/${truck.id}" class="alert-link">enable it by logging in</a>. </p>
+        </div>
+      </c:otherwise>
+    </c:choose>
   </div>
 </div>
 <%@ include file="../include/core_js.jsp" %>

@@ -23,6 +23,7 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import foodtruck.dao.LinxupAccountDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Location;
@@ -39,19 +40,22 @@ public class VendorServlet extends VendorServletSupport {
   private static final String JSP = "/WEB-INF/jsp/vendor/vendordash.jsp";
   private final LocationDAO locationDAO;
   private final StaticConfig config;
+  private final LinxupAccountDAO linxupAccountDAO;
 
   @Inject
   public VendorServlet(TruckDAO dao, LocationDAO locationDAO, Provider<Session> sessionProvider,
-      UserService userService, StaticConfig config) {
+      UserService userService, StaticConfig config, LinxupAccountDAO linxupAccountDAO) {
     super(dao, sessionProvider, userService, locationDAO);
     this.locationDAO = locationDAO;
     this.config = config;
+    this.linxupAccountDAO = linxupAccountDAO;
   }
 
   @Override protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable Truck truck)
       throws ServletException, IOException {
     if (truck != null) {
       req.setAttribute("categories", new JSONArray(truck.getCategories()));
+      req.setAttribute("linxupAccount", linxupAccountDAO.findByTruck(truck.getId()));
     }
     final List<Location> autocompleteLocations = locationDAO.findAutocompleteLocations();
     List<String> locationNames = ImmutableList.copyOf(Iterables.transform(autocompleteLocations, Location.TO_NAME));
