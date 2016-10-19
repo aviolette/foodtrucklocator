@@ -78,14 +78,20 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
   @Override
   public void synchronize() {
     for (LinxupAccount account : linxupAccountDAO.findActive()) {
-      List<Position> positionList = connector.findPositions(account);
-      try {
-        merge(synchronize(positionList, account.getTruckId()));
-      } catch (ExecutionException e) {
-        throw Throwables.propagate(e);
-      }
+      synchronizeFor(account);
     }
   }
+
+  @Override
+  public void synchronizeFor(LinxupAccount account) {
+    List<Position> positionList = connector.findPositions(account);
+    try {
+      merge(synchronize(positionList, account.getTruckId()));
+    } catch (ExecutionException e) {
+      throw Throwables.propagate(e);
+    }
+  }
+
 
   @Override
   public void enableDevice(Long beaconId, boolean enabled) {

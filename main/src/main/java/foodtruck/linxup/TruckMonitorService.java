@@ -1,5 +1,7 @@
 package foodtruck.linxup;
 
+import foodtruck.model.LinxupAccount;
+
 /**
  * @author aviolette
  * @since 8/4/16
@@ -10,6 +12,8 @@ public interface TruckMonitorService {
    * stops with data that is retrieved.
    */
   void synchronize();
+
+  void synchronizeFor(LinxupAccount account);
 
   /**
    * Enables or disables the beacon.  If a beacon is disabled, existing any active stops

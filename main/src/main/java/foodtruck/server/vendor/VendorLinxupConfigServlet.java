@@ -16,9 +16,11 @@ import com.google.inject.Singleton;
 import foodtruck.dao.LinxupAccountDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
+import foodtruck.linxup.TruckMonitorService;
 import foodtruck.model.LinxupAccount;
 import foodtruck.model.Truck;
 import foodtruck.server.GuiceHackRequestWrapper;
+import foodtruck.util.ServiceException;
 import foodtruck.util.Session;
 
 /**
@@ -29,12 +31,14 @@ import foodtruck.util.Session;
 public class VendorLinxupConfigServlet extends VendorServletSupport {
   private static final String JSP = "/WEB-INF/jsp/vendor/linxup.jsp";
   private final LinxupAccountDAO accountDAO;
+  private final TruckMonitorService service;
 
   @Inject
   public VendorLinxupConfigServlet(TruckDAO dao, Provider<Session> sessionProvider, UserService userService,
-      LocationDAO locationDAO, LinxupAccountDAO linxupAccountDAO) {
+      LocationDAO locationDAO, LinxupAccountDAO linxupAccountDAO, TruckMonitorService service) {
     super(dao, sessionProvider, userService, locationDAO);
     this.accountDAO = linxupAccountDAO;
+    this.service = service;
   }
 
   @Override
@@ -70,6 +74,12 @@ public class VendorLinxupConfigServlet extends VendorServletSupport {
       account = new LinxupAccount((Long) account.getKey(), userName, password, account.getTruckId());
     }
     accountDAO.save(account);
+    try {
+      service.synchronizeFor(account);
+    } catch (ServiceException se) {
+      resp.sendError(400, se.getMessage());
+      return;
+    }
     resp.sendRedirect("/vendor");
   }
 }
