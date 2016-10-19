@@ -80,7 +80,7 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
     for (LinxupAccount account : linxupAccountDAO.findActive()) {
       List<Position> positionList = connector.findPositions(account);
       try {
-        merge(synchronize(positionList));
+        merge(synchronize(positionList, account.getTruckId()));
       } catch (ExecutionException e) {
         throw Throwables.propagate(e);
       }
@@ -240,7 +240,7 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
    * Synchronize what is returned with existing tracking devices in the DB.  If there is new information, update it in
    * DB.
    */
-  private List<TrackingDevice> synchronize(List<Position> positions) throws ExecutionException {
+  private List<TrackingDevice> synchronize(List<Position> positions, String truckId) throws ExecutionException {
     // wish I had streams here
     Map<String, TrackingDevice> deviceMap = Maps.newHashMap();
     for (TrackingDevice device : trackingDeviceDAO.findAll()) {
@@ -276,6 +276,7 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
       builder.deviceNumber(position.getDeviceNumber())
           .lastLocation(locator.reverseLookup(location))
           .parked(parked)
+          .truckOwnerId(truckId)
           .atBlacklistedLocation(atBlacklistedLocation(device.getTruckOwnerId(), device.getLastLocation(), blacklistCache))
           .lastBroadcast(position.getDate())
           .label(position.getVehicleLabel());
