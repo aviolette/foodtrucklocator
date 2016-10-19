@@ -1,6 +1,8 @@
 <%@include file="../common.jsp" %>
 <h2 id="truck-widget-header">Schedule</h2>
-<p>It may take up to <em>8 minutes</em> before the changes made here are reflected on the website.</p>
+<div class="alert alert-info" role="alert">
+  <p>It may take up to <em>8 minutes</em> before the changes made here are reflected on the website.</p>
+</div>
 
 <div class="btn-group" style="margin-bottom:20px">
   <button class="btn" id="scheduleListButton"><span class="glyphicon glyphicon-list"></span></button>
