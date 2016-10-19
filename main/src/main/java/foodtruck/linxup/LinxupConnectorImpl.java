@@ -8,6 +8,7 @@ import javax.ws.rs.core.MediaType;
 import com.google.inject.Inject;
 import com.sun.jersey.api.client.WebResource;
 
+import foodtruck.model.LinxupAccount;
 import foodtruck.util.ServiceException;
 
 /**
@@ -16,21 +17,19 @@ import foodtruck.util.ServiceException;
  */
 class LinxupConnectorImpl implements LinxupConnector {
   private final WebResource resource;
-  private final LinxupMapRequest mapRequest;
 
   @Inject
-  public LinxupConnectorImpl(@LinxupEndpoint WebResource resource, LinxupMapRequest mapRequest) {
+  public LinxupConnectorImpl(@LinxupEndpoint WebResource resource) {
     this.resource = resource;
-    this.mapRequest = mapRequest;
   }
 
   @Override
-  public List<Position> findPositions() {
+  public List<Position> findPositions(LinxupAccount account) {
     LinxupMapResponse response = resource
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
         .header(HttpHeaders.ACCEPT_ENCODING, "gzip,deflate")
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-        .entity(mapRequest)
+        .entity(new LinxupMapRequest(account.getUsername(), account.getPassword()))
         .post(LinxupMapResponse.class);
     if (response.isSuccessful()) {
       return response.getPositions();

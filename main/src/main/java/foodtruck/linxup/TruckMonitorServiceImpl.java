@@ -23,11 +23,13 @@ import com.google.inject.Inject;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 
+import foodtruck.dao.LinxupAccountDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TrackingDeviceDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.geolocation.GeoLocator;
+import foodtruck.model.LinxupAccount;
 import foodtruck.model.Location;
 import foodtruck.model.StopOrigin;
 import foodtruck.model.TrackingDevice;
@@ -53,12 +55,13 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
   private final DateTimeFormatter formatter;
   private final SecurityChecker securityChecker;
   private final NotificationService notificationService;
+  private final LinxupAccountDAO linxupAccountDAO;
 
   @Inject
   public TruckMonitorServiceImpl(TruckStopDAO truckStopDAO, LinxupConnector connector,
       TrackingDeviceDAO trackingDeviceDAO, GeoLocator locator, Clock clock, TruckDAO truckDAO,
       @FriendlyDateTimeFormat DateTimeFormatter formatter, LocationDAO locationDAO, SecurityChecker securityChecker,
-      NotificationService notificationService) {
+      NotificationService notificationService, LinxupAccountDAO linxupAccountDAO) {
     this.connector = connector;
     this.truckStopDAO = truckStopDAO;
     this.trackingDeviceDAO = trackingDeviceDAO;
@@ -69,15 +72,18 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
     this.locationDAO = locationDAO;
     this.securityChecker = securityChecker;
     this.notificationService = notificationService;
+    this.linxupAccountDAO = linxupAccountDAO;
   }
 
   @Override
   public void synchronize() {
-    List<Position> positionList = connector.findPositions();
-    try {
-      merge(synchronize(positionList));
-    } catch (ExecutionException e) {
-      throw Throwables.propagate(e);
+    for (LinxupAccount account : linxupAccountDAO.findActive()) {
+      List<Position> positionList = connector.findPositions(account);
+      try {
+        merge(synchronize(positionList));
+      } catch (ExecutionException e) {
+        throw Throwables.propagate(e);
+      }
     }
   }
 

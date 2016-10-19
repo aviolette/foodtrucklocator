@@ -30,8 +30,9 @@
 </div>
 <div class="row">
   <div class="col-md-12">
-    <h2>Beacons</h2>
-        <table class="table">
+    <h2>Beacons </h2>
+    <a href="/vendor/linxup/${truck.id}">(Edit Configuration)</a>
+    <table class="table">
           <thead>
             <tr>
               <th>Name</th>
