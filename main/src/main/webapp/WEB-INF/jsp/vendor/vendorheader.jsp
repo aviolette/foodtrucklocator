@@ -42,16 +42,16 @@
             <li <c:if test="${tab == 'vendorhome'}"> class="active"</c:if>><a href="/vendor">Dashboard</a></li>
             <c:if test="${!empty(truck)}">
               <li <c:if test="${tab == 'menu'}"> class="active"</c:if>><a href="/vendor/menu/${truck.id}">Menu</a></li>
+              <li <c:if test="${tab == 'profile'}"> class="active"</c:if>><a
+                  href="/vendor/settings/${truck.id}">General</a></li>
+              <li <c:if test="${tab == 'linxup'}"> class="active"</c:if>><a
+                  href="/vendor/linxup/${truck.id}">Beacons</a></li>
             </c:if>
           </ul>
           <ul class="nav navbar-nav pull-right">
             <c:if test="${!empty(vendorIconUrl)}">
               <li><img src="${vendorIconUrl.protocolRelative}" alt="${vendorIconDescription}" class="img-circle"
                        width="48" height="48"></li>
-            </c:if>
-            <c:if test="${!empty(truck)}">
-              <li><a title="profile" href="/vendor/settings/${truck.id}" class="btn btn-block"><span
-                  class="glyphicon glyphicon-user"></span> </a></li>
             </c:if>
             <li><a title="home page" class="btn btn-block" href="/"><span class="glyphicon glyphicon-home"></span> </a>
             </li>

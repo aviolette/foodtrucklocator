@@ -42,7 +42,7 @@ public class VendorSettingsServlet extends VendorServletSupport {
   @Override protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable Truck truck)
       throws ServletException, IOException {
     req = new GuiceHackRequestWrapper(req, JSP);
-    req.setAttribute("tab", "trucksettings");
+    req.setAttribute("tab", "profile");
     req.getRequestDispatcher(JSP).forward(req, resp);
   }
 

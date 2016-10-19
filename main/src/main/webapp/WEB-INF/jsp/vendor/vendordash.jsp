@@ -31,7 +31,6 @@
 <div class="row">
   <div class="col-md-12">
     <h2>Beacons </h2>
-    <a href="/vendor/linxup/${truck.id}">(Edit Configuration)</a>
     <table class="table">
           <thead>
             <tr>
