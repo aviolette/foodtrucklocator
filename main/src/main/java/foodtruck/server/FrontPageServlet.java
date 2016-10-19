@@ -38,7 +38,7 @@ public abstract class FrontPageServlet extends HttpServlet {
     req.setAttribute("suffix", "-fluid");
     req.setAttribute("googleApiKey", staticConfig.getGoogleJavascriptApiKey());
     req.setAttribute("mapButtons", System.getProperty("foodtrucklocator.map.buttons",
-        "[{name:'University of Chicago', " + "latitude: 41.790628999999996, longitude:-87.60130099999999}, {name:'Downtown', latitude: 41.888141, longitude: -87.635352}]"));
+        "[{name:'University of Chicago', " + "latitude: 41.790628999999996, longitude:-87.60130099999999}, {name:'Downtown', latitude: 41.8806818, longitude: -87.6330294}]"));
     req.setAttribute("showBoozy", !"false".equals(System.getProperty("foodtrucklocator.showBoozy")));
     req.setAttribute("showWeekly", !"false".equals(System.getProperty("foodtrucklocator.showWeekly")));
     req.setAttribute("showAbout", !"false".equals(System.getProperty("foodtrucklocator.showAbout")));

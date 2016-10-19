@@ -641,7 +641,7 @@ var FoodTruckLocator = function () {
 
       $.each(buttons, function (idx, button) {
         _map.controls[google.maps.ControlPosition.TOP_LEFT].push(zoomWidget(button.name, function () {
-          _map.setZoom(16);
+          _map.setZoom(15);
           _map.setCenter(new google.maps.LatLng(button.latitude, button.longitude));
           refreshViewData();
         }));
