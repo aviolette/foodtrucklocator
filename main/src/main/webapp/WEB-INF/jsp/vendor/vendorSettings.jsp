@@ -21,7 +21,7 @@
     <label for="description">Description</label>
     <textarea class="form-control" id="description" name="description">${truck.description}</textarea>
   </div>
-  <button id="settingsButton" type="button" class="btn btn-primary">Submit</button>
+  <button id="settingsButton" type="button" class="btn btn-primary">Save</button>
 </form>
 <%@ include file="../include/core_js.jsp" %>
 <script type="text/javascript">

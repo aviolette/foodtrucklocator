@@ -12,8 +12,13 @@
     <label class="control-label" for="password">Password</label>
     <input class="form-control" name="password" id="password" type="password"/>
   </div>
+  <c:if test="${!empty(username)}">
+    <div class="btn-group">
+      <input type="submit" name="action" class="btn btn-danger" id="unlinkButton" value="Unlink Account"/>
+    </div>
+  </c:if>
   <div class="btn-group">
-    <input type="submit" class="btn btn-primary btn-lg" value="Save"/>
+    <input type="submit" class="btn btn-primary" value="Save"/>
   </div>
 </form>
 

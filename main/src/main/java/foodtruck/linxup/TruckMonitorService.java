@@ -21,4 +21,6 @@ public interface TruckMonitorService {
    * device.
    */
   void enableDevice(Long deviceId, boolean enabled);
+
+  void removeDevicesFor(String truckId);
 }

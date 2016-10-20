@@ -60,7 +60,14 @@ public class VendorLinxupConfigServlet extends VendorServletSupport {
 
   @Override
   protected void dispatchPost(HttpServletRequest req, HttpServletResponse resp, String truckId) throws IOException {
-    super.dispatchPost(req, resp, truckId);
+    if ("Unlink Account".equals(req.getParameter("action"))) {
+      LinxupAccount account = accountDAO.findByTruck(truckId);
+      accountDAO.delete((Long) account.getKey());
+      service.removeDevicesFor(truckId);
+      resp.sendRedirect("/vendor");
+      return;
+    }
+
     String userName = req.getParameter("username");
     String password = req.getParameter("password");
     if (Strings.isNullOrEmpty(userName) || Strings.isNullOrEmpty(password)) {

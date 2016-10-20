@@ -109,6 +109,13 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
     }
   }
 
+  @Override
+  public void removeDevicesFor(String truckId) {
+    for (TrackingDevice device : trackingDeviceDAO.findByTruckId(truckId)) {
+      trackingDeviceDAO.delete(device.getId());
+    }
+  }
+
   /**
    * Takes the device data the was retrieved and create/update/deletes an existing stops based on the data.
    * @param devices the list of devices retrieved
