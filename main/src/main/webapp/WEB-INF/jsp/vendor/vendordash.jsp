@@ -69,6 +69,8 @@
     TruckMap.init()
 
     function refreshBeacons() {
+      <c:if test="${!empty(linxupAccount)}">
+
       $.ajax({
         url: "/services/trucks/${truck.id}/beacons",
         type: 'GET',
@@ -125,6 +127,7 @@
           });
         }
       })
+      </c:if>
     }
 
     TruckScheduleWidget.init("${truck.id}", ${locations}, ${categories}, {
@@ -146,8 +149,7 @@
     setInterval(function() {
       console.log("Refreshing...");
       TruckScheduleWidget.refresh();
-    }, 60000);
-
+    }, 360000);
 
   })();
 </script>
