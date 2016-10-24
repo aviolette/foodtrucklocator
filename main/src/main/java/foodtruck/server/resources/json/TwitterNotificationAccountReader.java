@@ -48,8 +48,8 @@ public class TwitterNotificationAccountReader implements MessageBodyReader<Twitt
       TwitterNotificationAccount.Builder builder = TwitterNotificationAccount.builder();
 
       builder.location(geoLocator.locate(obj.getString("location"), GeolocationGranularity.NARROW));
-      return builder.oauthToken(obj.getString("token"))
-          .oauthTokenSecret(obj.getString("tokenSecret"))
+      return builder.oauthToken(obj.optString("token"))
+          .oauthTokenSecret(obj.optString("tokenSecret"))
           .twitterHandle(obj.getString("twitterHandle"))
           .active(obj.optBoolean("active", true))
           .name(obj.getString("name"))

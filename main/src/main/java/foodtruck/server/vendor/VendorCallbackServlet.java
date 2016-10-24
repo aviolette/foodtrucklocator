@@ -13,7 +13,9 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
+import foodtruck.dao.TwitterNotificationAccountDAO;
 import foodtruck.email.EmailNotifier;
+import foodtruck.model.TwitterNotificationAccount;
 import foodtruck.server.security.SimplePrincipal;
 import foodtruck.util.Session;
 import twitter4j.Twitter;
@@ -32,11 +34,14 @@ public class VendorCallbackServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(VendorCallbackServlet.class.getName());
   private final Provider<Session> sessionProvider;
   private final EmailNotifier emailNotifier;
+  private final TwitterNotificationAccountDAO twitterNotificationDAO;
 
   @Inject
-  public VendorCallbackServlet(Provider<Session> sessionProvider, EmailNotifier emailNotifier) {
+  public VendorCallbackServlet(Provider<Session> sessionProvider, EmailNotifier emailNotifier,
+      TwitterNotificationAccountDAO twitterNotificationAccountDAO) {
     this.sessionProvider = sessionProvider;
     this.emailNotifier = emailNotifier;
+    this.twitterNotificationDAO = twitterNotificationAccountDAO;
   }
 
   @Override
@@ -49,12 +54,22 @@ public class VendorCallbackServlet extends HttpServlet {
       @SuppressWarnings("ConstantConditions")
       AccessToken token = twitter.getOAuthAccessToken(requestToken, verifier);
       String screenName = token.getScreenName();
-      log.log(Level.INFO, "User {0} logged on via twitter", screenName);
-      session.setProperty("principal", new SimplePrincipal(screenName));
-      session.removeProperty("requestToken");
-      session.removeProperty("twitter");
-      emailNotifier.systemNotifyVendorPortalLogin(screenName, LoginMethod.TWITTER);
-      resp.sendRedirect("/vendor");
+      TwitterNotificationAccount notificationAccount = twitterNotificationDAO.findByTwitterHandle(screenName);
+      if (notificationAccount != null) {
+        notificationAccount = TwitterNotificationAccount.builder(notificationAccount)
+            .oauthToken(token.getToken())
+            .oauthTokenSecret(token.getTokenSecret())
+            .build();
+        twitterNotificationDAO.save(notificationAccount);
+        resp.sendRedirect("/admin");
+      } else {
+        log.log(Level.INFO, "User {0} logged on via twitter", screenName);
+        session.setProperty("principal", new SimplePrincipal(screenName));
+        session.removeProperty("requestToken");
+        session.removeProperty("twitter");
+        emailNotifier.systemNotifyVendorPortalLogin(screenName, LoginMethod.TWITTER);
+        resp.sendRedirect("/vendor");
+      }
     } catch (TwitterException e) {
       throw new ServletException(e);
     }

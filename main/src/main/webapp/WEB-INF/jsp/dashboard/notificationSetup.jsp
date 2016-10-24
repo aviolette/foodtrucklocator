@@ -49,14 +49,6 @@
           <label for="location">Location</label>
           <input id="location" class="form-control" type="text"/>
         </div>
-        <div class="form-group">
-          <label for="token">Token</label>
-          <input class="form-control" id="token" type="text"/>
-        </div>
-        <div class="form-group">
-          <label for="tokenSecret">Secret</label>
-          <input class="form-control" id="tokenSecret" type="text"/>
-        </div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
@@ -153,7 +145,7 @@
           $("#edit-notification").modal('hide');
         },
         success: function(e) {
-          refreshList();
+          location.href = '/admin/notifications/new'
         }
       });
 
