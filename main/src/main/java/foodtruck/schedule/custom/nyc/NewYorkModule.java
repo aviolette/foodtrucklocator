@@ -39,7 +39,7 @@ public class NewYorkModule extends AbstractModule {
         new Spot("60th/columbus", "60th and Columbus, New York, NY"),
         new Spot("madison/58", "Madison and 58th, New York, NY"),
         new Spot("49th st in between 6th and 7th ave", "49th and 6th, New York, NY"),
-        new Spot("49th/6th", "49th and 6th, New York, NY"),
+        new Spot("49th/6th", "49th and 6th, New York, NY"), new Spot("6th/broadway", "49th and Broadway, New York, NY"),
         new Spot("30-30 47th ave", "30-30 47th Ave, Long Island City, NY"),
         new Spot("hudson/king", "Hudson and King, New York, NY"), new Spot("metrotech", "metrotech"));
   }
