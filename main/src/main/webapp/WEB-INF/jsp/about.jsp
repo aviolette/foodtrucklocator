@@ -12,7 +12,9 @@
 
     <p>I am currently working on some new ways to accomplish notifications, but these are your best bets:</p>
     <h3>Chrome Extension</h3>
-    <p>The <a href="">Food Truck Finder Notifier</a> chrome extension is in the Chrome store. This puts an icon on your
+    <p>The <a
+        href="https://chrome.google.com/webstore/detail/food-truck-finder-notifie/hapnieohgibnoaldifflafpcflcicdlc">Food
+      Truck Finder Notifier</a> chrome extension is in the Chrome store. This puts an icon on your
       Chrome toolbar that indicates how many food trucks are nearby.</p>
 
     <h3>Location-specific Twitter Accounts</h3>
