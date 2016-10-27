@@ -31,7 +31,7 @@ public class NewYorkModule extends AbstractModule {
   @Provides
   @Singleton
   public ImmutableList<Spot> provideCommonSpots() {
-    return ImmutableList.of(new Spot("old slip/water", "Old Slip and Water, New York, NY"), new Spot("dumbo", "DUMBO"),
+    return ImmutableList.of(new Spot("slip/water", "Old Slip and Water, New York, NY"), new Spot("dumbo", "DUMBO"),
         new Spot("water/jay", "Water and Jay, New York, NY"), new Spot("park/33", "Park and 33rd, New York, NY"),
         new Spot("91/columbus", "91th and Columbus, New York, NY"),
         new Spot("broadway/55", "Broadway and 55th, New York, NY"),
