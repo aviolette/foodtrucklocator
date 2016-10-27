@@ -63,6 +63,7 @@ public class VendorCallbackServlet extends HttpServlet {
         twitterNotificationDAO.save(notificationAccount);
         resp.sendRedirect("/admin");
       } else {
+        screenName = screenName.toLowerCase();
         log.log(Level.INFO, "User {0} logged on via twitter", screenName);
         session.setProperty("principal", new SimplePrincipal(screenName));
         session.removeProperty("requestToken");

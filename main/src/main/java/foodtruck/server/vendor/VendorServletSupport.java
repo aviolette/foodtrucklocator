@@ -78,7 +78,7 @@ public abstract class VendorServletSupport extends HttpServlet {
           dispatchGet(req, resp, location);
         }
       }
-    } else if (trucks.size() == 1) {
+    } else {
       req.setAttribute("logoutUrl", getLogoutUrl(userPrincipal));
       Truck truck = Iterables.getFirst(trucks, null);
       req.setAttribute("truck", truck);
@@ -86,6 +86,11 @@ public abstract class VendorServletSupport extends HttpServlet {
       req.setAttribute("vendorIconDescription", truck.getName());
       log.log(Level.INFO, "User {0}", userPrincipal.getName());
       dispatchGet(req, resp, truck);
+    }
+
+    if (trucks.size() > 1) {
+      log.log(Level.SEVERE, "Multiple trucks returned for {0}. Using first one {1}",
+          new Object[]{userPrincipal, trucks});
     }
     // TODO implement multiple trucks and multiple locations associated with a user account
   }
