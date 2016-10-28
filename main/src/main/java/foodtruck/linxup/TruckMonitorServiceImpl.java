@@ -3,6 +3,8 @@ package foodtruck.linxup;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.WebApplicationException;
@@ -45,6 +47,7 @@ import foodtruck.util.FriendlyDateTimeFormat;
  * @since 8/4/16
  */
 class TruckMonitorServiceImpl implements TruckMonitorService {
+  private static final Logger log = Logger.getLogger(TruckMonitorServiceImpl.class.getName());
   private final LinxupConnector connector;
   private final TrackingDeviceDAO trackingDeviceDAO;
   private final LocationDAO locationDAO;
@@ -132,8 +135,9 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
     for (TrackingDevice device : devices) {
       if (!device.isEnabled() || !device.isParked() || device.isAtBlacklistedLocation() ||
           device.getLastLocation() == null) {
-          //noinspection ConstantConditions
-          cancelAnyStops(device, stopCache.get(device.getTruckOwnerId()));
+        log.log(Level.INFO, "Canceling stops for device: {0}", device);
+        //noinspection ConstantConditions
+        cancelAnyStops(device, stopCache.get(device.getTruckOwnerId()));
         continue;
       }
       mergeTruck(device, stopCache);

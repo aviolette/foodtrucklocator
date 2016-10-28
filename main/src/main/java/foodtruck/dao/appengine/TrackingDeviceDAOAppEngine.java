@@ -71,8 +71,8 @@ class TrackingDeviceDAOAppEngine extends AppEngineDAO<Long, TrackingDevice> impl
         .deviceNumber(fe.stringVal(DEVICE_NUMBER))
         .label(fe.stringVal(LABEL))
         .atBlacklistedLocation(fe.booleanVal(BLACKLISTED))
-        .lastModified(fe.dateVal(LAST_MODIFIED))
-        .lastBroadcast(fe.dateVal(LAST_BROADCAST))
+        .lastModified(fe.dateVal(LAST_MODIFIED, clock.zone()))
+        .lastBroadcast(fe.dateVal(LAST_BROADCAST, clock.zone()))
         .enabled(fe.booleanVal(ENABLED))
         .key(fe.longId())
         .build();

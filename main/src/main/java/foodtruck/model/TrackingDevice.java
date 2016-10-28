@@ -2,6 +2,7 @@ package foodtruck.model;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 
 import org.joda.time.DateTime;
@@ -85,6 +86,21 @@ public class TrackingDevice extends ModelEntity {
 
   public Long getId() {
     return (Long) getKey();
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("label", label)
+        .add("device number", deviceNumber)
+        .add("enabled", enabled)
+        .add("truck owner", truckOwnerId)
+        .add("last broadcast", lastBroadcast)
+        .add("last modified", lastModified)
+        .add("last location", lastLocation)
+        .add("parked", parked)
+        .add("at blacklisted location", atBlacklistedLocation)
+        .toString();
   }
 
   public static class Builder {

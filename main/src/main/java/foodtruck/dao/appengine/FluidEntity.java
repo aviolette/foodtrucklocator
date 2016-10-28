@@ -3,6 +3,7 @@ package foodtruck.dao.appengine;
 import com.google.appengine.api.datastore.Entity;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import static foodtruck.dao.appengine.Attributes.getDateTime;
 import static foodtruck.dao.appengine.Attributes.getDoubleProperty;
@@ -45,6 +46,10 @@ public class FluidEntity {
 
   public DateTime dateVal(String label) {
     return getDateTime(entity, label, null);
+  }
+
+  public DateTime dateVal(String label, DateTimeZone zone) {
+    return getDateTime(entity, label, zone);
   }
 
   public boolean booleanVal(String propertyName) {

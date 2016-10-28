@@ -63,6 +63,4 @@
   </script>
 </c:if>
 
-${beacon.lastModified}
-
 <%@include file="dashboardFooterBS3.jsp" %>
