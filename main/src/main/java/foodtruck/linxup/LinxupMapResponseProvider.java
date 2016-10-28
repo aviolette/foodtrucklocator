@@ -55,6 +55,8 @@ public class LinxupMapResponseProvider implements MessageBodyReader<LinxupMapRes
               .speeding(posObj.optBoolean("speeding"))
               .estimatedSpeedLimit(posObj.optInt("estSpeedLimit"))
               .latLng(new LatLng(lat, lng))
+              .batteryCharge(posObj.optString("battery"))
+              .fuelLevel(posObj.optString("fuelLevel"))
               .driverId(posObj.optString("driverId"))
               .deviceNumber(posObj.optString("deviceNbr"))
               .simDeviceNumber(posObj.optString("simDeviceNumber"))

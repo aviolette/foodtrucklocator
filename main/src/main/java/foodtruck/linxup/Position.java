@@ -25,6 +25,8 @@ public class Position {
   private final String driverId;
   private final String simDeviceNumber;
   private final String deviceTypeDescription;
+  private final String fuelLevel;
+  private final String batteryCharge;
 
   private Position(Builder builder) {
     this.date = builder.date;
@@ -39,6 +41,9 @@ public class Position {
     this.driverId = builder.driverId;
     this.simDeviceNumber = builder.simDeviceNumber;
     this.deviceTypeDescription = builder.deviceTypeDescription;
+    this.fuelLevel = builder.fuelLevel;
+    this.batteryCharge = builder.batteryCharge;
+
   }
 
   public static Builder builder() {
@@ -100,6 +105,14 @@ public class Position {
     return deviceNumber;
   }
 
+  public String getFuelLevel() {
+    return fuelLevel;
+  }
+
+  public String getBatteryCharge() {
+    return batteryCharge;
+  }
+
   public static class Builder {
     private DateTime date;
     private String vehicleLabel;
@@ -113,6 +126,8 @@ public class Position {
     private String driverId;
     private String simDeviceNumber;
     private String deviceTypeDescription;
+    private String fuelLevel;
+    private String batteryCharge;
 
     public Builder() {}
 
@@ -128,10 +143,22 @@ public class Position {
       this.driverId = position.driverId;
       this.simDeviceNumber = position.simDeviceNumber;
       this.deviceTypeDescription = position.deviceTypeDescription;
+      this.fuelLevel = position.fuelLevel;
+      this.batteryCharge = position.batteryCharge;
     }
 
     public Builder date(DateTime date) {
       this.date = date;
+      return this;
+    }
+
+    Builder fuelLevel(String fuelLevel) {
+      this.fuelLevel = fuelLevel;
+      return this;
+    }
+
+    Builder batteryCharge(String batteryCharge) {
+      this.batteryCharge = batteryCharge;
       return this;
     }
 

@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
+import com.google.common.primitives.Ints;
 
 import org.joda.time.DateTime;
 
@@ -22,6 +23,8 @@ public class TrackingDevice extends ModelEntity {
   private @Nullable Location lastLocation;
   private boolean parked;
   private boolean atBlacklistedLocation;
+  private @Nullable String fuelLevel;
+  private @Nullable String batteryCharge;
 
   private TrackingDevice(Builder builder) {
     super(builder.key);
@@ -34,6 +37,10 @@ public class TrackingDevice extends ModelEntity {
     this.lastLocation = builder.lastLocation;
     this.parked = builder.parked;
     this.atBlacklistedLocation = builder.atBlacklistedLocation;
+    this.fuelLevel = builder.fuelLevel;
+    this.batteryCharge = builder.batteryCharge;
+    this.fuelLevel = builder.fuelLevel;
+    this.batteryCharge = builder.batteryCharge;
   }
 
   public static Builder builder() {
@@ -42,6 +49,28 @@ public class TrackingDevice extends ModelEntity {
 
   public static Builder builder(@Nullable TrackingDevice device) {
     return (device == null) ?  new Builder() : new Builder(device);
+  }
+
+  @Nullable
+  public String getBatteryCharge() {
+    return batteryCharge;
+  }
+
+  @Nullable
+  public String getFuelLevel() {
+    return fuelLevel;
+  }
+
+  public int getFuelLevelValue() {
+    if (Strings.isNullOrEmpty(fuelLevel)) {
+      return 0;
+    }
+    String fuel = fuelLevel.replace("%", "");
+    int index = fuel.indexOf('.');
+    if (index != -1) {
+      fuel = fuel.substring(0, index);
+    }
+    return Ints.tryParse(fuel);
   }
 
   public boolean isParked() {
@@ -99,6 +128,8 @@ public class TrackingDevice extends ModelEntity {
         .add("last modified", lastModified)
         .add("last location", lastLocation)
         .add("parked", parked)
+        .add("fuel level", fuelLevel)
+        .add("battery charge", batteryCharge)
         .add("at blacklisted location", atBlacklistedLocation)
         .toString();
   }
@@ -114,6 +145,8 @@ public class TrackingDevice extends ModelEntity {
     private @Nullable Location lastLocation;
     private boolean parked;
     private boolean atBlacklistedLocation;
+    private @Nullable String fuelLevel;
+    private @Nullable String batteryCharge;
 
     public Builder() {
     }
@@ -129,6 +162,16 @@ public class TrackingDevice extends ModelEntity {
       this.lastLocation = device.lastLocation;
       this.parked = device.parked;
       this.atBlacklistedLocation = device.atBlacklistedLocation;
+    }
+
+    public Builder fuelLevel(String fuelLevel) {
+      this.fuelLevel = fuelLevel;
+      return this;
+    }
+
+    public Builder batteryCharge(String batteryCharge) {
+      this.batteryCharge = batteryCharge;
+      return this;
     }
 
     public Builder atBlacklistedLocation(boolean atBlacklistedLocation) {
