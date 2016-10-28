@@ -53,8 +53,7 @@
           <p>Beacons are hardware devices that you plug into your trucks' OBDII port or wire into their ignition.
             These devices broadcast a GPS signal that allows my site to accurately track your truck as it moves about
             the city. If you are interested in purchasing one of these devices for your truck, contact me at
-            847-863-4992 or aviolette@gmail.com. If you already purchased one, you must
-            <a href="/vendor/linxup/${truck.id}" class="alert-link">enable it by logging in</a>. </p>
+            847-863-4992 or aviolette@gmail.com. </p>
         </div>
       </c:otherwise>
     </c:choose>

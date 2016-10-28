@@ -44,8 +44,6 @@
               <li <c:if test="${tab == 'menu'}"> class="active"</c:if>><a href="/vendor/menu/${truck.id}">Menu</a></li>
               <li <c:if test="${tab == 'profile'}"> class="active"</c:if>><a
                   href="/vendor/settings/${truck.id}">General</a></li>
-              <li <c:if test="${tab == 'linxup'}"> class="active"</c:if>><a
-                  href="/vendor/linxup/${truck.id}">Beacons</a></li>
             </c:if>
           </ul>
           <ul class="nav navbar-nav pull-right">
