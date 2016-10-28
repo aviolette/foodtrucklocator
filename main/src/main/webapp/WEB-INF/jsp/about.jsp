@@ -35,7 +35,7 @@
 
 <%@include file="include/core_js.jsp" %>
 <script type="text/javascript"
-        src="http://maps.google.com/maps/api/js?key=${googleApiKey}&libraries=geometry"></script>
+        src="//maps.google.com/maps/api/js?key=${googleApiKey}&libraries=geometry"></script>
 
 <script>
   (function () {
