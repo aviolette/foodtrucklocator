@@ -8,6 +8,10 @@ import com.google.common.primitives.Ints;
 
 import org.joda.time.DateTime;
 
+import static foodtruck.model.TrackingDeviceState.BROADCASTING;
+import static foodtruck.model.TrackingDeviceState.HIDDEN;
+import static foodtruck.model.TrackingDeviceState.MOVING;
+
 /**
  * @author aviolette
  * @since 7/28/16
@@ -49,6 +53,19 @@ public class TrackingDevice extends ModelEntity {
 
   public static Builder builder(@Nullable TrackingDevice device) {
     return (device == null) ?  new Builder() : new Builder(device);
+  }
+
+  public TrackingDeviceState getState() {
+    if (enabled) {
+      if (!parked) {
+        return MOVING;
+      }
+      if (atBlacklistedLocation) {
+        return HIDDEN;
+      }
+      return BROADCASTING;
+    }
+    return HIDDEN;
   }
 
   @Nullable
