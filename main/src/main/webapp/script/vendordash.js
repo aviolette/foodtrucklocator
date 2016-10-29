@@ -33,7 +33,6 @@ var TruckMap = function() {
       var myOptions = {
         center: markerLat,
         zoom: 14,
-        maxZoom: 14,
         scrollwheel: false,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       };
@@ -88,7 +87,8 @@ var TruckMap = function() {
       });
       markers = [];
       // TODO: extend around beacons
-      bounds = new google.maps.LatLngBounds()
+      bounds = new google.maps.LatLngBounds();
+      bounds.extend(new google.maps.LatLng(41.8807438, -87.6293867));
     }
   };
 }();
