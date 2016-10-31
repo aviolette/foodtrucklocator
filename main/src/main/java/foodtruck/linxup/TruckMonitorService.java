@@ -23,4 +23,6 @@ public interface TruckMonitorService {
   void enableDevice(Long deviceId, boolean enabled);
 
   void removeDevicesFor(String truckId);
+
+  String getRecentTripList(Long beaconId);
 }

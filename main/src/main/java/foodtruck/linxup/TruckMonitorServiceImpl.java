@@ -119,6 +119,22 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
     }
   }
 
+  @Override
+  public String getRecentTripList(Long beaconId) {
+    TrackingDevice device = trackingDeviceDAO.findById(beaconId);
+    if (device == null || Strings.isNullOrEmpty(device.getTruckOwnerId())) {
+      throw new WebApplicationException(404);
+    }
+    securityChecker.requiresLoggedInAs(device.getTruckOwnerId());
+    LinxupAccount account = linxupAccountDAO.findByTruck(device.getTruckOwnerId());
+    if (account == null) {
+      throw new WebApplicationException(403);
+    }
+    log.log(Level.INFO, "Device: {0}", device);
+    return connector.rawTripList(account, clock.currentDay()
+        .toDateTimeAtStartOfDay(), clock.now(), device.getDeviceNumber());
+  }
+
   /**
    * Takes the device data the was retrieved and create/update/deletes an existing stops based on the data.
    * @param devices the list of devices retrieved
