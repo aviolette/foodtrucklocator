@@ -211,7 +211,10 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
     Optional<TruckStop> currentHolder = matches.getCurrent();
     if (currentHolder.isPresent()) {
       TruckStop current = currentHolder.get();
-      if (current.getLocation().sameName(device.getLastLocation())) {
+      if (current.getLocation()
+          .sameName(device.getLastLocation()) || current.getLocation()
+          .within(0.05)
+          .milesOf(device.getLastLocation())) {
         if (current.getEndTime().isBefore(now.plusMinutes(15))) {
           stop = TruckStop.builder(current)
               .appendNote("Extended time by 15 minutes")
