@@ -9,13 +9,16 @@ import com.google.api.client.util.Strings;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 
+import foodtruck.dao.LocationDAO;
 import foodtruck.dao.RetweetsDAO;
 import foodtruck.dao.TwitterNotificationAccountDAO;
 import foodtruck.model.Location;
+import foodtruck.model.StaticConfig;
 import foodtruck.model.Story;
 import foodtruck.model.StoryType;
 import foodtruck.model.Truck;
@@ -39,14 +42,19 @@ public class TwitterNotificationService implements NotificationService {
   private final Clock clock;
   private final TwitterNotificationAccountDAO notificationAccountDAO;
   private final RetweetsDAO retweetsDAO;
+  private final StaticConfig config;
+  private final LocationDAO locationDAO;
 
   @Inject
   public TwitterNotificationService(FoodTruckStopService truckService, Clock clock,
-      TwitterNotificationAccountDAO notificationAccountDAO, RetweetsDAO retweetsDAO) {
+      TwitterNotificationAccountDAO notificationAccountDAO, RetweetsDAO retweetsDAO, StaticConfig config,
+      LocationDAO locationDAO) {
     this.truckService = truckService;
     this.clock = clock;
     this.notificationAccountDAO = notificationAccountDAO;
     this.retweetsDAO = retweetsDAO;
+    this.config = config;
+    this.locationDAO = locationDAO;
   }
 
   @Override
@@ -87,23 +95,28 @@ public class TwitterNotificationService implements NotificationService {
 
   @Override
   public void notifyStopStart(TruckStop truckStop) {
-    messageAtStop(truckStop, "%s is now open at %s");
+    messageAtStop(truckStop, "%s is now open at %s %s");
   }
 
   @Override
   public void notifyStopEnd(TruckStop truckStop) {
-    messageAtStop(truckStop, "%s is leaving %s");
+    messageAtStop(truckStop, "%s is leaving %s %s");
   }
 
   private void messageAtStop(TruckStop truckStop, String messageFormat) {
     for (TwitterNotificationAccount account : notificationAccountDAO.findAll()) {
-      if (truckStop.getLocation().containedWithRadiusOf(account.getLocation()) && !retweetsDAO.hasBeenRetweeted(
-          truckStop.getTruck().getId(), account.getTwitterHandle())) {
+      Truck truck = truckStop.getTruck();
+      Location location = truckStop.getLocation();
+      location = MoreObjects.firstNonNull(locationDAO.findByAddress(location.getName()), null);
+      if (location.containedWithRadiusOf(account.getLocation()) && !retweetsDAO.hasBeenRetweeted(truck.getId(),
+          account.getTwitterHandle())) {
         Twitter twitter = new TwitterFactory(account.twitterCredentials()).getInstance();
         try {
-          twitter.updateStatus(
-              String.format(messageFormat, truckStop.getTruck().getName(), truckStop.getLocation().getName()));
-          retweetsDAO.markRetweeted(truckStop.getTruck().getId(), account.getTwitterHandle());
+          String descriptor = Strings.isNullOrEmpty(
+              truck.getTwitterHandle()) ? truck.getName() : ". @" + truck.getTwitterHandle();
+          twitter.updateStatus(String.format(messageFormat, descriptor, location.getShortenedName(),
+              config.getBaseUrl() + "/locations/" + location.getKey()));
+          retweetsDAO.markRetweeted(truck.getId(), account.getTwitterHandle());
         } catch (TwitterException e) {
           log.log(Level.SEVERE, e.getMessage(), e);
         }
