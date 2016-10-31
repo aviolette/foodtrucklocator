@@ -671,6 +671,18 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
   @Test
+  public void testHandleShortenedRange() {
+    TruckStopMatch match = tweet(
+        "We're at 3710 N. Southport ready for Trick or Treat on Southport from 4pm-8pm! ").match();
+    assertThat(match).isNotNull();
+    assertThat(match.getStop()
+        .getStartTime()).isEqualTo(tweetTime.withTime(16, 0, 0, 0));
+    assertThat(match.getStop()
+        .getEndTime()).isEqualTo(tweetTime.withTime(20, 0, 0, 0));
+
+  }
+
+  @Test
   public void testMatch_when1030AndLunchTruckExtendEndTimeToTwo() {
     TruckStopMatch match =
         tweet("foo")
