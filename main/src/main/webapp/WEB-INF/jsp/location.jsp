@@ -10,7 +10,7 @@
 
 <div class="row second-top-row" style="padding-top: 0;">
   <div class="col-md-6">
-    <h2>${location.name}<c:if test="${isAdmin}">
+    <h2>${location.shortenedName}<c:if test="${isAdmin}">
       <a class="btn btn-small btn-default" href="/admin/locations/${location.key}"> <span class="glyphicon glyphicon-pencil"></span> Edit</a>
     </c:if></h2>
 
