@@ -58,6 +58,7 @@ public class LocationWriter implements JSONWriter<Location>, MessageBodyWriter<L
         .put("radiateTo", location.getRadiateTo())
         .put("description", location.getDescription())
         .put("name", location.getName())
+        .put("shortenedName", location.getShortenedName())
         .put("hasBooze", location.isHasBooze())
         .put("closed", location.isClosed())
         .put("popular", location.isPopular())

@@ -293,7 +293,7 @@ var TruckScheduleWidget = function() {
       var buf = "<tr " + (crazyDuration ? " class='error'" : "") + "><td>" + stop.startDate + "<br/>" + stop.startTime + " - " + stop.endTime +
           "<br/>" + stop.duration + " hours</td><td class=\"origin large-screen-only\"><a href='#' data-toggle='popover' data-content='" + notes + "'>" + stop.origin + "</a></td><td><a href='" + _locationEndpoint + "?q=" + encodeURIComponent(stop.location.name) +
           "'>"
-          + stop.location.name + "</a>" + labels + "</td><td class='large-screen-only'>" + truckCountLink + "</td><td>";
+          + stop.location.shortenedName + "</a>" + labels + "</td><td class='large-screen-only'>" + truckCountLink + "</td><td>";
       if (showControls) {
         if (!prevHadStart && now < stop.startMillis) {
           prevHadStart = true;
@@ -422,7 +422,7 @@ var TruckScheduleWidget = function() {
     }
     $.each(schedule, function (i, stop) {
       var d = new Date(stop.startMillis), link = "<a href='" + _locationEndpoint + "?q=" + encodeURIComponent(stop.location.name) +
-          "'>" + stop.location.name + "</a><br/>";
+          "'>" + stop.location.shortenedName + "</a><br/>";
       $("#calendar-day-" + d.getMonth() + "-" + d.getDate()).append(link);
     });
   }

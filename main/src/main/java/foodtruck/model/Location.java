@@ -268,10 +268,14 @@ public class Location extends ModelEntity implements Serializable {
   }
 
   public String getShortenedName() {
-    if (name.endsWith(", Chicago, IL")) {
-      return name.substring(0, name.length() - 13);
+    String shortened = name;
+    if (shortened.matches(".*\\d{5}, USA")) {
+      shortened = shortened.substring(0, shortened.length() - 11);
     }
-    return name;
+    if (shortened.endsWith(", Chicago, IL")) {
+      return shortened.substring(0, shortened.length() - 13);
+    }
+    return shortened;
   }
 
   public Comparator<Location> distanceFromComparator() {
