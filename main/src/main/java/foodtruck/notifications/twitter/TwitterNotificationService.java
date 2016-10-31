@@ -95,7 +95,7 @@ public class TwitterNotificationService implements NotificationService {
 
   @Override
   public void notifyStopStart(TruckStop truckStop) {
-    messageAtStop(truckStop, "%s is now open at %s %s");
+    messageAtStop(truckStop, "%s is now at %s %s");
   }
 
   @Override
