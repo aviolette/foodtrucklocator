@@ -38,6 +38,11 @@
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
+      <name>longFormat</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
       <name>admin</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>

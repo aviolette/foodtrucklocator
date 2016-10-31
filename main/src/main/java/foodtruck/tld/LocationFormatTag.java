@@ -21,30 +21,39 @@ import foodtruck.model.Location;
  * @since 12/18/12
  */
 public class LocationFormatTag extends TagSupport {
-  private Location location;
   private static final Logger log = Logger.getLogger(LocationFormatTag.class.getName());
+  private final DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYYMMdd");
+  private Location location;
   private DateTime when;
   private boolean admin;
-  private final DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYYMMdd");
+  private boolean longFormat;
 
   public void setAdmin(boolean admin) {
     this.admin = admin;
-  }
-
-  public void setAt(DateTime dateTime) {
-    when = dateTime;
   }
 
   public DateTime getAt() {
     return when;
   }
 
-  public void setLocation(@Nullable Location location) {
-    this.location = location;
+  public void setAt(DateTime dateTime) {
+    when = dateTime;
   }
 
   public Location getLocation() {
     return this.location;
+  }
+
+  public void setLocation(@Nullable Location location) {
+    this.location = location;
+  }
+
+  public boolean isLongFormat() {
+    return longFormat;
+  }
+
+  public void setLongFormat(boolean longFormat) {
+    this.longFormat = longFormat;
   }
 
   @Override public int doStartTag() throws JspException {
@@ -55,7 +64,8 @@ public class LocationFormatTag extends TagSupport {
     }
     try {
       if (location != null) {
-        String locationName = HtmlEscapers.htmlEscaper().escape(location.getName());
+        String locationName = HtmlEscapers.htmlEscaper()
+            .escape(name(location));
         String aString = admin ? "/admin" : "";
         if (location.getKey() != null) {
           out.println("<a href='" + aString + "/locations/" + location.getKey() + "?" + dateString +"'>" + locationName + "</a>");
@@ -71,5 +81,9 @@ public class LocationFormatTag extends TagSupport {
       //throw Throwables.propagate(e);
     }
     return SKIP_BODY;
+  }
+
+  private String name(Location location) {
+    return longFormat ? location.getName() : location.getShortenedName();
   }
 }
