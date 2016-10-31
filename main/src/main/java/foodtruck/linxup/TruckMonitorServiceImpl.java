@@ -216,10 +216,12 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
           .within(0.05)
           .milesOf(device.getLastLocation())) {
         if (current.getEndTime().isBefore(now.plusMinutes(15))) {
-          stop = TruckStop.builder(current)
-              .appendNote("Extended time by 15 minutes")
-              .fromBeacon(device.getLastBroadcast())
-              .build();
+          TruckStop.Builder builder = TruckStop.builder(current)
+              .appendNote("Extended time by 15 minutes at " + formatter.print(now))
+              .endTime(current.getEndTime()
+                  .plusMinutes(15))
+              .fromBeacon(device.getLastBroadcast());
+          stop = builder.build();
         } else {
           // no need to update anything
           return;
