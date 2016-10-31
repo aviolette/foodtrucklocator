@@ -65,12 +65,12 @@ public class LocationFormatTag extends TagSupport {
     try {
       if (location != null) {
         String locationName = HtmlEscapers.htmlEscaper()
-            .escape(name(location));
+            .escape(location.getName());
         String aString = admin ? "/admin" : "";
         if (location.getKey() != null) {
           out.println("<a href='" + aString + "/locations/" + location.getKey() + "?" + dateString +"'>" + locationName + "</a>");
         } else {
-          out.println("<a href='/locations?q=" + locationName + "&" + dateString + "'>" + locationName + "</a>");
+          out.println("<a href='/locations?q=" + locationName + "&" + dateString + "'>" + name(location) + "</a>");
         }
       }
     } catch (Exception e) {
