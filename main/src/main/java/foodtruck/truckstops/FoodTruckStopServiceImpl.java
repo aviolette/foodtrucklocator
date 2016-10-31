@@ -94,6 +94,7 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
       truckStop = TruckStop.builder(truckStop)
           .notes(stop.getNotes())
           .origin(stop.getOrigin())
+          .createdWithDeviceId(stop.getCreatedWithDeviceId())
           .appendNote("Changed manually by " + modifier + " at " + clock.nowFormattedAsTime())
           .build();
     }

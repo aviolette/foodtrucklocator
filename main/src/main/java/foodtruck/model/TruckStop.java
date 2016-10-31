@@ -153,6 +153,7 @@ public class TruckStop extends ModelEntity {
           .add("endTime", endTime)
           .add("lastUpdated", lastUpdated)
           .add("location", location)
+          .add("createdWithDevice", createdWithDeviceId)
           .toString();
     } catch (Throwable t) {
       log.log(Level.WARNING, t.getMessage(), t);
