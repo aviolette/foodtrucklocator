@@ -79,6 +79,10 @@ class CacheAndForwardLocator implements GeoLocator {
     }
     Location loc = dao.findByLatLng(location);
     if (loc != null) {
+      Location aliased = dao.findByAlias(loc.getName());
+      if (aliased != null) {
+        return aliased;
+      }
       return location.withName(loc.getName());
     }
     try {
