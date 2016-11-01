@@ -49,24 +49,29 @@ var TruckMap = function() {
     },
     addBeacon: function (lat, lng, enabled, parked, blacklisted, direction) {
       var latLng = new google.maps.LatLng(lat, lng);
-      var color = "red";
+      var marker;
       if (parked && enabled && !blacklisted) {
         return;
       } else if(parked) {
-        color = "silver";
+        marker = new google.maps.Marker({
+          draggable: false,
+          position: latLng,
+          icon: "//maps.google.com/mapfiles/marker_grey.png",
+          map: map
+        });
+      } else {
+        marker = new google.maps.Marker({
+          position: latLng,
+          icon: {
+            path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+            rotation: direction,
+            strokeColor: "red",
+            scale: 3
+          },
+          draggable: false,
+          map: map
+        });  
       }
-
-      var marker = new google.maps.Marker({
-        position: latLng,
-        icon: {
-          path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-          scale: 5,
-          rotation: direction,
-          strokeColor: color
-        },
-        draggable: false,
-        map: map
-      });
       markers.push(marker);
       bounds.extend(marker.getPosition());
       map.fitBounds(bounds);
