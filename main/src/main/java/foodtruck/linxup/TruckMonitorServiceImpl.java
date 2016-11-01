@@ -310,12 +310,15 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
           .build();
       // TODO: it would be nice if the actual device could calculate this, but for now we look to see if it changed.
       boolean parked = position.getSpeedMph() == 0 && (device == null || device.getLastLocation() == null || device.getLastLocation()
+          .getName()
+          .equals(location.getName()) || device.getLastLocation()
           .within(0.05)
           .milesOf(location));
       boolean atBlacklisted = false;
       if (device != null) {
         atBlacklisted = atBlacklistedLocation(device.getTruckOwnerId(), device.getLastLocation(), blacklistCache);
       }
+      log.log(Level.INFO, "Device State: {0}\n {1}\n {2}", new Object[]{position, device, location});
       builder.deviceNumber(position.getDeviceNumber())
           .lastLocation(locator.reverseLookup(location))
           .parked(parked)
