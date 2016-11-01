@@ -83,7 +83,7 @@
             $tr.append("<td><a href='/vendor/beacons/" + item.id + "'>" + item.label + "</a></td>");
             $tr.append("<td class='large-screen-only'>" + item.deviceNumber + "</td>");
             if (item.lastLocation) {
-              $tr.append("<td><a href=\"/locations/" + item.lastLocation.key + "\">" + item.lastLocation.name + "</a> at " + item.lastBroadcast + "</td>");
+              $tr.append("<td><a href=\"/locations/" + item.lastLocation.key + "\">" + item.lastLocation.shortenedName + "</a> at " + item.lastBroadcast + "</td>");
             }
             $tr.append("<td class='large-screen-only'>" + item.lastModified + "</td>");
             $tr.append("<td>" + (item.parked ? "PARKED" : "MOVING") + "</td>");
