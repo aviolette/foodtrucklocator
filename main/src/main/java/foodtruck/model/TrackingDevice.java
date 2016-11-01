@@ -29,6 +29,7 @@ public class TrackingDevice extends ModelEntity {
   private boolean atBlacklistedLocation;
   private @Nullable String fuelLevel;
   private @Nullable String batteryCharge;
+  private int degreesFromNorth;
 
   private TrackingDevice(Builder builder) {
     super(builder.key);
@@ -45,6 +46,7 @@ public class TrackingDevice extends ModelEntity {
     this.batteryCharge = builder.batteryCharge;
     this.fuelLevel = builder.fuelLevel;
     this.batteryCharge = builder.batteryCharge;
+    this.degreesFromNorth = builder.degreesFromNorth;
   }
 
   public static Builder builder() {
@@ -151,6 +153,10 @@ public class TrackingDevice extends ModelEntity {
         .toString();
   }
 
+  public int getDegreesFromNorth() {
+    return degreesFromNorth;
+  }
+
   public static class Builder {
     private long key;
     private String label;
@@ -164,6 +170,7 @@ public class TrackingDevice extends ModelEntity {
     private boolean atBlacklistedLocation;
     private @Nullable String fuelLevel;
     private @Nullable String batteryCharge;
+    private int degreesFromNorth;
 
     public Builder() {
     }
@@ -179,6 +186,12 @@ public class TrackingDevice extends ModelEntity {
       this.lastLocation = device.lastLocation;
       this.parked = device.parked;
       this.atBlacklistedLocation = device.atBlacklistedLocation;
+      this.degreesFromNorth = device.degreesFromNorth;
+    }
+
+    public Builder degreesFromNorth(int degreesFromNorth) {
+      this.degreesFromNorth = degreesFromNorth;
+      return this;
     }
 
     public Builder fuelLevel(String fuelLevel) {

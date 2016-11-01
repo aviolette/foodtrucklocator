@@ -7,6 +7,7 @@ import org.joda.time.DateTimeZone;
 
 import static foodtruck.dao.appengine.Attributes.getDateTime;
 import static foodtruck.dao.appengine.Attributes.getDoubleProperty;
+import static foodtruck.dao.appengine.Attributes.getIntProperty;
 import static foodtruck.dao.appengine.Attributes.getStringProperty;
 import static foodtruck.dao.appengine.Attributes.setDateProperty;
 
@@ -61,5 +62,9 @@ public class FluidEntity {
 
   public long longId() {
     return entity.getKey().getId();
+  }
+
+  public int intValue(String propertyName) {
+    return getIntProperty(entity, propertyName, 0);
   }
 }

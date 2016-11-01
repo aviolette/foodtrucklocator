@@ -30,6 +30,7 @@ class TrackingDeviceDAOAppEngine extends AppEngineDAO<Long, TrackingDevice> impl
   private static final String PARKED = "parked";
   private static final String FUEL_LEVEL = "fuel_level";
   private static final String BATTERY_CHARGE = "battery_charge";
+  private static final String DIRECTION = "direction";
   private final Clock clock;
 
   @Inject
@@ -50,6 +51,7 @@ class TrackingDeviceDAOAppEngine extends AppEngineDAO<Long, TrackingDevice> impl
         .prop(FUEL_LEVEL, obj.getFuelLevel())
         .prop(BATTERY_CHARGE, obj.getBatteryCharge())
         .prop(BLACKLISTED, obj.isAtBlacklistedLocation())
+        .prop(DIRECTION, obj.getDegreesFromNorth())
         .prop(ENABLED, obj.isEnabled());
     if (obj.getLastLocation() != null) {
       fe.prop(LAST_LOCATION_NAME, obj.getLastLocation().getName())
@@ -76,6 +78,7 @@ class TrackingDeviceDAOAppEngine extends AppEngineDAO<Long, TrackingDevice> impl
         .label(fe.stringVal(LABEL))
         .batteryCharge(fe.stringVal(BATTERY_CHARGE))
         .fuelLevel(fe.stringVal(FUEL_LEVEL))
+        .degreesFromNorth(fe.intValue(DIRECTION))
         .atBlacklistedLocation(fe.booleanVal(BLACKLISTED))
         .lastModified(fe.dateVal(LAST_MODIFIED, clock.zone()))
         .lastBroadcast(fe.dateVal(LAST_BROADCAST, clock.zone()))

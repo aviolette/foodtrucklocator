@@ -47,18 +47,24 @@ var TruckMap = function() {
         map: map
       });
     },
-    addBeacon: function(lat, lng, enabled, parked, blacklisted) {
+    addBeacon: function (lat, lng, enabled, parked, blacklisted, direction) {
       var latLng = new google.maps.LatLng(lat, lng);
-      var suffix = "";
+      var color = "red";
       if (parked && enabled && !blacklisted) {
         return;
       } else if(parked) {
-        suffix = "_grey";
+        color = "silver";
       }
-      marker = new google.maps.Marker({
-        draggable: false,
+
+      var marker = new google.maps.Marker({
         position: latLng,
-        icon: "//maps.google.com/mapfiles/marker" + suffix + ".png",
+        icon: {
+          path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+          scale: 5,
+          rotation: direction,
+          strokeColor: color
+        },
+        draggable: false,
         map: map
       });
       markers.push(marker);
