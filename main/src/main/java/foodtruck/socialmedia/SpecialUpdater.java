@@ -189,6 +189,9 @@ class SpecialUpdater {
         if (first.equalsIgnoreCase("lime") && lower.contains("key lime")) {
           builder.append("key ");
         }
+        if (first.equalsIgnoreCase("and") && lower.contains("cookies and cream old fashioned")) {
+          builder.append("cookies ");
+        }
         builder.append(first).append(" ");
       }
       builder.append(matcher.group(2));

@@ -261,6 +261,22 @@ public class SpecialUpdaterTest extends EasyMockSupport {
         .build()));
     verifyAll();
   }
+
+  @Test
+  public void cookiesAndCream2() {
+    expect(dailyDataDAO.save(DailyData.builder()
+        .truckId(THEVAULTVANID)
+        .onDate(localDate)
+        .addSpecial("Cookies and Cream Old Fashioned", false)
+        .build())).andReturn(1L);
+    expect(dailyDataDAO.findByTruckAndDay(THEVAULTVANID, localDate)).andReturn(null);
+    replayAll();
+    specialUpdater.update(THEVAULTVAN, ImmutableList.of(Story.builder()
+        .text("#VaultVan is at Adams and Lasalle. Today's special is cookies and cream old fashioned.")
+        .build()));
+    verifyAll();
+  }
+
   @Test
   public void doubleChocolateYellowCake() {
     expect(dailyDataDAO.save(DailyData.builder()
