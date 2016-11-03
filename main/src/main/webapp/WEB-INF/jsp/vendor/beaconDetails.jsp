@@ -115,8 +115,30 @@
             strokeOpacity: 1.0,
             strokeWeight: 4
           });
-
           flightPath.setMap(map);
+
+          var firstPos = true;
+          $.each(trip.positions, function (j, pos) {
+            if (firstPos) {
+              firstPos = false;
+              return;
+            }
+            if (pos.speed === 0) {
+              return;
+            }
+            var arrow = new google.maps.Marker({
+              position: pos,
+              icon: {
+                path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                rotation: pos.direction,
+                strokeColor: "red",
+                scale: 3
+              },
+              draggable: false,
+              map: map
+            });
+          })
+
 
         });
       });
