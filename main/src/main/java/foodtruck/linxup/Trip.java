@@ -110,8 +110,9 @@ public class Trip {
       return endTime;
     }
 
-    public void addPosition(Position position) {
+    public Builder addPosition(Position position) {
       positions.add(position);
+      return this;
     }
   }
 }

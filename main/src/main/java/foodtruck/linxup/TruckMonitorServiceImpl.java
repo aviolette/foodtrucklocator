@@ -22,6 +22,7 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
+import com.javadocmd.simplelatlng.LatLng;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
@@ -146,6 +147,11 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
             .start(first.getLocation())
             .startTime(first.getEndTime())
             .end(stop.getLocation())
+            .addPosition(Position.builder()
+                .latLng(new LatLng(first.getLocation()
+                    .getLatitude(), first.getLocation()
+                    .getLongitude()))
+                .build())
             .endTime(stop.getBeginTime()));
         first = stop;
       }
