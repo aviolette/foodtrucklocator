@@ -90,7 +90,35 @@
             i + "' aria-expanded='true' aria-controls='collapse" + i + "'>" + name + "</a></h4></div><div id='collapse" + i + "' class='panel-collapse collapse' role='tabpanel' aria-labelledby='heading" + i + "'> <div class='panel-body' id='panel-body-" + i +"'> </div> </div></div>");
         $("#accordion").append($panelDiv);
         var $panelBody = $("#panel-body-" + i);
-        $panelBody.append("<dl><dt>Start Time</dt><dd>" + new Date(trip.startTime) + "</dd></dl>")
+        $panelBody.append("<dl><dt>Start Time</dt><dd>" + new Date(trip.startTime) + "</dd></dl><div id='map_canvas-" + i + "' style='width:100%; height:300px; padding-bottom:20px;'></div>");
+        $("#collapse" + i).on("shown.bs.collapse", function () {
+          var markerLat = new google.maps.LatLng(trip.start.latitude, trip.start.longitude);
+          var myOptions = {
+            center: markerLat,
+            zoom: 14,
+            scrollwheel: false,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+          };
+          var map = new google.maps.Map(document.getElementById("map_canvas-" + i),
+              myOptions);
+
+          var marker = new google.maps.Marker({
+            draggable: false,
+            position: markerLat,
+            map: map
+          });
+
+          var flightPath = new google.maps.Polyline({
+            path: trip.positions,
+            geodesic: true,
+            strokeColor: '#FF0000',
+            strokeOpacity: 1.0,
+            strokeWeight: 4
+          });
+
+          flightPath.setMap(map);
+
+        });
       });
     }
   });
