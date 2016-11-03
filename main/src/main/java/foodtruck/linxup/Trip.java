@@ -2,6 +2,7 @@ package foodtruck.linxup;
 
 import java.util.List;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
@@ -60,6 +61,16 @@ public class Trip {
     return positions;
   }
 
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+//        .add("start", start)
+//        .add("end", end)
+        .add("startTime", startTime)
+        .add("endTime", endTime)
+        .toString();
+  }
+
   public static class Builder {
     private Location start;
     private Location end;
@@ -113,6 +124,18 @@ public class Trip {
     public Builder addPosition(Position position) {
       positions.add(position);
       return this;
+    }
+
+    @Override
+    public String toString() {
+      return MoreObjects.toStringHelper(this)
+          .add("start", start.getShortenedName())
+          .add("end", end.getShortenedName())
+//          .add("start", start)
+//          .add("end", end)
+          .add("startTime", startTime)
+          .add("endTime", endTime)
+          .toString();
     }
   }
 }

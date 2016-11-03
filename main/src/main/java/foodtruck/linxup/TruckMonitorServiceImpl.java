@@ -132,8 +132,8 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
     if (account == null) {
       throw new WebApplicationException(403);
     }
-    LinxupMapHistoryResponse response = connector.tripList(account, clock.currentDay()
-        .toDateTimeAtStartOfDay(), clock.now(), device.getDeviceNumber());
+    LinxupMapHistoryResponse response = connector.tripList(account, clock.now()
+        .minusDays(1), clock.now(), device.getDeviceNumber());
     ImmutableList.Builder<Trip.Builder> tripsBuilder = ImmutableList.builder();
     Stop first = null;
     for (Stop stop : response.getStops()) {
@@ -180,13 +180,15 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
               .isBefore(trip.getEndTime())) {
             trip.addPosition(position);
             break;
+          } else if (position.getDate()
+              .isBefore(trip.getStartTime())) {
+            break;
           }
         }
       } else {
         trip.addPosition(position);
       }
     }
-
     return FluentIterable.from(tripsBuilder.build())
         .transform(new Function<Trip.Builder, Trip>() {
           public Trip apply(Trip.Builder input) {

@@ -45,7 +45,6 @@ public class LinxupMapHistoryResponseProvider implements MessageBodyReader<Linxu
 //        return new LinxupMapHistoryResponse(errorObject.getString("type"), errorObject.getString("message"));
         return null;
       } else {
-
         JSONObject data = obj.getJSONObject("data");
         JSONArray arr = data.getJSONArray("stops");
         ImmutableList.Builder<Stop> stopsBuilder = ImmutableList.builder();
