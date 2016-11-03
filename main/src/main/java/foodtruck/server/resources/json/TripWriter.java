@@ -28,6 +28,7 @@ public class TripWriter implements JSONWriter<Trip> {
     for (Position pos : trip.getPositions()) {
       positions.put(new JSONObject().put("lat", pos.getLatLng()
           .getLatitude())
+          .put("speed", pos.getSpeedMph())
           .put("lng", pos.getLatLng()
               .getLongitude())
           .put("direction", pos.getDirection()));
