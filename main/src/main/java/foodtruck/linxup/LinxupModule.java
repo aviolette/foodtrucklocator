@@ -30,22 +30,24 @@ public class LinxupModule extends PrivateModule {
     return new LinxupMapRequest(userName, password);
   }
 
+  @Provides
+  public Client provideClient() {
+    DefaultClientConfig clientConfig = new DefaultClientConfig(LinxupMapHistoryRequestWriter.class,
+        LinxupMapHistoryResponseProvider.class, LinxupMapResponseProvider.class, LinxupMapRequestWriter.class);
+    return Client.create(clientConfig);
+  }
+
   @LinxupMapHistoryEndpoint
   @Provides
   @Exposed
-  public WebResource provideTripEndpoint() {
-    DefaultClientConfig clientConfig = new DefaultClientConfig(LinxupMapHistoryRequestWriter.class);
-    return Client.create(clientConfig)
-        .resource("https://www.linxup.com/ibis/rest/linxupmobile/hist");
+  public WebResource provideTripEndpoint(Client client) {
+    return client.resource("https://www.linxup.com/ibis/rest/linxupmobile/hist");
   }
 
 
   @LinxupEndpoint @Provides @Exposed
-  public WebResource provideEndpoint() {
-    DefaultClientConfig clientConfig = new DefaultClientConfig(LinxupMapResponseProvider.class,
-        LinxupMapRequestWriter.class, LinxupMapHistoryRequestWriter.class);
-    return Client.create(clientConfig)
-      .resource("https://www.linxup.com/ibis/rest/linxupmobile/map");
+  public WebResource provideEndpoint(Client client) {
+    return client.resource("https://www.linxup.com/ibis/rest/linxupmobile/map");
   }
 
   @Provides @Named(USERNAME)

@@ -16,5 +16,5 @@ public interface LinxupConnector {
    */
   List<Position> findPositions(LinxupAccount account);
 
-  String rawTripList(LinxupAccount account, DateTime start, DateTime end, String deviceId);
+  LinxupMapHistoryResponse tripList(LinxupAccount account, DateTime start, DateTime end, String deviceId);
 }

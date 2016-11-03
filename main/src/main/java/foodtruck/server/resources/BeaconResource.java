@@ -1,14 +1,15 @@
 package foodtruck.server.resources;
 
+import java.util.List;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.google.inject.Inject;
 
+import foodtruck.linxup.Trip;
 import foodtruck.linxup.TruckMonitorService;
 
 /**
@@ -26,11 +27,8 @@ public class BeaconResource {
 
   @GET
   @Path("{beaconId}/trips")
-  public Response getRecentTripList(@PathParam("beaconId") Long beaconId) {
-    // TODO: make this legit
-    String response = service.getRecentTripList(beaconId);
-    return Response.ok(response, MediaType.APPLICATION_JSON_TYPE)
-        .build();
+  public List<Trip> getRecentTripList(@PathParam("beaconId") Long beaconId) {
+    return service.getRecentTripList(beaconId);
   }
 
   @POST

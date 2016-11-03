@@ -12,12 +12,10 @@ import javax.ws.rs.ext.MessageBodyReader;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
-import com.javadocmd.simplelatlng.LatLng;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.joda.time.DateTime;
 
 import foodtruck.server.resources.json.JSONSerializer;
 
@@ -27,6 +25,8 @@ import foodtruck.server.resources.json.JSONSerializer;
  */
 @SuppressWarnings("WeakerAccess")
 public class LinxupMapResponseProvider implements MessageBodyReader<LinxupMapResponse> {
+  public LinxupMapResponseProvider() {
+  }
 
   @Override
   public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
@@ -47,22 +47,7 @@ public class LinxupMapResponseProvider implements MessageBodyReader<LinxupMapRes
         ImmutableList.Builder<Position> positions = ImmutableList.builder();
         for (int i=0; i < positionsArr.length(); i++) {
           JSONObject posObj = positionsArr.getJSONObject(i);
-          double lat = posObj.getDouble("latitude"), lng = posObj.getDouble("longitude");
-          Position.Builder positionBuilder = Position.builder()
-              .date(new DateTime(posObj.getLong("date")))
-              .direction(posObj.getInt("direction"))
-              .speedMph(posObj.getInt("speed"))
-              .speeding(posObj.optBoolean("speeding"))
-              .estimatedSpeedLimit(posObj.optInt("estSpeedLimit"))
-              .latLng(new LatLng(lat, lng))
-              .batteryCharge(posObj.optString("battery"))
-              .fuelLevel(posObj.optString("fuelLevel"))
-              .driverId(posObj.optString("driverId"))
-              .deviceNumber(posObj.optString("deviceNbr"))
-              .simDeviceNumber(posObj.optString("simDeviceNumber"))
-              .deviceTypeDescription(posObj.optString("deviceTypeDescription"))
-              .vehicleLabel(posObj.getString("label"));
-          positions.add(positionBuilder.build());
+          positions.add(LinxupJSONHelper.readPosition(posObj));
         }
         return new LinxupMapResponse(positions.build());
       }

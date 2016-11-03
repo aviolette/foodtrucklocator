@@ -42,11 +42,11 @@ class LinxupConnectorImpl implements LinxupConnector {
   }
 
   @Override
-  public String rawTripList(LinxupAccount account, DateTime start, DateTime end, String deviceId) {
+  public LinxupMapHistoryResponse tripList(LinxupAccount account, DateTime start, DateTime end, String deviceId) {
     return tripResource.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
         .header(HttpHeaders.ACCEPT_ENCODING, "gzip,deflate")
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
         .entity(new LinxupMapHistoryRequest(account.getUsername(), account.getPassword(), start, end, deviceId))
-        .post(String.class);
+        .post(LinxupMapHistoryResponse.class);
   }
 }

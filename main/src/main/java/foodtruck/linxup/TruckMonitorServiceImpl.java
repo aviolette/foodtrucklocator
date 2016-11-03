@@ -1,5 +1,6 @@
 package foodtruck.linxup;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -120,7 +121,7 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
   }
 
   @Override
-  public String getRecentTripList(Long beaconId) {
+  public List<Trip> getRecentTripList(Long beaconId) {
     TrackingDevice device = trackingDeviceDAO.findById(beaconId);
     if (device == null || Strings.isNullOrEmpty(device.getTruckOwnerId())) {
       throw new WebApplicationException(404);
@@ -130,9 +131,63 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
     if (account == null) {
       throw new WebApplicationException(403);
     }
-    log.log(Level.INFO, "Device: {0}", device);
-    return connector.rawTripList(account, clock.currentDay()
+    LinxupMapHistoryResponse response = connector.tripList(account, clock.currentDay()
         .toDateTimeAtStartOfDay(), clock.now(), device.getDeviceNumber());
+    ImmutableList.Builder<Trip.Builder> tripsBuilder = ImmutableList.builder();
+    Stop first = null;
+    for (Stop stop : response.getStops()) {
+      if ("Idling".equals(stop.getStopType())) {
+        continue;
+      }
+      if (first == null) {
+        first = stop;
+      } else {
+        tripsBuilder.add(Trip.builder()
+            .start(first.getLocation())
+            .startTime(first.getEndTime())
+            .end(stop.getLocation())
+            .endTime(stop.getBeginTime()));
+        first = stop;
+      }
+    }
+    List<Trip.Builder> tripResponse = tripsBuilder.build();
+    Iterator<Trip.Builder> tripit = tripResponse.iterator();
+    Trip.Builder trip = null;
+    for (Position position : response.getPositions()) {
+      if (trip == null) {
+        if (tripit.hasNext()) {
+          trip = tripit.next();
+        } else {
+          break;
+        }
+      }
+      if (position.getDate()
+          .isBefore(trip.getStartTime())) {
+        // what to do?
+      } else if (position.getDate()
+          .isAfter(trip.getEndTime())) {
+        while (tripit.hasNext()) {
+          trip = tripit.next();
+          if (position.getDate()
+              .isAfter(trip.getStartTime()
+                  .minusSeconds(1)) && position.getDate()
+              .isBefore(trip.getEndTime())) {
+            trip.addPosition(position);
+            break;
+          }
+        }
+      } else {
+        trip.addPosition(position);
+      }
+    }
+
+    return FluentIterable.from(tripsBuilder.build())
+        .transform(new Function<Trip.Builder, Trip>() {
+          public Trip apply(Trip.Builder input) {
+            return input.build();
+          }
+        })
+        .toList();
   }
 
   /**

@@ -1,5 +1,7 @@
 package foodtruck.linxup;
 
+import java.util.List;
+
 import foodtruck.model.LinxupAccount;
 
 /**
@@ -24,5 +26,5 @@ public interface TruckMonitorService {
 
   void removeDevicesFor(String truckId);
 
-  String getRecentTripList(Long beaconId);
+  List<Trip> getRecentTripList(Long beaconId);
 }

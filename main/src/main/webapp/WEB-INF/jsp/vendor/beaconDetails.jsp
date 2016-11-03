@@ -76,26 +76,24 @@
     }
   </script>
 </c:if>
-<%--
 <script>
   $.ajax({
     url: "/services/beacons/${beacon.id}/trips",
     type: 'GET',
     dataType: 'json',
-    success: function (beacons) {
-      $.each(beacons.data.stops.reverse(), function(i, trip) {
-        var name = trip.street + " (" + trip.stopType + ")";
+    success: function (trips) {
+      $.each(trips.reverse(), function (i, trip) {
+        var name = trip.name;
         var $panelDiv = $("<div class='panel panel-default'><div class='panel-heading' " +
             "role='tab' id='heading" + i + "'><h4 class='panel-title'><a role='button' " +
             "data-toggle='collapse' data-parent='#accordion' href='#collapse" +
             i + "' aria-expanded='true' aria-controls='collapse" + i + "'>" + name + "</a></h4></div><div id='collapse" + i + "' class='panel-collapse collapse' role='tabpanel' aria-labelledby='heading" + i + "'> <div class='panel-body' id='panel-body-" + i +"'> </div> </div></div>");
         $("#accordion").append($panelDiv);
         var $panelBody = $("#panel-body-" + i);
-        $panelBody.append("<dl><dt>Start Time</dt><dd>" + new Date(trip.beginDate) + "</dd></dl>")
+        $panelBody.append("<dl><dt>Start Time</dt><dd>" + new Date(trip.startTime) + "</dd></dl>")
       });
     }
   });
 </script>
---%>
 
 <%@ include file="vendorfooter.jsp" %>
