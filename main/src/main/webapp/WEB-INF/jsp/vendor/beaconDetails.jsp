@@ -142,6 +142,7 @@
             };
             var map = new google.maps.Map(document.getElementById("map_canvas-" + i),
                 myOptions);
+            bounds = new google.maps.LatLngBounds();
 
             var marker = new google.maps.Marker({
               draggable: false,
@@ -149,6 +150,8 @@
               map: map
 
             });
+            bounds.extend(startPosition);
+            bounds.extend(endPosition);
             buildInfoWindow(marker, map, "<h4>" + trip.start.name + "</h4><br/><strong>" + trip.startTimeValue + "</strong>");
 
             marker = new google.maps.Marker({
@@ -177,6 +180,7 @@
               if (pos.speed === 0) {
                 return;
               }
+              bounds.extend(pos);
               var arrow = new google.maps.Marker({
                 position: pos,
                 icon: {
@@ -190,6 +194,7 @@
               });
               buildInfoWindow(arrow, map, "Speed: " + pos.speed + "mph<br/>Direction: " + directionValue(pos.direction) + "<br/>Time: " + pos.time);
             });
+            map.fitBounds(bounds);
 
           });
         });
