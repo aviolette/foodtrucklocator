@@ -92,6 +92,18 @@ var TruckMap = function() {
         map.fitBounds(bounds);
       }
     },
+    addMarker: function (pos) {
+      var marker = new google.maps.Marker({
+        draggable: true,
+        position: pos,
+        icon: "//maps.google.com/mapfiles/marker_green.png",
+        map: map
+      });
+      markers.push(marker);
+      bounds.extend(marker.getPosition());
+//      buildInfoWindow(marker, map, stop);
+      map.fitBounds(bounds);
+    },
     clear: function() {
       $.each(markers, function(i, marker) {
         marker.setMap(null);

@@ -1,5 +1,4 @@
 <%@ include file="vendorheader.jsp" %>
-
 <script type="text/javascript"
         src="//maps.googleapis.com/maps/api/js?key=${googleApiKey}"></script>
 
@@ -54,26 +53,13 @@
 </div>
 <%@ include file="../include/core_js.jsp" %>
 
-<c:if test="${!empty(beacon.lastLocation)}">
-  <script>
-    var lat = ${beacon.lastLocation.latitude}, lng = ${beacon.lastLocation.longitude};
-    if (!(typeof google == "undefined")) {
-      var markerLat = new google.maps.LatLng(lat, lng);
-      var myOptions = {
-        center: markerLat,
-        zoom: 14,
-        scrollwheel: false,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-      };
-      var map = new google.maps.Map(document.getElementById("map_canvas"),
-          myOptions);
 
-      var marker = new google.maps.Marker({
-        draggable: true,
-        position: markerLat,
-        map: map
-      });
-    }
+<c:if test="${!empty(beacon.lastLocation)}">
+  <script type="text/javascript" src="/script/vendordash.js"></script>
+  <script type="text/javascript">
+    TruckMap.init();
+    TruckMap.clear();
+    TruckMap.addMarker({lat: ${beacon.lastLocation.latitude}, lng: ${beacon.lastLocation.longitude}});
   </script>
 </c:if>
 <script>
