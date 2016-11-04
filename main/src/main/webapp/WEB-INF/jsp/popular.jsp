@@ -10,7 +10,15 @@
   <c:if test="${locationStatus.index % 4 == 0}"><c:if test="${locationStatus.index !=0 }"></div></c:if><div class="row"></c:if>
   <div class='col-xs-6 col-md-3 text-center'>
     <a href='/locations/${location.key}'>
-      <img width='180' height='180' class='img-rounded' src='${location.imageUrl.protocolRelative}'/>
+      <c:choose>
+        <c:when test="${empty(location.imageUrl)}">
+          <img width='180' height='180' class='img-rounded'
+               src='//storage.googleapis.com/cftf_locationicons/location_holder.svg'/>
+        </c:when>
+        <c:otherwise>
+          <img width='180' height='180' class='img-rounded' src='${location.imageUrl.protocolRelative}'/>
+        </c:otherwise>
+      </c:choose>
       <div><strong>${location.name}</strong></div>
     </a>
   </div>
