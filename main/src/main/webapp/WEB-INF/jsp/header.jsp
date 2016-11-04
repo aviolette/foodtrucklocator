@@ -56,9 +56,6 @@
             </ul>
           </li>
         </c:if>
-        <c:if test="${showAbout}">
-          <li <c:if test="${tab == 'about'}"> class="active"</c:if>><a href="/about">About</a></li>
-        </c:if>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cities <b class="caret"></b></a>
           <ul class="dropdown-menu">
@@ -66,31 +63,22 @@
             <li><a href="http://www.nycfoodtruckfinder.com">New York</a></li>
           </ul>
         </li>
-        <c:if test="${showStats}">
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Stats <b class="caret"></b></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Info <b class="caret"></b></a>
           <ul class="dropdown-menu">
-            <li><a href="/stats/timeline">Timeline</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="http://blog.chicagofoodtruckfinder.com/">Blog</a></li>
+            <li><a href="http://twitter.com/${twitterHandle}">Twitter</a></li>
+            <li><a href="http://facebook.com/${facebookPage}">Facebook</a></li>
           </ul>
         </li>
-        </c:if>
-        <c:if test="${showBlog}">
-        <li><a href="http://blog.chicagofoodtruckfinder.com/">Blog</a></li>
-        </c:if>
       </ul>
       <ul class="nav navbar-right navbar-nav">
         <c:if test="${!empty(user)}">
           <c:if test="${isAdmin}">
-            <li><a href="/admin" class="btn btn-block"><span class="glyphicon glyphicon-dashboard"></span></a></li>
+            <li><a href="/admin" class="btn btn-block"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a>
+            </li>
           </c:if>
-          <li><a title="Logout" class="btn btn-block" href="${signoutUrl}"><span
-              class="glyphicon glyphicon-log-out"></span> </a></li>
-        </c:if>
-        <c:if test="${city == 'Chicago'}">
-          <li><a style="padding: 10px 0 0 0" href="http://twitter.com/${twitterHandle}"><img
-              src="//storage.googleapis.com/ftf_static/img/twitter02_dark.png"/></a></li>
-          <li><a style="padding: 10px 0 0 0" href="http://facebook.com/${facebookPage}"><img
-              src="//storage.googleapis.com/ftf_static/img/facebook_dark.png"/></a></li>
         </c:if>
       </ul>
     </div>
