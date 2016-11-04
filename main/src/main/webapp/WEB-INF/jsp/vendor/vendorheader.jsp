@@ -47,11 +47,19 @@
       <div class="collapse navbar-collapse">
         <c:if test="${!empty(logoutUrl)}">
           <ul class="nav navbar-nav">
-            <li <c:if test="${tab == 'vendorhome'}"> class="active"</c:if>><a href="/vendor">Dashboard</a></li>
+            <li <c:if test="${tab == 'vendorhome'}"> class="active"</c:if>><a class="btn btn-block" href="/vendor"><span
+                class="glyphicon glyphicon-dashboard"></span> Dashboard</a></li>
             <c:if test="${!empty(truck)}">
-              <li <c:if test="${tab == 'menu'}"> class="active"</c:if>><a href="/vendor/menu/${truck.id}">Menu</a></li>
-              <li <c:if test="${tab == 'profile'}"> class="active"</c:if>><a
-                  href="/vendor/settings/${truck.id}">General</a></li>
+
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle btn btn-block" data-toggle="dropdown"><span
+                    class="glyphicon glyphicon-cog"></span> Settings <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="/vendor/settings/${truck.id}">General</a></li>
+                  <li><a href="/vendor/menu/${truck.id}">Menu</a></li>
+                </ul>
+              </li>
+
             </c:if>
           </ul>
           <ul class="nav navbar-nav pull-right">
