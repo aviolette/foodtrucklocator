@@ -2,35 +2,23 @@ package foodtruck.linxup;
 
 import java.util.List;
 
-import com.google.common.base.Strings;
-
 /**
  * @author aviolette
  * @since 7/25/16
  */
-class LinxupMapResponse {
+class LinxupMapResponse extends LinxupResponse {
   private List<Position> positions;
-  private String error;
-  private String errorType;
 
   LinxupMapResponse(String type, String message) {
-    errorType = type;
-    error = message;
+    super(type, message);
   }
 
   LinxupMapResponse(List<Position> positions) {
+    this(null, null);
     this.positions = positions;
-  }
-
-  boolean isSuccessful() {
-    return Strings.isNullOrEmpty(error);
   }
 
   List<Position> getPositions() {
     return positions;
-  }
-
-  public String getError() {
-    return error;
   }
 }

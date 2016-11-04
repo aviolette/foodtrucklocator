@@ -29,8 +29,7 @@ class LinxupConnectorImpl implements LinxupConnector {
 
   @Override
   public List<Position> findPositions(LinxupAccount account) {
-    LinxupMapResponse response = resource
-        .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
+    LinxupMapResponse response = resource.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
         .header(HttpHeaders.ACCEPT_ENCODING, "gzip,deflate")
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
         .entity(new LinxupMapRequest(account.getUsername(), account.getPassword()))

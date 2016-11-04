@@ -38,7 +38,7 @@ public class LinxupMapHistoryResponseProvider implements MessageBodyReader<Linxu
   public LinxupMapHistoryResponse readFrom(Class<LinxupMapHistoryResponse> type, Type genericType,
       Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> httpHeaders,
       InputStream entityStream) throws IOException, WebApplicationException {
-    JSONObject obj = null;
+    JSONObject obj;
     try {
       obj = JSONSerializer.readJSON(entityStream);
       return fromJson(obj);
@@ -51,8 +51,7 @@ public class LinxupMapHistoryResponseProvider implements MessageBodyReader<Linxu
   LinxupMapHistoryResponse fromJson(JSONObject obj) throws JSONException {
     if ("Error".equals(obj.getString("responseType"))) {
       JSONObject errorObject = obj.getJSONObject("error");
-//        return new LinxupMapHistoryResponse(errorObject.getString("type"), errorObject.getString("message"));
-      return null;
+      return new LinxupMapHistoryResponse(errorObject.getString("type"), errorObject.getString("message"));
     } else {
       JSONObject data = obj.getJSONObject("data");
       JSONArray arr = data.getJSONArray("stops");
