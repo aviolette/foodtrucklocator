@@ -34,7 +34,15 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <span class="navbar-brand">Vendor Dashboard</span>
+
+        <c:if test="${!empty(vendorIconUrl)}">
+          <img src="${vendorIconUrl.protocolRelative}" alt="${vendorIconDescription}"
+               style="margin-right:20px; margin-left:10px" class="img-circle"
+               width="48" height="48">
+        </c:if>
+        <c:if test="${empty(truck)}">
+          <span class="navbar-brand">Vendor Dashboard</span>
+        </c:if>
       </div>
       <div class="collapse navbar-collapse">
         <c:if test="${!empty(logoutUrl)}">
@@ -47,14 +55,11 @@
             </c:if>
           </ul>
           <ul class="nav navbar-nav pull-right">
-            <c:if test="${!empty(vendorIconUrl)}">
-              <li><img src="${vendorIconUrl.protocolRelative}" alt="${vendorIconDescription}" class="img-circle"
-                       width="48" height="48"></li>
-            </c:if>
-            <li><a title="home page" class="btn btn-block" href="/"><span class="glyphicon glyphicon-home"></span> </a>
+            <li><a title="home page" class="btn btn-block" href="/"><span class="glyphicon glyphicon-home"></span> Front
+              Page</a>
             </li>
             <li><a title="logoff" class="btn btn-block" href="${logoutUrl}"><span
-                class="glyphicon glyphicon-log-out"></span> </a></li>
+                class="glyphicon glyphicon-log-out"></span> Logout</a></li>
           </ul>
         </c:if>
       </div>
