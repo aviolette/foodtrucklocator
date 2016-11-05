@@ -75,6 +75,14 @@ public class TrackingDevice extends ModelEntity {
     return batteryCharge;
   }
 
+  public int getBatteryChargeValue() {
+    if (Strings.isNullOrEmpty(batteryCharge)) {
+      return 0;
+    }
+    float f = Float.parseFloat(batteryCharge);
+    return (int) ((f / 15f) * 100f);
+  }
+
   @Nullable
   public String getFuelLevel() {
     return fuelLevel;

@@ -9,33 +9,9 @@
 </div>
 <div class="row">
   <div class="col-md-6">
-    <dl>
-      <dt>Device Number</dt>
-      <dd>${beacon.deviceNumber}</dd>
-      <dt>Last Location</dt>
-      <dd><ftl:location location="${beacon.lastLocation}" admin="false"/></dd>
-      <dt>Last Broadcast</dt>
-      <dd><joda:format value="${beacon.lastBroadcast}" style="MM"/></dd>
-      <dt>State</dt>
-      <dd>${beacon.state}</dd>
-      <c:if test="${!empty(beacon.batteryCharge)}">
-        <dt>Battery Charge</dt>
-        <dd>${beacon.batteryCharge}</dd>
-      </c:if>
-      <c:if test="${!empty(beacon.fuelLevel)}">
-        <dt>Fuel Level</dt>
-        <dd>
-          <div class="progress">
-            <div
-                class="progress-bar <c:choose><c:when test="${beacon.fuelLevelValue < 10}">progress-bar-danger</c:when><c:when test="${beacon.fuelLevelValue < 33}">progress-bar-warning</c:when><c:otherwise>progress-bar-success</c:otherwise></c:choose>"
-                role="progressbar" aria-valuenow="${beacon.fuelLevelValue}" aria-valuemin="0" aria-valuemax="100"
-                style="width: ${beacon.fuelLevelValue}%">
-                ${beacon.fuelLevelValue}%
-            </div>
-          </div>
-        </dd>
-      </c:if>
-    </dl>
+
+    <div id="chart_div">
+    </div>
 
 
   </div>
@@ -52,6 +28,7 @@
   </div>
 </div>
 <%@ include file="../include/core_js.jsp" %>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
 
 <c:if test="${!empty(beacon.lastLocation)}">
@@ -60,6 +37,29 @@
     TruckMap.init();
     TruckMap.clear();
     TruckMap.addMarker({lat: ${beacon.lastLocation.latitude}, lng: ${beacon.lastLocation.longitude}});
+
+    google.charts.load('current', {'packages': ['gauge']});
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
+
+      var data = google.visualization.arrayToDataTable([
+        ['Label', 'Value'],
+        ['Fuel', ${beacon.fuelLevelValue}],
+        ['Battery', ${beacon.batteryChargeValue}]
+      ]);
+
+      var options = {
+        width: 400, height: 200,
+        redFrom: 90, redTo: 100,
+        yellowFrom: 75, yellowTo: 90,
+        minorTicks: 5
+      };
+
+      var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
+
+      chart.draw(data, options);
+    }
+
   </script>
 </c:if>
 <script>
