@@ -4,7 +4,7 @@
 
     <p class="lead">The ${title} is used to find food trucks in realtime on the streets of ${city}. Food trucks are put
       on the map by automatic aggregation of social media feeds, published food truck schedules, and from dedicated GPS
-      devices in trucks (this is an upcoming feature). Not only does this website publish food truck locations, it also
+      devices in trucks. Not only does this website publish food truck locations, it also
       notifies you via regional twitter accounts and via browser notifications from Chrome.</p>
 
     <a name="notify"></a>
@@ -49,8 +49,8 @@
     });
 
     function buildInfoWindow(marker, name, twitterHandle, locationId) {
-      var contentString = "<h3><a href='/locations/" + locationId + "'>" + name + "</a></h3>";
-      contentString += "<div><a href='http://twitter.com/" + twitterHandle + "'>@" + twitterHandle + "</a>"
+      var contentString = "<h3><a href='http://twitter.com/" + twitterHandle + "'>@" + twitterHandle + "</a></h3>";
+      contentString += "<div><a href='/locations/" + locationId + "'>" + name + "</a>";
       var infoWindow = new google.maps.InfoWindow({
         content: contentString
       });
