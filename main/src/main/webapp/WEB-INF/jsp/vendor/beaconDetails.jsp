@@ -8,14 +8,56 @@
   </div>
 </div>
 <div class="row">
-  <div class="col-md-6">
+  <div class="col-md-3">
 
-    <div id="chart_div">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title">Last Broadcast</h3>
+      </div>
+      <div class="panel-body">
+        <joda:format value="${beacon.lastBroadcast}" style="MM"/>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title">Last Location</h3>
+      </div>
+      <div class="panel-body">
+        <ftl:location location="${beacon.lastLocation}"/>
+      </div>
     </div>
 
+  </div>
+  <div class="col-md-3">
+
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title">Battery</h3>
+      </div>
+      <div class="panel-body">
+        ${beacon.batteryCharge} V
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title">Fuel</h3>
+      </div>
+      <div class="panel-body">
+        ${beacon.fuelLevelValue}%
+      </div>
+    </div>
 
   </div>
-  <div class="col-md-6">
+
+</div>
+<div class="row">
+  <div class="col-md-12">
     <div id="map_canvas" style="width:100%; height:300px; padding-bottom:20px;"></div>
   </div>
 </div>
@@ -28,8 +70,6 @@
   </div>
 </div>
 <%@ include file="../include/core_js.jsp" %>
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
 
 <c:if test="${!empty(beacon.lastLocation)}">
   <script type="text/javascript" src="/script/vendordash.js"></script>
@@ -37,29 +77,6 @@
     TruckMap.init();
     TruckMap.clear();
     TruckMap.addMarker({lat: ${beacon.lastLocation.latitude}, lng: ${beacon.lastLocation.longitude}});
-
-    google.charts.load('current', {'packages': ['gauge']});
-    google.charts.setOnLoadCallback(drawChart);
-    function drawChart() {
-
-      var data = google.visualization.arrayToDataTable([
-        ['Label', 'Value'],
-        ['Fuel', ${beacon.fuelLevelValue}],
-        ['Battery', ${beacon.batteryChargeValue}]
-      ]);
-
-      var options = {
-        width: 400, height: 200,
-        redFrom: 90, redTo: 100,
-        yellowFrom: 75, yellowTo: 90,
-        minorTicks: 5
-      };
-
-      var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
-
-      chart.draw(data, options);
-    }
-
   </script>
 </c:if>
 <script>
