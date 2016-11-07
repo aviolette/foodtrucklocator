@@ -65,7 +65,7 @@
 <script src="/script/lib/typeahead.bundle.js"></script>
 <script type="text/javascript">
   (function() {
-    TruckMap.init()
+    TruckMap.init();
 
     function refreshBeacons() {
       <c:if test="${!empty(linxupAccount)}">
