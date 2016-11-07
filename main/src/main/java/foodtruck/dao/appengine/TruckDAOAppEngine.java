@@ -88,6 +88,12 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
   private static final String BLACKLIST_LOCATION_NAMES = "blacklist_location_names";
   private static final String PHONETIC_MARKUP = "phonetic_markup";
   private static final String PHONETIC_ALIASES = "phonetic_aliases";
+  private static final String POST_AT_NEW_LOCATION = "post_at_new_location";
+  private static final String TWITTER_TOKEN = "twitter_token";
+  private static final String TWITTER_TOKEN_SECRET = "twitter_token_secret";
+  private static final String POST_WEEKLY_SCHEDULE = "post_weekly_schedule";
+  private static final String POST_DAILY_SCHEDULE = "post_daily_schedule";
+  private static final String NEVER_LINK_TWITTER = "never_link_twitter";
   private DateTimeZone zone;
 
   @Inject
@@ -168,6 +174,12 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
         .calendarUrl((String) entity.getProperty(TRUCK_CALENDAR_URL))
         .phone((String) entity.getProperty(TRUCK_PHONE))
         .email((String) entity.getProperty(TRUCK_EMAIL))
+        .postWeeklySchedule(getBooleanProperty(entity, POST_WEEKLY_SCHEDULE, false))
+        .postDailySchedule(getBooleanProperty(entity, POST_DAILY_SCHEDULE, false))
+        .postAtNewStop(getBooleanProperty(entity, POST_AT_NEW_LOCATION, false))
+        .twitterToken(getStringProperty(entity, TWITTER_TOKEN))
+        .twitterTokenSecret(getStringProperty(entity, TWITTER_TOKEN_SECRET))
+        .neverLinkTwitter(getBooleanProperty(entity, NEVER_LINK_TWITTER, false))
         .build();
   }
 
@@ -332,7 +344,13 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     entity.setProperty(TRUCK_TWITTER_GEOLOCATION, truck.isTwitterGeolocationDataValid());
     entity.setProperty(BLACKLIST_LOCATION_NAMES, truck.getBlacklistLocationNames());
     entity.setProperty(PHONETIC_ALIASES, truck.getPhoneticAliases());
+    entity.setProperty(TWITTER_TOKEN, truck.getTwitterToken());
+    entity.setProperty(TWITTER_TOKEN_SECRET, truck.getTwitterTokenSecret());
+    entity.setProperty(POST_AT_NEW_LOCATION, truck.isPostAtNewStop());
+    entity.setProperty(POST_WEEKLY_SCHEDULE, truck.isPostWeeklySchedule());
+    entity.setProperty(POST_DAILY_SCHEDULE, truck.isPostDailySchedule());
     Attributes.setDateProperty(TRUCK_MUTE_UNTIL, entity, truck.getMuteUntil());
+    entity.setProperty(NEVER_LINK_TWITTER, truck.isNeverLinkTwitter());
     Truck.Stats stats = truck.getStats();
     if (stats == null) {
       stats = Truck.Stats.builder().build();

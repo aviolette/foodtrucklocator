@@ -9,12 +9,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
+import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TwitterNotificationAccountDAO;
 import foodtruck.email.EmailNotifier;
+import foodtruck.model.Truck;
 import foodtruck.model.TwitterNotificationAccount;
 import foodtruck.server.security.SimplePrincipal;
 import foodtruck.util.Session;
@@ -35,13 +38,15 @@ public class VendorCallbackServlet extends HttpServlet {
   private final Provider<Session> sessionProvider;
   private final EmailNotifier emailNotifier;
   private final TwitterNotificationAccountDAO twitterNotificationDAO;
+  private final TruckDAO truckDAO;
 
   @Inject
   public VendorCallbackServlet(Provider<Session> sessionProvider, EmailNotifier emailNotifier,
-      TwitterNotificationAccountDAO twitterNotificationAccountDAO) {
+      TwitterNotificationAccountDAO twitterNotificationAccountDAO, TruckDAO truckDAO) {
     this.sessionProvider = sessionProvider;
     this.emailNotifier = emailNotifier;
     this.twitterNotificationDAO = twitterNotificationAccountDAO;
+    this.truckDAO = truckDAO;
   }
 
   @Override
@@ -66,6 +71,19 @@ public class VendorCallbackServlet extends HttpServlet {
         screenName = screenName.toLowerCase();
         log.log(Level.INFO, "User {0} logged on via twitter", screenName);
         session.setProperty("principal", new SimplePrincipal(screenName));
+        Truck truck = Iterables.getFirst(truckDAO.findByTwitterId(screenName), null);
+        if (truck != null) {
+          String twitterToken = null, twitterTokenSecret = null;
+          if (!truck.isNeverLinkTwitter()) {
+            twitterToken = token.getToken();
+            twitterTokenSecret = token.getTokenSecret();
+          }
+          truck = Truck.builder()
+              .twitterToken(twitterToken)
+              .twitterTokenSecret(twitterTokenSecret)
+              .build();
+          truckDAO.save(truck);
+        }
         session.removeProperty("requestToken");
         session.removeProperty("twitter");
         emailNotifier.systemNotifyVendorPortalLogin(screenName, LoginMethod.TWITTER);

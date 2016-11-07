@@ -32,7 +32,7 @@ public class TwitterNotificationServiceTest {
     notificationDAO = null;
     locationDAO = null;
     service = new TwitterNotificationService(truckService, clock, notificationDAO, null, new StaticConfig(),
-        locationDAO);
+        locationDAO, null);
   }
 
   @Test

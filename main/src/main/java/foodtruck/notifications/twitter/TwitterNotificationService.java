@@ -25,6 +25,7 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TwitterNotificationAccount;
 import foodtruck.notifications.NotificationService;
+import foodtruck.socialmedia.TwitterFactoryWrapper;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 import twitter4j.Twitter;
@@ -44,17 +45,19 @@ public class TwitterNotificationService implements NotificationService {
   private final RetweetsDAO retweetsDAO;
   private final StaticConfig config;
   private final LocationDAO locationDAO;
+  private final TwitterFactoryWrapper twitterFactoryWrapper;
 
   @Inject
   public TwitterNotificationService(FoodTruckStopService truckService, Clock clock,
       TwitterNotificationAccountDAO notificationAccountDAO, RetweetsDAO retweetsDAO, StaticConfig config,
-      LocationDAO locationDAO) {
+      LocationDAO locationDAO, TwitterFactoryWrapper twitterFactoryWrapper) {
     this.truckService = truckService;
     this.clock = clock;
     this.notificationAccountDAO = notificationAccountDAO;
     this.retweetsDAO = retweetsDAO;
     this.config = config;
     this.locationDAO = locationDAO;
+    this.twitterFactoryWrapper = twitterFactoryWrapper;
   }
 
   @Override
@@ -95,7 +98,19 @@ public class TwitterNotificationService implements NotificationService {
 
   @Override
   public void notifyStopStart(TruckStop truckStop) {
-    messageAtStop(truckStop, "%s is now at %s %s");
+    Truck truck = truckStop.getTruck();
+    if (truck.isPostAtNewStop() && truck.getHasTwitterCredentials()) {
+      Location location = truckStop.getLocation();
+      Twitter twitter = twitterFactoryWrapper.createDetached(truck.twitterAccessToken());
+      try {
+        twitter.updateStatus(String.format("We are now at stop: %s %s", location.getShortenedName(),
+            config.getBaseUrl() + "/locations/" + location.getKey()));
+      } catch (TwitterException e) {
+        log.log(Level.SEVERE, e.getMessage(), e);
+      }
+    } else {
+      messageAtStop(truckStop, "%s is now at %s %s");
+    }
   }
 
   @Override

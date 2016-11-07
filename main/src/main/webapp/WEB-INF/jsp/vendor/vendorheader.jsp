@@ -57,6 +57,7 @@
                 <ul class="dropdown-menu">
                   <li><a href="/vendor/settings/${truck.id}">General</a></li>
                   <li><a href="/vendor/menu/${truck.id}">Menu</a></li>
+                  <li><a href="/vendor/socialmedia/${truck.id}">Social Media</a></li>
                 </ul>
               </li>
 

@@ -58,6 +58,7 @@ import foodtruck.server.vendor.VendorOffTheRoadServlet;
 import foodtruck.server.vendor.VendorRecacheServlet;
 import foodtruck.server.vendor.VendorServlet;
 import foodtruck.server.vendor.VendorSettingsServlet;
+import foodtruck.server.vendor.VendorSocialMediaSettingsServlet;
 import foodtruck.server.vendor.VendorTwitterRedirectServlet;
 
 /**
@@ -128,6 +129,7 @@ class FoodtruckServletModule extends ServletModule {
     serve("/vendor/menu/*").with(MenuServlet.class);
     serve("/vendor/linxup/*").with(VendorLinxupConfigServlet.class);
     serve("/vendor/beacons/*").with(VendorBeaconDetailsServlet.class);
+    serve("/vendor/socialmedia/*").with(VendorSocialMediaSettingsServlet.class);
 
     // Alexa integration
     serve("/amazonalexa").with(AlexaServlet.class);

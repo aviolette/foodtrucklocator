@@ -20,6 +20,8 @@ import com.google.common.collect.ImmutableSet;
 
 import org.joda.time.DateTime;
 
+import twitter4j.auth.AccessToken;
+
 import static com.google.common.base.Preconditions.checkState;
 
 /**
@@ -74,6 +76,13 @@ public class Truck extends ModelEntity implements Serializable {
   private List<String> blacklistLocationNames;
   private @Nullable String phoneticMarkup;
   private ImmutableList<String> phoneticAliases;
+  private @Nullable String twitterToken;
+  private @Nullable String twitterTokenSecret;
+  private boolean neverLinkTwitter;
+  private boolean postDailySchedule;
+  private boolean postWeeklySchedule;
+  private boolean postAtNewStop;
+
 
   // For serialization (for storage in memcached)
   private Truck() {
@@ -120,6 +129,12 @@ public class Truck extends ModelEntity implements Serializable {
     this.blacklistLocationNames = builder.blacklistLocationNames;
     this.phoneticMarkup = builder.phoneticMarkup;
     this.phoneticAliases = ImmutableList.copyOf(builder.phoneticAliases);
+    this.twitterToken = builder.twitterToken;
+    this.twitterTokenSecret = builder.twitterTokenSecret;
+    this.neverLinkTwitter = builder.neverLinkTwitter;
+    this.postDailySchedule = builder.postDailySchedule;
+    this.postWeeklySchedule = builder.postWeeklySchedule;
+    this.postAtNewStop = builder.postAtNewStop;
   }
 
   public static Builder builder() {
@@ -136,6 +151,45 @@ public class Truck extends ModelEntity implements Serializable {
       name = name.substring(4);
     }
     return name;
+  }
+
+  public
+  @Nullable
+  AccessToken twitterAccessToken() {
+    if (getHasTwitterCredentials()) {
+      return new AccessToken(twitterToken, twitterTokenSecret);
+    }
+    return null;
+  }
+
+  @Nullable
+  public String getTwitterToken() {
+    return twitterToken;
+  }
+
+  @Nullable
+  public String getTwitterTokenSecret() {
+    return twitterTokenSecret;
+  }
+
+  public boolean isNeverLinkTwitter() {
+    return neverLinkTwitter;
+  }
+
+  public boolean isPostDailySchedule() {
+    return postDailySchedule;
+  }
+
+  public boolean isPostWeeklySchedule() {
+    return postWeeklySchedule;
+  }
+
+  public boolean isPostAtNewStop() {
+    return postAtNewStop;
+  }
+
+  public boolean getHasTwitterCredentials() {
+    return !(Strings.isNullOrEmpty(twitterToken) || Strings.isNullOrEmpty(twitterTokenSecret));
   }
 
   public ImmutableList<String> getPhoneticAliases() {
@@ -336,6 +390,7 @@ public class Truck extends ModelEntity implements Serializable {
         .add("id", id)
         .add("name", name)
         .add("url", url)
+        .add("phone", phone)
         .add("iconUrl", iconUrl)
         .add("twitterHandle", twitterHandle)
         .add("foursquareUrl", foursquareUrl)
@@ -648,6 +703,12 @@ public class Truck extends ModelEntity implements Serializable {
     private List<String> blacklistLocationNames = ImmutableList.of();
     private @Nullable String phoneticMarkup;
     private List<String> phoneticAliases = ImmutableList.of();
+    private @Nullable String twitterToken;
+    private @Nullable String twitterTokenSecret;
+    private boolean neverLinkTwitter;
+    private boolean postDailySchedule;
+    private boolean postWeeklySchedule;
+    private boolean postAtNewStop;
 
     public Builder() {
     }
@@ -692,6 +753,12 @@ public class Truck extends ModelEntity implements Serializable {
       this.blacklistLocationNames = truck.blacklistLocationNames;
       this.phoneticMarkup = truck.phoneticMarkup;
       this.phoneticAliases = truck.phoneticAliases;
+      this.twitterToken = truck.twitterToken;
+      this.twitterTokenSecret = truck.twitterTokenSecret;
+      this.neverLinkTwitter = truck.neverLinkTwitter;
+      this.postDailySchedule = truck.postDailySchedule;
+      this.postWeeklySchedule = truck.postWeeklySchedule;
+      this.postAtNewStop = truck.postAtNewStop;
     }
 
     public Builder phoneticMarkup(String markup) {
@@ -911,6 +978,36 @@ public class Truck extends ModelEntity implements Serializable {
           this.phone = this.phone.substring(0, 3) + "-" + this.phone.substring(3, 6) + "-" + this.phone.substring(6, 10);
         }
       }
+      return this;
+    }
+
+    public Builder twitterToken(String twitterToken) {
+      this.twitterToken = twitterToken;
+      return this;
+    }
+
+    public Builder twitterTokenSecret(String twitterTokenSecret) {
+      this.twitterTokenSecret = twitterTokenSecret;
+      return this;
+    }
+
+    public Builder neverLinkTwitter(boolean neverLinkTwitter) {
+      this.neverLinkTwitter = neverLinkTwitter;
+      return this;
+    }
+
+    public Builder postDailySchedule(boolean postDailySchedule) {
+      this.postDailySchedule = postDailySchedule;
+      return this;
+    }
+
+    public Builder postWeeklySchedule(boolean postWeeklySchedule) {
+      this.postWeeklySchedule = postWeeklySchedule;
+      return this;
+    }
+
+    public Builder postAtNewStop(boolean postAtNewStop) {
+      this.postAtNewStop = postAtNewStop;
       return this;
     }
   }
