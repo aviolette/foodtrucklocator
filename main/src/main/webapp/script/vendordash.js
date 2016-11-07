@@ -1,6 +1,6 @@
 var TruckMap = function() {
   var MILES_TO_METERS = 1609.34;
-  var map, markers = [], bounds = new google.maps.LatLngBounds(),openInfoWindow;
+  var map, markers = [], bounds, openInfoWindow;
   function buildInfoWindow(marker, map, stop) {
     var $content = $("<div>"),
         $masterDiv = $("<div>");
@@ -29,6 +29,10 @@ var TruckMap = function() {
 
   return {
     init : function() {
+      if (typeof google == "undefined") {
+        return;
+      }
+      bounds = new google.maps.LatLngBounds();
       var markerLat = new google.maps.LatLng(41.8807438, -87.6293867);
       var myOptions = {
         center: markerLat,
@@ -40,6 +44,9 @@ var TruckMap = function() {
           myOptions);
     },
     addBlacklisted: function(location) {
+      if (typeof google == "undefined") {
+        return;
+      }
       var markerLat = new google.maps.LatLng(location.latitude, location.longitude);
       circle = new google.maps.Circle({
         radius: location.radius * MILES_TO_METERS,
@@ -48,6 +55,9 @@ var TruckMap = function() {
       });
     },
     addBeacon: function (lat, lng, enabled, parked, blacklisted, direction) {
+      if (typeof google == "undefined") {
+        return;
+      }
       var latLng = new google.maps.LatLng(lat, lng);
       var marker;
       if (parked && enabled && !blacklisted) {
@@ -77,6 +87,9 @@ var TruckMap = function() {
       map.fitBounds(bounds);
     },
     addStop: function(stop) {
+      if (typeof google == "undefined") {
+        return;
+      }
       var now = new Date().getTime();
       if (stop.startMillis <= now && stop.endMillis > now) {
         var pos = new google.maps.LatLng(stop.location.latitude, stop.location.longitude);
@@ -93,6 +106,9 @@ var TruckMap = function() {
       }
     },
     addMarker: function (pos) {
+      if (typeof google == "undefined") {
+        return;
+      }
       var marker = new google.maps.Marker({
         draggable: true,
         position: pos,
@@ -101,10 +117,12 @@ var TruckMap = function() {
       });
       markers.push(marker);
       bounds.extend(marker.getPosition());
-//      buildInfoWindow(marker, map, stop);
       map.fitBounds(bounds);
     },
     clear: function() {
+      if (typeof google == "undefined") {
+        return;
+      }
       $.each(markers, function(i, marker) {
         marker.setMap(null);
       });
