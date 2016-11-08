@@ -53,6 +53,7 @@ public class VendorCallbackServlet extends HttpServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     Session session = sessionProvider.get();
     Twitter twitter = (Twitter) session.getProperty("twitter");
+    boolean noLogon = (Boolean) session.getProperty("nologon");
     RequestToken requestToken = (RequestToken) session.getProperty("requestToken");
     String verifier = req.getParameter("oauth_verifier");
     try {
@@ -69,24 +70,33 @@ public class VendorCallbackServlet extends HttpServlet {
         resp.sendRedirect("/admin");
       } else {
         screenName = screenName.toLowerCase();
-        log.log(Level.INFO, "User {0} logged on via twitter", screenName);
-        session.setProperty("principal", new SimplePrincipal(screenName));
+        if (noLogon) {
+          log.log(Level.INFO, "Linked @{0} via twitter", screenName);
+        } else {
+          log.log(Level.INFO, "User {0} logged on via twitter", screenName);
+          session.setProperty("principal", new SimplePrincipal(screenName));
+        }
         Truck truck = Iterables.getFirst(truckDAO.findByTwitterId(screenName), null);
         if (truck != null) {
           String twitterToken = null, twitterTokenSecret = null;
-          if (!truck.isNeverLinkTwitter()) {
+          if (noLogon || !truck.isNeverLinkTwitter()) {
             twitterToken = token.getToken();
             twitterTokenSecret = token.getTokenSecret();
           }
-          truck = Truck.builder()
+          truck = Truck.builder(truck)
               .twitterToken(twitterToken)
               .twitterTokenSecret(twitterTokenSecret)
               .build();
           truckDAO.save(truck);
+        } else if (noLogon) {
+          resp.sendError(400, "Truck not associated with @" + screenName);
+          return;
         }
         session.removeProperty("requestToken");
         session.removeProperty("twitter");
-        emailNotifier.systemNotifyVendorPortalLogin(screenName, LoginMethod.TWITTER);
+        if (!noLogon) {
+          emailNotifier.systemNotifyVendorPortalLogin(screenName, LoginMethod.TWITTER);
+        }
         resp.sendRedirect("/vendor");
       }
     } catch (TwitterException e) {

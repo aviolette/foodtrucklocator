@@ -1,5 +1,4 @@
 <%@ include file="vendorheader.jsp" %>
-<%--
 
 <h2>Linked Social Media Accounts</h2>
 <div class="row">
@@ -9,12 +8,18 @@
         <h3 class="panel-title">Twitter</h3>
       </div>
       <div class="panel-body">
-        <button class="btn btn-danger">Unlink</button>
+        <c:choose>
+          <c:when test="${truck.hasTwitterCredentials}">
+            <a href="/vendor/socialmedia/${truck.id}/unlink?account=twitter" class="btn btn-danger">Unlink</a>
+          </c:when>
+          <c:otherwise>
+            <a href="/vendor/twitter?nologon=true" class="btn btn-default">Link</a>
+          </c:otherwise>
+        </c:choose>
       </div>
     </div>
   </div>
 </div>
---%>
 <h2>Automated Posting</h2>
 
 <div class="row">
@@ -54,10 +59,11 @@
         url: "/vendor/socialmedia/${truck.id}",
         data: $("#settingsForm").serialize(),
         error: function (resp, textStatus, errorThrown) {
-          $("#flash").css("display", "block");
-          $("#flash").removeClass("alert-info");
-          $("#flash").addClass("alert-error");
-          $("#flash").html(resp.responseText);
+          var $flash = $("#flash");
+          $flash.css("display", "block");
+          $flash.removeClass("alert-info");
+          $flash.addClass("alert-error");
+          $flash.html(resp.responseText);
         },
         success: function () {
           location.href = "/vendor";

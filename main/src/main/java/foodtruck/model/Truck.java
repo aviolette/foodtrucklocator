@@ -153,9 +153,12 @@ public class Truck extends ModelEntity implements Serializable {
     return name;
   }
 
-  public
+  public Builder append() {
+    return new Builder(this);
+  }
+
   @Nullable
-  AccessToken twitterAccessToken() {
+  public AccessToken twitterAccessToken() {
     if (getHasTwitterCredentials()) {
       return new AccessToken(twitterToken, twitterTokenSecret);
     }
@@ -1008,6 +1011,13 @@ public class Truck extends ModelEntity implements Serializable {
 
     public Builder postAtNewStop(boolean postAtNewStop) {
       this.postAtNewStop = postAtNewStop;
+      return this;
+    }
+
+    public Builder clearTwitterCredentials() {
+      this.neverLinkTwitter = true;
+      this.twitterTokenSecret = null;
+      this.twitterToken = null;
       return this;
     }
   }
