@@ -54,7 +54,6 @@ public class Truck extends ModelEntity implements Serializable {
   private @Nullable String calendarUrl;
   private @Nullable String email;
   private @Nullable String phone;
-  private boolean twitterGeolocationDataValid;
   private @Nullable DateTime muteUntil;
   private String yelpSlug;
   private @Nullable String facebookPageId;
@@ -62,7 +61,6 @@ public class Truck extends ModelEntity implements Serializable {
   private boolean hidden;
   private ImmutableSet<String> beaconnaiseEmails;
   private @Nullable String previewIcon;
-  private boolean allowSystemNotifications;
   private boolean displayEmailPublicly;
   private String instagramId;
   private @Nullable String fullsizeImage;
@@ -108,14 +106,12 @@ public class Truck extends ModelEntity implements Serializable {
     this.donotMatchIf = builder.donotMatchIf;
     this.email = builder.email;
     this.phone = builder.phone;
-    this.twitterGeolocationDataValid = builder.twitterGeolocationDataValid;
     this.muteUntil = builder.muteUntil;
     this.yelpSlug = builder.yelpSlug;
     this.stats = builder.stats;
     this.hidden = builder.hidden;
     this.beaconnaiseEmails = ImmutableSet.copyOf(builder.beaconnaiseEmails);
     this.previewIcon = builder.previewIcon;
-    this.allowSystemNotifications = builder.allowSystemNotifications;
     this.displayEmailPublicly = builder.displayEmailPublicly;
     this.instagramId = builder.instagramId;
     this.fullsizeImage = builder.fullsizeImage;
@@ -237,18 +233,8 @@ public class Truck extends ModelEntity implements Serializable {
     return this.displayEmailPublicly;
   }
 
-  @Deprecated
-  public boolean isAllowSystemNotifications() {
-    return this.allowSystemNotifications;
-  }
-
   public boolean isHidden() {
     return hidden;
-  }
-
-  @Deprecated
-  public boolean isTwitterGeolocationDataValid() {
-    return twitterGeolocationDataValid;
   }
 
   public @Nullable String getFoursquareUrl() {
@@ -669,9 +655,7 @@ public class Truck extends ModelEntity implements Serializable {
   public static class Builder {
     public Set<String> categories = ImmutableSet.of();
     public String description;
-    public boolean twitterGeolocationDataValid;
     public Set<String> beaconnaiseEmails = ImmutableSet.of();
-    public boolean allowSystemNotifications;
     private String id;
     private String name;
     private @Nullable String url;
@@ -732,7 +716,6 @@ public class Truck extends ModelEntity implements Serializable {
       this.matchOnlyIf = truck.matchOnlyIf;
       this.inactive = truck.inactive;
       this.calendarUrl = truck.calendarUrl;
-      this.twitterGeolocationDataValid = truck.twitterGeolocationDataValid;
       this.muteUntil = truck.muteUntil;
       this.yelpSlug = truck.yelpSlug;
       this.facebookPageId = truck.facebookPageId;
@@ -742,7 +725,6 @@ public class Truck extends ModelEntity implements Serializable {
       this.email = truck.email;
       this.previewIcon = truck.previewIcon;
       this.beaconnaiseEmails = truck.beaconnaiseEmails;
-      this.allowSystemNotifications = truck.allowSystemNotifications;
       this.displayEmailPublicly = truck.displayEmailPublicly;
       this.instagramId = truck.instagramId;
       this.fullsizeImage = truck.fullsizeImage;
@@ -794,11 +776,6 @@ public class Truck extends ModelEntity implements Serializable {
       return this;
     }
 
-    public Builder allowSystemNotifications(boolean systemNotifications) {
-      this.allowSystemNotifications = systemNotifications;
-      return this;
-    }
-
     public Builder hidden(boolean hidden) {
       this.hidden = hidden;
       return this;
@@ -811,11 +788,6 @@ public class Truck extends ModelEntity implements Serializable {
 
     public Builder beaconnaiseEmails(Set<String> emails) {
       this.beaconnaiseEmails = emails;
-      return this;
-    }
-
-    public Builder twitterGeolocationDataValid(boolean valid) {
-      this.twitterGeolocationDataValid = valid;
       return this;
     }
 

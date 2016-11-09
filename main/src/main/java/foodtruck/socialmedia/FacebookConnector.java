@@ -82,7 +82,7 @@ public class FacebookConnector implements SocialMediaConnector {
       }
 
       if (first) {
-        truck = Truck.builder(truck).lastScanned(id).build();
+        truck = truck.append().lastScanned(id).build();
         truckDAO.save(truck);
         first = false;
       }

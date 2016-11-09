@@ -149,17 +149,8 @@
   </div>
   <div class="checkbox">
     <label><input type="checkbox" name="options"
-                  value="systemNotifications" ${truck.allowSystemNotifications ? "checked='checked'" : ""}/> Allow System Notifications</label>
-  </div>
-  <div class="checkbox">
-    <label><input type="checkbox" name="options"
                   value="displayEmailPublicly" ${truck.displayEmailPublicly ? "checked='checked'" : ""}/>
       Display email publicly</label>
-  </div>
-  <div class="checkbox">
-    <label><input type="checkbox" name="options"
-                  value="twitterGeolocation" ${truck.twitterGeolocationDataValid ? "checked='checked'" : ""}/>
-      Can Use Twitter Geolocation Data</label>
   </div>
   <div class="checkbox">
     <label><input type="checkbox" name="options"

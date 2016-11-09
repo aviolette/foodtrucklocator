@@ -139,7 +139,6 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
         .stats(stats)
         .fullsizeImage(getStringProperty(entity, TRUCK_FULL_SIZE))
         .displayEmailPublicly(getBooleanProperty(entity, TRUCK_DISPLAY_EMAIL, true))
-        .allowSystemNotifications(getBooleanProperty(entity, TRUCK_ALLOW_SYSTEM_NOTIFICATIONS, false))
         .previewIcon(getStringProperty(entity, TRUCK_PREVIEW_ICON))
         .inactive((Boolean) entity.getProperty(INACTIVE_FIELD))
         .twitterHandle((String) entity.getProperty(TRUCK_TWITTER_HANDLE))
@@ -170,7 +169,6 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
         .phoneticAliases(getListProperty(entity, PHONETIC_ALIASES))
         .categories(categoriesList == null ? ImmutableSet.<String>of() : ImmutableSet.copyOf(categoriesList))
         .useTwittalyzer((Boolean) entity.getProperty(TRUCK_TWITTALYZER_FIELD))
-        .twitterGeolocationDataValid(getBooleanProperty(entity, TRUCK_TWITTER_GEOLOCATION, false))
         .calendarUrl((String) entity.getProperty(TRUCK_CALENDAR_URL))
         .phone((String) entity.getProperty(TRUCK_PHONE))
         .email((String) entity.getProperty(TRUCK_EMAIL))
@@ -339,9 +337,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     entity.setProperty(TRUCK_FULL_SIZE, truck.getFullsizeImage());
     entity.setProperty(SCAN_FACEBOOK, truck.getScanFacebook());
     entity.setProperty(LAST_SCANNED, truck.getLastScanned());
-    entity.setProperty(TRUCK_ALLOW_SYSTEM_NOTIFICATIONS, truck.isAllowSystemNotifications());
     entity.setProperty(TRUCK_FACEBOOK_PAGE_ID, truck.getFacebookPageId());
-    entity.setProperty(TRUCK_TWITTER_GEOLOCATION, truck.isTwitterGeolocationDataValid());
     entity.setProperty(BLACKLIST_LOCATION_NAMES, truck.getBlacklistLocationNames());
     entity.setProperty(PHONETIC_ALIASES, truck.getPhoneticAliases());
     entity.setProperty(TWITTER_TOKEN, truck.getTwitterToken());
