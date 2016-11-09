@@ -10,10 +10,12 @@
       <div class="panel-body">
         <c:choose>
           <c:when test="${truck.hasTwitterCredentials}">
-            <a href="/vendor/socialmedia/${truck.id}/unlink?account=twitter" class="btn btn-danger">Unlink</a>
+            <a href="/vendor/socialmedia/${truck.id}/unlink?account=twitter"
+               class="btn btn-danger">Unlink</a> @${truck.twitterHandle}
           </c:when>
           <c:otherwise>
-            <a href="/vendor/twitter?nologon=true" class="btn btn-default">Link</a>
+            <a href="/vendor/twitter?nologon=true" class="btn btn-default"><span
+                class="glyphicon glyphicon-link"></span> Link</a>
           </c:otherwise>
         </c:choose>
       </div>
