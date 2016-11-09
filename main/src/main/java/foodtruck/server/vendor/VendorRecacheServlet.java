@@ -15,12 +15,10 @@ import com.google.inject.Singleton;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
-import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
-import foodtruck.util.Session;
 
 /**
  * @author aviolette
@@ -33,16 +31,19 @@ public class VendorRecacheServlet extends VendorServletSupport {
 
   @Inject
   protected VendorRecacheServlet(TruckDAO dao, FoodTruckStopService foodTruckStopService, Clock clock,
-      Provider<Session> sessionProvider, UserService userService, LocationDAO locationDAO) {
-    super(dao, sessionProvider, userService, locationDAO);
+      UserService userService, Provider<SessionUser> sessionUserProvider) {
+    super(dao, userService, sessionUserProvider);
     this.foodTruckStopService = foodTruckStopService;
     this.clock = clock;
   }
 
-  @Override protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable Truck truck)
-      throws ServletException, IOException {
+  @Override
+  protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp,
+      @Nullable Truck truck) throws ServletException, IOException {
     LocalDate when = clock.currentDay();
-    final Interval interval = when.toInterval(clock.zone()).withEnd(when.plusDays(7).toDateTimeAtStartOfDay());
+    final Interval interval = when.toInterval(clock.zone())
+        .withEnd(when.plusDays(7)
+            .toDateTimeAtStartOfDay());
     foodTruckStopService.pullCustomCalendarFor(interval, truck);
   }
 }

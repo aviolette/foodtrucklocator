@@ -18,11 +18,9 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
-import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
 import foodtruck.server.GuiceHackRequestWrapper;
-import foodtruck.util.Session;
 
 /**
  * @author aviolette
@@ -34,20 +32,21 @@ public class VendorSettingsServlet extends VendorServletSupport {
   private static final String JSP = "/WEB-INF/jsp/vendor/vendorSettings.jsp";
 
   @Inject
-  protected VendorSettingsServlet(TruckDAO dao, Provider<Session> sessionProvider, UserService userService,
-      LocationDAO locationDAO) {
-    super(dao, sessionProvider, userService, locationDAO);
+  protected VendorSettingsServlet(TruckDAO dao, UserService userService, Provider<SessionUser> sessionUserProvider) {
+    super(dao, userService, sessionUserProvider);
   }
 
-  @Override protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable Truck truck)
-      throws ServletException, IOException {
+  @Override
+  protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp,
+      @Nullable Truck truck) throws ServletException, IOException {
     req = new GuiceHackRequestWrapper(req, JSP);
     req.setAttribute("tab", "profile");
-    req.getRequestDispatcher(JSP).forward(req, resp);
+    req.getRequestDispatcher(JSP)
+        .forward(req, resp);
   }
 
-  @Override protected void dispatchPost(HttpServletRequest req, HttpServletResponse resp, String truckId)
-      throws IOException {
+  @Override
+  protected void dispatchPost(HttpServletRequest req, HttpServletResponse resp, String truckId) throws IOException {
     Truck truck = truckDAO.findById(truckId);
     Escaper escaper = HtmlEscapers.htmlEscaper();
     String name = req.getParameter("name"),
@@ -66,14 +65,16 @@ public class VendorSettingsServlet extends VendorServletSupport {
           .url(url)
           .normalizePhone(escaper.escape(Strings.nullToEmpty(phone)))
           .email(email == null ? null : escaper.escape(email))
-          .description(description == null ? null : escaper.escape(description)).build();
+          .description(description == null ? null : escaper.escape(description))
+          .build();
       log.log(Level.INFO, "Saving truck {0}", truck);
       truckDAO.save(truck);
       req.setAttribute("flash", "Successfully saved");
     } catch (Exception e) {
       log.log(Level.SEVERE, e.getMessage(), e);
       resp.setStatus(400);
-      resp.getWriter().println(e.getMessage());
+      resp.getWriter()
+          .println(e.getMessage());
     }
   }
 }

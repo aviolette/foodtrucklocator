@@ -14,11 +14,9 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
-import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
 import foodtruck.server.GuiceHackRequestWrapper;
-import foodtruck.util.Session;
 
 /**
  * @author aviolette
@@ -29,9 +27,9 @@ public class VendorSocialMediaSettingsServlet extends VendorServletSupport {
   private static final String JSP = "/WEB-INF/jsp/vendor/socialMediaSettings.jsp";
 
   @Inject
-  public VendorSocialMediaSettingsServlet(TruckDAO dao, Provider<Session> sessionProvider, UserService userService,
-      LocationDAO locationDAO) {
-    super(dao, sessionProvider, userService, locationDAO);
+  public VendorSocialMediaSettingsServlet(TruckDAO dao, UserService userService,
+      Provider<SessionUser> sessionUserProvider) {
+    super(dao, userService, sessionUserProvider);
   }
 
   @Override

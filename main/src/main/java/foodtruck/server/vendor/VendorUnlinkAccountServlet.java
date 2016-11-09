@@ -12,10 +12,8 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
-import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
-import foodtruck.util.Session;
 
 /**
  * Unlinks a social media accounts credentials from a specific truck.
@@ -26,9 +24,8 @@ import foodtruck.util.Session;
 @Singleton
 public class VendorUnlinkAccountServlet extends VendorServletSupport {
   @Inject
-  public VendorUnlinkAccountServlet(TruckDAO dao, Provider<Session> sessionProvider, UserService userService,
-      LocationDAO locationDAO) {
-    super(dao, sessionProvider, userService, locationDAO);
+  public VendorUnlinkAccountServlet(TruckDAO dao, UserService userService, Provider<SessionUser> sessionUserProvider) {
+    super(dao, userService, sessionUserProvider);
   }
 
   @Override

@@ -12,11 +12,9 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
-import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Location;
 import foodtruck.server.dashboard.EventServletSupport;
-import foodtruck.util.Session;
 
 /**
  * @author aviolette
@@ -27,21 +25,24 @@ public class LocationEditVendorServlet extends VendorServletSupport {
   private final Provider<EventServletSupport> eventServletSupportProvider;
 
   @Inject
-  public LocationEditVendorServlet(TruckDAO dao, Provider<Session> sessionProvider, UserService userService,
-      LocationDAO locationDAO, Provider<EventServletSupport> eventServletSupport) {
-    super(dao, sessionProvider, userService, locationDAO);
+  public LocationEditVendorServlet(TruckDAO dao, UserService userService,
+      Provider<EventServletSupport> eventServletSupport, Provider<SessionUser> sessionUserProvider) {
+    super(dao, userService, sessionUserProvider);
     this.eventServletSupportProvider = eventServletSupport;
   }
 
   @Override
-  protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable Location location) throws ServletException, IOException {
-    eventServletSupportProvider.get().get(location, getRedirectTo(location));
+  protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp,
+      @Nullable Location location) throws ServletException, IOException {
+    eventServletSupportProvider.get()
+        .get(location, getRedirectTo(location));
   }
 
   @Override
   protected void dispatchPost(HttpServletRequest req, HttpServletResponse resp, Location location,
       String principalName) throws IOException {
-    eventServletSupportProvider.get().post(location, principalName, getRedirectTo(location));
+    eventServletSupportProvider.get()
+        .post(location, principalName, getRedirectTo(location));
   }
 
   private String getRedirectTo(Location location) {

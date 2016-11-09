@@ -12,13 +12,11 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
-import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.Location;
 import foodtruck.model.TruckStop;
 import foodtruck.server.GuiceHackRequestWrapper;
-import foodtruck.util.Session;
 
 /**
  * @author aviolette
@@ -30,9 +28,9 @@ public class LocationStopDeleteServlet extends VendorServletSupport {
   private final TruckStopDAO truckStopDAO;
 
   @Inject
-  public LocationStopDeleteServlet(TruckDAO dao, Provider<Session> sessionProvider, UserService userService,
-      LocationDAO locationDAO, TruckStopDAO truckStopDAO) {
-    super(dao, sessionProvider, userService, locationDAO);
+  public LocationStopDeleteServlet(TruckDAO dao, UserService userService, TruckStopDAO truckStopDAO,
+      Provider<SessionUser> sessionUserProvider) {
+    super(dao, userService, sessionUserProvider);
     this.truckStopDAO = truckStopDAO;
   }
 
@@ -46,7 +44,8 @@ public class LocationStopDeleteServlet extends VendorServletSupport {
     }
     req.setAttribute("stopId", stop.getKey());
     req = new GuiceHackRequestWrapper(req, JSP);
-    req.getRequestDispatcher(JSP).forward(req, resp);
+    req.getRequestDispatcher(JSP)
+        .forward(req, resp);
   }
 
   @Override
@@ -61,9 +60,11 @@ public class LocationStopDeleteServlet extends VendorServletSupport {
     resp.sendRedirect("/vendor/locations/" + location.getKey());
   }
 
-  private @Nullable TruckStop extractTruckStop(HttpServletRequest req) {
+  @Nullable
+  private TruckStop extractTruckStop(HttpServletRequest req) {
     String uri = req.getRequestURI();
-    String stopId = uri.substring(uri.substring(0, uri.length() - 7).lastIndexOf('/')+1, uri.length()-7);
+    String stopId = uri.substring(uri.substring(0, uri.length() - 7)
+        .lastIndexOf('/') + 1, uri.length() - 7);
     return truckStopDAO.findById(Long.parseLong(stopId));
   }
 }

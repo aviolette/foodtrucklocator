@@ -14,14 +14,12 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
-import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TrackingDeviceDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
 import foodtruck.server.GuiceHackRequestWrapper;
-import foodtruck.util.Session;
 
 /**
  * @author aviolette
@@ -35,9 +33,9 @@ public class VendorBeaconDetailsServlet extends VendorServletSupport {
   private final StaticConfig config;
 
   @Inject
-  public VendorBeaconDetailsServlet(TruckDAO dao, Provider<Session> sessionProvider, UserService userService,
-      LocationDAO locationDAO, TrackingDeviceDAO deviceDAO, StaticConfig config) {
-    super(dao, sessionProvider, userService, locationDAO);
+  public VendorBeaconDetailsServlet(TruckDAO dao, UserService userService, TrackingDeviceDAO deviceDAO,
+      StaticConfig config, Provider<SessionUser> sessionUserProvider) {
+    super(dao, userService, sessionUserProvider);
     this.deviceDAO = deviceDAO;
     this.config = config;
   }

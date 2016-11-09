@@ -15,13 +15,11 @@ import com.google.inject.Singleton;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
-import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Location;
 import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
-import foodtruck.util.Session;
 
 /**
  * @author aviolette
@@ -34,15 +32,16 @@ public class LocationVendorServlet extends VendorServletSupport {
   private final Clock clock;
 
   @Inject
-  public LocationVendorServlet(TruckDAO dao, Provider<Session> sessionProvider, UserService userService,
-      LocationDAO locationDAO, FoodTruckStopService service, Clock clock) {
-    super(dao, sessionProvider, userService, locationDAO);
+  public LocationVendorServlet(TruckDAO dao, UserService userService, FoodTruckStopService service, Clock clock,
+      Provider<SessionUser> sessionUserProvider) {
+    super(dao, userService, sessionUserProvider);
     this.service = service;
     this.clock = clock;
   }
 
   @Override
-  protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable Location location) throws ServletException, IOException {
+  protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp,
+      @Nullable Location location) throws ServletException, IOException {
     req = new GuiceHackRequestWrapper(req, JSP);
     DateTime dt = clock.now();
     if (location != null && location.getImageUrl() != null) {
@@ -50,6 +49,7 @@ public class LocationVendorServlet extends VendorServletSupport {
       req.setAttribute("vendorIconDescription", location.getName());
     }
     req.setAttribute("stops", service.findStopsAtLocationOverRange(location, new Interval(dt, dt.plusDays(365))));
-    req.getRequestDispatcher(JSP).forward(req, resp);
+    req.getRequestDispatcher(JSP)
+        .forward(req, resp);
   }
 }

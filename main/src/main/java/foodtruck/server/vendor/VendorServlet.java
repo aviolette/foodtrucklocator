@@ -29,7 +29,6 @@ import foodtruck.dao.TruckDAO;
 import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
-import foodtruck.util.Session;
 
 /**
  * @author aviolette
@@ -43,16 +42,17 @@ public class VendorServlet extends VendorServletSupport {
   private final LinxupAccountDAO linxupAccountDAO;
 
   @Inject
-  public VendorServlet(TruckDAO dao, LocationDAO locationDAO, Provider<Session> sessionProvider,
-      UserService userService, StaticConfig config, LinxupAccountDAO linxupAccountDAO) {
-    super(dao, sessionProvider, userService, locationDAO);
+  public VendorServlet(TruckDAO dao, LocationDAO locationDAO, UserService userService, StaticConfig config,
+      LinxupAccountDAO linxupAccountDAO, Provider<SessionUser> sessionUserProvider) {
+    super(dao, userService, sessionUserProvider);
     this.locationDAO = locationDAO;
     this.config = config;
     this.linxupAccountDAO = linxupAccountDAO;
   }
 
-  @Override protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable Truck truck)
-      throws ServletException, IOException {
+  @Override
+  protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp,
+      @Nullable Truck truck) throws ServletException, IOException {
     if (truck != null) {
       req.setAttribute("categories", new JSONArray(truck.getCategories()));
       req.setAttribute("linxupAccount", linxupAccountDAO.findByTruck(truck.getId()));
@@ -71,8 +71,7 @@ public class VendorServlet extends VendorServletSupport {
                 return null;
               }
               try {
-                return new JSONObject()
-                    .put("name", input)
+                return new JSONObject().put("name", input)
                     .put("latitude", location.getLatitude())
                     .put("longitude", location.getLongitude())
                     .put("radius", location.getRadius());
@@ -84,6 +83,7 @@ public class VendorServlet extends VendorServletSupport {
           .filter(Predicates.notNull())
           .toList()));
     }
-    req.getRequestDispatcher(JSP).forward(req, resp);
+    req.getRequestDispatcher(JSP)
+        .forward(req, resp);
   }
 }

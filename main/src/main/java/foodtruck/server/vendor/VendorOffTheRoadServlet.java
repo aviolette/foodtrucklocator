@@ -12,12 +12,10 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
-import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
-import foodtruck.util.Session;
 
 /**
  * @author aviolette
@@ -30,14 +28,15 @@ public class VendorOffTheRoadServlet extends VendorServletSupport {
 
   @Inject
   protected VendorOffTheRoadServlet(TruckDAO dao, FoodTruckStopService foodTruckStopService, Clock clock,
-      Provider<Session> sessionProvider, UserService userService, LocationDAO locationDAO) {
-    super(dao, sessionProvider, userService, locationDAO);
+      UserService userService, Provider<SessionUser> sessionUserProvider) {
+    super(dao, userService, sessionUserProvider);
     this.stopService = foodTruckStopService;
     this.clock = clock;
   }
 
-  @Override protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable Truck truck)
-      throws ServletException, IOException {
+  @Override
+  protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp,
+      @Nullable Truck truck) throws ServletException, IOException {
     stopService.offRoad(truck.getId(), clock.currentDay());
   }
 }

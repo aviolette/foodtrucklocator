@@ -18,13 +18,11 @@ import com.google.inject.Singleton;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import foodtruck.dao.LocationDAO;
 import foodtruck.dao.MenuDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Menu;
 import foodtruck.model.Truck;
 import foodtruck.server.GuiceHackRequestWrapper;
-import foodtruck.util.Session;
 
 /**
  * @author aviolette
@@ -38,9 +36,9 @@ public class MenuServlet extends VendorServletSupport {
   private final MenuDAO menuDAO;
 
   @Inject
-  public MenuServlet(TruckDAO dao, Provider<Session> sessionProvider, UserService userService, LocationDAO locationDAO,
-      MenuDAO menuDAO) {
-    super(dao, sessionProvider, userService, locationDAO);
+  public MenuServlet(TruckDAO dao, UserService userService, MenuDAO menuDAO,
+      Provider<SessionUser> sessionUserProvider) {
+    super(dao, userService, sessionUserProvider);
     this.menuDAO = menuDAO;
   }
 
@@ -52,14 +50,18 @@ public class MenuServlet extends VendorServletSupport {
     if (truck != null) {
       req.setAttribute("menu", menuDAO.findByTruck(truck.getId()));
     }
-    req.getRequestDispatcher(JSP).forward(req, resp);
+    req.getRequestDispatcher(JSP)
+        .forward(req, resp);
   }
 
   @Override
   protected void dispatchPost(HttpServletRequest req, HttpServletResponse resp, String truckId) throws IOException {
     try {
       JSONObject jsonPayload = new JSONObject(new String(ByteStreams.toByteArray(req.getInputStream())));
-      Menu menu = Menu.builder(menuDAO.findByTruck(truckId)).payload(jsonPayload.toString()).truckId(truckId).build();
+      Menu menu = Menu.builder(menuDAO.findByTruck(truckId))
+          .payload(jsonPayload.toString())
+          .truckId(truckId)
+          .build();
       menuDAO.save(menu);
     } catch (JSONException je) {
       log.log(Level.SEVERE, je.getMessage(), je);

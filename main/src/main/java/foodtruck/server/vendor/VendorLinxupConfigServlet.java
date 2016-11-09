@@ -14,14 +14,12 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import foodtruck.dao.LinxupAccountDAO;
-import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.linxup.TruckMonitorService;
 import foodtruck.model.LinxupAccount;
 import foodtruck.model.Truck;
 import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.util.ServiceException;
-import foodtruck.util.Session;
 
 /**
  * @author aviolette
@@ -34,9 +32,9 @@ public class VendorLinxupConfigServlet extends VendorServletSupport {
   private final TruckMonitorService service;
 
   @Inject
-  public VendorLinxupConfigServlet(TruckDAO dao, Provider<Session> sessionProvider, UserService userService,
-      LocationDAO locationDAO, LinxupAccountDAO linxupAccountDAO, TruckMonitorService service) {
-    super(dao, sessionProvider, userService, locationDAO);
+  public VendorLinxupConfigServlet(TruckDAO dao, UserService userService, LinxupAccountDAO linxupAccountDAO,
+      TruckMonitorService service, Provider<SessionUser> sessionUserProvider) {
+    super(dao, userService, sessionUserProvider);
     this.accountDAO = linxupAccountDAO;
     this.service = service;
   }

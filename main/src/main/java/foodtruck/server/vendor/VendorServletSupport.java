@@ -14,16 +14,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.users.UserService;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.inject.Provider;
 
-import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.server.GuiceHackRequestWrapper;
-import foodtruck.util.Session;
 
 /**
  * @author aviolette
@@ -33,44 +30,42 @@ public abstract class VendorServletSupport extends HttpServlet {
   private static final Logger log = Logger.getLogger(VendorServletSupport.class.getName());
   private static final String LANDING_JSP = "/WEB-INF/jsp/vendor/index.jsp";
   protected final TruckDAO truckDAO;
-  protected final Provider<Session> sessionProvider;
   private final UserService userService;
-  private final LocationDAO locationDAO;
+  private final Provider<SessionUser> sessionUserProvider;
 
-  VendorServletSupport(TruckDAO dao, Provider<Session> sessionProvider, UserService userService,
-      LocationDAO locationDAO) {
+  VendorServletSupport(TruckDAO dao, UserService userService, Provider<SessionUser> sessionUserProvider) {
     truckDAO = dao;
-    this.sessionProvider = sessionProvider;
     this.userService = userService;
-    this.locationDAO = locationDAO;
+    this.sessionUserProvider = sessionUserProvider;
   }
 
-  @Override protected final void doGet(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
-    final Principal userPrincipal = getPrincipal(req);
+  @Override
+  protected final void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    SessionUser sessionUser = sessionUserProvider.get();
+    final Principal userPrincipal = sessionUser.getPrincipal();
     String thisURL = req.getRequestURI();
     if (userPrincipal == null) {
       log.info("User failed logging in");
       if (thisURL.equals("/vendor")) {
         req = new GuiceHackRequestWrapper(req, LANDING_JSP);
         req.setAttribute("loginUrl", userService.createLoginURL("/vendor?check"));
-        req.getRequestDispatcher(LANDING_JSP).forward(req,resp);
+        req.getRequestDispatcher(LANDING_JSP)
+            .forward(req, resp);
       } else {
         resp.sendRedirect("/vendor");
       }
       return;
     }
-    Set<Truck> trucks = associatedTrucks(userPrincipal);
+    Set<Truck> trucks = sessionUser.associatedTrucks(userPrincipal);
     if (trucks.isEmpty()) {
-      Set<Location> locations = associatedLocations(userPrincipal);
+      Set<Location> locations = sessionUser.associatedLocations(userPrincipal);
       if (locations.isEmpty()) {
         gotoLogonPage(req, resp, userPrincipal, thisURL);
       } else {
         req.setAttribute("logoutUrl", getLogoutUrl(userPrincipal));
-        Location location =  Iterables.getFirst(locations, null);
+        Location location = Iterables.getFirst(locations, null);
         req.setAttribute("location", location);
-        @SuppressWarnings("ConstantConditions")
-        String locationUrl = "/vendor/locations/"+location.getKey();
+        @SuppressWarnings("ConstantConditions") String locationUrl = "/vendor/locations/" + location.getKey();
         if (!thisURL.startsWith(locationUrl)) {
           resp.sendRedirect(locationUrl);
         } else {
@@ -98,47 +93,50 @@ public abstract class VendorServletSupport extends HttpServlet {
   private void gotoLogonPage(HttpServletRequest req, HttpServletResponse resp, Principal userPrincipal,
       String thisURL) throws ServletException, IOException {
     req = new GuiceHackRequestWrapper(req, LANDING_JSP);
-    Session session = sessionProvider.get();
-    session.invalidate();
-    if (thisURL.equals("/vendor") && (req.getParameter("check") != null || !isIdentifiedByEmail(userPrincipal))) {
+    SessionUser sessionUser = sessionUserProvider.get();
+    sessionUser.invalidate();
+    if (thisURL.equals("/vendor") && (req.getParameter("check") != null || !sessionUser.isIdentifiedByEmail(
+        userPrincipal))) {
       String logoutUrl = userService.createLogoutURL(thisURL);
       String principal = userPrincipal.getName();
-      final String message = MessageFormat
-          .format("The user <strong>{0}</strong> is not associated with any food trucks.", principal, logoutUrl);
+      final String message = MessageFormat.format(
+          "The user <strong>{0}</strong> is not associated with any food trucks.", principal, logoutUrl);
       vendorError("Invalid User", message, req, resp);
       log.info("Sent this message to the user" + message);
     } else {
       req.setAttribute("loginUrl", userService.createLoginURL("/vendor?check"));
-      req.getRequestDispatcher(LANDING_JSP).forward(req,resp);
+      req.getRequestDispatcher(LANDING_JSP)
+          .forward(req, resp);
     }
   }
 
   private String getLogoutUrl(Principal userPrincipal) {
-    if (isIdentifiedByEmail(userPrincipal)) {
+    if (sessionUserProvider.get()
+        .isIdentifiedByEmail(userPrincipal)) {
       return userService.createLogoutURL("/vendor");
     } else {
       return "/vendor/logout";
     }
   }
 
-  @Override protected final void doPost(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
-    Principal principal = getPrincipal(req);
+  @Override
+  protected final void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    SessionUser sessionUser = sessionUserProvider.get();
+    Principal principal = sessionUser.getPrincipal();
     if (principal == null) {
       resp.setStatus(401);
       return;
     }
-    Set<Truck> trucks = associatedTrucks(principal);
+    Set<Truck> trucks = sessionUser.associatedTrucks(principal);
     if (trucks.isEmpty()) {
-      Set<Location> locations = associatedLocations(principal);
+      Set<Location> locations = sessionUser.associatedLocations(principal);
       if (locations.isEmpty()) {
         log.info("Sent 401 on post because user didn't belong to any trucks");
         resp.setStatus(401);
       } else {
-        Location location =  Iterables.getFirst(locations, null);
+        Location location = Iterables.getFirst(locations, null);
         req.setAttribute("location", location);
-        @SuppressWarnings("ConstantConditions")
-        String locationUrl = "/vendor/locations/"+location.getKey();
+        @SuppressWarnings("ConstantConditions") String locationUrl = "/vendor/locations/" + location.getKey();
         String thisURL = req.getRequestURI();
         if (!thisURL.startsWith(locationUrl)) {
           resp.setStatus(401);
@@ -155,58 +153,30 @@ public abstract class VendorServletSupport extends HttpServlet {
     }
   }
 
-  protected void dispatchPost(HttpServletRequest req, HttpServletResponse resp, Location location, String principalName) throws IOException {
+  protected void dispatchPost(HttpServletRequest req, HttpServletResponse resp, Location location,
+      String principalName) throws IOException {
   }
 
   protected void dispatchPost(HttpServletRequest req, HttpServletResponse resp, String truckId) throws IOException {
   }
 
-  private Set<Truck> associatedTrucks(Principal principal) {
-    if (principal != null) {
-      if (isIdentifiedByEmail(principal)) {
-        return truckDAO.findByBeaconnaiseEmail(principal.getName().toLowerCase());
-      } else {
-        return ImmutableSet.copyOf(truckDAO.findByTwitterId(principal.getName()));
-      }
-    }
-    return ImmutableSet.of();
-  }
-
-  private Set<Location> associatedLocations(Principal principal) {
-    if (isIdentifiedByEmail(principal)) {
-      return ImmutableSet.copyOf(locationDAO.findByManagerEmail(principal.getName()));
-    } else {
-      return ImmutableSet.copyOf(locationDAO.findByTwitterId(principal.getName()));
-    }
-  }
-
-  private boolean isIdentifiedByEmail(Principal principal) {
-    return principal.getName().contains("@");
-  }
-
-  protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable Truck truck)
-      throws ServletException, IOException {
+  protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp,
+      @Nullable Truck truck) throws ServletException, IOException {
     throw new UnsupportedOperationException("dispatchGet(truck)");
 
   }
 
-  protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp, @Nullable Location location)
-      throws ServletException, IOException {
+  protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp,
+      @Nullable Location location) throws ServletException, IOException {
     throw new UnsupportedOperationException("dispatchGet(location)");
   }
 
-  private void vendorError(String title, String message, HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+  private void vendorError(String title, String message, HttpServletRequest request,
+      HttpServletResponse response) throws ServletException, IOException {
     request.setAttribute("errorTitle", title);
     request.setAttribute("errorMessage", message);
-    request.getRequestDispatcher(LANDING_JSP).forward(request, response);
-  }
-
-  @Nullable
-  private Principal getPrincipal(HttpServletRequest request) {
-    Session session = sessionProvider.get();
-    Principal principal = (Principal)session.getProperty("principal");
-    return principal == null ? request.getUserPrincipal() : principal;
+    request.getRequestDispatcher(LANDING_JSP)
+        .forward(request, response);
   }
 
   protected void flash(String message, HttpServletResponse resp) {
