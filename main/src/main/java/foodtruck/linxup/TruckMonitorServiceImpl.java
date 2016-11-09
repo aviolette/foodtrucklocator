@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 import javax.ws.rs.WebApplicationException;
 
 import com.google.common.base.Function;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
@@ -371,6 +372,7 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
           .lng(position.getLatLng().getLongitude())
           .name("UNKNOWN")
           .build();
+      location = MoreObjects.firstNonNull(locator.reverseLookup(location), location);
       // TODO: it would be nice if the actual device could calculate this, but for now we look to see if it changed.
       boolean parked = position.getSpeedMph() == 0 && (device == null || device.getLastLocation() == null || device.getLastLocation()
           .getName()
@@ -381,7 +383,7 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
       if (device != null) {
         atBlacklisted = atBlacklistedLocation(device.getTruckOwnerId(), device.getLastLocation(), blacklistCache);
       }
-      log.log(Level.INFO, "Device State: {0}\n {1}\n {2}", new Object[]{position, device, location});
+      log.log(Level.INFO, "Device State: {0}\n {1}\n {2}\n{3}", new Object[]{position, device, location, parked});
       builder.deviceNumber(position.getDeviceNumber())
           .lastLocation(locator.reverseLookup(location))
           .parked(parked)
