@@ -11,7 +11,7 @@
         <c:choose>
           <c:when test="${truck.hasTwitterCredentials}">
             <a href="/vendor/socialmedia/${truck.id}/unlink?account=twitter"
-               class="btn btn-danger">Unlink</a> @${truck.twitterHandle}
+               class="btn btn-danger">Unlink @${truck.twitterHandle}</a>
           </c:when>
           <c:otherwise>
             <a href="/vendor/twitter?nologon=true" class="btn btn-default"><span
