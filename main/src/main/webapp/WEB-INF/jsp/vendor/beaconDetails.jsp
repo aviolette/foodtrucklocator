@@ -62,6 +62,8 @@
   </div>
 </div>
 
+<div style="position:relative" style="right: 100px" id="accordion-spinner"></div>
+
 <div class="row" style="margin-top:20px">
   <div class="col-md-12">
     <h3>Recent trips</h3>
@@ -70,6 +72,7 @@
   </div>
 </div>
 <%@ include file="../include/core_js.jsp" %>
+<script type="text/javascript" src="/script/lib/spin.min.js"></script>
 
 <c:if test="${!empty(beacon.lastLocation)}">
   <script type="text/javascript" src="/script/vendordash.js"></script>
@@ -81,7 +84,7 @@
 </c:if>
 <script>
   (function () {
-    var openInfoWindow = null;
+    var openInfoWindow = null, spinner = new Spinner();
 
     function directionValue(direction) {
       if ((direction >= 0 && direction <= 22) || (direction >= 338 && direction <= 360)) {
@@ -120,10 +123,15 @@
       });
     }
 
+    spinner.spin($("#accordion-spinner").get(0));
+
     $.ajax({
       url: "/services/beacons/${beacon.id}/trips",
       type: 'GET',
       dataType: 'json',
+      complete: function () {
+        spinner.stop();
+      },
       success: function (trips) {
         $.each(trips.reverse(), function (i, trip) {
           var name = trip.name;
