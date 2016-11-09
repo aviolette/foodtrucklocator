@@ -120,7 +120,7 @@ public class VendorCallbackServlet extends HttpServlet {
 
   private boolean verifyWithSessionUser(Truck truck) {
     SessionUser sessionUser = sessionUserProvider.get();
-    return sessionUser.associatedTrucks(sessionUser.getPrincipal())
+    return sessionUser.associatedTrucks()
         .contains(truck);
   }
 }

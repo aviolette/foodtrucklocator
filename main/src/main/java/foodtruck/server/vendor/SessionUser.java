@@ -6,6 +6,8 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
@@ -26,6 +28,13 @@ public class SessionUser {
   private final TruckDAO truckDAO;
   private final LocationDAO locationDAO;
   private final HttpServletRequest request;
+  private final Supplier<Principal> principalSupplier = Suppliers.memoize(new Supplier<Principal>() {
+    @Override
+    public Principal get() {
+      Principal principal = (Principal) session.getProperty("principal");
+      return principal == null ? request.getUserPrincipal() : principal;
+    }
+  });
 
   @Inject
   public SessionUser(Session session, TruckDAO truckDAO, LocationDAO locationDAO, HttpServletRequest request) {
@@ -35,15 +44,25 @@ public class SessionUser {
     this.request = request;
   }
 
-  @Nullable
-  public Principal getPrincipal() {
-    Principal principal = (Principal) session.getProperty("principal");
-    return principal == null ? request.getUserPrincipal() : principal;
+  @Override
+  public String toString() {
+    Principal principal = getPrincipal();
+    return principal == null ? "NOT LOGGED IN" : principal.getName();
   }
 
-  public Set<Truck> associatedTrucks(Principal principal) {
+  public boolean isLoggedIn() {
+    return getPrincipal() != null;
+  }
+
+  @Nullable
+  public Principal getPrincipal() {
+    return principalSupplier.get();
+  }
+
+  public Set<Truck> associatedTrucks() {
+    Principal principal = getPrincipal();
     if (principal != null) {
-      if (isIdentifiedByEmail(principal)) {
+      if (isIdentifiedByEmail()) {
         return truckDAO.findByBeaconnaiseEmail(principal.getName()
             .toLowerCase());
       } else {
@@ -53,16 +72,16 @@ public class SessionUser {
     return ImmutableSet.of();
   }
 
-  public boolean isIdentifiedByEmail(Principal principal) {
-    return principal.getName()
+  public boolean isIdentifiedByEmail() {
+    return getPrincipal().getName()
         .contains("@");
   }
 
-  Set<Location> associatedLocations(Principal principal) {
-    if (isIdentifiedByEmail(principal)) {
-      return ImmutableSet.copyOf(locationDAO.findByManagerEmail(principal.getName()));
+  Set<Location> associatedLocations() {
+    if (isIdentifiedByEmail()) {
+      return ImmutableSet.copyOf(locationDAO.findByManagerEmail(getPrincipal().getName()));
     } else {
-      return ImmutableSet.copyOf(locationDAO.findByTwitterId(principal.getName()));
+      return ImmutableSet.copyOf(locationDAO.findByTwitterId(getPrincipal().getName()));
     }
   }
 

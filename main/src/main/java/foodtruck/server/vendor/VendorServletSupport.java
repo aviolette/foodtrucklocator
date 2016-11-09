@@ -42,9 +42,8 @@ public abstract class VendorServletSupport extends HttpServlet {
   @Override
   protected final void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     SessionUser sessionUser = sessionUserProvider.get();
-    final Principal userPrincipal = sessionUser.getPrincipal();
     String thisURL = req.getRequestURI();
-    if (userPrincipal == null) {
+    if (!sessionUser.isLoggedIn()) {
       log.info("User failed logging in");
       if (thisURL.equals("/vendor")) {
         req = new GuiceHackRequestWrapper(req, LANDING_JSP);
@@ -56,13 +55,13 @@ public abstract class VendorServletSupport extends HttpServlet {
       }
       return;
     }
-    Set<Truck> trucks = sessionUser.associatedTrucks(userPrincipal);
+    Set<Truck> trucks = sessionUser.associatedTrucks();
     if (trucks.isEmpty()) {
-      Set<Location> locations = sessionUser.associatedLocations(userPrincipal);
+      Set<Location> locations = sessionUser.associatedLocations();
       if (locations.isEmpty()) {
-        gotoLogonPage(req, resp, userPrincipal, thisURL);
+        gotoLogonPage(req, resp, thisURL);
       } else {
-        req.setAttribute("logoutUrl", getLogoutUrl(userPrincipal));
+        req.setAttribute("logoutUrl", getLogoutUrl());
         Location location = Iterables.getFirst(locations, null);
         req.setAttribute("location", location);
         @SuppressWarnings("ConstantConditions") String locationUrl = "/vendor/locations/" + location.getKey();
@@ -74,33 +73,30 @@ public abstract class VendorServletSupport extends HttpServlet {
         }
       }
     } else {
-      req.setAttribute("logoutUrl", getLogoutUrl(userPrincipal));
+      req.setAttribute("logoutUrl", getLogoutUrl());
       Truck truck = Iterables.getFirst(trucks, null);
       req.setAttribute("truck", truck);
       req.setAttribute("vendorIconUrl", truck.getPreviewIconUrl());
       req.setAttribute("vendorIconDescription", truck.getName());
-      log.log(Level.INFO, "User {0}", userPrincipal.getName());
+      log.log(Level.INFO, "User {0}", sessionUser);
       dispatchGet(req, resp, truck);
     }
 
     if (trucks.size() > 1) {
       log.log(Level.SEVERE, "Multiple trucks returned for {0}. Using first one {1}",
-          new Object[]{userPrincipal, trucks});
+          new Object[]{sessionUser.getPrincipal().getName(), trucks});
     }
     // TODO implement multiple trucks and multiple locations associated with a user account
   }
 
-  private void gotoLogonPage(HttpServletRequest req, HttpServletResponse resp, Principal userPrincipal,
-      String thisURL) throws ServletException, IOException {
+  private void gotoLogonPage(HttpServletRequest req, HttpServletResponse resp, String thisURL) throws ServletException, IOException {
     req = new GuiceHackRequestWrapper(req, LANDING_JSP);
     SessionUser sessionUser = sessionUserProvider.get();
     sessionUser.invalidate();
-    if (thisURL.equals("/vendor") && (req.getParameter("check") != null || !sessionUser.isIdentifiedByEmail(
-        userPrincipal))) {
+    if (thisURL.equals("/vendor") && (req.getParameter("check") != null || !sessionUser.isIdentifiedByEmail())) {
       String logoutUrl = userService.createLogoutURL(thisURL);
-      String principal = userPrincipal.getName();
       final String message = MessageFormat.format(
-          "The user <strong>{0}</strong> is not associated with any food trucks.", principal, logoutUrl);
+          "The user <strong>{0}</strong> is not associated with any food trucks.", sessionUser, logoutUrl);
       vendorError("Invalid User", message, req, resp);
       log.info("Sent this message to the user" + message);
     } else {
@@ -110,9 +106,9 @@ public abstract class VendorServletSupport extends HttpServlet {
     }
   }
 
-  private String getLogoutUrl(Principal userPrincipal) {
+  private String getLogoutUrl() {
     if (sessionUserProvider.get()
-        .isIdentifiedByEmail(userPrincipal)) {
+        .isIdentifiedByEmail()) {
       return userService.createLogoutURL("/vendor");
     } else {
       return "/vendor/logout";
@@ -127,9 +123,9 @@ public abstract class VendorServletSupport extends HttpServlet {
       resp.setStatus(401);
       return;
     }
-    Set<Truck> trucks = sessionUser.associatedTrucks(principal);
+    Set<Truck> trucks = sessionUser.associatedTrucks();
     if (trucks.isEmpty()) {
-      Set<Location> locations = sessionUser.associatedLocations(principal);
+      Set<Location> locations = sessionUser.associatedLocations();
       if (locations.isEmpty()) {
         log.info("Sent 401 on post because user didn't belong to any trucks");
         resp.setStatus(401);
