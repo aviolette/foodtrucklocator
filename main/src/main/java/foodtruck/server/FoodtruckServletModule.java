@@ -50,6 +50,7 @@ import foodtruck.server.vendor.LocationEditVendorServlet;
 import foodtruck.server.vendor.LocationStopDeleteServlet;
 import foodtruck.server.vendor.LocationVendorServlet;
 import foodtruck.server.vendor.MenuServlet;
+import foodtruck.server.vendor.PostScheduleServlet;
 import foodtruck.server.vendor.VendorBeaconDetailsServlet;
 import foodtruck.server.vendor.VendorCallbackServlet;
 import foodtruck.server.vendor.VendorLinxupConfigServlet;
@@ -132,7 +133,7 @@ class FoodtruckServletModule extends ServletModule {
     serve("/vendor/beacons/*").with(VendorBeaconDetailsServlet.class);
     serveRegex("/vendor/socialmedia/[\\S]*/unlink").with(VendorUnlinkAccountServlet.class);
     serve("/vendor/socialmedia/*").with(VendorSocialMediaSettingsServlet.class);
-
+    serve("/vendor/schedule").with(PostScheduleServlet.class);
     // Alexa integration
     serve("/amazonalexa").with(AlexaServlet.class);
 

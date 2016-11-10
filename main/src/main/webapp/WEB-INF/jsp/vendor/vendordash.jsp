@@ -28,6 +28,17 @@
     <%@ include file="../include/truck_schedule_widget.jsp" %>
   </div>
 </div>
+<c:if test="${truck.hasSocialMediaCredentials}">
+  <div style="padding-top:10px" class="row">
+    <div class="col-md-12">
+      <div class="btn-toolbar">
+        <div class="btn-group">
+          <a href="/vendor/schedule" class="btn btn-default">Post Today's Schedule</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</c:if>
 <div class="row">
   <div class="col-md-12">
     <h2>Beacons </h2>

@@ -187,6 +187,10 @@ public class Truck extends ModelEntity implements Serializable {
     return postAtNewStop;
   }
 
+  public boolean getHasSocialMediaCredentials() {
+    return getHasTwitterCredentials();
+  }
+
   public boolean getHasTwitterCredentials() {
     return !(Strings.isNullOrEmpty(twitterToken) || Strings.isNullOrEmpty(twitterTokenSecret));
   }

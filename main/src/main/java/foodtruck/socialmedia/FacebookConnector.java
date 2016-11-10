@@ -20,9 +20,11 @@ import foodtruck.model.StaticConfig;
 import foodtruck.model.Story;
 import foodtruck.model.StoryType;
 import foodtruck.model.Truck;
+import foodtruck.schedule.ScheduleMessage;
 import foodtruck.util.Clock;
 import foodtruck.util.FacebookTimeFormat;
 import foodtruck.util.Secondary;
+import foodtruck.util.ServiceException;
 
 /**
  * @author aviolette
@@ -58,6 +60,11 @@ public class FacebookConnector implements SocialMediaConnector {
       }
     }
     return stories.build();
+  }
+
+  @Override
+  public void updateStatusFor(ScheduleMessage message, Truck truck) throws ServiceException {
+    // TODO: implement
   }
 
   private ImmutableList<Story> retrieveStoriesForTruck(Truck truck) throws JSONException {

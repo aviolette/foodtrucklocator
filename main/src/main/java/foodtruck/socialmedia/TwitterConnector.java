@@ -18,6 +18,9 @@ import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.Story;
 import foodtruck.model.StoryType;
+import foodtruck.model.Truck;
+import foodtruck.schedule.ScheduleMessage;
+import foodtruck.util.ServiceException;
 import twitter4j.GeoLocation;
 import twitter4j.Paging;
 import twitter4j.Status;
@@ -76,6 +79,22 @@ public class TwitterConnector implements SocialMediaConnector {
       throw new RuntimeException(e);
     }
     return stories.build();
+  }
+
+  @Override
+  public void updateStatusFor(ScheduleMessage message, Truck truck) throws ServiceException {
+    if (!truck.getHasTwitterCredentials()) {
+      // TODO: what to do here?
+      return;
+    }
+    Twitter twitter = twitterFactory.createDetached(truck.twitterAccessToken());
+    try {
+      for (String messageComponent : message.getTwitterMessages()) {
+        twitter.updateStatus(messageComponent);
+      }
+    } catch (TwitterException e) {
+      throw new ServiceException(e);
+    }
   }
 
   private Paging determinePaging() {
