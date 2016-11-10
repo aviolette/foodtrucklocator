@@ -14,9 +14,10 @@ import foodtruck.model.TruckStop;
  * @since 11/9/16
  */
 public class ScheduleMessage {
+  private static final int MAX_TWITTER_LENGTH = 140;
   private String fullSchedule;
 
-  private ScheduleMessage(String message) {
+  ScheduleMessage(String message) {
     this.fullSchedule = message;
   }
 
@@ -30,16 +31,33 @@ public class ScheduleMessage {
 
     String remainder = fullSchedule;
     while (true) {
-      if (remainder.length() < 140) {
+      if (remainder.length() < MAX_TWITTER_LENGTH) {
         if (remainder.length() > 0) {
           builder.add(remainder);
         }
         break;
       } else {
         // TODO: make this broken across lines
-        String portion = remainder.substring(0, 140);
-        builder.add(portion);
-        remainder = remainder.substring(140);
+        int index;
+        StringBuilder subBuilder = new StringBuilder();
+        while (true) {
+          index = remainder.indexOf('\n');
+          if (index >= MAX_TWITTER_LENGTH || index == -1) {
+            int remaining = MAX_TWITTER_LENGTH - subBuilder.length();
+            String portion = remainder.substring(0, remaining);
+            builder.add(subBuilder.append(portion)
+                .toString());
+            remainder = remainder.substring(remaining);
+            break;
+          }
+          String portion = remainder.substring(0, index + 1);
+          if (portion.length() + subBuilder.length() > MAX_TWITTER_LENGTH) {
+            builder.add(subBuilder.toString());
+            break;
+          }
+          subBuilder.append(portion);
+          remainder = remainder.substring(index + 1);
+        }
       }
     }
     return builder.build();
