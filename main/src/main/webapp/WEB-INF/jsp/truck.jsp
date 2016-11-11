@@ -87,7 +87,7 @@
             </c:if>
             <dd <c:if test="${stop.activeNow}">class="alert-success"</c:if>><!-- ${stop.key} --><joda:format
                 value="${stop.startTime}"
-                style="-S"/> -
+                style="-S"/> - <joda:format value="${stop.endTime}" style="-S"/>
               <ftl:location at="${stop.startTime}" location="${stop.location}"/>
             </dd>
           </c:forEach>
