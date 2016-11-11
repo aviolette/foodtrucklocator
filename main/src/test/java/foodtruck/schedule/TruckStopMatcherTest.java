@@ -13,6 +13,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import foodtruck.email.EmailNotifier;
@@ -211,6 +212,23 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .geolocatorReturns(location)
             .match();
     assertThat(match).isNotNull();
+  }
+
+  @Test
+  public void testMatch_breakfastUntil() {
+    tweetTime = tweetTime.withTime(8, 0, 0, 0);
+    truck = Truck.builder()
+        .categories(ImmutableSet.of("Breakfast", "Lunch"))
+        .build();
+    TruckStopMatch match = tweet("Breakfast is on... 9am till 11am.@chiftf_uchicago@uchiNOMgo").withTruck(truck)
+        .withTime(tweetTime)
+        .match();
+    assertThat(match).isNotNull();
+    assertThat(match.getStop()
+        .getStartTime()).isEqualTo(tweetTime.withTime(9, 0, 0, 0));
+    assertThat(match.getStop()
+        .getEndTime()).isEqualTo(tweetTime.withTime(11, 0, 0, 0));
+
   }
 
   @Test
@@ -439,6 +457,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   }
 
   @Test
+  @Ignore
   public void testMatch_yetAnotherUntil() {
     TruckStopMatch match = tweet(
         "Look For The Truck @UChicago This Afternoon Till 3 PM On Ellis! http://t.co/TD1aZ8OyHt")

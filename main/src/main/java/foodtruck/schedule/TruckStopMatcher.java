@@ -45,7 +45,7 @@ public class TruckStopMatcher {
   private static final Logger log = Logger.getLogger(TruckStopMatcher.class.getName());
   private static final long ONE_HOUR_IN_MILLIS = 3600000;
   private static final long DEFAULT_STOP_LENGTH_IN_HOURS = 2 * ONE_HOUR_IN_MILLIS;
-  private static final String TIME_RANGE_PATTERN = "(" + TIME_PATTERN + ")\\s*-\\s*(" + TIME_PATTERN + ")[\\s|!|\\$|\\n|,|\\.&&[^\\-]]";
+  private static final String TIME_RANGE_PATTERN = "(" + TIME_PATTERN + ")\\s*(-|til|till)\\s*(" + TIME_PATTERN + ")[\\s|!|\\$|\\n|,|\\.&&[^\\-]]";
   private static final String TOMORROW = "2morrow|tmw|tmrw|tomorrow|maana|mañana";
   private final AddressExtractor addressExtractor;
   private final GeoLocator geoLocator;
@@ -250,7 +250,7 @@ public class TruckStopMatcher {
     if (m.find()) {
       final LocalDate date = tweet.getTime().toLocalDate();
       tsBuilder.startTime(parseTime(m.group(1), date, null));
-      tsBuilder.endTime(parseTime(m.group(5), date, tsBuilder.startTime()));
+      tsBuilder.endTime(parseTime(m.group(6), date, tsBuilder.startTime()));
       if (tsBuilder.hasTimes() && tsBuilder.startTime().getHourOfDay() > 12 &&
           tsBuilder.startTime().isAfter(tsBuilder.endTime())) {
         tsBuilder.startTime(tsBuilder.startTime().minusHours(12));
