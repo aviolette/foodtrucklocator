@@ -355,8 +355,7 @@ public class Truck extends ModelEntity implements Serializable {
   }
 
   public boolean shouldAnalyzeStories() {
-    return (!Strings.isNullOrEmpty(twitterHandle) && twittalyzer) ||
-        (!Strings.isNullOrEmpty(facebook) && scanFacebook);
+    return !Strings.isNullOrEmpty(twitterHandle) || !Strings.isNullOrEmpty(facebook);
   }
 
   @Override
@@ -514,6 +513,10 @@ public class Truck extends ModelEntity implements Serializable {
 
   public String canonicalName() {
     return canonize(getName());
+  }
+
+  public boolean getDeriveStopsFromSocialMedia() {
+    return isUsingTwittalyzer() || getScanFacebook();
   }
 
   public static class HasCategoryPredicate implements Predicate<Truck> {

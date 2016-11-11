@@ -14,7 +14,6 @@ import javax.annotation.Nullable;
 import com.google.api.client.util.Sets;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -207,7 +206,7 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
           truck.getTwitterHandle(), false);
       notifyIfOffTheRoad(stories, truck);
       if (!truck.shouldAnalyzeStories()) {
-        log.log(Level.FINE, "Twittalyzer isn't enabled for {0}", truck.getId());
+        log.log(Level.FINE, "There are no social media accounts for {0}", truck.getId());
         continue;
       }
       TruckStopMatch match = findMatch(stories, truck);
@@ -215,7 +214,7 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
       ignoreTweets(stories);
       if (match != null) {
         handleStopMatch(truck, match);
-      } else if (terminationTime != null) {
+      } else if (terminationTime != null && truck.getDeriveStopsFromSocialMedia()) {
         capLastMatchingStop(truck, terminationTime);
       } else {
         log.log(Level.FINE, "No matches for {0}", truck.getId());
@@ -314,7 +313,9 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
       for (TruckStop stop : deleteStops) {
         log.log(Level.INFO, "Stop removed: {0}", stop);
       }
-      truckStopDAO.deleteStops(deleteStops);
+      if (truck.getDeriveStopsFromSocialMedia()) {
+        truckStopDAO.deleteStops(deleteStops);
+      }
     }
     if (matchedStop != null) {
       addStops.add(matchedStop);
@@ -324,11 +325,17 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
       for (TruckStop stop : addStops) {
         notificationService.share(match.getStory(), stop);
         handleAdditionalTrucks(stop, match);
-        log.log(Level.INFO, "Stop added: {0}", stop);
+        if (truck.getDeriveStopsFromSocialMedia()) {
+          log.log(Level.INFO, "Stop added: {0}", stop);
+        }
       }
-      truckStopDAO.addStops(addStops);
+      if (truck.getDeriveStopsFromSocialMedia()) {
+        truckStopDAO.addStops(addStops);
+      }
     }
-    compressAdjacentStops(truck.getId(), clock.currentDay());
+    if (truck.getDeriveStopsFromSocialMedia()) {
+      compressAdjacentStops(truck.getId(), clock.currentDay());
+    }
   }
 
   @VisibleForTesting
@@ -424,17 +431,10 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
           } else {
             log.log(Level.INFO, "No stops to actually cancel");
           }
-          if (!truck.isUsingTwittalyzer()) {
-            ignoreTweets(ImmutableList.of(tweet));
-          }
           return;
         } else {
           try {
             emailNotifier.systemNotifyOffTheRoad(truck, tweet);
-            if (!truck.isUsingTwittalyzer()) {
-              log.log(Level.FINE, "Ignoring tweet {0} cause truck is not using twittalyzer", tweet.getText());
-              ignoreTweets(ImmutableList.of(tweet));
-            }
             return;
           } catch (Exception e) {
             log.log(Level.WARNING, e.getMessage(), e);
