@@ -158,6 +158,9 @@ class SpecialUpdater {
       String name = builder.toString();
       if (name.toLowerCase().contains("n cream") || name.toLowerCase().equals("cookies cream cake")) {
         name = "Cookies n' Cream Cake";
+      } else if (name.toLowerCase()
+          .equals("de leche cake")) {
+        name = "dulce de leche cake";
       }
       dailyData = specialsBuilder.clearSpecials().addSpecial(name, false)
           .locationId(locationName)

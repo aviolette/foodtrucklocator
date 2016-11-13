@@ -86,6 +86,7 @@ public class SpecialUpdaterTest extends EasyMockSupport {
     verifyAll();
   }
 
+
   @Test
   public void addCanalWithPreexistingSpecial() {
     expect(dailyDataDAO.save(DailyData.builder()
@@ -145,6 +146,20 @@ public class SpecialUpdaterTest extends EasyMockSupport {
   }
 
   @Test
+  public void addDulcheDeLeche() {
+    expect(dailyDataDAO.save(DailyData.builder()
+        .truckId(THEVAULTVANID)
+        .onDate(localDate)
+        .addSpecial("Dulce De Leche Cake", false)
+        .build())).andReturn(1L);
+    expect(dailyDataDAO.findByTruckAndDay(THEVAULTVANID, localDate)).andReturn(null);
+    replayAll();
+    specialUpdater.update(THEVAULTVAN, ImmutableList.of(Story.builder()
+        .text("#VaultVan is at Southport and Addison. Today's special is dulce de leche cake.")
+        .build()));
+    verifyAll();
+  }
+
   public void addVaultVan() {
     expect(dailyDataDAO.save(DailyData.builder()
         .truckId(THEVAULTVANID)
@@ -153,8 +168,9 @@ public class SpecialUpdaterTest extends EasyMockSupport {
         .build())).andReturn(1L);
     expect(dailyDataDAO.findByTruckAndDay(THEVAULTVANID, localDate)).andReturn(null);
     replayAll();
-    specialUpdater.update(THEVAULTVAN, ImmutableList.of(
-        Story.builder().text("#VaultVan is at  LaSalle & Adams this morning with our piña colada special. Come on by.").build()));
+    specialUpdater.update(THEVAULTVAN, ImmutableList.of(Story.builder()
+        .text("#VaultVan is at  LaSalle & Adams this morning with our piña colada special. Come on by.")
+        .build()));
     verifyAll();
   }
 
