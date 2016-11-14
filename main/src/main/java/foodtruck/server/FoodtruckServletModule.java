@@ -8,6 +8,10 @@ import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 
+import foodtruck.server.book.BookingLandingServlet;
+import foodtruck.server.book.CreateAccountServlet;
+import foodtruck.server.book.LoginServlet;
+import foodtruck.server.book.PrepaidServlet;
 import foodtruck.server.dashboard.AddressRuleServlet;
 import foodtruck.server.dashboard.AdminDashboardServlet;
 import foodtruck.server.dashboard.AlexaQueryServlet;
@@ -137,6 +141,14 @@ class FoodtruckServletModule extends ServletModule {
     // Alexa integration
     serve("/amazonalexa").with(AlexaServlet.class);
 
+    if ("true".equals(System.getProperty("foodtrucklocator.supports.booking"))) {
+      // Booking endpoints
+      serve("/book").with(BookingLandingServlet.class);
+      serve("/login").with(LoginServlet.class);
+      serve("/book/prepaid").with(PrepaidServlet.class);
+      serve("/book/create_account").with(CreateAccountServlet.class);
+    }
+
     // Front-page endpoints
     serve("/weekly-schedule").with(WeeklyScheduleServlet.class);
     serve("/popular").with(PopularServlet.class);
@@ -160,7 +172,7 @@ class FoodtruckServletModule extends ServletModule {
 
     // Filters
     if ("true".equals(System.getProperty("foodtrucklocator.supports.ssl"))) {
-      filterRegex("/admin/.*", "/vendor.*").through(SSLRedirectFilter.class);
+      filterRegex("/admin/.*", "/vendor.*", "/book.*").through(SSLRedirectFilter.class);
     }
     filter("/*").through(SiteScraperFilter.class);
     filter("/*").through(CommonConfigFilter.class);

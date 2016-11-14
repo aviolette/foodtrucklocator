@@ -93,6 +93,7 @@ public class TrucksServlet extends FrontPageServlet {
 
     req = new GuiceHackRequestWrapper(req, jsp);
     req.setAttribute("tab", "trucks");
+    req.setAttribute("supportsBooking", staticConfig.getSupportsBooking());
     req.getRequestDispatcher(jsp).forward(req, resp);
   }
 

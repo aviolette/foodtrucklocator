@@ -123,4 +123,8 @@ public class StaticConfig {
   public String getGoogleJavascriptApiKey() {
     return System.getProperty("foodtrucklocator.google.javascript.api.key", null);
   }
+
+  public boolean getSupportsBooking() {
+    return "true".equals(System.getProperty("foodtrucklocator.supports.booking"));
+  }
 }

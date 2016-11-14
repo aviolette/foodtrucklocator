@@ -18,6 +18,10 @@
 
 <div class="row">
   <div class="col-md-2 category-selection">
+    <c:if test="${supportsBooking}">
+      <a href="/book" class="btn btn-primary btn-lg">Book a Truck</a>
+    </c:if>
+
     <h4>Active</h4>
     <div class="checkbox">
       <label>
