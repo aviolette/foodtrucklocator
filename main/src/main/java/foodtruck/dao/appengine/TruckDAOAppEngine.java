@@ -94,6 +94,8 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
   private static final String POST_WEEKLY_SCHEDULE = "post_weekly_schedule";
   private static final String POST_DAILY_SCHEDULE = "post_daily_schedule";
   private static final String NEVER_LINK_TWITTER = "never_link_twitter";
+  private static final String FACEBOOK_ACCESS_TOKEN = "facebook_access_token";
+  private static final String FACEBOOK_ACCESS_TOKEN_EXPIRY = "facebook_access_token_expiry";
   private DateTimeZone zone;
 
   @Inject
@@ -178,6 +180,8 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
         .twitterToken(getStringProperty(entity, TWITTER_TOKEN))
         .twitterTokenSecret(getStringProperty(entity, TWITTER_TOKEN_SECRET))
         .neverLinkTwitter(getBooleanProperty(entity, NEVER_LINK_TWITTER, false))
+        .facebookAccessToken(getStringProperty(entity, FACEBOOK_ACCESS_TOKEN, null))
+        .facebookAccessTokenExpires(getDateTime(entity, FACEBOOK_ACCESS_TOKEN_EXPIRY, zone))
         .build();
   }
 
@@ -345,6 +349,8 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     entity.setProperty(POST_AT_NEW_LOCATION, truck.isPostAtNewStop());
     entity.setProperty(POST_WEEKLY_SCHEDULE, truck.isPostWeeklySchedule());
     entity.setProperty(POST_DAILY_SCHEDULE, truck.isPostDailySchedule());
+    setDateProperty(FACEBOOK_ACCESS_TOKEN_EXPIRY, entity, truck.getFacebookAccessTokenExpires());
+    entity.setProperty(FACEBOOK_ACCESS_TOKEN, truck.getFacebookAccessToken());
     Attributes.setDateProperty(TRUCK_MUTE_UNTIL, entity, truck.getMuteUntil());
     entity.setProperty(NEVER_LINK_TWITTER, truck.isNeverLinkTwitter());
     Truck.Stats stats = truck.getStats();

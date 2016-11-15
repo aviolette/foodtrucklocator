@@ -80,6 +80,8 @@ public class Truck extends ModelEntity implements Serializable {
   private boolean postDailySchedule;
   private boolean postWeeklySchedule;
   private boolean postAtNewStop;
+  private @Nullable String facebookAccessToken;
+  private @Nullable DateTime facebookAccessTokenExpires;
 
 
   // For serialization (for storage in memcached)
@@ -131,6 +133,8 @@ public class Truck extends ModelEntity implements Serializable {
     this.postDailySchedule = builder.postDailySchedule;
     this.postWeeklySchedule = builder.postWeeklySchedule;
     this.postAtNewStop = builder.postAtNewStop;
+    this.facebookAccessToken = builder.facebookAccessToken;
+    this.facebookAccessTokenExpires = builder.facebookAccessTokenExpires;
   }
 
   public static Builder builder() {
@@ -151,6 +155,16 @@ public class Truck extends ModelEntity implements Serializable {
 
   public Builder append() {
     return new Builder(this);
+  }
+
+  @Nullable
+  public String getFacebookAccessToken() {
+    return facebookAccessToken;
+  }
+
+  @Nullable
+  public DateTime getFacebookAccessTokenExpires() {
+    return facebookAccessTokenExpires;
   }
 
   @Nullable
@@ -703,6 +717,8 @@ public class Truck extends ModelEntity implements Serializable {
     private boolean postDailySchedule;
     private boolean postWeeklySchedule;
     private boolean postAtNewStop;
+    private @Nullable String facebookAccessToken;
+    private @Nullable DateTime facebookAccessTokenExpires;
 
     public Builder() {
     }
@@ -751,6 +767,8 @@ public class Truck extends ModelEntity implements Serializable {
       this.postDailySchedule = truck.postDailySchedule;
       this.postWeeklySchedule = truck.postWeeklySchedule;
       this.postAtNewStop = truck.postAtNewStop;
+      this.facebookAccessToken = truck.facebookAccessToken;
+      this.facebookAccessTokenExpires = truck.facebookAccessTokenExpires;
     }
 
     public Builder phoneticMarkup(String markup) {
@@ -990,6 +1008,16 @@ public class Truck extends ModelEntity implements Serializable {
 
     public Builder postAtNewStop(boolean postAtNewStop) {
       this.postAtNewStop = postAtNewStop;
+      return this;
+    }
+
+    public Builder facebookAccessToken(String facebookAccessToken) {
+      this.facebookAccessToken = facebookAccessToken;
+      return this;
+    }
+
+    public Builder facebookAccessTokenExpires(DateTime expires) {
+      this.facebookAccessTokenExpires = expires;
       return this;
     }
 
