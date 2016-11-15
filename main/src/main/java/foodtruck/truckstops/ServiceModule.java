@@ -10,6 +10,5 @@ public class ServiceModule extends AbstractModule {
   @Override
   protected void configure() {
     bind(FoodTruckStopService.class).to(FoodTruckStopServiceImpl.class);
-    bind(TruckStopNotifier.class).to(LoggingTruckStopNotifier.class);
   }
 }

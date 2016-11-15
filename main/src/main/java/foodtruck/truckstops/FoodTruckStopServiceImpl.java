@@ -71,9 +71,8 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
   }
 
   @Override
-  public
   @Nullable
-  TruckStop findById(long stopId) {
+  public TruckStop findById(long stopId) {
     return truckStopDAO.findById(stopId);
   }
 
@@ -143,12 +142,15 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
   public DailySchedule findStopsForDayAfter(final DateTime dateTime) {
     LocalDate day = dateTime.toLocalDate();
     List<TruckStop> stops = truckStopDAO.findDuring(null, day);
-    return dailySchedule(day, FluentIterable.from(stops).filter(new Predicate<TruckStop>() {
-      @Override
-      public boolean apply(TruckStop truckStop) {
-        return truckStop.getEndTime().isAfter(dateTime);
-      }
-    }).toList());
+    return dailySchedule(day, FluentIterable.from(stops)
+        .filter(new Predicate<TruckStop>() {
+          @Override
+          public boolean apply(TruckStop truckStop) {
+            return truckStop.getEndTime()
+                .isAfter(dateTime);
+          }
+        })
+        .toList());
   }
 
   @Override
@@ -158,7 +160,11 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
       delete((Long) stop.getKey());
     }
     Truck t = truckDAO.findById(truckId);
-    t = Truck.builder(t).muteUntil(clock.currentDay().toDateTimeAtStartOfDay(clock.zone()).plusDays(1)).build();
+    t = Truck.builder(t)
+        .muteUntil(clock.currentDay()
+            .toDateTimeAtStartOfDay(clock.zone())
+            .plusDays(1))
+        .build();
     truckDAO.save(t);
   }
 
@@ -170,13 +176,18 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
       if (stop.activeDuring(after)) {
         update(stop.withEndTime(after), "unknown");
         count++;
-      } else if (stop.getEndTime().isAfter(after)) {
+      } else if (stop.getEndTime()
+          .isAfter(after)) {
         delete((Long) stop.getKey());
         count++;
       }
     }
     Truck t = truckDAO.findById(truckId);
-    t = Truck.builder(t).muteUntil(clock.currentDay().toDateTimeAtStartOfDay(clock.zone()).plusDays(1)).build();
+    t = Truck.builder(t)
+        .muteUntil(clock.currentDay()
+            .toDateTimeAtStartOfDay(clock.zone())
+            .plusDays(1))
+        .build();
     truckDAO.save(t);
     return count;
   }
@@ -194,12 +205,15 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
       locations.put(loc.getName(), loc);
     }
     return FluentIterable.from(truckStopDAO.findOverRange(null,
-        new Interval(startDate.toDateTimeAtStartOfDay(clock.zone()),
-            startDate.plusDays(daysOut).toDateTimeAtStartOfDay(clock.zone())))).filter(new Predicate<TruckStop>() {
-      public boolean apply(TruckStop truckStop) {
-        return locations.containsKey(truckStop.getLocation().getName());
-      }
-    }).toList();
+        new Interval(startDate.toDateTimeAtStartOfDay(clock.zone()), startDate.plusDays(daysOut)
+            .toDateTimeAtStartOfDay(clock.zone()))))
+        .filter(new Predicate<TruckStop>() {
+          public boolean apply(TruckStop truckStop) {
+            return locations.containsKey(truckStop.getLocation()
+                .getName());
+          }
+        })
+        .toList();
   }
 
   @Override
@@ -210,37 +224,47 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
   @Override
   public List<TruckStopWithCounts> findStopsForTruckAfter(final String truckId, DateTime startTime) {
     final List<TruckStop> stops = truckStopDAO.findAfter(startTime);
-    return FluentIterable.from(stops).filter(new Predicate<TruckStop>() {
-      public boolean apply(TruckStop truckStop) {
-        return truckId.equals(truckStop.getTruck().getId());
-      }
-    }).transform(new Function<TruckStop, TruckStopWithCounts>() {
-      public TruckStopWithCounts apply(final TruckStop thisStop) {
-        ImmutableSet<String> trucks = ImmutableSet.of();
-        try {
-          final Interval thisInterval = thisStop.timeInterval();
-          trucks = FluentIterable.from(stops).filter(new Predicate<TruckStop>() {
-            public boolean apply(TruckStop truckStop) {
-              try {
-                return truckStop.timeInterval().overlap(thisInterval) != null && truckStop.getLocation()
-                    .getName()
-                    .equals(thisStop.getLocation().getName());
-              } catch (RuntimeException rte) {
-                log.log(Level.WARNING, "Error processing stop {0}", truckStop);
-                throw rte;
-              }
+    return FluentIterable.from(stops)
+        .filter(new Predicate<TruckStop>() {
+          public boolean apply(TruckStop truckStop) {
+            return truckId.equals(truckStop.getTruck()
+                .getId());
+          }
+        })
+        .transform(new Function<TruckStop, TruckStopWithCounts>() {
+          public TruckStopWithCounts apply(final TruckStop thisStop) {
+            ImmutableSet<String> trucks = ImmutableSet.of();
+            try {
+              final Interval thisInterval = thisStop.timeInterval();
+              trucks = FluentIterable.from(stops)
+                  .filter(new Predicate<TruckStop>() {
+                    public boolean apply(TruckStop truckStop) {
+                      try {
+                        return truckStop.timeInterval()
+                            .overlap(thisInterval) != null && truckStop.getLocation()
+                            .getName()
+                            .equals(thisStop.getLocation()
+                                .getName());
+                      } catch (RuntimeException rte) {
+                        log.log(Level.WARNING, "Error processing stop {0}", truckStop);
+                        throw rte;
+                      }
+                    }
+                  })
+                  .transform(new Function<TruckStop, String>() {
+                    public String apply(TruckStop truckStop) {
+                      return truckStop.getTruck()
+                          .getName();
+                    }
+                  })
+                  .toSet();
+            } catch (RuntimeException e) {
+              log.log(Level.SEVERE, e.getMessage(), e);
             }
-          }).transform(new Function<TruckStop, String>() {
-            public String apply(TruckStop truckStop) {
-              return truckStop.getTruck().getName();
-            }
-          }).toSet();
-        } catch (RuntimeException e) {
-          log.log(Level.SEVERE, e.getMessage(), e);
-        }
-        return new TruckStopWithCounts(thisStop, trucks);
-      }
-    }).toList();
+            return new TruckStopWithCounts(thisStop, trucks);
+          }
+        })
+        .toList();
   }
 
   @Override
@@ -248,15 +272,20 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
     ImmutableList.Builder<DailySchedule> builder = ImmutableList.builder();
     DailySchedule.Builder schedule = null;
     for (TruckStop stop : truckStopDAO.findOverRange(null, range)) {
-      if (!stop.getLocation().containedWithRadiusOf(location)) {
+      if (!stop.getLocation()
+          .containedWithRadiusOf(location)) {
         continue;
       }
-      if (schedule != null && !schedule.getDay().isEqual(stop.getStartTime().toLocalDate())) {
+      if (schedule != null && !schedule.getDay()
+          .isEqual(stop.getStartTime()
+              .toLocalDate())) {
         builder.add(schedule.build());
         schedule = null;
       }
       if (schedule == null) {
-        schedule = DailySchedule.builder().date(stop.getStartTime().toLocalDate());
+        schedule = DailySchedule.builder()
+            .date(stop.getStartTime()
+                .toLocalDate());
       }
       schedule.addStop(stop);
     }
@@ -270,7 +299,9 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
   public List<TruckStop> findStopsAtLocationOverRange(Location location, Interval range) {
     ImmutableList.Builder<TruckStop> builder = ImmutableList.builder();
     for (TruckStop stop : truckStopDAO.findOverRange(null, range)) {
-      if (stop.getLocation().getName().equals(location.getName())) {
+      if (stop.getLocation()
+          .getName()
+          .equals(location.getName())) {
         builder.add(stop);
       }
     }
@@ -280,19 +311,24 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
   @Override
   public List<DailySchedule> findSchedules(String truckId, Interval range) {
     List<TruckStop> stopList = truckStopDAO.findOverRange(truckId, range);
-    LocalDate date = range.getStart().toLocalDate();
-    long numDays = range.toDuration().getStandardDays();
+    LocalDate date = range.getStart()
+        .toLocalDate();
+    long numDays = range.toDuration()
+        .getStandardDays();
     Multimap<LocalDate, TruckStop> stopMM = ArrayListMultimap.create();
     for (TruckStop truckStop : stopList) {
-      final LocalDate localDate = truckStop.getStartTime().toLocalDate();
+      final LocalDate localDate = truckStop.getStartTime()
+          .toLocalDate();
       stopMM.put(localDate, truckStop);
     }
     ImmutableList.Builder<DailySchedule> stops = ImmutableList.builder();
     for (int i = 0; i < numDays; i++) {
       LocalDate currentDay = date.plusDays(i);
-      DailySchedule.Builder builder = DailySchedule.builder().date(currentDay);
+      DailySchedule.Builder builder = DailySchedule.builder()
+          .date(currentDay);
       if (stopMM.containsKey(currentDay)) {
-        stops.add(builder.stops(ImmutableList.copyOf(stopMM.get(currentDay))).build());
+        stops.add(builder.stops(ImmutableList.copyOf(stopMM.get(currentDay)))
+            .build());
       } else {
         stops.add(builder.build());
       }
@@ -309,7 +345,9 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
       if (stop.hasExpiredBy(currentTime)) {
         continue;
       }
-      if (location.getName().equals(stop.getLocation().getName()) || location.within(location.getRadius())
+      if (location.getName()
+          .equals(stop.getLocation()
+              .getName()) || location.within(location.getRadius())
           .milesOf(stop.getLocation())) {
         builder.add(stop.getTruck());
       }
@@ -321,7 +359,9 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
   public List<TruckStop> findStopsNearALocation(Location location, LocalDate theDate) {
     ImmutableList.Builder<TruckStop> builder = ImmutableList.builder();
     for (TruckStop stop : truckStopDAO.findDuring(null, theDate)) {
-      if (location.getName().equals(stop.getLocation().getName()) || location.within(location.getRadius())
+      if (location.getName()
+          .equals(stop.getLocation()
+              .getName()) || location.within(location.getRadius())
           .milesOf(stop.getLocation())) {
         builder.add(stop);
       }
@@ -345,11 +385,14 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
       TruckStop currentStop = null;
       TruckStop nextStop = null;
       for (final TruckStop truckStop : stops) {
-        if (truckStop.getTruck().getId().equals(truck.getId())) {
+        if (truckStop.getTruck()
+            .getId()
+            .equals(truck.getId())) {
           activeToday = true;
           if (truckStop.activeDuring(now)) {
             currentStop = truckStop;
-          } else if (truckStop.getStartTime().isAfter(now) && (nextStop == null || truckStop.getStartTime()
+          } else if (truckStop.getStartTime()
+              .isAfter(now) && (nextStop == null || truckStop.getStartTime()
               .isBefore(nextStop.getStartTime()))) {
             nextStop = truckStop;
           }
@@ -364,7 +407,9 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
   public void updateLocationInCurrentSchedule(Location location) {
     List<TruckStop> stops = truckStopDAO.findDuring(null, clock.currentDay());
     for (TruckStop stop : stops) {
-      if (stop.getLocation().getName().equals(location.getName())) {
+      if (stop.getLocation()
+          .getName()
+          .equals(location.getName())) {
         stop = stop.withLocation(location);
         truckStopDAO.save(stop);
       }
