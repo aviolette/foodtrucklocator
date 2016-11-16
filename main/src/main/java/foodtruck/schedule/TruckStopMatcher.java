@@ -22,7 +22,6 @@ import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import foodtruck.email.EmailNotifier;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.DayOfWeek;
@@ -31,6 +30,7 @@ import foodtruck.model.StopOrigin;
 import foodtruck.model.Story;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
+import foodtruck.notifications.SystemNotificationService;
 import foodtruck.util.Clock;
 
 /**
@@ -51,7 +51,7 @@ public class TruckStopMatcher {
   private final GeoLocator geoLocator;
   private final DateTimeFormatter formatter;
   private final Clock clock;
-  private final EmailNotifier notifier;
+  private final SystemNotificationService notifier;
   private final Location center;
   private final LocalTime defaultLunchTime;
   private final Pattern endTimePattern = Pattern.compile("\\b(close at|leaving at|until|til|till) (" + TIME_PATTERN + ")"),
@@ -63,7 +63,7 @@ public class TruckStopMatcher {
 
   @Inject
   public TruckStopMatcher(AddressExtractor extractor, GeoLocator geoLocator, DateTimeZone defaultZone, Clock clock,
-      EmailNotifier notifier, @Named("center") Location center, @DefaultStartTime LocalTime startTime,
+      SystemNotificationService notifier, @Named("center") Location center, @DefaultStartTime LocalTime startTime,
       Map<String, SpecialMatcher> specialMatchers) {
     this.addressExtractor = extractor;
     this.geoLocator = geoLocator;

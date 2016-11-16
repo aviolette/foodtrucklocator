@@ -9,7 +9,7 @@ import foodtruck.model.TruckStop;
  * @author aviolette
  * @since 12/3/12
  */
-public interface EventNotificationService {
+public interface PublicEventNotificationService {
   /**
    * Broadcasts location-based notifications to people who subscribe.  Currently, this puts notifications on
    * location-specific twitter accounts.

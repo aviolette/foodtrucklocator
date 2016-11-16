@@ -1,4 +1,4 @@
-package foodtruck.email;
+package foodtruck.notifications;
 
 import java.text.MessageFormat;
 import java.util.Map;
@@ -25,7 +25,7 @@ import foodtruck.util.TimeFormatter;
  * @author aviolette
  * @since 4/29/13
  */
-class SimpleEmailNotifier implements EmailNotifier {
+class SimpleEmailNotifier implements SystemNotificationService {
   public static Logger log = Logger.getLogger(SimpleEmailNotifier.class.getName());
   private final StaticConfig staticConfig;
   private final DateTimeFormatter dateTimeFormatter;

@@ -1,4 +1,4 @@
-package foodtruck.email;
+package foodtruck.notifications;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;

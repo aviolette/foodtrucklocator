@@ -16,13 +16,13 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import foodtruck.email.EmailNotifier;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.DayOfWeek;
 import foodtruck.model.Location;
 import foodtruck.model.Story;
 import foodtruck.model.Truck;
+import foodtruck.notifications.SystemNotificationService;
 import foodtruck.util.Clock;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -39,14 +39,14 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   private Truck truck;
   private DateTime tweetTime;
   private Clock clock;
-  private EmailNotifier notifier;
+  private SystemNotificationService notifier;
 
   @Before
   public void before() {
     extractor = createMock(AddressExtractor.class);
     geolocator = createMock(GeoLocator.class);
     clock = createMock(Clock.class);
-    notifier = createMock(EmailNotifier.class);
+    notifier = createMock(SystemNotificationService.class);
     Location mapCenter = Location.builder().lat(41.8807438).lng(-87.6293867).build();
     expect(clock.dayOfWeek()).andStubReturn(DayOfWeek.sunday);
     topic = new TruckStopMatcher(extractor, geolocator, DateTimeZone.UTC, clock, notifier, mapCenter,

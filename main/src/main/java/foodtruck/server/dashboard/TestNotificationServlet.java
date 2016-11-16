@@ -12,9 +12,9 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import foodtruck.dao.TruckDAO;
-import foodtruck.email.EmailNotifier;
 import foodtruck.model.Story;
 import foodtruck.model.Truck;
+import foodtruck.notifications.SystemNotificationService;
 import foodtruck.util.Clock;
 
 /**
@@ -24,12 +24,12 @@ import foodtruck.util.Clock;
  */
 @Singleton
 public class TestNotificationServlet extends HttpServlet {
-  private final EmailNotifier notifier;
+  private final SystemNotificationService notifier;
   private final TruckDAO truckDAO;
   private final Clock clock;
 
   @Inject
-  public TestNotificationServlet(EmailNotifier notifier, TruckDAO truckDAO, Clock clock) {
+  public TestNotificationServlet(SystemNotificationService notifier, TruckDAO truckDAO, Clock clock) {
     this.notifier = notifier;
     this.truckDAO = truckDAO;
     this.clock = clock;

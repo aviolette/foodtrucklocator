@@ -23,7 +23,6 @@ import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckObserverDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.dao.TwitterNotificationAccountDAO;
-import foodtruck.email.EmailNotifier;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
@@ -33,7 +32,8 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckObserver;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TwitterNotificationAccount;
-import foodtruck.notifications.EventNotificationService;
+import foodtruck.notifications.PublicEventNotificationService;
+import foodtruck.notifications.SystemNotificationService;
 import foodtruck.schedule.OffTheRoadDetector;
 import foodtruck.schedule.OffTheRoadResponse;
 import foodtruck.schedule.TerminationDetector;
@@ -66,7 +66,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
   private DateTime matchEndTime;
   private TruckDAO truckDAO;
   private Story basicTweet;
-  private EmailNotifier emailNotifier;
+  private SystemNotificationService emailNotifier;
   private OffTheRoadDetector offTheRoadDetector;
   private GeoLocator locator;
   private Location uofc;
@@ -75,7 +75,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
   private RetweetsDAO retweetDAO;
   private TwitterNotificationAccountDAO notificationDAO;
   private SpecialUpdater specialsUpdater;
-  private EventNotificationService notificationService;
+  private PublicEventNotificationService notificationService;
 
   @Before
   public void before() {
@@ -86,7 +86,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
     truck2 = new Truck.Builder().id(TRUCK_2_ID).twitterHandle(TRUCK_2_ID)
         .useTwittalyzer(true).build();
     final DateTimeZone zone = DateTimeZone.forID("America/Chicago");
-    emailNotifier = createMock(EmailNotifier.class);
+    emailNotifier = createMock(SystemNotificationService.class);
     matcher = createMock(TruckStopMatcher.class);
     truckStopDAO = createMock(TruckStopDAO.class);
     locator = createMock(GeoLocator.class);
@@ -112,7 +112,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
     DateTimeFormatter timeFormatter = DateTimeFormat.longTime();
     expect(clock.nowFormattedAsTime()).andStubReturn(timeFormatter.print(now));
     Set<SocialMediaConnector> connectors = ImmutableSet.of();
-    notificationService = createNiceMock(EventNotificationService.class);
+    notificationService = createNiceMock(PublicEventNotificationService.class);
     service = new SocialMediaCacherImpl( tweetDAO, matcher,
         truckStopDAO, clock, terminationDetector, truckDAO, emailNotifier, offTheRoadDetector, locator,
         truckObserverDAO, null, timeFormatter, new StaticConfig(), connectors, specialsUpdater, notificationService);

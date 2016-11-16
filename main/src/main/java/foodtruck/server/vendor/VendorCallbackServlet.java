@@ -16,9 +16,9 @@ import com.google.inject.Singleton;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TwitterNotificationAccountDAO;
-import foodtruck.email.EmailNotifier;
 import foodtruck.model.Truck;
 import foodtruck.model.TwitterNotificationAccount;
+import foodtruck.notifications.SystemNotificationService;
 import foodtruck.server.security.SimplePrincipal;
 import foodtruck.util.Session;
 import twitter4j.Twitter;
@@ -39,13 +39,13 @@ import static foodtruck.server.vendor.VendorTwitterRedirectServlet.NOLOGON_PARAM
 public class VendorCallbackServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(VendorCallbackServlet.class.getName());
   private final Provider<Session> sessionProvider;
-  private final EmailNotifier emailNotifier;
+  private final SystemNotificationService emailNotifier;
   private final TwitterNotificationAccountDAO twitterNotificationDAO;
   private final TruckDAO truckDAO;
   private final Provider<SessionUser> sessionUserProvider;
 
   @Inject
-  public VendorCallbackServlet(Provider<Session> sessionProvider, EmailNotifier emailNotifier,
+  public VendorCallbackServlet(Provider<Session> sessionProvider, SystemNotificationService emailNotifier,
       TwitterNotificationAccountDAO twitterNotificationAccountDAO, TruckDAO truckDAO,
       Provider<SessionUser> sessionUserProvider) {
     this.sessionProvider = sessionProvider;

@@ -40,7 +40,7 @@ import foodtruck.model.StopOrigin;
 import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
-import foodtruck.notifications.EventNotificationService;
+import foodtruck.notifications.PublicEventNotificationService;
 import foodtruck.server.security.SecurityChecker;
 import foodtruck.util.Clock;
 import foodtruck.util.FriendlyDateTimeFormat;
@@ -60,14 +60,14 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
   private final Clock clock;
   private final DateTimeFormatter formatter;
   private final SecurityChecker securityChecker;
-  private final EventNotificationService notificationService;
+  private final PublicEventNotificationService notificationService;
   private final LinxupAccountDAO linxupAccountDAO;
 
   @Inject
   public TruckMonitorServiceImpl(TruckStopDAO truckStopDAO, LinxupConnector connector,
       TrackingDeviceDAO trackingDeviceDAO, GeoLocator locator, Clock clock, TruckDAO truckDAO,
       @FriendlyDateTimeFormat DateTimeFormatter formatter, LocationDAO locationDAO, SecurityChecker securityChecker,
-      EventNotificationService notificationService, LinxupAccountDAO linxupAccountDAO) {
+      PublicEventNotificationService notificationService, LinxupAccountDAO linxupAccountDAO) {
     this.connector = connector;
     this.truckStopDAO = truckStopDAO;
     this.trackingDeviceDAO = trackingDeviceDAO;

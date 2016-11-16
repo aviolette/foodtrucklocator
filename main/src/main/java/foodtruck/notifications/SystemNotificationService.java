@@ -1,4 +1,4 @@
-package foodtruck.email;
+package foodtruck.notifications;
 
 import java.util.Map;
 import java.util.Set;
@@ -13,7 +13,7 @@ import foodtruck.server.vendor.LoginMethod;
  * @author aviolette
  * @since 4/29/13
  */
-public interface EmailNotifier {
+public interface SystemNotificationService {
   /**
    * Send notification when an off-the-road tweet has occurred
    * @param truck the truck that is the subject of the tweet

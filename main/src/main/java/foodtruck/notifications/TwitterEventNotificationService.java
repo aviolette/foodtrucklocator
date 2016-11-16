@@ -1,4 +1,4 @@
-package foodtruck.notifications.twitter;
+package foodtruck.notifications;
 
 import java.util.List;
 import java.util.Set;
@@ -24,7 +24,6 @@ import foodtruck.model.StoryType;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TwitterNotificationAccount;
-import foodtruck.notifications.EventNotificationService;
 import foodtruck.socialmedia.TwitterFactoryWrapper;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
@@ -36,7 +35,7 @@ import twitter4j.TwitterFactory;
  * @author aviolette
  * @since 12/3/12
  */
-public class TwitterEventNotificationService implements EventNotificationService {
+public class TwitterEventNotificationService implements PublicEventNotificationService {
   private static final Joiner HANDLE_JOINER = Joiner.on(" ").skipNulls();
   private static final Logger log = Logger.getLogger(TwitterEventNotificationService.class.getName());
   private final FoodTruckStopService truckService;

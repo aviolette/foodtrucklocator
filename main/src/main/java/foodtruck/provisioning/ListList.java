@@ -1,4 +1,4 @@
-package foodtruck.notifications;
+package foodtruck.provisioning;
 
 import java.io.IOException;
 import java.io.InputStream;

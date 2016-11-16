@@ -24,7 +24,7 @@ import com.google.inject.Singleton;
 
 import foodtruck.dao.DailyRollupDAO;
 import foodtruck.dao.FifteenMinuteRollupDAO;
-import foodtruck.email.EmailNotifier;
+import foodtruck.notifications.SystemNotificationService;
 import foodtruck.util.Clock;
 
 /**
@@ -39,11 +39,11 @@ public class ErrorCountServlet extends HttpServlet {
   private final Clock clock;
   private final FifteenMinuteRollupDAO fifteenMinuteRollupDAO;
   private final DailyRollupDAO dailyRollupDAO;
-  private final EmailNotifier notifier;
+  private final SystemNotificationService notifier;
 
   @Inject
   public ErrorCountServlet(Clock clock, FifteenMinuteRollupDAO fifteenMinuteRollupDAO, DailyRollupDAO dailyRollupDAO,
-      EmailNotifier notifier) {
+      SystemNotificationService notifier) {
     this.clock = clock;
     this.fifteenMinuteRollupDAO = fifteenMinuteRollupDAO;
     this.dailyRollupDAO = dailyRollupDAO;

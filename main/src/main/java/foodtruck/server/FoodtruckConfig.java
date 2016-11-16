@@ -12,7 +12,6 @@ import foodtruck.alexa.AlexaModule;
 import foodtruck.book.BookingModule;
 import foodtruck.dao.appengine.AppEngineDAOModule;
 import foodtruck.dao.memcached.MemcachedModule;
-import foodtruck.email.EmailModule;
 import foodtruck.geolocation.GeolocationModule;
 import foodtruck.googleapi.GoogleApiModule;
 import foodtruck.linxup.LinxupModule;
@@ -45,7 +44,6 @@ public class FoodtruckConfig extends GuiceServletContextListener {
         .add(new MemcachedModule())
         .add(new GeolocationModule())
         .add(new TruckStopsModule())
-        .add(new EmailModule())
         .add(new SecurityModule())
         .add(new ScheduleModule())
         .add(new UtilModule())

@@ -1,4 +1,4 @@
-package foodtruck.notifications.twitter;
+package foodtruck.notifications;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
  * @author aviolette
  * @since 12/6/12
  */
-public class TwitterEventNotificationServiceTest {
+public class TwitterPublicEventNotificationServiceTest {
 
   private TwitterNotificationAccountDAO notificationDAO;
   private Clock clock;

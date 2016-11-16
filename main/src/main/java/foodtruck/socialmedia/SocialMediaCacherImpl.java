@@ -29,7 +29,6 @@ import foodtruck.dao.StoryDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckObserverDAO;
 import foodtruck.dao.TruckStopDAO;
-import foodtruck.email.EmailNotifier;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.StopOrigin;
@@ -38,7 +37,8 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckObserver;
 import foodtruck.model.TruckStop;
 import foodtruck.monitoring.Monitored;
-import foodtruck.notifications.EventNotificationService;
+import foodtruck.notifications.PublicEventNotificationService;
+import foodtruck.notifications.SystemNotificationService;
 import foodtruck.schedule.OffTheRoadDetector;
 import foodtruck.schedule.OffTheRoadResponse;
 import foodtruck.schedule.TerminationDetector;
@@ -62,7 +62,7 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
   private final Clock clock;
   private final TerminationDetector terminationDetector;
   private final TruckDAO truckDAO;
-  private final EmailNotifier emailNotifier;
+  private final SystemNotificationService emailNotifier;
   private final OffTheRoadDetector offTheRoadDetector;
   private final GeoLocator locator;
   private final TruckObserverDAO truckObserverDAO;
@@ -71,14 +71,16 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
   private final StaticConfig staticConfig;
   private final Set<SocialMediaConnector> connectors;
   private final SpecialUpdater specialUpdater;
-  private final EventNotificationService notificationService;
+  private final PublicEventNotificationService notificationService;
 
   @Inject
   public SocialMediaCacherImpl(StoryDAO storyDAO, TruckStopMatcher matcher, TruckStopDAO truckStopDAO, Clock clock,
-      TerminationDetector detector, TruckDAO truckDAO, EmailNotifier notifier, OffTheRoadDetector offTheRoadDetector,
+      TerminationDetector detector, TruckDAO truckDAO, SystemNotificationService notifier,
+      OffTheRoadDetector offTheRoadDetector,
       GeoLocator locator, TruckObserverDAO truckObserverDAO, FoodTruckStopService truckStopService,
       @TimeOnlyFormatter DateTimeFormatter timeFormatter, StaticConfig staticConfig,
-      Set<SocialMediaConnector> connectors, SpecialUpdater specialUpdater, EventNotificationService notificationService) {
+      Set<SocialMediaConnector> connectors, SpecialUpdater specialUpdater,
+      PublicEventNotificationService notificationService) {
     this.storyDAO = storyDAO;
     this.matcher = matcher;
     this.truckStopDAO = truckStopDAO;

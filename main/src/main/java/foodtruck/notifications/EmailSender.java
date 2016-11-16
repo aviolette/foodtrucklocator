@@ -1,4 +1,4 @@
-package foodtruck.email;
+package foodtruck.notifications;
 
 import javax.annotation.Nullable;
 
@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
  * @author aviolette
  * @since 8/13/15
  */
-public interface EmailSender {
+interface EmailSender {
   /**
    * Sends a system message (to the configured list)
    */
