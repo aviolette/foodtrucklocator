@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import foodtruck.notifications.NotificationService;
+import foodtruck.notifications.EventNotificationService;
 
 /**
  * @author aviolette
@@ -20,10 +20,10 @@ import foodtruck.notifications.NotificationService;
 @Singleton
 public class SendLunchNotificationsServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(SendLunchNotificationsServlet.class.getName());
-  private final NotificationService notificationService;
+  private final EventNotificationService notificationService;
 
   @Inject
-  public SendLunchNotificationsServlet(NotificationService notificationService) {
+  public SendLunchNotificationsServlet(EventNotificationService notificationService) {
     this.notificationService = notificationService;
   }
 

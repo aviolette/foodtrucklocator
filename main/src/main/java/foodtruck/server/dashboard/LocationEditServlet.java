@@ -22,7 +22,7 @@ import org.codehaus.jettison.json.JSONObject;
 import foodtruck.dao.LocationDAO;
 import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
-import foodtruck.notifications.NotificationService;
+import foodtruck.notifications.EventNotificationService;
 import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.server.resources.json.LocationReader;
 import foodtruck.server.resources.json.LocationWriter;
@@ -41,12 +41,12 @@ public class LocationEditServlet extends HttpServlet {
   private final LocationWriter writer;
   private final LocationReader reader;
   private final FoodTruckStopService truckStopService;
-  private final NotificationService notificationService;
+  private final EventNotificationService notificationService;
   private final StaticConfig config;
 
   @Inject
   public LocationEditServlet(LocationDAO dao, LocationWriter writer, LocationReader reader,
-      FoodTruckStopService truckStopService, NotificationService notificationService, StaticConfig config) {
+      FoodTruckStopService truckStopService, EventNotificationService notificationService, StaticConfig config) {
     this.locationDAO = dao;
     this.writer = writer;
     this.reader = reader;

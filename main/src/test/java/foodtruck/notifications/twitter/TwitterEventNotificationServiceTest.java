@@ -17,12 +17,12 @@ import static org.junit.Assert.assertEquals;
  * @author aviolette
  * @since 12/6/12
  */
-public class TwitterNotificationServiceTest {
+public class TwitterEventNotificationServiceTest {
 
   private TwitterNotificationAccountDAO notificationDAO;
   private Clock clock;
   private FoodTruckStopService truckService;
-  private TwitterNotificationService service;
+  private TwitterEventNotificationService service;
   private LocationDAO locationDAO;
 
   @Before
@@ -31,7 +31,7 @@ public class TwitterNotificationServiceTest {
     clock = null;
     notificationDAO = null;
     locationDAO = null;
-    service = new TwitterNotificationService(truckService, clock, notificationDAO, null, new StaticConfig(),
+    service = new TwitterEventNotificationService(truckService, clock, notificationDAO, null, new StaticConfig(),
         locationDAO, null);
   }
 

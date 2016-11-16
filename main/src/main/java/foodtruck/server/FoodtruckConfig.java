@@ -1,7 +1,6 @@
 package foodtruck.server;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
+import java.util.logging.Logger;
 
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Guice;
@@ -30,8 +29,11 @@ import foodtruck.util.UtilModule;
  * @since Jul 12, 2011
  */
 public class FoodtruckConfig extends GuiceServletContextListener {
+  private static final Logger log = Logger.getLogger(FoodtruckConfig.class.getName());
+
   @Override
   protected Injector getInjector() {
+    log.info("Loading injector");
     return Guice.createInjector(modules());
   }
 
@@ -57,21 +59,5 @@ public class FoodtruckConfig extends GuiceServletContextListener {
     }
     ImmutableList<Module> allModules = modules.build();
     return allModules.toArray(new Module[allModules.size()]);
-  }
-
-  // These two methods are overriden to provide the injector to the JSP tags
-  @Override
-  public void contextDestroyed(ServletContextEvent servletContextEvent) {
-    ServletContext servletContext = servletContextEvent.getServletContext();
-    servletContext.removeAttribute(Injector.class.getName());
-    super.contextDestroyed(servletContextEvent);
-  }
-
-  @Override
-  public void contextInitialized(ServletContextEvent servletContextEvent) {
-    Injector injector = getInjector();
-    ServletContext servletContext = servletContextEvent.getServletContext();
-    servletContext.setAttribute(Injector.class.getName(), injector);
-    super.contextInitialized(servletContextEvent);
   }
 }

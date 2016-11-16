@@ -38,7 +38,7 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckObserver;
 import foodtruck.model.TruckStop;
 import foodtruck.monitoring.Monitored;
-import foodtruck.notifications.NotificationService;
+import foodtruck.notifications.EventNotificationService;
 import foodtruck.schedule.OffTheRoadDetector;
 import foodtruck.schedule.OffTheRoadResponse;
 import foodtruck.schedule.TerminationDetector;
@@ -71,14 +71,14 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
   private final StaticConfig staticConfig;
   private final Set<SocialMediaConnector> connectors;
   private final SpecialUpdater specialUpdater;
-  private final NotificationService notificationService;
+  private final EventNotificationService notificationService;
 
   @Inject
   public SocialMediaCacherImpl(StoryDAO storyDAO, TruckStopMatcher matcher, TruckStopDAO truckStopDAO, Clock clock,
       TerminationDetector detector, TruckDAO truckDAO, EmailNotifier notifier, OffTheRoadDetector offTheRoadDetector,
       GeoLocator locator, TruckObserverDAO truckObserverDAO, FoodTruckStopService truckStopService,
       @TimeOnlyFormatter DateTimeFormatter timeFormatter, StaticConfig staticConfig,
-      Set<SocialMediaConnector> connectors, SpecialUpdater specialUpdater, NotificationService notificationService) {
+      Set<SocialMediaConnector> connectors, SpecialUpdater specialUpdater, EventNotificationService notificationService) {
     this.storyDAO = storyDAO;
     this.matcher = matcher;
     this.truckStopDAO = truckStopDAO;

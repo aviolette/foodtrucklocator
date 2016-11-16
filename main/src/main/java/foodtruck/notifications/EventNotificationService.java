@@ -5,10 +5,11 @@ import foodtruck.model.Story;
 import foodtruck.model.TruckStop;
 
 /**
+ * Sends out high-level events to any channel that listens.
  * @author aviolette
  * @since 12/3/12
  */
-public interface NotificationService {
+public interface EventNotificationService {
   /**
    * Broadcasts location-based notifications to people who subscribe.  Currently, this puts notifications on
    * location-specific twitter accounts.

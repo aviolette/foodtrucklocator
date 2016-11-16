@@ -24,7 +24,7 @@ import foodtruck.model.StoryType;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TwitterNotificationAccount;
-import foodtruck.notifications.NotificationService;
+import foodtruck.notifications.EventNotificationService;
 import foodtruck.socialmedia.TwitterFactoryWrapper;
 import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
@@ -36,9 +36,9 @@ import twitter4j.TwitterFactory;
  * @author aviolette
  * @since 12/3/12
  */
-public class TwitterNotificationService implements NotificationService {
+public class TwitterEventNotificationService implements EventNotificationService {
   private static final Joiner HANDLE_JOINER = Joiner.on(" ").skipNulls();
-  private static final Logger log = Logger.getLogger(TwitterNotificationService.class.getName());
+  private static final Logger log = Logger.getLogger(TwitterEventNotificationService.class.getName());
   private final FoodTruckStopService truckService;
   private final Clock clock;
   private final TwitterNotificationAccountDAO notificationAccountDAO;
@@ -48,7 +48,7 @@ public class TwitterNotificationService implements NotificationService {
   private final TwitterFactoryWrapper twitterFactoryWrapper;
 
   @Inject
-  public TwitterNotificationService(FoodTruckStopService truckService, Clock clock,
+  public TwitterEventNotificationService(FoodTruckStopService truckService, Clock clock,
       TwitterNotificationAccountDAO notificationAccountDAO, RetweetsDAO retweetsDAO, StaticConfig config,
       LocationDAO locationDAO, TwitterFactoryWrapper twitterFactoryWrapper) {
     this.truckService = truckService;

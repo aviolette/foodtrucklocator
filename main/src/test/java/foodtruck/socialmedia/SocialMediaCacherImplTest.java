@@ -33,7 +33,7 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckObserver;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TwitterNotificationAccount;
-import foodtruck.notifications.NotificationService;
+import foodtruck.notifications.EventNotificationService;
 import foodtruck.schedule.OffTheRoadDetector;
 import foodtruck.schedule.OffTheRoadResponse;
 import foodtruck.schedule.TerminationDetector;
@@ -75,7 +75,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
   private RetweetsDAO retweetDAO;
   private TwitterNotificationAccountDAO notificationDAO;
   private SpecialUpdater specialsUpdater;
-  private NotificationService notificationService;
+  private EventNotificationService notificationService;
 
   @Before
   public void before() {
@@ -112,7 +112,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
     DateTimeFormatter timeFormatter = DateTimeFormat.longTime();
     expect(clock.nowFormattedAsTime()).andStubReturn(timeFormatter.print(now));
     Set<SocialMediaConnector> connectors = ImmutableSet.of();
-    notificationService = createNiceMock(NotificationService.class);
+    notificationService = createNiceMock(EventNotificationService.class);
     service = new SocialMediaCacherImpl( tweetDAO, matcher,
         truckStopDAO, clock, terminationDetector, truckDAO, emailNotifier, offTheRoadDetector, locator,
         truckObserverDAO, null, timeFormatter, new StaticConfig(), connectors, specialsUpdater, notificationService);

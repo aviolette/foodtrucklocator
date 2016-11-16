@@ -40,7 +40,6 @@ import foodtruck.server.job.MigrateTruckCountJobServlet;
 import foodtruck.server.job.MigrateTruckCountServlet;
 import foodtruck.server.job.ProfileSyncServlet;
 import foodtruck.server.job.PurgeStatsServlet;
-import foodtruck.server.job.PushNotificationServlet;
 import foodtruck.server.job.RecacheServlet;
 import foodtruck.server.job.SendLunchNotificationsServlet;
 import foodtruck.server.job.StatUpdateQueueServlet;
@@ -77,7 +76,6 @@ class FoodtruckServletModule extends ServletModule {
   @Override
   protected void configureServlets() {
     // Offline endpoints called via cron-jobs
-    serve("/cron/push_notifications").with(PushNotificationServlet.class);
     serve("/cron/recache").with(RecacheServlet.class);
     serve("/cron/tweets").with(TweetCacheUpdateServlet.class);
     serve("/cron/tweetPurge").with(TwitterCachePurgeServlet.class);

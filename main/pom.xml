@@ -46,6 +46,25 @@
       <version>1.7R1</version>
       <scope>runtime</scope>
     </dependency>
+
+    <!-- needed by alexa -->
+    <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.21</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>2.8.4</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>2.8.4</version>
+    </dependency>
     <dependency>
       <groupId>com.amazon.alexa</groupId>
       <artifactId>alexa-skills-kit</artifactId>
@@ -201,15 +220,6 @@
       <artifactId>antlr</artifactId>
       <version>2.7.7</version>
     </dependency>
-
-    <!-- push notification client -->
-
-    <dependency>
-      <groupId>com.notnoop.apns</groupId>
-      <artifactId>apns</artifactId>
-      <version>1.0.0.Beta6</version>
-    </dependency>
-
     <!-- Code needed for google apis V3 -->
     <dependency>
       <groupId>com.google.oauth-client</groupId>

@@ -11,7 +11,6 @@
     <tr id="beacon-${rowStatus.index}">
       <td><a href="/admin/beacons/${beacon.key}">${beacon.label}</a></td>
       <td>${beacon.deviceNumber}</td>
-      <td><ftl:truck truckId="${beacon.truckOwnerId}" admin="true"/></td>
     </tr>
   </c:forEach>
   </tbody>
