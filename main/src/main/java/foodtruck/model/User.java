@@ -2,6 +2,8 @@ package foodtruck.model;
 
 import java.security.Principal;
 
+import javax.annotation.Nullable;
+
 import org.joda.time.DateTime;
 
 /**
@@ -9,17 +11,22 @@ import org.joda.time.DateTime;
  * @since 11/14/16
  */
 public class User extends ModelEntity implements Principal {
-  private String firstName, lastName, email, hashedPassword;
-  private DateTime modified, created;
+  private String firstName, lastName, email;
+  private @Nullable String hashedPassword;
+  private @Nullable DateTime lastLogin;
 
   private User(Builder builder) {
     super(builder.key);
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.email = email;
-    this.hashedPassword = hashedPassword;
-    this.modified = modified;
-    this.created = created;
+    this.firstName = builder.firstName;
+    this.lastName = builder.lastName;
+    this.email = builder.email;
+    this.hashedPassword = builder.hashedPassword;
+    this.lastLogin = builder.lastLogin;
+  }
+
+  @Nullable
+  public DateTime getLastLogin() {
+    return lastLogin;
   }
 
   public String getFirstName() {
@@ -38,14 +45,6 @@ public class User extends ModelEntity implements Principal {
     return hashedPassword;
   }
 
-  public DateTime getModified() {
-    return modified;
-  }
-
-  public DateTime getCreated() {
-    return created;
-  }
-
   @Override
   public String getName() {
     return null;
@@ -60,8 +59,9 @@ public class User extends ModelEntity implements Principal {
   }
 
   public static class Builder {
-    private String firstName, lastName, email, hashedPassword;
-    private DateTime modified = new DateTime(), created = new DateTime();
+    private String firstName, lastName, email;
+    private @Nullable String hashedPassword;
+    private @Nullable DateTime lastLogin;
     private Long key;
 
     public Builder() {
@@ -72,12 +72,40 @@ public class User extends ModelEntity implements Principal {
       this.lastName = instance.lastName;
       this.email = instance.email;
       this.hashedPassword = instance.hashedPassword;
-      this.modified = instance.modified;
-      this.created = instance.created;
+      this.lastLogin = instance.lastLogin;
       this.key = (Long) instance.key;
     }
 
-    
+    public Builder lastLogin(@Nullable DateTime lastLogin) {
+      this.lastLogin = lastLogin;
+      return this;
+    }
+
+    public Builder key(Long key) {
+      this.key = key;
+      return this;
+    }
+
+    public Builder hashedPassword(String hashedPassword) {
+      this.hashedPassword = hashedPassword;
+      return this;
+    }
+
+    public Builder firstName(String firstName) {
+      this.firstName = firstName;
+      return this;
+    }
+
+    public Builder lastName(String lastName) {
+      this.lastName = lastName;
+      return this;
+    }
+
+    public Builder email(String email) {
+      this.email = email;
+      return this;
+    }
+
 
     public User build() {
       return new User(this);

@@ -3,12 +3,14 @@ package foodtruck.server;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
+import com.google.common.collect.ImmutableList;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.servlet.GuiceServletContextListener;
 
 import foodtruck.alexa.AlexaModule;
+import foodtruck.book.BookingModule;
 import foodtruck.dao.appengine.AppEngineDAOModule;
 import foodtruck.dao.memcached.MemcachedModule;
 import foodtruck.email.EmailModule;
@@ -34,22 +36,27 @@ public class FoodtruckConfig extends GuiceServletContextListener {
   }
 
   private Module[] modules() {
-    return new Module[] {new AlexaModule(),
-        new GoogleApiModule(),
-        new AppEngineDAOModule(),
-        new MemcachedModule(),
-        new GeolocationModule(),
-        new ServiceModule(),
-        new EmailModule(),
-        new SecurityModule(),
-        new ScheduleModule(),
-        new UtilModule(),
-        new SocialMediaModule(),
-        new MonitoringModule(),
-        new NotificationModule(),
-        new LinxupModule(),
-        new FoodtruckServletModule()
-    };
+    ImmutableList.Builder<Module> modules = ImmutableList.<Module>builder()
+        .add(new AlexaModule())
+        .add(new GoogleApiModule())
+        .add(new AppEngineDAOModule())
+        .add(new MemcachedModule())
+        .add(new GeolocationModule())
+        .add(new ServiceModule())
+        .add(new EmailModule())
+        .add(new SecurityModule())
+        .add(new ScheduleModule())
+        .add(new UtilModule())
+        .add(new SocialMediaModule())
+        .add(new MonitoringModule())
+        .add(new NotificationModule())
+        .add(new LinxupModule())
+        .add(new FoodtruckServletModule());
+    if ("true".equals(System.getProperty("foodtrucklocator.supports.booking"))) {
+      modules.add(new BookingModule());
+    }
+    ImmutableList<Module> allModules = modules.build();
+    return allModules.toArray(new Module[allModules.size()]);
   }
 
   // These two methods are overriden to provide the injector to the JSP tags
