@@ -32,6 +32,7 @@ public abstract class AuthenticatedServlet extends HttpServlet {
       resp.sendRedirect("/login");
       return;
     }
+    req.setAttribute("user", principal);
     protectedDoGet(req, resp, principal);
   }
 

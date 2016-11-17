@@ -76,10 +76,17 @@
       </ul>
       <ul class="nav navbar-right navbar-nav">
         <c:if test="${!empty(user)}">
-          <c:if test="${isAdmin}">
-            <li><a href="/admin" class="btn btn-block"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a>
-            </li>
-          </c:if>
+          <c:choose>
+            <c:when test="${isAdmin}">
+              <li><a href="/admin" class="btn btn-block"><span class="glyphicon glyphicon-dashboard"></span>
+                Dashboard</a>
+              </li>
+            </c:when>
+            <c:otherwise>
+              <li><a href="/logout" class="btn btn-block"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
+              </li>
+            </c:otherwise>
+          </c:choose>
         </c:if>
       </ul>
     </div>

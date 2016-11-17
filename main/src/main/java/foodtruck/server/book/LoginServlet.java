@@ -47,7 +47,7 @@ public class LoginServlet extends HttpServlet {
       return;
     }
     User user;
-    if ((user = userService.verifyLogin(email, password)) != null) {
+    if ((user = userService.login(email, password)) != null) {
       sessionProvider.get()
           .setProperty("principal", user);
       response.sendRedirect(MoreObjects.firstNonNull(request.getParameter("redirect"), "/book/prepaid"));

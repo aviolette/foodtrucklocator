@@ -9,6 +9,7 @@ import com.google.inject.Inject;
 
 import foodtruck.dao.UserDAO;
 import foodtruck.model.User;
+import foodtruck.util.Clock;
 
 /**
  * @author aviolette
@@ -18,11 +19,13 @@ class UserServiceImpl implements UserService {
   private static final Logger log = Logger.getLogger(UserServiceImpl.class.getName());
   private final UserDAO userDAO;
   private final PasswordHasher hasher;
+  private final Clock clock;
 
   @Inject
-  public UserServiceImpl(UserDAO userDAO, PasswordHasher passwordHasher) {
+  public UserServiceImpl(UserDAO userDAO, PasswordHasher passwordHasher, Clock clock) {
     this.userDAO = userDAO;
     this.hasher = passwordHasher;
+    this.clock = clock;
   }
 
   @Override
@@ -46,12 +49,19 @@ class UserServiceImpl implements UserService {
 
   @Override
   @Nullable
-  public User verifyLogin(String email, String password) {
+  public User login(String email, String password) {
     User user = userDAO.findByEmail(email);
     if (user == null || !user.hasPassword()) {
       return null;
     }
-    return hasher.hash(password)
-        .equals(user.getHashedPassword()) ? user : null;
+    if (hasher.hash(password)
+        .equals(user.getHashedPassword())) {
+      user = User.builder(user)
+          .lastLogin(clock.now())
+          .build();
+      userDAO.save(user);
+      return user;
+    }
+    return null;
   }
 }

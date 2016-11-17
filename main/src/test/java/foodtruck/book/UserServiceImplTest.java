@@ -1,5 +1,6 @@
 package foodtruck.book;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,6 +10,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import foodtruck.dao.UserDAO;
 import foodtruck.model.User;
+import foodtruck.util.Clock;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;
@@ -23,11 +25,12 @@ public class UserServiceImplTest {
   private @Mock UserDAO userDAO;
   private @Mock User user;
   private @Mock PasswordHasher passwordHasher;
+  private @Mock Clock clock;
   private UserServiceImpl userService;
 
   @Before
   public void before() {
-    userService = new UserServiceImpl(userDAO, passwordHasher);
+    userService = new UserServiceImpl(userDAO, passwordHasher, clock);
   }
 
   @Test
@@ -80,14 +83,25 @@ public class UserServiceImplTest {
   @Test
   public void verifyLogin() {
     final String email = "foobar@gmail.com";
-    when(user.getEmail()).thenReturn(email);
-    when(user.getHashedPassword()).thenReturn("hashed");
-    when(user.hasPassword()).thenReturn(true);
+    user = User.builder()
+        .email(email)
+        .hashedPassword("hashed")
+        .firstName("first")
+        .lastName("last")
+        .build();
     when(userDAO.findByEmail(email)).thenReturn(user);
     when(passwordHasher.hash("unhashed")).thenReturn("hashed");
-    assertThat(userService.verifyLogin(email, "unhashed")).isEqualTo(user);
+    DateTime date = new DateTime(2016, 11, 10, 9, 8, 7);
+    when(clock.now()).thenReturn(date);
+    User modifiedUser = User.builder(user)
+        .lastLogin(date)
+        .build();
+    assertThat(userService.login(email, "unhashed")).isEqualTo(modifiedUser);
     Mockito.verify(userDAO)
         .findByEmail(email);
+    Mockito.verify(userDAO)
+        .save(modifiedUser);
+
   }
 
   @Test
@@ -98,7 +112,7 @@ public class UserServiceImplTest {
     when(user.hasPassword()).thenReturn(true);
     when(userDAO.findByEmail(email)).thenReturn(user);
     when(passwordHasher.hash("unhashed")).thenReturn("hashed1");
-    assertThat(userService.verifyLogin(email, "unhashed")).isNull();
+    assertThat(userService.login(email, "unhashed")).isNull();
     Mockito.verify(userDAO)
         .findByEmail(email);
   }
@@ -109,7 +123,7 @@ public class UserServiceImplTest {
     when(user.getEmail()).thenReturn(email);
     when(user.hasPassword()).thenReturn(false);
     when(userDAO.findByEmail(email)).thenReturn(user);
-    assertThat(userService.verifyLogin(email, "unhashed")).isNull();
+    assertThat(userService.login(email, "unhashed")).isNull();
     Mockito.verify(userDAO)
         .findByEmail(email);
   }
@@ -118,7 +132,7 @@ public class UserServiceImplTest {
   public void verifyLogin_noUser() {
     final String email = "foobar@gmail.com";
     when(userDAO.findByEmail(email)).thenReturn(null);
-    assertThat(userService.verifyLogin(email, "unhashed")).isNull();
+    assertThat(userService.login(email, "unhashed")).isNull();
     Mockito.verify(userDAO)
         .findByEmail(email);
   }

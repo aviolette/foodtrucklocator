@@ -24,5 +24,5 @@ public interface UserService {
    * @return the user object if everything is verified, null otherwise.
    */
   @Nullable
-  User verifyLogin(String email, String password);
+  User login(String email, String password);
 }
