@@ -7,7 +7,6 @@ import com.google.appengine.api.datastore.Query;
 import com.google.inject.Inject;
 
 import foodtruck.dao.UserDAO;
-import foodtruck.dao.memcached.AbstractMemcachedDAO;
 import foodtruck.model.User;
 
 import static foodtruck.dao.appengine.Attributes.setDateProperty;
@@ -34,7 +33,8 @@ public class UserDAOAppEngine extends AppEngineDAO<Long, User> implements UserDA
   @Nullable
   @Override
   public User findByEmail(String email) {
-    return aq().filter(predicate(EMAIL, Query.FilterOperator.EQUAL, EMAIL)).findOne();
+    return aq().filter(predicate(EMAIL, Query.FilterOperator.EQUAL, email))
+        .findOne();
   }
 
   @Override
@@ -55,7 +55,7 @@ public class UserDAOAppEngine extends AppEngineDAO<Long, User> implements UserDA
         .email(fe.stringVal(EMAIL))
         .firstName(fe.stringVal(FIRST_NAME))
         .lastName(fe.stringVal(LAST_NAME))
-        .hashedPassword(HASHED_PASSWORD)
+        .hashedPassword(fe.stringVal(HASHED_PASSWORD))
         .lastLogin(fe.dateVal(LAST_LOGIN))
         .build();
   }

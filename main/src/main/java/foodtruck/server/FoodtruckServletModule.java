@@ -11,6 +11,7 @@ import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import foodtruck.server.book.BookingLandingServlet;
 import foodtruck.server.book.CreateAccountServlet;
 import foodtruck.server.book.LoginServlet;
+import foodtruck.server.book.LogoutServlet;
 import foodtruck.server.book.PrepaidServlet;
 import foodtruck.server.dashboard.AddressRuleServlet;
 import foodtruck.server.dashboard.AdminDashboardServlet;
@@ -143,6 +144,7 @@ class FoodtruckServletModule extends ServletModule {
       // Booking endpoints
       serve("/book").with(BookingLandingServlet.class);
       serve("/login").with(LoginServlet.class);
+      serve("/logout").with(LogoutServlet.class);
       serve("/book/prepaid").with(PrepaidServlet.class);
       serve("/book/create_account").with(CreateAccountServlet.class);
     }
@@ -160,7 +162,7 @@ class FoodtruckServletModule extends ServletModule {
     serve("/support").with(SupportServlet.class);
     serve("/support/iphone").with(IPhoneSupportServlet.class);
     serve("/.well-known/acme-challenge/*").with(SSLVerificationServlet.class);
-    serveRegex("/[\\w]*").with(FoodTruckServlet.class);
+    serve("/").with(FoodTruckServlet.class);
 
 
     // Services

@@ -11,17 +11,18 @@ import foodtruck.model.User;
 public interface UserService {
   /**
    * Creates a user.
-   *
-   * @param firstname            the first name
-   * @param lastName             the last name
-   * @param email                the email
-   * @param password             the password
-   * @param passwordConfirmation the password confirmation
-   * @return the created user
    * @throws IllegalArgumentException if the password and password confirmation do not match
    * @throws IllegalStateException    if the user already exists
    */
-  User createUser(@Nullable String firstname, @Nullable String lastName, @Nullable String email,
-      @Nullable String password,
-      @Nullable String passwordConfirmation) throws IllegalArgumentException, IllegalStateException;
+  User createUser(User user, String confirmation) throws IllegalArgumentException, IllegalStateException;
+
+  /**
+   * Verifies a user exists and that the password (when hashed) matches the stored password.
+   *
+   * @param email    the email
+   * @param password the password (plain-text)
+   * @return the user object if everything is verified, null otherwise.
+   */
+  @Nullable
+  User verifyLogin(String email, String password);
 }

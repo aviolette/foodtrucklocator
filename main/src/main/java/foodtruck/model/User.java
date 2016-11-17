@@ -1,8 +1,13 @@
 package foodtruck.model;
 
+import java.io.Serializable;
 import java.security.Principal;
 
 import javax.annotation.Nullable;
+
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 import org.joda.time.DateTime;
 
@@ -10,7 +15,7 @@ import org.joda.time.DateTime;
  * @author aviolette
  * @since 11/14/16
  */
-public class User extends ModelEntity implements Principal {
+public class User extends ModelEntity implements Principal, Serializable {
   private String firstName, lastName, email;
   private @Nullable String hashedPassword;
   private @Nullable DateTime lastLogin;
@@ -22,6 +27,32 @@ public class User extends ModelEntity implements Principal {
     this.email = builder.email;
     this.hashedPassword = builder.hashedPassword;
     this.lastLogin = builder.lastLogin;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static Builder builder(User instance) {
+    return new Builder(instance);
+  }
+
+  @Override
+  public void validate() throws IllegalStateException {
+    Preconditions.checkState(!Strings.isNullOrEmpty(email), "Email is not specified");
+    Preconditions.checkState(!Strings.isNullOrEmpty(firstName), "First name is not specified");
+    Preconditions.checkState(!Strings.isNullOrEmpty(lastName), "Last name is not specified");
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("first name", firstName)
+        .add("last name", lastName)
+        .add("email", email)
+        .add("hashed password", Strings.isNullOrEmpty(hashedPassword) ? "EMPTY" : "EXISTS")
+        .add("last login", lastLogin)
+        .toString();
   }
 
   @Nullable
@@ -50,12 +81,8 @@ public class User extends ModelEntity implements Principal {
     return null;
   }
 
-  public static Builder builder() {
-    return new Builder();
-  }
-
-  public static Builder builder(User instance) {
-    return new Builder(instance);
+  public boolean hasPassword() {
+    return !Strings.isNullOrEmpty(hashedPassword);
   }
 
   public static class Builder {
@@ -105,7 +132,6 @@ public class User extends ModelEntity implements Principal {
       this.email = email;
       return this;
     }
-
 
     public User build() {
       return new User(this);
