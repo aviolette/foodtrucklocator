@@ -6,6 +6,7 @@ import java.security.Principal;
 import javax.annotation.Nullable;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
@@ -55,6 +56,23 @@ public class User extends ModelEntity implements Principal, Serializable {
         .toString();
   }
 
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(lastLogin, firstName, lastName, email, hashedPassword, lastLogin);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == this) {
+      return true;
+    } else if (!(obj instanceof User)) {
+      return false;
+    }
+    User u = (User) obj;
+    return u.lastName.equals(lastName) && u.firstName.equals(firstName) && u.email.equals(email) && Objects.equal(
+        u.hashedPassword, hashedPassword) && Objects.equal(u.lastLogin, lastLogin);
+  }
+
   @Nullable
   public DateTime getLastLogin() {
     return lastLogin;
@@ -78,7 +96,8 @@ public class User extends ModelEntity implements Principal, Serializable {
 
   @Override
   public String getName() {
-    return null;
+    // need this to be email so that it is interoperable with vendor dashboard
+    return email;
   }
 
   public boolean hasPassword() {
