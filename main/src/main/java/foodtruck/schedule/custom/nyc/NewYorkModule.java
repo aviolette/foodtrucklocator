@@ -35,6 +35,7 @@ public class NewYorkModule extends AbstractModule {
         new Spot("water/jay", "Water and Jay, New York, NY"), new Spot("park/33", "Park and 33rd, New York, NY"),
         new Spot("91/columbus", "91th and Columbus, New York, NY"),
         new Spot("broadway/55", "Broadway and 55th, New York, NY"),
+        new Spot("52/madison", "52nd and Madison, New York, NY"),
         new Spot("madison/98", "Madison and 98th, New York, NY"),
         new Spot("60th/columbus", "60th and Columbus, New York, NY"),
         new Spot("madison/58", "Madison and 58th, New York, NY"),
