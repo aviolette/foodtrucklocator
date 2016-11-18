@@ -16,7 +16,6 @@ import foodtruck.util.Clock;
  * @since 11/15/16
  */
 class UserServiceImpl implements UserService {
-  private static final Logger log = Logger.getLogger(UserServiceImpl.class.getName());
   private final UserDAO userDAO;
   private final PasswordHasher hasher;
   private final Clock clock;

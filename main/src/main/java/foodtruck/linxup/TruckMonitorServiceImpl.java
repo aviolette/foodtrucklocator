@@ -168,6 +168,7 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
           break;
         }
       }
+      //noinspection StatementWithEmptyBody
       if (position.getDate()
           .isBefore(trip.getStartTime())) {
         // what to do?
