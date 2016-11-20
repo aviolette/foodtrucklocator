@@ -207,6 +207,7 @@ public class TruckServlet extends HttpServlet {
     builder.inactive(options.contains("inactive"));
     builder.hidden(options.contains("hidden"));
     builder.useTwittalyzer(options.contains("twittalyzer"));
+    builder.notifyOfLocationChanges(options.contains("notifyOfLocationChanges"));
     builder.scanFacebook(options.contains("facebooker"));
     builder.displayEmailPublicly(options.contains("displayEmailPublicly"));
     String matchRegex = request.getParameter("matchOnlyIf");

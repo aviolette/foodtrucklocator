@@ -154,6 +154,11 @@
   </div>
   <div class="checkbox">
     <label><input type="checkbox" name="options"
+                  value="notifyOfLocationChanges" ${truck.notifyOfLocationChanges ? "checked='checked'" : ""}/>
+      Notify of location changes</label>
+  </div>
+  <div class="checkbox">
+    <label><input type="checkbox" name="options"
                   value="inactive" ${truck.inactive ? "checked='checked'" : ""}/>
       Inactive</label>
   </div>

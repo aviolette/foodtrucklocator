@@ -2,8 +2,6 @@ package foodtruck.monitoring;
 
 import com.google.appengine.api.memcache.Expiration;
 import com.google.appengine.api.memcache.MemcacheService;
-import com.google.appengine.api.taskqueue.Queue;
-import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.matcher.Matchers;
@@ -29,10 +27,5 @@ public class MonitoringModule extends AbstractModule {
   @Provides @HourlyScheduleCounter
   public Counter providesHourlyScheduleCounter(MemcacheService memcacheService) {
     return new Counter("service.access.hourly", memcacheService, Expiration.byDeltaSeconds(3600));
-  }
-
-  @Provides
-  public Queue provideQueue() {
-    return QueueFactory.getDefaultQueue();
   }
 }

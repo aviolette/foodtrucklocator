@@ -10,6 +10,8 @@ import java.util.logging.Logger;
 import javax.annotation.Nullable;
 import javax.ws.rs.WebApplicationException;
 
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Optional;
@@ -23,6 +25,7 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.javadocmd.simplelatlng.LatLng;
 
 import org.joda.time.DateTime;
@@ -40,7 +43,6 @@ import foodtruck.model.StopOrigin;
 import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
-import foodtruck.notifications.PublicEventNotificationService;
 import foodtruck.server.security.SecurityChecker;
 import foodtruck.util.Clock;
 import foodtruck.util.FriendlyDateTimeFormat;
@@ -60,14 +62,14 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
   private final Clock clock;
   private final DateTimeFormatter formatter;
   private final SecurityChecker securityChecker;
-  private final PublicEventNotificationService notificationService;
   private final LinxupAccountDAO linxupAccountDAO;
+  private final Provider<Queue> queueProvider;
 
   @Inject
   public TruckMonitorServiceImpl(TruckStopDAO truckStopDAO, LinxupConnector connector,
       TrackingDeviceDAO trackingDeviceDAO, GeoLocator locator, Clock clock, TruckDAO truckDAO,
       @FriendlyDateTimeFormat DateTimeFormatter formatter, LocationDAO locationDAO, SecurityChecker securityChecker,
-      PublicEventNotificationService notificationService, LinxupAccountDAO linxupAccountDAO) {
+      LinxupAccountDAO linxupAccountDAO, Provider<Queue> queueProvider) {
     this.connector = connector;
     this.truckStopDAO = truckStopDAO;
     this.trackingDeviceDAO = trackingDeviceDAO;
@@ -77,8 +79,8 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
     this.formatter = formatter;
     this.locationDAO = locationDAO;
     this.securityChecker = securityChecker;
-    this.notificationService = notificationService;
     this.linxupAccountDAO = linxupAccountDAO;
+    this.queueProvider = queueProvider;
   }
 
   @Override
@@ -306,9 +308,12 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
       }
       stop = stop(matches.getTruck(), device).endTime(endTime).build();
     }
-    truckStopDAO.save(stop);
+    long stopId = truckStopDAO.save(stop);
     if (stop.isNew()) {
-      notificationService.notifyStopStart(stop);
+      Queue queue = queueProvider.get();
+      queue.add(TaskOptions.Builder.withUrl("/cron/notify_stop_created")
+          .param("stopId", String.valueOf(stopId))
+          .param("deviceId", String.valueOf(device.getKey())));
     }
   }
 

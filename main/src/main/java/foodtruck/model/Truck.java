@@ -82,7 +82,7 @@ public class Truck extends ModelEntity implements Serializable {
   private boolean postAtNewStop;
   private @Nullable String facebookAccessToken;
   private @Nullable DateTime facebookAccessTokenExpires;
-
+  private boolean notifyOfLocationChanges;
 
   // For serialization (for storage in memcached)
   private Truck() {
@@ -135,6 +135,7 @@ public class Truck extends ModelEntity implements Serializable {
     this.postAtNewStop = builder.postAtNewStop;
     this.facebookAccessToken = builder.facebookAccessToken;
     this.facebookAccessTokenExpires = builder.facebookAccessTokenExpires;
+    this.notifyOfLocationChanges = builder.notifyOfLocationChanges;
   }
 
   public static Builder builder() {
@@ -155,6 +156,10 @@ public class Truck extends ModelEntity implements Serializable {
 
   public Builder append() {
     return new Builder(this);
+  }
+
+  public boolean isNotifyOfLocationChanges() {
+    return notifyOfLocationChanges;
   }
 
   @Nullable
@@ -719,6 +724,7 @@ public class Truck extends ModelEntity implements Serializable {
     private boolean postAtNewStop;
     private @Nullable String facebookAccessToken;
     private @Nullable DateTime facebookAccessTokenExpires;
+    private boolean notifyOfLocationChanges;
 
     public Builder() {
     }
@@ -769,6 +775,12 @@ public class Truck extends ModelEntity implements Serializable {
       this.postAtNewStop = truck.postAtNewStop;
       this.facebookAccessToken = truck.facebookAccessToken;
       this.facebookAccessTokenExpires = truck.facebookAccessTokenExpires;
+      this.notifyOfLocationChanges = truck.notifyOfLocationChanges;
+    }
+
+    public Builder notifyOfLocationChanges(boolean notify) {
+      this.notifyOfLocationChanges = notify;
+      return this;
     }
 
     public Builder phoneticMarkup(String markup) {

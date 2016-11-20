@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
  * @author aviolette
  * @since 8/13/15
  */
-interface EmailSender {
+public interface EmailSender {
   /**
    * Sends a system message (to the configured list)
    */

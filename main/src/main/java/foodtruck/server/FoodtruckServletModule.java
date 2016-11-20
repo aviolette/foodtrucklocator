@@ -1,5 +1,7 @@
 package foodtruck.server;
 
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Provides;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
@@ -37,6 +39,7 @@ import foodtruck.server.dashboard.TruckServlet;
 import foodtruck.server.dashboard.TruckStopServlet;
 import foodtruck.server.job.ErrorCountServlet;
 import foodtruck.server.job.InvalidateScheduleCache;
+import foodtruck.server.job.NotifyNewStopServlet;
 import foodtruck.server.job.ProfileSyncServlet;
 import foodtruck.server.job.PurgeStatsServlet;
 import foodtruck.server.job.RecacheServlet;
@@ -87,6 +90,7 @@ class FoodtruckServletModule extends ServletModule {
 
     // Queue activated servlets
     serve("/cron/update_count").with(StatUpdateQueueServlet.class);
+    serve("/cron/notify_stop_created").with(NotifyNewStopServlet.class);
 
     // Dashboard endpoints
     serve("/admin").with(AdminDashboardServlet.class);
@@ -181,5 +185,10 @@ class FoodtruckServletModule extends ServletModule {
   @Provides @Named("foodtrucklocator.signal.id")
   public String provideFoodTruckLocatorSignalId() {
     return System.getProperty("foodtrucklocator.signal.id");
+  }
+
+  @Provides
+  public Queue provideQueue() {
+    return QueueFactory.getDefaultQueue();
   }
 }

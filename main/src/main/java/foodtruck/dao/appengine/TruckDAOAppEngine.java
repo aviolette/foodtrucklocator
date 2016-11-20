@@ -96,6 +96,8 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
   private static final String NEVER_LINK_TWITTER = "never_link_twitter";
   private static final String FACEBOOK_ACCESS_TOKEN = "facebook_access_token";
   private static final String FACEBOOK_ACCESS_TOKEN_EXPIRY = "facebook_access_token_expiry";
+  private static final String NOTIFY_OF_LOCATION_CHANGES = "notify_of_location_changes";
+
   private DateTimeZone zone;
 
   @Inject
@@ -150,6 +152,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
         .instagramId(getStringProperty(entity, TRUCK_INSTAGRAM))
         .facebook((String) entity.getProperty(TRUCK_FACEBOOK_FIELD))
         .scanFacebook(getBooleanProperty(entity, SCAN_FACEBOOK, false))
+        .notifyOfLocationChanges(getBooleanProperty(entity, NOTIFY_OF_LOCATION_CHANGES, false))
         .lastScanned(getStringProperty(entity, LAST_SCANNED))
         .foursquareUrl((String) entity.getProperty(TRUCK_FOURSQUARE_URL_FIELD))
         .iconUrl((String) entity.getProperty(TRUCK_ICON_URL))
@@ -311,6 +314,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     entity.setProperty(TRUCK_CANONICAL_NAME, truck.canonicalName());
     entity.setProperty(TRUCK_DISPLAY_EMAIL, truck.isDisplayEmailPublicly());
     entity.setProperty(TRUCK_NAME_FIELD, truck.getName());
+    entity.setProperty(NOTIFY_OF_LOCATION_CHANGES, truck.isNotifyOfLocationChanges());
     entity.setProperty(TRUCK_TWITTER_HANDLE, truck.getTwitterHandle());
     entity.setProperty(TRUCK_URL, truck.getUrl());
     entity.setProperty(TRUCK_PREVIEW_ICON, truck.getPreviewIcon());
