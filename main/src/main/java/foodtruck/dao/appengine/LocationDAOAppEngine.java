@@ -100,7 +100,9 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
   @Nullable
   @Override
   public Location findByLatLng(Location location) {
-    return aq().filter(predicate(REVERSE_LOOKUP_KEY, EQUAL, reverseLookupKey(location)))
+    String lookupKey = reverseLookupKey(location);
+    log.log(Level.INFO, "Searching by: {0}", lookupKey);
+    return aq().filter(predicate(REVERSE_LOOKUP_KEY, EQUAL, lookupKey))
         .findFirst();
   }
 

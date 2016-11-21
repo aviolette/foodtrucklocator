@@ -37,7 +37,6 @@ public class MonitorInterceptor implements MethodInterceptor {
     String prefix = className + "_" + methodName;
     Queue queue = monitorQueueProvider.get();
     try {
-      System.out.println("HERE");
       return invocation.proceed();
     } catch (Exception e) {
       queue.add(TaskOptions.Builder.withUrl("/cron/update_count")
