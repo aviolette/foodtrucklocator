@@ -101,7 +101,7 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
   @Override
   public Location findByLatLng(Location location) {
     String lookupKey = reverseLookupKey(location);
-    log.log(Level.INFO, "Searching by: {0}", lookupKey);
+    log.log(Level.INFO, "Reverse lookup key: " + lookupKey);
     return aq().filter(predicate(REVERSE_LOOKUP_KEY, EQUAL, lookupKey))
         .findFirst();
   }
@@ -239,7 +239,8 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
     StringBuilder builder = new StringBuilder();
     Formatter formatter = new Formatter(builder, Locale.US);
     formatter.format("%10.4f %10.4f", location.getLatitude(), location.getLongitude());
-    return builder.toString();
+    String s = builder.toString();
+    return s.replaceAll(" ", "");
   }
 
   @Override
