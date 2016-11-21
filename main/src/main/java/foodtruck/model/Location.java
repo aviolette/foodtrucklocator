@@ -31,6 +31,7 @@ public class Location extends ModelEntity implements Serializable {
       return input.getShortenedName();
     }
   };
+  private static final String UNKNOWN = "UNKNOWN";
 
   private static final long serialVersionUID = 1L;
   private LatLng latLng;
@@ -175,6 +176,10 @@ public class Location extends ModelEntity implements Serializable {
     return eventSpecific;
   }
 
+  public boolean withinToleranceOf(Location location) {
+    return within(0.05).milesOf(location);
+  }
+
   public @Nullable String getDescription() {
     return this.description;
   }
@@ -205,7 +210,7 @@ public class Location extends ModelEntity implements Serializable {
   }
 
   public boolean sameName(Location loc) {
-    return name.equals(loc.getName());
+    return !UNKNOWN.equals(name) && name.equals(loc.getName());
   }
 
   @Override
@@ -309,7 +314,7 @@ public class Location extends ModelEntity implements Serializable {
     private Object key;
     private double lat;
     private double lng;
-    private String name;
+    private String name = UNKNOWN;
     private boolean valid = true;
     private @Nullable String description;
     private boolean eventSpecific;

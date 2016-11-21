@@ -94,7 +94,7 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
   public void synchronizeFor(LinxupAccount account) {
     List<Position> positionList = connector.findPositions(account);
     try {
-      merge(synchronize(positionList, account.getTruckId()));
+      merge(synchronize(positionList, account.getTruckId(), account));
     } catch (ExecutionException e) {
       throw Throwables.propagate(e);
     }
@@ -348,7 +348,8 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
    * Synchronize what is returned with existing tracking devices in the DB.  If there is new information, update it in
    * DB.
    */
-  private List<TrackingDevice> synchronize(List<Position> positions, String truckId) throws ExecutionException {
+  private List<TrackingDevice> synchronize(List<Position> positions, String truckId,
+      LinxupAccount linxupAccount) throws ExecutionException {
     // wish I had streams here
     Map<String, TrackingDevice> deviceMap = Maps.newHashMap();
     for (TrackingDevice device : trackingDeviceDAO.findAll()) {
@@ -374,10 +375,7 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
     for (Position position : positions) {
       TrackingDevice device = deviceMap.get(position.getDeviceNumber());
       TrackingDevice.Builder builder = TrackingDevice.builder(device);
-      Location location = Location.builder().lat(position.getLatLng().getLatitude())
-          .lng(position.getLatLng().getLongitude())
-          .name("UNKNOWN")
-          .build();
+      Location location = buildLocation(position, device, linxupAccount);
       location = MoreObjects.firstNonNull(locator.reverseLookup(location), location);
       // TODO: it would be nice if the actual device could calculate this, but for now we look to see if it changed.
       boolean parked = position.getSpeedMph() == 0 && (device == null || device.getLastLocation() == null || device.getLastLocation()
@@ -405,6 +403,41 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
       devices.add(theDevice);
     }
     return devices.build();
+  }
+
+  private Location buildLocation(Position position, @Nullable TrackingDevice device, LinxupAccount linxupAccount) {
+    Location location = Location.builder()
+        .lat(position.getLatLng()
+            .getLatitude())
+        .lng(position.getLatLng()
+            .getLongitude())
+        .build();
+    if (device == null) {
+      return location;
+    }
+    Location preciseLocation = device.getPreciseLocation();
+    if (preciseLocation == null || location.withinToleranceOf(preciseLocation)) {
+      return location;
+    }
+    // the case where there was no intermediate movement, means there may be an anomaly
+    if (position.isParked() && device.isParked() && !location.withinToleranceOf(
+        device.getLastLocation()) && location.within(0.20)
+        .milesOf(device.getLastLocation())) {
+      log.log(Level.INFO, "Checking for anomaly {0}\n\n {1}", new Object[]{location, device});
+      try {
+        LinxupMapHistoryResponse response = connector.tripList(linxupAccount, clock.timeAt(0, 0), clock.timeAt(23, 59),
+            device.getDeviceNumber());
+        Stop stop = response.lastStopFor(device.getDeviceNumber());
+        if (stop != null && stop.getLocation()
+            .withinToleranceOf(preciseLocation)) {
+          log.log(Level.SEVERE, "Anomaly detected {0} {1}", new Object[]{stop.getLocation(), preciseLocation});
+          return device.getLastActualLocation();
+        }
+      } catch (Exception e) {
+        log.log(Level.SEVERE, e.getMessage(), e);
+      }
+    }
+    return location;
   }
 
   private static class Matches {

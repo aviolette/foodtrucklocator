@@ -31,6 +31,8 @@ class TrackingDeviceDAOAppEngine extends AppEngineDAO<Long, TrackingDevice> impl
   private static final String FUEL_LEVEL = "fuel_level";
   private static final String BATTERY_CHARGE = "battery_charge";
   private static final String DIRECTION = "direction";
+  private static final String LAST_ACTUAL_LOCATION_LAT = "last_actual_lat";
+  private static final String LAST_ACTUAL_LOCATION_LNG = "last_actual_lng";
   private final Clock clock;
 
   @Inject
@@ -41,8 +43,7 @@ class TrackingDeviceDAOAppEngine extends AppEngineDAO<Long, TrackingDevice> impl
 
   @Override
   protected Entity toEntity(TrackingDevice obj, Entity entity) {
-    FluidEntity fe = new FluidEntity(entity)
-        .prop(LABEL, obj.getLabel())
+    FluidEntity fe = new FluidEntity(entity).prop(LABEL, obj.getLabel())
         .prop(DEVICE_NUMBER, obj.getDeviceNumber())
         .prop(TRUCK_OWNER_ID, obj.getTruckOwnerId())
         .prop(LAST_MODIFIED, clock.now())
@@ -54,9 +55,22 @@ class TrackingDeviceDAOAppEngine extends AppEngineDAO<Long, TrackingDevice> impl
         .prop(DIRECTION, obj.getDegreesFromNorth())
         .prop(ENABLED, obj.isEnabled());
     if (obj.getLastLocation() != null) {
-      fe.prop(LAST_LOCATION_NAME, obj.getLastLocation().getName())
-          .prop(LAST_LOCATION_LAT, obj.getLastLocation().getLatitude())
-          .prop(LAST_LOCATION_LNG, obj.getLastLocation().getLongitude());
+      fe.prop(LAST_LOCATION_NAME, obj.getLastLocation()
+          .getName())
+          .prop(LAST_LOCATION_LAT, obj.getLastLocation()
+              .getLatitude())
+          .prop(LAST_LOCATION_LNG, obj.getLastLocation()
+              .getLongitude());
+    } else {
+      fe.prop(LAST_LOCATION_NAME, null)
+          .prop(LAST_LOCATION_LAT, 0)
+          .prop(LAST_LOCATION_LNG, 0);
+    }
+    if (obj.getLastActualLocation() != null) {
+      fe.prop(LAST_ACTUAL_LOCATION_LAT, obj.getLastActualLocation()
+          .getLatitude());
+      fe.prop(LAST_ACTUAL_LOCATION_LNG, obj.getLastActualLocation()
+          .getLongitude());
     }
     return fe.toEntity();
   }
@@ -65,14 +79,24 @@ class TrackingDeviceDAOAppEngine extends AppEngineDAO<Long, TrackingDevice> impl
   protected TrackingDevice fromEntity(Entity entity) {
     FluidEntity fe = new FluidEntity(entity);
     double lat = fe.doubleVal(LAST_LOCATION_LAT),
-        lng = fe.doubleVal(LAST_LOCATION_LNG);
+        lng = fe.doubleVal(LAST_LOCATION_LNG), actualLat = fe.doubleVal(LAST_ACTUAL_LOCATION_LAT),
+        actualLng = fe.doubleVal(LAST_ACTUAL_LOCATION_LNG);
     String name = fe.stringVal(LAST_LOCATION_NAME);
-    TrackingDevice.Builder builder =  TrackingDevice.builder();
-    if (lat != 0 || lng != 0) {
-      builder.lastLocation(Location.builder().name(name).lat(lat).lng(lng).build());
+    TrackingDevice.Builder builder = TrackingDevice.builder();
+    if (lat != 0 && lng != 0) {
+      builder.lastLocation(Location.builder()
+          .name(name)
+          .lat(lat)
+          .lng(lng)
+          .build());
     }
-    return builder
-        .parked(fe.booleanVal(PARKED))
+    if (actualLat != 0 && actualLng != 0) {
+      builder.lastActualLocation(Location.builder()
+          .lat(lat)
+          .lng(lng)
+          .build());
+    }
+    return builder.parked(fe.booleanVal(PARKED))
         .truckOwnerId(fe.stringVal(TRUCK_OWNER_ID))
         .deviceNumber(fe.stringVal(DEVICE_NUMBER))
         .label(fe.stringVal(LABEL))
@@ -89,8 +113,7 @@ class TrackingDeviceDAOAppEngine extends AppEngineDAO<Long, TrackingDevice> impl
 
   @Override
   public List<TrackingDevice> findByTruckId(String truckId) {
-    return aq()
-        .filter(predicate(TRUCK_OWNER_ID, EQUAL, truckId))
+    return aq().filter(predicate(TRUCK_OWNER_ID, EQUAL, truckId))
         .execute();
   }
 }

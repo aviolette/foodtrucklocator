@@ -2,6 +2,8 @@ package foodtruck.linxup;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 
@@ -41,5 +43,17 @@ public class LinxupMapHistoryResponse extends LinxupResponse {
         .add("errorType", getErrorType())
         .add("message", getError())
         .toString();
+  }
+
+  @Nullable
+  public Stop lastStopFor(String deviceNumber) {
+    Stop lastStop = null;
+    for (Stop stop : stops) {
+      if (stop.getDeviceId()
+          .equals(deviceNumber)) {
+        lastStop = stop;
+      }
+    }
+    return lastStop;
   }
 }

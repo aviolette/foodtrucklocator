@@ -30,6 +30,7 @@ public class TrackingDevice extends ModelEntity {
   private @Nullable String fuelLevel;
   private @Nullable String batteryCharge;
   private int degreesFromNorth;
+  private @Nullable Location lastActualLocation;
 
   private TrackingDevice(Builder builder) {
     super(builder.key);
@@ -47,6 +48,7 @@ public class TrackingDevice extends ModelEntity {
     this.fuelLevel = builder.fuelLevel;
     this.batteryCharge = builder.batteryCharge;
     this.degreesFromNorth = builder.degreesFromNorth;
+    this.lastActualLocation = builder.lastActualLocation;
   }
 
   public static Builder builder() {
@@ -55,6 +57,11 @@ public class TrackingDevice extends ModelEntity {
 
   public static Builder builder(@Nullable TrackingDevice device) {
     return (device == null) ?  new Builder() : new Builder(device);
+  }
+
+  @Nullable
+  public Location getLastActualLocation() {
+    return lastActualLocation;
   }
 
   public TrackingDeviceState getState() {
@@ -165,6 +172,12 @@ public class TrackingDevice extends ModelEntity {
     return degreesFromNorth;
   }
 
+  public
+  @Nullable
+  Location getPreciseLocation() {
+    return MoreObjects.firstNonNull(getLastActualLocation(), getLastLocation());
+  }
+
   public static class Builder {
     private long key;
     private String label;
@@ -179,6 +192,7 @@ public class TrackingDevice extends ModelEntity {
     private @Nullable String fuelLevel;
     private @Nullable String batteryCharge;
     private int degreesFromNorth;
+    private Location lastActualLocation;
 
     public Builder() {
     }
@@ -195,6 +209,7 @@ public class TrackingDevice extends ModelEntity {
       this.parked = device.parked;
       this.atBlacklistedLocation = device.atBlacklistedLocation;
       this.degreesFromNorth = device.degreesFromNorth;
+      this.lastActualLocation = device.lastActualLocation;
     }
 
     public Builder degreesFromNorth(int degreesFromNorth) {
@@ -264,6 +279,11 @@ public class TrackingDevice extends ModelEntity {
 
     public TrackingDevice build() {
       return new TrackingDevice(this);
+    }
+
+    public Builder lastActualLocation(Location actualLocation) {
+      this.lastActualLocation = actualLocation;
+      return this;
     }
   }
 }
