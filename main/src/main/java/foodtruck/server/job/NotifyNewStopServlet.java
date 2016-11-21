@@ -87,9 +87,9 @@ public class NotifyNewStopServlet extends HttpServlet {
       String subject = device.getLabel() + " has parked at " + stop.getLocation()
           .getShortenedName();
       String msgBody = "Truck stats:\n\nFuel:           " +
-          device.getFuelLevel() + "%\nBattery charge: " +
-          device.getDeviceNumber() + "\nDevice id:      " +
-          device.getBatteryCharge() + "\nLast broadcast: " +
+          device.getFuelLevel() + "%\nDevice id: " +
+          device.getDeviceNumber() + "\nBattery charge      " +
+          device.getBatteryCharge() + " V\nLast broadcast: " +
           formatter.print(device.getLastBroadcast());
       emailSender.sendMessage(subject, ImmutableList.of(truck.getEmail()), msgBody, config.getSystemNotificationList(),
           null);
