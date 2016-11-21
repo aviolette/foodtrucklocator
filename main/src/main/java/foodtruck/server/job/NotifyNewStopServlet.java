@@ -58,7 +58,7 @@ public class NotifyNewStopServlet extends HttpServlet {
     this.formatter = formatter;
   }
 
-  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     String stopId = request.getParameter("stopId");
     String deviceId = request.getParameter("deviceId");
     TruckStop stop = truckStopDAO.findById(Long.parseLong(stopId));
