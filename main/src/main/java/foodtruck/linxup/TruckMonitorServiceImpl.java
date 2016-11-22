@@ -280,8 +280,7 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
       TruckStop current = currentHolder.get();
       if (current.getLocation()
           .sameName(device.getLastLocation()) || current.getLocation()
-          .within(0.05)
-          .milesOf(device.getLastLocation())) {
+          .withinToleranceOf(device.getLastLocation())) {
         if (current.getEndTime().isBefore(now.plusMinutes(15))) {
           TruckStop.Builder builder = TruckStop.builder(current)
               .appendNote("Extended time by 60 minutes at " + formatter.print(now))
