@@ -108,7 +108,9 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
       throw new WebApplicationException(404);
     }
     securityChecker.requiresLoggedInAs(device.getTruckOwnerId());
-    trackingDeviceDAO.save(TrackingDevice.builder(device).enabled(enabled).build());
+    trackingDeviceDAO.save(TrackingDevice.builder(device)
+        .enabled(enabled)
+        .build());
     if (enabled) {
       // TODO: probably not what we want to do here.
       synchronize();
@@ -204,6 +206,7 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
 
   /**
    * Takes the device data the was retrieved and create/update/deletes an existing stops based on the data.
+   *
    * @param devices the list of devices retrieved
    */
 
@@ -237,7 +240,8 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
       return false;
     }
     for (Location location : locations) {
-      if (location.within(location.getRadius()).milesOf(lastLocation)) {
+      if (location.within(location.getRadius())
+          .milesOf(lastLocation)) {
         return true;
       }
     }
@@ -247,11 +251,12 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
   private void cancelAnyStops(TrackingDevice device, List<TruckStop> activeStops) {
     //noinspection ConstantConditions
     for (TruckStop stop : activeStops) {
-      if (stop.activeDuring(clock.now()) && device.getId().equals(stop.getCreatedWithDeviceId())) {
+      if (stop.activeDuring(clock.now()) && device.getId()
+          .equals(stop.getCreatedWithDeviceId())) {
         truckStopDAO.save(TruckStop.builder(stop)
             .endTime(clock.now())
-            .appendNote(device.isEnabled() ? "Ended stop since because truck is moving" :
-                "Ended stop since beacon was disabled")
+            .appendNote(
+                device.isEnabled() ? "Ended stop since because truck is moving" : "Ended stop since beacon was disabled")
             .build());
         return;
       }
@@ -263,7 +268,9 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
     return TruckStop.builder()
         .appendNote("Created by beacon on " + formatter.print(now))
         .lastUpdated(clock.now())
-        .startTime(device.getLastBroadcast()).endTime(now.plusHours(2)).createdWithDeviceId(device.getId())
+        .startTime(device.getLastBroadcast())
+        .endTime(now.plusHours(2))
+        .createdWithDeviceId(device.getId())
         .fromBeacon(device.getLastBroadcast())
         .location(device.getLastLocation())
         .origin(StopOrigin.LINXUP)
@@ -281,7 +288,8 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
       if (current.getLocation()
           .sameName(device.getLastLocation()) || current.getLocation()
           .withinToleranceOf(device.getLastLocation())) {
-        if (current.getEndTime().isBefore(now.plusMinutes(15))) {
+        if (current.getEndTime()
+            .isBefore(now.plusMinutes(15))) {
           TruckStop.Builder builder = TruckStop.builder(current)
               .appendNote("Extended time by 60 minutes at " + formatter.print(now))
               .endTime(current.getEndTime()
@@ -292,6 +300,11 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
           // no need to update anything
           return;
         }
+      } else if (current.getManuallyUpdated() != null && device.getLastBroadcast() != null && current.getManuallyUpdated()
+          .isAfter(device.getLastBroadcast())) {
+        log.log(Level.WARNING, "Stop was manually edited {0}.  Ignoring until new broadcast.", current);
+        // this stop was manually edited so do thing.
+        return;
       } else {
         truckStopDAO.save(current.withEndTime(device.getLastBroadcast()));
         stop = stop(matches.getTruck(), device).build();
@@ -301,11 +314,14 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
       Optional<TruckStop> afterHolder = matches.getAfter();
       if (afterHolder.isPresent()) {
         TruckStop after = afterHolder.get();
-        endTime = after.getStartTime().isBefore(now.plusHours(2)) ? after.getStartTime().minusMinutes(5) : now.plusHours(2);
+        endTime = after.getStartTime()
+            .isBefore(now.plusHours(2)) ? after.getStartTime()
+            .minusMinutes(5) : now.plusHours(2);
       } else {
         endTime = now.plusHours(2);
       }
-      stop = stop(matches.getTruck(), device).endTime(endTime).build();
+      stop = stop(matches.getTruck(), device).endTime(endTime)
+          .build();
     }
     long stopId = truckStopDAO.save(stop);
     if (stop.isNew()) {
@@ -331,11 +347,13 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
         if (stop.getCreatedWithDeviceId() == null) {
           aCurrentStop = stop;
         }
-        if (device.getKey().equals(stop.getCreatedWithDeviceId()) || (stop.getCreatedWithDeviceId() == null &&
-            stop.getLocation().sameName(device.getLastLocation()))) {
+        if (device.getKey()
+            .equals(stop.getCreatedWithDeviceId()) || (stop.getCreatedWithDeviceId() == null && stop.getLocation()
+            .sameName(device.getLastLocation()))) {
           currentStop = stop;
         }
-      } else if (afterStop == null && stop.getStartTime().isAfter(now)) {
+      } else if (afterStop == null && stop.getStartTime()
+          .isAfter(now)) {
         afterStop = stop;
       }
     }

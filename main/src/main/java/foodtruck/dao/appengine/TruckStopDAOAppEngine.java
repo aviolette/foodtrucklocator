@@ -56,10 +56,10 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
   private static final String START_TIMESTAMP = "startTimeStamp";
   private static final String BEACON_FIELD = "beaconTime";
   private static final String LAST_UPDATED = "last_updated";
-  private static final String MATCH_CONFIDENCE = "match_confidence";
   private static final String NOTES = "notes";
   private static final String ORIGIN = "origin";
   private static final String DEVICE_ID = "device_id";
+  private static final String MANUALLY_UPDATED = "manually_updated";
   private static final Predicate<TruckStop> VENDOR_STOP_PREDICATE = new Predicate<TruckStop>() {
     public boolean apply(TruckStop truckStop) {
       return truckStop.getOrigin() == StopOrigin.VENDORCAL;
@@ -100,6 +100,7 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
         .prop(LOCKED_FIELD, stop.isLocked())
         .prop(ORIGIN, stop.getOrigin().toString())
         .prop(NOTES, stop.getNotes())
+        .prop(MANUALLY_UPDATED, stop.getManuallyUpdated())
         .prop(BEACON_FIELD, stop.getBeaconTime())
         .prop(LAST_UPDATED, stop.getLastUpdated())
         .prop(END_TIMESTAMP, stop.getEndTime().getMillis())
@@ -111,7 +112,6 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
   @Override
   protected TruckStop fromEntity(Entity entity) {
     Boolean locked = (Boolean) entity.getProperty(LOCKED_FIELD);
-    final String confidence = getStringProperty(entity, MATCH_CONFIDENCE);
     Collection<String> notes = getListProperty(entity, NOTES);
     final String origin = getStringProperty(entity, ORIGIN);
     return TruckStop.builder()
@@ -121,6 +121,7 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
         .endTime(getDateTime(entity, END_TIME_FIELD, zone))
         .origin(Strings.isNullOrEmpty(origin) ? StopOrigin.UNKNOWN : StopOrigin.valueOf(origin))
         .lastUpdated(Attributes.getDateTime(entity, LAST_UPDATED, zone))
+        .manuallyUpdated(Attributes.getDateTime(entity, MANUALLY_UPDATED, zone))
         .fromBeacon(Attributes.getDateTime(entity, BEACON_FIELD, zone))
         .createdWithDeviceId((Long)entity.getProperty(DEVICE_ID))
         .location(Location.builder()

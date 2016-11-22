@@ -86,6 +86,7 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
   public void update(TruckStop truckStop, String modifier) {
     if (truckStop.isNew()) {
       truckStop = TruckStop.builder(truckStop)
+          .manuallyUpdated(clock.now())
           .notes(ImmutableList.of("Entered manually by " + modifier + " at " + clock.nowFormattedAsTime()))
           .build();
     } else {
@@ -95,6 +96,7 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
           .origin(stop.getOrigin())
           .fromBeacon(stop.getBeaconTime())
           .createdWithDeviceId(stop.getCreatedWithDeviceId())
+          .manuallyUpdated(clock.now())
           .appendNote("Changed manually by " + modifier + " at " + clock.nowFormattedAsTime())
           .build();
     }
