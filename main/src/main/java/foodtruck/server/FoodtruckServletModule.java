@@ -51,6 +51,7 @@ import foodtruck.server.job.TwitterCachePurgeServlet;
 import foodtruck.server.job.UpdateLocationStats;
 import foodtruck.server.job.UpdateTruckStats;
 import foodtruck.server.resources.DailySpecialResourceFactory;
+import foodtruck.server.vendor.DeviceInfoServlet;
 import foodtruck.server.vendor.LocationEditVendorServlet;
 import foodtruck.server.vendor.LocationStopDeleteServlet;
 import foodtruck.server.vendor.LocationVendorServlet;
@@ -138,6 +139,7 @@ class FoodtruckServletModule extends ServletModule {
     serve("/vendor/socialmedia/*").with(VendorSocialMediaSettingsServlet.class);
     serve("/vendor/schedule").with(PostScheduleServlet.class);
     serve("/vendor/info").with(VendorInfoServlet.class);
+    serve("/vendor/info/device").with(DeviceInfoServlet.class);
 
     // Alexa integration
     serve("/amazonalexa").with(AlexaServlet.class);

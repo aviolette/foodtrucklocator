@@ -22,7 +22,7 @@
 
 <div class="row">
   <div class="col-lg-12">
-    <h1>How to Publish Your Location on this Site</h1>
+    <h1>How to Publish Your Location on the Food Truck Finder</h1>
   </div>
 </div>
 
@@ -33,8 +33,8 @@
       plug
       this device in, and do some minor instrumentation on my website, your truck will automatically show on my website
       and
-      send out alerts to your customers via social media. Contact me at 847-863-4992 if you'd like more information on
-      this.</p>
+      send out alerts to your customers via social media.</p>
+    <p><a href="/vendor/info/device" class="btn btn-primary">Read More &raquo;</a></p>
   </div>
   <div class="col-lg-3">
     <h2>Published Calendar</h2>
@@ -56,4 +56,5 @@
   </div>
 </div>
 
+<%@ include file="../include/core_js.jsp" %>
 <%@ include file="../footer.jsp" %>
