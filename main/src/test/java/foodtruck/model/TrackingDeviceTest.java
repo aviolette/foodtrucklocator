@@ -50,6 +50,8 @@ public class TrackingDeviceTest {
         .addEqualityGroup(builder.truckOwnerId("foo")
             .build(), builder.truckOwnerId("foo")
             .build())
+        .addEqualityGroup(builder.lastActualLocation(location).build(),
+            builder.lastActualLocation(location).build())
         .testEquals();
   }
 }

@@ -352,6 +352,7 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
       builder.deviceNumber(position.getDeviceNumber())
           .lastLocation(locator.reverseLookup(location))
           .parked(parked)
+          .lastActualLocation(position.toLocation())
           .degreesFromNorth(position.getDirection())
           .fuelLevel(position.getFuelLevel())
           .batteryCharge(position.getBatteryCharge())

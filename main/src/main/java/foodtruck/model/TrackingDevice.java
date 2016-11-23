@@ -174,7 +174,7 @@ public class TrackingDevice extends ModelEntity {
   @Override
   public int hashCode() {
     return Objects.hash(key, label, deviceNumber, enabled, truckOwnerId, lastBroadcast, lastModified, lastLocation,
-        parked, fuelLevel, batteryCharge, atBlacklistedLocation);
+        parked, fuelLevel, batteryCharge, atBlacklistedLocation, lastActualLocation);
   }
 
   @Override
@@ -188,6 +188,7 @@ public class TrackingDevice extends ModelEntity {
     return label.equals(td.label) && deviceNumber.equals(td.deviceNumber) && enabled == td.enabled && Objects.equals(
         truckOwnerId, td.truckOwnerId) &&
         Objects.equals(key, td.key) &&
+        Objects.equals(lastActualLocation, td.lastActualLocation) &&
         Objects.equals(lastBroadcast, td.lastBroadcast) && Objects.equals(lastModified,
         td.lastModified) && Objects.equals(lastLocation, td.lastLocation) &&
         parked == td.parked && atBlacklistedLocation == td.atBlacklistedLocation && Objects.equals(fuelLevel,
@@ -198,9 +199,8 @@ public class TrackingDevice extends ModelEntity {
     return degreesFromNorth;
   }
 
-  public
   @Nullable
-  Location getPreciseLocation() {
+  public Location getPreciseLocation() {
     return MoreObjects.firstNonNull(getLastActualLocation(), getLastLocation());
   }
 
@@ -218,7 +218,7 @@ public class TrackingDevice extends ModelEntity {
     private @Nullable String fuelLevel;
     private @Nullable String batteryCharge;
     private int degreesFromNorth;
-    private Location lastActualLocation;
+    private @Nullable Location lastActualLocation;
 
     public Builder() {
     }

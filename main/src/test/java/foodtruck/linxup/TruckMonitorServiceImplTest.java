@@ -98,6 +98,7 @@ public class TruckMonitorServiceImplTest {
     TrackingDevice trackingDevice = TrackingDevice.builder()
         .deviceNumber(position.getDeviceNumber())
         .lastLocation(location)
+        .lastActualLocation(position.toLocation())
         .parked(false)
         .degreesFromNorth(position.getDirection())
         .fuelLevel(position.getFuelLevel())
