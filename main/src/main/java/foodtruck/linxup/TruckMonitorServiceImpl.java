@@ -380,6 +380,8 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
     if (preciseLocation == null || location.withinToleranceOf(preciseLocation)) {
       return location;
     }
+    log.log(Level.INFO, "Sanity check: {0} {1} {2}",
+        new Object[]{position.isParked(), device.isParked(), location.distanceFrom(device.getLastLocation())});
     // the case where there was no intermediate movement, means there may be an anomaly
     if (position.isParked() && device.isParked() && !location.withinToleranceOf(
         device.getLastLocation()) && location.within(0.20)
