@@ -90,7 +90,13 @@ class CacheAndForwardLocator implements GeoLocator {
       loc = secondaryLocator.reverseLookup(location);
       if (loc != null) {
         loc = Location.builder(loc).valid(true).build();
-        return dao.saveAndFetch(loc).wasJustResolved();
+        Location existing = dao.findByAddress(loc.getName());
+        if (existing == null) {
+          return dao.saveAndFetch(loc)
+              .wasJustResolved();
+        } else {
+          return loc;
+        }
       }
     } catch (UnsupportedOperationException ignored) {
     }
