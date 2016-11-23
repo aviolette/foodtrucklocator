@@ -22,11 +22,15 @@ public class LinxupModule extends PrivateModule {
     expose(LinxupConnector.class);
     bind(TruckMonitorService.class).to(TruckMonitorServiceImpl.class);
     expose(TruckMonitorService.class);
+    bind(TruckStopCache.class).to(TruckStopLoadingCache.class);
+    expose(TruckStopCache.class);
+    bind(BlacklistedLocationMatcher.class).to(BlacklistedLocationMatcherImpl.class);
+    expose(BlacklistedLocationMatcher.class);
   }
 
-  @Provides @Exposed
-  public LinxupMapRequest provideMapRequest(@Named(USERNAME) String userName,
-      @Named(PASSWORD) String password) {
+  @Provides
+  @Exposed
+  public LinxupMapRequest provideMapRequest(@Named(USERNAME) String userName, @Named(PASSWORD) String password) {
     return new LinxupMapRequest(userName, password);
   }
 
@@ -45,18 +49,22 @@ public class LinxupModule extends PrivateModule {
   }
 
 
-  @LinxupEndpoint @Provides @Exposed
+  @LinxupEndpoint
+  @Provides
+  @Exposed
   public WebResource provideEndpoint(Client client) {
     return client.resource("https://www.linxup.com/ibis/rest/linxupmobile/map");
   }
 
-  @Provides @Named(USERNAME)
+  @Provides
+  @Named(USERNAME)
   public String providesUsername() {
     return System.getProperty("foodtrucklocator.linxup.username");
   }
 
-  @Provides @Named(PASSWORD)
+  @Provides
+  @Named(PASSWORD)
   public String providesPassword() {
-    return  System.getProperty("foodtrucklocator.linxup.password");
+    return System.getProperty("foodtrucklocator.linxup.password");
   }
 }

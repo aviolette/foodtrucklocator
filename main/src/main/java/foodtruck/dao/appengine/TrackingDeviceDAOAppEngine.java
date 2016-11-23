@@ -92,8 +92,8 @@ class TrackingDeviceDAOAppEngine extends AppEngineDAO<Long, TrackingDevice> impl
     }
     if (actualLat != 0 && actualLng != 0) {
       builder.lastActualLocation(Location.builder()
-          .lat(lat)
-          .lng(lng)
+          .lat(actualLat)
+          .lng(actualLng)
           .build());
     }
     return builder.parked(fe.booleanVal(PARKED))

@@ -7,6 +7,8 @@ import com.javadocmd.simplelatlng.LatLng;
 
 import org.joda.time.DateTime;
 
+import foodtruck.model.Location;
+
 /**
  * @author aviolette
  * @since 7/24/16
@@ -78,12 +80,20 @@ public class Position {
     return estimatedSpeedLimit;
   }
 
-  public @Nullable BehaviorCode getBehaviorCode() {
+  @Nullable
+  public BehaviorCode getBehaviorCode() {
     return behaviorCode;
   }
 
   public boolean isParked() {
     return speedMph == 0;
+  }
+
+  public Location toLocation() {
+    return Location.builder()
+        .lat(getLatLng().getLatitude())
+        .lng(getLatLng().getLongitude())
+        .build();
   }
 
   @Override
@@ -129,7 +139,8 @@ public class Position {
     private String fuelLevel;
     private String batteryCharge;
 
-    public Builder() {}
+    public Builder() {
+    }
 
     public Builder(Position position) {
       this.date = position.date;

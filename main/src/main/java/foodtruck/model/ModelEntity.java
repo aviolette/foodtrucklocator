@@ -1,12 +1,14 @@
 package foodtruck.model;
 
+import javax.annotation.Nullable;
+
 /**
  * Provides an object's key to be used in a DB.
  * @author aviolette@gmail.com
  * @since 10/16/11
  */
 public abstract class ModelEntity {
-  protected Object key;
+  protected @Nullable Object key;
 
   // for serialization
   public ModelEntity() {

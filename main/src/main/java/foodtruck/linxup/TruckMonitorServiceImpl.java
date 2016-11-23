@@ -3,7 +3,6 @@ package foodtruck.linxup;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,12 +14,7 @@ import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Optional;
-import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
@@ -32,7 +26,6 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.LinxupAccountDAO;
-import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TrackingDeviceDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
@@ -55,7 +48,6 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
   private static final Logger log = Logger.getLogger(TruckMonitorServiceImpl.class.getName());
   private final LinxupConnector connector;
   private final TrackingDeviceDAO trackingDeviceDAO;
-  private final LocationDAO locationDAO;
   private final TruckDAO truckDAO;
   private final GeoLocator locator;
   private final TruckStopDAO truckStopDAO;
@@ -64,12 +56,15 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
   private final SecurityChecker securityChecker;
   private final LinxupAccountDAO linxupAccountDAO;
   private final Provider<Queue> queueProvider;
+  private final Provider<TruckStopCache> truckStopCacheProvider;
+  private final BlacklistedLocationMatcher blacklistedLocationMatcher;
 
   @Inject
   public TruckMonitorServiceImpl(TruckStopDAO truckStopDAO, LinxupConnector connector,
       TrackingDeviceDAO trackingDeviceDAO, GeoLocator locator, Clock clock, TruckDAO truckDAO,
-      @FriendlyDateTimeFormat DateTimeFormatter formatter, LocationDAO locationDAO, SecurityChecker securityChecker,
-      LinxupAccountDAO linxupAccountDAO, Provider<Queue> queueProvider) {
+      @FriendlyDateTimeFormat DateTimeFormatter formatter, SecurityChecker securityChecker,
+      LinxupAccountDAO linxupAccountDAO, Provider<Queue> queueProvider, Provider<TruckStopCache> truckStopCacheProvider,
+      BlacklistedLocationMatcher blacklistedLocationMatcher) {
     this.connector = connector;
     this.truckStopDAO = truckStopDAO;
     this.trackingDeviceDAO = trackingDeviceDAO;
@@ -77,10 +72,11 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
     this.clock = clock;
     this.truckDAO = truckDAO;
     this.formatter = formatter;
-    this.locationDAO = locationDAO;
     this.securityChecker = securityChecker;
     this.linxupAccountDAO = linxupAccountDAO;
     this.queueProvider = queueProvider;
+    this.truckStopCacheProvider = truckStopCacheProvider;
+    this.blacklistedLocationMatcher = blacklistedLocationMatcher;
   }
 
   @Override
@@ -93,11 +89,7 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
   @Override
   public void synchronizeFor(LinxupAccount account) {
     List<Position> positionList = connector.findPositions(account);
-    try {
-      merge(synchronize(positionList, account.getTruckId(), account));
-    } catch (ExecutionException e) {
-      throw Throwables.propagate(e);
-    }
+    merge(synchronize(positionList, account));
   }
 
 
@@ -206,18 +198,11 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
 
   /**
    * Takes the device data the was retrieved and create/update/deletes an existing stops based on the data.
-   *
    * @param devices the list of devices retrieved
    */
 
-  private void merge(List<TrackingDevice> devices) throws ExecutionException {
-    LoadingCache<String, List<TruckStop>> stopCache = CacheBuilder.newBuilder()
-        .build(new CacheLoader<String, List<TruckStop>>() {
-          @SuppressWarnings("NullableProblems")
-          public List<TruckStop> load(String truckId) throws Exception {
-            return truckStopDAO.findDuring(truckId, clock.currentDay());
-          }
-        });
+  private void merge(List<TrackingDevice> devices) {
+    TruckStopCache stopCache = truckStopCacheProvider.get();
     for (TrackingDevice device : devices) {
       if (!device.isEnabled() || !device.isParked() || device.isAtBlacklistedLocation() ||
           device.getLastLocation() == null) {
@@ -228,24 +213,6 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
       }
       mergeTruck(device, stopCache);
     }
-  }
-
-  private boolean atBlacklistedLocation(@Nullable String ownerId, @Nullable Location lastLocation,
-      LoadingCache<String, List<Location>> blacklistCache) throws ExecutionException {
-    if (Strings.isNullOrEmpty(ownerId)) {
-      return false;
-    }
-    List<Location> locations = blacklistCache.get(ownerId);
-    if (locations == null || lastLocation == null) {
-      return false;
-    }
-    for (Location location : locations) {
-      if (location.within(location.getRadius())
-          .milesOf(lastLocation)) {
-        return true;
-      }
-    }
-    return false;
   }
 
   private void cancelAnyStops(TrackingDevice device, List<TruckStop> activeStops) {
@@ -277,8 +244,7 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
         .truck(truck);
   }
 
-  private void mergeTruck(TrackingDevice device,
-      LoadingCache<String, List<TruckStop>> stopCache) throws ExecutionException {
+  private void mergeTruck(TrackingDevice device, TruckStopCache stopCache) {
     Matches matches = matchTruck(stopCache, device);
     DateTime now = clock.now();
     TruckStop stop;
@@ -332,12 +298,10 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
     }
   }
 
-  private Matches matchTruck(LoadingCache<String, List<TruckStop>> stopCache,
-      TrackingDevice device) throws ExecutionException {
+  private Matches matchTruck(TruckStopCache stopCache, TrackingDevice device) {
     List<TruckStop> truckStops;
     //noinspection ConstantConditions
     truckStops = stopCache.get(device.getTruckOwnerId());
-
     Truck truck = null;
     TruckStop currentStop = null, aCurrentStop = null, afterStop = null;
     DateTime now = clock.now();
@@ -365,8 +329,7 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
    * Synchronize what is returned with existing tracking devices in the DB.  If there is new information, update it in
    * DB.
    */
-  private List<TrackingDevice> synchronize(List<Position> positions, String truckId,
-      LinxupAccount linxupAccount) throws ExecutionException {
+  private List<TrackingDevice> synchronize(List<Position> positions, LinxupAccount linxupAccount) {
     // wish I had streams here
     Map<String, TrackingDevice> deviceMap = Maps.newHashMap();
     for (TrackingDevice device : trackingDeviceDAO.findAll()) {
@@ -374,21 +337,6 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
     }
     ImmutableList.Builder<TrackingDevice> devices = ImmutableList.builder();
     //noinspection NullableProblems
-    LoadingCache<String, List<Location>> blacklistCache = CacheBuilder.newBuilder()
-        .build(new CacheLoader<String, List<Location>>() {
-          public List<Location> load(String key) throws Exception {
-            Truck truck = truckDAO.findById(key);
-            //noinspection ConstantConditions,ConstantConditions
-            return FluentIterable.from(truck.getBlacklistLocationNames())
-                .transform(new Function<String, Location>() {
-                  public Location apply(String name) {
-                    return locationDAO.findByAddress(name);
-                  }
-                })
-                .filter(Predicates.<Location>notNull())
-                .toList();
-          }
-        });
     for (Position position : positions) {
       TrackingDevice device = deviceMap.get(position.getDeviceNumber());
       TrackingDevice.Builder builder = TrackingDevice.builder(device);
@@ -400,10 +348,6 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
           .equals(location.getName()) || device.getLastLocation()
           .within(0.05)
           .milesOf(location));
-      boolean atBlacklisted = false;
-      if (device != null) {
-        atBlacklisted = atBlacklistedLocation(device.getTruckOwnerId(), device.getLastLocation(), blacklistCache);
-      }
       log.log(Level.INFO, "Device State: {0}\n {1}\n {2}\n{3}", new Object[]{position, device, location, parked});
       builder.deviceNumber(position.getDeviceNumber())
           .lastLocation(locator.reverseLookup(location))
@@ -411,8 +355,8 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
           .degreesFromNorth(position.getDirection())
           .fuelLevel(position.getFuelLevel())
           .batteryCharge(position.getBatteryCharge())
-          .truckOwnerId(truckId)
-          .atBlacklistedLocation(atBlacklisted)
+          .truckOwnerId(linxupAccount.getTruckId())
+          .atBlacklistedLocation(blacklistedLocationMatcher.isBlacklisted(device))
           .lastBroadcast(position.getDate())
           .label(position.getVehicleLabel());
       TrackingDevice theDevice = builder.build();
@@ -423,12 +367,7 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
   }
 
   private Location buildLocation(Position position, @Nullable TrackingDevice device, LinxupAccount linxupAccount) {
-    Location location = Location.builder()
-        .lat(position.getLatLng()
-            .getLatitude())
-        .lng(position.getLatLng()
-            .getLongitude())
-        .build();
+    Location location = position.toLocation();
     if (device == null) {
       return location;
     }
@@ -448,7 +387,7 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
         if (stop != null && stop.getLocation()
             .withinToleranceOf(preciseLocation)) {
           log.log(Level.SEVERE, "Anomaly detected {0} {1}", new Object[]{stop.getLocation(), preciseLocation});
-          return device.getLastActualLocation();
+          return preciseLocation;
         }
       } catch (Exception e) {
         log.log(Level.SEVERE, e.getMessage(), e);
