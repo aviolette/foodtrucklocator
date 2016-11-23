@@ -279,7 +279,11 @@ var FoodTruckLocator = function () {
   function buildTimeRange(stop, time) {
     if (stop.startMillis < time && stop.endMillis > time) {
       if (stop.fromBeacon) {
-        return "<em>Transmitting from beacon <span class='glyphicon glyphicon-flash'></span></span></em>"
+        var result = "<em>Transmitting from beacon <span class='glyphicon glyphicon-flash'></span></span></em>";
+        if (stop["me"]) {
+          result += "<br/>Est. departure time: " + stop.endTime;
+        }
+        return result;
       } else {
         return "Est. departure time: " + stop.endTime;
       }

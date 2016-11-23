@@ -88,6 +88,7 @@ public class DailyScheduleWriter implements MessageBodyWriter<DailySchedule>, JS
             .put("startTime", formatter.print(stop.getStartTime()))
             .put("startMillis", stop.getStartTime().getMillis())
             .put("endMillis", stop.getEndTime().getMillis())
+            .put("me", stop.getManuallyUpdated() != null)
             .put("endTime", formatter.print(stop.getEndTime()));
         schedules.put(truckStop);
       } catch (Exception e) {
