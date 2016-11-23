@@ -65,7 +65,7 @@ public class TruckMonitorServiceImplTest {
         .build();
     service = new TruckMonitorServiceImpl(truckStopDAO, connector, trackingDeviceDAO, locator, clock, truckDAO,
         formatter, securityChecker, linxupAccountDAO, queueProvider, Providers.of(truckStopCache),
-        blacklistLocationMatcher);
+        blacklistLocationMatcher, null);
   }
 
   // create a tracking device when none exists.  This tracking device is associated with the linxupaccount that

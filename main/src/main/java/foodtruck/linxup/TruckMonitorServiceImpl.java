@@ -9,6 +9,8 @@ import java.util.logging.Logger;
 import javax.annotation.Nullable;
 import javax.ws.rs.WebApplicationException;
 
+import com.google.appengine.api.memcache.Expiration;
+import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.common.base.Function;
@@ -58,13 +60,14 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
   private final Provider<Queue> queueProvider;
   private final Provider<TruckStopCache> truckStopCacheProvider;
   private final BlacklistedLocationMatcher blacklistedLocationMatcher;
+  private final MemcacheService memcacheService;
 
   @Inject
   public TruckMonitorServiceImpl(TruckStopDAO truckStopDAO, LinxupConnector connector,
       TrackingDeviceDAO trackingDeviceDAO, GeoLocator locator, Clock clock, TruckDAO truckDAO,
       @FriendlyDateTimeFormat DateTimeFormatter formatter, SecurityChecker securityChecker,
       LinxupAccountDAO linxupAccountDAO, Provider<Queue> queueProvider, Provider<TruckStopCache> truckStopCacheProvider,
-      BlacklistedLocationMatcher blacklistedLocationMatcher) {
+      BlacklistedLocationMatcher blacklistedLocationMatcher, MemcacheService memcacheService) {
     this.connector = connector;
     this.truckStopDAO = truckStopDAO;
     this.trackingDeviceDAO = trackingDeviceDAO;
@@ -77,6 +80,7 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
     this.queueProvider = queueProvider;
     this.truckStopCacheProvider = truckStopCacheProvider;
     this.blacklistedLocationMatcher = blacklistedLocationMatcher;
+    this.memcacheService = memcacheService;
   }
 
   @Override
@@ -381,20 +385,37 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
         device.getLastLocation()) && location.within(0.20)
         .milesOf(device.getLastLocation())) {
       log.log(Level.INFO, "Checking for anomaly {0}\n\n {1}", new Object[]{location, device});
-      try {
-        LinxupMapHistoryResponse response = connector.tripList(linxupAccount, clock.timeAt(0, 0), clock.timeAt(23, 59),
-            device.getDeviceNumber());
-        Stop stop = response.lastStopFor(device.getDeviceNumber());
-        if (stop != null && stop.getLocation()
-            .withinToleranceOf(preciseLocation)) {
-          log.log(Level.SEVERE, "Anomaly detected {0} {1}", new Object[]{stop.getLocation(), preciseLocation});
-          return preciseLocation;
-        }
-      } catch (Exception e) {
-        log.log(Level.SEVERE, e.getMessage(), e);
+      if (detectAnomaly(device, linxupAccount, preciseLocation)) {
+        return preciseLocation;
       }
     }
     return location;
+  }
+
+  private boolean detectAnomaly(TrackingDevice device, LinxupAccount linxupAccount, Location preciseLocation) {
+    String key = "anomaly-detected-for-" + device.getDeviceNumber();
+    if (memcacheService.contains(key)) {
+      log.log(Level.INFO, "Anomaly detected for device {0} but pulled from memcache {1}", new Object[]{device, key});
+      return true;
+    }
+
+    try {
+      LinxupMapHistoryResponse response = connector.tripList(linxupAccount, clock.timeAt(0, 0), clock.timeAt(23, 59),
+          device.getDeviceNumber());
+      Stop stop = response.lastStopFor(device.getDeviceNumber());
+      if (stop != null && stop.getLocation()
+          .withinToleranceOf(preciseLocation)) {
+        log.log(Level.SEVERE, "Anomaly detected {0} {1}", new Object[]{stop.getLocation(), preciseLocation});
+        // only perform anomaly detection once per-broadcast (the device usually broadcasts every hour when parked)
+        memcacheService.put(key, true, Expiration.onDate(device.getLastBroadcast()
+            .plusMinutes(59)
+            .toDate()));
+        return true;
+      }
+    } catch (Exception e) {
+      log.log(Level.SEVERE, e.getMessage(), e);
+    }
+    return false;
   }
 
   private static class Matches {
