@@ -14,6 +14,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import com.google.inject.Provider;
 
 import foodtruck.dao.DAO;
 import foodtruck.model.ModelEntity;
@@ -23,10 +24,10 @@ import foodtruck.model.ModelEntity;
  * @since 4/12/12
  */
 public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T> {
-  protected final DatastoreServiceProvider provider;
+  protected final Provider<DatastoreService> provider;
   private final String kind;
 
-  public AppEngineDAO(String kind, DatastoreServiceProvider provider) {
+  public AppEngineDAO(String kind, Provider<DatastoreService> provider) {
     this.kind = kind;
     this.provider = provider;
   }
@@ -41,7 +42,8 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
   List<T> executeQuery(Query q, @Nullable Predicate<Entity> predicate) {
     DatastoreService dataStore = provider.get();
     ImmutableList.Builder<T> objs = ImmutableList.builder();
-    for (Entity entity : dataStore.prepare(q).asIterable()) {
+    for (Entity entity : dataStore.prepare(q)
+        .asIterable()) {
       if (predicate != null && !predicate.apply(entity)) {
         continue;
       }
@@ -62,7 +64,8 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
 
   void deleteFromQuery(DatastoreService dataStore, Query q) {
     ImmutableList.Builder<Key> keys = ImmutableList.builder();
-    for (Entity entity : dataStore.prepare(q).asIterable()) {
+    for (Entity entity : dataStore.prepare(q)
+        .asIterable()) {
       keys.add(entity.getKey());
     }
     dataStore.delete(keys.build());
@@ -80,7 +83,8 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
     DatastoreService dataStore = provider.get();
     FetchOptions options = FetchOptions.Builder.withDefaults();
     // TODO: this won't work properly, but works for my existing use case.
-    return dataStore.prepare(new Query(getKind())).countEntities(options);
+    return dataStore.prepare(new Query(getKind()))
+        .countEntities(options);
   }
 
   protected long save(T obj, DatastoreService dataStore) {
@@ -166,7 +170,8 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
     DatastoreService dataStore = provider.get();
     Query q = new Query(getKind());
     q.setFilter(filter);
-    Entity entity = dataStore.prepare(q).asSingleEntity();
+    Entity entity = dataStore.prepare(q)
+        .asSingleEntity();
     return (entity == null) ? null : fromEntity(entity);
   }
 
@@ -209,13 +214,17 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
 
     @Nullable
     T findOne() {
-      Entity entity = provider.get().prepare(query).asSingleEntity();
+      Entity entity = provider.get()
+          .prepare(query)
+          .asSingleEntity();
       return (entity == null) ? null : fromEntity(entity);
     }
 
     @Nullable
     T findFirst() {
-      Entity entity = Iterables.getFirst(provider.get().prepare(query).asIterable(FetchOptions.Builder.withLimit(1)), null);
+      Entity entity = Iterables.getFirst(provider.get()
+          .prepare(query)
+          .asIterable(FetchOptions.Builder.withLimit(1)), null);
       return (entity == null) ? null : fromEntity(entity);
     }
 

@@ -9,11 +9,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.users.UserService;
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import foodtruck.dao.LocationDAO;
@@ -33,9 +35,9 @@ public class TruckBusinessesServlet extends FrontPageServlet {
   private final TruckDAO truckDAO;
 
   @Inject
-  public TruckBusinessesServlet(StaticConfig staticConfig, LocationDAO locationDAO,
-      TruckDAO truckDAO) {
-    super(staticConfig);
+  public TruckBusinessesServlet(StaticConfig staticConfig, LocationDAO locationDAO, TruckDAO truckDAO,
+      Provider<UserService> userServiceProvider) {
+    super(staticConfig, userServiceProvider);
     this.locationDAO = locationDAO;
     this.truckDAO = truckDAO;
   }
@@ -61,11 +63,15 @@ public class TruckBusinessesServlet extends FrontPageServlet {
         .filter(Predicates.notNull())
         .toSortedList(new Comparator<LocationWithTruck>() {
           public int compare(LocationWithTruck o1, LocationWithTruck o2) {
-            return o1.getLocation().getName().compareTo(o2.getLocation().getName());
+            return o1.getLocation()
+                .getName()
+                .compareTo(o2.getLocation()
+                    .getName());
           }
         }));
     req.setAttribute("tab", "location");
-    req.getRequestDispatcher("/WEB-INF/jsp/businesses.jsp").forward(req, resp);
+    req.getRequestDispatcher("/WEB-INF/jsp/businesses.jsp")
+        .forward(req, resp);
   }
 
   // public access needed for access on JSP
@@ -78,7 +84,8 @@ public class TruckBusinessesServlet extends FrontPageServlet {
       this.truck = truck;
       this.location = Location.builder(location)
           .description(sanitize(location.getDescription()))
-          .url(Strings.nullToEmpty(location.getUrl())).build();
+          .url(Strings.nullToEmpty(location.getUrl()))
+          .build();
     }
 
     private String sanitize(String description) {

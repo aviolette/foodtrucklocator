@@ -6,7 +6,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.users.UserService;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import foodtruck.model.StaticConfig;
@@ -20,8 +22,8 @@ import foodtruck.server.FrontPageServlet;
 public class DeviceInfoServlet extends FrontPageServlet {
 
   @Inject
-  public DeviceInfoServlet(StaticConfig staticConfig) {
-    super(staticConfig);
+  public DeviceInfoServlet(StaticConfig staticConfig, Provider<UserService> userServiceProvider) {
+    super(staticConfig, userServiceProvider);
   }
 
   @Override

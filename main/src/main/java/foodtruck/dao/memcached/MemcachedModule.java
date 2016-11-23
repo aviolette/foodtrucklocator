@@ -9,6 +9,7 @@ import foodtruck.dao.TruckDAO;
  * @since 3/16/15
  */
 public class MemcachedModule extends AbstractModule {
+
   @Override
   protected void configure() {
     bind(TruckDAO.class).to(TruckDAOMemcache.class);

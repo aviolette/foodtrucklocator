@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import org.joda.time.DateTimeZone;
 
@@ -101,7 +102,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
   private DateTimeZone zone;
 
   @Inject
-  public TruckDAOAppEngine(DatastoreServiceProvider provider, DateTimeZone zone) {
+  public TruckDAOAppEngine(Provider<DatastoreService> provider, DateTimeZone zone) {
     super(TRUCK_KIND, provider);
     this.zone = zone;
   }
@@ -139,7 +140,8 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     }
 
     //noinspection unchecked
-    return builder.id(entity.getKey().getName())
+    return builder.id(entity.getKey()
+        .getName())
         .stats(stats)
         .fullsizeImage(getStringProperty(entity, TRUCK_FULL_SIZE))
         .displayEmailPublicly(getBooleanProperty(entity, TRUCK_DISPLAY_EMAIL, true))
@@ -199,7 +201,8 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     Query q = new Query(TRUCK_KIND);
     q.setFilter(new Query.FilterPredicate(TRUCK_TWITTER_HANDLE, EQUAL, screenName));
     ImmutableSet.Builder<Truck> trucks = ImmutableSet.builder();
-    for (Entity entity : dataStore.prepare(q).asIterable()) {
+    for (Entity entity : dataStore.prepare(q)
+        .asIterable()) {
       Truck truck = fromEntity(entity);
       trucks.add(truck);
     }
@@ -220,13 +223,13 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
 
   public List<Truck> findVisibleTrucks() {
     return executeQuery(new Query(TRUCK_KIND).setFilter(new Query.FilterPredicate(TRUCK_HIDDEN, EQUAL, false))
-            .addSort(TRUCK_CANONICAL_NAME), null);
+        .addSort(TRUCK_CANONICAL_NAME), null);
   }
 
   @Override
   public List<Truck> findFacebookTrucks() {
     return executeQuery(new Query(TRUCK_KIND).setFilter(new Query.FilterPredicate(SCAN_FACEBOOK, EQUAL, true))
-            .addSort(TRUCK_CANONICAL_NAME), null);
+        .addSort(TRUCK_CANONICAL_NAME), null);
   }
 
   @Nullable
@@ -239,7 +242,8 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
   public List<Truck> findByCategory(String tag) {
     ImmutableList.Builder<Truck> trucks = ImmutableList.builder();
     for (Truck truck : findVisibleTrucks()) {
-      if (truck.getCategories().contains(tag)) {
+      if (truck.getCategories()
+          .contains(tag)) {
         trucks.add(truck);
       }
     }
@@ -252,7 +256,8 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     Query q = new Query(TRUCK_KIND);
     q.setFilter(new Query.FilterPredicate(TRUCK_BEACONNAISE_EMAILS, Query.FilterOperator.IN, ImmutableSet.of(email)));
     ImmutableSet.Builder<Truck> trucks = ImmutableSet.builder();
-    for (Entity entity : dataStore.prepare(q).asIterable()) {
+    for (Entity entity : dataStore.prepare(q)
+        .asIterable()) {
       Truck truck = fromEntity(entity);
       trucks.add(truck);
     }
@@ -273,7 +278,8 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     DatastoreService dataStore = provider.get();
     Query q = new Query(getKind());
     ImmutableList.Builder<Key> keys = ImmutableList.builder();
-    for (Entity entity : dataStore.prepare(q).asIterable()) {
+    for (Entity entity : dataStore.prepare(q)
+        .asIterable()) {
       keys.add(entity.getKey());
     }
     dataStore.delete(keys.build());
@@ -303,7 +309,8 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     Query q = new Query(TRUCK_KIND);
     q.setFilter(new Query.FilterPredicate(TRUCK_CALENDAR_URL, Query.FilterOperator.NOT_EQUAL, null));
     ImmutableSet.Builder<Truck> trucks = ImmutableSet.builder();
-    for (Entity entity : dataStore.prepare(q).asIterable()) {
+    for (Entity entity : dataStore.prepare(q)
+        .asIterable()) {
       Truck truck = fromEntity(entity);
       trucks.add(truck);
     }
@@ -359,7 +366,8 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     entity.setProperty(NEVER_LINK_TWITTER, truck.isNeverLinkTwitter());
     Truck.Stats stats = truck.getStats();
     if (stats == null) {
-      stats = Truck.Stats.builder().build();
+      stats = Truck.Stats.builder()
+          .build();
     }
     setDateProperty(TRUCK_STATS_LAST_SEEN_WHEN, entity, stats.getLastSeen());
     setDateProperty(TRUCK_STATS_FIRST_SEEN_WHEN, entity, stats.getFirstSeen());
@@ -374,7 +382,8 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
       entity.setProperty(TRUCK_STATS_FIRST_SEEN_WHERE_LAT, whereFirstSeen.getLatitude());
       entity.setProperty(TRUCK_STATS_FIRST_SEEN_WHERE_LNG, whereFirstSeen.getLongitude());
     }
-    entity.setProperty(TRUCK_STATS_LAST_UPDATED, stats.getLastUpdated().toDate());
+    entity.setProperty(TRUCK_STATS_LAST_UPDATED, stats.getLastUpdated()
+        .toDate());
     entity.setProperty(TRUCK_STATS_TOTAL_STOPS, stats.getTotalStops());
     entity.setProperty(TRUCK_STATS_STOPS_THIS_YEAR, stats.getStopsThisYear());
     return entity;

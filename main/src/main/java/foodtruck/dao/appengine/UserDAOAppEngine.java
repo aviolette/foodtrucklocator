@@ -2,9 +2,11 @@ package foodtruck.dao.appengine;
 
 import javax.annotation.Nullable;
 
+import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import foodtruck.dao.UserDAO;
 import foodtruck.model.User;
@@ -25,7 +27,7 @@ public class UserDAOAppEngine extends AppEngineDAO<Long, User> implements UserDA
   private static final String CREATED = "created";
 
   @Inject
-  public UserDAOAppEngine(DatastoreServiceProvider provider) {
+  public UserDAOAppEngine(Provider<DatastoreService> provider) {
     super("user", provider);
   }
 

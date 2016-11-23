@@ -1,7 +1,9 @@
 package foodtruck.dao.appengine;
 
+import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import foodtruck.dao.NotificationDeviceProfileDAO;
 import foodtruck.model.NotificationDeviceProfile;
@@ -18,7 +20,7 @@ class NotificationDeviceProfileDAOAppEngine extends AppEngineDAO<String, Notific
   private static final String TRUCK_IDS = "truck_ids";
 
   @Inject
-  public NotificationDeviceProfileDAOAppEngine(DatastoreServiceProvider provider) {
+  public NotificationDeviceProfileDAOAppEngine(Provider<DatastoreService> provider) {
     super(KIND, provider);
   }
 
@@ -32,7 +34,8 @@ class NotificationDeviceProfileDAOAppEngine extends AppEngineDAO<String, Notific
   @Override
   protected NotificationDeviceProfile fromEntity(Entity entity) {
     return NotificationDeviceProfile.builder()
-        .deviceToken(entity.getKey().getName())
+        .deviceToken(entity.getKey()
+            .getName())
         .locationNames(getListProperty(entity, LOCATION_NAMES))
         .truckIds(getListProperty(entity, TRUCK_IDS))
         .build();

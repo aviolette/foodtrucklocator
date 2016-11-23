@@ -3,10 +3,12 @@ package foodtruck.dao.appengine;
 import java.util.List;
 import java.util.Map;
 
+import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import org.joda.time.DateTimeZone;
 
@@ -30,7 +32,7 @@ class AlexaExchangeDAOAppEngine extends AppEngineDAO<Long, AlexaExchange> implem
   private final DateTimeZone zone;
 
   @Inject
-  public AlexaExchangeDAOAppEngine(DatastoreServiceProvider provider, DateTimeZone zone) {
+  public AlexaExchangeDAOAppEngine(Provider<DatastoreService> provider, DateTimeZone zone) {
     super("alexa_exchange", provider);
     this.zone = zone;
   }

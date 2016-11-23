@@ -18,6 +18,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import foodtruck.dao.LocationDAO;
 import foodtruck.model.Location;
@@ -70,7 +71,7 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
   private final Clock clock;
 
   @Inject
-  public LocationDAOAppEngine(DatastoreServiceProvider provider, Clock clock) {
+  public LocationDAOAppEngine(Provider<DatastoreService> provider, Clock clock) {
     super(LOCATION_KIND, provider);
     this.clock = clock;
   }

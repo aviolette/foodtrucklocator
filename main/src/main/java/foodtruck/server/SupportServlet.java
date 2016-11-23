@@ -6,7 +6,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.users.UserService;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import foodtruck.model.StaticConfig;
@@ -19,13 +21,14 @@ import foodtruck.model.StaticConfig;
 public class SupportServlet extends FrontPageServlet {
 
   @Inject
-  public SupportServlet(StaticConfig staticConfig) {
-    super(staticConfig);
+  public SupportServlet(StaticConfig staticConfig, Provider<UserService> userServiceProvider) {
+    super(staticConfig, userServiceProvider);
   }
 
   @Override
   protected void doGetProtected(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     req.setAttribute("title", "iPhone App Support");
-    req.getRequestDispatcher("/WEB-INF/jsp/support/index.jsp").forward(req, resp);
+    req.getRequestDispatcher("/WEB-INF/jsp/support/index.jsp")
+        .forward(req, resp);
   }
 }

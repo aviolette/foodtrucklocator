@@ -5,9 +5,11 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -35,35 +37,36 @@ class DailyDataDAOAppEngine extends AppEngineDAO<Long, DailyData> implements Dai
   private final DateTimeZone defaultZone;
 
   @Inject
-  public DailyDataDAOAppEngine(DatastoreServiceProvider provider, DateTimeZone zone) {
+  public DailyDataDAOAppEngine(Provider<DatastoreService> provider, DateTimeZone zone) {
     super(SPECIALS_KIND, provider);
     this.defaultZone = zone;
   }
 
   @Override
-  public @Nullable DailyData findByLocationAndDay(String locationId, LocalDate date) {
-    return aq()
-        .filter(and(
-            predicate(SPECIALS_LOCATION_ID, EQUAL, locationId),
-            predicate(SPECIALS_DATE, EQUAL, date.toDateTimeAtStartOfDay(defaultZone).toDate())))
+  public
+  @Nullable
+  DailyData findByLocationAndDay(String locationId, LocalDate date) {
+    return aq().filter(and(predicate(SPECIALS_LOCATION_ID, EQUAL, locationId), predicate(SPECIALS_DATE, EQUAL,
+        date.toDateTimeAtStartOfDay(defaultZone)
+            .toDate())))
         .findOne();
   }
 
   @Override
-  public @Nullable DailyData findByTruckAndDay(String truckId, LocalDate date) {
-    return aq()
-        .filter(and(
-            predicate(SPECIALS_TRUCK_ID, EQUAL, truckId),
-            predicate(SPECIALS_DATE, EQUAL, date.toDateTimeAtStartOfDay(defaultZone).toDate())))
+  public
+  @Nullable
+  DailyData findByTruckAndDay(String truckId, LocalDate date) {
+    return aq().filter(and(predicate(SPECIALS_TRUCK_ID, EQUAL, truckId), predicate(SPECIALS_DATE, EQUAL,
+        date.toDateTimeAtStartOfDay(defaultZone)
+            .toDate())))
         .findOne();
   }
 
   @Override
   public List<DailyData> findTruckSpecialsByDay(LocalDate day) {
-    return aq()
-        .filter(and(
-            predicate(SPECIALS_TRUCK_ID, NOT_EQUAL, null),
-            predicate(SPECIALS_DATE, EQUAL, day.toDateTimeAtStartOfDay(defaultZone).toDate())))
+    return aq().filter(and(predicate(SPECIALS_TRUCK_ID, NOT_EQUAL, null), predicate(SPECIALS_DATE, EQUAL,
+        day.toDateTimeAtStartOfDay(defaultZone)
+            .toDate())))
         .execute();
   }
 
@@ -71,20 +74,23 @@ class DailyDataDAOAppEngine extends AppEngineDAO<Long, DailyData> implements Dai
   protected Entity toEntity(DailyData dailyData, Entity entity) {
     entity.setProperty(SPECIALS_LOCATION_ID, dailyData.getLocationId());
     entity.setProperty(SPECIALS_TRUCK_ID, dailyData.getTruckId());
-    List<String> entities = Lists.newArrayListWithCapacity(dailyData.getSpecials().size());
+    List<String> entities = Lists.newArrayListWithCapacity(dailyData.getSpecials()
+        .size());
     for (DailyData.SpecialInfo info : dailyData.getSpecials()) {
       // TODO: can we use embedded entities for this, because this is obviously horrible
       entities.add(info.getSpecial() + ":" + info.isSoldOut());
     }
     entity.setProperty(SPECIALS_SPECIALS, entities);
-    setDateProperty(SPECIALS_DATE, entity, dailyData.getOnDate().toDateTimeAtStartOfDay(defaultZone));
+    setDateProperty(SPECIALS_DATE, entity, dailyData.getOnDate()
+        .toDateTimeAtStartOfDay(defaultZone));
     return entity;
   }
 
   @Override
   protected DailyData fromEntity(Entity entity) {
     DailyData.Builder builder = DailyData.builder()
-        .key(entity.getKey().getId())
+        .key(entity.getKey()
+            .getId())
         .locationId(getStringProperty(entity, SPECIALS_LOCATION_ID))
         .truckId(getStringProperty(entity, SPECIALS_TRUCK_ID))
         .onDate(getDateTime(entity, SPECIALS_DATE, defaultZone).toLocalDate());

@@ -1,6 +1,8 @@
 package foodtruck.dao.appengine;
 
+import com.google.appengine.api.datastore.DatastoreService;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import foodtruck.dao.WeeklyTruckStopDAO;
 import foodtruck.util.Slots;
@@ -12,7 +14,7 @@ import foodtruck.util.WeeklyRollup;
  */
 public class WeeklyTruckStopDAOAppEngine extends TimeSeriesDAOAppEngine implements WeeklyTruckStopDAO {
   @Inject
-  public WeeklyTruckStopDAOAppEngine(DatastoreServiceProvider provider, @WeeklyRollup Slots slotter) {
+  public WeeklyTruckStopDAOAppEngine(Provider<DatastoreService> provider, @WeeklyRollup Slots slotter) {
     super("weekly_truck_stop_stats", provider, slotter);
   }
 }

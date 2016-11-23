@@ -8,8 +8,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.users.UserService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import org.joda.time.DateTime;
@@ -42,11 +44,10 @@ public class LocationServlet extends FrontPageServlet {
   private final DateTimeFormatter friendlyFormatter;
 
   @Inject
-  public LocationServlet(LocationDAO locationDAO, Clock clock,
-      @DateOnlyFormatter DateTimeFormatter dateFormatter,
-      FoodTruckStopService truckStopService,
-      @FriendlyDateOnlyFormat DateTimeFormatter friendlyFormatter, StaticConfig staticConfig) {
-    super(staticConfig);
+  public LocationServlet(LocationDAO locationDAO, Clock clock, @DateOnlyFormatter DateTimeFormatter dateFormatter,
+      FoodTruckStopService truckStopService, @FriendlyDateOnlyFormat DateTimeFormatter friendlyFormatter,
+      StaticConfig staticConfig, Provider<UserService> userServiceProvider) {
+    super(staticConfig, userServiceProvider);
     this.locationDAO = locationDAO;
     this.clock = clock;
     this.dateFormatter = dateFormatter;
@@ -54,10 +55,11 @@ public class LocationServlet extends FrontPageServlet {
     this.friendlyFormatter = friendlyFormatter;
   }
 
-  @Override protected void doGetProtected(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+  @Override
+  protected void doGetProtected(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     final String requestURI = req.getRequestURI();
-    String locationId = (requestURI.equals("/locations") || requestURI.equals("/locations/") ? null : requestURI.substring(11));
+    String locationId = (requestURI.equals("/locations") || requestURI.equals(
+        "/locations/") ? null : requestURI.substring(11));
     Location location;
     long locId;
     String query = req.getParameter("q");
@@ -76,7 +78,7 @@ public class LocationServlet extends FrontPageServlet {
     } else {
       location = locationDAO.findByAddress(query);
       if (location != null && location.isResolved()) {
-        String date = req.getParameter("date"), dateString="";
+        String date = req.getParameter("date"), dateString = "";
         if (!Strings.isNullOrEmpty(date)) {
           dateString = "?date=" + date;
         }
@@ -108,7 +110,8 @@ public class LocationServlet extends FrontPageServlet {
       showStops = false;
       LocalDate startDate = clock.firstDayOfWeekFrom(clock.now());
       List<DailySchedule> truckStops = truckStopService.findStopsNearLocationOverRange(location,
-          new Interval(startDate.toDateTimeAtStartOfDay(), startDate.plusDays(8).toDateTimeAtStartOfDay()));
+          new Interval(startDate.toDateTimeAtStartOfDay(), startDate.plusDays(8)
+              .toDateTimeAtStartOfDay()));
       req.setAttribute("weeklyStops", truckStops);
     }
     if (dateTime == null) {
@@ -123,10 +126,12 @@ public class LocationServlet extends FrontPageServlet {
     req.setAttribute("hasPopularityStats", staticConfig.showLocationGraphs() && location.isPopular());
     req.setAttribute("location", location);
     req.setAttribute("title", location.getName() + onDate);
-    req.setAttribute("description", Strings.isNullOrEmpty(location.getDescription()) ? location.getName() : location.getDescription());
+    req.setAttribute("description",
+        Strings.isNullOrEmpty(location.getDescription()) ? location.getName() : location.getDescription());
     String jsp = "/WEB-INF/jsp/location.jsp";
     req = new GuiceHackRequestWrapper(req, jsp);
     req.setAttribute("containerType", "fixed");
-    req.getRequestDispatcher(jsp).forward(req, resp);
+    req.getRequestDispatcher(jsp)
+        .forward(req, resp);
   }
 }

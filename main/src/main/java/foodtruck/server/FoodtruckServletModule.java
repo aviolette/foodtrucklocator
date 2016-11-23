@@ -1,7 +1,5 @@
 package foodtruck.server;
 
-import com.google.appengine.api.taskqueue.Queue;
-import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Provides;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
@@ -182,18 +180,16 @@ class FoodtruckServletModule extends ServletModule {
     filter("/*").through(CommonConfigFilter.class);
   }
 
-  @Provides @Named("remote.tweet.update")
+  @Provides
+  @Named("remote.tweet.update")
   public boolean provideIsTweetUpdateEnabled() {
     return "true".equals(System.getProperty("remote.tweet.update"));
   }
 
-  @Provides @Named("foodtrucklocator.signal.id")
+  @Provides
+  @Named("foodtrucklocator.signal.id")
   public String provideFoodTruckLocatorSignalId() {
     return System.getProperty("foodtrucklocator.signal.id");
   }
 
-  @Provides
-  public Queue provideQueue() {
-    return QueueFactory.getDefaultQueue();
-  }
 }

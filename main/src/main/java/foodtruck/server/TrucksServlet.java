@@ -7,9 +7,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.users.UserService;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import org.joda.time.DateTimeZone;
@@ -43,8 +45,9 @@ public class TrucksServlet extends FrontPageServlet {
 
   @Inject
   public TrucksServlet(TruckDAO trucks, FoodTruckStopService stops, Clock clock, DateTimeZone zone,
-      StaticConfig staticConfig, DailyDataDAO dailyDataDAO, MenuDAO menuDAO) {
-    super(staticConfig);
+      StaticConfig staticConfig, DailyDataDAO dailyDataDAO, MenuDAO menuDAO,
+      Provider<UserService> userServiceProvider) {
+    super(staticConfig, userServiceProvider);
     this.truckDAO = trucks;
     this.stops = stops;
     this.clock = clock;
@@ -53,8 +56,8 @@ public class TrucksServlet extends FrontPageServlet {
     this.menuDAO = menuDAO;
   }
 
-  @Override protected void doGetProtected(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+  @Override
+  protected void doGetProtected(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     final String requestURI = req.getRequestURI();
     String truckId = (requestURI.equals("/trucks") || requestURI.equals("/trucks/") ? null : requestURI.substring(8));
     String jsp = "/WEB-INF/jsp/trucks.jsp";
@@ -80,7 +83,8 @@ public class TrucksServlet extends FrontPageServlet {
       req.setAttribute("suffix", "-fluid");
       req.setAttribute("menu", menuDAO.findByTruck(truckId));
       req.setAttribute("dailyData", dailyDataDAO.findByTruckAndDay(truck.getId(), clock.currentDay()));
-      req.setAttribute("description", Strings.isNullOrEmpty(truck.getDescription()) ? truck.getName() : truck.getDescription());
+      req.setAttribute("description",
+          Strings.isNullOrEmpty(truck.getDescription()) ? truck.getName() : truck.getDescription());
     } else {
       String tag = req.getParameter("tag");
       if (!Strings.isNullOrEmpty(tag)) {
@@ -94,19 +98,21 @@ public class TrucksServlet extends FrontPageServlet {
     req = new GuiceHackRequestWrapper(req, jsp);
     req.setAttribute("tab", "trucks");
     req.setAttribute("supportsBooking", staticConfig.getSupportsBooking());
-    req.getRequestDispatcher(jsp).forward(req, resp);
+    req.getRequestDispatcher(jsp)
+        .forward(req, resp);
   }
 
   private List<DailySchedule> getSchedules(Truck truck, LocalDate firstDay) {
     return stops.findSchedules(truck.getId(), new Interval(firstDay.toDateTimeAtStartOfDay(zone),
-        firstDay.toDateTimeAtStartOfDay(zone).plusDays(8)));
+        firstDay.toDateTimeAtStartOfDay(zone)
+            .plusDays(8)));
   }
 
   private Iterable<String> daysOfWeek(LocalDate firstDay) {
     DateTimeFormatter formatter = DateTimeFormat.forPattern("EEE MM/dd");
     ImmutableList.Builder builder = ImmutableList.builder();
     LocalDate date = firstDay;
-    for (int i=0; i < 7; i++) {
+    for (int i = 0; i < 7; i++) {
       builder.add(formatter.print(date));
       date = date.plusDays(1);
     }

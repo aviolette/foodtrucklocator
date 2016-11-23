@@ -15,6 +15,7 @@ import com.google.appengine.api.datastore.Transaction;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.inject.Provider;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -37,7 +38,7 @@ abstract class TimeSeriesDAOAppEngine extends AppEngineDAO<Long, SystemStats> im
   private static final Logger log = Logger.getLogger(FifteenMinuteRollupDAOAppEngine.class.getName());
   private final Slots slotter;
 
-  TimeSeriesDAOAppEngine(String kind, DatastoreServiceProvider provider, Slots slotter) {
+  TimeSeriesDAOAppEngine(String kind, Provider<DatastoreService> provider, Slots slotter) {
     super(kind, provider);
     this.slotter = slotter;
   }
@@ -48,10 +49,8 @@ abstract class TimeSeriesDAOAppEngine extends AppEngineDAO<Long, SystemStats> im
 
   @Override
   public List<SystemStats> findWithinRange(long startTime, long endTime, String[] statList) {
-    return aq()
-        .filter(and(
-            predicate(PARAM_TIMESTAMP, GREATER_THAN_OR_EQUAL, startTime),
-            predicate(PARAM_TIMESTAMP, LESS_THAN, endTime)))
+    return aq().filter(and(predicate(PARAM_TIMESTAMP, GREATER_THAN_OR_EQUAL, startTime),
+        predicate(PARAM_TIMESTAMP, LESS_THAN, endTime)))
         .sort(PARAM_TIMESTAMP, ASCENDING)
         .execute();
   }
@@ -64,11 +63,12 @@ abstract class TimeSeriesDAOAppEngine extends AppEngineDAO<Long, SystemStats> im
   @Override
   public void deleteBefore(LocalDate localDate) {
     DatastoreService dataStore = provider.get();
-    long ts = localDate.toDateTimeAtStartOfDay().getMillis();
-    Query q = new Query(getKind()).setFilter(
-        new Query.FilterPredicate(PARAM_TIMESTAMP, LESS_THAN, ts));
+    long ts = localDate.toDateTimeAtStartOfDay()
+        .getMillis();
+    Query q = new Query(getKind()).setFilter(new Query.FilterPredicate(PARAM_TIMESTAMP, LESS_THAN, ts));
     List<Key> entities = Lists.newLinkedList();
-    for (Entity e : dataStore.prepare(q).asIterable()) {
+    for (Entity e : dataStore.prepare(q)
+        .asIterable()) {
       entities.add(e.getKey());
     }
     log.log(Level.INFO, "Deleted {0} entities", entities.size());
@@ -115,14 +115,17 @@ abstract class TimeSeriesDAOAppEngine extends AppEngineDAO<Long, SystemStats> im
   public void deleteStat(String statName) {
     Query q = new Query(getKind());
     DatastoreService dataStore = provider.get();
-    for (Entity e : dataStore.prepare(q).asIterable()) {
+    for (Entity e : dataStore.prepare(q)
+        .asIterable()) {
       e.setProperty(statName, 0);
       dataStore.put(e);
     }
   }
 
   @Override
-  public @Nullable SystemStats findBySlot(long slot) {
+  public
+  @Nullable
+  SystemStats findBySlot(long slot) {
     Entity entity = findBySlot(slot, provider.get());
     if (entity == null) {
       return null;
@@ -130,16 +133,20 @@ abstract class TimeSeriesDAOAppEngine extends AppEngineDAO<Long, SystemStats> im
     return fromEntity(entity);
   }
 
-  private @Nullable Entity findBySlot(long slot, DatastoreService dataStore) {
+  private
+  @Nullable
+  Entity findBySlot(long slot, DatastoreService dataStore) {
     Query q = new Query(getKind());
     q.setFilter(new Query.FilterPredicate(PARAM_TIMESTAMP, Query.FilterOperator.EQUAL, slot));
-    return Iterables.getFirst(dataStore.prepare(q).asIterable(), null);
+    return Iterables.getFirst(dataStore.prepare(q)
+        .asIterable(), null);
   }
 
   @Override
   protected Entity toEntity(SystemStats obj, Entity entity) {
     entity.setProperty(PARAM_TIMESTAMP, obj.getTimeStamp());
-    for (Map.Entry<String, Long> entry : obj.getAttributes().entrySet()) {
+    for (Map.Entry<String, Long> entry : obj.getAttributes()
+        .entrySet()) {
       entity.setProperty(entry.getKey(), entry.getValue());
     }
     return entity;
@@ -148,12 +155,15 @@ abstract class TimeSeriesDAOAppEngine extends AppEngineDAO<Long, SystemStats> im
   @Override
   protected SystemStats fromEntity(Entity entity) {
     ImmutableMap.Builder<String, Long> entries = ImmutableMap.builder();
-    for (Map.Entry<String, Object> entry : entity.getProperties().entrySet()) {
-      if (!entry.getKey().equals(PARAM_TIMESTAMP)) {
+    for (Map.Entry<String, Object> entry : entity.getProperties()
+        .entrySet()) {
+      if (!entry.getKey()
+          .equals(PARAM_TIMESTAMP)) {
         entries.put(entry.getKey(), (Long) entry.getValue());
       }
     }
-    return new SystemStats(entity.getKey().getId(), (Long) entity.getProperty(PARAM_TIMESTAMP), entries.build());
+    return new SystemStats(entity.getKey()
+        .getId(), (Long) entity.getProperty(PARAM_TIMESTAMP), entries.build());
   }
 
 }

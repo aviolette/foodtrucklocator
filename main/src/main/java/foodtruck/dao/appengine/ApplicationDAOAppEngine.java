@@ -2,8 +2,10 @@ package foodtruck.dao.appengine;
 
 import java.util.Collection;
 
+import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import foodtruck.dao.ApplicationDAO;
 import foodtruck.model.Application;
@@ -24,7 +26,7 @@ class ApplicationDAOAppEngine extends AppEngineDAO<String, Application> implemen
   private static final String CAN_HANDLE_NOTIFICATIONS = "can_handle_notifications";
 
   @Inject
-  public ApplicationDAOAppEngine(DatastoreServiceProvider provider) {
+  public ApplicationDAOAppEngine(Provider<DatastoreService> provider) {
     super(KIND, provider);
   }
 
@@ -46,12 +48,14 @@ class ApplicationDAOAppEngine extends AppEngineDAO<String, Application> implemen
         .description(getStringProperty(entity, PROP_DESCRIPTION))
         .enabled(getBooleanProperty(entity, PROP_ENABLED, false))
         .canHandleNotifications(getBooleanProperty(entity, CAN_HANDLE_NOTIFICATIONS, false))
-        .appKey(entity.getKey().getName())
+        .appKey(entity.getKey()
+            .getName())
         .build();
   }
 
   @Override
   public Collection<Application> findActive() {
-    return aq().filter(predicate(PROP_ENABLED, EQUAL, true)).execute();
+    return aq().filter(predicate(PROP_ENABLED, EQUAL, true))
+        .execute();
   }
 }

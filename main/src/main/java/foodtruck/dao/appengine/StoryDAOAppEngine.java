@@ -12,6 +12,7 @@ import com.google.appengine.api.datastore.Text;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -40,18 +41,17 @@ class StoryDAOAppEngine implements StoryDAO {
   private static final String TWEET_SINCE = "lastTweetId";
   private static final String TWEET_IGNORE = "ignore";
   private static final String STORY_TYPE = "story_type";
-  private final DatastoreServiceProvider provider;
+  private final Provider<DatastoreService> provider;
   private final DateTimeZone zone;
 
   @Inject
-  public StoryDAOAppEngine(DatastoreServiceProvider provider, DateTimeZone zone) {
+  public StoryDAOAppEngine(Provider<DatastoreService> provider, DateTimeZone zone) {
     this.provider = provider;
     this.zone = zone;
   }
 
   @Override
-  public List<Story> findTweetsAfter(DateTime time, String twitterHandle,
-      boolean includeIgnored) {
+  public List<Story> findTweetsAfter(DateTime time, String twitterHandle, boolean includeIgnored) {
     DatastoreService dataStore = provider.get();
     Query q = new Query(TWEET_KIND);
     List<Query.Filter> filters = Lists.newLinkedList();
@@ -63,7 +63,8 @@ class StoryDAOAppEngine implements StoryDAO {
     q.setFilter(Query.CompositeFilterOperator.and(filters));
     q.addSort(TWEET_TIME, Query.SortDirection.DESCENDING);
     ImmutableList.Builder<Story> tweets = ImmutableList.builder();
-    for (Entity entity : dataStore.prepare(q).asIterable()) {
+    for (Entity entity : dataStore.prepare(q)
+        .asIterable()) {
       Story tweet = fromEntity(entity);
       tweets.add(tweet);
     }
@@ -76,26 +77,31 @@ class StoryDAOAppEngine implements StoryDAO {
     Query q = new Query(TWEET_KIND);
     q.setFilter(new Query.FilterPredicate(TWEET_TIME, Query.FilterOperator.LESS_THAN_OR_EQUAL, dateTime.toDate()));
     ImmutableList.Builder<Key> keys = ImmutableList.builder();
-    for (Entity entity : dataStore.prepare(q).asIterable()) {
+    for (Entity entity : dataStore.prepare(q)
+        .asIterable()) {
       keys.add(entity.getKey());
     }
     dataStore.delete(keys.build());
   }
 
-  @Override public long getLastTweetId() {
+  @Override
+  public long getLastTweetId() {
     Query q = new Query(TWEET_SINCE_KIND);
     DatastoreService dataStore = provider.get();
-    Entity entity = dataStore.prepare(q).asSingleEntity();
+    Entity entity = dataStore.prepare(q)
+        .asSingleEntity();
     if (entity == null) {
       return 0;
     }
     return (Long) entity.getProperty(TWEET_SINCE);
   }
 
-  @Override public void setLastTweetId(long id) {
+  @Override
+  public void setLastTweetId(long id) {
     DatastoreService dataStore = provider.get();
     Query q = new Query(TWEET_SINCE_KIND);
-    Entity e = dataStore.prepare(q).asSingleEntity();
+    Entity e = dataStore.prepare(q)
+        .asSingleEntity();
     if (e == null) {
       e = new Entity(TWEET_SINCE_KIND);
     }
@@ -111,26 +117,29 @@ class StoryDAOAppEngine implements StoryDAO {
     }
   }
 
-  @Override public @Nullable
+  @Override
+  public
+  @Nullable
   Story findByTweetId(long id) {
     DatastoreService dataStore = provider.get();
     Query q = new Query(TWEET_KIND);
     q.setFilter(new Query.FilterPredicate(TWEET_ID, Query.FilterOperator.EQUAL, id));
-    Entity entity = dataStore.prepare(q).asSingleEntity();
+    Entity entity = dataStore.prepare(q)
+        .asSingleEntity();
     if (entity == null) {
       return null;
     }
     return fromEntity(entity);
   }
 
-  @Override public void saveOrUpdate(Story tweet) {
+  @Override
+  public void saveOrUpdate(Story tweet) {
     DatastoreService dataStore = provider.get();
     saveOrUpdate(tweet, dataStore);
   }
 
   private void saveOrUpdate(Story tweet, DatastoreService dataStore) {
-    final Entity entity =
-        (tweet.getKey() == null) ? new Entity(TWEET_KIND) : new Entity((Key) tweet.getKey());
+    final Entity entity = (tweet.getKey() == null) ? new Entity(TWEET_KIND) : new Entity((Key) tweet.getKey());
     entity.setProperty(TWEET_SCREEN_NAME, tweet.getScreenName());
     final Location location = tweet.getLocation();
     if (location != null) {
@@ -138,10 +147,12 @@ class StoryDAOAppEngine implements StoryDAO {
       entity.setProperty(TWEET_LOCATION_LNG, location.getLongitude());
     }
     entity.setProperty(TWEET_TEXT, new Text(tweet.getText()));
-    entity.setProperty(TWEET_TIME, tweet.getTime().toDate());
+    entity.setProperty(TWEET_TIME, tweet.getTime()
+        .toDate());
     entity.setProperty(TWEET_ID, tweet.getId());
     entity.setProperty(TWEET_IGNORE, tweet.getIgnoreInTwittalyzer());
-    entity.setProperty(STORY_TYPE, tweet.getStoryType().toString());
+    entity.setProperty(STORY_TYPE, tweet.getStoryType()
+        .toString());
     dataStore.put(entity);
   }
 
@@ -150,12 +161,14 @@ class StoryDAOAppEngine implements StoryDAO {
     Double lng = (Double) entity.getProperty(TWEET_LOCATION_LNG);
     Location location = null;
     if (lat != null && lng != null) {
-      location = Location.builder().lat(lat).lng(lng).build();
+      location = Location.builder()
+          .lat(lat)
+          .lng(lng)
+          .build();
     }
     DateTime dateTime = new DateTime(entity.getProperty(TWEET_TIME), zone);
     StoryType storyType = StoryType.valueOf(getStringProperty(entity, STORY_TYPE, StoryType.TWEET.toString()));
-    return new Story.Builder()
-        .id((Long) entity.getProperty(TWEET_ID))
+    return new Story.Builder().id((Long) entity.getProperty(TWEET_ID))
         .ignoreInTwittalyzer(Boolean.TRUE.equals(entity.getProperty(TWEET_IGNORE)))
         .location(location)
         .time(dateTime)

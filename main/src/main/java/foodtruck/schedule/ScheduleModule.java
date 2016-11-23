@@ -1,14 +1,10 @@
 package foodtruck.schedule;
 
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.script.ScriptEngineManager;
 
-import com.google.appengine.api.memcache.ErrorHandlers;
-import com.google.appengine.api.memcache.MemcacheService;
-import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -44,19 +40,13 @@ public class ScheduleModule extends AbstractModule {
     }
   }
 
-  @Provides @Singleton
-  public MemcacheService provideMemcacheService() {
-    MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
-    syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
-    return syncCache;
-  }
-
   @Provides
   public ScriptEngineManager provideScriptEngineManager() {
     return new ScriptEngineManager();
   }
 
-  @Provides @Named("center")
+  @Provides
+  @Named("center")
   public Location providesMapCenter(StaticConfig config) {
     return config.getCenter();
   }
@@ -70,7 +60,9 @@ public class ScheduleModule extends AbstractModule {
         "Where’s Grill Chasers today?", "Pop Up Shop Ogilvie French Market");
   }
 
-  @Provides @DefaultStartTime @Singleton
+  @Provides
+  @DefaultStartTime
+  @Singleton
   public LocalTime provideDefaultStartTime(@MilitaryTimeOnlyFormatter DateTimeFormatter formatter) {
     try {
       LocalTime localTime = formatter.parseLocalTime(System.getProperty("foodtrucklocator.lunchtime", "11:30"));

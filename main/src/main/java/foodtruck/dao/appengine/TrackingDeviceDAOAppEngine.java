@@ -2,8 +2,10 @@ package foodtruck.dao.appengine;
 
 import java.util.List;
 
+import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import foodtruck.dao.TrackingDeviceDAO;
 import foodtruck.model.Location;
@@ -36,7 +38,7 @@ class TrackingDeviceDAOAppEngine extends AppEngineDAO<Long, TrackingDevice> impl
   private final Clock clock;
 
   @Inject
-  public TrackingDeviceDAOAppEngine(Clock clock, DatastoreServiceProvider provider) {
+  public TrackingDeviceDAOAppEngine(Clock clock, Provider<DatastoreService> provider) {
     super("tracking_device", provider);
     this.clock = clock;
   }

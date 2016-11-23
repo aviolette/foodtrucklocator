@@ -4,9 +4,11 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import foodtruck.dao.LinxupAccountDAO;
 import foodtruck.model.LinxupAccount;
@@ -20,7 +22,7 @@ import static foodtruck.dao.appengine.Attributes.getStringProperty;
 public class LinxupDAOAppengine extends AppEngineDAO<Long, LinxupAccount> implements LinxupAccountDAO {
 
   @Inject
-  public LinxupDAOAppengine(DatastoreServiceProvider provider) {
+  public LinxupDAOAppengine(Provider<DatastoreService> provider) {
     super("linxup_account", provider);
   }
 

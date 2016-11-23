@@ -2,9 +2,11 @@ package foodtruck.dao.appengine;
 
 import javax.annotation.Nullable;
 
+import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Text;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import foodtruck.dao.MenuDAO;
 import foodtruck.model.Menu;
@@ -24,7 +26,7 @@ class MenuDAOAppEngine extends AppEngineDAO<Long, Menu> implements MenuDAO {
   private final Clock clock;
 
   @Inject
-  public MenuDAOAppEngine(DatastoreServiceProvider provider, Clock clock) {
+  public MenuDAOAppEngine(Provider<DatastoreService> provider, Clock clock) {
     super("menu", provider);
     this.clock = clock;
   }
@@ -32,7 +34,8 @@ class MenuDAOAppEngine extends AppEngineDAO<Long, Menu> implements MenuDAO {
   @Nullable
   @Override
   public Menu findByTruck(String truckId) {
-    return aq().filter(predicate(TRUCK_ID, EQUAL, truckId)).findOne();
+    return aq().filter(predicate(TRUCK_ID, EQUAL, truckId))
+        .findOne();
   }
 
   @Override
@@ -46,7 +49,8 @@ class MenuDAOAppEngine extends AppEngineDAO<Long, Menu> implements MenuDAO {
   @Override
   protected Menu fromEntity(Entity entity) {
     return Menu.builder()
-        .key(entity.getKey().getId())
+        .key(entity.getKey()
+            .getId())
         .truckId((String) entity.getProperty(TRUCK_ID))
         .payload(((Text) entity.getProperty(MENU)).getValue())
         .build();

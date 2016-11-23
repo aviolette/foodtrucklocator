@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.users.UserService;
 import com.google.common.base.Strings;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -17,6 +18,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import org.joda.time.LocalDate;
@@ -46,11 +48,9 @@ public class BoozeAndTrucksServlet extends FrontPageServlet {
 
   @Inject
   public BoozeAndTrucksServlet(FoodTruckStopService stopService, Clock clock,
-                               @DateOnlyFormatter DateTimeFormatter dateFormatter,
-                               @FriendlyDateOnlyFormat DateTimeFormatter friendlyFormatter,
-      LocationDAO locationDAO,
-      StaticConfig staticConfig) {
-    super(staticConfig);
+      @DateOnlyFormatter DateTimeFormatter dateFormatter, @FriendlyDateOnlyFormat DateTimeFormatter friendlyFormatter,
+      LocationDAO locationDAO, StaticConfig staticConfig, Provider<UserService> userServiceProvider) {
+    super(staticConfig, userServiceProvider);
     this.stopService = stopService;
     this.clock = clock;
     this.dateFormatter = dateFormatter;
@@ -58,8 +58,8 @@ public class BoozeAndTrucksServlet extends FrontPageServlet {
     this.friendlyFormatter = friendlyFormatter;
   }
 
-  @Override protected void doGetProtected(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+  @Override
+  protected void doGetProtected(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     ImmutableList.Builder<ScheduleForDay> schedules = ImmutableList.builder();
     LocalDate currentDay = null;
     Map<String, TruckStopGroup> tsgs = Maps.newHashMap();
@@ -75,28 +75,35 @@ public class BoozeAndTrucksServlet extends FrontPageServlet {
     int daysOut = 7;
     if (!Strings.isNullOrEmpty(dateString)) {
       try {
-        date = dateFormatter.parseDateTime(dateString).toLocalDate();
+        date = dateFormatter.parseDateTime(dateString)
+            .toLocalDate();
         daysOut = 1;
       } catch (IllegalArgumentException ignored) {
       }
     }
     ImmutableList.Builder<TruckStopGroup> builder = ImmutableList.builder();
     for (TruckStop stop : stopService.findUpcomingBoozyStops(date, daysOut)) {
-      if (currentDay != null && !stop.getStartTime().toLocalDate().equals(currentDay) && !tsgs.isEmpty()) {
+      if (currentDay != null && !stop.getStartTime()
+          .toLocalDate()
+          .equals(currentDay) && !tsgs.isEmpty()) {
         schedules.add(new ScheduleForDay(currentDay, ImmutableList.copyOf(tsgs.values())));
         tsgs = Maps.newHashMap();
       }
-      TruckStopGroup tsg = tsgs.get(stop.getLocation().getName());
-      currentDay = stop.getStartTime().toLocalDate();
+      TruckStopGroup tsg = tsgs.get(stop.getLocation()
+          .getName());
+      currentDay = stop.getStartTime()
+          .toLocalDate();
       if (tsg == null) {
         Location location;
         try {
-          location = locationCache.get(stop.getLocation().getName());
+          location = locationCache.get(stop.getLocation()
+              .getName());
         } catch (ExecutionException e) {
           location = stop.getLocation();
         }
         tsg = new TruckStopGroup(location, currentDay);
-        tsgs.put(stop.getLocation().getName(), tsg);
+        tsgs.put(stop.getLocation()
+            .getName(), tsg);
         builder.add(tsg);
       }
       tsg.addStop(stop);
@@ -115,7 +122,8 @@ public class BoozeAndTrucksServlet extends FrontPageServlet {
       req.setAttribute("title", "Upcoming Boozy Events");
     }
     req.setAttribute("description", "Lists upcoming events that combine food trucks and booze.");
-    req.getRequestDispatcher(JSP).forward(req, resp);
+    req.getRequestDispatcher(JSP)
+        .forward(req, resp);
   }
 
   public static class TruckStopGroup {

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.inject.Provider;
 
 import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
@@ -22,13 +23,12 @@ import foodtruck.model.StaticConfig;
 public abstract class FrontPageServlet extends HttpServlet {
   protected final StaticConfig staticConfig;
 
-  public FrontPageServlet(StaticConfig staticConfig) {
+  public FrontPageServlet(StaticConfig staticConfig, Provider<UserService> userServiceProvider) {
     this.staticConfig = staticConfig;
   }
 
   @Override
-  protected final void doGet(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+  protected final void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     // TODO: inject Provider<UserService>; not doing now since it would require updating a gazillion files
     UserService userService = UserServiceFactory.getUserService();
     req.setAttribute("isAdmin", userService.isUserLoggedIn() && userService.isUserAdmin());
@@ -53,8 +53,8 @@ public abstract class FrontPageServlet extends HttpServlet {
     doGetProtected(req, resp);
   }
 
-  protected abstract void doGetProtected(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException;
+  protected abstract void doGetProtected(HttpServletRequest req,
+      HttpServletResponse resp) throws ServletException, IOException;
 
   Location getCenter(@Nullable Cookie[] cookies) {
     double lat = 0, lng = 0;
@@ -69,7 +69,10 @@ public abstract class FrontPageServlet extends HttpServlet {
       }
     }
     if (lat != 0 && lng != 0) {
-      return Location.builder().lat(lat).lng(lng).build();
+      return Location.builder()
+          .lat(lat)
+          .lng(lng)
+          .build();
     }
     return staticConfig.getCenter();
   }

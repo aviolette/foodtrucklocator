@@ -3,6 +3,7 @@ package foodtruck.dao.appengine;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
+import com.google.inject.Provider;
 
 import foodtruck.dao.SingletonDAO;
 import foodtruck.model.ModelEntity;
@@ -12,28 +13,32 @@ import foodtruck.model.ModelEntity;
  * @since 9/13/12
  */
 abstract class SingletonDAOAppEngine<E extends ModelEntity> implements SingletonDAO<E> {
-  private final DatastoreServiceProvider provider;
+  private final Provider<DatastoreService> provider;
   private String kind;
 
-  SingletonDAOAppEngine(DatastoreServiceProvider provider, String kind) {
+  SingletonDAOAppEngine(Provider<DatastoreService> provider, String kind) {
     this.provider = provider;
     this.kind = kind;
   }
 
-  @Override public E find() {
+  @Override
+  public E find() {
     DatastoreService service = provider.get();
     Query q = new Query(getKind());
-    Entity entity = service.prepare(q).asSingleEntity();
+    Entity entity = service.prepare(q)
+        .asSingleEntity();
     if (entity == null) {
       return buildObject();
     }
     return fromEntity(entity);
   }
 
-  @Override public void save(E obj) {
+  @Override
+  public void save(E obj) {
     DatastoreService service = provider.get();
     Query q = new Query(getKind());
-    Entity entity = service.prepare(q).asSingleEntity();
+    Entity entity = service.prepare(q)
+        .asSingleEntity();
     if (entity == null) {
       entity = new Entity(getKind());
     }
@@ -52,7 +57,7 @@ abstract class SingletonDAOAppEngine<E extends ModelEntity> implements Singleton
   /**
    * Serializes the objects properties to the specified entity
    * @param entity the entity
-   * @param obj the object
+   * @param obj    the object
    * @return the entity passed in
    */
   protected abstract Entity toEntity(Entity entity, E obj);

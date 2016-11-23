@@ -6,7 +6,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.users.UserService;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import foodtruck.dao.LocationDAO;
@@ -21,8 +23,8 @@ public class PopularServlet extends FrontPageServlet {
   private final LocationDAO locationDAO;
 
   @Inject
-  public PopularServlet(StaticConfig staticConfig, LocationDAO locationDAO) {
-    super(staticConfig);
+  public PopularServlet(StaticConfig staticConfig, LocationDAO locationDAO, Provider<UserService> userServiceProvider) {
+    super(staticConfig, userServiceProvider);
     this.locationDAO = locationDAO;
   }
 
@@ -33,6 +35,7 @@ public class PopularServlet extends FrontPageServlet {
     req.setAttribute("title", "Popular Spots");
     req.setAttribute("description", "Popular Food Truck Locations");
     req.setAttribute("tab", "location");
-    req.getRequestDispatcher(jsp).forward(req, resp);
+    req.getRequestDispatcher(jsp)
+        .forward(req, resp);
   }
 }

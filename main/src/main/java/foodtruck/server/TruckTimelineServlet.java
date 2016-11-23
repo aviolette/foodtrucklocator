@@ -7,7 +7,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.users.UserService;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import foodtruck.dao.TruckDAO;
@@ -27,18 +29,20 @@ public class TruckTimelineServlet extends FrontPageServlet {
   private final TruckCollectionWriter trucksWriter;
 
   @Inject
-  public TruckTimelineServlet(TruckDAO truckDAO, TruckCollectionWriter trucksWriter,
-      StaticConfig staticConfig) {
-    super(staticConfig);
+  public TruckTimelineServlet(TruckDAO truckDAO, TruckCollectionWriter trucksWriter, StaticConfig staticConfig,
+      Provider<UserService> userServiceProvider) {
+    super(staticConfig, userServiceProvider);
     this.truckDAO = truckDAO;
     this.trucksWriter = trucksWriter;
   }
 
-  @Override protected void doGetProtected(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+  @Override
+  protected void doGetProtected(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     List<Truck> trucks = truckDAO.findVisibleTrucks();
     req.setAttribute("title", "Truck Timeline");
-    req.setAttribute("trucks", trucksWriter.asJSON(trucks).toString());
-    req.getRequestDispatcher(JSP).forward(req, resp);
+    req.setAttribute("trucks", trucksWriter.asJSON(trucks)
+        .toString());
+    req.getRequestDispatcher(JSP)
+        .forward(req, resp);
   }
 }

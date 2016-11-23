@@ -8,9 +8,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.users.UserService;
 import com.google.common.base.Strings;
 import com.google.common.net.HttpHeaders;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import org.codehaus.jettison.json.JSONException;
@@ -28,7 +30,6 @@ import foodtruck.util.TimeFormatter;
 
 /**
  * Servlet that serves up the main food truck page.
- *
  * @author aviolette
  * @since Jul 12, 2011
  */
@@ -44,8 +45,9 @@ public class FoodTruckServlet extends FrontPageServlet {
 
   @Inject
   public FoodTruckServlet(Clock clock, FoodTruckStopService service, DailyScheduleWriter writer,
-      ScheduleCacher scheduleCacher, @TimeFormatter DateTimeFormatter timeFormatter, StaticConfig staticConfig) {
-    super(staticConfig);
+      ScheduleCacher scheduleCacher, @TimeFormatter DateTimeFormatter timeFormatter, StaticConfig staticConfig,
+      Provider<UserService> userServiceProvider) {
+    super(staticConfig, userServiceProvider);
     this.clock = clock;
     this.timeFormatter = timeFormatter;
     this.dateFormatter = DateTimeFormat.forPattern("EEE MMM dd, YYYY");
@@ -97,14 +99,16 @@ public class FoodTruckServlet extends FrontPageServlet {
     resp.setHeader(HttpHeaders.EXPIRES, "Thu, 01 Jan 1970 00:00:00 GMT");
     req.setAttribute("payload", payload);
     String jsp = "/WEB-INF/jsp/index.jsp";
-    req.getRequestDispatcher(jsp).forward(req, resp);
+    req.getRequestDispatcher(jsp)
+        .forward(req, resp);
   }
 
   private String getSchedule(DateTime dateTime, boolean timeSpecified, String payload) {
     if (payload == null || !staticConfig.isScheduleCachingOn()) {
       DailySchedule schedule = stopService.findStopsForDay(dateTime.toLocalDate());
       try {
-        payload = writer.asJSON(schedule).toString();
+        payload = writer.asJSON(schedule)
+            .toString();
         if (!timeSpecified) {
           scheduleCacher.saveSchedule(payload);
         }

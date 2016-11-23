@@ -4,9 +4,11 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -29,7 +31,7 @@ class MessageDAOAppEngine extends AppEngineDAO<Long, Message> implements Message
   private final DateTimeZone zone;
 
   @Inject
-  public MessageDAOAppEngine(DatastoreServiceProvider provider, DateTimeZone zone) {
+  public MessageDAOAppEngine(Provider<DatastoreService> provider, DateTimeZone zone) {
     super(MESSAGE_KIND, provider);
     this.zone = zone;
   }
