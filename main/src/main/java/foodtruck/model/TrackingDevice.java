@@ -1,5 +1,7 @@
 package foodtruck.model;
 
+import java.util.Objects;
+
 import javax.annotation.Nullable;
 
 import com.google.common.base.MoreObjects;
@@ -13,6 +15,7 @@ import static foodtruck.model.TrackingDeviceState.HIDDEN;
 import static foodtruck.model.TrackingDeviceState.MOVING;
 
 /**
+ * Represents the last recorded state of a tracking device that is in a truck.
  * @author aviolette
  * @since 7/28/16
  */
@@ -56,7 +59,7 @@ public class TrackingDevice extends ModelEntity {
   }
 
   public static Builder builder(@Nullable TrackingDevice device) {
-    return (device == null) ?  new Builder() : new Builder(device);
+    return (device == null) ? new Builder() : new Builder(device);
   }
 
   @Nullable
@@ -168,6 +171,29 @@ public class TrackingDevice extends ModelEntity {
         .toString();
   }
 
+  @Override
+  public int hashCode() {
+    return Objects.hash(key, label, deviceNumber, enabled, truckOwnerId, lastBroadcast, lastModified, lastLocation,
+        parked, fuelLevel, batteryCharge, atBlacklistedLocation);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == this) {
+      return true;
+    } else if (!(obj instanceof TrackingDevice)) {
+      return false;
+    }
+    TrackingDevice td = (TrackingDevice) obj;
+    return label.equals(td.label) && deviceNumber.equals(td.deviceNumber) && enabled == td.enabled && Objects.equals(
+        truckOwnerId, td.truckOwnerId) &&
+        Objects.equals(key, td.key) &&
+        Objects.equals(lastBroadcast, td.lastBroadcast) && Objects.equals(lastModified,
+        td.lastModified) && Objects.equals(lastLocation, td.lastLocation) &&
+        parked == td.parked && atBlacklistedLocation == td.atBlacklistedLocation && Objects.equals(fuelLevel,
+        td.fuelLevel) && Objects.equals(batteryCharge, td.batteryCharge) && degreesFromNorth == td.degreesFromNorth;
+  }
+
   public int getDegreesFromNorth() {
     return degreesFromNorth;
   }
@@ -198,7 +224,7 @@ public class TrackingDevice extends ModelEntity {
     }
 
     public Builder(TrackingDevice device) {
-      this.key = (Long)device.getKey();
+      this.key = (Long) device.getKey();
       this.label = device.getLabel();
       this.deviceNumber = device.getDeviceNumber();
       this.enabled = device.isEnabled();
