@@ -1,4 +1,4 @@
-package foodtruck.server.dashboard;
+package foodtruck.server.dashboard.truck;
 
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -29,7 +29,6 @@ import foodtruck.model.Location;
 import foodtruck.model.Story;
 import foodtruck.model.Truck;
 import foodtruck.server.GuiceHackRequestWrapper;
-import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Clock;
 import foodtruck.util.Link;
 
@@ -40,7 +39,6 @@ import foodtruck.util.Link;
 @Singleton
 public class TruckServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(TruckServlet.class.getName());
-  private final FoodTruckStopService truckService;
   private final Clock clock;
   private final TruckDAO truckDAO;
   private final LocationDAO locationDAO;
@@ -48,10 +46,9 @@ public class TruckServlet extends HttpServlet {
   private final DailyDataDAO dailyDataDAO;
 
   @Inject
-  public TruckServlet(StoryDAO storyDAO, FoodTruckStopService truckService, Clock clock, TruckDAO truckDAO,
+  public TruckServlet(StoryDAO storyDAO, Clock clock, TruckDAO truckDAO,
       LocationDAO locationDAO, DailyDataDAO dailyDataDAO) {
     this.tweetDAO = storyDAO;
-    this.truckService = truckService;
     this.locationDAO = locationDAO;
     this.clock = clock;
     this.truckDAO = truckDAO;
@@ -66,34 +63,14 @@ public class TruckServlet extends HttpServlet {
       resp.sendRedirect("/trucks");
       return;
     }
-    if (truckId.endsWith("/offtheroad")) {
-      truckId = truckId.substring(0, truckId.length() - 11);
-      offTheRoad(truckId, req, resp);
-    } else {
-      loadDashboard(truckId, req, resp);
-    }
+    loadDashboard(truckId, req, resp);
   }
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    if (req.getRequestURI()
-        .endsWith("/offtheroad")) {
-      handleOffTheRoadPost(req, resp);
-    } else {
-      handleTweetUpdate(req, resp);
-    }
+    handleTweetUpdate(req, resp);
   }
 
-
-  private void offTheRoad(String truckId, HttpServletRequest req,
-      HttpServletResponse resp) throws ServletException, IOException {
-    final String jsp = "/WEB-INF/jsp/dashboard/offTheRoad.jsp";
-    req = new GuiceHackRequestWrapper(req, jsp);
-    final Truck truck = truckDAO.findById(truckId);
-    req.setAttribute("truck", truck);
-    req.setAttribute("nav", "trucks");
-    req.getRequestDispatcher(jsp).forward(req, resp);
-  }
 
   private void loadDashboard(String truckId, HttpServletRequest req,
       HttpServletResponse resp) throws IOException, ServletException {
@@ -127,15 +104,6 @@ public class TruckServlet extends HttpServlet {
     List<String> locationNames = ImmutableList.copyOf(
         Iterables.transform(locationDAO.findAutocompleteLocations(), Location.TO_NAME));
     return new JSONArray(locationNames).toString();
-  }
-
-
-  private void handleOffTheRoadPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    String truckId = req.getRequestURI();
-    truckId = truckId.substring(14, truckId.lastIndexOf('/'));
-    truckService.offRoad(truckId, clock.currentDay());
-    resp.sendRedirect("/admin/trucks");
-
   }
 
 

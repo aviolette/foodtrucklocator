@@ -1,4 +1,4 @@
-package foodtruck.server.dashboard;
+package foodtruck.server.dashboard.truck;
 
 import java.io.IOException;
 import java.util.Set;
@@ -17,7 +17,6 @@ import com.google.inject.Singleton;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
-import foodtruck.server.dashboard.truck.AbstractTruckServlet;
 import foodtruck.util.Link;
 
 /**
