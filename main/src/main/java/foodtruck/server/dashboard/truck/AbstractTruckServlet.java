@@ -58,7 +58,9 @@ public abstract class AbstractTruckServlet extends HttpServlet {
     final String requestURI = request.getRequestURI();
     String truckId = requestURI.substring(14);
     int idx = truckId.indexOf("/");
-    truckId = truckId.substring(0, idx);
+    if (idx != -1) {
+      truckId = truckId.substring(0, idx);
+    }
     return truckDAO.findById(truckId);
   }
 
