@@ -9,10 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.users.UserService;
-import com.google.common.base.Function;
-import com.google.common.base.Predicates;
-import com.google.common.base.Throwables;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
@@ -20,14 +16,10 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 
-import foodtruck.dao.LinxupAccountDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Location;
-import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
 
 /**
@@ -38,51 +30,26 @@ import foodtruck.model.Truck;
 public class VendorServlet extends VendorServletSupport {
   private static final String JSP = "/WEB-INF/jsp/vendor/vendordash.jsp";
   private final LocationDAO locationDAO;
-  private final StaticConfig config;
-  private final LinxupAccountDAO linxupAccountDAO;
+  private final BeaconServletHelper helper;
 
   @Inject
-  public VendorServlet(TruckDAO dao, LocationDAO locationDAO, UserService userService, StaticConfig config,
-      LinxupAccountDAO linxupAccountDAO, Provider<SessionUser> sessionUserProvider) {
+  public VendorServlet(TruckDAO dao, LocationDAO locationDAO, UserService userService,
+      Provider<SessionUser> sessionUserProvider, BeaconServletHelper helper) {
     super(dao, userService, sessionUserProvider);
     this.locationDAO = locationDAO;
-    this.config = config;
-    this.linxupAccountDAO = linxupAccountDAO;
+    this.helper = helper;
   }
 
   @Override
   protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp,
       @Nullable Truck truck) throws ServletException, IOException {
     if (truck != null) {
-      req.setAttribute("categories", new JSONArray(truck.getCategories()));
-      req.setAttribute("linxupAccount", linxupAccountDAO.findByTruck(truck.getId()));
+      helper.seedRequest(req, truck);
     }
     final List<Location> autocompleteLocations = locationDAO.findAutocompleteLocations();
     List<String> locationNames = ImmutableList.copyOf(Iterables.transform(autocompleteLocations, Location.TO_NAME));
     req.setAttribute("locations", new JSONArray(locationNames).toString());
-    req.setAttribute("googleApiKey", config.getGoogleJavascriptApiKey());
     req.setAttribute("tab", "vendorhome");
-    if (truck != null) {
-      req.setAttribute("blacklist", new JSONArray(FluentIterable.from(truck.getBlacklistLocationNames())
-          .transform(new Function<String, JSONObject>() {
-            public JSONObject apply(String input) {
-              Location location = locationDAO.findByAddress(input);
-              if (location == null) {
-                return null;
-              }
-              try {
-                return new JSONObject().put("name", input)
-                    .put("latitude", location.getLatitude())
-                    .put("longitude", location.getLongitude())
-                    .put("radius", location.getRadius());
-              } catch (JSONException e) {
-                throw Throwables.propagate(e);
-              }
-            }
-          })
-          .filter(Predicates.notNull())
-          .toList()));
-    }
     req.getRequestDispatcher(JSP)
         .forward(req, resp);
   }
