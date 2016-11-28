@@ -202,6 +202,10 @@ public class Truck extends ModelEntity implements Serializable {
     return postWeeklySchedule;
   }
 
+  public boolean isMatchesMorningStops() {
+    return categories.contains("Breakfast");
+  }
+
   public boolean isPostAtNewStop() {
     return postAtNewStop;
   }
