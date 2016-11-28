@@ -1,16 +1,14 @@
-package foodtruck.server.vendor;
+package foodtruck.server.dashboard.truck;
 
 import java.io.IOException;
 
-import javax.annotation.Nullable;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.appengine.api.users.UserService;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import foodtruck.dao.LinxupAccountDAO;
@@ -18,59 +16,54 @@ import foodtruck.dao.TruckDAO;
 import foodtruck.linxup.TruckMonitorService;
 import foodtruck.model.LinxupAccount;
 import foodtruck.model.Truck;
-import foodtruck.server.GuiceHackRequestWrapper;
+import foodtruck.util.Link;
 import foodtruck.util.ServiceException;
 
 /**
  * @author aviolette
- * @since 10/18/16
+ * @since 11/27/16
  */
 @Singleton
-public class VendorLinxupConfigServlet extends VendorServletSupport {
-  private static final String JSP = "/WEB-INF/jsp/vendor/linxup.jsp";
+public class LinxupConfigServlet extends AbstractTruckServlet {
   private final LinxupAccountDAO accountDAO;
   private final TruckMonitorService service;
 
   @Inject
-  public VendorLinxupConfigServlet(TruckDAO dao, UserService userService, LinxupAccountDAO linxupAccountDAO,
-      TruckMonitorService service, Provider<SessionUser> sessionUserProvider) {
-    super(dao, userService, sessionUserProvider);
-    this.accountDAO = linxupAccountDAO;
+  public LinxupConfigServlet(TruckDAO truckDAO, LinxupAccountDAO accountDAO, TruckMonitorService service) {
+    super(truckDAO);
+    this.accountDAO = accountDAO;
     this.service = service;
   }
 
   @Override
-  protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp,
-      @Nullable Truck truck) throws ServletException, IOException {
-    req = new GuiceHackRequestWrapper(req, JSP);
-    req.setAttribute("tab", "linxup");
+  protected void doGetProtected(HttpServletRequest request, HttpServletResponse response,
+      Truck truck) throws ServletException, IOException {
+    LinxupAccount account = accountDAO.findByTruck(truck.getId());
     String username = "";
-    if (truck != null) {
-      LinxupAccount account = accountDAO.findByTruck(truck.getId());
-      if (account != null) {
-        username = account.getUsername();
-      }
+    if (account != null) {
+      username = account.getUsername();
     }
-    req.setAttribute("username", username);
-    req.getRequestDispatcher(JSP)
-        .forward(req, resp);
+    request.setAttribute("username", username);
+    forward(request, response);
   }
 
   @Override
-  protected void dispatchPost(HttpServletRequest req, HttpServletResponse resp, String truckId) throws IOException {
+  protected void doPostProtected(HttpServletRequest req, HttpServletResponse response,
+      Truck truck) throws IOException {
+    String truckId = truck.getId();
     if ("Unlink Account".equals(req.getParameter("action"))) {
       LinxupAccount account = accountDAO.findByTruck(truckId);
       accountDAO.delete((Long) account.getKey());
       service.removeDevicesFor(truckId);
-      resp.sendRedirect("/vendor");
+      response.sendRedirect("/admin/trucks/" + truckId);
       return;
     }
 
     String userName = req.getParameter("username");
     String password = req.getParameter("password");
     if (Strings.isNullOrEmpty(userName) || Strings.isNullOrEmpty(password)) {
-      flash("Username and password need to be specified", resp);
-      resp.sendRedirect("/vendor/linxup/" + truckId);
+      flash("Username and password need to be specified", response);
+      response.sendRedirect("/admin/trucks/" + truckId + "/linxup_config");
       return;
     }
     LinxupAccount account = accountDAO.findByTruck(truckId);
@@ -90,10 +83,22 @@ public class VendorLinxupConfigServlet extends VendorServletSupport {
     try {
       service.synchronizeFor(account);
     } catch (ServiceException se) {
-      flash(se.getMessage(), resp);
-      resp.sendRedirect("/vendor/linxup/" + truckId);
+      flash(se.getMessage(), response);
+      response.sendRedirect("/admin/trucks/" + truckId + "/linxup_config");
       return;
     }
-    resp.sendRedirect("/vendor");
+    response.sendRedirect("/admin/trucks/" + truckId);
+  }
+
+  @Override
+  protected ImmutableList<Link> breadcrumbs(Truck truck) {
+    return ImmutableList.of(new Link("Trucks", "/admin/trucks"),
+        new Link(truck.getName(), "/admin/trucks/" + truck.getId()),
+        new Link("Beacons", "/admin/trucks/" + truck.getId() + "/linxup_config"));
+  }
+
+  @Override
+  protected String getJsp() {
+    return "/WEB-INF/jsp/dashboard/truck/linxup.jsp";
   }
 }

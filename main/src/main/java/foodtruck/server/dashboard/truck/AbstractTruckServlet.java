@@ -78,4 +78,8 @@ public abstract class AbstractTruckServlet extends HttpServlet {
   }
 
   protected abstract String getJsp();
+
+  protected void flash(String message, HttpServletResponse resp) {
+    resp.setHeader("Set-Cookie", "flash=" + message + ";Max-Age=30000");
+  }
 }

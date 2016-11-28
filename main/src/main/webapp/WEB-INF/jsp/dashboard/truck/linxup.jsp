@@ -1,4 +1,4 @@
-<%@ include file="vendorheader.jsp" %>
+<%@ include file="../truckHeader.jsp" %>
 
 <p class="lead">Enter your username and password for <strong>your Linxup account</strong>. The username is typically an
   email address.</p>
@@ -22,5 +22,5 @@
   </div>
 </form>
 
-<%@ include file="../include/core_js.jsp" %>
-<%@ include file="vendorfooter.jsp" %>
+<%@ include file="../../include/core_js.jsp" %>
+<%@ include file="../truckFooter.jsp" %>

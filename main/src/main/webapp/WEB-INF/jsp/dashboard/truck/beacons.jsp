@@ -17,44 +17,57 @@
     }
   }
 </style>
-<div class="row">
-  <div class="col-md-12">
-    <div id="map_canvas" style="width:100%; height:300px; padding-bottom:20px;" class="location-related"></div>
+
+<div class="btn-toolbar">
+  <div class="btn-group">
+    <a class="btn btn-primary" href="/admin/trucks/${truck.id}/linxup_config">Setup</a>
   </div>
 </div>
-<%@ include file="../../include/core_js.jsp" %>
-<script type="text/javascript" src="/script/vendordash.js"></script>
 
-<script type="text/javascript">
-  (function () {
-    TruckMap.init();
+<c:if test="${!empty(linxupAccount)}">
+  <div class="row">
+    <div class="col-md-12">
+      <div id="map_canvas" style="width:100%; height:300px; padding-bottom:20px;" class="location-related"></div>
+    </div>
+  </div>
 
-    function refreshBeacons() {
-      <c:if test="${!empty(linxupAccount)}">
 
-      $.ajax({
-        url: "/services/trucks/${truck.id}/beacons",
-        type: 'GET',
-        dataType: 'json',
-        success: function (beacons) {
-          $("#beacons").empty();
-          $.each(beacons, function (i, item) {
-            TruckMap.addBeacon(item.lastLocation.latitude, item.lastLocation.longitude,
-                item.enabled, item.parked, item.blacklisted, item.direction);
-          });
-        }
+  <%@ include file="../../include/core_js.jsp" %>
+  <script type="text/javascript" src="/script/vendordash.js"></script>
+
+  <script type="text/javascript">
+    (function () {
+      TruckMap.init();
+
+      function refreshBeacons() {
+        <c:if test="${!empty(linxupAccount)}">
+
+        $.ajax({
+          url: "/services/trucks/${truck.id}/beacons",
+          type: 'GET',
+          dataType: 'json',
+          success: function (beacons) {
+            $("#beacons").empty();
+            $.each(beacons, function (i, item) {
+              TruckMap.addBeacon(item.lastLocation.latitude, item.lastLocation.longitude,
+                  item.enabled, item.parked, item.blacklisted, item.direction);
+            });
+          }
+        });
+        </c:if>
+      }
+
+      $.each(${blacklist}, function (i, location) {
+        TruckMap.addBlacklisted(location);
       });
-      </c:if>
-    }
 
-    $.each(${blacklist}, function (i, location) {
-      TruckMap.addBlacklisted(location);
-    });
+      refreshBeacons();
 
-    refreshBeacons();
+    })();
+  </script>
 
-  })();
-</script>
+
+</c:if>
 
 
 <%@ include file="../truckFooter.jsp" %>
