@@ -1,4 +1,4 @@
-<%@ include file="../truckHeader.jsp" %>
+<%@ include file="truckHeader.jsp" %>
 
 <script type="text/javascript"
         src="//maps.googleapis.com/maps/api/js?key=${googleApiKey}">
@@ -145,4 +145,4 @@
 </c:if>
 
 
-<%@ include file="../truckFooter.jsp" %>
+<%@ include file="truckFooter.jsp" %>

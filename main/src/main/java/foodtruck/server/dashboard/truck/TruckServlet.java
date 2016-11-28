@@ -72,7 +72,7 @@ public class TruckServlet extends AbstractTruckServlet {
 
   @Override
   protected String getJsp() {
-    return "/WEB-INF/jsp/dashboard/truckDashboard.jsp";
+    return "/WEB-INF/jsp/dashboard/truck/truckDashboard.jsp";
   }
 
   private String locationNamesAsJsonArray() {

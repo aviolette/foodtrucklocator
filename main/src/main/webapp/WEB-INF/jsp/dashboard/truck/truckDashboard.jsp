@@ -1,6 +1,6 @@
 <%@include file="truckHeader.jsp" %>
 
-<%@include file="../include/truck_schedule_widget.jsp"%>
+<%@include file="../../include/truck_schedule_widget.jsp" %>
 
 
 <div class="row">

@@ -28,7 +28,7 @@ public class TruckConfigurationServlet extends AbstractTruckServlet {
   private static final Splitter BLACK_LIST_SPLITTER = Splitter.on(";")
       .omitEmptyStrings()
       .trimResults();
-  private static final String JSP = "/WEB-INF/jsp/dashboard/truckEdit.jsp";
+  private static final String JSP = "/WEB-INF/jsp/dashboard/truck/truckEdit.jsp";
 
   @Inject
   public TruckConfigurationServlet(TruckDAO truckDAO) {

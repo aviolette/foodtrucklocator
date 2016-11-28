@@ -14,7 +14,7 @@ import foodtruck.util.Link;
  */
 @Singleton
 public class TruckStatsServlet extends AbstractTruckServlet {
-  private static final String JSP = "/WEB-INF/jsp/dashboard/truckStats.jsp";
+  private static final String JSP = "/WEB-INF/jsp/dashboard/truck/truckStats.jsp";
 
   @Inject
   public TruckStatsServlet(TruckDAO truckDAO) {

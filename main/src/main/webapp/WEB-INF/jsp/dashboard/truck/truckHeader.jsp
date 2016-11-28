@@ -1,4 +1,4 @@
-<%@include file="dashboardHeaderBS3.jsp" %>
+<%@include file="../dashboardHeaderBS3.jsp" %>
 
 <div class="row">
   <div class="col-md-2">
