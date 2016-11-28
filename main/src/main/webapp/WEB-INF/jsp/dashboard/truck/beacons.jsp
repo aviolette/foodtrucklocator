@@ -93,7 +93,7 @@
               $("#beacons").append($tr);
             });
             $.ajax({
-              url: '/services/v2/stops?truck=' + ${truck.id},
+              url: '/services/v2/stops?truck=${truck.id}',
               type: 'GET',
               dataType: 'json',
               success: function (schedule) {
