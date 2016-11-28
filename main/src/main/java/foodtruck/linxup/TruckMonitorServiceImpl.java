@@ -394,6 +394,10 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
     return location;
   }
 
+  /**
+   * Search through the history and compare last history location with the current location.  If the current location
+   * is not within tolerance of stop, then return true. If there is no anomaly, return false.
+   */
   private boolean detectAnomaly(TrackingDevice device, LinxupAccount linxupAccount, Location preciseLocation) {
     String key = "anomaly-detected-for-" + device.getDeviceNumber();
     if (memcacheService.contains(key)) {
@@ -405,7 +409,8 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
       LinxupMapHistoryResponse response = connector.tripList(linxupAccount, clock.timeAt(0, 0), clock.timeAt(23, 59),
           device.getDeviceNumber());
       Stop stop = response.lastStopFor(device.getDeviceNumber());
-      if (stop != null && stop.getLocation()
+      log.log(Level.INFO, "Stop {0}\n{1}", new Object[] {stop, preciseLocation});
+      if (stop != null && !stop.getLocation()
           .withinToleranceOf(preciseLocation)) {
         log.log(Level.SEVERE, "Anomaly detected {0} {1}", new Object[]{stop.getLocation(), preciseLocation});
         // only perform anomaly detection once per-broadcast (the device usually broadcasts every hour when parked)
