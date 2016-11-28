@@ -208,9 +208,16 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
   private void merge(List<TrackingDevice> devices) {
     TruckStopCache stopCache = truckStopCacheProvider.get();
     for (TrackingDevice device : devices) {
+      Truck truck = truckDAO.findById(device.getTruckOwnerId());
+      boolean noMorningStops = truck != null && !truck.isMatchesMorningStops() && clock.timeAt(11, 0)
+          .isAfter(clock.now());
       if (!device.isEnabled() || !device.isParked() || device.isAtBlacklistedLocation() ||
-          device.getLastLocation() == null) {
-        log.log(Level.INFO, "Canceling stops for device: {0}", device);
+          device.getLastLocation() == null || noMorningStops) {
+        if (noMorningStops) {
+          log.log(Level.INFO, "Canceling stops for device {0} since there are no morning stops allowed");
+        } else {
+          log.log(Level.INFO, "Canceling stops for device: {0}", device);
+        }
         //noinspection ConstantConditions
         cancelAnyStops(device, stopCache.get(device.getTruckOwnerId()));
         continue;

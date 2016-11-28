@@ -83,6 +83,7 @@ public class Truck extends ModelEntity implements Serializable {
   private @Nullable String facebookAccessToken;
   private @Nullable DateTime facebookAccessTokenExpires;
   private boolean notifyOfLocationChanges;
+  private boolean disableBeaconsUntilLunchtime;
 
   // For serialization (for storage in memcached)
   private Truck() {
@@ -136,6 +137,7 @@ public class Truck extends ModelEntity implements Serializable {
     this.facebookAccessToken = builder.facebookAccessToken;
     this.facebookAccessTokenExpires = builder.facebookAccessTokenExpires;
     this.notifyOfLocationChanges = builder.notifyOfLocationChanges;
+    this.disableBeaconsUntilLunchtime = builder.disableBeaconsUntilLunchtime;
   }
 
   public static Builder builder() {
@@ -175,6 +177,7 @@ public class Truck extends ModelEntity implements Serializable {
   @Nullable
   public AccessToken twitterAccessToken() {
     if (getHasTwitterCredentials()) {
+      //noinspection ConstantConditions
       return new AccessToken(twitterToken, twitterTokenSecret);
     }
     return null;
@@ -690,6 +693,7 @@ public class Truck extends ModelEntity implements Serializable {
     public Set<String> categories = ImmutableSet.of();
     public String description;
     public Set<String> beaconnaiseEmails = ImmutableSet.of();
+    public boolean disableBeaconsUntilLunchtime;
     private String id;
     private String name;
     private @Nullable String url;
@@ -784,6 +788,7 @@ public class Truck extends ModelEntity implements Serializable {
       this.facebookAccessToken = truck.facebookAccessToken;
       this.facebookAccessTokenExpires = truck.facebookAccessTokenExpires;
       this.notifyOfLocationChanges = truck.notifyOfLocationChanges;
+      this.disableBeaconsUntilLunchtime = truck.disableBeaconsUntilLunchtime;
     }
 
     public Builder notifyOfLocationChanges(boolean notify) {

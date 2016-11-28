@@ -52,6 +52,10 @@ public class Position {
     return new Builder();
   }
 
+  public static Builder builder(Position position) {
+    return new Builder(position);
+  }
+
   public DateTime getDate() {
     return date;
   }
