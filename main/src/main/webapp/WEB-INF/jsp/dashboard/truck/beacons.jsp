@@ -92,6 +92,16 @@
               $tr.append($td)
               $("#beacons").append($tr);
             });
+            $.ajax({
+              url: '/services/v2/stops?truck=' + ${truck.id},
+              type: 'GET',
+              dataType: 'json',
+              success: function (schedule) {
+                $.each(schedule, function (i, stop) {
+                  TruckMap.addStop(stop);
+                });
+              }
+            });
             $(".beacon-button").click(function (e) {
               var $self = $(e.target);
               var item = $self.attr("id").substr(14);
