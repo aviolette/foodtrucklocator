@@ -86,6 +86,23 @@ public class SpecialUpdaterTest extends EasyMockSupport {
     verifyAll();
   }
 
+  @Test
+  public void pumpkinCake() {
+    expect(dailyDataDAO.save(DailyData.builder()
+        .truckId(THEVAULTVANID)
+        .onDate(localDate)
+        .addSpecial("Pumpkin Cake", false)
+        .build())).andReturn(1L);
+    expect(dailyDataDAO.findByTruckAndDay(THEVAULTVANID, localDate)).andReturn(null);
+    replayAll();
+    specialUpdater.update(THEVAULTVAN, ImmutableList.of(Story.builder()
+        .text(
+            "#VaultVan has coffee caramel old fashioned and pumpkin cake as our specials today. Find us on Lasalle and Adams.")
+        .build()));
+    verifyAll();
+
+  }
+
 
   @Test
   public void addCanalWithPreexistingSpecial() {

@@ -148,7 +148,7 @@ class SpecialUpdater {
       } else if (lower.contains("mocha coconut crunch cake")) {
         builder.append("mocha ");
       }
-      if (!first.matches("the|is|our")) {
+      if (!first.matches("the|is|our|and")) {
         builder.append(first).append(" ");
       }
       builder.append(matcher.group(2));
