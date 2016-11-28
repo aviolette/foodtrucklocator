@@ -9,8 +9,8 @@ import javax.ws.rs.PathParam;
 
 import com.google.inject.Inject;
 
+import foodtruck.linxup.TrackingDeviceService;
 import foodtruck.linxup.Trip;
-import foodtruck.linxup.TruckMonitorService;
 
 /**
  * @author aviolette
@@ -18,10 +18,10 @@ import foodtruck.linxup.TruckMonitorService;
  */
 @Path("/beacons")
 public class BeaconResource {
-  private final TruckMonitorService service;
+  private final TrackingDeviceService service;
 
   @Inject
-  public BeaconResource(TruckMonitorService service) {
+  public BeaconResource(TrackingDeviceService service) {
     this.service = service;
   }
 

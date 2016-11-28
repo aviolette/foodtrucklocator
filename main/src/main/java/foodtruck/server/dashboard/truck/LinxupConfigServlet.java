@@ -13,23 +13,24 @@ import com.google.inject.Singleton;
 
 import foodtruck.dao.LinxupAccountDAO;
 import foodtruck.dao.TruckDAO;
-import foodtruck.linxup.TruckMonitorService;
+import foodtruck.linxup.TrackingDeviceService;
 import foodtruck.model.LinxupAccount;
 import foodtruck.model.Truck;
 import foodtruck.util.Link;
 import foodtruck.util.ServiceException;
 
 /**
+ * Links or unlinks a linxup account to a truck's profile.
  * @author aviolette
  * @since 11/27/16
  */
 @Singleton
 public class LinxupConfigServlet extends AbstractTruckServlet {
   private final LinxupAccountDAO accountDAO;
-  private final TruckMonitorService service;
+  private final TrackingDeviceService service;
 
   @Inject
-  public LinxupConfigServlet(TruckDAO truckDAO, LinxupAccountDAO accountDAO, TruckMonitorService service) {
+  public LinxupConfigServlet(TruckDAO truckDAO, LinxupAccountDAO accountDAO, TrackingDeviceService service) {
     super(truckDAO);
     this.accountDAO = accountDAO;
     this.service = service;

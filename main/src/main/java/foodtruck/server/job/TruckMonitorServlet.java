@@ -12,7 +12,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import foodtruck.linxup.TruckMonitorService;
+import foodtruck.linxup.TrackingDeviceService;
 
 /**
  * Called periodically to query for updates on the beacon.
@@ -23,10 +23,10 @@ import foodtruck.linxup.TruckMonitorService;
 @Singleton
 public class TruckMonitorServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(TruckMonitorServlet.class.getName());
-  private final TruckMonitorService service;
+  private final TrackingDeviceService service;
 
   @Inject
-  public TruckMonitorServlet(TruckMonitorService service) {
+  public TruckMonitorServlet(TrackingDeviceService service) {
     this.service = service;
   }
 

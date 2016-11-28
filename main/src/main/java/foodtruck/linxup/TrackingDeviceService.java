@@ -8,7 +8,7 @@ import foodtruck.model.LinxupAccount;
  * @author aviolette
  * @since 8/4/16
  */
-public interface TruckMonitorService {
+public interface TrackingDeviceService {
   /**
    * Connects with upstream position provider and creates/deletes/modifies existing stops with data that is retrieved.
    */

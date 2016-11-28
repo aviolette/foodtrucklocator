@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
  * @since 11/22/16
  */
 @RunWith(MockitoJUnitRunner.class)
-public class TruckMonitorServiceImplTest {
+public class TrackingDeviceServiceImplTest {
   private static final String TRUCKID = "truckid";
   private static final String DEVICEID1 = "device1";
   private static final String DEVICELABEL1 = "label1";
@@ -50,7 +50,7 @@ public class TruckMonitorServiceImplTest {
   @Mock private Provider<Queue> queueProvider;
   @Mock private TruckStopCache truckStopCache;
   @Mock private BlacklistedLocationMatcher blacklistLocationMatcher;
-  @Mock private TruckMonitorServiceImpl service;
+  @Mock private TrackingDeviceServiceImpl service;
   private LinxupAccount account;
   private DateTime now = new DateTime(2016, 11, 22, 9, 0, 0);
 
@@ -63,7 +63,7 @@ public class TruckMonitorServiceImplTest {
         .username("username")
         .password("password")
         .build();
-    service = new TruckMonitorServiceImpl(truckStopDAO, connector, trackingDeviceDAO, locator, clock, truckDAO,
+    service = new TrackingDeviceServiceImpl(truckStopDAO, connector, trackingDeviceDAO, locator, clock, truckDAO,
         formatter, securityChecker, linxupAccountDAO, queueProvider, Providers.of(truckStopCache),
         blacklistLocationMatcher, null);
   }

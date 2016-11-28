@@ -46,8 +46,8 @@ import foodtruck.util.FriendlyDateTimeFormat;
  * @author aviolette
  * @since 8/4/16
  */
-class TruckMonitorServiceImpl implements TruckMonitorService {
-  private static final Logger log = Logger.getLogger(TruckMonitorServiceImpl.class.getName());
+class TrackingDeviceServiceImpl implements TrackingDeviceService {
+  private static final Logger log = Logger.getLogger(TrackingDeviceServiceImpl.class.getName());
   private final LinxupConnector connector;
   private final TrackingDeviceDAO trackingDeviceDAO;
   private final TruckDAO truckDAO;
@@ -63,7 +63,7 @@ class TruckMonitorServiceImpl implements TruckMonitorService {
   private final MemcacheService memcacheService;
 
   @Inject
-  public TruckMonitorServiceImpl(TruckStopDAO truckStopDAO, LinxupConnector connector,
+  public TrackingDeviceServiceImpl(TruckStopDAO truckStopDAO, LinxupConnector connector,
       TrackingDeviceDAO trackingDeviceDAO, GeoLocator locator, Clock clock, TruckDAO truckDAO,
       @FriendlyDateTimeFormat DateTimeFormatter formatter, SecurityChecker securityChecker,
       LinxupAccountDAO linxupAccountDAO, Provider<Queue> queueProvider, Provider<TruckStopCache> truckStopCacheProvider,
