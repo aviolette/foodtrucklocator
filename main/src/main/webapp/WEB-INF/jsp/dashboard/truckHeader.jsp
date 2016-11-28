@@ -8,7 +8,8 @@
         <h3>${truck.name}</h3>
       </c:when>
       <c:otherwise>
-        <img src="${truck.previewIcon}" alt="${truck.name}" width="150" height="150"/>
+        <img src="${truck.previewIcon}" class="img-rounded img-responsive" alt="${truck.name}" width="150"
+             height="150"/>
       </c:otherwise>
     </c:choose>
     <ul class="list-unstyled">
