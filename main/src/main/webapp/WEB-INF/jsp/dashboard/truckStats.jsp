@@ -17,6 +17,18 @@
         <td>Total stops</td>
         <td>${truck.stats.totalStops}</td>
       </tr>
+      <tr>
+        <td>Twitter Linked?</td>
+        <td>${truck.hasTwitterCredentials ? "YES" : "NO"}</td>
+      </tr>
+      <tr>
+        <td>Facebook Linked?</td>
+        <td>${truck.hasFacebookCredentials ? "YES" : "NO"}</td>
+      </tr>
+      <tr>
+        <td>Post at New Stop</td>
+        <td>${truck.postAtNewStop ? "YES" : "NO"}</td>
+      </tr>
     </table>
   </div>
   <div class="col-md-12">
