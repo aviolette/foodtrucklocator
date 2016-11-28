@@ -102,7 +102,7 @@ public class TwitterEventNotificationService implements PublicEventNotificationS
       Location location = truckStop.getLocation();
       Twitter twitter = twitterFactoryWrapper.createDetached(truck.twitterAccessToken());
       try {
-        twitter.updateStatus(String.format("We are now at stop: %s %s", location.getShortenedName(),
+        twitter.updateStatus(String.format("We are now at %s. %s", location.getShortenedName(),
             config.getBaseUrl() + "/locations/" + location.getKey()));
       } catch (TwitterException e) {
         log.log(Level.SEVERE, e.getMessage(), e);
