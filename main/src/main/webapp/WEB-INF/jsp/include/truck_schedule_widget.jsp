@@ -1,6 +1,6 @@
 <%@include file="../common.jsp" %>
 <h2 id="truck-widget-header">Schedule</h2>
-<div class="alert alert-info" role="alert">
+<div class="alert alert-info" role="alert" id="delay-warning">
   <p><span class="glyphicon glyphicon-warning-sign"></span> It may take up to <em>8 minutes</em> before the changes made
     here are reflected on the website.</p>
 </div>

@@ -441,6 +441,9 @@ var TruckScheduleWidget = function() {
         _locationEndpoint = '/locations';
         _useFormSubmitOnTouch = false;
         _baseEndpoint = '/vendor';
+      } else {
+        $("#delay-warning").addClass("hidden");
+        $("#truck-widget-header").addClass("hidden");
       }
       _useFormSubmitOnTouch = (window.innerWidth < 600) && _useFormSubmitOnTouch;
       _calcStartDay = enhancedDateWidget("start");
