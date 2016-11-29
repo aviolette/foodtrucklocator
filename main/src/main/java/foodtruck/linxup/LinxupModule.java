@@ -19,13 +19,11 @@ public class LinxupModule extends PrivateModule {
   @Override
   protected void configure() {
     bind(LinxupConnector.class).to(LinxupConnectorImpl.class);
-    expose(LinxupConnector.class);
     bind(TrackingDeviceService.class).to(TrackingDeviceServiceImpl.class);
     expose(TrackingDeviceService.class);
     bind(TruckStopCache.class).to(TruckStopLoadingCache.class);
-    expose(TruckStopCache.class);
     bind(BlacklistedLocationMatcher.class).to(BlacklistedLocationMatcherImpl.class);
-    expose(BlacklistedLocationMatcher.class);
+    bind(LocationResolver.class).to(LocationResolverImpl.class);
   }
 
   @Provides
@@ -43,7 +41,6 @@ public class LinxupModule extends PrivateModule {
 
   @LinxupMapHistoryEndpoint
   @Provides
-  @Exposed
   public WebResource provideTripEndpoint(Client client) {
     return client.resource("https://www.linxup.com/ibis/rest/linxupmobile/hist");
   }
@@ -51,7 +48,6 @@ public class LinxupModule extends PrivateModule {
 
   @LinxupEndpoint
   @Provides
-  @Exposed
   public WebResource provideEndpoint(Client client) {
     return client.resource("https://www.linxup.com/ibis/rest/linxupmobile/map");
   }

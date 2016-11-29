@@ -6,11 +6,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.annotation.Nullable;
 import javax.ws.rs.WebApplicationException;
 
-import com.google.appengine.api.memcache.Expiration;
-import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.common.base.Function;
@@ -60,14 +57,14 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
   private final Provider<Queue> queueProvider;
   private final Provider<TruckStopCache> truckStopCacheProvider;
   private final BlacklistedLocationMatcher blacklistedLocationMatcher;
-  private final MemcacheService memcacheService;
+  private final LocationResolver locationResolver;
 
   @Inject
   public TrackingDeviceServiceImpl(TruckStopDAO truckStopDAO, LinxupConnector connector,
       TrackingDeviceDAO trackingDeviceDAO, GeoLocator locator, Clock clock, TruckDAO truckDAO,
       @FriendlyDateTimeFormat DateTimeFormatter formatter, SecurityChecker securityChecker,
       LinxupAccountDAO linxupAccountDAO, Provider<Queue> queueProvider, Provider<TruckStopCache> truckStopCacheProvider,
-      BlacklistedLocationMatcher blacklistedLocationMatcher, MemcacheService memcacheService) {
+      BlacklistedLocationMatcher blacklistedLocationMatcher, LocationResolver locationResolver) {
     this.connector = connector;
     this.truckStopDAO = truckStopDAO;
     this.trackingDeviceDAO = trackingDeviceDAO;
@@ -80,7 +77,7 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
     this.queueProvider = queueProvider;
     this.truckStopCacheProvider = truckStopCacheProvider;
     this.blacklistedLocationMatcher = blacklistedLocationMatcher;
-    this.memcacheService = memcacheService;
+    this.locationResolver = locationResolver;
   }
 
   @Override
@@ -351,7 +348,7 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
     for (Position position : positions) {
       TrackingDevice device = deviceMap.get(position.getDeviceNumber());
       TrackingDevice.Builder builder = TrackingDevice.builder(device);
-      Location location = buildLocation(position, device, linxupAccount);
+      Location location = locationResolver.resolve(position, device, linxupAccount);
       location = MoreObjects.firstNonNull(locator.reverseLookup(location), location);
       // TODO: it would be nice if the actual device could calculate this, but for now we look to see if it changed.
       boolean parked = position.getSpeedMph() == 0 && (device == null || device.getLastLocation() == null || device.getLastLocation()
@@ -376,72 +373,6 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
       devices.add(theDevice);
     }
     return devices.build();
-  }
-
-  /**
-   * Translate a raw position from the Linxup device into a Location object.  Since there can be variances in queries to
-   * the GPS device, we want the location object to represent the last device value in the case where the data varies
-   * but the truck has not actually moved.
-   * @param position      the CURRENT raw response from GPS device
-   * @param device        the LAST device state (i.e. from fie minutes ago)
-   * @param linxupAccount the linxup account information
-   */
-
-  private Location buildLocation(Position position, @Nullable TrackingDevice device, LinxupAccount linxupAccount) {
-    Location currentlyRecordPosition = position.toLocation();
-    // device will be null when this is the first time we've seen a particular device
-    if (device == null) {
-      return currentlyRecordPosition;
-    }
-    // In the case where the CURRENT and LAST position have not varied by much, return the last position
-    Location lastRecordedPosition = device.getPreciseLocation();
-    if (lastRecordedPosition == null || currentlyRecordPosition.within(0.01)
-        .milesOf(lastRecordedPosition)) {
-      return lastRecordedPosition;
-    }
-    log.log(Level.INFO, "Sanity check: position-parked: {0} device-parked: {1} distance from last position {2}",
-        new Object[]{position.isParked(), device.isParked(), currentlyRecordPosition.distanceFrom(
-            device.getLastLocation())});
-    // the case where there was no intermediate movement, means there may be an anomaly
-    if (position.isParked() && device.isParked() && currentlyRecordPosition.within(0.20)
-        .milesOf(device.getLastLocation())) {
-      log.log(Level.INFO, "Checking for anomaly {0}\n\n {1}", new Object[]{currentlyRecordPosition, device});
-      if (detectAnomaly(device, linxupAccount, currentlyRecordPosition)) {
-        return lastRecordedPosition;
-      }
-    }
-    return currentlyRecordPosition;
-  }
-
-  /**
-   * Search through the history and compare last history location with the current location.  If the current location
-   * is not within tolerance of stop, then return true. If there is no anomaly, return false.
-   */
-  private boolean detectAnomaly(TrackingDevice device, LinxupAccount linxupAccount, Location preciseLocation) {
-    String key = "anomaly-detected-for-" + device.getDeviceNumber();
-    if (memcacheService.contains(key)) {
-      log.log(Level.INFO, "Anomaly detected for device {0} but pulled from memcache {1}", new Object[]{device, key});
-      return true;
-    }
-
-    try {
-      LinxupMapHistoryResponse response = connector.tripList(linxupAccount, clock.timeAt(0, 0), clock.timeAt(23, 59),
-          device.getDeviceNumber());
-      Stop stop = response.lastStopFor(device.getDeviceNumber());
-      log.log(Level.INFO, "Stop {0}\n{1}", new Object[] {stop, preciseLocation});
-      if (stop != null && !stop.getLocation()
-          .withinToleranceOf(preciseLocation)) {
-        log.log(Level.SEVERE, "Anomaly detected {0} {1}", new Object[]{stop.getLocation(), preciseLocation});
-        // only perform anomaly detection once per-broadcast (the device usually broadcasts every hour when parked)
-        memcacheService.put(key, true, Expiration.onDate(device.getLastBroadcast()
-            .plusMinutes(59)
-            .toDate()));
-        return true;
-      }
-    } catch (Exception e) {
-      log.log(Level.SEVERE, e.getMessage(), e);
-    }
-    return false;
   }
 
   private static class Matches {

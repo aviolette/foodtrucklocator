@@ -56,6 +56,7 @@ public class TrackingDeviceServiceImplTest {
   @Mock private TruckStopCache truckStopCache;
   @Mock private BlacklistedLocationMatcher blacklistLocationMatcher;
   @Mock private TrackingDeviceServiceImpl service;
+  @Mock private LocationResolver locationResolver;
   private LinxupAccount account;
   private DateTime now = new DateTime(2016, 11, 22, 9, 0, 0);
   private Position position1;
@@ -104,7 +105,7 @@ public class TrackingDeviceServiceImplTest {
         .build();
     service = new TrackingDeviceServiceImpl(truckStopDAO, connector, trackingDeviceDAO, locator, clock, truckDAO,
         formatter, securityChecker, linxupAccountDAO, queueProvider, Providers.of(truckStopCache),
-        blacklistLocationMatcher, null);
+        blacklistLocationMatcher, locationResolver);
   }
 
   // handle merging a tracking device that is not enabled.  It should cancel existing stops created by that device
@@ -120,6 +121,7 @@ public class TrackingDeviceServiceImplTest {
         .lastLocation(location)
         .lastActualLocation(null)
         .build();
+    when(locationResolver.resolve(position1, trackingDevice, account)).thenReturn(location);
     when(trackingDeviceDAO.findAll()).thenReturn(ImmutableList.of(trackingDevice));
     when(connector.findPositions(account)).thenReturn(ImmutableList.of(position1));
     when(blacklistLocationMatcher.isBlacklisted(null)).thenReturn(false);
@@ -164,6 +166,7 @@ public class TrackingDeviceServiceImplTest {
         .lastLocation(location)
         .lastActualLocation(null)
         .build();
+    when(locationResolver.resolve(position1, trackingDevice, account)).thenReturn(location);
     when(trackingDeviceDAO.findAll()).thenReturn(ImmutableList.of(trackingDevice));
     when(connector.findPositions(account)).thenReturn(ImmutableList.of(position1));
     when(blacklistLocationMatcher.isBlacklisted(null)).thenReturn(false);
@@ -214,6 +217,8 @@ public class TrackingDeviceServiceImplTest {
     when(trackingDeviceDAO.findAll()).thenReturn(ImmutableList.<TrackingDevice>of());
     when(connector.findPositions(account)).thenReturn(ImmutableList.of(position1));
     when(blacklistLocationMatcher.isBlacklisted(null)).thenReturn(false);
+    when(locationResolver.resolve(position1, null, account)).thenReturn(preprocessedLocation);
+
     service.synchronizeFor(account);
 
     TrackingDevice trackingDevice = TrackingDevice.builder()
