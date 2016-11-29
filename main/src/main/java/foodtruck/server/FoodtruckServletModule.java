@@ -182,7 +182,7 @@ class FoodtruckServletModule extends ServletModule {
 
     // Filters
     if ("true".equals(System.getProperty("foodtrucklocator.supports.ssl"))) {
-      filterRegex("/admin/.*", "/vendor.*", "/book.*").through(SSLRedirectFilter.class);
+      filterRegex("/admin/.*", "/", "/vendor.*", "/book.*").through(SSLRedirectFilter.class);
     }
     filter("/*").through(SiteScraperFilter.class);
     filter("/*").through(CommonConfigFilter.class);

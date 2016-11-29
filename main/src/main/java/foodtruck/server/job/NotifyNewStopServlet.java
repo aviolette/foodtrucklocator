@@ -65,7 +65,8 @@ public class NotifyNewStopServlet extends HttpServlet {
     TrackingDevice device = trackingDeviceDAO.findById(Long.parseLong(deviceId));
 
     if (stop == null) {
-      log.log(Level.SEVERE, "Stop not found {0}", stopId);
+      // just a warning since it's possible and legitimate to delete a stop before this actually gets invoked.
+      log.log(Level.WARNING, "Stop not found {0}", stopId);
       return;
     }
 

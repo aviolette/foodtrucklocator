@@ -3,8 +3,10 @@ package foodtruck.notifications;
 import java.util.Map;
 import java.util.Set;
 
+import foodtruck.linxup.Stop;
 import foodtruck.model.Location;
 import foodtruck.model.Story;
+import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.server.vendor.LoginMethod;
@@ -58,4 +60,6 @@ public interface SystemNotificationService {
    * are mentioned at that spot that don't already have an overlapping stop.
    */
   void notifyAddMentionedTrucks(Set<String> truckIds, TruckStop stop, String text);
+
+  void notifyDeviceAnomalyDetected(Stop stop, TrackingDevice device);
 }

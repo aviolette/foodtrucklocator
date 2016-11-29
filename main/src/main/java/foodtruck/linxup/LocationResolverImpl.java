@@ -12,6 +12,7 @@ import com.google.inject.Inject;
 import foodtruck.model.LinxupAccount;
 import foodtruck.model.Location;
 import foodtruck.model.TrackingDevice;
+import foodtruck.notifications.SystemNotificationService;
 import foodtruck.util.Clock;
 
 /**
@@ -23,12 +24,14 @@ class LocationResolverImpl implements LocationResolver {
   private final MemcacheService memcacheService;
   private final Clock clock;
   private final LinxupConnector connector;
+  private final SystemNotificationService systemNotificationService;
 
   @Inject
-  public LocationResolverImpl(MemcacheService memcacheService, Clock clock, LinxupConnector connector) {
+  public LocationResolverImpl(MemcacheService memcacheService, Clock clock, LinxupConnector connector, SystemNotificationService systemNotificationService) {
     this.memcacheService = memcacheService;
     this.clock = clock;
     this.connector = connector;
+    this.systemNotificationService = systemNotificationService;
   }
 
   @Override
@@ -63,7 +66,7 @@ class LocationResolverImpl implements LocationResolver {
    * Search through the history and compare last history location with the current location.  If the current location is
    * not within tolerance of stop, then return true. If there is no anomaly, return false.
    */
-  private boolean detectAnomaly(TrackingDevice device, LinxupAccount linxupAccount, Location preciseLocation) {
+  private boolean detectAnomaly(TrackingDevice device, LinxupAccount linxupAccount, Location currentLocation) {
     String key = "anomaly-detected-for-" + device.getDeviceNumber();
     if (memcacheService.contains(key)) {
       log.log(Level.INFO, "Anomaly detected for device {0} but pulled from memcache {1}", new Object[]{device, key});
@@ -74,10 +77,10 @@ class LocationResolverImpl implements LocationResolver {
       LinxupMapHistoryResponse response = connector.tripList(linxupAccount, clock.timeAt(0, 0), clock.timeAt(23, 59),
           device.getDeviceNumber());
       Stop stop = response.lastStopFor(device.getDeviceNumber());
-      log.log(Level.INFO, "Stop {0}\n{1}", new Object[]{stop, preciseLocation});
       if (stop != null && !stop.getLocation()
-          .withinToleranceOf(preciseLocation)) {
-        log.log(Level.SEVERE, "Anomaly detected {0} {1}", new Object[]{stop.getLocation(), preciseLocation});
+          .withinToleranceOf(currentLocation)) {
+        systemNotificationService.notifyDeviceAnomalyDetected(stop, device);
+        log.log(Level.WARNING, "Anomaly detected {0} {1}", new Object[]{stop.getLocation(), currentLocation});
         // only perform anomaly detection once per-broadcast (the device usually broadcasts every hour when parked)
         memcacheService.put(key, true, Expiration.onDate(device.getLastBroadcast()
             .plusMinutes(59)

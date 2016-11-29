@@ -11,9 +11,11 @@ import com.google.inject.Inject;
 
 import org.joda.time.format.DateTimeFormatter;
 
+import foodtruck.linxup.Stop;
 import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.Story;
+import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.server.vendor.LoginMethod;
@@ -21,7 +23,6 @@ import foodtruck.util.TimeFormatter;
 
 /**
  * An email notifier that sends the email immediately.
- *
  * @author aviolette
  * @since 4/29/13
  */
@@ -69,15 +70,19 @@ class SimpleEmailNotifier implements SystemNotificationService {
   public void systemNotifyTrucksAddedByObserver(Map<Truck, Story> trucksAdded) {
     StringBuilder builder = new StringBuilder("The following trucks were added: \n\n");
     for (Map.Entry<Truck, Story> entry : trucksAdded.entrySet()) {
-      builder.append(entry.getKey().getName())
+      builder.append(entry.getKey()
+          .getName())
           .append(" ")
           .append(staticConfig.getBaseUrl())
           .append("/admin/trucks/")
-          .append(entry.getKey().getId())
+          .append(entry.getKey()
+              .getId())
           .append(" => @")
-          .append(entry.getValue().getScreenName())
+          .append(entry.getValue()
+              .getScreenName())
           .append(" '")
-          .append(entry.getValue().getText())
+          .append(entry.getValue()
+              .getText())
           .append("'\n\n");
     }
     try {
@@ -111,13 +116,30 @@ class SimpleEmailNotifier implements SystemNotificationService {
 
   @Override
   public void notifyAddMentionedTrucks(Set<String> truckIds, TruckStop stop, String text) {
-    String truckIdString = Joiner.on(",").join(truckIds),
-        url = staticConfig.getBaseUrl() + "/admin/event_at/" + stop.getLocation().getKey() +
+    String truckIdString = Joiner.on(",")
+        .join(truckIds),
+        url = staticConfig.getBaseUrl() + "/admin/event_at/" + stop.getLocation()
+            .getKey() +
             "?selected=" + truckIdString + "&startTime=" + dateTimeFormatter.print(stop.getStartTime()) + "&endTime=" +
             dateTimeFormatter.print(stop.getEndTime());
     String msgBody = MessageFormat.format(
         "This tweet \"{0}\"\n\n from {1} might have indicated that there additional trucks " + "to be added to the system.\n\n  Click here {2} to add the trucks",
-        text, stop.getTruck().getName(), url);
+        text, stop.getTruck()
+            .getName(), url);
     sender.sendSystemMessage("Truck was mentioned by another truck", msgBody);
+  }
+
+  @Override
+  public void notifyDeviceAnomalyDetected(Stop stop, TrackingDevice device) {
+    try {
+      String msgBody = MessageFormat.format(
+          "The last polled stop for {0} is different than the current polled stop {1}, with no intermediary travel.  The last stop in the travel history is {2}.\n\n{3}/admin/trucks/{4}",
+          device.getLabel(), device.getLastLocation()
+              .getName(), stop.getLocation()
+              .getName(), staticConfig.getBaseUrl(), device.getTruckOwnerId());
+      sender.sendSystemMessage("Device anomaly found for " + device.getLabel(), msgBody);
+    } catch (Exception e) {
+      log.log(Level.SEVERE, e.getMessage(), e);
+    }
   }
 }
