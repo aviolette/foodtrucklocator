@@ -2,6 +2,7 @@ package foodtruck.linxup;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,6 +35,7 @@ public class BlacklistedLocationMatcherImpl implements BlacklistedLocationMatche
   @Inject
   public BlacklistedLocationMatcherImpl(final TruckDAO truckDAO, final LocationDAO locationDAO) {
     blacklistCache = CacheBuilder.newBuilder()
+        .expireAfterAccess(2, TimeUnit.MINUTES)
         .build(new CacheLoader<String, List<Location>>() {
           public List<Location> load(String key) throws Exception {
             Truck truck = truckDAO.findById(key);
