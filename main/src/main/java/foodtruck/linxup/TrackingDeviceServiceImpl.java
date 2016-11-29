@@ -378,27 +378,39 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
     return devices.build();
   }
 
+  /**
+   * Translate a raw position from the Linxup device into a Location object.  Since there can be variances in queries to
+   * the GPS device, we want the location object to represent the last device value in the case where the data varies
+   * but the truck has not actually moved.
+   * @param position      the CURRENT raw response from GPS device
+   * @param device        the LAST device state (i.e. from fie minutes ago)
+   * @param linxupAccount the linxup account information
+   */
+
   private Location buildLocation(Position position, @Nullable TrackingDevice device, LinxupAccount linxupAccount) {
-    Location location = position.toLocation();
+    Location currentlyRecordPosition = position.toLocation();
+    // device will be null when this is the first time we've seen a particular device
     if (device == null) {
-      return location;
+      return currentlyRecordPosition;
     }
-    Location preciseLocation = device.getPreciseLocation();
-    if (preciseLocation == null || location.withinToleranceOf(preciseLocation)) {
-      return location;
+    // In the case where the CURRENT and LAST position have not varied by much, return the last position
+    Location lastRecordedPosition = device.getPreciseLocation();
+    if (lastRecordedPosition == null || currentlyRecordPosition.within(0.01)
+        .milesOf(lastRecordedPosition)) {
+      return lastRecordedPosition;
     }
-    log.log(Level.INFO, "Sanity check: {0} {1} {2}",
-        new Object[]{position.isParked(), device.isParked(), location.distanceFrom(device.getLastLocation())});
+    log.log(Level.INFO, "Sanity check: position-parked: {0} device-parked: {1} distance from last position {2}",
+        new Object[]{position.isParked(), device.isParked(), currentlyRecordPosition.distanceFrom(
+            device.getLastLocation())});
     // the case where there was no intermediate movement, means there may be an anomaly
-    if (position.isParked() && device.isParked() && !location.withinToleranceOf(
-        device.getLastLocation()) && location.within(0.20)
+    if (position.isParked() && device.isParked() && currentlyRecordPosition.within(0.20)
         .milesOf(device.getLastLocation())) {
-      log.log(Level.INFO, "Checking for anomaly {0}\n\n {1}", new Object[]{location, device});
-      if (detectAnomaly(device, linxupAccount, preciseLocation)) {
-        return preciseLocation;
+      log.log(Level.INFO, "Checking for anomaly {0}\n\n {1}", new Object[]{currentlyRecordPosition, device});
+      if (detectAnomaly(device, linxupAccount, currentlyRecordPosition)) {
+        return lastRecordedPosition;
       }
     }
-    return location;
+    return currentlyRecordPosition;
   }
 
   /**
