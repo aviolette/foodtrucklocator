@@ -1,4 +1,4 @@
-package foodtruck.util;
+package foodtruck.appengine.dao.appengine;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

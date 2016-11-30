@@ -102,6 +102,11 @@
       <version>1.0-SNAPSHOT</version>
     </dependency>
 
+    <dependency>
+      <groupId>foodtruck</groupId>
+      <artifactId>geolocation</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
 
     <!-- older version required by appengine -->
     <dependency>

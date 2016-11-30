@@ -6,7 +6,6 @@ import com.google.inject.Provider;
 
 import foodtruck.dao.DailyTruckStopDAO;
 import foodtruck.model.Slots;
-import foodtruck.util.DailyRollup;
 
 /**
  * @author aviolette

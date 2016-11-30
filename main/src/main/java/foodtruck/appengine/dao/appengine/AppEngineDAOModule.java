@@ -27,8 +27,6 @@ import foodtruck.dao.WeeklyLocationStatsRollupDAO;
 import foodtruck.dao.WeeklyRollupDAO;
 import foodtruck.dao.WeeklyTruckStopDAO;
 import foodtruck.model.Slots;
-import foodtruck.util.DailyRollup;
-import foodtruck.util.FifteenMinuteRollup;
 import foodtruck.util.Secondary;
 import foodtruck.util.WeeklyRollup;
 
