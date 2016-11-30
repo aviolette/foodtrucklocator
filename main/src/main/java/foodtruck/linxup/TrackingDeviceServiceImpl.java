@@ -1,5 +1,6 @@
 package foodtruck.linxup;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.name.Named;
 import com.javadocmd.simplelatlng.LatLng;
 
 import org.joda.time.DateTime;
@@ -35,6 +37,7 @@ import foodtruck.model.StopOrigin;
 import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
+import foodtruck.monitoring.Counter;
 import foodtruck.server.security.SecurityChecker;
 import foodtruck.util.Clock;
 import foodtruck.util.FriendlyDateTimeFormat;
@@ -58,13 +61,15 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
   private final Provider<TruckStopCache> truckStopCacheProvider;
   private final BlacklistedLocationMatcher blacklistedLocationMatcher;
   private final LocationResolver locationResolver;
+  private final Counter counter;
 
   @Inject
   public TrackingDeviceServiceImpl(TruckStopDAO truckStopDAO, LinxupConnector connector,
       TrackingDeviceDAO trackingDeviceDAO, GeoLocator locator, Clock clock, TruckDAO truckDAO,
       @FriendlyDateTimeFormat DateTimeFormatter formatter, SecurityChecker securityChecker,
       LinxupAccountDAO linxupAccountDAO, Provider<Queue> queueProvider, Provider<TruckStopCache> truckStopCacheProvider,
-      BlacklistedLocationMatcher blacklistedLocationMatcher, LocationResolver locationResolver) {
+      BlacklistedLocationMatcher blacklistedLocationMatcher, LocationResolver locationResolver,
+      @Named(LinxupModule.ERROR_COUNTER) Counter errorCounter) {
     this.connector = connector;
     this.truckStopDAO = truckStopDAO;
     this.trackingDeviceDAO = trackingDeviceDAO;
@@ -78,17 +83,28 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
     this.truckStopCacheProvider = truckStopCacheProvider;
     this.blacklistedLocationMatcher = blacklistedLocationMatcher;
     this.locationResolver = locationResolver;
+    this.counter = errorCounter;
   }
 
   @Override
   public void synchronize() {
     for (LinxupAccount account : linxupAccountDAO.findActive()) {
-      synchronizeFor(account);
+      try {
+        synchronizeFor(account);
+      } catch (IOException io) {
+        long count = counter.getCount(account.getTruckId());
+        if (count < 2) {
+          counter.increment(account.getTruckId());
+          log.log(Level.WARNING, io.getMessage() + " " + count, io);
+          continue;
+        }
+        log.log(Level.SEVERE, io.getMessage(), io);
+      }
     }
   }
 
   @Override
-  public void synchronizeFor(LinxupAccount account) {
+  public void synchronizeFor(LinxupAccount account) throws IOException {
     List<Position> positionList = connector.findPositions(account);
     merge(synchronize(positionList, account));
   }

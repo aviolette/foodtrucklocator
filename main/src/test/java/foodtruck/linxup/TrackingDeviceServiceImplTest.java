@@ -25,6 +25,7 @@ import foodtruck.model.Location;
 import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
+import foodtruck.monitoring.Counter;
 import foodtruck.server.security.SecurityChecker;
 import foodtruck.util.Clock;
 
@@ -57,6 +58,7 @@ public class TrackingDeviceServiceImplTest {
   @Mock private BlacklistedLocationMatcher blacklistLocationMatcher;
   @Mock private TrackingDeviceServiceImpl service;
   @Mock private LocationResolver locationResolver;
+  @Mock private Counter errorCounter;
   private LinxupAccount account;
   private DateTime now = new DateTime(2016, 11, 22, 9, 0, 0);
   private Position position1;
@@ -105,7 +107,7 @@ public class TrackingDeviceServiceImplTest {
         .build();
     service = new TrackingDeviceServiceImpl(truckStopDAO, connector, trackingDeviceDAO, locator, clock, truckDAO,
         formatter, securityChecker, linxupAccountDAO, queueProvider, Providers.of(truckStopCache),
-        blacklistLocationMatcher, locationResolver);
+        blacklistLocationMatcher, locationResolver, errorCounter);
   }
 
   // handle merging a tracking device that is not enabled.  It should cancel existing stops created by that device

@@ -1,5 +1,6 @@
 package foodtruck.linxup;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -28,12 +29,17 @@ class LinxupConnectorImpl implements LinxupConnector {
   }
 
   @Override
-  public List<Position> findPositions(LinxupAccount account) {
-    LinxupMapResponse response = resource.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
-        .header(HttpHeaders.ACCEPT_ENCODING, "gzip,deflate")
-        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-        .entity(new LinxupMapRequest(account.getUsername(), account.getPassword()))
-        .post(LinxupMapResponse.class);
+  public List<Position> findPositions(LinxupAccount account) throws IOException, ServiceException {
+    LinxupMapResponse response;
+    try {
+      response = resource.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
+          .header(HttpHeaders.ACCEPT_ENCODING, "gzip,deflate")
+          .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+          .entity(new LinxupMapRequest(account.getUsername(), account.getPassword()))
+          .post(LinxupMapResponse.class);
+    } catch (RuntimeException rte) {
+      throw new IOException(rte.getMessage());
+    }
     if (response.isSuccessful()) {
       return response.getPositions();
     }

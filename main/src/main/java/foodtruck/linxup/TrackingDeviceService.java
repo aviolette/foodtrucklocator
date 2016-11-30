@@ -1,5 +1,6 @@
 package foodtruck.linxup;
 
+import java.io.IOException;
 import java.util.List;
 
 import foodtruck.model.LinxupAccount;
@@ -17,7 +18,7 @@ public interface TrackingDeviceService {
   /**
    * Synchronizes just one linxup account
    */
-  void synchronizeFor(LinxupAccount account);
+  void synchronizeFor(LinxupAccount account) throws IOException;
 
   /**
    * Enables or disables the beacon.  If a beacon is disabled, existing any active stops created by the beacon will be
