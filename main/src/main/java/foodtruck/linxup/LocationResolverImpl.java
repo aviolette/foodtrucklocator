@@ -55,8 +55,8 @@ class LocationResolverImpl implements LocationResolver {
         .milesOf(device.getLastLocation())) {
       log.log(Level.INFO, "Checking for anomaly {0}\n\n {1}", new Object[]{currentlyRecordPosition, device});
       if (detectAnomaly(device, linxupAccount, currentlyRecordPosition)) {
-        log.log(Level.INFO, "Returning {0}", lastRecordedPosition);
-        return lastRecordedPosition;
+        log.log(Level.INFO, "Returning {0}", device.getLastLocation());
+        return device.getLastLocation();
       }
     }
     return currentlyRecordPosition;
