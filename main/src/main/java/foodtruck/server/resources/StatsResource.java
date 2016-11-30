@@ -24,7 +24,7 @@ import foodtruck.dao.TimeSeriesDAO;
 import foodtruck.model.Slots;
 import foodtruck.model.StatVector;
 import foodtruck.model.SystemStats;
-import foodtruck.monitoring.Counter;
+import foodtruck.monitoring.CounterImpl;
 import foodtruck.monitoring.DailyScheduleCounter;
 import foodtruck.time.Clock;
 
@@ -37,13 +37,13 @@ public class StatsResource {
   private static final Logger log = Logger.getLogger(StatsResource.class.getName());
   private static final long DAY_IN_MILLIS = 86400000L;
   private final MemcacheService cache;
-  private final Counter scheduleCounter;
+  private final CounterImpl scheduleCounter;
   private final Clock clock;
   private final TimeSeriesSelector seriesSelector;
 
   @Inject
   public StatsResource(TimeSeriesSelector seriesSelector, Clock clock, MemcacheService cache,
-      @DailyScheduleCounter Counter counter) {
+      @DailyScheduleCounter CounterImpl counter) {
     this.cache = cache;
     this.clock = clock;
     this.seriesSelector = seriesSelector;

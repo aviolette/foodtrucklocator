@@ -14,6 +14,9 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 
+import foodtruck.appengine.dao.appengine.AppEngineDAOModule;
+import foodtruck.appengine.dao.memcached.MemcachedModule;
+
 /**
  * @author aviolette
  * @since 11/23/16
@@ -21,6 +24,8 @@ import com.google.inject.Provides;
 public class AppengineModule extends AbstractModule {
   @Override
   protected void configure() {
+    install(new AppEngineDAOModule());
+    install(new MemcachedModule());
   }
 
   @Provides

@@ -11,8 +11,6 @@ import com.google.inject.servlet.GuiceServletContextListener;
 import foodtruck.alexa.AlexaModule;
 import foodtruck.appengine.AppengineModule;
 import foodtruck.book.BookingModule;
-import foodtruck.dao.appengine.AppEngineDAOModule;
-import foodtruck.dao.memcached.MemcachedModule;
 import foodtruck.geolocation.GeolocationModule;
 import foodtruck.googleapi.GoogleApiModule;
 import foodtruck.linxup.LinxupModule;
@@ -41,14 +39,12 @@ public class FoodtruckConfig extends GuiceServletContextListener {
     ImmutableList.Builder<Module> modules = ImmutableList.<Module>builder().add(new AppengineModule())
         .add(new AlexaModule())
         .add(new GoogleApiModule())
-        .add(new AppEngineDAOModule())
-        .add(new MemcachedModule())
         .add(new GeolocationModule())
         .add(new TruckStopsModule())
         .add(new SecurityModule())
         .add(new ScheduleModule())
-        .add(new SocialMediaModule())
         .add(new MonitoringModule())
+        .add(new SocialMediaModule())
         .add(new NotificationModule())
         .add(new LinxupModule())
         .add(new TimeModule())

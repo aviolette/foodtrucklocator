@@ -10,7 +10,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 
-import foodtruck.monitoring.Counter;
+import foodtruck.monitoring.CounterImpl;
 
 /**
  * @author aviolette
@@ -71,7 +71,7 @@ public class LinxupModule extends PrivateModule {
 
   @Provides
   @Named(ERROR_COUNTER)
-  public Counter providesServiceErrorCounter(MemcacheService memcacheService) {
-    return new Counter("service.trackingdeviceservice.error", memcacheService, Expiration.byDeltaSeconds(3600));
+  public CounterImpl providesServiceErrorCounter(MemcacheService memcacheService) {
+    return new CounterImpl("service.trackingdeviceservice.error", memcacheService, Expiration.byDeltaSeconds(3600));
   }
 }

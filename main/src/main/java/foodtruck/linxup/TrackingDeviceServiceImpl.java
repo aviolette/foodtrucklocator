@@ -37,7 +37,7 @@ import foodtruck.model.StopOrigin;
 import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
-import foodtruck.monitoring.Counter;
+import foodtruck.monitoring.CounterImpl;
 import foodtruck.server.security.SecurityChecker;
 import foodtruck.time.Clock;
 import foodtruck.time.FriendlyDateTimeFormat;
@@ -61,7 +61,7 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
   private final Provider<TruckStopCache> truckStopCacheProvider;
   private final BlacklistedLocationMatcher blacklistedLocationMatcher;
   private final LocationResolver locationResolver;
-  private final Counter counter;
+  private final CounterImpl counter;
 
   @Inject
   public TrackingDeviceServiceImpl(TruckStopDAO truckStopDAO, LinxupConnector connector,
@@ -69,7 +69,7 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
       @FriendlyDateTimeFormat DateTimeFormatter formatter, SecurityChecker securityChecker,
       LinxupAccountDAO linxupAccountDAO, Provider<Queue> queueProvider, Provider<TruckStopCache> truckStopCacheProvider,
       BlacklistedLocationMatcher blacklistedLocationMatcher, LocationResolver locationResolver,
-      @Named(LinxupModule.ERROR_COUNTER) Counter errorCounter) {
+      @Named(LinxupModule.ERROR_COUNTER) CounterImpl errorCounter) {
     this.connector = connector;
     this.truckStopDAO = truckStopDAO;
     this.trackingDeviceDAO = trackingDeviceDAO;

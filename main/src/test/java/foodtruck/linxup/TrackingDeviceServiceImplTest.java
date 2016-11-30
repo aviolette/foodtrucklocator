@@ -25,7 +25,7 @@ import foodtruck.model.Location;
 import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
-import foodtruck.monitoring.Counter;
+import foodtruck.monitoring.CounterImpl;
 import foodtruck.server.security.SecurityChecker;
 import foodtruck.time.Clock;
 
@@ -58,7 +58,7 @@ public class TrackingDeviceServiceImplTest {
   @Mock private BlacklistedLocationMatcher blacklistLocationMatcher;
   @Mock private TrackingDeviceServiceImpl service;
   @Mock private LocationResolver locationResolver;
-  @Mock private Counter errorCounter;
+  @Mock private CounterImpl errorCounter;
   private LinxupAccount account;
   private DateTime now = new DateTime(2016, 11, 22, 9, 0, 0);
   private Position position1;

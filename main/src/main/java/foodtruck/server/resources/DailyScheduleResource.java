@@ -16,14 +16,14 @@ import org.codehaus.jettison.json.JSONException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 
-import foodtruck.monitoring.Counter;
+import foodtruck.monitoring.CounterImpl;
 import foodtruck.monitoring.DailyScheduleCounter;
 import foodtruck.monitoring.HourlyScheduleCounter;
 import foodtruck.schedule.ScheduleCacher;
 import foodtruck.server.resources.json.DailyScheduleWriter;
-import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.time.Clock;
 import foodtruck.time.DateOnlyFormatter;
+import foodtruck.truckstops.FoodTruckStopService;
 
 /**
  * @author aviolette
@@ -38,13 +38,13 @@ public class DailyScheduleResource {
   private final ScheduleCacher scheduleCacher;
   private final DailyScheduleWriter dailyScheduleWriter;
   private final DateTimeFormatter formatter;
-  private final Counter dailyCounter;
-  private final Counter hourlyCounter;
+  private final CounterImpl dailyCounter;
+  private final CounterImpl hourlyCounter;
 
   @Inject
   public DailyScheduleResource(FoodTruckStopService foodTruckService, Clock clock, AuthorizationChecker checker,
-      ScheduleCacher scheduleCacher, DailyScheduleWriter writer,
-      @DailyScheduleCounter Counter counter, @HourlyScheduleCounter Counter hourlyCounter,
+      ScheduleCacher scheduleCacher, DailyScheduleWriter writer, @DailyScheduleCounter CounterImpl counter,
+      @HourlyScheduleCounter CounterImpl hourlyCounter,
       @DateOnlyFormatter DateTimeFormatter formatter) {
     this.truckService = foodTruckService;
     this.clock = clock;

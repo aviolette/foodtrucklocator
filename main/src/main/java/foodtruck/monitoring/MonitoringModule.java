@@ -20,12 +20,12 @@ public class MonitoringModule extends AbstractModule {
 
   @Provides
   @DailyScheduleCounter
-  public Counter providesDailyScheduleCounter(MemcacheService memcacheService) {
-    return new Counter("service.access.daily", memcacheService, null);
+  public CounterImpl providesDailyScheduleCounter(MemcacheService memcacheService) {
+    return new CounterImpl("service.access.daily", memcacheService, null);
   }
 
   @Provides @HourlyScheduleCounter
-  public Counter providesHourlyScheduleCounter(MemcacheService memcacheService) {
-    return new Counter("service.access.hourly", memcacheService, Expiration.byDeltaSeconds(3600));
+  public CounterImpl providesHourlyScheduleCounter(MemcacheService memcacheService) {
+    return new CounterImpl("service.access.hourly", memcacheService, Expiration.byDeltaSeconds(3600));
   }
 }
