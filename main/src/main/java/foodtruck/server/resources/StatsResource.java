@@ -20,12 +20,12 @@ import com.sun.jersey.api.JResponse;
 
 import org.joda.time.DateTime;
 
+import foodtruck.appengine.monitoring.CounterImpl;
+import foodtruck.appengine.monitoring.DailyScheduleCounter;
 import foodtruck.dao.TimeSeriesDAO;
 import foodtruck.model.Slots;
 import foodtruck.model.StatVector;
 import foodtruck.model.SystemStats;
-import foodtruck.monitoring.CounterImpl;
-import foodtruck.monitoring.DailyScheduleCounter;
 import foodtruck.time.Clock;
 
 /**

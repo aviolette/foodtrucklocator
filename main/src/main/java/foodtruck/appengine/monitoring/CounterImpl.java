@@ -1,4 +1,4 @@
-package foodtruck.monitoring;
+package foodtruck.appengine.monitoring;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -8,6 +8,8 @@ import javax.annotation.Nullable;
 import com.google.appengine.api.memcache.Expiration;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.inject.Inject;
+
+import foodtruck.monitoring.Counter;
 
 /**
  * @author aviolette

@@ -16,9 +16,9 @@ import org.codehaus.jettison.json.JSONException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 
-import foodtruck.monitoring.CounterImpl;
-import foodtruck.monitoring.DailyScheduleCounter;
-import foodtruck.monitoring.HourlyScheduleCounter;
+import foodtruck.appengine.monitoring.CounterImpl;
+import foodtruck.appengine.monitoring.DailyScheduleCounter;
+import foodtruck.appengine.monitoring.HourlyScheduleCounter;
 import foodtruck.schedule.ScheduleCacher;
 import foodtruck.server.resources.json.DailyScheduleWriter;
 import foodtruck.time.Clock;

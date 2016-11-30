@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import foodtruck.appengine.monitoring.CounterImpl;
 import foodtruck.dao.LinxupAccountDAO;
 import foodtruck.dao.TrackingDeviceDAO;
 import foodtruck.dao.TruckDAO;
@@ -25,7 +26,6 @@ import foodtruck.model.Location;
 import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
-import foodtruck.monitoring.CounterImpl;
 import foodtruck.server.security.SecurityChecker;
 import foodtruck.time.Clock;
 

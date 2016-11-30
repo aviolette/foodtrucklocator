@@ -18,6 +18,8 @@ import com.google.inject.Singleton;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
+import foodtruck.appengine.monitoring.CounterImpl;
+import foodtruck.appengine.monitoring.DailyScheduleCounter;
 import foodtruck.dao.ApplicationDAO;
 import foodtruck.dao.DailyRollupDAO;
 import foodtruck.dao.DailyTruckStopDAO;
@@ -27,8 +29,6 @@ import foodtruck.dao.TruckStopDAO;
 import foodtruck.dao.WeeklyTruckStopDAO;
 import foodtruck.model.Application;
 import foodtruck.model.TruckStop;
-import foodtruck.monitoring.CounterImpl;
-import foodtruck.monitoring.DailyScheduleCounter;
 import foodtruck.time.Clock;
 
 /**

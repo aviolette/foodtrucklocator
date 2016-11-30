@@ -10,7 +10,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 
-import foodtruck.monitoring.CounterImpl;
+import foodtruck.appengine.monitoring.CounterImpl;
 
 /**
  * @author aviolette

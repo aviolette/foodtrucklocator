@@ -14,11 +14,11 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 
+import foodtruck.appengine.monitoring.CounterImpl;
+import foodtruck.appengine.monitoring.DailyScheduleCounter;
 import foodtruck.dao.ApplicationDAO;
 import foodtruck.model.Application;
 import foodtruck.model.ApplicationWithUsageCounts;
-import foodtruck.monitoring.CounterImpl;
-import foodtruck.monitoring.DailyScheduleCounter;
 import foodtruck.util.RandomString;
 
 import static foodtruck.server.resources.Resources.requiresAdmin;

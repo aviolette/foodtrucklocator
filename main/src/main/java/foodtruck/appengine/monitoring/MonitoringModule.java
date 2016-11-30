@@ -1,10 +1,12 @@
-package foodtruck.monitoring;
+package foodtruck.appengine.monitoring;
 
 import com.google.appengine.api.memcache.Expiration;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
-import com.google.inject.matcher.Matchers;
+
+import foodtruck.monitoring.CommonMonitoringModule;
+import foodtruck.monitoring.CounterPublisher;
 
 /**
  * @author aviolette@gmail.com
@@ -12,10 +14,8 @@ import com.google.inject.matcher.Matchers;
  */
 public class MonitoringModule extends AbstractModule {
   @Override protected void configure() {
-    MonitorInterceptor interceptor = new MonitorInterceptor();
-    requestInjection(interceptor);
-    bindInterceptor(Matchers.any(),
-        Matchers.annotatedWith(Monitored.class), interceptor);
+    bind(CounterPublisher.class).to(QueuePublisher.class);
+    install(new CommonMonitoringModule());
   }
 
   @Provides

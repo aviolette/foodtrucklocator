@@ -10,11 +10,11 @@ import com.google.inject.servlet.GuiceServletContextListener;
 
 import foodtruck.alexa.AlexaModule;
 import foodtruck.appengine.AppengineModule;
+import foodtruck.appengine.monitoring.MonitoringModule;
 import foodtruck.book.BookingModule;
 import foodtruck.geolocation.GeolocationModule;
 import foodtruck.googleapi.GoogleApiModule;
 import foodtruck.linxup.LinxupModule;
-import foodtruck.monitoring.MonitoringModule;
 import foodtruck.notifications.NotificationModule;
 import foodtruck.schedule.ScheduleModule;
 import foodtruck.server.security.SecurityModule;

@@ -21,7 +21,6 @@ import foodtruck.time.Clock;
  */
 @Singleton
 public class StatUpdateQueueServlet extends HttpServlet {
-
   private final DailyRollupDAO dailyRollupDAO;
   private final FifteenMinuteRollupDAO fifteenMinuteRollupDAO;
   private final WeeklyRollupDAO weeklyRollupDAO;

@@ -1,4 +1,4 @@
-package foodtruck.monitoring;
+package foodtruck.appengine.monitoring;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
