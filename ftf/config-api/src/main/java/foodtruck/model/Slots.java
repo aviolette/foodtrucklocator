@@ -13,7 +13,7 @@ import com.google.common.collect.Maps;
 public class Slots {
   private final long slotLength;
 
-  Slots(long slotLength) {
+  public Slots(long slotLength) {
     this.slotLength = slotLength;
   }
 

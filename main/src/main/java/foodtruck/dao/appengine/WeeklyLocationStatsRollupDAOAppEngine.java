@@ -5,7 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 
 import foodtruck.dao.WeeklyLocationStatsRollupDAO;
-import foodtruck.util.Slots;
+import foodtruck.model.Slots;
 import foodtruck.util.WeeklyRollup;
 
 /**

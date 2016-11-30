@@ -1,15 +1,23 @@
 package foodtruck.notifications;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.annotation.Nullable;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 
 import com.google.api.client.util.Strings;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Throwables;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
@@ -25,18 +33,21 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TwitterNotificationAccount;
 import foodtruck.socialmedia.TwitterFactoryWrapper;
-import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.time.Clock;
+import foodtruck.truckstops.FoodTruckStopService;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
+import twitter4j.auth.AccessToken;
+import twitter4j.conf.PropertyConfiguration;
 
 /**
  * @author aviolette
  * @since 12/3/12
  */
 public class TwitterEventNotificationService implements PublicEventNotificationService {
-  private static final Joiner HANDLE_JOINER = Joiner.on(" ").skipNulls();
+  private static final Joiner HANDLE_JOINER = Joiner.on(" ")
+      .skipNulls();
   private static final Logger log = Logger.getLogger(TwitterEventNotificationService.class.getName());
   private final FoodTruckStopService truckService;
   private final Clock clock;
@@ -69,15 +80,16 @@ public class TwitterEventNotificationService implements PublicEventNotificationS
       try {
         Set<Truck> trucks = truckService.findTrucksNearLocation(account.getLocation(), clock.now());
         if (!trucks.isEmpty()) {
-          updateStatus(account, String.format("Trucks at %s today: %s ", account.getName(),
-              FluentIterable.from(trucks).transform(new Function<Truck, String>() {
+          updateStatus(account, String.format("Trucks at %s today: %s ", account.getName(), FluentIterable.from(trucks)
+              .transform(new Function<Truck, String>() {
                 public String apply(Truck input) {
                   if (Strings.isNullOrEmpty(input.getTwitterHandle())) {
                     return input.getName();
                   }
                   return "@" + input.getTwitterHandle();
                 }
-              }).join(HANDLE_JOINER)));
+              })
+              .join(HANDLE_JOINER)));
         }
       } catch (Exception e) {
         log.log(Level.WARNING, "An exception occurred", e);
@@ -91,7 +103,9 @@ public class TwitterEventNotificationService implements PublicEventNotificationS
     if (account == null) {
       return;
     }
-    account = TwitterNotificationAccount.builder(account).location(location).build();
+    account = TwitterNotificationAccount.builder(account)
+        .location(location)
+        .build();
     notificationAccountDAO.save(account);
   }
 
@@ -100,7 +114,7 @@ public class TwitterEventNotificationService implements PublicEventNotificationS
     Truck truck = truckStop.getTruck();
     if (truck.isPostAtNewStop() && truck.getHasTwitterCredentials()) {
       Location location = truckStop.getLocation();
-      Twitter twitter = twitterFactoryWrapper.createDetached(truck.twitterAccessToken());
+      Twitter twitter = twitterFactoryWrapper.createDetached(twitterAccessToken(truck));
       try {
         twitter.updateStatus(String.format("We are now at %s. %s", location.getShortenedName(),
             config.getBaseUrl() + "/locations/" + location.getKey()));
@@ -110,6 +124,14 @@ public class TwitterEventNotificationService implements PublicEventNotificationS
     } else {
       messageAtStop(truckStop, "%s is now at %s %s");
     }
+  }
+
+  @Nullable
+  private AccessToken twitterAccessToken(Truck truck) {
+    if (truck.getHasTwitterCredentials()) {
+      return new AccessToken(truck.getTwitterToken(), truck.getTwitterTokenSecret());
+    }
+    return null;
   }
 
   @Override
@@ -124,7 +146,7 @@ public class TwitterEventNotificationService implements PublicEventNotificationS
       location = MoreObjects.firstNonNull(locationDAO.findByAddress(location.getName()), null);
       if (location.containedWithRadiusOf(account.getLocation()) && !retweetsDAO.hasBeenRetweeted(truck.getId(),
           account.getTwitterHandle())) {
-        Twitter twitter = new TwitterFactory(account.twitterCredentials()).getInstance();
+        Twitter twitter = new TwitterFactory(twitterCredentials(account)).getInstance();
         try {
           String descriptor = Strings.isNullOrEmpty(
               truck.getTwitterHandle()) ? truck.getName() : ". @" + truck.getTwitterHandle();
@@ -138,6 +160,22 @@ public class TwitterEventNotificationService implements PublicEventNotificationS
     }
   }
 
+  private PropertyConfiguration twitterCredentials(TwitterNotificationAccount account) {
+    Properties properties = new Properties();
+    InputStream in = Thread.currentThread()
+        .getContextClassLoader()
+        .getResourceAsStream("twitter4j.properties");
+    try {
+      properties.load(in);
+      in.close();
+    } catch (IOException e) {
+      throw Throwables.propagate(e);
+    }
+    properties.put(PropertyConfiguration.OAUTH_ACCESS_TOKEN, account.getOauthToken());
+    properties.put(PropertyConfiguration.OAUTH_ACCESS_TOKEN_SECRET, account.getOauthTokenSecret());
+    return new PropertyConfiguration(properties);
+  }
+
   @Override
   public void share(Story story, TruckStop stop) {
     if (story.getStoryType() != StoryType.TWEET) {
@@ -146,16 +184,19 @@ public class TwitterEventNotificationService implements PublicEventNotificationS
     try {
       log.log(Level.INFO, "Checking for retweets against {0} {1}", new Object[]{stop, story});
       for (TwitterNotificationAccount account : notificationAccountDAO.findAll()) {
-        if (retweetsDAO.hasBeenRetweeted(stop.getTruck().getId(), account.getTwitterHandle())) {
+        if (retweetsDAO.hasBeenRetweeted(stop.getTruck()
+            .getId(), account.getTwitterHandle())) {
           log.log(Level.INFO, "Already retweeted at {0} {1}",
               new Object[]{stop.getTruck().getId(), account.getTwitterHandle()});
           continue;
         }
-        if (stop.getLocation().containedWithRadiusOf(account.getLocation())) {
-          Twitter twitter = new TwitterFactory(account.twitterCredentials()).getInstance();
+        if (stop.getLocation()
+            .containedWithRadiusOf(account.getLocation())) {
+          Twitter twitter = new TwitterFactory(twitterCredentials(account)).getInstance();
           try {
             log.log(Level.INFO, "RETWEETING:" + story.getText());
-            retweetsDAO.markRetweeted(stop.getTruck().getId(), account.getTwitterHandle());
+            retweetsDAO.markRetweeted(stop.getTruck()
+                .getId(), account.getTwitterHandle());
             twitter.retweetStatus(story.getId());
           } catch (TwitterException e) {
             log.log(Level.SEVERE, e.getMessage(), e);
@@ -170,13 +211,31 @@ public class TwitterEventNotificationService implements PublicEventNotificationS
     }
   }
 
+  @Override
+  public void retweet(String accountName, String tweetIdValue) {
+    try {
+      TwitterNotificationAccount account = notificationAccountDAO.findByTwitterHandle(accountName);
+      if (account == null) {
+        throw new WebApplicationException(Response.status(400)
+            .entity("Account not found: " + accountName)
+            .build());
+      }
+      Twitter twitter = new TwitterFactory(twitterCredentials(account)).getInstance();
+      final long tweetId = Long.parseLong(tweetIdValue);
+      twitter.retweetStatus(tweetId);
+    } catch (TwitterException e) {
+      throw Throwables.propagate(e);
+    }
+  }
+
   @VisibleForTesting
   List<String> twitterSplitter(String name, String status) {
     ImmutableList.Builder<String> statuses = ImmutableList.builder();
     int start = 0, end = 140, cutoff = 140;
     // TODO: This doesn't work when greater than 280
     while (true) {
-      int min = Math.min(status.substring(start).length(), end);
+      int min = Math.min(status.substring(start)
+          .length(), end);
       String chunk = status.substring(start, start + min);
       if (start != 0) {
         chunk = "Additional trucks at " + name + ":" + chunk;
@@ -185,18 +244,20 @@ public class TwitterEventNotificationService implements PublicEventNotificationS
         statuses.add(chunk);
         break;
       } else {
-        end = status.substring(0, end).lastIndexOf(' ');
+        end = status.substring(0, end)
+            .lastIndexOf(' ');
         statuses.add(status.substring(start, end));
         start = end;
         end = end + 140;
       }
     }
-    return statuses.build().reverse();
+    return statuses.build()
+        .reverse();
   }
 
   private void updateStatus(TwitterNotificationAccount account, String status) throws TwitterException {
     log.log(Level.INFO, "Initial status: {0}", new Object[]{status});
-    Twitter twitter = new TwitterFactory(account.twitterCredentials()).getInstance();
+    Twitter twitter = new TwitterFactory(twitterCredentials(account)).getInstance();
     for (String theStatus : twitterSplitter(account.getName(), status)) {
       log.log(Level.INFO, "Sending status update for account {0}: {1}", new Object[]{account.getName(), theStatus});
       twitter.updateStatus(theStatus);

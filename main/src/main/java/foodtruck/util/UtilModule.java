@@ -3,6 +3,8 @@ package foodtruck.util;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 
+import foodtruck.model.Slots;
+
 /**
  * @author aviolette@gmail.com
  * @since 9/22/11

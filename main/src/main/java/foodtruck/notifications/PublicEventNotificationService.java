@@ -41,4 +41,6 @@ public interface PublicEventNotificationService {
    * Shares the story (if possible) associated with the matched truck stop.
    */
   void share(Story story, TruckStop stop);
+
+  void retweet(String account, String tweetId);
 }

@@ -72,6 +72,16 @@ public class Truck extends ModelEntity implements Serializable {
   private List<String> blacklistLocationNames;
   private @Nullable String phoneticMarkup;
   private ImmutableList<String> phoneticAliases;
+  private @Nullable String twitterToken;
+  private @Nullable String twitterTokenSecret;
+  private boolean neverLinkTwitter;
+  private boolean postDailySchedule;
+  private boolean postWeeklySchedule;
+  private boolean postAtNewStop;
+  private @Nullable String facebookAccessToken;
+  private @Nullable DateTime facebookAccessTokenExpires;
+  private boolean notifyOfLocationChanges;
+  private boolean disableBeaconsUntilLunchtime;
 
   // For serialization (for storage in memcached)
   private Truck() {
@@ -116,6 +126,16 @@ public class Truck extends ModelEntity implements Serializable {
     this.blacklistLocationNames = builder.blacklistLocationNames;
     this.phoneticMarkup = builder.phoneticMarkup;
     this.phoneticAliases = ImmutableList.copyOf(builder.phoneticAliases);
+    this.twitterToken = builder.twitterToken;
+    this.twitterTokenSecret = builder.twitterTokenSecret;
+    this.neverLinkTwitter = builder.neverLinkTwitter;
+    this.postDailySchedule = builder.postDailySchedule;
+    this.postWeeklySchedule = builder.postWeeklySchedule;
+    this.postAtNewStop = builder.postAtNewStop;
+    this.facebookAccessToken = builder.facebookAccessToken;
+    this.facebookAccessTokenExpires = builder.facebookAccessTokenExpires;
+    this.notifyOfLocationChanges = builder.notifyOfLocationChanges;
+    this.disableBeaconsUntilLunchtime = builder.disableBeaconsUntilLunchtime;
   }
 
   public static Builder builder() {
@@ -132,6 +152,66 @@ public class Truck extends ModelEntity implements Serializable {
       name = name.substring(4);
     }
     return name;
+  }
+
+  public Builder append() {
+    return new Builder(this);
+  }
+
+  public boolean isNotifyOfLocationChanges() {
+    return notifyOfLocationChanges;
+  }
+
+  @Nullable
+  public String getFacebookAccessToken() {
+    return facebookAccessToken;
+  }
+
+  @Nullable
+  public DateTime getFacebookAccessTokenExpires() {
+    return facebookAccessTokenExpires;
+  }
+
+  @Nullable
+  public String getTwitterToken() {
+    return twitterToken;
+  }
+
+  @Nullable
+  public String getTwitterTokenSecret() {
+    return twitterTokenSecret;
+  }
+
+  public boolean isNeverLinkTwitter() {
+    return neverLinkTwitter;
+  }
+
+  public boolean isPostDailySchedule() {
+    return postDailySchedule;
+  }
+
+  public boolean isPostWeeklySchedule() {
+    return postWeeklySchedule;
+  }
+
+  public boolean isMatchesMorningStops() {
+    return categories.contains("Breakfast");
+  }
+
+  public boolean isPostAtNewStop() {
+    return postAtNewStop;
+  }
+
+  public boolean getHasSocialMediaCredentials() {
+    return getHasTwitterCredentials();
+  }
+
+  public boolean getHasFacebookCredentials() {
+    return !Strings.isNullOrEmpty(facebookAccessToken);
+  }
+
+  public boolean getHasTwitterCredentials() {
+    return !(Strings.isNullOrEmpty(twitterToken) || Strings.isNullOrEmpty(twitterTokenSecret));
   }
 
   public ImmutableList<String> getPhoneticAliases() {
@@ -294,8 +374,7 @@ public class Truck extends ModelEntity implements Serializable {
   }
 
   public boolean shouldAnalyzeStories() {
-    return (!Strings.isNullOrEmpty(twitterHandle) && twittalyzer) ||
-        (!Strings.isNullOrEmpty(facebook) && scanFacebook);
+    return !Strings.isNullOrEmpty(twitterHandle) || !Strings.isNullOrEmpty(facebook);
   }
 
   @Override
@@ -322,6 +401,7 @@ public class Truck extends ModelEntity implements Serializable {
         .add("id", id)
         .add("name", name)
         .add("url", url)
+        .add("phone", phone)
         .add("iconUrl", iconUrl)
         .add("twitterHandle", twitterHandle)
         .add("foursquareUrl", foursquareUrl)
@@ -452,6 +532,10 @@ public class Truck extends ModelEntity implements Serializable {
 
   public String canonicalName() {
     return canonize(getName());
+  }
+
+  public boolean getDeriveStopsFromSocialMedia() {
+    return isUsingTwittalyzer() || getScanFacebook();
   }
 
   public static class HasCategoryPredicate implements Predicate<Truck> {
@@ -597,9 +681,8 @@ public class Truck extends ModelEntity implements Serializable {
   public static class Builder {
     public Set<String> categories = ImmutableSet.of();
     public String description;
-    public boolean twitterGeolocationDataValid;
     public Set<String> beaconnaiseEmails = ImmutableSet.of();
-    public boolean allowSystemNotifications;
+    public boolean disableBeaconsUntilLunchtime;
     private String id;
     private String name;
     private @Nullable String url;
@@ -634,6 +717,15 @@ public class Truck extends ModelEntity implements Serializable {
     private List<String> blacklistLocationNames = ImmutableList.of();
     private @Nullable String phoneticMarkup;
     private List<String> phoneticAliases = ImmutableList.of();
+    private @Nullable String twitterToken;
+    private @Nullable String twitterTokenSecret;
+    private boolean neverLinkTwitter;
+    private boolean postDailySchedule;
+    private boolean postWeeklySchedule;
+    private boolean postAtNewStop;
+    private @Nullable String facebookAccessToken;
+    private @Nullable DateTime facebookAccessTokenExpires;
+    private boolean notifyOfLocationChanges;
 
     public Builder() {
     }
@@ -676,6 +768,21 @@ public class Truck extends ModelEntity implements Serializable {
       this.blacklistLocationNames = truck.blacklistLocationNames;
       this.phoneticMarkup = truck.phoneticMarkup;
       this.phoneticAliases = truck.phoneticAliases;
+      this.twitterToken = truck.twitterToken;
+      this.twitterTokenSecret = truck.twitterTokenSecret;
+      this.neverLinkTwitter = truck.neverLinkTwitter;
+      this.postDailySchedule = truck.postDailySchedule;
+      this.postWeeklySchedule = truck.postWeeklySchedule;
+      this.postAtNewStop = truck.postAtNewStop;
+      this.facebookAccessToken = truck.facebookAccessToken;
+      this.facebookAccessTokenExpires = truck.facebookAccessTokenExpires;
+      this.notifyOfLocationChanges = truck.notifyOfLocationChanges;
+      this.disableBeaconsUntilLunchtime = truck.disableBeaconsUntilLunchtime;
+    }
+
+    public Builder notifyOfLocationChanges(boolean notify) {
+      this.notifyOfLocationChanges = notify;
+      return this;
     }
 
     public Builder phoneticMarkup(String markup) {
@@ -708,11 +815,6 @@ public class Truck extends ModelEntity implements Serializable {
       return this;
     }
 
-    public Builder allowSystemNotifications(boolean systemNotifications) {
-      this.allowSystemNotifications = systemNotifications;
-      return this;
-    }
-
     public Builder hidden(boolean hidden) {
       this.hidden = hidden;
       return this;
@@ -725,11 +827,6 @@ public class Truck extends ModelEntity implements Serializable {
 
     public Builder beaconnaiseEmails(Set<String> emails) {
       this.beaconnaiseEmails = emails;
-      return this;
-    }
-
-    public Builder twitterGeolocationDataValid(boolean valid) {
-      this.twitterGeolocationDataValid = valid;
       return this;
     }
 
@@ -895,6 +992,53 @@ public class Truck extends ModelEntity implements Serializable {
           this.phone = this.phone.substring(0, 3) + "-" + this.phone.substring(3, 6) + "-" + this.phone.substring(6, 10);
         }
       }
+      return this;
+    }
+
+    public Builder twitterToken(String twitterToken) {
+      this.twitterToken = twitterToken;
+      return this;
+    }
+
+    public Builder twitterTokenSecret(String twitterTokenSecret) {
+      this.twitterTokenSecret = twitterTokenSecret;
+      return this;
+    }
+
+    public Builder neverLinkTwitter(boolean neverLinkTwitter) {
+      this.neverLinkTwitter = neverLinkTwitter;
+      return this;
+    }
+
+    public Builder postDailySchedule(boolean postDailySchedule) {
+      this.postDailySchedule = postDailySchedule;
+      return this;
+    }
+
+    public Builder postWeeklySchedule(boolean postWeeklySchedule) {
+      this.postWeeklySchedule = postWeeklySchedule;
+      return this;
+    }
+
+    public Builder postAtNewStop(boolean postAtNewStop) {
+      this.postAtNewStop = postAtNewStop;
+      return this;
+    }
+
+    public Builder facebookAccessToken(String facebookAccessToken) {
+      this.facebookAccessToken = facebookAccessToken;
+      return this;
+    }
+
+    public Builder facebookAccessTokenExpires(DateTime expires) {
+      this.facebookAccessTokenExpires = expires;
+      return this;
+    }
+
+    public Builder clearTwitterCredentials() {
+      this.neverLinkTwitter = true;
+      this.twitterTokenSecret = null;
+      this.twitterToken = null;
       return this;
     }
   }

@@ -27,11 +27,11 @@ import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.dao.WeeklyLocationStatsRollupDAO;
 import foodtruck.model.Location;
+import foodtruck.model.Slots;
 import foodtruck.model.SystemStats;
 import foodtruck.model.TruckStop;
 import foodtruck.time.Clock;
 import foodtruck.time.DateOnlyFormatter;
-import foodtruck.util.Slots;
 import foodtruck.util.WeeklyRollup;
 
 /**

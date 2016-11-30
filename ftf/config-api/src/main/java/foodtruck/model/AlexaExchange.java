@@ -98,6 +98,16 @@ public class AlexaExchange extends ModelEntity {
       return this;
     }
 
+    public Builder sessionEnded(boolean sessionEnded) {
+      this.sessionEnded = sessionEnded;
+      return this;
+    }
+
+    public Builder requestTime(DateTime requestTime) {
+      this.requestTime = requestTime;
+      return this;
+    }
+
     public Builder intentName(String intentName) {
       this.intentName = intentName;
       return this;

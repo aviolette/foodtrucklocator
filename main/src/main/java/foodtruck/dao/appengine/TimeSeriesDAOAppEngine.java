@@ -21,8 +21,8 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import foodtruck.dao.TimeSeriesDAO;
+import foodtruck.model.Slots;
 import foodtruck.model.SystemStats;
-import foodtruck.util.Slots;
 
 import static com.google.appengine.api.datastore.Query.CompositeFilterOperator.and;
 import static com.google.appengine.api.datastore.Query.FilterOperator.GREATER_THAN_OR_EQUAL;

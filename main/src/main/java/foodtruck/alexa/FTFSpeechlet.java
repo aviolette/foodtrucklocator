@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.IntentRequest;
 import com.amazon.speech.speechlet.LaunchRequest;
 import com.amazon.speech.speechlet.Session;
@@ -14,9 +15,13 @@ import com.amazon.speech.speechlet.SpeechletException;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.TaskOptions;
+import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+
+import org.joda.time.DateTime;
 
 import foodtruck.dao.AlexaExchangeDAO;
 import foodtruck.model.AlexaExchange;
@@ -84,9 +89,22 @@ class FTFSpeechlet implements Speechlet {
   }
 
   private void record(IntentRequest intentRequest, SpeechletResponse response) {
+
+    ImmutableMap.Builder<String, String> slotBuilder = ImmutableMap.builder();
+    for (Slot slot : intentRequest.getIntent()
+        .getSlots()
+        .values()) {
+      slotBuilder.put(slot.getName(), Strings.nullToEmpty(slot.getValue()));
+    }
+
     AlexaExchange exchange = AlexaExchange.builder()
-        .intent(intentRequest)
-        .response(response)
+        .intentName(intentRequest.getIntent()
+            .getName())
+        .slots(slotBuilder.build())
+        .hadReprompt(response.getReprompt() != null)
+        .hadCard(response.getCard() != null)
+        .sessionEnded(response.getShouldEndSession())
+        .requestTime(new DateTime(intentRequest.getTimestamp()))
         .completeTime(clock.now())
         .build();
     alexaExchangeDAO.save(exchange);

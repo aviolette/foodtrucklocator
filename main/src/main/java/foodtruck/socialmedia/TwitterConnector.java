@@ -26,6 +26,7 @@ import twitter4j.Paging;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import twitter4j.auth.AccessToken;
 
 /**
  * @author aviolette
@@ -87,7 +88,8 @@ public class TwitterConnector implements SocialMediaConnector {
       // TODO: what to do here?
       return;
     }
-    Twitter twitter = twitterFactory.createDetached(truck.twitterAccessToken());
+    Twitter twitter = twitterFactory.createDetached(
+        new AccessToken(truck.getTwitterToken(), truck.getTwitterTokenSecret()));
     try {
       for (String messageComponent : message.getTwitterMessages()) {
         twitter.updateStatus(messageComponent);

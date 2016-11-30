@@ -55,6 +55,7 @@ public class TruckStop extends ModelEntity {
   private final boolean locked;
   private final @Nullable DateTime lastUpdated;
   private final @Nullable DateTime fromBeacon;
+  private final @Nullable DateTime manuallyUpdated;
   private final List<String> notes;
   private final StopOrigin origin;
   private final @Nullable Long createdWithDeviceId;
@@ -71,6 +72,7 @@ public class TruckStop extends ModelEntity {
     notes = ImmutableList.copyOf(builder.notes);
     origin = builder.origin;
     createdWithDeviceId = builder.createdWithDeviceId;
+    manuallyUpdated = builder.manuallyUpdated;
   }
 
   public static Builder builder() {
@@ -79,6 +81,11 @@ public class TruckStop extends ModelEntity {
 
   public static Builder builder(TruckStop stop) {
     return new Builder(stop);
+  }
+
+  @Nullable
+  public DateTime getManuallyUpdated() {
+    return manuallyUpdated;
   }
 
   public Long getCreatedWithDeviceId() {
@@ -153,6 +160,7 @@ public class TruckStop extends ModelEntity {
           .add("endTime", endTime)
           .add("lastUpdated", lastUpdated)
           .add("location", location)
+          .add("createdWithDevice", createdWithDeviceId)
           .toString();
     } catch (Throwable t) {
       log.log(Level.WARNING, t.getMessage(), t);
@@ -243,6 +251,7 @@ public class TruckStop extends ModelEntity {
     private List<String> notes = Lists.newLinkedList();
     private StopOrigin origin = StopOrigin.UNKNOWN;
     private @Nullable Long createdWithDeviceId;
+    private @Nullable DateTime manuallyUpdated;
 
     private Builder() {
     }
@@ -259,6 +268,7 @@ public class TruckStop extends ModelEntity {
       notes = Lists.newLinkedList(stop.getNotes());
       origin = stop.getOrigin();
       createdWithDeviceId = stop.createdWithDeviceId;
+      manuallyUpdated = stop.manuallyUpdated;
     }
 
     public Builder createdWithDeviceId(Long deviceId) {
@@ -293,6 +303,11 @@ public class TruckStop extends ModelEntity {
 
     public Builder startTime(DateTime dateTime) {
       this.startTime = dateTime;
+      return this;
+    }
+
+    public Builder manuallyUpdated(@Nullable DateTime manuallyUpdated) {
+      this.manuallyUpdated = manuallyUpdated;
       return this;
     }
 

@@ -21,12 +21,12 @@ import com.sun.jersey.api.JResponse;
 import org.joda.time.DateTime;
 
 import foodtruck.dao.TimeSeriesDAO;
+import foodtruck.model.Slots;
 import foodtruck.model.StatVector;
 import foodtruck.model.SystemStats;
 import foodtruck.monitoring.Counter;
 import foodtruck.monitoring.DailyScheduleCounter;
 import foodtruck.time.Clock;
-import foodtruck.util.Slots;
 
 /**
  * @author aviolette@gmail.com

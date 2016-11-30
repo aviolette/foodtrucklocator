@@ -5,8 +5,8 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 
 import foodtruck.dao.FifteenMinuteRollupDAO;
+import foodtruck.model.Slots;
 import foodtruck.util.FifteenMinuteRollup;
-import foodtruck.util.Slots;
 
 /**
  * @author aviolette@gmail.com
