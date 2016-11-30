@@ -87,8 +87,7 @@ class LocationResolverImpl implements LocationResolver {
             .toDate()));
         return true;
       } else {
-        log.log(Level.INFO, "Anomaly not detected\n\n {0}\n\n {1}\n\n",
-            new Object[]{stop.getLocation(), currentLocation});
+        log.log(Level.INFO, "Anomaly not detected\n\n {0}\n\n {1}\n\n", new Object[]{stop, currentLocation});
       }
     } catch (Exception e) {
       log.log(Level.SEVERE, e.getMessage(), e);
