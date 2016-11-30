@@ -23,7 +23,7 @@ import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStop;
 import foodtruck.model.Url;
 import foodtruck.truckstops.FoodTruckStopService;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 /**
  * @author aviolette

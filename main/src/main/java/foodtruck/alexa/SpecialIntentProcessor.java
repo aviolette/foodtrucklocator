@@ -14,7 +14,7 @@ import foodtruck.dao.DailyDataDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.DailyData;
 import foodtruck.model.Truck;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 /**
  * @author aviolette

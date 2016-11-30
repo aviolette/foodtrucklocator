@@ -13,7 +13,7 @@ import com.google.inject.Singleton;
 import foodtruck.dao.DailyRollupDAO;
 import foodtruck.dao.FifteenMinuteRollupDAO;
 import foodtruck.dao.WeeklyRollupDAO;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 /**
  * @author aviolette

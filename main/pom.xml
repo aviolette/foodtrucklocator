@@ -88,6 +88,15 @@
       <version>2.4</version>
     </dependency>
 
+    <!-- module jars -->
+
+    <dependency>
+      <groupId>foodtruck</groupId>
+      <artifactId>common-api</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+
+
     <!-- older version required by appengine -->
     <dependency>
       <groupId>com.sun.xml.bind</groupId>

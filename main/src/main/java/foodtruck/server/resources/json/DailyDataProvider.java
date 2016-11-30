@@ -23,7 +23,7 @@ import org.joda.time.format.DateTimeFormatter;
 import foodtruck.dao.DailyDataDAO;
 import foodtruck.model.DailyData;
 import foodtruck.server.resources.BadRequestException;
-import foodtruck.util.DateOnlyFormatter;
+import foodtruck.time.DateOnlyFormatter;
 
 import static foodtruck.server.resources.json.JSONSerializer.readJSON;
 

@@ -25,7 +25,7 @@ import foodtruck.dao.TruckDAO;
 import foodtruck.model.StaticConfig;
 import foodtruck.socialmedia.SocialMediaCacher;
 import foodtruck.truckstops.FoodTruckStopService;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 /**
  * Reloads the external calendars into the internal schedule cache.

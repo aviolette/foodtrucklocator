@@ -31,8 +31,8 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.truckstops.FoodTruckStopService;
-import foodtruck.util.Clock;
-import foodtruck.util.HtmlDateFormatter;
+import foodtruck.time.Clock;
+import foodtruck.time.HtmlDateFormatter;
 import foodtruck.util.Link;
 
 /**

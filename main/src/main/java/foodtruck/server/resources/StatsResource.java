@@ -25,7 +25,7 @@ import foodtruck.model.StatVector;
 import foodtruck.model.SystemStats;
 import foodtruck.monitoring.Counter;
 import foodtruck.monitoring.DailyScheduleCounter;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 import foodtruck.util.Slots;
 
 /**

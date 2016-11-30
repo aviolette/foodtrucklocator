@@ -25,7 +25,7 @@ import foodtruck.model.DailyData;
 import foodtruck.model.Location;
 import foodtruck.model.LocationWithDailyData;
 import foodtruck.monitoring.Monitored;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 import foodtruck.util.ServiceException;
 
 import static foodtruck.server.resources.Resources.requiresAdmin;

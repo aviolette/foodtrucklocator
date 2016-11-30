@@ -9,7 +9,7 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
 import foodtruck.dao.FifteenMinuteRollupDAO;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 /**
  * @author aviolette@gmail.com

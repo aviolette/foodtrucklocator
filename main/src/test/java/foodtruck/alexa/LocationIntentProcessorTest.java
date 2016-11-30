@@ -24,7 +24,7 @@ import foodtruck.model.TruckStop;
 import foodtruck.schedule.ScheduleCacher;
 import foodtruck.server.resources.json.DailyScheduleWriter;
 import foodtruck.truckstops.FoodTruckStopService;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 import static com.google.common.truth.Truth.assertThat;
 import static foodtruck.alexa.AlexaTestingUtils.assertSpeech;

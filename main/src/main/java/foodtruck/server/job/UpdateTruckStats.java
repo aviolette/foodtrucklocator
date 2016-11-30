@@ -22,7 +22,7 @@ import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.truckstops.FoodTruckStopService;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 /**
  * Called to update stats about a truck.  For instance, how many stops it made in the last year.

@@ -11,7 +11,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import foodtruck.socialmedia.SocialMediaCacher;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 /**
  * Removes tweets prior to midnight on the current day.

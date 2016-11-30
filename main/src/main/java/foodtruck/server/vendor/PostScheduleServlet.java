@@ -24,8 +24,8 @@ import foodtruck.schedule.ScheduleMessage;
 import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.socialmedia.SocialMediaConnector;
 import foodtruck.truckstops.FoodTruckStopService;
-import foodtruck.util.Clock;
-import foodtruck.util.TimeOnlyFormatter;
+import foodtruck.time.Clock;
+import foodtruck.time.TimeOnlyFormatter;
 
 /**
  * @author aviolette

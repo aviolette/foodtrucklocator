@@ -29,8 +29,8 @@ import foodtruck.model.StopOrigin;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.server.resources.BadRequestException;
-import foodtruck.util.Clock;
-import foodtruck.util.HtmlDateFormatter;
+import foodtruck.time.Clock;
+import foodtruck.time.HtmlDateFormatter;
 
 /**
  * @author aviolette@gmail.com

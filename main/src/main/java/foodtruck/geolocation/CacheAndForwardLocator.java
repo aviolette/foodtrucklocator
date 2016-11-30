@@ -12,7 +12,7 @@ import org.joda.time.DateTime;
 import foodtruck.dao.FifteenMinuteRollupDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.model.Location;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 /**
  * A geo-locator that attempts to find a keyword in the datastore, if not it delegates

@@ -25,8 +25,8 @@ import foodtruck.model.StaticConfig;
 import foodtruck.schedule.ScheduleCacher;
 import foodtruck.server.resources.json.DailyScheduleWriter;
 import foodtruck.truckstops.FoodTruckStopService;
-import foodtruck.util.Clock;
-import foodtruck.util.TimeFormatter;
+import foodtruck.time.Clock;
+import foodtruck.time.TimeFormatter;
 
 /**
  * Servlet that serves up the main food truck page.

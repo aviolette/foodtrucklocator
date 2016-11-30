@@ -21,7 +21,7 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStop;
 import foodtruck.truckstops.FoodTruckStopService;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 import static com.google.common.truth.Truth.assertThat;
 import static foodtruck.alexa.TruckLocationIntentProcessor.SLOT_TIME_OF_DAY;

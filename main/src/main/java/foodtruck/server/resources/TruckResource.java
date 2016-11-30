@@ -29,8 +29,8 @@ import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
 import foodtruck.server.security.SecurityChecker;
 import foodtruck.socialmedia.ProfileSyncService;
-import foodtruck.util.Clock;
-import foodtruck.util.DateOnlyFormatter;
+import foodtruck.time.Clock;
+import foodtruck.time.DateOnlyFormatter;
 
 import static foodtruck.server.resources.Resources.requiresAdmin;
 

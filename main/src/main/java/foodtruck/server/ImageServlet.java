@@ -27,7 +27,7 @@ import org.joda.time.format.DateTimeFormatter;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
-import foodtruck.util.HttpHeaderFormat;
+import foodtruck.time.HttpHeaderFormat;
 
 /**
  * @author aviolette

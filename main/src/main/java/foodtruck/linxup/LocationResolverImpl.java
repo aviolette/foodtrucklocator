@@ -13,7 +13,7 @@ import foodtruck.model.LinxupAccount;
 import foodtruck.model.Location;
 import foodtruck.model.TrackingDevice;
 import foodtruck.notifications.SystemNotificationService;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 /**
  * @author aviolette

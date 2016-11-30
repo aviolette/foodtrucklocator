@@ -24,7 +24,7 @@ import org.joda.time.format.DateTimeFormatter;
 import au.com.bytecode.opencsv.CSVWriter;
 import foodtruck.model.TruckStop;
 import foodtruck.server.resources.json.JSONSerializer;
-import foodtruck.util.FriendlyDateTimeFormat;
+import foodtruck.time.FriendlyDateTimeFormat;
 
 /**
  * @author aviolette

@@ -27,7 +27,7 @@ import foodtruck.model.DailySchedule;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
 import foodtruck.truckstops.FoodTruckStopService;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 
 /**

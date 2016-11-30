@@ -17,6 +17,9 @@ import com.google.inject.servlet.RequestScoped;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 
+import foodtruck.time.Clock;
+import foodtruck.time.HttpHeaderFormat;
+
 /**
  * A light-weight session I created since I only wanted sessions tracked in some of the lesser used-parts of my app
  * (not on the front-door).  This tracks sessions by storing a session cookie and storing data in memcached.

@@ -11,7 +11,7 @@ import foodtruck.dao.DailyDataDAO;
 import foodtruck.model.DailyData;
 import foodtruck.model.Story;
 import foodtruck.model.Truck;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 import static org.easymock.EasyMock.expect;
 

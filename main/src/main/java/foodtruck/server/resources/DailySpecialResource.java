@@ -13,7 +13,7 @@ import org.joda.time.LocalDate;
 import foodtruck.dao.DailyDataDAO;
 import foodtruck.model.DailyData;
 import foodtruck.model.Truck;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 import static foodtruck.server.resources.Resources.requiresAdmin;
 

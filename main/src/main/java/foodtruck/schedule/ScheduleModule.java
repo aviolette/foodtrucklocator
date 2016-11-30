@@ -18,7 +18,7 @@ import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
 import foodtruck.schedule.custom.chicago.ChicagoModule;
 import foodtruck.schedule.custom.nyc.NewYorkModule;
-import foodtruck.util.MilitaryTimeOnlyFormatter;
+import foodtruck.time.MilitaryTimeOnlyFormatter;
 
 /**
  * @author aviolette@gmail.com

@@ -35,7 +35,7 @@ import foodtruck.model.TruckStatus;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TruckStopWithCounts;
 import foodtruck.schedule.ScheduleStrategy;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 /**
  * @author aviolette@gmail.com

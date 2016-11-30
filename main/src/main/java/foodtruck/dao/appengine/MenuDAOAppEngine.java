@@ -10,7 +10,7 @@ import com.google.inject.Provider;
 
 import foodtruck.dao.MenuDAO;
 import foodtruck.model.Menu;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 import static com.google.appengine.api.datastore.Query.FilterOperator.EQUAL;
 import static foodtruck.dao.appengine.Attributes.setDateProperty;

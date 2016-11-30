@@ -28,7 +28,7 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.server.resources.json.LocationReader;
 import foodtruck.server.resources.json.TruckReader;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 /**
  * @author aviolette

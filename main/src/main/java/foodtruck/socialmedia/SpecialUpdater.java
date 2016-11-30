@@ -15,7 +15,7 @@ import foodtruck.dao.DailyDataDAO;
 import foodtruck.model.DailyData;
 import foodtruck.model.Story;
 import foodtruck.model.Truck;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 /**
  * This is kind of weird, it extracts day-specific information (such as specials) from social media accounts associated

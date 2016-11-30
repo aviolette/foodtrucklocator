@@ -39,7 +39,7 @@ import foodtruck.schedule.OffTheRoadResponse;
 import foodtruck.schedule.TerminationDetector;
 import foodtruck.schedule.TruckStopMatch;
 import foodtruck.schedule.TruckStopMatcher;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 import static org.easymock.EasyMock.expect;
 

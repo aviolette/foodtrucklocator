@@ -22,7 +22,7 @@ import foodtruck.dao.TruckDAO;
 import foodtruck.model.Location;
 import foodtruck.model.Story;
 import foodtruck.model.Truck;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 import foodtruck.util.Link;
 
 /**

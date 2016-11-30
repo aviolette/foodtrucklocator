@@ -14,7 +14,7 @@ import foodtruck.dao.TruckDAO;
 import foodtruck.model.TruckSchedule;
 import foodtruck.server.security.SecurityChecker;
 import foodtruck.truckstops.FoodTruckStopService;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 import static foodtruck.server.resources.Resources.noCache;
 

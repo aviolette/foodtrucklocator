@@ -20,8 +20,8 @@ import foodtruck.model.TruckStop;
 import foodtruck.schedule.AbstractSpecialMatcher;
 import foodtruck.schedule.Spot;
 import foodtruck.schedule.TruckStopMatch;
-import foodtruck.util.Clock;
-import foodtruck.util.FriendlyDateTimeFormat;
+import foodtruck.time.Clock;
+import foodtruck.time.FriendlyDateTimeFormat;
 
 /**
  * @author aviolette

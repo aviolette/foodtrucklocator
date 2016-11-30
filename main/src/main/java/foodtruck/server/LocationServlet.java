@@ -24,9 +24,9 @@ import foodtruck.model.DailySchedule;
 import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
 import foodtruck.truckstops.FoodTruckStopService;
-import foodtruck.util.Clock;
-import foodtruck.util.DateOnlyFormatter;
-import foodtruck.util.FriendlyDateOnlyFormat;
+import foodtruck.time.Clock;
+import foodtruck.time.DateOnlyFormatter;
+import foodtruck.time.FriendlyDateOnlyFormat;
 
 /**
  * @author aviolette

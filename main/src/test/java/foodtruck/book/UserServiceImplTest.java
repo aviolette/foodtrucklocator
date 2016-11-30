@@ -10,7 +10,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import foodtruck.dao.UserDAO;
 import foodtruck.model.User;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;

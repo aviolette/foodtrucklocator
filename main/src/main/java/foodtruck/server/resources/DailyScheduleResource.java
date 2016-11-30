@@ -22,8 +22,8 @@ import foodtruck.monitoring.HourlyScheduleCounter;
 import foodtruck.schedule.ScheduleCacher;
 import foodtruck.server.resources.json.DailyScheduleWriter;
 import foodtruck.truckstops.FoodTruckStopService;
-import foodtruck.util.Clock;
-import foodtruck.util.DateOnlyFormatter;
+import foodtruck.time.Clock;
+import foodtruck.time.DateOnlyFormatter;
 
 /**
  * @author aviolette

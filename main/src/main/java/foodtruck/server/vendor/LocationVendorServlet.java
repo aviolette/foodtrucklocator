@@ -19,7 +19,7 @@ import foodtruck.dao.TruckDAO;
 import foodtruck.model.Location;
 import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.truckstops.FoodTruckStopService;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 /**
  * @author aviolette

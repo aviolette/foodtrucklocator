@@ -27,7 +27,7 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.monitoring.Counter;
 import foodtruck.server.security.SecurityChecker;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;

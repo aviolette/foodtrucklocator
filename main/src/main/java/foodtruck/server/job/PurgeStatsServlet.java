@@ -29,7 +29,7 @@ import foodtruck.model.Application;
 import foodtruck.model.TruckStop;
 import foodtruck.monitoring.Counter;
 import foodtruck.monitoring.DailyScheduleCounter;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 /**
  * @author aviolette

@@ -13,7 +13,7 @@ import com.google.inject.Singleton;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.truckstops.FoodTruckStopService;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 /**
  * @author aviolette@gmail.com

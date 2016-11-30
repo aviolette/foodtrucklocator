@@ -6,11 +6,11 @@ import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
-import foodtruck.model.DayOfWeek;
+import foodtruck.time.DayOfWeek;
 import foodtruck.model.Story;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 /**
  * @author aviolette

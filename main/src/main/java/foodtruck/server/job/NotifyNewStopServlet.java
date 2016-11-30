@@ -25,7 +25,7 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.notifications.EmailSender;
 import foodtruck.notifications.PublicEventNotificationService;
-import foodtruck.util.FriendlyDateTimeFormat;
+import foodtruck.time.FriendlyDateTimeFormat;
 
 /**
  * Job that handles sending out notifications when a new stop has been created.

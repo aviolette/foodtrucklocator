@@ -20,7 +20,7 @@ import com.google.inject.Provider;
 
 import foodtruck.dao.AlexaExchangeDAO;
 import foodtruck.model.AlexaExchange;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 /**
  * @author aviolette

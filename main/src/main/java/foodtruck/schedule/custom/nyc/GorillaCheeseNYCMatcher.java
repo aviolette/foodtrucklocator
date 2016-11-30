@@ -8,8 +8,8 @@ import org.joda.time.format.DateTimeFormatter;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.schedule.MultipleTruckMatcher;
 import foodtruck.schedule.Spot;
-import foodtruck.util.Clock;
-import foodtruck.util.FriendlyDateTimeFormat;
+import foodtruck.time.Clock;
+import foodtruck.time.FriendlyDateTimeFormat;
 
 /**
  * @author aviolette

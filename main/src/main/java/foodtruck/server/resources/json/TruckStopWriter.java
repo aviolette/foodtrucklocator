@@ -9,9 +9,9 @@ import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.model.TruckStop;
-import foodtruck.util.FriendlyDateOnlyFormat;
-import foodtruck.util.HtmlDateFormatter;
-import foodtruck.util.TimeOnlyFormatter;
+import foodtruck.time.FriendlyDateOnlyFormat;
+import foodtruck.time.HtmlDateFormatter;
+import foodtruck.time.TimeOnlyFormatter;
 
 /**
  * @author aviolette

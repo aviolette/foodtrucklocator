@@ -37,8 +37,8 @@ import foodtruck.model.TruckStop;
 import foodtruck.schedule.ScheduleCacher;
 import foodtruck.server.resources.json.DailyScheduleWriter;
 import foodtruck.truckstops.FoodTruckStopService;
-import foodtruck.util.Clock;
-import foodtruck.util.TimeOnlyFormatter;
+import foodtruck.time.Clock;
+import foodtruck.time.TimeOnlyFormatter;
 
 import static foodtruck.alexa.AlexaModule.TESTING_MODE;
 import static foodtruck.util.MoreStrings.capitalize;

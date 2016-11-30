@@ -17,8 +17,8 @@ import org.joda.time.format.DateTimeFormatter;
 import foodtruck.dao.MessageDAO;
 import foodtruck.model.Message;
 import foodtruck.server.GuiceHackRequestWrapper;
-import foodtruck.util.AlexaDateFormat;
-import foodtruck.util.Clock;
+import foodtruck.time.AlexaDateFormat;
+import foodtruck.time.Clock;
 import foodtruck.util.Link;
 
 /**

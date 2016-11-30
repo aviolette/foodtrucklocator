@@ -19,7 +19,7 @@ import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.server.vendor.LoginMethod;
-import foodtruck.util.TimeFormatter;
+import foodtruck.time.TimeFormatter;
 
 /**
  * An email notifier that sends the email immediately.

@@ -9,7 +9,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 
 import foodtruck.dao.RetweetsDAO;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 /**
  * @author aviolette

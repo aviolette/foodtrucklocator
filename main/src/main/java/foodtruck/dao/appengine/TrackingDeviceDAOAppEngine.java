@@ -10,7 +10,7 @@ import com.google.inject.Provider;
 import foodtruck.dao.TrackingDeviceDAO;
 import foodtruck.model.Location;
 import foodtruck.model.TrackingDevice;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 import static com.google.appengine.api.datastore.Query.FilterOperator.EQUAL;
 

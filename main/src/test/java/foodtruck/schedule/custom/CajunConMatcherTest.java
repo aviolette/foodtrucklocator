@@ -18,7 +18,7 @@ import foodtruck.model.TruckStop;
 import foodtruck.schedule.Spot;
 import foodtruck.schedule.TruckStopMatch;
 import foodtruck.schedule.custom.chicago.CajunConMatcher;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;

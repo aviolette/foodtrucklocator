@@ -37,7 +37,7 @@ import foodtruck.model.TruckStop;
 import foodtruck.model.TruckStopWithCounts;
 import foodtruck.server.security.SecurityChecker;
 import foodtruck.truckstops.FoodTruckStopService;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 import foodtruck.util.Session;
 
 

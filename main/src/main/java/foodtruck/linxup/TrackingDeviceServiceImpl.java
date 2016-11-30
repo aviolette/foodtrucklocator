@@ -39,8 +39,8 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.monitoring.Counter;
 import foodtruck.server.security.SecurityChecker;
-import foodtruck.util.Clock;
-import foodtruck.util.FriendlyDateTimeFormat;
+import foodtruck.time.Clock;
+import foodtruck.time.FriendlyDateTimeFormat;
 
 /**
  * @author aviolette

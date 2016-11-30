@@ -45,8 +45,8 @@ import foodtruck.schedule.TerminationDetector;
 import foodtruck.schedule.TruckStopMatch;
 import foodtruck.schedule.TruckStopMatcher;
 import foodtruck.truckstops.FoodTruckStopService;
-import foodtruck.util.Clock;
-import foodtruck.util.TimeOnlyFormatter;
+import foodtruck.time.Clock;
+import foodtruck.time.TimeOnlyFormatter;
 
 /**
  * @author aviolette@gmail.com

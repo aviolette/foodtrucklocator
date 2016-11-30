@@ -23,7 +23,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.model.DailyData;
 import foodtruck.server.resources.BadRequestException;
-import foodtruck.util.DateOnlyFormatter;
+import foodtruck.time.DateOnlyFormatter;
 
 /**
  * @author aviolette

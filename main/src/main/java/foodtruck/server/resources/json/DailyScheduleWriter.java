@@ -33,8 +33,8 @@ import foodtruck.model.Message;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.server.resources.BadRequestException;
-import foodtruck.util.DateOnlyFormatter;
-import foodtruck.util.TimeOnlyFormatter;
+import foodtruck.time.DateOnlyFormatter;
+import foodtruck.time.TimeOnlyFormatter;
 
 /**
  * @author aviolette

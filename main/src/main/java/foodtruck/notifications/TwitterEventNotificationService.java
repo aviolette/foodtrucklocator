@@ -26,7 +26,7 @@ import foodtruck.model.TruckStop;
 import foodtruck.model.TwitterNotificationAccount;
 import foodtruck.socialmedia.TwitterFactoryWrapper;
 import foodtruck.truckstops.FoodTruckStopService;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;

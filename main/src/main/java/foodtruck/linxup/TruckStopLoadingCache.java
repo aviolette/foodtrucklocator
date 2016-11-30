@@ -13,7 +13,7 @@ import com.google.inject.Inject;
 
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.TruckStop;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 /**
  * @author aviolette

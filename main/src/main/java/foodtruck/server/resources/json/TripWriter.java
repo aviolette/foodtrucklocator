@@ -9,7 +9,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.linxup.Position;
 import foodtruck.linxup.Trip;
-import foodtruck.util.FriendlyDateTimeFormat;
+import foodtruck.time.FriendlyDateTimeFormat;
 
 /**
  * @author aviolette

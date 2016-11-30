@@ -19,7 +19,7 @@ import com.sun.jersey.spi.inject.InjectableProvider;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 
-import foodtruck.util.TimeFormatter;
+import foodtruck.time.TimeFormatter;
 
 /**
  * Provides a DateTime object when a time parameter is passed into to a query string

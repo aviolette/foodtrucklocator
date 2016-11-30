@@ -19,7 +19,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.model.TrackingDevice;
 import foodtruck.server.resources.BadRequestException;
-import foodtruck.util.FriendlyDateTimeFormat;
+import foodtruck.time.FriendlyDateTimeFormat;
 
 /**
  * @author aviolette

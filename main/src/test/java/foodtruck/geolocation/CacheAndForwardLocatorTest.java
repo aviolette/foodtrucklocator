@@ -8,7 +8,7 @@ import org.junit.Test;
 import foodtruck.dao.FifteenMinuteRollupDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.model.Location;
-import foodtruck.util.Clock;
+import foodtruck.time.Clock;
 
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
