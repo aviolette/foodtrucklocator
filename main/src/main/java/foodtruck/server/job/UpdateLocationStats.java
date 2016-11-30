@@ -27,12 +27,10 @@ import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.dao.WeeklyLocationStatsRollupDAO;
 import foodtruck.model.Location;
-import foodtruck.model.Slots;
 import foodtruck.model.SystemStats;
 import foodtruck.model.TruckStop;
 import foodtruck.time.Clock;
 import foodtruck.time.DateOnlyFormatter;
-import foodtruck.util.WeeklyRollup;
 
 /**
  * Called to update stats about a location.
@@ -47,17 +45,15 @@ public class UpdateLocationStats extends HttpServlet {
   private final WeeklyLocationStatsRollupDAO rollupDAO;
   private final LocationDAO locationDAO;
   private final DateTimeFormatter formatter;
-  private final Slots slotter;
 
   @Inject
   public UpdateLocationStats(TruckStopDAO truckStopDAO, Clock clock, LocationDAO locationDAO,
-      WeeklyLocationStatsRollupDAO rollupDAO, @DateOnlyFormatter DateTimeFormatter formatter, @WeeklyRollup Slots slotter) {
+      WeeklyLocationStatsRollupDAO rollupDAO, @DateOnlyFormatter DateTimeFormatter formatter) {
     this.clock = clock;
     this.locationDAO = locationDAO;
     this.rollupDAO = rollupDAO;
     this.truckStopDAO = truckStopDAO;
     this.formatter = formatter;
-    this.slotter = slotter;
   }
 
   @Override
@@ -86,7 +82,9 @@ public class UpdateLocationStats extends HttpServlet {
         if (!location.getName().equals(name)) {
           log.log(Level.INFO, "Corrected location {0} to {1}", new Object[] {name, location.getName()});
         }
-        long slot = slotter.getSlot(stop.getStartTime().getMillis());
+        long slot = rollupDAO.getSlots()
+            .getSlot(stop.getStartTime()
+                .getMillis());
         SystemStats stat = stats.get(slot);
         if (stat == null) {
           stat = rollupDAO.findBySlot(slot);

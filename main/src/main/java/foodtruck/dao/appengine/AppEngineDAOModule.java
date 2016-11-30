@@ -1,6 +1,7 @@
 package foodtruck.dao.appengine;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
 
 import foodtruck.dao.AddressRuleScriptDAO;
 import foodtruck.dao.AlexaExchangeDAO;
@@ -25,7 +26,11 @@ import foodtruck.dao.UserDAO;
 import foodtruck.dao.WeeklyLocationStatsRollupDAO;
 import foodtruck.dao.WeeklyRollupDAO;
 import foodtruck.dao.WeeklyTruckStopDAO;
+import foodtruck.model.Slots;
+import foodtruck.util.DailyRollup;
+import foodtruck.util.FifteenMinuteRollup;
 import foodtruck.util.Secondary;
+import foodtruck.util.WeeklyRollup;
 
 /**
  * @author aviolette@gmail.com
@@ -58,5 +63,24 @@ public class AppEngineDAOModule extends AbstractModule {
     bind(UserDAO.class).to(UserDAOAppEngine.class);
     bind(DailyTruckStopDAO.class).to(DailyTruckStopDAOAppEngine.class);
     bind(WeeklyTruckStopDAO.class).to(WeeklyTruckStopDAOAppEngine.class);
+  }
+
+  @DailyRollup
+  @Provides
+  public Slots provideDailyRollup() {
+    return new Slots(1000 * 60 * 60 * 24);
+  }
+
+  @FifteenMinuteRollup
+  @Provides
+  public Slots provideFifteenMinuteRollup() {
+    return new Slots(1000 * 60 * 15);
+  }
+
+
+  @WeeklyRollup
+  @Provides
+  public Slots provideWeeklyRollup() {
+    return new Slots(1000 * 60 * 60 * 24 * 7);
   }
 }
