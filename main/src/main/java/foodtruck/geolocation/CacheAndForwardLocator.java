@@ -7,12 +7,9 @@ import javax.annotation.Nullable;
 
 import com.google.inject.Inject;
 
-import org.joda.time.DateTime;
-
-import foodtruck.dao.FifteenMinuteRollupDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.model.Location;
-import foodtruck.time.Clock;
+import foodtruck.monitoring.CounterPublisher;
 
 /**
  * A geo-locator that attempts to find a keyword in the datastore, if not it delegates
@@ -25,16 +22,14 @@ class CacheAndForwardLocator implements GeoLocator {
   private final static String LAT_LNG = "(\\+|-)?[\\d|\\.]+,(\\+|-)?[\\d|\\.]+";
   private final LocationDAO dao;
   private final GeoLocator secondaryLocator;
-  private final FifteenMinuteRollupDAO monitor;
-  private final Clock clock;
+  private final CounterPublisher counterPublisher;
 
   @Inject
   public CacheAndForwardLocator(LocationDAO dao, @SecondaryGeolocator GeoLocator secondaryLocator,
-      FifteenMinuteRollupDAO monitor, Clock clock) {
+      CounterPublisher counterPublisher) {
     this.secondaryLocator = secondaryLocator;
     this.dao = dao;
-    this.monitor = monitor;
-    this.clock = clock;
+    this.counterPublisher = counterPublisher;
   }
 
   @Override
@@ -49,13 +44,12 @@ class CacheAndForwardLocator implements GeoLocator {
       log.log(Level.INFO, "Reverse lookup location: {0}", foundLocation);
       return foundLocation;
     }
-    DateTime now = clock.now();
-    monitor.updateCount(now, "cacheLookup_total");
+    counterPublisher.increment("cacheLookup_total");
     Location loc = dao.findByAlias(location);
     if (loc != null) {
       return loc;
     } else {
-      monitor.updateCount(now, "cacheLookup_failed");
+      counterPublisher.increment("cacheLookup_failed");
     }
     try {
       loc = secondaryLocator.locate(location, granularity);
