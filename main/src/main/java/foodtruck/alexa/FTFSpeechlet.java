@@ -13,18 +13,16 @@ import com.amazon.speech.speechlet.SessionStartedRequest;
 import com.amazon.speech.speechlet.Speechlet;
 import com.amazon.speech.speechlet.SpeechletException;
 import com.amazon.speech.speechlet.SpeechletResponse;
-import com.google.appengine.api.taskqueue.Queue;
-import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 import org.joda.time.DateTime;
 
 import foodtruck.dao.AlexaExchangeDAO;
 import foodtruck.model.AlexaExchange;
+import foodtruck.monitoring.CounterPublisher;
 import foodtruck.time.Clock;
 
 /**
@@ -37,15 +35,15 @@ class FTFSpeechlet implements Speechlet {
   private final Map<String, IntentProcessor> processors;
   private final Clock clock;
   private final AlexaExchangeDAO alexaExchangeDAO;
-  private final Provider<Queue> monitorQueueProvider;
+  private final CounterPublisher publisher;
 
   @Inject
   public FTFSpeechlet(Map<String, IntentProcessor> processors, Clock clock, AlexaExchangeDAO alexaExchangeDAO,
-      Provider<Queue> monitorQueue) {
+      CounterPublisher publisher) {
     this.processors = processors;
     this.clock = clock;
     this.alexaExchangeDAO = alexaExchangeDAO;
-    this.monitorQueueProvider = monitorQueue;
+    this.publisher = publisher;
   }
 
   @Override
@@ -56,9 +54,7 @@ class FTFSpeechlet implements Speechlet {
   @Override
   public SpeechletResponse onLaunch(LaunchRequest launchRequest, Session session) throws SpeechletException {
     log.log(Level.INFO, "Alexa launched: {0}", session.getSessionId());
-    Queue queue = monitorQueueProvider.get();
-    queue.add(TaskOptions.Builder.withUrl("/cron/update_count")
-        .param("statName", "alexa_launch"));
+    publisher.increment("alexa_launch");
     return SpeechletResponseBuilder.builder()
         .speechText(
             "Food Truck Finder.  You can ask me what food trucks are at a specific location or information about a specific food truck. What would you like to find?")
@@ -108,10 +104,8 @@ class FTFSpeechlet implements Speechlet {
         .completeTime(clock.now())
         .build();
     alexaExchangeDAO.save(exchange);
-    Queue queue = monitorQueueProvider.get();
-    queue.add(TaskOptions.Builder.withUrl("/cron/update_count")
-        .param("statName", "alexa_intent_" + intentRequest.getIntent()
-            .getName()));
+    publisher.increment("alexa_intent_" + intentRequest.getIntent()
+        .getName());
   }
 
   @Override
