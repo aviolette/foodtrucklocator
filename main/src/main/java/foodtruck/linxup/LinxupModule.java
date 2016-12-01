@@ -1,7 +1,5 @@
 package foodtruck.linxup;
 
-import com.google.appengine.api.memcache.Expiration;
-import com.google.appengine.api.memcache.MemcacheService;
 import com.google.inject.Exposed;
 import com.google.inject.PrivateModule;
 import com.google.inject.Provides;
@@ -10,14 +8,11 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 
-import foodtruck.appengine.monitoring.CounterImpl;
-
 /**
  * @author aviolette
  * @since 7/21/16
  */
 public class LinxupModule extends PrivateModule {
-  static final String ERROR_COUNTER = "linxup.error.counter";
   private static final String USERNAME = "linxup.username";
   private static final String PASSWORD = "linxup.password";
 
@@ -67,11 +62,5 @@ public class LinxupModule extends PrivateModule {
   @Named(PASSWORD)
   public String providesPassword() {
     return System.getProperty("foodtrucklocator.linxup.password");
-  }
-
-  @Provides
-  @Named(ERROR_COUNTER)
-  public CounterImpl providesServiceErrorCounter(MemcacheService memcacheService) {
-    return new CounterImpl("service.trackingdeviceservice.error", memcacheService, Expiration.byDeltaSeconds(3600));
   }
 }

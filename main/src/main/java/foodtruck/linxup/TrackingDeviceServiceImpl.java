@@ -20,13 +20,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.google.inject.name.Named;
 import com.javadocmd.simplelatlng.LatLng;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 
-import foodtruck.appengine.monitoring.CounterImpl;
 import foodtruck.dao.LinxupAccountDAO;
 import foodtruck.dao.TrackingDeviceDAO;
 import foodtruck.dao.TruckDAO;
@@ -38,6 +36,7 @@ import foodtruck.model.StopOrigin;
 import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
+import foodtruck.monitoring.Counter;
 import foodtruck.server.security.SecurityChecker;
 import foodtruck.time.Clock;
 import foodtruck.time.FriendlyDateTimeFormat;
@@ -61,7 +60,7 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
   private final Provider<TruckStopCache> truckStopCacheProvider;
   private final BlacklistedLocationMatcher blacklistedLocationMatcher;
   private final LocationResolver locationResolver;
-  private final CounterImpl counter;
+  private final Counter counter;
 
   @Inject
   public TrackingDeviceServiceImpl(TruckStopDAO truckStopDAO, LinxupConnector connector,
@@ -69,7 +68,7 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
       @FriendlyDateTimeFormat DateTimeFormatter formatter, SecurityChecker securityChecker,
       LinxupAccountDAO linxupAccountDAO, Provider<Queue> queueProvider, Provider<TruckStopCache> truckStopCacheProvider,
       BlacklistedLocationMatcher blacklistedLocationMatcher, LocationResolver locationResolver,
-      @Named(LinxupModule.ERROR_COUNTER) CounterImpl errorCounter) {
+      @ErrorCounter Counter errorCounter) {
     this.connector = connector;
     this.truckStopDAO = truckStopDAO;
     this.trackingDeviceDAO = trackingDeviceDAO;
