@@ -9,6 +9,6 @@
   <modules>
     <module>common-api</module>
     <module>config-api</module>
-    <module>geolocation</module>
+    <module>core-services</module>
   </modules>
 </project>

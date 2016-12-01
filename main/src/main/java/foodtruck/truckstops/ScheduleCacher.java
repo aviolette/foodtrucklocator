@@ -1,4 +1,4 @@
-package foodtruck.schedule;
+package foodtruck.truckstops;
 
 import javax.annotation.Nullable;
 

@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import foodtruck.schedule.ScheduleCacher;
+import foodtruck.truckstops.ScheduleCacher;
 
 /**
  * Called to invalidate the schedule cache in memcached.

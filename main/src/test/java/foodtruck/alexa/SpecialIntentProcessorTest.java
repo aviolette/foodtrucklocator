@@ -117,7 +117,6 @@ public class SpecialIntentProcessorTest extends EasyMockSupport {
   }
 
 
-
   @Test
   public void twoSpecials() {
     expect(truckDAO.findByNameOrAlias("Foobar")).andReturn(truck);
@@ -128,8 +127,9 @@ public class SpecialIntentProcessorTest extends EasyMockSupport {
     expect(dailyDataDAO.findByTruckAndDay("foobar", date)).andReturn(dailyData);
     replayAll();
     SpeechletResponse response = processor.process(intent, null);
-    assertSpeech(response.getOutputSpeech()).isEqualTo(
-        "<speak>Foobar's specials for today are Cherry Old Fashioned and Mexican Hot Chocolate Cake Donut</speak>");
+    assertSpeech(response.getOutputSpeech()).isAnyOf(
+        "<speak>Foobar's specials for today are Cherry Old Fashioned and Mexican Hot Chocolate Cake Donut</speak>",
+        "<speak>Foobar's specials for today are Mexican Hot Chocolate Cake Donut and Cherry Old Fashioned</speak>");
     verifyAll();
   }
 }

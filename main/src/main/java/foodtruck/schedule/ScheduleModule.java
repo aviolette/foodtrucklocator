@@ -31,7 +31,6 @@ public class ScheduleModule extends AbstractModule {
   protected void configure() {
     bind(AddressExtractor.class).to(JavascriptAddressExtractor.class);
     bind(ScheduleStrategy.class).to(GoogleCalendarV3Consumer.class);
-    bind(ScheduleCacher.class).to(MemcacheScheduleCacher.class);
     String city = System.getProperty("foodtrucklocator.city", "Chicago");
     if ("New York".equals(city)) {
       install(new NewYorkModule());
