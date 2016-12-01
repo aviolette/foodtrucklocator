@@ -12,11 +12,11 @@ import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 
+import foodtruck.appengine.session.Session;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
-import foodtruck.util.Session;
 
 /**
  * @author aviolette

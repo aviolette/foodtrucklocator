@@ -11,10 +11,10 @@ import com.google.appengine.api.users.UserService;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
+import foodtruck.appengine.session.Session;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
 import foodtruck.server.resources.ErrorPayload;
-import foodtruck.util.Session;
 
 /**
  * @author aviolette

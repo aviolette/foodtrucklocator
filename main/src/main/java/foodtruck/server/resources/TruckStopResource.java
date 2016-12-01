@@ -33,12 +33,12 @@ import com.google.inject.Provider;
 
 import org.joda.time.DateTime;
 
+import foodtruck.appengine.session.Session;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TruckStopWithCounts;
 import foodtruck.server.security.SecurityChecker;
-import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.time.Clock;
-import foodtruck.util.Session;
+import foodtruck.truckstops.FoodTruckStopService;
 
 
 /**

@@ -12,9 +12,9 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
+import foodtruck.appengine.session.Session;
 import foodtruck.model.StaticConfig;
 import foodtruck.socialmedia.TwitterFactoryWrapper;
-import foodtruck.util.Session;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.auth.RequestToken;

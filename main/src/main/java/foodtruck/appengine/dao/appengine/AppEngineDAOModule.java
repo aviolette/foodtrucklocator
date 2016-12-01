@@ -28,7 +28,6 @@ import foodtruck.dao.WeeklyRollupDAO;
 import foodtruck.dao.WeeklyTruckStopDAO;
 import foodtruck.model.Slots;
 import foodtruck.util.Secondary;
-import foodtruck.util.WeeklyRollup;
 
 /**
  * @author aviolette@gmail.com
@@ -74,7 +73,6 @@ public class AppEngineDAOModule extends AbstractModule {
   public Slots provideFifteenMinuteRollup() {
     return new Slots(1000 * 60 * 15);
   }
-
 
   @WeeklyRollup
   @Provides

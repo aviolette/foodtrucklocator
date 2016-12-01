@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.inject.Provider;
 
-import foodtruck.util.Session;
+import foodtruck.appengine.session.Session;
 
 /**
  * A servlet that stores a principal in a session and redirects to login page if that principal

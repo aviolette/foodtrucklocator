@@ -1,4 +1,4 @@
-package foodtruck.util;
+package foodtruck.appengine.session;
 
 import java.util.Map;
 
