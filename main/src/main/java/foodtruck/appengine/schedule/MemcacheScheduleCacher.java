@@ -13,8 +13,8 @@ import foodtruck.truckstops.ScheduleCacher;
  * @since 5/29/13
  */
 public class MemcacheScheduleCacher implements ScheduleCacher {
-  public static final String DAILY_SCHEDULE = "daily_schedule";
-  public static final String TOMORROWS_SCHEDULE = "tomorrows_schedule";
+  private static final String DAILY_SCHEDULE = "daily_schedule";
+  private static final String TOMORROWS_SCHEDULE = "tomorrows_schedule";
   private final MemcacheService cache;
 
   @Inject

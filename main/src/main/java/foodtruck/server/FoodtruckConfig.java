@@ -13,7 +13,6 @@ import foodtruck.appengine.AppengineModule;
 import foodtruck.appengine.monitoring.MonitoringModule;
 import foodtruck.book.BookingModule;
 import foodtruck.geolocation.GeolocationModule;
-import foodtruck.googleapi.GoogleApiModule;
 import foodtruck.linxup.LinxupModule;
 import foodtruck.notifications.NotificationModule;
 import foodtruck.schedule.ScheduleModule;
@@ -38,7 +37,6 @@ public class FoodtruckConfig extends GuiceServletContextListener {
   private Module[] modules() {
     ImmutableList.Builder<Module> modules = ImmutableList.<Module>builder().add(new AppengineModule())
         .add(new AlexaModule())
-        .add(new GoogleApiModule())
         .add(new GeolocationModule())
         .add(new TruckStopsModule())
         .add(new SecurityModule())

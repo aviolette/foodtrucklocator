@@ -5,6 +5,10 @@ import java.util.logging.Logger;
 
 import javax.script.ScriptEngineManager;
 
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.services.calendar.Calendar;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -72,5 +76,15 @@ public class ScheduleModule extends AbstractModule {
     }
     return new LocalTime(11, 30);
   }
+
+
+  @Singleton
+  @Provides
+  public Calendar providesCalendar(HttpTransport httpTransport, JsonFactory jsonFactory,
+      @javax.inject.Named("projectId") String applicationName, HttpRequestInitializer credential) {
+    return new Calendar.Builder(httpTransport, jsonFactory, credential).setApplicationName(applicationName)
+        .build();
+  }
+
 }
 
