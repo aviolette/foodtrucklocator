@@ -1,4 +1,4 @@
-package foodtruck.socialmedia;
+package foodtruck.schedule;
 
 import java.util.List;
 import java.util.Set;
@@ -34,11 +34,7 @@ import foodtruck.model.TruckStop;
 import foodtruck.model.TwitterNotificationAccount;
 import foodtruck.notifications.PublicEventNotificationService;
 import foodtruck.notifications.SystemNotificationService;
-import foodtruck.schedule.OffTheRoadDetector;
-import foodtruck.schedule.OffTheRoadResponse;
-import foodtruck.schedule.TerminationDetector;
-import foodtruck.schedule.TruckStopMatch;
-import foodtruck.schedule.TruckStopMatcher;
+import foodtruck.socialmedia.SocialMediaConnector;
 import foodtruck.time.Clock;
 
 import static org.easymock.EasyMock.expect;

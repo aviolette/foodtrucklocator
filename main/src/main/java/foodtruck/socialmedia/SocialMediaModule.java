@@ -25,8 +25,6 @@ public class SocialMediaModule extends AbstractModule {
 
   @Override
   protected void configure() {
-    bind(SocialMediaCacher.class).to(SocialMediaCacherImpl.class);
-    bind(ProfileSyncService.class).to(ProfileSyncServiceImpl.class);
     Multibinder<SocialMediaConnector> connectorBinder = Multibinder.newSetBinder(binder(), SocialMediaConnector.class);
     connectorBinder.addBinding().to(TwitterConnector.class);
     if (System.getProperty("foodtrucklocator.fb.access.token", null) != null) {

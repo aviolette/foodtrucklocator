@@ -1,4 +1,4 @@
-package foodtruck.socialmedia;
+package foodtruck.profile;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -24,6 +24,8 @@ import org.codehaus.jettison.json.JSONObject;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
+import foodtruck.socialmedia.FacebookEndpoint;
+import foodtruck.socialmedia.TwitterFactoryWrapper;
 import foodtruck.storage.StorageService;
 import twitter4j.ResponseList;
 import twitter4j.Twitter;

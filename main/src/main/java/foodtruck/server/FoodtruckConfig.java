@@ -15,6 +15,7 @@ import foodtruck.book.BookingModule;
 import foodtruck.geolocation.GeolocationModule;
 import foodtruck.linxup.LinxupModule;
 import foodtruck.notifications.NotificationModule;
+import foodtruck.profile.ProfileModule;
 import foodtruck.schedule.ScheduleModule;
 import foodtruck.server.security.SecurityModule;
 import foodtruck.socialmedia.SocialMediaModule;
@@ -45,6 +46,7 @@ public class FoodtruckConfig extends GuiceServletContextListener {
         .add(new SocialMediaModule())
         .add(new NotificationModule())
         .add(new LinxupModule())
+        .add(new ProfileModule())
         .add(new TimeModule())
         .add(new FoodtruckServletModule());
     if ("true".equals(System.getProperty("foodtrucklocator.supports.booking"))) {

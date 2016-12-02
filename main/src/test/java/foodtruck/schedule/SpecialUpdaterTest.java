@@ -1,4 +1,4 @@
-package foodtruck.socialmedia;
+package foodtruck.schedule;
 
 import com.google.common.collect.ImmutableList;
 

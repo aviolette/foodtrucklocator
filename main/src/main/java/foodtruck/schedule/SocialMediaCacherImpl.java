@@ -1,4 +1,4 @@
-package foodtruck.socialmedia;
+package foodtruck.schedule;
 
 import java.util.Collection;
 import java.util.List;
@@ -39,14 +39,10 @@ import foodtruck.model.TruckStop;
 import foodtruck.monitoring.Monitored;
 import foodtruck.notifications.PublicEventNotificationService;
 import foodtruck.notifications.SystemNotificationService;
-import foodtruck.schedule.OffTheRoadDetector;
-import foodtruck.schedule.OffTheRoadResponse;
-import foodtruck.schedule.TerminationDetector;
-import foodtruck.schedule.TruckStopMatch;
-import foodtruck.schedule.TruckStopMatcher;
-import foodtruck.truckstops.FoodTruckStopService;
+import foodtruck.socialmedia.SocialMediaConnector;
 import foodtruck.time.Clock;
 import foodtruck.time.TimeOnlyFormatter;
+import foodtruck.truckstops.FoodTruckStopService;
 
 /**
  * @author aviolette@gmail.com

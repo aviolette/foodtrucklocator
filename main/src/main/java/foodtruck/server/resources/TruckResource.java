@@ -27,8 +27,8 @@ import foodtruck.dao.TrackingDeviceDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
+import foodtruck.profile.ProfileSyncService;
 import foodtruck.server.security.SecurityChecker;
-import foodtruck.socialmedia.ProfileSyncService;
 import foodtruck.time.Clock;
 import foodtruck.time.DateOnlyFormatter;
 

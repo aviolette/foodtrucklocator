@@ -1,4 +1,4 @@
-package foodtruck.socialmedia;
+package foodtruck.schedule;
 
 import org.joda.time.LocalDate;
 

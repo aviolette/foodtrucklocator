@@ -1,4 +1,4 @@
-package foodtruck.socialmedia;
+package foodtruck.profile;
 
 import foodtruck.model.Truck;
 
