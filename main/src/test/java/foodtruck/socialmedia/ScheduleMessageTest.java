@@ -1,6 +1,8 @@
-package foodtruck.schedule;
+package foodtruck.socialmedia;
 
 import org.junit.Test;
+
+import foodtruck.socialmedia.ScheduleMessage;
 
 import static com.google.common.truth.Truth.assertThat;
 

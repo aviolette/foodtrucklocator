@@ -4,7 +4,6 @@ import java.util.List;
 
 import foodtruck.model.Story;
 import foodtruck.model.Truck;
-import foodtruck.schedule.ScheduleMessage;
 import foodtruck.util.ServiceException;
 
 /**

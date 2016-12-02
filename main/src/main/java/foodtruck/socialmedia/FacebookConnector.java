@@ -20,7 +20,6 @@ import foodtruck.model.StaticConfig;
 import foodtruck.model.Story;
 import foodtruck.model.StoryType;
 import foodtruck.model.Truck;
-import foodtruck.schedule.ScheduleMessage;
 import foodtruck.time.Clock;
 import foodtruck.time.FacebookTimeFormat;
 import foodtruck.util.Secondary;

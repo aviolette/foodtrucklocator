@@ -19,7 +19,6 @@ import foodtruck.model.StaticConfig;
 import foodtruck.model.Story;
 import foodtruck.model.StoryType;
 import foodtruck.model.Truck;
-import foodtruck.schedule.ScheduleMessage;
 import foodtruck.util.ServiceException;
 import twitter4j.GeoLocation;
 import twitter4j.Paging;

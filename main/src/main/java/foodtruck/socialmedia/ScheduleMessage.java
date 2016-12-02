@@ -1,4 +1,4 @@
-package foodtruck.schedule;
+package foodtruck.socialmedia;
 
 import java.util.List;
 
