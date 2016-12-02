@@ -22,7 +22,7 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStop;
 import foodtruck.model.Url;
-import foodtruck.truckstops.FoodTruckStopService;
+import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.time.Clock;
 
 /**

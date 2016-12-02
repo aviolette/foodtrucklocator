@@ -19,11 +19,11 @@ import org.joda.time.format.DateTimeFormatter;
 import foodtruck.appengine.monitoring.CounterImpl;
 import foodtruck.appengine.monitoring.DailyScheduleCounter;
 import foodtruck.appengine.monitoring.HourlyScheduleCounter;
+import foodtruck.schedule.FoodTruckStopService;
+import foodtruck.schedule.ScheduleCacher;
 import foodtruck.server.resources.json.DailyScheduleWriter;
 import foodtruck.time.Clock;
 import foodtruck.time.DateOnlyFormatter;
-import foodtruck.truckstops.FoodTruckStopService;
-import foodtruck.truckstops.ScheduleCacher;
 
 /**
  * @author aviolette

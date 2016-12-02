@@ -8,7 +8,7 @@ import org.junit.Test;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TwitterNotificationAccountDAO;
 import foodtruck.model.StaticConfig;
-import foodtruck.truckstops.FoodTruckStopService;
+import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.time.Clock;
 
 import static org.junit.Assert.assertEquals;

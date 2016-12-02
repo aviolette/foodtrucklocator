@@ -20,10 +20,10 @@ import org.joda.time.format.DateTimeFormatter;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckSchedule;
-import foodtruck.socialmedia.ScheduleMessage;
+import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.server.GuiceHackRequestWrapper;
+import foodtruck.socialmedia.ScheduleMessage;
 import foodtruck.socialmedia.SocialMediaConnector;
-import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.time.Clock;
 import foodtruck.time.TimeOnlyFormatter;
 

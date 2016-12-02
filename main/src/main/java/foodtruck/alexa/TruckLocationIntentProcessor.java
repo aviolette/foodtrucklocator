@@ -17,7 +17,7 @@ import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStop;
-import foodtruck.truckstops.FoodTruckStopService;
+import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.time.Clock;
 
 import static foodtruck.model.TruckStop.TO_LOCATION_NAME;

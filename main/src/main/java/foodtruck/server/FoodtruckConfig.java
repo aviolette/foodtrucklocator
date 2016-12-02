@@ -20,7 +20,6 @@ import foodtruck.schedule.ScheduleModule;
 import foodtruck.server.security.SecurityModule;
 import foodtruck.socialmedia.SocialMediaModule;
 import foodtruck.time.TimeModule;
-import foodtruck.truckstops.TruckStopsModule;
 
 /**
  * @author aviolette@gmail.com
@@ -39,7 +38,6 @@ public class FoodtruckConfig extends GuiceServletContextListener {
     ImmutableList.Builder<Module> modules = ImmutableList.<Module>builder().add(new AppengineModule())
         .add(new AlexaModule())
         .add(new GeolocationModule())
-        .add(new TruckStopsModule())
         .add(new SecurityModule())
         .add(new ScheduleModule())
         .add(new MonitoringModule())

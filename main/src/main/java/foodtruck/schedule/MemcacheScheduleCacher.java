@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 import com.google.inject.Inject;
 
 import foodtruck.caching.Cacher;
-import foodtruck.truckstops.ScheduleCacher;
 
 /**
  * @author aviolette

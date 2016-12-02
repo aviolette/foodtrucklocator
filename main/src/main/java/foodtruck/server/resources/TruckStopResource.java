@@ -36,9 +36,9 @@ import org.joda.time.DateTime;
 import foodtruck.appengine.session.Session;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TruckStopWithCounts;
+import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.server.security.SecurityChecker;
 import foodtruck.time.Clock;
-import foodtruck.truckstops.FoodTruckStopService;
 
 
 /**

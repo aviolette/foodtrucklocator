@@ -20,7 +20,7 @@ import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStop;
-import foodtruck.truckstops.FoodTruckStopService;
+import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.time.Clock;
 
 import static com.google.common.truth.Truth.assertThat;

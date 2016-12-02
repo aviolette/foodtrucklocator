@@ -12,8 +12,8 @@ import com.sun.jersey.api.JResponse;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.TruckSchedule;
+import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.server.security.SecurityChecker;
-import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.time.Clock;
 
 import static foodtruck.server.resources.Resources.noCache;

@@ -34,11 +34,11 @@ import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
 import foodtruck.model.TruckStop;
+import foodtruck.schedule.FoodTruckStopService;
+import foodtruck.schedule.ScheduleCacher;
 import foodtruck.server.resources.json.DailyScheduleWriter;
 import foodtruck.time.Clock;
 import foodtruck.time.TimeOnlyFormatter;
-import foodtruck.truckstops.FoodTruckStopService;
-import foodtruck.truckstops.ScheduleCacher;
 
 import static foodtruck.alexa.AlexaModule.TESTING_MODE;
 import static foodtruck.util.MoreStrings.capitalize;

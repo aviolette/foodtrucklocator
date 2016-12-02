@@ -22,11 +22,11 @@ import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.model.DailySchedule;
 import foodtruck.model.StaticConfig;
+import foodtruck.schedule.FoodTruckStopService;
+import foodtruck.schedule.ScheduleCacher;
 import foodtruck.server.resources.json.DailyScheduleWriter;
 import foodtruck.time.Clock;
 import foodtruck.time.TimeFormatter;
-import foodtruck.truckstops.FoodTruckStopService;
-import foodtruck.truckstops.ScheduleCacher;
 
 /**
  * Servlet that serves up the main food truck page.

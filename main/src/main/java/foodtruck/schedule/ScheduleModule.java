@@ -23,7 +23,6 @@ import foodtruck.model.StaticConfig;
 import foodtruck.schedule.custom.chicago.ChicagoModule;
 import foodtruck.schedule.custom.nyc.NewYorkModule;
 import foodtruck.time.MilitaryTimeOnlyFormatter;
-import foodtruck.truckstops.ScheduleCacher;
 
 /**
  * @author aviolette@gmail.com
@@ -38,6 +37,7 @@ public class ScheduleModule extends AbstractModule {
     bind(AddressExtractor.class).to(JavascriptAddressExtractor.class);
     bind(ScheduleStrategy.class).to(GoogleCalendarV3Consumer.class);
     bind(SocialMediaCacher.class).to(SocialMediaCacherImpl.class);
+    bind(FoodTruckStopService.class).to(FoodTruckStopServiceImpl.class);
     String city = System.getProperty("foodtrucklocator.city", "Chicago");
     if ("New York".equals(city)) {
       install(new NewYorkModule());

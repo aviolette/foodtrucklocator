@@ -17,7 +17,7 @@ import org.joda.time.LocalDate;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
-import foodtruck.truckstops.FoodTruckStopService;
+import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.time.Clock;
 
 /**

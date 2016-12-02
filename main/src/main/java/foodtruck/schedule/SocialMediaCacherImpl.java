@@ -42,7 +42,6 @@ import foodtruck.notifications.SystemNotificationService;
 import foodtruck.socialmedia.SocialMediaConnector;
 import foodtruck.time.Clock;
 import foodtruck.time.TimeOnlyFormatter;
-import foodtruck.truckstops.FoodTruckStopService;
 
 /**
  * @author aviolette@gmail.com

@@ -21,10 +21,10 @@ import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
+import foodtruck.schedule.FoodTruckStopService;
+import foodtruck.schedule.ScheduleCacher;
 import foodtruck.server.resources.json.DailyScheduleWriter;
 import foodtruck.time.Clock;
-import foodtruck.truckstops.FoodTruckStopService;
-import foodtruck.truckstops.ScheduleCacher;
 
 import static com.google.common.truth.Truth.assertThat;
 import static foodtruck.alexa.AlexaTestingUtils.assertSpeech;

@@ -23,9 +23,9 @@ import org.joda.time.format.DateTimeFormatter;
 import foodtruck.dao.RetweetsDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.StaticConfig;
+import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.schedule.SocialMediaCacher;
 import foodtruck.time.Clock;
-import foodtruck.truckstops.FoodTruckStopService;
 
 /**
  * Reloads the external calendars into the internal schedule cache.

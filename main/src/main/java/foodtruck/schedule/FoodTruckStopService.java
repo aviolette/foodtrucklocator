@@ -1,4 +1,4 @@
-package foodtruck.truckstops;
+package foodtruck.schedule;
 
 import java.util.List;
 import java.util.Set;

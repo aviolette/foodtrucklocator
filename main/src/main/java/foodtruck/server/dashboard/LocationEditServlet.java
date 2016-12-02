@@ -23,10 +23,10 @@ import foodtruck.dao.LocationDAO;
 import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
 import foodtruck.notifications.PublicEventNotificationService;
+import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.server.resources.json.LocationReader;
 import foodtruck.server.resources.json.LocationWriter;
-import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.util.Urls;
 
 import static com.google.common.base.Preconditions.checkNotNull;

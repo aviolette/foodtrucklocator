@@ -23,7 +23,7 @@ import foodtruck.dao.LocationDAO;
 import foodtruck.model.DailySchedule;
 import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
-import foodtruck.truckstops.FoodTruckStopService;
+import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.time.Clock;
 import foodtruck.time.DateOnlyFormatter;
 import foodtruck.time.FriendlyDateOnlyFormat;

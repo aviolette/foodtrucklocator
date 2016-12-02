@@ -17,8 +17,8 @@ import org.joda.time.Interval;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Location;
+import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.server.GuiceHackRequestWrapper;
-import foodtruck.truckstops.FoodTruckStopService;
 import foodtruck.time.Clock;
 
 /**

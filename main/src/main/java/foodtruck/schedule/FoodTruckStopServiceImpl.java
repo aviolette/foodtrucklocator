@@ -1,4 +1,4 @@
-package foodtruck.truckstops;
+package foodtruck.schedule;
 
 import java.util.List;
 import java.util.Map;
@@ -34,7 +34,6 @@ import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStatus;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TruckStopWithCounts;
-import foodtruck.schedule.ScheduleStrategy;
 import foodtruck.time.Clock;
 
 /**
