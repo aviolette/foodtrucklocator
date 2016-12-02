@@ -21,6 +21,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
 import foodtruck.model.Location;
+import foodtruck.model.Stop;
 import foodtruck.server.resources.json.JSONSerializer;
 
 /**

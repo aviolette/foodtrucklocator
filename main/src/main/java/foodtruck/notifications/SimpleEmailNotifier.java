@@ -11,15 +11,15 @@ import com.google.inject.Inject;
 
 import org.joda.time.format.DateTimeFormatter;
 
-import foodtruck.linxup.Stop;
 import foodtruck.model.Location;
+import foodtruck.model.LoginMethod;
 import foodtruck.model.StaticConfig;
+import foodtruck.model.Stop;
 import foodtruck.model.Story;
 import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.time.TimeFormatter;
-import foodtruck.model.LoginMethod;
 
 /**
  * An email notifier that sends the email immediately.

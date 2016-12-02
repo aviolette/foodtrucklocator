@@ -32,6 +32,7 @@ import foodtruck.dao.TruckStopDAO;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.model.LinxupAccount;
 import foodtruck.model.Location;
+import foodtruck.model.Stop;
 import foodtruck.model.StopOrigin;
 import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
@@ -107,7 +108,6 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
     List<Position> positionList = connector.findPositions(account);
     merge(synchronize(positionList, account));
   }
-
 
   @Override
   public void enableDevice(Long beaconId, boolean enabled) {

@@ -7,6 +7,8 @@ import javax.annotation.Nullable;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 
+import foodtruck.model.Stop;
+
 /**
  * @author aviolette
  * @since 11/1/16

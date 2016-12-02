@@ -3,13 +3,13 @@ package foodtruck.notifications;
 import java.util.Map;
 import java.util.Set;
 
-import foodtruck.linxup.Stop;
 import foodtruck.model.Location;
+import foodtruck.model.LoginMethod;
+import foodtruck.model.Stop;
 import foodtruck.model.Story;
 import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
-import foodtruck.model.LoginMethod;
 
 /**
  * @author aviolette

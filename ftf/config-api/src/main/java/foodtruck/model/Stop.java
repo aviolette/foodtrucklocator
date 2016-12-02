@@ -1,4 +1,4 @@
-package foodtruck.linxup;
+package foodtruck.model;
 
 import com.google.common.base.MoreObjects;
 

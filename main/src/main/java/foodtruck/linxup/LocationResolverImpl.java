@@ -10,6 +10,7 @@ import com.google.inject.Inject;
 import foodtruck.caching.Cacher;
 import foodtruck.model.LinxupAccount;
 import foodtruck.model.Location;
+import foodtruck.model.Stop;
 import foodtruck.model.TrackingDevice;
 import foodtruck.notifications.SystemNotificationService;
 import foodtruck.time.Clock;
