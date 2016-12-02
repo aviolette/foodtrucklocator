@@ -34,10 +34,10 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
+import foodtruck.appengine.cache.MemcacheCacher;
 import foodtruck.appengine.dao.appengine.AppEngineDAOModule;
 import foodtruck.appengine.dao.memcached.MemcachedModule;
-import foodtruck.appengine.schedule.MemcacheScheduleCacher;
-import foodtruck.truckstops.ScheduleCacher;
+import foodtruck.caching.Cacher;
 
 /**
  * @author aviolette
@@ -50,7 +50,7 @@ public class AppengineModule extends AbstractModule {
   protected void configure() {
     install(new AppEngineDAOModule());
     install(new MemcachedModule());
-    bind(ScheduleCacher.class).to(MemcacheScheduleCacher.class);
+    bind(Cacher.class).to(MemcacheCacher.class);
   }
 
   @Provides
