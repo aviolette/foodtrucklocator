@@ -6,6 +6,8 @@ import com.google.appengine.api.memcache.Expiration;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.inject.Inject;
 
+import org.joda.time.DateTime;
+
 import foodtruck.caching.Cacher;
 
 /**
@@ -23,6 +25,11 @@ public class MemcacheCacher implements Cacher {
   @Override
   public void put(String name, @Nullable Object value, int expirationInMinutes) {
     service.put(name, value, Expiration.byDeltaSeconds(expirationInMinutes * 60));
+  }
+
+  @Override
+  public void put(String name, @Nullable Object value, DateTime expirationDate) {
+    service.put(name, value, Expiration.onDate(expirationDate.toDate()));
   }
 
   @Nullable
