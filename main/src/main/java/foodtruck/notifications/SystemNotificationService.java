@@ -9,7 +9,7 @@ import foodtruck.model.Story;
 import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
-import foodtruck.server.vendor.LoginMethod;
+import foodtruck.model.LoginMethod;
 
 /**
  * @author aviolette

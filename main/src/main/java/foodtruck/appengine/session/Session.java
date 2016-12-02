@@ -7,8 +7,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.appengine.api.memcache.Expiration;
-import com.google.appengine.api.memcache.MemcacheService;
 import com.google.common.collect.Maps;
 import com.google.common.net.HttpHeaders;
 import com.google.inject.Inject;
@@ -17,6 +15,7 @@ import com.google.inject.servlet.RequestScoped;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 
+import foodtruck.caching.Cacher;
 import foodtruck.time.Clock;
 import foodtruck.time.HttpHeaderFormat;
 
@@ -29,15 +28,15 @@ import foodtruck.time.HttpHeaderFormat;
  */
 @RequestScoped
 public class Session {
-  private final MemcacheService cache;
+  private final Cacher cache;
   private final HttpServletResponse response;
   private String sessionKey;
   private DateTimeFormatter formatter;
 
   @Inject
-  public Session(HttpServletRequest request, HttpServletResponse response, MemcacheService cache,
-      SessionIdentifier sessionIdentifier, Clock clock, @HttpHeaderFormat DateTimeFormatter formatter) {
-    this.cache = cache;
+  public Session(HttpServletRequest request, HttpServletResponse response, SessionIdentifier sessionIdentifier, Clock clock, @HttpHeaderFormat DateTimeFormatter formatter,
+      Cacher cacher) {
+    this.cache = cacher ;
     this.sessionKey = getSessionCookie(request);
     this.formatter = formatter;
     this.response = response;
@@ -71,7 +70,7 @@ public class Session {
       contents = Maps.newHashMap();
     }
     contents.put(name, value);
-    cache.put(fullSessionKey(), contents, Expiration.byDeltaSeconds(86400));
+    cache.put(fullSessionKey(), contents, 1440);
   }
 
   public @Nullable Object getProperty(String name) {

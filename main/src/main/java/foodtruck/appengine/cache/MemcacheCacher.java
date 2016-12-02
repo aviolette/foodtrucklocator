@@ -32,6 +32,11 @@ public class MemcacheCacher implements Cacher {
     service.put(name, value, Expiration.onDate(expirationDate.toDate()));
   }
 
+  @Override
+  public void put(String s, @Nullable Object o) {
+    service.put(s, o);
+  }
+
   @Nullable
   @Override
   public Object get(String name) {

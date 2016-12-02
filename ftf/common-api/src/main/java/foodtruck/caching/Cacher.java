@@ -26,6 +26,13 @@ public interface Cacher {
   void put(String key, @Nullable Object value, DateTime expirationDate);
 
   /**
+   * Puts an object with no specific expiration
+   * @param key the key
+   * @param value the value
+   */
+  void put(String key, @Nullable Object value);
+
+  /**
    * Returns the object specified by the key or null if it is not specified.
    * @param key the key
    * @return the object or null if it is not in the cache

@@ -17,6 +17,7 @@ import com.google.inject.Singleton;
 import foodtruck.appengine.session.Session;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TwitterNotificationAccountDAO;
+import foodtruck.model.LoginMethod;
 import foodtruck.model.Truck;
 import foodtruck.model.TwitterNotificationAccount;
 import foodtruck.notifications.SystemNotificationService;

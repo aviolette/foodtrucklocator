@@ -1,4 +1,4 @@
-package foodtruck.server.vendor;
+package foodtruck.model;
 
 /**
  * @author aviolette
