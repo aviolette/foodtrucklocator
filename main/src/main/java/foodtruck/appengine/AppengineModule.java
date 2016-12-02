@@ -37,7 +37,9 @@ import com.google.inject.Singleton;
 import foodtruck.appengine.cache.MemcacheCacher;
 import foodtruck.appengine.dao.appengine.AppEngineDAOModule;
 import foodtruck.appengine.dao.memcached.MemcachedModule;
+import foodtruck.appengine.storage.GcsStorageService;
 import foodtruck.caching.Cacher;
+import foodtruck.storage.StorageService;
 
 /**
  * @author aviolette
@@ -51,6 +53,7 @@ public class AppengineModule extends AbstractModule {
     install(new AppEngineDAOModule());
     install(new MemcachedModule());
     bind(Cacher.class).to(MemcacheCacher.class);
+    bind(StorageService.class).to(GcsStorageService.class);
   }
 
   @Provides

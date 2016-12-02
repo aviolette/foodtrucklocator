@@ -1,12 +1,9 @@
 package foodtruck.socialmedia;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.channels.Channels;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -14,11 +11,6 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
-import com.google.api.client.util.ByteStreams;
-import com.google.appengine.tools.cloudstorage.GcsFileOptions;
-import com.google.appengine.tools.cloudstorage.GcsFilename;
-import com.google.appengine.tools.cloudstorage.GcsOutputChannel;
-import com.google.appengine.tools.cloudstorage.GcsService;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSet;
@@ -32,6 +24,7 @@ import org.codehaus.jettison.json.JSONObject;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
+import foodtruck.storage.StorageService;
 import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -44,7 +37,7 @@ import twitter4j.User;
 public class ProfileSyncServiceImpl implements ProfileSyncService {
   private static final Logger log = Logger.getLogger(ProfileSyncServiceImpl.class.getName());
   private final TwitterFactoryWrapper twitterFactory;
-  private final GcsService cloudStorage;
+  private final StorageService storageService;
   private final TruckDAO truckDAO;
   private final StaticConfig staticConfig;
   private final Pattern pageUrlPattern = Pattern.compile("/pages/(.*)/(\\d+)");
@@ -52,13 +45,13 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
 
 
   @Inject
-  public ProfileSyncServiceImpl(TwitterFactoryWrapper twitterFactory, GcsService cloudStorage, TruckDAO truckDAO,
-      StaticConfig staticConfig,  @FacebookEndpoint WebResource facebookResource) {
+  public ProfileSyncServiceImpl(TwitterFactoryWrapper twitterFactory, TruckDAO truckDAO, StaticConfig staticConfig,
+      @FacebookEndpoint WebResource facebookResource, StorageService storageService) {
     this.twitterFactory = twitterFactory;
-    this.cloudStorage = cloudStorage;
     this.truckDAO = truckDAO;
     this.staticConfig = staticConfig;
     this.facebookResource = facebookResource;
+    this.storageService = storageService;
   }
 
   @Override
@@ -91,17 +84,7 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
       // If the twitter profile exists, then get the icon URL
       String extension = ogIconUrl.substring(ogIconUrl.lastIndexOf(".")),
           fileName = twitterHandle + extension;
-      // copy icon to google cloud storage
-      GcsFilename gcsFilename = new GcsFilename(bucket, fileName);
-      GcsOutputChannel channel = cloudStorage.createOrReplace(gcsFilename,
-          new GcsFileOptions.Builder().cacheControl("public, max-age=2591000")
-              .mimeType(fileName.matches("png") ? "image/png" : "image/jpeg")
-              .build());
-      URL iconUrl = new URL(ogIconUrl);
-      try (InputStream in = iconUrl.openStream(); OutputStream out = Channels.newOutputStream(channel)) {
-        ByteStreams.copy(in, out);
-      }
-      ogIconUrl = "http://storage.googleapis.com/" + bucket + "/" + fileName;
+      return storageService.copyUrl(ogIconUrl, bucket, fileName);
     } catch (Exception io) {
       log.log(Level.WARNING, io.getMessage(), io);
     }
@@ -202,16 +185,7 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
         return null;
       }
       String extension = mimeType.contains("jpeg") ? "jpg" : "png", fileName = baseName + "." + extension;
-      GcsFilename gcsFilename = new GcsFilename(truckIconsBucket, fileName);
-      GcsOutputChannel channel = cloudStorage.createOrReplace(gcsFilename,
-          new GcsFileOptions.Builder().mimeType(mimeType)
-              .cacheControl("public, max-age=2591000")
-              .build());
-      try (InputStream in = connection.getInputStream(); OutputStream out = Channels.newOutputStream(channel)) {
-        ByteStreams.copy(in, out);
-      }
-      log.log(Level.INFO, "Created file {0} in bucket {1}", new Object[] {fileName, truckIconsBucket});
-      return "http://storage.googleapis.com/" + truckIconsBucket + "/" + fileName;
+      return storageService.copyUrl(iconUrl.toExternalForm(), truckIconsBucket, fileName);
     } catch (Exception io) {
       log.log(Level.WARNING, io.getMessage(), io);
       throw Throwables.propagate(io);
