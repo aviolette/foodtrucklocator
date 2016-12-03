@@ -33,7 +33,7 @@ import com.google.inject.Provider;
 
 import org.joda.time.DateTime;
 
-import foodtruck.appengine.session.Session;
+import foodtruck.session.Session;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TruckStopWithCounts;
 import foodtruck.schedule.FoodTruckStopService;
