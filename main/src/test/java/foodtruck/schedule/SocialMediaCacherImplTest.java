@@ -71,7 +71,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
   private RetweetsDAO retweetDAO;
   private TwitterNotificationAccountDAO notificationDAO;
   private SpecialUpdater specialsUpdater;
-  private PublicEventNotificationService notificationService;
+  private StoryEventCallback notificationService;
 
   @Before
   public void before() {
@@ -108,7 +108,7 @@ public class SocialMediaCacherImplTest extends EasyMockSupport {
     DateTimeFormatter timeFormatter = DateTimeFormat.longTime();
     expect(clock.nowFormattedAsTime()).andStubReturn(timeFormatter.print(now));
     Set<SocialMediaConnector> connectors = ImmutableSet.of();
-    notificationService = createNiceMock(PublicEventNotificationService.class);
+    notificationService = createNiceMock(StoryEventCallback.class);
     service = new SocialMediaCacherImpl( tweetDAO, matcher,
         truckStopDAO, clock, terminationDetector, truckDAO, emailNotifier, offTheRoadDetector, locator,
         truckObserverDAO, null, timeFormatter, new StaticConfig(), connectors, specialsUpdater, notificationService);

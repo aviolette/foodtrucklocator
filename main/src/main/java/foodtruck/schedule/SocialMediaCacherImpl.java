@@ -66,7 +66,7 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
   private final StaticConfig staticConfig;
   private final Set<SocialMediaConnector> connectors;
   private final SpecialUpdater specialUpdater;
-  private final PublicEventNotificationService notificationService;
+  private final StoryEventCallback eventHandler;
 
   @Inject
   public SocialMediaCacherImpl(StoryDAO storyDAO, TruckStopMatcher matcher, TruckStopDAO truckStopDAO, Clock clock,
@@ -75,7 +75,7 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
       GeoLocator locator, TruckObserverDAO truckObserverDAO, FoodTruckStopService truckStopService,
       @TimeOnlyFormatter DateTimeFormatter timeFormatter, StaticConfig staticConfig,
       Set<SocialMediaConnector> connectors, SpecialUpdater specialUpdater,
-      PublicEventNotificationService notificationService) {
+      StoryEventCallback eventHandler) {
     this.storyDAO = storyDAO;
     this.matcher = matcher;
     this.truckStopDAO = truckStopDAO;
@@ -91,7 +91,7 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
     this.staticConfig = staticConfig;
     this.connectors = connectors;
     this.specialUpdater = specialUpdater;
-    this.notificationService = notificationService;
+    this.eventHandler = eventHandler;
   }
 
   @Override
@@ -320,7 +320,7 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
         addStops.addAll(match.getAdditionalStops());
       }
       for (TruckStop stop : addStops) {
-        notificationService.share(match.getStory(), stop);
+        eventHandler.stopAdded(match.getStory(), stop);
         handleAdditionalTrucks(stop, match);
         if (truck.getDeriveStopsFromSocialMedia()) {
           log.log(Level.INFO, "Stop added: {0}", stop);
