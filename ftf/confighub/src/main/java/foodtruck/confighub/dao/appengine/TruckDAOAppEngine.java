@@ -2,6 +2,7 @@ package foodtruck.confighub.dao.appengine;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -17,6 +18,7 @@ import com.google.cloud.datastore.StringValue;
 import com.google.cloud.datastore.StructuredQuery;
 import com.google.cloud.datastore.Value;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 
@@ -217,7 +219,6 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
         .description(getString(entity, TRUCK_DESCRIPTION_FIELD))
         .fullsizeImage(getString(entity, TRUCK_FULL_SIZE))
         .displayEmailPublicly(getBoolean(entity, TRUCK_DISPLAY_EMAIL))
-        .allowSystemNotifications(getBoolean(entity, TRUCK_ALLOW_SYSTEM_NOTIFICATIONS))
         .previewIcon(getString(entity, TRUCK_PREVIEW_ICON))
         .inactive(getBoolean(entity, INACTIVE_FIELD))
         .twitterHandle(getString(entity, TRUCK_TWITTER_HANDLE))
@@ -249,7 +250,6 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
         .phoneticAliases(getList(PHONETIC_ALIASES, entity))
         .categories(getSet(CATEGORIES_FIELD, entity))
         .useTwittalyzer(getBoolean(entity, TRUCK_TWITTALYZER_FIELD))
-        .twitterGeolocationDataValid(getBoolean(entity, TRUCK_TWITTER_GEOLOCATION))
         .calendarUrl(getString(entity, TRUCK_CALENDAR_URL))
         .phone(getString(entity, TRUCK_PHONE))
         .email(getString(entity, TRUCK_EMAIL))
@@ -295,11 +295,11 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
   }
 
   @Override
-  public Collection<Truck> findTrucksWithCalendars() {
-    return executeQuery(Query.entityQueryBuilder()
+  public Set<Truck> findTrucksWithCalendars() {
+    return ImmutableSet.copyOf(executeQuery(Query.entityQueryBuilder()
         .kind(getKind())
         .filter(eq(INACTIVE_FIELD, false))
-        .build(), e -> !Strings.isNullOrEmpty(e.getString(TRUCK_CALENDAR_URL)));
+        .build(), e -> !Strings.isNullOrEmpty(e.getString(TRUCK_CALENDAR_URL))));
   }
 
   @Override
@@ -335,13 +335,6 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
         .build(), null);
   }
 
-  @Override
-  public Collection<Truck> findByBeaconnaiseEmail(String email) {
-    return executeQuery(Query.entityQueryBuilder()
-        .kind(getKind())
-        .build(), e -> getList(TRUCK_BEACONNAISE_EMAILS, e).contains(email));
-
-  }
 
   @Override
   public Iterable<Truck> findTrucksWithEmail() {
@@ -370,5 +363,13 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
   @Override
   public Truck findByNameOrAlias(String s) {
     return null;
+  }
+
+  @Override
+  public Set<Truck> findByBeaconnaiseEmail(String email) {
+    return ImmutableSet.copyOf(executeQuery(Query.entityQueryBuilder()
+        .kind(getKind())
+        .build(), e -> getList(TRUCK_BEACONNAISE_EMAILS, e).contains(email)));
+
   }
 }
