@@ -23,7 +23,7 @@ import foodtruck.model.StaticConfig;
 import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
-import foodtruck.notifications.EmailSender;
+import foodtruck.mail.EmailSender;
 import foodtruck.notifications.PublicEventNotificationService;
 import foodtruck.time.FriendlyDateTimeFormat;
 

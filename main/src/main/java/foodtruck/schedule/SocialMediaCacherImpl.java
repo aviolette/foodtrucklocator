@@ -38,7 +38,7 @@ import foodtruck.model.TruckObserver;
 import foodtruck.model.TruckStop;
 import foodtruck.monitoring.Monitored;
 import foodtruck.notifications.PublicEventNotificationService;
-import foodtruck.notifications.SystemNotificationService;
+import foodtruck.mail.SystemNotificationService;
 import foodtruck.socialmedia.SocialMediaConnector;
 import foodtruck.time.Clock;
 import foodtruck.time.TimeOnlyFormatter;

@@ -1,4 +1,4 @@
-package foodtruck.notifications;
+package foodtruck.mail;
 
 import com.google.common.collect.ImmutableSet;
 

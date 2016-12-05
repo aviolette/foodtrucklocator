@@ -33,7 +33,7 @@ import foodtruck.model.TruckObserver;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TwitterNotificationAccount;
 import foodtruck.notifications.PublicEventNotificationService;
-import foodtruck.notifications.SystemNotificationService;
+import foodtruck.mail.SystemNotificationService;
 import foodtruck.socialmedia.SocialMediaConnector;
 import foodtruck.time.Clock;
 

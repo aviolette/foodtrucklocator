@@ -1,4 +1,4 @@
-package foodtruck.notifications;
+package foodtruck.mail;
 
 import java.util.Map;
 import java.util.Set;

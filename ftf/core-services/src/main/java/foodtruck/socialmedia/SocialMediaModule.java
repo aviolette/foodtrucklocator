@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import com.google.common.base.Throwables;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
@@ -35,15 +34,11 @@ public class SocialMediaModule extends AbstractModule {
   }
 
   @Provides @Singleton
-  public TwitterFactoryWrapper provideTwitterFactory() {
+  public TwitterFactoryWrapper provideTwitterFactory() throws IOException {
     Properties properties = new Properties();
     InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("twitter4j.properties");
-    try {
-      properties.load(in);
-      in.close();
-    } catch (IOException e) {
-      throw Throwables.propagate(e);
-    }
+    properties.load(in);
+    in.close();
     properties.remove(PropertyConfiguration.OAUTH_ACCESS_TOKEN);
     properties.remove(PropertyConfiguration.OAUTH_ACCESS_TOKEN_SECRET);
     return new TwitterFactoryWrapper(new TwitterFactory(), new TwitterFactory(new PropertyConfiguration(properties)));

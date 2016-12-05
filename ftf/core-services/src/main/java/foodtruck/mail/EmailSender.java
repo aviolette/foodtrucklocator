@@ -1,4 +1,4 @@
-package foodtruck.notifications;
+package foodtruck.mail;
 
 import javax.annotation.Nullable;
 

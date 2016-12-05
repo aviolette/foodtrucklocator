@@ -14,6 +14,7 @@ import foodtruck.appengine.monitoring.MonitoringModule;
 import foodtruck.book.BookingModule;
 import foodtruck.geolocation.GeolocationModule;
 import foodtruck.linxup.LinxupModule;
+import foodtruck.mail.MailModule;
 import foodtruck.notifications.NotificationModule;
 import foodtruck.profile.ProfileModule;
 import foodtruck.schedule.ScheduleModule;
@@ -44,6 +45,7 @@ public class FoodtruckConfig extends GuiceServletContextListener {
         .add(new SocialMediaModule())
         .add(new NotificationModule())
         .add(new LinxupModule())
+        .add(new MailModule())
         .add(new ProfileModule())
         .add(new TimeModule())
         .add(new FoodtruckServletModule());

@@ -20,7 +20,7 @@ import foodtruck.dao.TwitterNotificationAccountDAO;
 import foodtruck.model.LoginMethod;
 import foodtruck.model.Truck;
 import foodtruck.model.TwitterNotificationAccount;
-import foodtruck.notifications.SystemNotificationService;
+import foodtruck.mail.SystemNotificationService;
 import foodtruck.server.security.SimplePrincipal;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;

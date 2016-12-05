@@ -24,7 +24,7 @@ import com.google.inject.Singleton;
 
 import foodtruck.dao.DailyRollupDAO;
 import foodtruck.dao.FifteenMinuteRollupDAO;
-import foodtruck.notifications.SystemNotificationService;
+import foodtruck.mail.SystemNotificationService;
 import foodtruck.time.Clock;
 
 /**

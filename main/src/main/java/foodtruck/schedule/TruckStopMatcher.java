@@ -30,7 +30,7 @@ import foodtruck.model.StopOrigin;
 import foodtruck.model.Story;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
-import foodtruck.notifications.SystemNotificationService;
+import foodtruck.mail.SystemNotificationService;
 import foodtruck.time.Clock;
 
 /**

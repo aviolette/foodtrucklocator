@@ -22,7 +22,7 @@ import foodtruck.time.DayOfWeek;
 import foodtruck.model.Location;
 import foodtruck.model.Story;
 import foodtruck.model.Truck;
-import foodtruck.notifications.SystemNotificationService;
+import foodtruck.mail.SystemNotificationService;
 import foodtruck.time.Clock;
 
 import static com.google.common.truth.Truth.assertThat;
