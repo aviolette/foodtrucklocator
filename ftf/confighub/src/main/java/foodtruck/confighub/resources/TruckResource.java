@@ -39,6 +39,8 @@ public class TruckResource {
     MultivaluedMap<String, String> queryParams = ui.getQueryParameters();
     if (queryParams.size() == 0) {
       return truckDAO.findAll();
+    } else if (queryParams.containsKey("twitterHandle")) {
+      return ImmutableList.copyOf(truckDAO.findByTwitterId(queryParams.getFirst("twitterHandle")));
     } else if (queryParams.containsKey("name")) {
       Truck truck = truckDAO.findByName(queryParams.getFirst("name"));
       if (truck == null) {
