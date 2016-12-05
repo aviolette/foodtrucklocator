@@ -11,8 +11,7 @@ import foodtruck.model.Location;
 import foodtruck.monitoring.CounterPublisher;
 import foodtruck.time.Clock;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -41,7 +40,7 @@ public class CacheAndForwardLocatorTest {
     monitorUpdate();
     when(dao.findByAlias(LOCATION_NAME)).thenReturn(namedLocation);
     Location loc = locator.locate(LOCATION_NAME, GeolocationGranularity.BROAD);
-    assertEquals(loc, namedLocation);
+    assertThat(loc).isEqualTo(namedLocation);
   }
 
   private void monitorUpdate() {
@@ -56,7 +55,7 @@ public class CacheAndForwardLocatorTest {
     when(secondary.locate(LOCATION_NAME, GeolocationGranularity.BROAD)).thenReturn(namedLocation);
     when(dao.saveAndFetch(namedLocation)).thenReturn(namedLocation);
     Location loc = locator.locate(LOCATION_NAME, GeolocationGranularity.BROAD);
-    assertEquals(loc, namedLocation);
+    assertThat(loc).isEqualTo(namedLocation);
   }
 
   @Test
@@ -68,6 +67,6 @@ public class CacheAndForwardLocatorTest {
     Location targetLoc = Location.builder().name(LOCATION_NAME).valid(false).build();
     when(dao.saveAndFetch(targetLoc)).thenReturn(targetLoc);
     Location loc = locator.locate(LOCATION_NAME, GeolocationGranularity.BROAD);
-    assertFalse(loc.isResolved());
+    assertThat(loc.isResolved()).isFalse();
   }
 }

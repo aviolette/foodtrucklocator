@@ -12,9 +12,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import foodtruck.model.Location;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static com.google.common.truth.Truth.assertThat;
 
 /**
  * @author aviolette@gmail.com
@@ -30,38 +28,37 @@ public class GoogleGeolocatorTest extends Mockito {
     geoLocator = new GoogleGeolocator(resource);
   }
 
-
   @Test
   public void testLocate_ParseLatLong() {
     Location location = geoLocator.locate("-3.4343,87.634024", GeolocationGranularity.BROAD);
-    assertNotNull(location);
-    assertEquals(-3.4343, location.getLatitude(), 0);
-    assertEquals(87.634024, location.getLongitude(), 0);
-    assertNull(location.getName());
+    assertThat(location).isNotNull();
+    assertThat(location.getLatitude()).isWithin(0).of(-3.4343);
+    assertThat(location.getLongitude()).isWithin(0).of(87.634024);
+    assertThat(location.getName()).isNull();
   }
 
   @Test
   public void testLocate_ParseLatLong2() {
     Location location = geoLocator.locate("-3.4343,87.634024,Blah Blah", GeolocationGranularity.BROAD);
-    assertNotNull(location);
-    assertEquals(-3.4343, location.getLatitude(), 0);
-    assertEquals(87.634024, location.getLongitude(), 0);
-    assertEquals("Blah Blah", location.getName());
+    assertThat(location).isNotNull();
+    assertThat(location.getLatitude()).isWithin(0).of(-3.4343);
+    assertThat(location.getLongitude()).isWithin(0).of(87.634024);
+    assertThat(location.getName()).isEqualTo("Blah Blah");
   }
 
   @Test
   public void testLocate_ParseLatLong3() {
     Location location = geoLocator.locate("  -3, 87.634024, Blah Blah", GeolocationGranularity.BROAD);
-    assertNotNull(location);
-    assertEquals(-3, location.getLatitude(), 0);
-    assertEquals(87.634024, location.getLongitude(), 0);
-    assertEquals("Blah Blah", location.getName());
+    assertThat(location).isNotNull();
+    assertThat(location.getLatitude()).isWithin(0).of(-3);
+    assertThat(location.getLongitude()).isWithin(0).of(87.634024);
+    assertThat(location.getName()).isEqualTo("Blah Blah");
   }
 
   @Test
   public void testLocate_ParseLatLong4() {
     Location location = geoLocator.parseLatLong("123. Main Street, Chicago, IL 60606");
-    assertNull(location);
+    assertThat(location).isNull();
   }
 
   @Test
@@ -736,7 +733,7 @@ public class GoogleGeolocatorTest extends Mockito {
     Location location = Location.builder().lat(40.714224).lng(-73.961452).build();
     when(resource.reverseLookup(location)).thenReturn(new JSONObject(response));
     final Location actual = geoLocator.reverseLookup(location);
-    assertEquals("285 Bedford Ave, Brooklyn, NY 11211, USA", actual.getName());
+    assertThat(actual.getName()).isEqualTo("285 Bedford Ave, Brooklyn, NY 11211, USA");
     verify(resource).reverseLookup(location);
   }
 
@@ -804,7 +801,7 @@ public class GoogleGeolocatorTest extends Mockito {
     final String thelocation = "Beer and Wine, Chicago, IL";
     when(resource.findLocation(thelocation)).thenReturn(response);
     Location location = geoLocator.locate(thelocation, GeolocationGranularity.BROAD);
-    assertNull(location);
+    assertThat(location).isNull();
     verify(resource).findLocation(thelocation);
   }
 
@@ -883,10 +880,8 @@ public class GoogleGeolocatorTest extends Mockito {
     when(resource.findLocation("Dearborn and Monroe, Chicago, IL")).thenReturn(response);
     Location location = geoLocator.locate("Dearborn and Monroe, Chicago, IL",
         GeolocationGranularity.BROAD);
-    assertEquals(
-        Location.builder().lat(41.8807438).lng(-87.6293867).name("Dearborn and Monroe, Chicago, IL")
-            .build(),
-        location);
+    assertThat(location).isEqualTo(Location.builder().lat(41.8807438).lng(-87.6293867).name("Dearborn and Monroe, Chicago, IL")
+        .build());
   }
 
   @Test
@@ -896,9 +891,8 @@ public class GoogleGeolocatorTest extends Mockito {
     when(resource.findLocation("Willis Tower")).thenReturn(response);
     Location location = geoLocator.locate("Willis Tower",
         GeolocationGranularity.BROAD);
-    assertEquals(
-        Location.builder().lat(41.878891).lng(-87.635815).name("Willis Tower")
-            .build(), location);
+    assertThat(location).isEqualTo(Location.builder().lat(41.878891).lng(-87.635815).name("Willis Tower")
+        .build());
   }
 
   @Test(expected = OverQueryLimitException.class)
@@ -1009,6 +1003,6 @@ public class GoogleGeolocatorTest extends Mockito {
     when(resource.findLocation("Willis Tower")).thenReturn(response);
     Location location = geoLocator.locate("Willis Tower",
         GeolocationGranularity.NARROW);
-    assertNull(location);
+    assertThat(location).isNull();
   }
 }

@@ -10,9 +10,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import foodtruck.model.Location;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -70,10 +68,10 @@ public class YQLGeolocatorTest {
         "}}\n");
     when(resource.findLocation(location, false)).thenReturn(jsonObject);
     Location loc = yqlGeolocator.locate(location, GeolocationGranularity.NARROW);
-    assertNotNull(loc);
-    assertEquals(location, loc.getName());
-    assertEquals(41.908741, loc.getLatitude(), 0.00001);
-    assertEquals(-87.687149, loc.getLongitude(), 0.00001);
+    assertThat(loc).isNotNull();
+    assertThat(loc.getName()).isEqualTo(location);
+    assertThat(loc.getLatitude()).isWithin(0.00001).of(41.908741);
+    assertThat(loc.getLongitude()).isWithin(0.00001).of(-87.687149);
   }
 
   @Test
@@ -82,10 +80,10 @@ public class YQLGeolocatorTest {
     JSONObject jsonObject = new JSONObject("{\"query\":{\"count\":1,\"created\":\"2014-01-31T22:30:02Z\",\"lang\":\"en-US\",\"results\":{\"Result\":{\"quality\":\"62\",\"latitude\":\"41.787498\",\"longitude\":\"-87.7416\",\"offsetlat\":\"41.787498\",\"offsetlon\":\"-87.7416\",\"radius\":\"1400\",\"name\":\"Chicago Midway International Airport\",\"line1\":\"Chicago Midway International Airport\",\"line2\":\"Chicago, IL 60638\",\"line3\":null,\"line4\":\"United States\",\"house\":null,\"street\":null,\"xstreet\":null,\"unittype\":null,\"unit\":null,\"postal\":\"60638\",\"neighborhood\":null,\"city\":\"Chicago\",\"county\":\"Cook County\",\"state\":\"Illinois\",\"country\":\"United States\",\"countrycode\":\"US\",\"statecode\":\"IL\",\"countycode\":null,\"uzip\":\"60638\",\"hash\":null,\"woeid\":\"12519178\",\"woetype\":\"14\"}}}}");
     when(resource.findLocation(location, false)).thenReturn(jsonObject);
     Location loc = yqlGeolocator.locate(location, GeolocationGranularity.BROAD);
-    assertNotNull(loc);
-    assertEquals(location, loc.getName());
-    assertEquals(41.787498, loc.getLatitude(), 0.00001);
-    assertEquals(-87.74159999999999, loc.getLongitude(), 0.00001);
+    assertThat(loc).isNotNull();
+    assertThat(loc.getName()).isEqualTo(location);
+    assertThat(loc.getLatitude()).isWithin(0.00001).of(41.787498);
+    assertThat(loc.getLongitude()).isWithin(0.00001).of(-87.74159999999999);
   }
 
   @Test
@@ -94,6 +92,7 @@ public class YQLGeolocatorTest {
     JSONObject jsonObject = new JSONObject("{\"query\":{\"count\":1,\"created\":\"2014-01-31T22:30:02Z\",\"lang\":\"en-US\",\"results\":{\"Result\":{\"quality\":\"62\",\"latitude\":\"41.787498\",\"longitude\":\"-87.7416\",\"offsetlat\":\"41.787498\",\"offsetlon\":\"-87.7416\",\"radius\":\"1400\",\"name\":\"Chicago Midway International Airport\",\"line1\":\"Chicago Midway International Airport\",\"line2\":\"Chicago, IL 60638\",\"line3\":null,\"line4\":\"United States\",\"house\":null,\"street\":null,\"xstreet\":null,\"unittype\":null,\"unit\":null,\"postal\":\"60638\",\"neighborhood\":null,\"city\":\"Chicago\",\"county\":\"Cook County\",\"state\":\"Illinois\",\"country\":\"United States\",\"countrycode\":\"US\",\"statecode\":\"IL\",\"countycode\":null,\"uzip\":\"60638\",\"hash\":null,\"woeid\":\"12519178\",\"woetype\":\"14\"}}}}");
     when(resource.findLocation(location, false)).thenReturn(jsonObject);
     Location loc = yqlGeolocator.locate(location, GeolocationGranularity.NARROW);
+    assertThat(loc).isNull();
   }
 
   // The results item is not an object, but rather an array in when count is > 1
@@ -104,10 +103,10 @@ public class YQLGeolocatorTest {
     JSONObject jsonObject = new JSONObject(jsonText);
     when(resource.findLocation(location, false)).thenReturn(jsonObject);
     Location loc = yqlGeolocator.locate(location, GeolocationGranularity.BROAD);
-    assertNotNull(loc);
-    assertEquals(location, loc.getName());
-    assertEquals(41.604099, loc.getLatitude(), 0.00001);
-    assertEquals(-88.091202, loc.getLongitude(), 0.00001);
+    assertThat(loc).isNotNull();
+    assertThat(loc.getName()).isEqualTo(location);
+    assertThat(loc.getLatitude()).isWithin(0.00001).of(41.604099);
+    assertThat(loc.getLongitude()).isWithin(0.00001).of(-88.091202);
   }
 
   // The results item is not an object, but rather an array in when count is > 1
@@ -119,6 +118,6 @@ public class YQLGeolocatorTest {
     JSONObject jsonObject = new JSONObject(jsonText);
     when(resource.findLocation(location, false)).thenReturn(jsonObject);
     Location loc = yqlGeolocator.locate(location, GeolocationGranularity.NARROW);
-    assertNull(loc);
+    assertThat(loc).isNull();
   }
 }
