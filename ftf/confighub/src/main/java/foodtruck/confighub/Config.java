@@ -7,6 +7,7 @@ import com.google.inject.servlet.GuiceServletContextListener;
 
 import foodtruck.confighub.dao.appengine.AppengineDAOModule;
 import foodtruck.confighub.server.ConfigHubServletModule;
+import foodtruck.json.jackson.JacksonModule;
 import foodtruck.time.TimeModule;
 
 /**
@@ -19,6 +20,6 @@ public class Config extends GuiceServletContextListener {
   }
 
   private Module[] modules() {
-    return new Module[] {new ConfigHubServletModule(), new AppengineDAOModule(), new TimeModule()};
+    return new Module[] {new ConfigHubServletModule(), new JacksonModule(), new AppengineDAOModule(), new TimeModule()};
   }
 }

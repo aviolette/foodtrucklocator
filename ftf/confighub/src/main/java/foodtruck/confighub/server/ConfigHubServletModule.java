@@ -13,6 +13,6 @@ public class ConfigHubServletModule extends ServletModule {
   @Override
   protected void configureServlets() {
     serve("/v1/services/*").with(GuiceContainer.class,
-        ImmutableMap.of(PackagesResourceConfig.PROPERTY_PACKAGES, "foodtruck.confighub.resources,foodtruck.json.jettison"));
+        ImmutableMap.of(PackagesResourceConfig.PROPERTY_PACKAGES, "foodtruck.confighub.resources"));
   }
 }

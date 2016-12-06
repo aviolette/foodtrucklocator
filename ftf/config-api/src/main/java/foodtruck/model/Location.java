@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import com.javadocmd.simplelatlng.LatLng;
 import com.javadocmd.simplelatlng.LatLngTool;
@@ -274,6 +275,9 @@ public class Location extends ModelEntity implements Serializable {
 
   public String getShortenedName() {
     String shortened = name;
+    if (Strings.isNullOrEmpty(name)) {
+      return UNKNOWN;
+    }
     if (shortened.matches(".*\\d{5}, USA")) {
       shortened = shortened.substring(0, shortened.length() - 11);
     }
