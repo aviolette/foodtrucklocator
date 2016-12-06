@@ -24,7 +24,7 @@ public class BookingLandingServlet extends FrontPageServlet {
 
   @Inject
   public BookingLandingServlet(StaticConfig staticConfig, Provider<UserService> userServiceProvider) {
-    super(staticConfig, userServiceProvider);
+    super(staticConfig);
   }
 
   @Override

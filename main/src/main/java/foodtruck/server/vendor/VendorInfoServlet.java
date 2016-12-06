@@ -23,7 +23,7 @@ public class VendorInfoServlet extends FrontPageServlet {
 
   @Inject
   public VendorInfoServlet(StaticConfig staticConfig, Provider<UserService> userServiceProvider) {
-    super(staticConfig, userServiceProvider);
+    super(staticConfig);
   }
 
   @Override

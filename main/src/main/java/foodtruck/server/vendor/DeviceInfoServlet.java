@@ -23,7 +23,7 @@ public class DeviceInfoServlet extends FrontPageServlet {
 
   @Inject
   public DeviceInfoServlet(StaticConfig staticConfig, Provider<UserService> userServiceProvider) {
-    super(staticConfig, userServiceProvider);
+    super(staticConfig);
   }
 
   @Override

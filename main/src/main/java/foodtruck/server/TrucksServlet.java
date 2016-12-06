@@ -47,7 +47,7 @@ public class TrucksServlet extends FrontPageServlet {
   public TrucksServlet(TruckDAO trucks, FoodTruckStopService stops, Clock clock, DateTimeZone zone,
       StaticConfig staticConfig, DailyDataDAO dailyDataDAO, MenuDAO menuDAO,
       Provider<UserService> userServiceProvider) {
-    super(staticConfig, userServiceProvider);
+    super(staticConfig);
     this.truckDAO = trucks;
     this.stops = stops;
     this.clock = clock;

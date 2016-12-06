@@ -24,7 +24,7 @@ public class PopularServlet extends FrontPageServlet {
 
   @Inject
   public PopularServlet(StaticConfig staticConfig, LocationDAO locationDAO, Provider<UserService> userServiceProvider) {
-    super(staticConfig, userServiceProvider);
+    super(staticConfig);
     this.locationDAO = locationDAO;
   }
 

@@ -47,7 +47,7 @@ public class LocationServlet extends FrontPageServlet {
   public LocationServlet(LocationDAO locationDAO, Clock clock, @DateOnlyFormatter DateTimeFormatter dateFormatter,
       FoodTruckStopService truckStopService, @FriendlyDateOnlyFormat DateTimeFormatter friendlyFormatter,
       StaticConfig staticConfig, Provider<UserService> userServiceProvider) {
-    super(staticConfig, userServiceProvider);
+    super(staticConfig);
     this.locationDAO = locationDAO;
     this.clock = clock;
     this.dateFormatter = dateFormatter;

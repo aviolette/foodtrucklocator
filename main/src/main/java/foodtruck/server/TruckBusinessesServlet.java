@@ -37,7 +37,7 @@ public class TruckBusinessesServlet extends FrontPageServlet {
   @Inject
   public TruckBusinessesServlet(StaticConfig staticConfig, LocationDAO locationDAO, TruckDAO truckDAO,
       Provider<UserService> userServiceProvider) {
-    super(staticConfig, userServiceProvider);
+    super(staticConfig);
     this.locationDAO = locationDAO;
     this.truckDAO = truckDAO;
   }

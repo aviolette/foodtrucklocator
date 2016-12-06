@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-import com.google.inject.Provider;
 
 import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
@@ -23,7 +22,7 @@ import foodtruck.model.StaticConfig;
 public abstract class FrontPageServlet extends HttpServlet {
   protected final StaticConfig staticConfig;
 
-  public FrontPageServlet(StaticConfig staticConfig, Provider<UserService> userServiceProvider) {
+  public FrontPageServlet(StaticConfig staticConfig) {
     this.staticConfig = staticConfig;
   }
 

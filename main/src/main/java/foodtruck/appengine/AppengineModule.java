@@ -28,6 +28,7 @@ import com.google.appengine.api.utils.SystemProperty;
 import com.google.appengine.tools.cloudstorage.GcsService;
 import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
 import com.google.appengine.tools.cloudstorage.RetryParams;
+import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.AbstractModule;
@@ -40,6 +41,7 @@ import foodtruck.appengine.dao.memcached.MemcachedModule;
 import foodtruck.appengine.storage.GcsStorageService;
 import foodtruck.caching.Cacher;
 import foodtruck.storage.StorageService;
+import foodtruck.user.LoggedInUser;
 
 /**
  * @author aviolette
@@ -128,5 +130,14 @@ public class AppengineModule extends AbstractModule {
         .retryMaxAttempts(10)
         .totalRetryPeriodMillis(15000)
         .build());
+  }
+
+  @Provides
+  public Optional<LoggedInUser> providesUser(UserService userService) {
+    if (!userService.isUserLoggedIn()) {
+      return Optional.absent();
+    }
+    return Optional.of(new LoggedInUser(userService.getCurrentUser()
+        .getEmail(), userService.isUserAdmin()));
   }
 }

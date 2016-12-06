@@ -31,7 +31,7 @@ public class TruckTimelineServlet extends FrontPageServlet {
   @Inject
   public TruckTimelineServlet(TruckDAO truckDAO, TruckCollectionWriter trucksWriter, StaticConfig staticConfig,
       Provider<UserService> userServiceProvider) {
-    super(staticConfig, userServiceProvider);
+    super(staticConfig);
     this.truckDAO = truckDAO;
     this.trucksWriter = trucksWriter;
   }

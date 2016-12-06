@@ -50,7 +50,7 @@ public class BoozeAndTrucksServlet extends FrontPageServlet {
   public BoozeAndTrucksServlet(FoodTruckStopService stopService, Clock clock,
       @DateOnlyFormatter DateTimeFormatter dateFormatter, @FriendlyDateOnlyFormat DateTimeFormatter friendlyFormatter,
       LocationDAO locationDAO, StaticConfig staticConfig, Provider<UserService> userServiceProvider) {
-    super(staticConfig, userServiceProvider);
+    super(staticConfig);
     this.stopService = stopService;
     this.clock = clock;
     this.dateFormatter = dateFormatter;

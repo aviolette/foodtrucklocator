@@ -22,7 +22,7 @@ public class SupportServlet extends FrontPageServlet {
 
   @Inject
   public SupportServlet(StaticConfig staticConfig, Provider<UserService> userServiceProvider) {
-    super(staticConfig, userServiceProvider);
+    super(staticConfig);
   }
 
   @Override

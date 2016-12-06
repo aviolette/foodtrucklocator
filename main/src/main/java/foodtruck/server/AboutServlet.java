@@ -30,7 +30,7 @@ public class AboutServlet extends FrontPageServlet {
   @Inject
   public AboutServlet(StaticConfig staticConfig, LocationDAO locationDAO,
       TwitterNotificationAccountDAO notificationAccountDAO, Provider<UserService> userServiceProvider) {
-    super(staticConfig, userServiceProvider);
+    super(staticConfig);
     this.notificationAccountDAO = notificationAccountDAO;
     this.locationDAO = locationDAO;
   }

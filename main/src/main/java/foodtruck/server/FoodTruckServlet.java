@@ -47,7 +47,7 @@ public class FoodTruckServlet extends FrontPageServlet {
   public FoodTruckServlet(Clock clock, FoodTruckStopService service, DailyScheduleWriter writer,
       ScheduleCacher scheduleCacher, @TimeFormatter DateTimeFormatter timeFormatter, StaticConfig staticConfig,
       Provider<UserService> userServiceProvider) {
-    super(staticConfig, userServiceProvider);
+    super(staticConfig);
     this.clock = clock;
     this.timeFormatter = timeFormatter;
     this.dateFormatter = DateTimeFormat.forPattern("EEE MMM dd, YYYY");
