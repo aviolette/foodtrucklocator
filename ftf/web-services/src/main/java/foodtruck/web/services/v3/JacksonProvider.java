@@ -1,4 +1,4 @@
-package foodtruck.confighub.resources;
+package foodtruck.web.services.v3;
 
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;

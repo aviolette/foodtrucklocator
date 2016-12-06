@@ -13,7 +13,6 @@ import com.sun.jersey.api.client.WebResource;
 import org.codehaus.jettison.json.JSONArray;
 
 import foodtruck.dao.TruckDAO;
-import foodtruck.json.jettison.JSONSerializer;
 import foodtruck.model.Truck;
 
 /**

@@ -12,7 +12,7 @@ import com.sun.jersey.api.core.PackagesResourceConfig;
 public class FinderServletModule extends ServletModule {
   @Override
   protected void configureServlets() {
-    serve("/v1/services/*").with(GuiceContainer.class,
-        ImmutableMap.of(PackagesResourceConfig.PROPERTY_PACKAGES, "foodtruck.finder.resources,foodtruck.json.jettison"));
+    serve("/v3/services/*").with(GuiceContainer.class,
+        ImmutableMap.of(PackagesResourceConfig.PROPERTY_PACKAGES, "foodtruck.finder.server.services.v3"));
   }
 }

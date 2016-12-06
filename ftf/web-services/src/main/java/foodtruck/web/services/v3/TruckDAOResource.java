@@ -1,4 +1,4 @@
-package foodtruck.confighub.resources;
+package foodtruck.web.services.v3;
 
 import java.util.List;
 
@@ -18,19 +18,20 @@ import javax.ws.rs.core.UriInfo;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 
+import foodtruck.annotations.RequiresAdmin;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
 
 /**
  * @author aviolette
- * @since 10/13/16
+ * @since 12/6/16
  */
 @Produces(MediaType.APPLICATION_JSON) @Path("/trucks")
-public class TruckResource {
+public class TruckDAOResource {
   private final TruckDAO truckDAO;
 
   @Inject
-  public TruckResource(TruckDAO truckDAO) {
+  public TruckDAOResource(TruckDAO truckDAO) {
     this.truckDAO = truckDAO;
   }
 
@@ -41,6 +42,8 @@ public class TruckResource {
       return truckDAO.findAll();
     } else if (queryParams.containsKey("twitterHandle")) {
       return ImmutableList.copyOf(truckDAO.findByTwitterId(queryParams.getFirst("twitterHandle")));
+    } else if ("true".equals(queryParams.getFirst("active"))) {
+      return truckDAO.findActiveTrucks();
     } else if (queryParams.containsKey("name")) {
       Truck truck = truckDAO.findByName(queryParams.getFirst("name"));
       if (truck == null) {
@@ -61,12 +64,13 @@ public class TruckResource {
     return truck;
   }
 
-  @POST
+  @POST @RequiresAdmin
   public void save(Truck truck) {
     truckDAO.save(truck);
   }
 
-  @DELETE @Path("{truckId}")
+  @DELETE
+  @Path("{truckId}") @RequiresAdmin
   public void delete(@PathParam("truckId") String truckId) {
     if (truckDAO.findById(truckId) == null) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);

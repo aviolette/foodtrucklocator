@@ -12,7 +12,7 @@ import com.sun.jersey.api.core.PackagesResourceConfig;
 public class ConfigHubServletModule extends ServletModule {
   @Override
   protected void configureServlets() {
-    serve("/v1/services/*").with(GuiceContainer.class,
-        ImmutableMap.of(PackagesResourceConfig.PROPERTY_PACKAGES, "foodtruck.confighub.resources"));
+    serve("/v3/services/*").with(GuiceContainer.class,
+        ImmutableMap.of(PackagesResourceConfig.PROPERTY_PACKAGES, "foodtruck.web.services.v3"));
   }
 }
