@@ -1,4 +1,4 @@
-package foodtruck.confighub.dao.appengine;
+package foodtruck.dao.datastore;
 
 import java.util.List;
 import java.util.stream.Collectors;

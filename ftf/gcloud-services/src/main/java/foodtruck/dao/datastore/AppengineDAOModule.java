@@ -1,4 +1,4 @@
-package foodtruck.confighub.dao.appengine;
+package foodtruck.dao.datastore;
 
 import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.DatastoreOptions;

@@ -5,7 +5,7 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.servlet.GuiceServletContextListener;
 
-import foodtruck.confighub.dao.appengine.AppengineDAOModule;
+import foodtruck.dao.datastore.AppengineDAOModule;
 import foodtruck.confighub.server.ConfigHubServletModule;
 import foodtruck.json.jackson.JacksonModule;
 import foodtruck.time.TimeModule;
