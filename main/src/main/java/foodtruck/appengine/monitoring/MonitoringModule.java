@@ -9,6 +9,8 @@ import foodtruck.linxup.ErrorCounter;
 import foodtruck.monitoring.CommonMonitoringModule;
 import foodtruck.monitoring.Counter;
 import foodtruck.monitoring.CounterPublisher;
+import foodtruck.monitoring.DailyScheduleCounter;
+import foodtruck.monitoring.HourlyScheduleCounter;
 
 /**
  * @author aviolette@gmail.com
@@ -23,12 +25,12 @@ public class MonitoringModule extends AbstractModule {
 
   @Provides
   @DailyScheduleCounter
-  public CounterImpl providesDailyScheduleCounter(MemcacheService memcacheService) {
+  public Counter providesDailyScheduleCounter(MemcacheService memcacheService) {
     return new CounterImpl("service.access.daily", memcacheService, null);
   }
 
   @Provides @HourlyScheduleCounter
-  public CounterImpl providesHourlyScheduleCounter(MemcacheService memcacheService) {
+  public Counter providesHourlyScheduleCounter(MemcacheService memcacheService) {
     return new CounterImpl("service.access.hourly", memcacheService, Expiration.byDeltaSeconds(3600));
   }
 

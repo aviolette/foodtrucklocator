@@ -18,8 +18,6 @@ import com.google.inject.Singleton;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
-import foodtruck.appengine.monitoring.CounterImpl;
-import foodtruck.appengine.monitoring.DailyScheduleCounter;
 import foodtruck.dao.ApplicationDAO;
 import foodtruck.dao.DailyRollupDAO;
 import foodtruck.dao.DailyTruckStopDAO;
@@ -29,6 +27,8 @@ import foodtruck.dao.TruckStopDAO;
 import foodtruck.dao.WeeklyTruckStopDAO;
 import foodtruck.model.Application;
 import foodtruck.model.TruckStop;
+import foodtruck.monitoring.Counter;
+import foodtruck.monitoring.DailyScheduleCounter;
 import foodtruck.time.Clock;
 
 /**
@@ -46,13 +46,13 @@ public class PurgeStatsServlet extends HttpServlet {
   private final MemcacheService memcache;
   private final ApplicationDAO appDAO;
   private final DailyRollupDAO dailyDAO;
-  private final CounterImpl dailyCounter;
+  private final Counter dailyCounter;
   private final TimeSeriesDAO weeklyTruckStopDAO;
   private final TimeSeriesDAO dailyTruckStopDAO;
 
   @Inject
   public PurgeStatsServlet(FifteenMinuteRollupDAO dao, Clock clock, MemcacheService service, ApplicationDAO appDAO,
-      DailyRollupDAO dailyRollupDAO, @DailyScheduleCounter CounterImpl dailyCounter, TruckStopDAO truckStopDAO,
+      DailyRollupDAO dailyRollupDAO, @DailyScheduleCounter Counter dailyCounter, TruckStopDAO truckStopDAO,
       WeeklyTruckStopDAO weeklyRollupDAO, DailyTruckStopDAO dailyTruckStopDAO) {
     this.dao = dao;
     this.clock = clock;

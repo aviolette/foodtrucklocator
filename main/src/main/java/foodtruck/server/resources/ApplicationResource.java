@@ -14,11 +14,11 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 
-import foodtruck.appengine.monitoring.CounterImpl;
-import foodtruck.appengine.monitoring.DailyScheduleCounter;
 import foodtruck.dao.ApplicationDAO;
 import foodtruck.model.Application;
 import foodtruck.model.ApplicationWithUsageCounts;
+import foodtruck.monitoring.Counter;
+import foodtruck.monitoring.DailyScheduleCounter;
 import foodtruck.util.RandomString;
 
 import static foodtruck.server.resources.Resources.requiresAdmin;
@@ -30,10 +30,10 @@ import static foodtruck.server.resources.Resources.requiresAdmin;
 @Path("/applications") @Produces(MediaType.APPLICATION_JSON)
 public class ApplicationResource {
   private final ApplicationDAO appDao;
-  private final CounterImpl counter;
+  private final Counter counter;
 
   @Inject
-  public ApplicationResource(ApplicationDAO appDao, @DailyScheduleCounter CounterImpl counter) {
+  public ApplicationResource(ApplicationDAO appDao, @DailyScheduleCounter Counter counter) {
     this.appDao = appDao;
     this.counter = counter;
   }
