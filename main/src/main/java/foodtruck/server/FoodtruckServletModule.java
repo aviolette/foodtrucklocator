@@ -46,6 +46,7 @@ import foodtruck.server.front.FoodTruckServlet;
 import foodtruck.server.front.IPhoneSupportServlet;
 import foodtruck.server.front.LocationServlet;
 import foodtruck.server.front.PopularServlet;
+import foodtruck.server.front.SSLVerificationServlet;
 import foodtruck.server.front.SupportServlet;
 import foodtruck.server.front.TruckBusinessesServlet;
 import foodtruck.server.front.TruckTimelineServlet;
