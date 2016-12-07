@@ -1,4 +1,4 @@
-package foodtruck.server;
+package foodtruck.server.front;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,6 +23,7 @@ import foodtruck.model.DailySchedule;
 import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
 import foodtruck.schedule.FoodTruckStopService;
+import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.time.Clock;
 import foodtruck.time.DateOnlyFormatter;
 import foodtruck.time.FriendlyDateOnlyFormat;
