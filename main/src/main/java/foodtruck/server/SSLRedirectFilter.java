@@ -11,10 +11,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import foodtruck.model.StaticConfig;
 import foodtruck.util.UrlBuilder;
 
 /**

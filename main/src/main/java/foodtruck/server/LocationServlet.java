@@ -5,13 +5,12 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.appengine.api.users.UserService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import org.joda.time.DateTime;
@@ -34,7 +33,7 @@ import foodtruck.time.FriendlyDateOnlyFormat;
  */
 
 @Singleton
-public class LocationServlet extends FrontPageServlet {
+public class LocationServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(LocationServlet.class.getName());
 
   private final LocationDAO locationDAO;
@@ -42,21 +41,22 @@ public class LocationServlet extends FrontPageServlet {
   private final DateTimeFormatter dateFormatter;
   private final FoodTruckStopService truckStopService;
   private final DateTimeFormatter friendlyFormatter;
+  private final StaticConfig staticConfig;
 
   @Inject
   public LocationServlet(LocationDAO locationDAO, Clock clock, @DateOnlyFormatter DateTimeFormatter dateFormatter,
       FoodTruckStopService truckStopService, @FriendlyDateOnlyFormat DateTimeFormatter friendlyFormatter,
-      StaticConfig staticConfig, Provider<UserService> userServiceProvider) {
-    super(staticConfig);
+      StaticConfig staticConfig) {
     this.locationDAO = locationDAO;
     this.clock = clock;
+    this.staticConfig = staticConfig;
     this.dateFormatter = dateFormatter;
     this.truckStopService = truckStopService;
     this.friendlyFormatter = friendlyFormatter;
   }
 
   @Override
-  protected void doGetProtected(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     final String requestURI = req.getRequestURI();
     String locationId = (requestURI.equals("/locations") || requestURI.equals(
         "/locations/") ? null : requestURI.substring(11));

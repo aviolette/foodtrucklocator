@@ -6,10 +6,10 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.appengine.api.users.UserService;
 import com.google.common.base.Strings;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -18,7 +18,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import org.joda.time.LocalDate;
@@ -26,7 +25,6 @@ import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.LocationDAO;
 import foodtruck.model.Location;
-import foodtruck.model.StaticConfig;
 import foodtruck.model.TruckStop;
 import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.time.Clock;
@@ -38,7 +36,7 @@ import foodtruck.time.FriendlyDateOnlyFormat;
  * @since 8/27/14
  */
 @Singleton
-public class BoozeAndTrucksServlet extends FrontPageServlet {
+public class BoozeAndTrucksServlet extends HttpServlet {
   private static final String JSP = "/WEB-INF/jsp/booze.jsp";
   private final Clock clock;
   private final FoodTruckStopService stopService;
@@ -49,8 +47,7 @@ public class BoozeAndTrucksServlet extends FrontPageServlet {
   @Inject
   public BoozeAndTrucksServlet(FoodTruckStopService stopService, Clock clock,
       @DateOnlyFormatter DateTimeFormatter dateFormatter, @FriendlyDateOnlyFormat DateTimeFormatter friendlyFormatter,
-      LocationDAO locationDAO, StaticConfig staticConfig, Provider<UserService> userServiceProvider) {
-    super(staticConfig);
+      LocationDAO locationDAO) {
     this.stopService = stopService;
     this.clock = clock;
     this.dateFormatter = dateFormatter;
@@ -59,7 +56,7 @@ public class BoozeAndTrucksServlet extends FrontPageServlet {
   }
 
   @Override
-  protected void doGetProtected(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     ImmutableList.Builder<ScheduleForDay> schedules = ImmutableList.builder();
     LocalDate currentDay = null;
     Map<String, TruckStopGroup> tsgs = Maps.newHashMap();

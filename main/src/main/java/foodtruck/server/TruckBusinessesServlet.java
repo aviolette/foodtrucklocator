@@ -6,22 +6,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.appengine.api.users.UserService;
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Location;
-import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
 
 /**
@@ -29,21 +27,19 @@ import foodtruck.model.Truck;
  * @since 1/29/15
  */
 @Singleton
-public class TruckBusinessesServlet extends FrontPageServlet {
+public class TruckBusinessesServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(TruckBusinessesServlet.class.getName());
   private final LocationDAO locationDAO;
   private final TruckDAO truckDAO;
 
   @Inject
-  public TruckBusinessesServlet(StaticConfig staticConfig, LocationDAO locationDAO, TruckDAO truckDAO,
-      Provider<UserService> userServiceProvider) {
-    super(staticConfig);
+  public TruckBusinessesServlet(LocationDAO locationDAO, TruckDAO truckDAO) {
     this.locationDAO = locationDAO;
     this.truckDAO = truckDAO;
   }
 
   @Override
-  protected void doGetProtected(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     req.setAttribute("locations", FluentIterable.from(locationDAO.findLocationsOwnedByFoodTrucks())
         .transform(new Function<Location, LocationWithTruck>() {
           public LocationWithTruck apply(Location location) {

@@ -4,15 +4,16 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Nullable;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.appengine.api.users.UserService;
 import com.google.common.base.Strings;
 import com.google.common.net.HttpHeaders;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import org.codehaus.jettison.json.JSONException;
@@ -21,6 +22,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.model.DailySchedule;
+import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
 import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.schedule.ScheduleCacher;
@@ -34,7 +36,7 @@ import foodtruck.time.TimeFormatter;
  * @since Jul 12, 2011
  */
 @Singleton
-public class FoodTruckServlet extends FrontPageServlet {
+public class FoodTruckServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(FoodTruckServlet.class.getName());
   private final DateTimeFormatter timeFormatter;
   private final Clock clock;
@@ -42,22 +44,22 @@ public class FoodTruckServlet extends FrontPageServlet {
   private final FoodTruckStopService stopService;
   private final DailyScheduleWriter writer;
   private final ScheduleCacher scheduleCacher;
+  private final StaticConfig staticConfig;
 
   @Inject
   public FoodTruckServlet(Clock clock, FoodTruckStopService service, DailyScheduleWriter writer,
-      ScheduleCacher scheduleCacher, @TimeFormatter DateTimeFormatter timeFormatter, StaticConfig staticConfig,
-      Provider<UserService> userServiceProvider) {
-    super(staticConfig);
+      ScheduleCacher scheduleCacher, @TimeFormatter DateTimeFormatter timeFormatter, StaticConfig staticConfig) {
     this.clock = clock;
     this.timeFormatter = timeFormatter;
     this.dateFormatter = DateTimeFormat.forPattern("EEE MMM dd, YYYY");
     this.stopService = service;
     this.writer = writer;
     this.scheduleCacher = scheduleCacher;
+    this.staticConfig = staticConfig;
   }
 
   @Override
-  protected void doGetProtected(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     final String path = req.getRequestURI();
     final String serverName = req.getServerName();
     if (serverName.equals("chicagofoodtrucklocator.appspot.com")) {
@@ -102,6 +104,29 @@ public class FoodTruckServlet extends FrontPageServlet {
     req.getRequestDispatcher(jsp)
         .forward(req, resp);
   }
+
+
+  Location getCenter(@Nullable Cookie[] cookies) {
+    double lat = 0, lng = 0;
+    if (cookies == null) {
+      return staticConfig.getCenter();
+    }
+    for (Cookie cooky : cookies) {
+      if ("latitude".equals(cooky.getName())) {
+        lat = Double.valueOf(cooky.getValue());
+      } else if ("longitude".equals(cooky.getName())) {
+        lng = Double.valueOf(cooky.getValue());
+      }
+    }
+    if (lat != 0 && lng != 0) {
+      return Location.builder()
+          .lat(lat)
+          .lng(lng)
+          .build();
+    }
+    return staticConfig.getCenter();
+  }
+
 
   private String getSchedule(DateTime dateTime, boolean timeSpecified, String payload) {
     if (payload == null || !staticConfig.isScheduleCachingOn()) {

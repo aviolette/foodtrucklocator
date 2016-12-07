@@ -4,14 +4,13 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.appengine.api.users.UserService;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import org.joda.time.DateTimeZone;
@@ -35,20 +34,20 @@ import foodtruck.time.Clock;
  * @since 5/20/13
  */
 @Singleton
-public class TrucksServlet extends FrontPageServlet {
+public class TrucksServlet extends HttpServlet {
   private final TruckDAO truckDAO;
   private final FoodTruckStopService stops;
   private final Clock clock;
   private final DateTimeZone zone;
   private final DailyDataDAO dailyDataDAO;
   private final MenuDAO menuDAO;
+  private final StaticConfig staticConfig;
 
   @Inject
   public TrucksServlet(TruckDAO trucks, FoodTruckStopService stops, Clock clock, DateTimeZone zone,
-      StaticConfig staticConfig, DailyDataDAO dailyDataDAO, MenuDAO menuDAO,
-      Provider<UserService> userServiceProvider) {
-    super(staticConfig);
+      StaticConfig staticConfig, DailyDataDAO dailyDataDAO, MenuDAO menuDAO) {
     this.truckDAO = trucks;
+    this.staticConfig = staticConfig;
     this.stops = stops;
     this.clock = clock;
     this.zone = zone;
@@ -57,7 +56,7 @@ public class TrucksServlet extends FrontPageServlet {
   }
 
   @Override
-  protected void doGetProtected(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     final String requestURI = req.getRequestURI();
     String truckId = (requestURI.equals("/trucks") || requestURI.equals("/trucks/") ? null : requestURI.substring(8));
     String jsp = "/WEB-INF/jsp/trucks.jsp";
