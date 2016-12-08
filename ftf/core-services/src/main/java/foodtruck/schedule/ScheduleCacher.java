@@ -1,20 +1,13 @@
 package foodtruck.schedule;
 
-import javax.annotation.Nullable;
-
 /**
  * @author aviolette
  * @since 5/29/13
  */
 public interface ScheduleCacher {
-  @Nullable String findSchedule();
-
-  void saveSchedule(String payload);
+  String findSchedule();
 
   void invalidate();
 
-  @Nullable String findTomorrowsSchedule();
-
-  void saveTomorrowsSchedule(String payload);
-
+  String findTomorrowsSchedule();
 }

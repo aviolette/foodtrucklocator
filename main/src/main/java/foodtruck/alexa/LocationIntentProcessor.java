@@ -207,11 +207,6 @@ class LocationIntentProcessor implements IntentProcessor {
   private List<String> findAlternateLocations(boolean tomorrow, Location currentLocation, LocalDate theDate) {
     try {
       String schedule = tomorrow ? scheduleCacher.findTomorrowsSchedule() : scheduleCacher.findSchedule();
-      if (tomorrow && Strings.isNullOrEmpty(schedule)) {
-        schedule = dailyScheduleWriter.asJSON(service.findStopsForDay(theDate))
-            .toString();
-        scheduleCacher.saveTomorrowsSchedule(schedule);
-      }
       List<Location> locations = extractLocations(schedule);
       Predicate<Location> filterPredicate = Predicates.alwaysTrue();
       Location searchLocation = MoreObjects.firstNonNull(currentLocation, defaultCenter);

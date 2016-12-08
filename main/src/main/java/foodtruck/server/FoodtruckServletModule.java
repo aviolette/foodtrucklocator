@@ -8,6 +8,8 @@ import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 
+import foodtruck.jersey.ScheduleCacherImpl;
+import foodtruck.schedule.ScheduleCacher;
 import foodtruck.server.book.BookingLandingServlet;
 import foodtruck.server.book.CreateAccountServlet;
 import foodtruck.server.book.LoginServlet;
@@ -215,4 +217,9 @@ class FoodtruckServletModule extends ServletModule {
     return System.getProperty("foodtrucklocator.signal.id");
   }
 
+  // TODO: once we're off jersey-json move this into core-services
+  @Provides
+  public ScheduleCacher providesCacher(ScheduleCacherImpl impl) {
+    return impl;
+  }
 }

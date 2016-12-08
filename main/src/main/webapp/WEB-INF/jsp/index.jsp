@@ -1,3 +1,4 @@
+
 <%@ include file="header.jsp" %>
 
 <div class="row" id="sidebar">

@@ -33,7 +33,7 @@ public class ScheduleModule extends AbstractModule {
 
   @Override
   protected void configure() {
-    bind(ScheduleCacher.class).to(MemcacheScheduleCacher.class);
+//    bind(ScheduleCacher.class).to(MemcacheScheduleCacher.class);
     bind(AddressExtractor.class).to(JavascriptAddressExtractor.class);
     bind(ScheduleStrategy.class).to(GoogleCalendarV3Consumer.class);
     bind(SocialMediaCacher.class).to(SocialMediaCacherImpl.class);
