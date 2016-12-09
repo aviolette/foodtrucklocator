@@ -19,4 +19,12 @@ public class BadRequestException extends WebApplicationException {
     super(Responses.clientError().entity(new ErrorPayload(message))
         .type(MediaType.APPLICATION_JSON_TYPE).build());
   }
+
+  public BadRequestException(String message, String extraData) {
+    super(Responses.clientError()
+        .entity(new ErrorPayload(message, extraData))
+        .type(MediaType.APPLICATION_JSON_TYPE)
+        .build());
+
+  }
 }

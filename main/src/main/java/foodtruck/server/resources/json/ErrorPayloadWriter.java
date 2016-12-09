@@ -38,8 +38,8 @@ public class ErrorPayloadWriter implements MessageBodyWriter<ErrorPayload> {
       Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
       OutputStream entityStream) throws IOException, WebApplicationException {
     try {
-      JSONSerializer
-          .writeJSON(new JSONObject().put("error", errorPayload.getMessage()), entityStream);
+      JSONSerializer.writeJSON(new JSONObject().put("error", errorPayload.getMessage())
+          .putOpt("data", errorPayload.getExtra()), entityStream);
     } catch (JSONException e) {
       throw Throwables.propagate(e);
     }

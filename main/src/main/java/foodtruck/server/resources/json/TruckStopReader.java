@@ -97,7 +97,7 @@ public class TruckStopReader implements MessageBodyReader<TruckStop> {
         throw new BadRequestException("Location couldn't be resolved");
       }
       if (!location.isResolved()) {
-        throw new BadRequestException("Location is not resolved");
+        throw new BadRequestException("Location is not resolved", String.valueOf(location.getKey()));
       }
       long key = obj.optLong("id", 0);
       boolean locked = obj.optBoolean("locked", false);

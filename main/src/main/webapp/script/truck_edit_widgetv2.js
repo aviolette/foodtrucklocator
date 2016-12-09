@@ -151,8 +151,13 @@ var TruckScheduleWidget = function() {
           complete: function () {
           },
           error: function(e) {
-            var obj = JSON.parse(e.responseText);
-            $("#truck-schedule-error").html(obj.error);
+            var obj = JSON.parse(e.responseText),
+                message = obj.error;
+
+            if (message == "Location is not resolved" && _options["vendorEndpoints"] && locationName.length > 0) {
+              message = "<p>Location is not resolved</p><a class='btn btn-default' href='" + _baseEndpoint + "/locations/" + obj.data + "/edit'>Create Location</a>";
+            }
+            $("#truck-schedule-error").html(message);
             $("#truck-schedule-alert").removeClass("hidden");
             if (/location/i.exec(obj.error)) {
               $("#locationInputGroup").addClass("has-error");
