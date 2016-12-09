@@ -57,7 +57,7 @@ public class ScheduleCacherImpl implements ScheduleCacher {
       JSONObject json = writer.asJSON(schedule);
       String payload = json.toString();
       if (staticConfig.isScheduleCachingOn()) {
-        cacher.put(key, payload);
+        cacher.put(key, payload, 5);
       }
       return payload;
     } catch (JSONException e) {
