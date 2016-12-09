@@ -38,8 +38,13 @@ public class StatUpdateQueueServlet extends HttpServlet {
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     String param = req.getParameter("statName");
-    fifteenMinuteRollupDAO.updateCount(clock.now(), param);
-    dailyRollupDAO.updateCount(clock.now(), param);
-    weeklyRollupDAO.updateCount(clock.now(), param);
+    int amount = 1;
+    try {
+      amount = Integer.parseInt(req.getParameter("amount"));
+    } catch (NumberFormatException | NullPointerException ignored) {
+    }
+    fifteenMinuteRollupDAO.updateCount(clock.now(), param, amount);
+    dailyRollupDAO.updateCount(clock.now(), param, amount);
+    weeklyRollupDAO.updateCount(clock.now(), param, amount);
   }
 }

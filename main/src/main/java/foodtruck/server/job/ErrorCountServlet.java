@@ -25,6 +25,7 @@ import com.google.inject.Singleton;
 import foodtruck.dao.DailyRollupDAO;
 import foodtruck.dao.FifteenMinuteRollupDAO;
 import foodtruck.mail.SystemNotificationService;
+import foodtruck.monitoring.CounterPublisher;
 import foodtruck.time.Clock;
 
 /**
@@ -37,17 +38,14 @@ public class ErrorCountServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(ErrorCountServlet.class.getName());
   private static final String APP_ERROR_COUNT = "app_error_count";
   private final Clock clock;
-  private final FifteenMinuteRollupDAO fifteenMinuteRollupDAO;
-  private final DailyRollupDAO dailyRollupDAO;
   private final SystemNotificationService notifier;
+  private final CounterPublisher publisher;
 
   @Inject
-  public ErrorCountServlet(Clock clock, FifteenMinuteRollupDAO fifteenMinuteRollupDAO, DailyRollupDAO dailyRollupDAO,
-      SystemNotificationService notifier) {
+  public ErrorCountServlet(Clock clock, SystemNotificationService notifier, CounterPublisher publisher) {
     this.clock = clock;
-    this.fifteenMinuteRollupDAO = fifteenMinuteRollupDAO;
-    this.dailyRollupDAO = dailyRollupDAO;
     this.notifier = notifier;
+    this.publisher = publisher;
   }
 
   @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -60,9 +58,8 @@ public class ErrorCountServlet extends HttpServlet {
     final Iterable<RequestLogs> results = LogServiceFactory.getLogService().fetch(query);
     int count = Iterables.size(results);
     log.log(Level.INFO, "There were {0} errors in the last 15 minutes", count);
-    fifteenMinuteRollupDAO.updateCount(clock.now(), APP_ERROR_COUNT, count);
-    dailyRollupDAO.updateCount(clock.now(), APP_ERROR_COUNT, count);
     if (count > 0) {
+      publisher.increment(APP_ERROR_COUNT, count);
       StringBuilder builder = new StringBuilder();
       for (RequestLogs logs : results) {
         builder.append(Joiner.on("\n\n").join(FluentIterable.from(logs.getAppLogLines())

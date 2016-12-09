@@ -21,8 +21,15 @@ public class QueuePublisher implements CounterPublisher {
 
   @Override
   public void increment(String statName) {
+    increment(statName, 1);
+  }
+
+  @Override
+  public void increment(String statName, int amount) {
     Queue queue = queueProvider.get();
     queue.add(TaskOptions.Builder.withUrl("/cron/update_count")
+        .param("amount", String.valueOf(amount))
         .param("statName", statName));
+
   }
 }
