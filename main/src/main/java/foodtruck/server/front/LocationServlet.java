@@ -124,7 +124,6 @@ public class LocationServlet extends HttpServlet {
     req.setAttribute("thedate", dateTime);
     req.setAttribute("requestedTime", requestedTime);
     req.setAttribute("tab", "location");
-    req.setAttribute("hasPopularityStats", staticConfig.showLocationGraphs() && location.isPopular());
     req.setAttribute("location", location);
     req.setAttribute("title", location.getName() + onDate);
     req.setAttribute("description",
