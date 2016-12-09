@@ -21,7 +21,6 @@ import org.joda.time.format.DateTimeFormatter;
 import foodtruck.dao.LocationDAO;
 import foodtruck.model.DailySchedule;
 import foodtruck.model.Location;
-import foodtruck.model.StaticConfig;
 import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.time.Clock;
@@ -42,15 +41,12 @@ public class LocationServlet extends HttpServlet {
   private final DateTimeFormatter dateFormatter;
   private final FoodTruckStopService truckStopService;
   private final DateTimeFormatter friendlyFormatter;
-  private final StaticConfig staticConfig;
 
   @Inject
   public LocationServlet(LocationDAO locationDAO, Clock clock, @DateOnlyFormatter DateTimeFormatter dateFormatter,
-      FoodTruckStopService truckStopService, @FriendlyDateOnlyFormat DateTimeFormatter friendlyFormatter,
-      StaticConfig staticConfig) {
+      FoodTruckStopService truckStopService, @FriendlyDateOnlyFormat DateTimeFormatter friendlyFormatter) {
     this.locationDAO = locationDAO;
     this.clock = clock;
-    this.staticConfig = staticConfig;
     this.dateFormatter = dateFormatter;
     this.truckStopService = truckStopService;
     this.friendlyFormatter = friendlyFormatter;
