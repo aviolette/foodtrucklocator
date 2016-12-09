@@ -1,26 +1,6 @@
-<%@include file="dashboardHeaderBS3.jsp" %>
-<style>
-  .form-inline {
-    margin-bottom: 15px;
-  }
-</style>
-<c:if test="${!empty(locationId)}">
-  <div class="row">
-    <div class="col-md-12">
-      <div class="btn-toolbar">
-        <div class="btn-group">
-          <a href="/admin/event_at/${locationId}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>
-            New Event</a>
-        </div>
-        <div class="btn-group">
-          <a id="locationViewButton" href="/locations/${locationId}" class="btn btn-default">View</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</c:if>
+<%@ include file="vendorheader.jsp" %>
 
-<div class="row" style="padding-top: 20px">
+<div class="row">
   <div class="col-md-8">
     <div id="map_canvas" style="width:100%; height:300px; padding-bottom:20px;"></div>
   </div>
@@ -30,16 +10,9 @@
     </div>
     <ul id="searchLocations">
     </ul>
-    <div>
-      <h4>Current Aliases</h4>
-      <ul>
-        <c:forEach var="alias" items="${aliases}">
-          <li><a href="/admin/locations/${alias.key}">${alias.name}</a></li>
-        </c:forEach>
-      </ul>
-    </div>
   </div>
 </div>
+
 
 <div class="row">
   <div class="col-md-12">
@@ -157,18 +130,16 @@
 </div>
 
 
+
 <script type="text/javascript"
         src="//maps.googleapis.com/maps/api/js?key=${googleApiKey}">
 </script>
-<script type="text/javascript" src="/script/typeahead-addon.js"></script>
+<%@ include file="../include/core_js.jsp" %>
 <script type="text/javascript" src="/script/location-edit.js"></script>
+
 <script type="text/javascript">
   $(document).ready(function() {
-
-    locationMatching(${locations}, "alias");
-
     locationEdit(${location});
   });
 </script>
-
-<%@include file="dashboardFooterBS3.jsp" %>
+<%@ include file="vendorfooter.jsp" %>

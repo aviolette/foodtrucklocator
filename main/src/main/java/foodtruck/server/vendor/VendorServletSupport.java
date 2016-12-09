@@ -158,13 +158,13 @@ public abstract class VendorServletSupport extends HttpServlet {
 
   protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp,
       @Nullable Truck truck) throws ServletException, IOException {
-    throw new UnsupportedOperationException("dispatchGet(truck)");
+    throw new UnsupportedOperationException(getClass().getName() + ".dispatchGet(truck)");
 
   }
 
   protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp,
       @Nullable Location location) throws ServletException, IOException {
-    throw new UnsupportedOperationException("dispatchGet(location)");
+    throw new UnsupportedOperationException(getClass().getName() + "dispatchGet(location)");
   }
 
   private void vendorError(String title, String message, HttpServletRequest request,

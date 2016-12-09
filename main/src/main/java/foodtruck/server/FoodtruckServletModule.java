@@ -78,6 +78,7 @@ import foodtruck.server.vendor.VendorBeaconDetailsServlet;
 import foodtruck.server.vendor.VendorCallbackServlet;
 import foodtruck.server.vendor.VendorInfoServlet;
 import foodtruck.server.vendor.VendorLogoutServlet;
+import foodtruck.server.vendor.VendorLocationEditServlet;
 import foodtruck.server.vendor.VendorOffTheRoadServlet;
 import foodtruck.server.vendor.VendorRecacheServlet;
 import foodtruck.server.vendor.VendorServlet;
@@ -146,6 +147,7 @@ class FoodtruckServletModule extends ServletModule {
     serve("/vendor").with(VendorServlet.class);
     serveRegex("/vendor/locations/[\\d]*/stops/[\\w]*/delete").with(LocationStopDeleteServlet.class);
     serveRegex("/vendor/locations/[\\d]*/stops/[\\w]*").with(LocationEditVendorServlet.class);
+    serveRegex("/vendor/locations/[\\d]*/edit").with(VendorLocationEditServlet.class);
     serve("/vendor/locations/*").with(LocationVendorServlet.class);
     serve("/vendor/recache/*").with(VendorRecacheServlet.class);
     serve("/vendor/offtheroad/*").with(VendorOffTheRoadServlet.class);
