@@ -1,6 +1,13 @@
 <%@ include file="vendorheader.jsp" %>
 
 <div class="row">
+  <div class="col-md-12">
+    <h2 id="nameHeader"></h2>
+    <p class="lead">Drag the red pin to location or use the "Search for Location" button to specify an address.   Then click 'Continue'.</p>
+  </div>
+</div>
+
+<div class="row">
   <div class="col-md-8">
     <div id="map_canvas" style="width:100%; height:300px; padding-bottom:20px;"></div>
   </div>
@@ -16,12 +23,6 @@
 
 <div class="row">
   <div class="col-md-12">
-    <div class="">
-      <div class="form-group">
-        <label for="name">Name</label>
-        <input id="name" class="form-control" placeholder="Location Name" type="text"/>
-      </div>
-    </div>
     <div class="form-inline">
       <div class="form-group">
         <label for="latitude">Latitude</label>
@@ -33,23 +34,6 @@
       </div>
     </div>
     <div>
-      <div class="form-group">
-        <label for="radius">Radius</label>
-        <input id="radius" class="form-control" type="text"/>
-      </div>
-      <div class="form-group">
-        <label for="radiateTo">Radiate Direction</label>
-        <input id="radiateTo" class="form-control" type="text"/>
-      </div>
-      <div class="form-group">
-        <label for="alias">Alias for</label>
-        <input id="alias" class="form-control" type="text" data-provider="typeahead" data-items="4"/>
-        <a href="#" id="viewAlias">View</a>
-      </div>
-      <div class="form-group">
-        <label for="ownedBy">Owned By</label>
-        <input class="form-control" id="ownedBy" type="text"/>
-      </div>
       <div class="form-group">
         <label for="description">Description</label>
         <textarea class="form-control" id="description" rows="5" cols="80"></textarea>
@@ -82,48 +66,18 @@
         <input id="facebookUri" class="form-control" type="text"/>
       </div>
       <div class="form-group">
-        <label for="imageUrl">Image Url</label>
-        <input id="imageUrl" class="form-control" type="url"/>
-      </div>
-      <div class="form-group">
-        <label for="eventUrl">Event Url</label>
-        <input id="eventUrl" class="form-control" type="text"/>
-      </div>
-      <div class="form-group">
         <label for="email">Email</label>
         <input id="email" class="form-control" type="text"/>
-      </div>
-      <div class="form-group">
-        <label for="managerEmails">Manager Emails (comma separated)</label>
-        <input id="managerEmails" class="form-control" type="text"/>
       </div>
       <div class="form-group">
         <label for="phone" class="control-label">Phone</label>
         <input id="phone" class="form-control" type="tel"/>
       </div>
       <div class="checkbox">
-        <label><input id="invalidLoc" type="checkbox">&nbsp;Ignore in geolocation lookups</label>
-      </div>
-      <div class="checkbox">
-        <label><input id="designatedStop" type="checkbox">&nbsp;Designated food truck stop</label>
-      </div>
-      <div class="checkbox">
-        <label><input id="popular" type="checkbox">&nbsp;Popular?</label>
-      </div>
-      <div class="checkbox">
-        <label><input id="autocomplete" type="checkbox">&nbsp;Autocomplete?</label>
-      </div>
-      <div class="checkbox">
         <label><input id="hasBooze" type="checkbox">&nbsp;Serves Alcohol?</label>
       </div>
-      <div class="checkbox">
-        <label><input id="closed" type="checkbox">&nbsp;Closed?</label>
-      </div>
-      <div class="checkbox">
-        <label><input id="alexaProvided" type="checkbox">&nbsp;Available to Alexa?</label>
-      </div>
       <div class="btn-group>">
-        <button id="submitButton" class="btn btn-primary"><span class="glyphicon glyphicon-save"></span> Save</button>
+        <button id="submitButton" class="btn btn-primary">Continue</button>
       </div>
     </div>
   </div>
@@ -139,7 +93,28 @@
 
 <script type="text/javascript">
   $(document).ready(function() {
-    locationEdit(${location});
+    var loc = ${location};
+    <%-- force to initial location --%>
+    if (!loc.valid) {
+      loc.latitude = 41.8807438;
+      loc.longitude = -87.6293867;
+      loc.valid = true;
+    }
+
+    locationEdit(loc, true, function() {
+      <c:choose>
+      <c:when test="${!empty(startTime) && !empty(endTime)}">
+        $.post("/vendor/locations/" + loc.key + "/edit?startTime=${startTime}&endTime=${endTime}&locationId=${locationId}", function() {
+          location.href="/vendor";
+        });
+      </c:when>
+      <c:otherwise>
+        location.href = "/vendor";
+      </c:otherwise>
+      </c:choose>
+    });
+
+    $("#nameHeader").append(loc.name);
   });
 </script>
 <%@ include file="vendorfooter.jsp" %>

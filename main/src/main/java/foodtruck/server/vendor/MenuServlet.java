@@ -1,6 +1,7 @@
 package foodtruck.server.vendor;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -55,7 +56,7 @@ public class MenuServlet extends VendorServletSupport {
   }
 
   @Override
-  protected void dispatchPost(HttpServletRequest req, HttpServletResponse resp, String truckId) throws IOException {
+  protected void dispatchPost(HttpServletRequest req, HttpServletResponse resp, String truckId, Principal principal) throws IOException {
     try {
       JSONObject jsonPayload = new JSONObject(new String(ByteStreams.toByteArray(req.getInputStream())));
       Menu menu = Menu.builder(menuDAO.findByTruck(truckId))

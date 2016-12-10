@@ -1,6 +1,7 @@
 package foodtruck.server.vendor;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,8 +53,8 @@ public class PostScheduleServlet extends VendorServletSupport {
   }
 
   @Override
-  protected void dispatchPost(HttpServletRequest req, HttpServletResponse resp, String truckId) throws IOException {
-    super.dispatchPost(req, resp, truckId);
+  protected void dispatchPost(HttpServletRequest req, HttpServletResponse resp, String truckId, Principal principal) throws IOException {
+    super.dispatchPost(req, resp, truckId, principal);
     Truck truck = truckDAO.findById(truckId);
     ScheduleMessage message = getScheduleMessage(truck);
     log.log(Level.INFO, "Posting {0} for truck {1} ", new Object[]{message, truck});

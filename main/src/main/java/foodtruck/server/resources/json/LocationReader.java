@@ -34,7 +34,7 @@ public class LocationReader {
         .popular(obj.optBoolean("popular", false))
         .designatedStop(obj.optBoolean("designatedStop", false))
         .autocomplete(obj.optBoolean("autocomplete", false))
-        .radius(obj.getDouble("radius"))
+        .radius(obj.optDouble("radius", 0))
         .phoneNumber(obj.optString("phone"))
         .email(obj.optString("email"))
         .imageUrl(imageUrl)

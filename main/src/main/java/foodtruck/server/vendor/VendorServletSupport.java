@@ -145,15 +145,36 @@ public abstract class VendorServletSupport extends HttpServlet {
       //noinspection ConstantConditions
       req.setAttribute("truck", truckDAO.findById(truck.getId()));
       log.log(Level.INFO, "User {0}", principal.getName());
-      dispatchPost(req, resp, truck.getId());
+      dispatchPost(req, resp, truck.getId(), principal);
     }
+  }
+
+  @Override
+  protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    SessionUser sessionUser = sessionUserProvider.get();
+    Principal principal = sessionUser.getPrincipal();
+    if (principal == null) {
+      resp.setStatus(401);
+      return;
+    }
+    Set<Truck> trucks = sessionUser.associatedTrucks();
+    if (trucks.size() == 1) {
+      Truck truck = Iterables.getFirst(trucks, null);
+      //noinspection ConstantConditions
+      req.setAttribute("truck", truckDAO.findById(truck.getId()));
+      log.log(Level.INFO, "User {0}", principal.getName());
+      dispatchPut(req, resp, truck);
+    }
+  }
+
+  protected void dispatchPut(HttpServletRequest req, HttpServletResponse resp, Truck truck) throws IOException {
   }
 
   protected void dispatchPost(HttpServletRequest req, HttpServletResponse resp, Location location,
       String principalName) throws IOException {
   }
 
-  protected void dispatchPost(HttpServletRequest req, HttpServletResponse resp, String truckId) throws IOException {
+  protected void dispatchPost(HttpServletRequest req, HttpServletResponse resp, String truckId, Principal principal) throws IOException {
   }
 
   protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp,

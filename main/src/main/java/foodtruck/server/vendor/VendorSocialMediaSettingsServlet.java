@@ -1,6 +1,7 @@
 package foodtruck.server.vendor;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -41,7 +42,7 @@ public class VendorSocialMediaSettingsServlet extends VendorServletSupport {
   }
 
   @Override
-  protected void dispatchPost(HttpServletRequest req, HttpServletResponse resp, String truckId) throws IOException {
+  protected void dispatchPost(HttpServletRequest req, HttpServletResponse resp, String truckId, Principal principal) throws IOException {
     Truck truck = truckDAO.findById(truckId);
     final String[] optionsArray = req.getParameterValues("options");
     Set<String> options = ImmutableSet.copyOf(optionsArray == null ? new String[0] : optionsArray);

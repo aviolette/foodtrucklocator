@@ -1,4 +1,4 @@
-var TruckScheduleWidget = function() {
+var TruckScheduleWidget = function () {
   var _lastStop = null,
       _baseEndpoint,
       _truckId,
@@ -25,7 +25,7 @@ var TruckScheduleWidget = function() {
 
   function fromDate(dateString) {
     var year = parseInt(dateString.substring(0, 4)),
-        month = parseInt(dateString.substring(5, 7))-1,
+        month = parseInt(dateString.substring(5, 7)) - 1,
         day = parseInt(dateString.substring(8, 10)),
         hour = parseInt(dateString.substring(11, 13)),
         min = parseInt(dateString.substring(14, 16));
@@ -33,32 +33,40 @@ var TruckScheduleWidget = function() {
   }
 
   function toDate(d) {
-    return (d.getFullYear()) + "-" + padTime(d.getMonth()+1) + "-" + padTime(d.getDate()) + "T" + padTime(d.getHours()) + ":" + padTime(d.getMinutes());
+    return (d.getFullYear()) + "-" + padTime(d.getMonth() + 1) + "-" + padTime(d.getDate()) + "T" + padTime(d.getHours()) + ":" + padTime(d.getMinutes());
   }
 
   function enhancedDateWidget(widgetPrefix) {
     function figureOutDay($input, $output) {
-      return function() {
+      return function () {
         var time = fromDate($input.val()), day;
         switch (time.getDay()) {
           case 0:
-            day = "Sunday"; break;
+            day = "Sunday";
+            break;
           case 1:
-            day = "Monday"; break;
+            day = "Monday";
+            break;
           case 2:
-            day = "Tuesday"; break;
+            day = "Tuesday";
+            break;
           case 3:
-            day = "Wednesday"; break;
+            day = "Wednesday";
+            break;
           case 4:
-            day = "Thursday"; break;
+            day = "Thursday";
+            break;
           case 5:
-            day = "Friday"; break;
+            day = "Friday";
+            break;
           case 6:
-            day = "Saturday"; break;
+            day = "Saturday";
+            break;
         }
         $output.html(day);
       }
     }
+
     var $timeWidget = $("#" + widgetPrefix + "TimeInput");
     var calcDay = figureOutDay($timeWidget, $("#" + widgetPrefix + "Day"));
     $timeWidget.change(calcDay);
@@ -79,14 +87,14 @@ var TruckScheduleWidget = function() {
 
   function locationMatching(locations) {
     // Type-ahead related stuff
-    var substringMatcher = function(strs) {
+    var substringMatcher = function (strs) {
       return function findMatches(q, cb) {
         var matches, substrRegex;
         matches = [];
         substrRegex = new RegExp(q, 'i');
-        $.each(strs, function(i, str) {
+        $.each(strs, function (i, str) {
           if (substrRegex.test(str)) {
-            matches.push({ value: str });
+            matches.push({value: str});
           }
         });
         cb(matches);
@@ -97,7 +105,7 @@ var TruckScheduleWidget = function() {
       hint: true,
       highlight: true,
       minLength: 1
-    },{ name: 'locations', displayKey: 'value', source: substringMatcher(locations)});
+    }, {name: 'locations', displayKey: 'value', source: substringMatcher(locations)});
   }
 
   function numStops() {
@@ -112,24 +120,24 @@ var TruckScheduleWidget = function() {
   function populateDialog(stop) {
     $startTimeInput.val(stop.startTimeH);
     _calcStartDay();
-    $endTimeInput.val( stop.endTimeH);
+    $endTimeInput.val(stop.endTimeH);
     _calcEndDay();
     $("#locationInput").val(stop.location.name);
-    $("#lockStop").val( stop.locked);
+    $("#lockStop").val(stop.locked);
   }
 
   function invokeEditDialog(stop, afterwards) {
     populateDialog(stop);
     $("#locationInputGroup").removeClass("has-error");
     $("#truck-schedule-alert").addClass("hidden");
-    $("#edit-stop").modal({ show: true, keyboard: true, backdrop: true});
+    $("#edit-stop").modal({show: true, keyboard: true, backdrop: true});
     var $saveButton = $("#saveButton");
     $saveButton.unbind('click');
     $saveButton.click(function (e) {
       e.preventDefault();
       var $btn = $(this).button('loading')
-      stop.startTime =  $startTimeInput.val();
-      stop.endTime =  $endTimeInput.val();
+      stop.startTime = $startTimeInput.val();
+      stop.endTime = $endTimeInput.val();
       var locationName = $("#locationInput").val();
       var oldLocation = stop.location;
       if (locationName != stop.location.name) {
@@ -138,7 +146,7 @@ var TruckScheduleWidget = function() {
       }
       stop.truckId = _truckId;
       stop.locked = $("#lockStop").is(":checked");
-      if(locationName.length == 0) {
+      if (locationName.length == 0) {
         $("#locationInputGroup").addClass("has-error");
         $("#truck-schedule-error").html("No location specified");
         $btn.button('reset')
@@ -150,12 +158,12 @@ var TruckScheduleWidget = function() {
           data: JSON.stringify(stop),
           complete: function () {
           },
-          error: function(e) {
+          error: function (e) {
             var obj = JSON.parse(e.responseText),
                 message = obj.error;
 
             if (message == "Location is not resolved" && _options["vendorEndpoints"] && locationName.length > 0) {
-              message = "<p>Location is not resolved</p><a class='btn btn-default' href='" + _baseEndpoint + "/locations/" + obj.data + "/edit'>Create Location</a>";
+              message = "<p>Location is not resolved</p><a class='btn btn-default' href='" + _baseEndpoint + "/locations/" + obj.data + "/edit?startTime=" + stop.startTime + "&endTime=" + stop.endTime + "'>Create Location</a>";
             }
             $("#truck-schedule-error").html(message);
             $("#truck-schedule-alert").removeClass("hidden");
@@ -171,7 +179,7 @@ var TruckScheduleWidget = function() {
             stop.location = oldLocation;
             $btn.button('reset')
           },
-          success: function() {
+          success: function () {
             $("#edit-stop").modal('hide');
             $btn.button('reset');
             afterwards();
@@ -189,7 +197,7 @@ var TruckScheduleWidget = function() {
 
   function newStop() {
     var now = new Date();
-    if ((!hasCategory("Breakfast") && numStops() == 0) && now.getHours() < 10 ) {
+    if ((!hasCategory("Breakfast") && numStops() == 0) && now.getHours() < 10) {
       now.setHours(11);
       now.setMinutes(0);
     }
@@ -206,9 +214,11 @@ var TruckScheduleWidget = function() {
         now.setMinutes(0);
       }
     }
-    var today = toDate(now), later = toDate(new Date(now.getTime() + (2*60*60*1000)));
-    invokeEditDialog({truckId: _truckId, locationName: "", location: { name: ""},
-          startTimeH: today, endTimeH: later },
+    var today = toDate(now), later = toDate(new Date(now.getTime() + (2 * 60 * 60 * 1000)));
+    invokeEditDialog({
+          truckId: _truckId, locationName: "", location: {name: ""},
+          startTimeH: today, endTimeH: later
+        },
         refreshSchedule);
   }
 
@@ -265,6 +275,7 @@ var TruckScheduleWidget = function() {
       _counts[String(stop.id)] = {count: stop.totalTruckCount, truckNames: stop.truckNames};
     });
   }
+
   function drawScheduleList(schedule) {
     var d = new Date();
     d.setHours(0);
@@ -433,10 +444,10 @@ var TruckScheduleWidget = function() {
   }
 
   return {
-    refresh : function() {
+    refresh: function () {
       refreshSchedule();
     },
-    init : function(truckId, locations, categories, options)  {
+    init: function (truckId, locations, categories, options) {
       _baseEndpoint = '/admin/trucks/' + truckId;
       _categories = categories;
       _truckId = truckId;
@@ -456,7 +467,7 @@ var TruckScheduleWidget = function() {
 
       unifiedDateControls(_calcEndDay);
 
-      $editStop.keypress(function(e) {
+      $editStop.keypress(function (e) {
         if (e.which == 13) {
           e.preventDefault();
           $("#saveButton").click();
@@ -479,10 +490,10 @@ var TruckScheduleWidget = function() {
         $(this).removeClass("btn-default");
         $("#scheduleCalendarButton").addClass("btn-default");
       });
-      
+
       locationMatching(locations);
 
-      $editStop.on("shown.bs.modal", function() {
+      $editStop.on("shown.bs.modal", function () {
         $startTimeInput.focus();
       });
 
@@ -494,7 +505,7 @@ var TruckScheduleWidget = function() {
         }
       });
 
-      $(document).keypress(function(e) {
+      $(document).keypress(function (e) {
         if (e.which == 110 && $editStop.css("display") == 'none') {
           e.preventDefault();
           newStop();
@@ -541,7 +552,8 @@ var TruckScheduleWidget = function() {
           },
           success: function (data) {
             refreshSchedule();
-          }});
+          }
+        });
       });
     }
   };

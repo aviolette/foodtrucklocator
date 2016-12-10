@@ -1,6 +1,7 @@
-function locationEdit(loc) {
-  var MILES_TO_METERS = 1609.34;
-
+function locationEdit(loc, vendor, saveCallback) {
+  var MILES_TO_METERS = 1609.34, locationName = loc.name;
+  // stupid
+  var useVendorEndpoints = vendor ? true : false;
   $("#viewAlias").click(function(e) {
     e.preventDefault();
     location.href = '/admin/locations?q=' + encodeURIComponent($("#alias").val());
@@ -22,15 +23,15 @@ function locationEdit(loc) {
     }
     $("#latitude").val(loc.latitude);
     $("#longitude").val(loc.longitude);
+    $("#twitterHandle").val(loc.twitterHandle);
+    $("#description").val(loc.description);
+    $("#hasBooze").attr("checked", loc.hasBooze);
     $("#radius").val(loc.radius);
     $("#radiateTo").val(loc.radiateTo);
     $("#name").val(loc.name);
     $("#alias").val(loc.alias);
-    $("#twitterHandle").val(loc.twitterHandle);
     $("#invalidLoc").attr("checked", !loc.valid);
-    $("#description").val(loc.description);
     $("#popular").attr("checked", loc.popular);
-    $("#hasBooze").attr("checked", loc.hasBooze);
     $("#closed").attr("checked", loc.closed);
     $("#designatedStop").attr("checked", loc.designatedStop);
     $("#autocomplete").attr("checked", loc.autocomplete);
@@ -161,12 +162,17 @@ function locationEdit(loc) {
     loc.managerEmails = $("#managerEmails").val();
     e.preventDefault();
     $submitButton.addClass("disabled");
+    var endpoint =  "/admin/locations/" + loc.key;
+    if (useVendorEndpoints) {
+      endpoint = "/vendor/locations/" + loc.key  + "/edit";
+      loc.name = locationName;
+    }
     $.ajax({
       context: document.body,
       type: 'PUT',
       contentType: 'application/json',
       data: JSON.stringify(loc),
-      url: "/admin/locations/" + loc.key,
+      url: endpoint,
       complete : function() {
         $submitButton.removeClass("disabled");
       },
@@ -174,7 +180,11 @@ function locationEdit(loc) {
         if (circle) {
           circle.setRadius(loc.radius * MILES_TO_METERS);
         }
-        flash("Successfully saved", "success");
+        if (saveCallback) {
+          saveCallback();
+        } else {
+          flash("Successfully saved", "success");
+        }
       }
     });
   });
