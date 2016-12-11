@@ -1,4 +1,4 @@
-function locationEdit(loc, vendor, saveCallback) {
+function locationEdit(loc, vendor, saveCallback, errorCallback) {
   var MILES_TO_METERS = 1609.34, locationName = loc.name;
   // stupid
   var useVendorEndpoints = vendor ? true : false;
@@ -176,6 +176,11 @@ function locationEdit(loc, vendor, saveCallback) {
       url: endpoint,
       complete : function() {
         $submitButton.removeClass("disabled");
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        if (errorCallback) {
+          errorCallback(errorThrown);
+        }
       },
       success: function() {
         if (circle) {

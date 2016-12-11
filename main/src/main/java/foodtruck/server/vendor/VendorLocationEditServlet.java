@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.api.client.http.HttpStatusCodes;
 import com.google.appengine.api.users.UserService;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
@@ -117,7 +118,8 @@ public class VendorLocationEditServlet extends VendorServletSupport {
   }
 
   @Override
-  protected void dispatchPut(HttpServletRequest req, HttpServletResponse resp, Truck truck) throws IOException {
+  protected void dispatchPut(HttpServletRequest req, HttpServletResponse resp, Truck truck,
+      Principal principal) throws IOException {
     final String json = new String(ByteStreams.toByteArray(req.getInputStream()));
     try {
       // TODO: add attribute to location so that we know who created it.
@@ -125,9 +127,19 @@ public class VendorLocationEditServlet extends VendorServletSupport {
       JSONObject jsonPayload = new JSONObject(json);
       Location location = reader.toLocation(jsonPayload);
       Location existing = locationDAO.findById((Long) location.getKey());
+
+      if (existing.isValid() && !principal.getName()
+          .equals(existing.getCreatedBy())) {
+        log.log(Level.WARNING, "User {0} cannot edit {1}", new Object[]{principal.getName(), existing});
+        resp.sendError(HttpStatusCodes.STATUS_CODE_UNAUTHORIZED, "You can only edit this location if you created it");
+        return;
+      }
+
       location = Location.builder(existing)
           .autocomplete(true)
           .valid(true)
+          .alexaProvided(true)
+          .createdBy(principal.getName())
           .description(FormDataMassager.escape(jsonPayload.optString("description")))
           .lat(jsonPayload.getDouble("latitude"))
           .lng(jsonPayload.getDouble("longitude"))

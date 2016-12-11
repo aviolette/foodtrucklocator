@@ -22,7 +22,7 @@ import com.javadocmd.simplelatlng.util.LengthUnit;
  * @since Jul 12, 2011
  */
 public class Location extends ModelEntity implements Serializable {
-  public static final Function<Location, String> TO_NAME = new Function<Location, String> () {
+  public static final Function<Location, String> TO_NAME = new Function<Location, String>() {
     public String apply(Location input) {
       return input.getName();
     }
@@ -59,6 +59,7 @@ public class Location extends ModelEntity implements Serializable {
   private @Nullable String eventCalendarUrl;
   private ImmutableSet<String> managerEmails;
   private boolean alexaProvided;
+  private @Nullable String createdBy;
 
   // For serializable
   public Location() {
@@ -91,6 +92,7 @@ public class Location extends ModelEntity implements Serializable {
     eventCalendarUrl = builder.eventCalendarUrl;
     managerEmails = ImmutableSet.copyOf(builder.managerEmails);
     alexaProvided = builder.alexaProvided;
+    createdBy = builder.createdBy;
   }
 
   public static Builder builder() {
@@ -101,11 +103,18 @@ public class Location extends ModelEntity implements Serializable {
     return new Builder(loc);
   }
 
-  public @Nullable String getEventCalendarUrl() {
+  @Nullable
+  public String getCreatedBy() {
+    return createdBy;
+  }
+
+  @Nullable
+  public String getEventCalendarUrl() {
     return eventCalendarUrl;
   }
 
-  public @Nullable Url getImageUrl() {
+  @Nullable
+  public Url getImageUrl() {
     return imageUrl;
   }
 
@@ -117,15 +126,18 @@ public class Location extends ModelEntity implements Serializable {
     return closed;
   }
 
-  public @Nullable String getPhoneNumber() {
+  @Nullable
+  public String getPhoneNumber() {
     return phoneNumber;
   }
 
-  public @Nullable String getEmail() {
+  @Nullable
+  public String getEmail() {
     return email;
   }
 
-  public @Nullable String getFacebookUri() {
+  @Nullable
+  public String getFacebookUri() {
     return facebookUri;
   }
 
@@ -153,12 +165,15 @@ public class Location extends ModelEntity implements Serializable {
     return this.name;
   }
 
-  public @Nullable String getTwitterHandle() {
+  @Nullable
+  public String getTwitterHandle() {
     return this.twitterHandle;
   }
 
   public Location wasJustResolved() {
-    return Location.builder(this).wasJustResolved(true).build();
+    return Location.builder(this)
+        .wasJustResolved(true)
+        .build();
   }
 
   public boolean isValid() {
@@ -181,13 +196,15 @@ public class Location extends ModelEntity implements Serializable {
     return within(0.05).milesOf(location);
   }
 
-  public @Nullable String getDescription() {
+  @Nullable
+  public String getDescription() {
     return this.description;
   }
 
   // TODO: this probably should be refactored out of here
 
-  public @Nullable String getUrl() {
+  @Nullable
+  public String getUrl() {
     return url;
   }
 
@@ -195,7 +212,8 @@ public class Location extends ModelEntity implements Serializable {
    * Return the truck that owns this location (i.e. a restaurant)
    * @return the truck that owns this location or null if it's not owned
    */
-  public @Nullable String getOwnedBy() {
+  @Nullable
+  public String getOwnedBy() {
     return ownedBy;
   }
 
@@ -222,6 +240,7 @@ public class Location extends ModelEntity implements Serializable {
         // appengine throws Method undefined errors 'cause of this...not sure why
         .add("Radius", String.valueOf(radius))
         .add("Owned by", ownedBy)
+        .add("Created by ", createdBy)
         .toString();
   }
 
@@ -242,7 +261,8 @@ public class Location extends ModelEntity implements Serializable {
   }
 
   public Location withKey(Object key) {
-    return builder(this).key(key).build();
+    return builder(this).key(key)
+        .build();
   }
 
   public double getRadius() {
@@ -258,10 +278,13 @@ public class Location extends ModelEntity implements Serializable {
   }
 
   public Location withName(String name) {
-    return Location.builder(this).name(name).build();
+    return Location.builder(this)
+        .name(name)
+        .build();
   }
 
-  @Nullable public String getAlias() {
+  @Nullable
+  public String getAlias() {
     return alias;
   }
 
@@ -341,6 +364,7 @@ public class Location extends ModelEntity implements Serializable {
     private @Nullable String eventCalendarUrl;
     private Set<String> managerEmails = ImmutableSet.of();
     private boolean alexaProvided;
+    private @Nullable String createdBy;
 
     public Builder(Location location) {
       key = location.getKey();
@@ -369,6 +393,7 @@ public class Location extends ModelEntity implements Serializable {
       eventCalendarUrl = location.eventCalendarUrl;
       managerEmails = location.managerEmails;
       alexaProvided = location.alexaProvided;
+      createdBy = location.createdBy;
     }
 
     public Builder() {
@@ -391,6 +416,11 @@ public class Location extends ModelEntity implements Serializable {
 
     public Builder phoneNumber(String phoneNumber) {
       this.phoneNumber = phoneNumber;
+      return this;
+    }
+
+    public Builder createdBy(String createdBy) {
+      this.createdBy = createdBy;
       return this;
     }
 
@@ -507,6 +537,7 @@ public class Location extends ModelEntity implements Serializable {
   @SuppressWarnings("WeakerAccess")
   public class ScalarDistanceRequest {
     private final double distance;
+
     ScalarDistanceRequest(double distance) {
       this.distance = distance;
     }

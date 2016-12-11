@@ -163,11 +163,12 @@ public abstract class VendorServletSupport extends HttpServlet {
       //noinspection ConstantConditions
       req.setAttribute("truck", truckDAO.findById(truck.getId()));
       log.log(Level.INFO, "User {0}", principal.getName());
-      dispatchPut(req, resp, truck);
+      dispatchPut(req, resp, truck, principal);
     }
   }
 
-  protected void dispatchPut(HttpServletRequest req, HttpServletResponse resp, Truck truck) throws IOException {
+  protected void dispatchPut(HttpServletRequest req, HttpServletResponse resp, Truck truck,
+      Principal principal) throws IOException {
   }
 
   protected void dispatchPost(HttpServletRequest req, HttpServletResponse resp, Location location,

@@ -121,6 +121,11 @@
         location.href = "/vendor";
       </c:otherwise>
       </c:choose>
+    }, function (e) {
+      $("#flash").append(e);
+      $("#flash").addClass("alert-danger");
+      $("#flash").removeClass("alert-warning");
+      $("#flash").removeClass("hidden");
     });
 
     $("#nameHeader").append(loc.name);

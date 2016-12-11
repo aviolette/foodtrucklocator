@@ -1,7 +1,6 @@
 package foodtruck.server.vendor;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 import javax.servlet.ServletException;
@@ -28,7 +27,6 @@ import foodtruck.server.GuiceHackRequestWrapper;
 @Singleton
 public class VendorBeaconDetailsServlet extends VendorServletSupport {
   public static final String JSP = "/WEB-INF/jsp/vendor/beaconDetails.jsp";
-  private static final Logger log = Logger.getLogger(VendorBeaconDetailsServlet.class.getName());
   private final TrackingDeviceDAO deviceDAO;
   private final StaticConfig config;
 
