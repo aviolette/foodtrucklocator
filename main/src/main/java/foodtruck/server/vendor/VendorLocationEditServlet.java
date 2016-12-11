@@ -26,6 +26,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
+import foodtruck.mail.SystemNotificationService;
 import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.StopOrigin;
@@ -53,11 +54,13 @@ public class VendorLocationEditServlet extends VendorServletSupport {
   private final LocationReader reader;
   private final DateTimeFormatter formatter;
   private final FoodTruckStopService stopService;
+  private final SystemNotificationService notificationService;
 
   @Inject
   public VendorLocationEditServlet(TruckDAO dao, UserService userService, Provider<SessionUser> sessionUserProvider,
       LocationDAO locationDAO, StaticConfig config, LocationWriter locationWriter, LocationReader reader,
-      @HtmlDateFormatter DateTimeFormatter formatter, FoodTruckStopService stopService) {
+      @HtmlDateFormatter DateTimeFormatter formatter, FoodTruckStopService stopService,
+      SystemNotificationService notificationService) {
     super(dao, userService, sessionUserProvider);
     this.locationDAO = locationDAO;
     this.config = config;
@@ -65,6 +68,7 @@ public class VendorLocationEditServlet extends VendorServletSupport {
     this.reader = reader;
     this.formatter = formatter;
     this.stopService = stopService;
+    this.notificationService = notificationService;
   }
 
   @Override
@@ -101,8 +105,12 @@ public class VendorLocationEditServlet extends VendorServletSupport {
     DateTime startTime = formatter.parseDateTime(req.getParameter("startTime")), endTime = formatter.parseDateTime(
         req.getParameter("endTime"));
     Truck truck = truckDAO.findById(truckId);
-    Location location = locationDAO.findById(Long.parseLong(req.getParameter("locationId")));
-    // TODO: what if locaiton not found
+    String locationId = req.getParameter("locationId");
+    Location location = locationDAO.findById(Long.parseLong(locationId));
+    if (location == null) {
+      resp.sendError(404, "Could not find location with ID: " + locationId);
+      return;
+    }
     // TODO: what if startTime poorly formatted
     // TODO: what if endtime poorly formatted
 
@@ -122,7 +130,6 @@ public class VendorLocationEditServlet extends VendorServletSupport {
       Principal principal) throws IOException {
     final String json = new String(ByteStreams.toByteArray(req.getInputStream()));
     try {
-      // TODO: add attribute to location so that we know who created it.
       // TODO: use FormDataMassager in VendorSettingsServlet
       JSONObject jsonPayload = new JSONObject(json);
       Location location = reader.toLocation(jsonPayload);
@@ -134,7 +141,6 @@ public class VendorLocationEditServlet extends VendorServletSupport {
         resp.sendError(HttpStatusCodes.STATUS_CODE_UNAUTHORIZED, "You can only edit this location if you created it");
         return;
       }
-
       location = Location.builder(existing)
           .autocomplete(true)
           .valid(true)
@@ -151,9 +157,7 @@ public class VendorLocationEditServlet extends VendorServletSupport {
           .hasBooze(jsonPayload.optBoolean("hasBooze"))
           .build();
       locationDAO.save(location);
-
-      // TODO: send notification when location is created this way
-
+      notificationService.systemNotifyLocationAdded(location, principal.getName());
       resp.setStatus(204);
     } catch (JSONException e) {
       throw Throwables.propagate(e);

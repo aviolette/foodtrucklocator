@@ -67,6 +67,18 @@ class SimpleEmailNotifier implements SystemNotificationService {
   }
 
   @Override
+  public void systemNotifyLocationAdded(Location location, String principalName) {
+    try {
+      sender.sendSystemMessage("New Location Added Via Vendor Portal: " + location.getName(),
+          MessageFormat.format("{0} added the location {1}: {2}/admin/locations/{3} via the vendor portal.",
+              principalName, location.getName(), staticConfig.getBaseUrl(), String.valueOf(location.getKey())));
+    } catch (Exception e) {
+      log.log(Level.WARNING, e.getMessage(), e);
+    }
+
+  }
+
+  @Override
   public void systemNotifyTrucksAddedByObserver(Map<Truck, Story> trucksAdded) {
     StringBuilder builder = new StringBuilder("The following trucks were added: \n\n");
     for (Map.Entry<Truck, Story> entry : trucksAdded.entrySet()) {
@@ -123,7 +135,7 @@ class SimpleEmailNotifier implements SystemNotificationService {
             "?selected=" + truckIdString + "&startTime=" + dateTimeFormatter.print(stop.getStartTime()) + "&endTime=" +
             dateTimeFormatter.print(stop.getEndTime());
     String msgBody = MessageFormat.format(
-        "This tweet \"{0}\"\n\n from {1} might have indicated that there additional trucks " + "to be added to the system.\n\n  Click here {2} to add the trucks",
+        "This tweet \"{0}\"\n\n from {1} might have indicated that there additional trucks to be added to the system.\n\n  Click here {2} to add the trucks",
         text, stop.getTruck()
             .getName(), url);
     sender.sendSystemMessage("Truck was mentioned by another truck", msgBody);

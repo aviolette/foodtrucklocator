@@ -32,6 +32,13 @@ public interface SystemNotificationService {
   void systemNotifyLocationAdded(Location location, Story tweet, Truck truck);
 
   /**
+   * Sends system notification when a new location is added by a certain user
+   * @param location the location
+   * @param principalName the user name of the user that created it.
+   */
+  void systemNotifyLocationAdded(Location location, String principalName);
+
+  /**
    * Sends system notification when new stops are added by regional observers.
    * @param trucksAdded the map of truckIds
    */
