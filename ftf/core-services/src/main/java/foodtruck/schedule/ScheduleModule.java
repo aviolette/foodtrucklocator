@@ -63,7 +63,7 @@ public class ScheduleModule extends AbstractModule {
   public List<String> providesExemptLocations() {
     // TODO: probably should make this a system property
     return ImmutableList.of("Flower Truck", "Lincoln Square Open 10-8", "Not-So-Mobile Eatery – After School Special",
-        "Where’s Grill Chasers today?", "Pop Up Shop Ogilvie French Market");
+        "Where’s Grill Chasers today?", "Pop Up Shop Ogilvie French Market", "Busy");
   }
 
   @Provides
