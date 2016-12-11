@@ -15,8 +15,11 @@
     <div>
       <a id="locationSearchButton" href="#" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Search for a location</a>
     </div>
-    <ul id="searchLocations">
-    </ul>
+    <nav>
+      <p id="markerMessage" class="hidden">Select a location to move the marker</p>
+      <ul style="margin-top:20px" class="nav list-unstyled" id="searchLocations">
+      </ul>
+    </nav>
   </div>
 </div>
 
@@ -24,19 +27,20 @@
 <div class="row">
   <div class="col-md-12">
     <div class="form-inline">
-      <div class="form-group">
+      <div class="form-group ">
         <label for="latitude">Latitude</label>
-        <input id="latitude" class="form-control" type="text"/>
+        <input id="latitude" class="form-control" readonly type="text"/>
       </div>
       <div class="form-group">
         <label for="longitude">Longitude</label>
-        <input id="longitude" class="form-control" type="text"/>
+        <input id="longitude" class="form-control disabled" readonly type="text"/>
       </div>
     </div>
     <div>
       <div class="form-group">
         <label for="description">Description</label>
-        <textarea class="form-control" id="description" rows="5" cols="80"></textarea>
+        <textarea class="form-control" placeholder="Optional description" id="description" rows="5"
+                  cols="80"></textarea>
 
       </div>
       <div class="form-group">
@@ -63,11 +67,11 @@
       </div>
       <div class="form-group">
         <label for="facebookUri">Facebook</label>
-        <input id="facebookUri" class="form-control" type="text"/>
+        <input id="facebookUri" placeholder="For example /chicagofoodtruckfinder" class="form-control" type="text"/>
       </div>
       <div class="form-group">
         <label for="email">Email</label>
-        <input id="email" class="form-control" type="text"/>
+        <input id="email" class="form-control" type="email"/>
       </div>
       <div class="form-group">
         <label for="phone" class="control-label">Phone</label>
@@ -76,8 +80,13 @@
       <div class="checkbox">
         <label><input id="hasBooze" type="checkbox">&nbsp;Serves Alcohol?</label>
       </div>
-      <div class="btn-group>">
-        <button id="submitButton" class="btn btn-primary">Continue</button>
+      <div class="btn-toolbar">
+        <div class="btn-group">
+          <a href="/vendor" class="btn btn-default">Cancel</a>
+        </div>
+        <div class="btn-group">
+          <button id="submitButton" class="btn btn-primary">Continue</button>
+        </div>
       </div>
     </div>
   </div>

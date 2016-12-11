@@ -97,6 +97,7 @@ function locationEdit(loc, vendor, saveCallback) {
       if (!addr.match(/,/)) {
         addr = addr + ", Chicago, IL";
       }
+      $("#markerMessage").removeClass("hidden");
       var $searchLocations = $("#searchLocations");
       $searchLocations.empty();
       geocoder.geocode({ 'address': addr }, function(results, status) {

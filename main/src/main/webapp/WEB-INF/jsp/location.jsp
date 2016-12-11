@@ -18,9 +18,22 @@
     <c:if test="${!empty(location.description)}">
       <p class="lead">${location.description}</p>
     </c:if>
-    <c:if test="${!empty(location.url)}">
-      <div class="lead"><a href='${location.url}'>${location.url}</a></div>
-    </c:if>
+
+    <ul class="list-unstyled">
+      <c:if test="${!empty(location.url)}">
+        <li class="lead"><a href='${location.url}'>${location.url}</a></li>
+      </c:if>
+      <c:if test="${!empty(location.email)}">
+        <li><span class="glyphicon glyphicon-envelope"></span>&nbsp;
+          <a target="_blank"
+             href="mailto:${location.email}">${location.email}</a></li>
+      </c:if>
+      <c:if test="${!empty(location.phoneNumber)}">
+        <li><span class="glyphicon glyphicon-earphone"></span>&nbsp;
+            ${location.phoneNumber}</li>
+      </c:if>
+
+    </ul>
 
     <div>
       <c:if test="${!empty(location.facebookUri)}"><a target="_blank" href="http://facebook.com${location.facebookUri}"><img

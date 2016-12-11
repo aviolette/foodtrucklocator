@@ -35,6 +35,7 @@ import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.server.resources.json.LocationReader;
 import foodtruck.server.resources.json.LocationWriter;
 import foodtruck.time.HtmlDateFormatter;
+import foodtruck.util.FormDataMassager;
 
 /**
  * @author aviolette
@@ -119,23 +120,28 @@ public class VendorLocationEditServlet extends VendorServletSupport {
   protected void dispatchPut(HttpServletRequest req, HttpServletResponse resp, Truck truck) throws IOException {
     final String json = new String(ByteStreams.toByteArray(req.getInputStream()));
     try {
+      // TODO: add attribute to location so that we know who created it.
+      // TODO: use FormDataMassager in VendorSettingsServlet
       JSONObject jsonPayload = new JSONObject(json);
       Location location = reader.toLocation(jsonPayload);
       Location existing = locationDAO.findById((Long) location.getKey());
       location = Location.builder(existing)
           .autocomplete(true)
           .valid(true)
-          .description(jsonPayload.optString("description"))
+          .description(FormDataMassager.escape(jsonPayload.optString("description")))
           .lat(jsonPayload.getDouble("latitude"))
           .lng(jsonPayload.getDouble("longitude"))
-          .url(jsonPayload.optString("url"))
-          .twitterHandle(jsonPayload.getString("twitterHandle"))
-          .facebookUri(jsonPayload.optString("facebook"))
-          .email(jsonPayload.optString("email"))
-          .phoneNumber(jsonPayload.optString("phone"))
+          .url(FormDataMassager.escapeUrl(jsonPayload.optString("url")))
+          .twitterHandle(FormDataMassager.escape(jsonPayload.getString("twitterHandle")))
+          .facebookUri(FormDataMassager.escape(jsonPayload.optString("facebook")))
+          .email(FormDataMassager.escape(jsonPayload.optString("email")))
+          .phoneNumber(FormDataMassager.normalizePhone(jsonPayload.optString("phone")))
           .hasBooze(jsonPayload.optBoolean("hasBooze"))
           .build();
       locationDAO.save(location);
+
+      // TODO: send notification when location is created this way
+
       resp.setStatus(204);
     } catch (JSONException e) {
       throw Throwables.propagate(e);
