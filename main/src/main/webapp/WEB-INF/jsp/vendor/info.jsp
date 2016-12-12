@@ -34,7 +34,7 @@
       this device in, and do some minor instrumentation on my website, your truck will automatically show on my website
       and
       send out alerts to your customers via social media.</p>
-    <p><a href="/vendorinfo/device" class="btn btn-primary">Read More &raquo;</a></p>
+    <p><a href="/vendinfo/device" class="btn btn-primary">Read More &raquo;</a></p>
   </div>
   <div class="col-lg-3">
     <h2>Published Calendar</h2>

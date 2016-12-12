@@ -70,7 +70,7 @@
             <li><a href="http://blog.chicagofoodtruckfinder.com/">Blog</a></li>
             <li><a href="http://twitter.com/${twitterHandle}">Twitter</a></li>
             <li><a href="http://facebook.com/${facebookPage}">Facebook</a></li>
-            <li><a href="/vendorinfo">For Food Truck Owners</a></li>
+            <li><a href="/vendinfo">For Food Truck Owners</a></li>
           </ul>
         </li>
       </ul>
