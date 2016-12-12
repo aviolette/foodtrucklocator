@@ -99,7 +99,7 @@
             $tr.append("<td class='large-screen-only'>" + item.lastModified + "</td>");
             $tr.append("<td>" + (item.parked ? "PARKED" : "MOVING") + "</td>");
 
-            var $button = $("<button class='beacon-button btn' id='beacon-button-" + item.id +"'>" + (item.enabled ? "Disable" : "Enable") + "</button>");
+            var $button = $("<button data-loading-text='Working...' class='beacon-button btn' id='beacon-button-" + item.id + "'>" + (item.enabled ? "Disable" : "Enable") + "</button>");
             if (item.enabled) {
               $button.addClass("btn-danger");
             } else {
@@ -114,11 +114,13 @@
             var $self = $(e.target);
             var item = $self.attr("id").substr(14);
             var action = $self.text().toLowerCase();
+            var $btn = $self.button('loading');
             $.ajax({
               url: "/services/beacons/" + item + "/" + action,
               type: 'POST',
               contentType: 'application/json',
               complete : function() {
+                $btn.button('reset');
               },
               success: function(e) {
                 if (action == "disable") {
