@@ -10,8 +10,6 @@ import static com.google.common.truth.Truth.assertThat;
  * @since 10/30/16
  */
 public class LocationTest {
-
-
   @Test
   public void getShortenedName() {
     Location location = Location.builder()

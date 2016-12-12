@@ -7,9 +7,7 @@ import org.joda.time.DateTimeZone;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.matchers.JUnitMatchers.hasItem;
+import static com.google.common.truth.Truth.assertThat;
 
 /**
  * @author aviolette@gmail.com
@@ -24,19 +22,18 @@ public class TruckStopTest {
         new DateTime(2011, 7, 11, 12, 0, 0, 0, DateTimeZone.UTC));
   }
 
-
   @Test
   public void prependNotes() {
     stop = TruckStop.builder(stop).appendNote("hello world").build();
-    assertThat(stop.getNotes(), hasItem("hello world"));
+    assertThat(stop.getNotes()).contains("hello world");
     stop = TruckStop.builder(stop).prependNotes(ImmutableList.of("goodbye1", "goodbye2")).build();
-    assertEquals(ImmutableList.of("goodbye1", "goodbye2", "hello world"), stop.getNotes());
+    assertThat(stop.getNotes()).containsAllOf("goodbye1", "goodbye2", "hello world");
   }
 
   @Test
   public void prependNotesWithNoExistingNotes() {
     stop = TruckStop.builder(stop).prependNotes(ImmutableList.of("goodbye1", "goodbye2")).build();
-    assertEquals(ImmutableList.of("goodbye1", "goodbye2"), stop.getNotes());
+    assertThat(stop.getNotes()).containsExactly("goodbye1", "goodbye2");
   }
 
   private TruckStop createTruckStop(DateTime startTime, DateTime endTime) {
