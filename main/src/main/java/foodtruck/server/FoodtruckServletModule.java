@@ -69,9 +69,6 @@ import foodtruck.server.job.UpdateLocationStats;
 import foodtruck.server.job.UpdateTruckStats;
 import foodtruck.server.resources.DailySpecialResourceFactory;
 import foodtruck.server.vendor.DeviceInfoServlet;
-import foodtruck.server.vendor.LocationEditVendorServlet;
-import foodtruck.server.vendor.LocationStopDeleteServlet;
-import foodtruck.server.vendor.LocationVendorServlet;
 import foodtruck.server.vendor.MenuServlet;
 import foodtruck.server.vendor.PostScheduleServlet;
 import foodtruck.server.vendor.VendorBeaconDetailsServlet;
@@ -80,6 +77,7 @@ import foodtruck.server.vendor.VendorInfoServlet;
 import foodtruck.server.vendor.VendorLocationEditServlet;
 import foodtruck.server.vendor.VendorLogoutServlet;
 import foodtruck.server.vendor.VendorOffTheRoadServlet;
+import foodtruck.server.vendor.VendorPageFilter;
 import foodtruck.server.vendor.VendorRecacheServlet;
 import foodtruck.server.vendor.VendorServlet;
 import foodtruck.server.vendor.VendorSettingsServlet;
@@ -145,10 +143,7 @@ class FoodtruckServletModule extends ServletModule {
 
     // Vendor dashboard endpoints
     serve("/vendor").with(VendorServlet.class);
-    serveRegex("/vendor/locations/[\\d]*/stops/[\\w]*/delete").with(LocationStopDeleteServlet.class);
-    serveRegex("/vendor/locations/[\\d]*/stops/[\\w]*").with(LocationEditVendorServlet.class);
     serveRegex("/vendor/locations/[\\d]*/edit").with(VendorLocationEditServlet.class);
-    serve("/vendor/locations/*").with(LocationVendorServlet.class);
     serve("/vendor/recache/*").with(VendorRecacheServlet.class);
     serve("/vendor/offtheroad/*").with(VendorOffTheRoadServlet.class);
     serve("/vendor/settings/*").with(VendorSettingsServlet.class);
@@ -202,6 +197,7 @@ class FoodtruckServletModule extends ServletModule {
     }
     filterRegex("/", "/popular.*", "/businesses.*", "/booze.*", "/trucks.*", "/about.*", "/locations.*",
         "/stats/timeline", "/support.*", "/vendinfo.*").through(PublicPageFilter.class);
+    filterRegex("/vendor.*").through(VendorPageFilter.class);
     filter("/*").through(SiteScraperFilter.class);
     filter("/*").through(CommonConfigFilter.class);
   }

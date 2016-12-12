@@ -1,18 +1,15 @@
 package foodtruck.server.vendor;
 
 import java.io.IOException;
-import java.security.Principal;
 import java.util.Set;
 
-import javax.annotation.Nullable;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.appengine.api.users.UserService;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import foodtruck.dao.TruckDAO;
@@ -24,26 +21,25 @@ import foodtruck.server.GuiceHackRequestWrapper;
  * @since 11/6/16
  */
 @Singleton
-public class VendorSocialMediaSettingsServlet extends VendorServletSupport {
+public class VendorSocialMediaSettingsServlet extends HttpServlet {
   private static final String JSP = "/WEB-INF/jsp/vendor/socialMediaSettings.jsp";
+  private final TruckDAO truckDAO;
 
   @Inject
-  public VendorSocialMediaSettingsServlet(TruckDAO dao, UserService userService,
-      Provider<SessionUser> sessionUserProvider) {
-    super(dao, userService, sessionUserProvider);
+  public VendorSocialMediaSettingsServlet(TruckDAO dao) {
+    this.truckDAO = dao;
   }
 
   @Override
-  protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp,
-      @Nullable Truck truck) throws ServletException, IOException {
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     req = new GuiceHackRequestWrapper(req, JSP);
     req.getRequestDispatcher(JSP)
         .forward(req, resp);
   }
 
   @Override
-  protected void dispatchPost(HttpServletRequest req, HttpServletResponse resp, String truckId, Principal principal) throws IOException {
-    Truck truck = truckDAO.findById(truckId);
+  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    Truck truck = (Truck) req.getAttribute(VendorPageFilter.TRUCK);
     final String[] optionsArray = req.getParameterValues("options");
     Set<String> options = ImmutableSet.copyOf(optionsArray == null ? new String[0] : optionsArray);
     truck = Truck.builder(truck)

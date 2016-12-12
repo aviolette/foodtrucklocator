@@ -1,22 +1,19 @@
 package foodtruck.server.vendor;
 
 import java.io.IOException;
-import java.security.Principal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.annotation.Nullable;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.appengine.api.users.UserService;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.escape.Escaper;
 import com.google.common.html.HtmlEscapers;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import foodtruck.dao.TruckDAO;
@@ -28,18 +25,18 @@ import foodtruck.server.GuiceHackRequestWrapper;
  * @since 11/4/13
  */
 @Singleton
-public class VendorSettingsServlet extends VendorServletSupport {
+public class VendorSettingsServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(VendorSettingsServlet.class.getName());
   private static final String JSP = "/WEB-INF/jsp/vendor/vendorSettings.jsp";
+  private final TruckDAO truckDAO;
 
   @Inject
-  protected VendorSettingsServlet(TruckDAO dao, UserService userService, Provider<SessionUser> sessionUserProvider) {
-    super(dao, userService, sessionUserProvider);
+  public VendorSettingsServlet(TruckDAO truckDAO) {
+    this.truckDAO = truckDAO;
   }
 
   @Override
-  protected void dispatchGet(HttpServletRequest req, HttpServletResponse resp,
-      @Nullable Truck truck) throws ServletException, IOException {
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     req = new GuiceHackRequestWrapper(req, JSP);
     req.setAttribute("tab", "profile");
     req.getRequestDispatcher(JSP)
@@ -47,8 +44,8 @@ public class VendorSettingsServlet extends VendorServletSupport {
   }
 
   @Override
-  protected void dispatchPost(HttpServletRequest req, HttpServletResponse resp, String truckId, Principal principal) throws IOException {
-    Truck truck = truckDAO.findById(truckId);
+  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    Truck truck = (Truck) req.getAttribute(VendorPageFilter.TRUCK);
     Escaper escaper = HtmlEscapers.htmlEscaper();
     String name = req.getParameter("name"),
         url = req.getParameter("url"),

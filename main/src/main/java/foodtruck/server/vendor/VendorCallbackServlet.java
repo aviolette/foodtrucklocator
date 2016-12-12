@@ -14,14 +14,14 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
-import foodtruck.session.Session;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TwitterNotificationAccountDAO;
+import foodtruck.mail.SystemNotificationService;
 import foodtruck.model.LoginMethod;
 import foodtruck.model.Truck;
 import foodtruck.model.TwitterNotificationAccount;
-import foodtruck.mail.SystemNotificationService;
 import foodtruck.server.security.SimplePrincipal;
+import foodtruck.session.Session;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.auth.AccessToken;

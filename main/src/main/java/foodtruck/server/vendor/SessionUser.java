@@ -12,11 +12,10 @@ import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 
-import foodtruck.session.Session;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
-import foodtruck.model.Location;
 import foodtruck.model.Truck;
+import foodtruck.session.Session;
 
 /**
  * @author aviolette
@@ -50,7 +49,7 @@ public class SessionUser {
     return principal == null ? "NOT LOGGED IN" : principal.getName();
   }
 
-  public boolean isLoggedIn() {
+  boolean isLoggedIn() {
     return getPrincipal() != null;
   }
 
@@ -59,7 +58,7 @@ public class SessionUser {
     return principalSupplier.get();
   }
 
-  public Set<Truck> associatedTrucks() {
+  Set<Truck> associatedTrucks() {
     Principal principal = getPrincipal();
     if (principal != null) {
       if (isIdentifiedByEmail()) {
@@ -72,20 +71,12 @@ public class SessionUser {
     return ImmutableSet.of();
   }
 
-  public boolean isIdentifiedByEmail() {
+  boolean isIdentifiedByEmail() {
     return getPrincipal().getName()
         .contains("@");
   }
 
-  Set<Location> associatedLocations() {
-    if (isIdentifiedByEmail()) {
-      return ImmutableSet.copyOf(locationDAO.findByManagerEmail(getPrincipal().getName()));
-    } else {
-      return ImmutableSet.copyOf(locationDAO.findByTwitterId(getPrincipal().getName()));
-    }
-  }
-
-  public void invalidate() {
+  void invalidate() {
     session.invalidate();
   }
 }
