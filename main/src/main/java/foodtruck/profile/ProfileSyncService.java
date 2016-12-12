@@ -16,7 +16,14 @@ public interface ProfileSyncService {
    */
   Truck createFromTwitter(Truck truck);
 
+  /**
+   * Syncs the truck's data form twitter and facebook into a unified profile.  This includes images, descriptions, etc.
+   * @param truckId the truck ID
+   */
   void syncProfile(String truckId);
 
+  /**
+   * Syncs all the trucks' data from twitter and facebook to the truck profiles in the database.
+   */
   void syncAllProfiles();
 }
