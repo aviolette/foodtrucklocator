@@ -80,8 +80,6 @@
 <%@ include file="include/core_js.jsp" %>
 <script type="text/javascript"
         src="//maps.google.com/maps/api/js?key=${googleApiKey}&libraries=geometry"></script>
-<%@include file="include/graph_libraries.jsp" %>
-
 <script type="text/javascript">
   (function() {
     $(document).ready(function () {

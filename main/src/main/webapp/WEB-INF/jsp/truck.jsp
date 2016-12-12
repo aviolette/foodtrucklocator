@@ -183,24 +183,7 @@
   </c:if>
 </div>
 <%@include file="include/core_js.jsp" %>
-<%@include file="include/graph_libraries.jsp" %>
 <script>
-  <c:if test="${enableGraphs}">
-  (function () {
-    var loopId;
-
-    function resize() {
-      $("#chart").empty();
-      drawGraphs(["count.${truck.id}"], "chart");
-    }
-
-    $(window).resize(function () {
-      clearTimeout(loopId);
-      loopId = setTimeout(resize, 500);
-    });
-    resize();
-  })();
-  </c:if>
   <c:if test="${!empty(menu)}">
   (function () {
     var menuJSON = ${menu.scrubbedPayload}, $menu = $("#menu");
