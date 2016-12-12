@@ -77,8 +77,8 @@ import foodtruck.server.vendor.PostScheduleServlet;
 import foodtruck.server.vendor.VendorBeaconDetailsServlet;
 import foodtruck.server.vendor.VendorCallbackServlet;
 import foodtruck.server.vendor.VendorInfoServlet;
-import foodtruck.server.vendor.VendorLogoutServlet;
 import foodtruck.server.vendor.VendorLocationEditServlet;
+import foodtruck.server.vendor.VendorLogoutServlet;
 import foodtruck.server.vendor.VendorOffTheRoadServlet;
 import foodtruck.server.vendor.VendorRecacheServlet;
 import foodtruck.server.vendor.VendorServlet;
@@ -160,8 +160,8 @@ class FoodtruckServletModule extends ServletModule {
     serveRegex("/vendor/socialmedia/[\\S]*/unlink").with(VendorUnlinkAccountServlet.class);
     serve("/vendor/socialmedia/*").with(VendorSocialMediaSettingsServlet.class);
     serve("/vendor/schedule").with(PostScheduleServlet.class);
-    serve("/vendor/info").with(VendorInfoServlet.class);
-    serve("/vendor/info/device").with(DeviceInfoServlet.class);
+    serve("/vendorinfo").with(VendorInfoServlet.class);
+    serve("/vendorinfo/device").with(DeviceInfoServlet.class);
 
     // Alexa integration
     serve("/amazonalexa").with(AlexaServlet.class);
@@ -201,7 +201,7 @@ class FoodtruckServletModule extends ServletModule {
       filterRegex("/admin/.*", "/", "/vendor.*", "/book.*").through(SSLRedirectFilter.class);
     }
     filterRegex("/", "/popular.*", "/businesses.*", "/booze.*", "/trucks.*", "/about.*", "/locations.*",
-        "/stats/timeline", "/support.*", "/vendor/info.*").through(PublicPageFilter.class);
+        "/stats/timeline", "/support.*", "/vendorinfo.*").through(PublicPageFilter.class);
 
     filter("/*").through(SiteScraperFilter.class);
     filter("/*").through(CommonConfigFilter.class);
