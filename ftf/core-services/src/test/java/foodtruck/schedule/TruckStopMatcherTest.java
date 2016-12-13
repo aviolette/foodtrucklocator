@@ -6,60 +6,53 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-import org.easymock.EasyMockSupport;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
-import foodtruck.time.DayOfWeek;
+import foodtruck.mail.SystemNotificationService;
 import foodtruck.model.Location;
 import foodtruck.model.Story;
 import foodtruck.model.Truck;
-import foodtruck.mail.SystemNotificationService;
 import foodtruck.time.Clock;
+import foodtruck.time.DayOfWeek;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.easymock.EasyMock.expect;
 
 /**
  * @author aviolette@gmail.com
  * @since 9/23/11
  */
-public class TruckStopMatcherTest extends EasyMockSupport {
-  private AddressExtractor extractor;
-  private GeoLocator geolocator;
+@RunWith(MockitoJUnitRunner.class)
+public class TruckStopMatcherTest extends Mockito {
+  @Mock private AddressExtractor extractor;
+  @Mock private GeoLocator geolocator;
+  @Mock private Clock clock;
+  @Mock private SystemNotificationService notifier;
   private TruckStopMatcher topic;
   private Truck truck;
   private DateTime tweetTime;
-  private Clock clock;
-  private SystemNotificationService notifier;
 
   @Before
   public void before() {
-    extractor = createMock(AddressExtractor.class);
-    geolocator = createMock(GeoLocator.class);
-    clock = createMock(Clock.class);
-    notifier = createMock(SystemNotificationService.class);
     Location mapCenter = Location.builder().lat(41.8807438).lng(-87.6293867).build();
-    expect(clock.dayOfWeek()).andStubReturn(DayOfWeek.sunday);
+    when(clock.dayOfWeek()).thenReturn(DayOfWeek.sunday);
     topic = new TruckStopMatcher(extractor, geolocator, DateTimeZone.UTC, clock, notifier, mapCenter,
         new LocalTime(11, 30), ImmutableMap.<String, SpecialMatcher>of());
     truck = Truck.builder().id("foobar").build();
-    expect(clock.zone()).andStubReturn(DateTimeZone.UTC);
-    expect(clock.currentDay()).andStubReturn(new LocalDate(2011, 11, 10));
+    when(clock.zone()).thenReturn(DateTimeZone.UTC);
+    when(clock.currentDay()).thenReturn(new LocalDate(2011, 11, 10));
     tweetTime = new DateTime(2011, 11, 10, 11, 13, 7, 7, DateTimeZone.UTC);
-  }
-
-  @After
-  public void after() {
-    verifyAll();
   }
 
   @Test
@@ -76,7 +69,6 @@ public class TruckStopMatcherTest extends EasyMockSupport {
         .getStartTime()).isEqualTo(tweetTime);
     assertThat(match.getStop()
         .getEndTime()).isEqualTo(tweetTime.plusHours(2));
-
   }
 
   @Test
@@ -185,8 +177,8 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   @Test
   public void testMatch_shouldReturnNullWhenNoAddress() {
     final String tweetText = "foobar";
-    expect(extractor.parse(tweetText, truck)).andReturn(ImmutableList.<String>of());
-    replayAll();
+    when(extractor.parse(tweetText, truck)).thenReturn(ImmutableList.<String>of());
+    
     Story tweet = new Story.Builder().text(tweetText).time(tweetTime).build();
     assertThat(topic.match(truck, tweet)).isNull();
   }
@@ -489,7 +481,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .match();
     assertThat(match).isNotNull();
     assertThat(match.getStop().getLocation().getName()).isEqualTo("Michigan and Ohio");
-    verifyAll();
+    
   }
 
   @Test
@@ -504,7 +496,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     assertThat(match.getStop().getStartTime()).isEqualTo(tweetTime);
     assertThat(match.getStop().getEndTime()).isEqualTo(tweetTime.withTime(14, 0, 0, 0));
     assertThat(match.getStop().getLocation().getName()).isEqualTo("Michigan and Ohio");
-    verifyAll();
+    
   }
 
   @Test
@@ -519,7 +511,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
     assertThat(match.getStop().getStartTime()).isEqualTo(tweetTime);
     assertThat(match.getStop().getEndTime()).isEqualTo(tweetTime.withTime(14, 0, 0, 0));
     assertThat(match.getStop().getLocation().getName()).isEqualTo("Michigan and Ohio");
-    verifyAll();
+    
   }
 
 
@@ -531,7 +523,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
             .geolocatorReturns(Location.builder().lat(41.889973).lng(80.634024).name("Michigan and Ohio").build())
             .match();
     assertThat(match).isNull();
-    verifyAll();
+    
   }
 
   @Test
@@ -844,7 +836,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
   // for now, we can't handle tweets like this.
   @Test
   public void testMatch_shouldntMatchDayOfWeek2() {
-    expect(clock.dayOfWeek()).andReturn(DayOfWeek.sunday);
+    when(clock.dayOfWeek()).thenReturn(DayOfWeek.sunday);
     tweetTime = new DateTime(2011, 11, 12, 9, 0, 0, 0, DateTimeZone.UTC);
     TruckStopMatch match =
         tweet("We hope you having a great weekend, see you on Monday <<Wells & Monroe>>")
@@ -922,7 +914,7 @@ public class TruckStopMatcherTest extends EasyMockSupport {
         .noParse()
         .match();
     assertThat(match).isNull();
-    verifyAll();
+    
   }
 
   @Test
@@ -1083,11 +1075,11 @@ public class TruckStopMatcherTest extends EasyMockSupport {
 
     TruckStopMatch match() {
       if (expectParse) {
-        expect(extractor.parse(tweet, Tweeter.this.truck)).andReturn(ImmutableList.of(address));
-        expect(geolocator.locate(address, GeolocationGranularity.NARROW))
-            .andReturn(geolocatorResult);
+        when(extractor.parse(tweet, Tweeter.this.truck)).thenReturn(ImmutableList.of(address));
+        when(geolocator.locate(address, GeolocationGranularity.NARROW))
+            .thenReturn(geolocatorResult);
       }
-      replayAll();
+      
       Story tweet = new Story.Builder().text(Tweeter.this.tweet)
           .userId("foobar")
           .time(Tweeter.this.time).build();

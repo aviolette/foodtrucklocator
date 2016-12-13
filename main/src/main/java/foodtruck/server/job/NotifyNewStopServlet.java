@@ -19,11 +19,11 @@ import org.joda.time.format.DateTimeFormatter;
 import foodtruck.dao.TrackingDeviceDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
+import foodtruck.mail.EmailSender;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
-import foodtruck.mail.EmailSender;
 import foodtruck.notifications.PublicEventNotificationService;
 import foodtruck.time.FriendlyDateTimeFormat;
 

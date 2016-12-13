@@ -22,8 +22,6 @@ import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import foodtruck.dao.DailyRollupDAO;
-import foodtruck.dao.FifteenMinuteRollupDAO;
 import foodtruck.mail.SystemNotificationService;
 import foodtruck.monitoring.CounterPublisher;
 import foodtruck.time.Clock;

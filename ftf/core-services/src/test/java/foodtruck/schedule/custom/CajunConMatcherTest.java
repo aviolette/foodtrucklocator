@@ -2,12 +2,15 @@ package foodtruck.schedule.custom;
 
 import com.google.common.collect.ImmutableList;
 
-import org.easymock.EasyMockSupport;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
@@ -20,31 +23,39 @@ import foodtruck.schedule.TruckStopMatch;
 import foodtruck.schedule.custom.chicago.CajunConMatcher;
 import foodtruck.time.Clock;
 
-import static org.easymock.EasyMock.expect;
-import static org.junit.Assert.assertEquals;
+import static com.google.common.truth.Truth.assertThat;
 
 /**
  * @author aviolette
  * @since 5/11/16
  */
-public class CajunConMatcherTest extends EasyMockSupport {
-
+@RunWith(MockitoJUnitRunner.class)
+public class CajunConMatcherTest extends Mockito {
   private Truck truck;
-  private Location loc1, loc2, loc3;
-  private GeoLocator geoLocator;
+  private Location loc1;
+  private Location loc2;
+  @Mock private GeoLocator geoLocator;
   private DateTime tweetTime;
   private CajunConMatcher matcher;
 
   @Before
   public void setup() {
-    truck = Truck.builder().id("thecajuncon").build();
-    loc1 = Location.builder().name("Location 1").lat(1).lng(1).build();
-    loc3 = Location.builder().name("Location 2").lat(2).lng(2).build();
-    loc2 = Location.builder().name("Location 3").lat(1).lng(1).build();
-    geoLocator = createMock(GeoLocator.class);
+    truck = Truck.builder()
+        .id("thecajuncon")
+        .build();
+    loc1 = Location.builder()
+        .name("Location 1")
+        .lat(1)
+        .lng(1)
+        .build();
+    loc2 = Location.builder()
+        .name("Location 3")
+        .lat(1)
+        .lng(1)
+        .build();
     tweetTime = new DateTime(2016, 1, 11, 7, 30, 0, 0, DateTimeZone.UTC);
-    Clock clock = createMock(Clock.class);
-    expect(clock.now()).andStubReturn(new DateTime(1470237365629L));
+    Clock clock = mock(Clock.class);
+    when(clock.now()).thenReturn(new DateTime(1470237365629L));
     matcher = new CajunConMatcher(geoLocator, ImmutableList.<Spot>of(), DateTimeFormat.forStyle("SS"), clock);
   }
 
@@ -62,29 +73,35 @@ public class CajunConMatcherTest extends EasyMockSupport {
         .userId("")
         .build();
     TruckStopMatch.Builder builder = TruckStopMatch.builder();
-    builder.stop(TruckStop.builder().location(loc1)
+    builder.stop(TruckStop.builder()
+        .location(loc1)
         .truck(truck)
         .endTime(tweetTime.withTime(8, 30, 0, 0))
         .startTime(tweetTime.withTime(6, 0, 0, 0))
         .build());
     geolocate("1100 South Hamilton, Chicago, IL", loc2);
-    replayAll();
+
     matcher.handle(builder, story, truck);
     TruckStopMatch match = builder.build();
-    assertEquals(tweetTime.withTime(6, 0, 0, 0), match.getStop().getStartTime());
-    assertEquals(tweetTime.withTime(8, 30, 0, 0), match.getStop().getEndTime());
-    assertEquals(loc1, match.getStop().getLocation());
-    assertEquals(1, match.getAdditionalStops().size());
-    assertEquals(tweetTime.withTime(10, 30, 0, 0), match.getAdditionalStops().get(0).getStartTime());
-    assertEquals(tweetTime.withTime(13, 30, 0, 0), match.getAdditionalStops().get(0).getEndTime());
-    assertEquals(loc2, match.getAdditionalStops().get(0).getLocation());
-
-    verifyAll();
+    assertThat(match.getStop()
+        .getStartTime()).isEqualTo(tweetTime.withTime(6, 0, 0, 0));
+    assertThat(match.getStop()
+        .getEndTime()).isEqualTo(tweetTime.withTime(8, 30, 0, 0));
+    assertThat(match.getStop()
+        .getLocation()).isEqualTo(loc1);
+    assertThat(match.getAdditionalStops()).hasSize(1);
+    assertThat(match.getAdditionalStops()
+        .get(0)
+        .getStartTime()).isEqualTo(tweetTime.withTime(10, 30, 0, 0));
+    assertThat(match.getAdditionalStops()
+        .get(0)
+        .getEndTime()).isEqualTo(tweetTime.withTime(13, 30, 0, 0));
+    assertThat(match.getAdditionalStops()
+        .get(0)
+        .getLocation()).isEqualTo(loc2);
   }
 
-
   private void geolocate(String address, Location location) {
-    expect(geoLocator.locate(address, GeolocationGranularity.NARROW))
-        .andReturn(location);
+    when(geoLocator.locate(address, GeolocationGranularity.NARROW)).thenReturn(location);
   }
 }
