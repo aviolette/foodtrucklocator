@@ -2,7 +2,7 @@ package foodtruck.util;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static com.google.common.truth.Truth.assertThat;
 
 /**
  * @author aviolette
@@ -12,21 +12,21 @@ public class MoreStringsTest {
 
   @Test
   public void testCapitalize() throws Exception {
-    assertEquals("Foo Bar Days", MoreStrings.capitalize("foo bar days"));
+    assertThat(MoreStrings.capitalize("foo bar days")).isEqualTo("Foo Bar Days");
   }
 
   @Test
   public void testCapitalize1() throws Exception {
-    assertEquals("Foo", MoreStrings.capitalize("foo"));
+    assertThat(MoreStrings.capitalize("foo")).isEqualTo("Foo");
   }
 
   @Test
   public void testCapitalize2() throws Exception {
-    assertEquals("", MoreStrings.capitalize(""));
+    assertThat(MoreStrings.capitalize("")).isEqualTo("");
   }
 
   @Test
   public void testCapitalize3() throws Exception {
-    assertEquals("Foo   Bar Days", MoreStrings.capitalize("foo   bar days"));
+    assertThat(MoreStrings.capitalize("foo   bar days")).isEqualTo("Foo   Bar Days");
   }
 }

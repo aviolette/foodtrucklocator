@@ -38,5 +38,4 @@ public class ScheduleMessageTest {
     ScheduleMessage message = new ScheduleMessage(scheduleMessage);
     assertThat(message.getTwitterMessages()).containsExactly(message.getFullSchedule());
   }
-
 }
