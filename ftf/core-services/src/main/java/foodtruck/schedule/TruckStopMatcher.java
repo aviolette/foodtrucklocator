@@ -444,6 +444,9 @@ public class TruckStopMatcher {
       }
       int hour = Integer.parseInt(tmpTime.substring(0, 2).trim());
       int min = Integer.parseInt(tmpTime.substring(2, 4).trim());
+      if (hour > 23 || min > 59)  {
+        return null;
+      }
       if (after.isAfter(date.toDateTime(new LocalTime(hour, min), clock.zone()))) {
         suffix = "pm";
       } else if (hour == 12) {

@@ -72,6 +72,21 @@ public class TruckStopMatcherTest extends Mockito {
   }
 
   @Test
+  public void testMatch_truncatedTime() {
+    tweetTime = tweetTime.withTime(7, 0, 0, 0);
+    TruckStopMatch match =
+        tweet("Good\n" +
+            "    morning friends, Warm up with a fresh bag of kettle corn. 52nd St. between\n" +
+            "    Lexington Ave and 3rd Ave until 3:3… https://t.co/xQZHLTV8RO")
+            .withTime(tweetTime)
+            .match();
+    assertThat(match).isNotNull();
+    assertThat(match.getStop().getStartTime()).isEqualTo(tweetTime.withTime(11, 30, 0, 0));
+    assertThat(match.getStop().getEndTime()).isEqualTo(tweetTime.withTime(13, 30, 0, 0));
+
+  }
+
+  @Test
   public void testMatch_whenHardEndWithSoftStart() {
     truck = Truck.builder().id("foobar").name("FOO").twitterHandle("bar")
         .categories(ImmutableSet.of("Breakfast", "Lunch")).build();
