@@ -22,6 +22,8 @@ import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
 import foodtruck.schedule.JavascriptAddressExtractor;
 
+import static foodtruck.server.resources.Resources.requiresAdmin;
+
 /**
  * @author aviolette@gmail.com
  * @since 8/20/12
@@ -44,11 +46,13 @@ public class AddressRuleScriptResource {
 
   @GET
   public AddressRuleScript findSingleton() {
+    requiresAdmin();
     return addressRuleDAO.find();
   }
 
   @POST @Consumes(MediaType.APPLICATION_JSON)
   public void update(AddressRuleScript script) {
+    requiresAdmin();
     Truck truck = this.truckDAO.findFirst();
     // attempt to execute the script on a small sentence and see if there are any issues before saving it
     try {
