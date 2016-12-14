@@ -33,11 +33,12 @@ import com.google.inject.Provider;
 
 import org.joda.time.DateTime;
 
-import foodtruck.session.Session;
+import foodtruck.annotations.RequiresAppKeyWithCountRestriction;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TruckStopWithCounts;
 import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.server.security.SecurityChecker;
+import foodtruck.session.Session;
 import foodtruck.time.Clock;
 
 
@@ -55,55 +56,57 @@ public class TruckStopResource {
   private final SecurityChecker checker;
   private final Provider<UserService> userServiceProvider;
   private final Provider<Session> sessionProvider;
-  private final AuthorizationChecker authorizationChecker;
 
   @Inject
   public TruckStopResource(FoodTruckStopService service, Clock clock, SecurityChecker checker,
-      Provider<UserService> userServiceProvider, Provider<Session> sessionProvider, AuthorizationChecker authChecker) {
+      Provider<UserService> userServiceProvider, Provider<Session> sessionProvider) {
     this.foodTruckService = service;
     this.clock = clock;
     this.checker = checker;
     this.userServiceProvider = userServiceProvider;
     this.sessionProvider = sessionProvider;
-    this.authorizationChecker = authChecker;
   }
 
   @DELETE
   @Path("{stopId: \\d+}")
-  public void delete(@PathParam("stopId") final long stopId)
-      throws ServletException, IOException {
+  public void delete(@PathParam("stopId") final long stopId) throws ServletException, IOException {
     if (!checker.isAdmin()) {
       TruckStop stop = foodTruckService.findById(stopId);
       if (stop == null) {
         return;
       }
-      checker.requiresLoggedInAs(stop.getTruck().getId());
+      checker.requiresLoggedInAs(stop.getTruck()
+          .getId());
     }
     foodTruckService.delete(stopId);
   }
 
   @PUT
-  public void save(TruckStop truckStop)
-      throws ServletException, IOException {
-    checker.requiresLoggedInAs(truckStop.getTruck().getId());
+  public void save(TruckStop truckStop) throws ServletException, IOException {
+    checker.requiresLoggedInAs(truckStop.getTruck()
+        .getId());
     log.log(Level.INFO, "Saving stop: {0}", truckStop);
-    CapabilitiesService service =
-        CapabilitiesServiceFactory.getCapabilitiesService();
-    CapabilityStatus status = service.getStatus(Capability.DATASTORE_WRITE).getStatus();
+    CapabilitiesService service = CapabilitiesServiceFactory.getCapabilitiesService();
+    CapabilityStatus status = service.getStatus(Capability.DATASTORE_WRITE)
+        .getStatus();
     log.log(Level.INFO, "Data store: {0}", status);
     UserService userService = userServiceProvider.get();
-    Principal principal = (Principal) sessionProvider.get().getProperty("principal");
-    String whom = (principal != null) ? principal.getName() : userService.getCurrentUser().getEmail();
+    Principal principal = (Principal) sessionProvider.get()
+        .getProperty("principal");
+    String whom = (principal != null) ? principal.getName() : userService.getCurrentUser()
+        .getEmail();
     foodTruckService.update(truckStop, whom);
   }
 
   @GET
+  @RequiresAppKeyWithCountRestriction
   public List<TruckStopWithCounts> getStops(@QueryParam("truck") String truckId, @Context DateTime startTime,
       @QueryParam("includeCounts") boolean includeCounts) {
     if (Strings.isNullOrEmpty(truckId)) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
-    startTime = (startTime == null) ? clock.currentDay().toDateTimeAtStartOfDay() : startTime;
+    startTime = (startTime == null) ? clock.currentDay()
+        .toDateTimeAtStartOfDay() : startTime;
     if (includeCounts) {
       return foodTruckService.findStopsForTruckAfter(truckId, startTime);
     } else {
@@ -117,11 +120,13 @@ public class TruckStopResource {
     }
   }
 
-  @GET @Path("{truckId}")
+  @GET
+  @Path("{truckId}")
+  @RequiresAppKeyWithCountRestriction
   public List<TruckStopWithCounts> getStop(@PathParam("truckId") String truckId, @QueryParam("appKey") String appKey,
       @Context DateTime startTime, @QueryParam("includeCounts") boolean includeStops) {
-    authorizationChecker.requireAppKey(appKey);
-    startTime = (startTime == null) ? clock.currentDay().toDateTimeAtStartOfDay() : startTime;
+    startTime = (startTime == null) ? clock.currentDay()
+        .toDateTimeAtStartOfDay() : startTime;
     if (includeStops) {
       return foodTruckService.findStopsForTruckAfter(truckId, startTime);
     } else {

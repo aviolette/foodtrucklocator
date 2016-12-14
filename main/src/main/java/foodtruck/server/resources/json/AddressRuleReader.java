@@ -24,17 +24,18 @@ import static foodtruck.server.resources.json.JSONSerializer.readJSON;
  * @author aviolette@gmail.com
  * @since 8/20/12
  */
-@Provider @Consumes(MediaType.APPLICATION_JSON)
+@Provider
+@Consumes(MediaType.APPLICATION_JSON)
 public class AddressRuleReader implements MessageBodyReader<AddressRuleScript> {
-  @Override public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations,
-      MediaType mediaType) {
+  @Override
+  public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
     return type.equals(AddressRuleScript.class);
   }
 
   @Override
   public AddressRuleScript readFrom(Class<AddressRuleScript> type, Type genericType, Annotation[] annotations,
-      MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
-      throws IOException, WebApplicationException {
+      MediaType mediaType, MultivaluedMap<String, String> httpHeaders,
+      InputStream entityStream) throws IOException, WebApplicationException {
     try {
       JSONObject json = readJSON(entityStream);
       return AddressRuleScript.builder()

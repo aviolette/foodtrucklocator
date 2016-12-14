@@ -12,7 +12,8 @@ import foodtruck.model.StatVector;
  * @author aviolette@gmail.com
  * @since 7/6/12
  */
-@Provider @Produces(MediaType.APPLICATION_JSON)
+@Provider
+@Produces(MediaType.APPLICATION_JSON)
 public class StatVectorCollectionWriter extends CollectionWriter<StatVector, StatVectorWriter> {
   /**
    * Constructs the collection writer

@@ -40,7 +40,8 @@ import foodtruck.time.TimeOnlyFormatter;
  * @author aviolette
  * @since 1/28/13
  */
-@Provider @Produces(MediaType.APPLICATION_JSON)
+@Provider
+@Produces(MediaType.APPLICATION_JSON)
 public class DailyScheduleWriter implements MessageBodyWriter<DailySchedule>, JSONWriter<DailySchedule> {
   private static final Logger log = Logger.getLogger(DailyScheduleWriter.class.getName());
   private final LocationWriter locationWriter;
@@ -50,7 +51,7 @@ public class DailyScheduleWriter implements MessageBodyWriter<DailySchedule>, JS
   private final DailyDataWriter dailyDataWriter;
 
   @Inject
-  public DailyScheduleWriter(LocationWriter locationWriter,@TimeOnlyFormatter DateTimeFormatter formatter,
+  public DailyScheduleWriter(LocationWriter locationWriter, @TimeOnlyFormatter DateTimeFormatter formatter,
       TruckWriter truckWriter, @DateOnlyFormatter DateTimeFormatter dateOnlyFormatter,
       DailyDataWriter dailyDataWriter) {
     this.locationWriter = locationWriter;
@@ -60,14 +61,15 @@ public class DailyScheduleWriter implements MessageBodyWriter<DailySchedule>, JS
     this.dailyDataWriter = dailyDataWriter;
   }
 
-  @Override public JSONObject asJSON(DailySchedule schedule) throws JSONException {
+  @Override
+  public JSONObject asJSON(DailySchedule schedule) throws JSONException {
     JSONObject payload = new JSONObject();
-    Iterable<Truck> trucks =
-        Iterables.transform(schedule.getStops(), new Function<TruckStop, Truck>() {
-          @Override public Truck apply(TruckStop input) {
-            return input.getTruck();
-          }
-        });
+    Iterable<Truck> trucks = Iterables.transform(schedule.getStops(), new Function<TruckStop, Truck>() {
+      @Override
+      public Truck apply(TruckStop input) {
+        return input.getTruck();
+      }
+    });
     Map<Location, Integer> locations = Maps.newHashMap();
     JSONArray locationArr = new JSONArray();
     int i = 1;
@@ -80,14 +82,18 @@ public class DailyScheduleWriter implements MessageBodyWriter<DailySchedule>, JS
     JSONArray schedules = new JSONArray();
     for (TruckStop stop : schedule.getStops()) {
       try {
-        JSONObject truckStop = new JSONObject()
-            .put("key", stop.getKey().toString())
+        JSONObject truckStop = new JSONObject().put("key", stop.getKey()
+            .toString())
             .put("location", locations.get(stop.getLocation()))
             .put("fromBeacon", stop.isFromBeacon())
-            .put("truckId", stop.getTruck().getId()).put("confidence", "MEDIUM")
+            .put("truckId", stop.getTruck()
+                .getId())
+            .put("confidence", "MEDIUM")
             .put("startTime", formatter.print(stop.getStartTime()))
-            .put("startMillis", stop.getStartTime().getMillis())
-            .put("endMillis", stop.getEndTime().getMillis())
+            .put("startMillis", stop.getStartTime()
+                .getMillis())
+            .put("endMillis", stop.getEndTime()
+                .getMillis())
             .put("me", stop.getManuallyUpdated() != null)
             .put("endTime", formatter.print(stop.getEndTime()));
         schedules.put(truckStop);
@@ -109,24 +115,27 @@ public class DailyScheduleWriter implements MessageBodyWriter<DailySchedule>, JS
   }
 
   private JSONObject writeMessage(Message message) throws JSONException {
-    return new JSONObject()
-        .put("startTime", message.getStartTime().getMillis())
+    return new JSONObject().put("startTime", message.getStartTime()
+        .getMillis())
         .put("message", message.getMessage())
         .put("id", message.getKey());
   }
 
-  @Override public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+  @Override
+  public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
     return type.equals(DailySchedule.class);
   }
 
-  @Override public long getSize(DailySchedule dailySchedule, Class<?> type, Type genericType, Annotation[] annotations,
+  @Override
+  public long getSize(DailySchedule dailySchedule, Class<?> type, Type genericType, Annotation[] annotations,
       MediaType mediaType) {
     return -1;
   }
 
-  @Override public void writeTo(DailySchedule dailySchedule, Class<?> type, Type genericType, Annotation[] annotations,
-      MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
-      throws IOException, WebApplicationException {
+  @Override
+  public void writeTo(DailySchedule dailySchedule, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
+      OutputStream entityStream) throws IOException, WebApplicationException {
     try {
       JSONSerializer.writeJSON(asJSON(dailySchedule), entityStream);
     } catch (JSONException e) {

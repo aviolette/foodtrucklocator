@@ -33,18 +33,21 @@ public class TruckObserverWriter implements MessageBodyWriter<TruckObserver>, JS
     this.locationWriter = locationWriter;
   }
 
-  @Override public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+  @Override
+  public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
     return type.equals(TruckObserver.class);
   }
 
-  @Override public long getSize(TruckObserver truckObserver, Class<?> type, Type genericType, Annotation[] annotations,
+  @Override
+  public long getSize(TruckObserver truckObserver, Class<?> type, Type genericType, Annotation[] annotations,
       MediaType mediaType) {
     return -1;
   }
 
-  @Override public void writeTo(TruckObserver truckObserver, Class<?> type, Type genericType, Annotation[] annotations,
-      MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
-      throws IOException, WebApplicationException {
+  @Override
+  public void writeTo(TruckObserver truckObserver, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
+      OutputStream entityStream) throws IOException, WebApplicationException {
     try {
       JSONSerializer.writeJSON(asJSON(truckObserver), entityStream);
     } catch (JSONException e) {
@@ -53,9 +56,9 @@ public class TruckObserverWriter implements MessageBodyWriter<TruckObserver>, JS
   }
 
   public JSONObject asJSON(TruckObserver truckObserver) throws JSONException {
-    return new JSONObject()
-        .put("twitterHandle", truckObserver.getTwitterHandle())
-        .put("keywords", Joiner.on(",").join(truckObserver.getKeywords()))
+    return new JSONObject().put("twitterHandle", truckObserver.getTwitterHandle())
+        .put("keywords", Joiner.on(",")
+            .join(truckObserver.getKeywords()))
         .put("location", locationWriter.asJSON(truckObserver.getLocation()));
   }
 }

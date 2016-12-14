@@ -31,7 +31,8 @@ import foodtruck.time.TimeOnlyFormatter;
  * @author aviolette@gmail.com
  * @since 10/15/12
  */
-@Provider @Produces(MediaType.APPLICATION_JSON)
+@Provider
+@Produces(MediaType.APPLICATION_JSON)
 public class TruckScheduleWriter implements MessageBodyWriter<TruckSchedule> {
   private final LocationWriter locationWriter;
   private final TruckWriter truckWriter;
@@ -47,18 +48,20 @@ public class TruckScheduleWriter implements MessageBodyWriter<TruckSchedule> {
     this.htmlDateFormatter = htmlDateFormatter;
   }
 
-  @Override public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations,
-      MediaType mediaType) {
+  @Override
+  public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
     return type.equals(TruckSchedule.class);
   }
 
-  @Override public long getSize(TruckSchedule truckSchedule, Class<?> type, Type genericType,
-      Annotation[] annotations, MediaType mediaType) {
+  @Override
+  public long getSize(TruckSchedule truckSchedule, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType) {
     return -1;
   }
 
-  @Override public void writeTo(TruckSchedule truckSchedule, Class<?> type, Type genericType,
-      Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
+  @Override
+  public void writeTo(TruckSchedule truckSchedule, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
       OutputStream entityStream) throws IOException, WebApplicationException {
     try {
       JSONSerializer.writeJSON(asJSON(truckSchedule), entityStream);
@@ -68,20 +71,22 @@ public class TruckScheduleWriter implements MessageBodyWriter<TruckSchedule> {
   }
 
   public JSONObject asJSON(TruckSchedule schedule) throws JSONException {
-    JSONObject obj = new JSONObject()
-        .put("truck", truckWriter.asJSON(schedule.getTruck()))
-        .put("day", schedule.getDate().toString());
+    JSONObject obj = new JSONObject().put("truck", truckWriter.asJSON(schedule.getTruck()))
+        .put("day", schedule.getDate()
+            .toString());
     JSONArray arr = new JSONArray();
     for (TruckStop stop : schedule.getStops()) {
       Period p = new Period(stop.getStartTime(), stop.getEndTime());
-      JSONObject truckStop = new JSONObject()
-          .put("location", locationWriter.writeLocation(stop.getLocation(), 0, false))
+      JSONObject truckStop = new JSONObject().put("location",
+          locationWriter.writeLocation(stop.getLocation(), 0, false))
           .put("id", stop.getKey())
           .put("locked", stop.isLocked())
           .put("fromBeacon", stop.isFromBeacon())
           .put("origin", stop.getOrigin())
-          .put("startTimeMillis", stop.getStartTime().getMillis())
-          .put("endTimeMillis", stop.getEndTime().getMillis())
+          .put("startTimeMillis", stop.getStartTime()
+              .getMillis())
+          .put("endTimeMillis", stop.getEndTime()
+              .getMillis())
           .put("duration", period(p))
           .put("durationMillis", new Duration(stop.getStartTime(), stop.getEndTime()).getMillis())
           .put("startTimeH", htmlDateFormatter.print(stop.getStartTime()))

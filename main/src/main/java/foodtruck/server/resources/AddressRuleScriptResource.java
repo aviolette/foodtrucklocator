@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 
+import foodtruck.annotations.RequiresAdmin;
 import foodtruck.dao.AddressRuleScriptDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.AddressRuleScript;
@@ -22,13 +23,12 @@ import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
 import foodtruck.schedule.JavascriptAddressExtractor;
 
-import static foodtruck.server.resources.Resources.requiresAdmin;
-
 /**
  * @author aviolette@gmail.com
  * @since 8/20/12
  */
-@Produces(MediaType.APPLICATION_JSON) @Path("/addressRules")
+@Produces(MediaType.APPLICATION_JSON)
+@Path("/addressRules")
 public class AddressRuleScriptResource {
   private final AddressRuleScriptDAO addressRuleDAO;
   private final JavascriptAddressExtractor extractor;
@@ -45,14 +45,15 @@ public class AddressRuleScriptResource {
   }
 
   @GET
+  @RequiresAdmin
   public AddressRuleScript findSingleton() {
-    requiresAdmin();
     return addressRuleDAO.find();
   }
 
-  @POST @Consumes(MediaType.APPLICATION_JSON)
+  @POST
+  @Consumes(MediaType.APPLICATION_JSON)
+  @RequiresAdmin
   public void update(AddressRuleScript script) {
-    requiresAdmin();
     Truck truck = this.truckDAO.findFirst();
     // attempt to execute the script on a small sentence and see if there are any issues before saving it
     try {
@@ -62,8 +63,10 @@ public class AddressRuleScriptResource {
       Preconditions.checkState(firstLine.contains(config.getCity()),
           "First line of script must contain correct city name");
     } catch (Exception e) {
-      throw new WebApplicationException(Response.status(400).entity(e.getMessage())
-          .type(MediaType.TEXT_PLAIN_TYPE).build());
+      throw new WebApplicationException(Response.status(400)
+          .entity(e.getMessage())
+          .type(MediaType.TEXT_PLAIN_TYPE)
+          .build());
     }
     addressRuleDAO.save(script);
   }

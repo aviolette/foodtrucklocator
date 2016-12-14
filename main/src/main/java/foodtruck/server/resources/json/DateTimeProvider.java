@@ -27,8 +27,7 @@ import foodtruck.time.TimeFormatter;
  * @since 4/18/12
  */
 @Provider
-public class DateTimeProvider extends AbstractHttpContextInjectable<DateTime>
-    implements InjectableProvider<Context, Type> {
+public class DateTimeProvider extends AbstractHttpContextInjectable<DateTime> implements InjectableProvider<Context, Type> {
   private DateTimeFormatter timeFormatter;
 
   @Inject
@@ -36,8 +35,11 @@ public class DateTimeProvider extends AbstractHttpContextInjectable<DateTime>
     this.timeFormatter = formatter;
   }
 
-  @Override public @Nullable DateTime getValue(HttpContext httpContext) {
-    MultivaluedMap<String, String> params = httpContext.getRequest().getQueryParameters();
+  @Override
+  @Nullable
+  public DateTime getValue(HttpContext httpContext) {
+    MultivaluedMap<String, String> params = httpContext.getRequest()
+        .getQueryParameters();
     final String timeRequest = params.getFirst("time");
     if (!Strings.isNullOrEmpty(timeRequest)) {
       try {
@@ -48,12 +50,13 @@ public class DateTimeProvider extends AbstractHttpContextInjectable<DateTime>
     return null;
   }
 
-  @Override public ComponentScope getScope() {
+  @Override
+  public ComponentScope getScope() {
     return ComponentScope.PerRequest;
   }
 
-  @Override public Injectable getInjectable(ComponentContext componentContext, Context context,
-      Type type) {
+  @Override
+  public Injectable getInjectable(ComponentContext componentContext, Context context, Type type) {
     return type.equals(DateTime.class) ? this : null;
   }
 }

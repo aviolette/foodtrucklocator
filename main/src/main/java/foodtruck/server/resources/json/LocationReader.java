@@ -38,13 +38,18 @@ public class LocationReader {
         .phoneNumber(obj.optString("phone"))
         .email(obj.optString("email"))
         .imageUrl(imageUrl)
-        .managerEmails(ImmutableSet.copyOf(Splitter.on(",").trimResults().omitEmptyStrings().split(obj.optString("managerEmails"))))
+        .managerEmails(ImmutableSet.copyOf(Splitter.on(",")
+            .trimResults()
+            .omitEmptyStrings()
+            .split(obj.optString("managerEmails"))))
         .facebookUri(obj.optString("facebookUri"))
         .radiateTo(obj.optInt("radiateTo", 0))
-        .name(obj.getString("name")).key((key > 0) ? key : null)
+        .name(obj.getString("name"))
+        .key((key > 0) ? key : null)
         .url(obj.optString("url"))
         .ownedBy(Strings.emptyToNull(obj.optString("ownedBy")))
         .description(obj.optString("description"))
-        .valid(obj.optBoolean("valid", true)).build();
+        .valid(obj.optBoolean("valid", true))
+        .build();
   }
 }

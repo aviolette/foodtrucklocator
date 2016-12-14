@@ -30,22 +30,22 @@ import foodtruck.server.resources.json.JSONSerializer;
 @Produces("text/csv")
 public class TruckCSVCollectionWriter implements MessageBodyWriter<Iterable<Truck>> {
 
-  private static final String[] HEADER =
-      new String[] {"NAME", "TWITTER HANDLE", "FACEBOOK URI", "FOURSQUARE ID", "WEBSITE URL",
-          "PHONE", "EMAIL"};
+  private static final String[] HEADER = new String[]{"NAME", "TWITTER HANDLE", "FACEBOOK URI", "FOURSQUARE ID", "WEBSITE URL", "PHONE", "EMAIL"};
 
-  @Override public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations,
-      MediaType mediaType) {
+  @Override
+  public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
     return JSONSerializer.isParameterizedCollectionOf(genericType, type, Truck.class);
   }
 
-  @Override public long getSize(Iterable<Truck> truckIterable, Class<?> type, Type genericType,
-      Annotation[] annotations, MediaType mediaType) {
+  @Override
+  public long getSize(Iterable<Truck> truckIterable, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType) {
     return -1;
   }
 
-  @Override public void writeTo(Iterable<Truck> truckIterable, Class<?> type, Type genericType,
-      Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
+  @Override
+  public void writeTo(Iterable<Truck> truckIterable, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
       OutputStream entityStream) throws IOException, WebApplicationException {
 
     final StringWriter stringWriter = new StringWriter();
@@ -55,7 +55,9 @@ public class TruckCSVCollectionWriter implements MessageBodyWriter<Iterable<Truc
       writer.writeNext(truckEntries(truck));
     }
     writer.close();
-    entityStream.write(stringWriter.getBuffer().toString().getBytes("UTF-8"));
+    entityStream.write(stringWriter.getBuffer()
+        .toString()
+        .getBytes("UTF-8"));
   }
 
   private String[] truckEntries(Truck truck) {
@@ -78,7 +80,9 @@ public class TruckCSVCollectionWriter implements MessageBodyWriter<Iterable<Truc
     return "http://www.foursquare.com/v/" + foursquareUrl;
   }
 
-  private @Nullable String completeFacebook(String facebook) {
+  private
+  @Nullable
+  String completeFacebook(String facebook) {
     String uri = Strings.emptyToNull(facebook);
     if (uri == null) {
       return null;

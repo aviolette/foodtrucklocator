@@ -18,14 +18,13 @@ import org.codehaus.jettison.json.JSONException;
  * @author aviolette@gmail.com
  * @since 4/19/12
  */
-public abstract class CollectionWriter<E, D extends JSONWriter<E>> implements
-    MessageBodyWriter<Iterable<E>> {
+public abstract class CollectionWriter<E, D extends JSONWriter<E>> implements MessageBodyWriter<Iterable<E>> {
   private final D writer;
   private final Class<?> entityClass;
 
   /**
    * Constructs the collection writer
-   * @param writer the writer used to output each entity
+   * @param writer      the writer used to output each entity
    * @param entityClass the class of the entities that this collection writer supports
    */
   protected CollectionWriter(D writer, Class<?> entityClass) {
@@ -34,20 +33,18 @@ public abstract class CollectionWriter<E, D extends JSONWriter<E>> implements
   }
 
   @Override
-  public boolean isWriteable(Class<?> aClass, Type type, Annotation[] annotations,
-      MediaType mediaType) {
+  public boolean isWriteable(Class<?> aClass, Type type, Annotation[] annotations, MediaType mediaType) {
     return JSONSerializer.isParameterizedCollectionOf(type, aClass, entityClass);
   }
 
   @Override
-  public long getSize(Iterable<E> es, Class<?> aClass, Type type, Annotation[] annotations,
-      MediaType mediaType) {
+  public long getSize(Iterable<E> es, Class<?> aClass, Type type, Annotation[] annotations, MediaType mediaType) {
     return -1;
   }
 
   @Override
-  public void writeTo(Iterable<E> es, Class<?> aClass, Type type, Annotation[] annotations,
-      MediaType mediaType, MultivaluedMap<String, Object> stringObjectMultivaluedMap,
+  public void writeTo(Iterable<E> es, Class<?> aClass, Type type, Annotation[] annotations, MediaType mediaType,
+      MultivaluedMap<String, Object> stringObjectMultivaluedMap,
       OutputStream outputStream) throws IOException, WebApplicationException {
     try {
       JSONSerializer.writeJSONCollection(es, writer, outputStream);

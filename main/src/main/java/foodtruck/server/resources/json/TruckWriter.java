@@ -32,40 +32,44 @@ public class TruckWriter implements JSONWriter<Truck>, MessageBodyWriter<Truck> 
     this.truckWriter = truckWriter;
   }
 
-  @Override public JSONObject asJSON(Truck truck) throws JSONException {
+  @Override
+  public JSONObject asJSON(Truck truck) throws JSONException {
     JSONObject obj = truckWriter.asJSON(truck);
     obj.put("previewIcon", truck.getPreviewIcon());
     obj.put("inactive", truck.isInactive());
     obj.put("menuUrl", truck.getMenuUrl());
     Truck.Stats stats = truck.getStats();
     if (stats != null) {
-      obj.put("firstSeen", stats.getFirstSeen() == null ? 0 : stats.getFirstSeen().getMillis());
+      obj.put("firstSeen", stats.getFirstSeen() == null ? 0 : stats.getFirstSeen()
+          .getMillis());
       if (stats.getWhereFirstSeen() != null) {
-        obj.put("whereFirstSeen", stats.getWhereFirstSeen().getName());
+        obj.put("whereFirstSeen", stats.getWhereFirstSeen()
+            .getName());
       }
-      obj.put("lastSeen", stats.getLastSeen() == null ? 0 : stats.getLastSeen().getMillis());
+      obj.put("lastSeen", stats.getLastSeen() == null ? 0 : stats.getLastSeen()
+          .getMillis());
       if (stats.getWhereLastSeen() != null) {
-        obj.put("whereLastSeen", stats.getWhereLastSeen().getName());
+        obj.put("whereLastSeen", stats.getWhereLastSeen()
+            .getName());
       }
     }
     return obj;
   }
 
-  @Override public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations,
-      MediaType mediaType) {
+  @Override
+  public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
     return Truck.class.equals(type);
   }
 
   @Override
-  public long getSize(Truck truck, Class<?> type, Type genericType, Annotation[] annotations,
-      MediaType mediaType) {
+  public long getSize(Truck truck, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
     return -1;
   }
 
   @Override
-  public void writeTo(Truck truck, Class<?> type, Type genericType, Annotation[] annotations,
-      MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
-      throws IOException, WebApplicationException {
+  public void writeTo(Truck truck, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+      MultivaluedMap<String, Object> httpHeaders,
+      OutputStream entityStream) throws IOException, WebApplicationException {
     try {
       JSONSerializer.writeJSON(asJSON(truck), entityStream);
     } catch (JSONException e) {

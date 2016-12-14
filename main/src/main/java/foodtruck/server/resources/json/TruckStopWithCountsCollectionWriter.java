@@ -11,7 +11,7 @@ import foodtruck.model.TruckStopWithCounts;
  * @since 4/8/15
  */
 @Provider
-public class TruckStopWithCountsCollectionWriter  extends CollectionWriter<TruckStopWithCounts, TruckStopWithCountsWriter> {
+public class TruckStopWithCountsCollectionWriter extends CollectionWriter<TruckStopWithCounts, TruckStopWithCountsWriter> {
 
   @Inject
   public TruckStopWithCountsCollectionWriter(TruckStopWithCountsWriter writer) {

@@ -24,16 +24,18 @@ import static foodtruck.server.resources.json.JSONSerializer.readJSON;
  * @author aviolette
  * @since 1/25/13
  */
-@Provider @Consumes(MediaType.APPLICATION_JSON)
+@Provider
+@Consumes(MediaType.APPLICATION_JSON)
 public class ApplicationReader implements MessageBodyReader<Application> {
-  @Override public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+  @Override
+  public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
     return type.equals(Application.class);
   }
 
   @Override
   public Application readFrom(Class<Application> type, Type genericType, Annotation[] annotations, MediaType mediaType,
-      MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
-      throws IOException, WebApplicationException {
+      MultivaluedMap<String, String> httpHeaders,
+      InputStream entityStream) throws IOException, WebApplicationException {
     try {
       JSONObject json = readJSON(entityStream);
       return Application.builder()

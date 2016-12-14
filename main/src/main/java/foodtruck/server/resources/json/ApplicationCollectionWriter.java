@@ -11,7 +11,8 @@ import foodtruck.model.Application;
  * @author aviolette
  * @since 1/25/13
  */
-@Provider @Produces("application/json")
+@Provider
+@Produces("application/json")
 public class ApplicationCollectionWriter extends CollectionWriter<Application, ApplicationWriter> {
   /**
    * Constructs the collection writer

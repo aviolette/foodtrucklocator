@@ -14,10 +14,10 @@ import foodtruck.model.TimeValue;
  * @since 7/6/12
  */
 public class StatVectorWriter implements JSONWriter<StatVector> {
-  @Override public JSONObject asJSON(StatVector statVector) throws JSONException {
+  @Override
+  public JSONObject asJSON(StatVector statVector) throws JSONException {
     JSONArray dataArray = toDataArray(statVector.getDataPoints());
-    return new JSONObject()
-        .put("name", statVector.getName())
+    return new JSONObject().put("name", statVector.getName())
         .put("data", dataArray);
   }
 

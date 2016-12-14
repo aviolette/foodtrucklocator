@@ -22,19 +22,22 @@ import foodtruck.server.resources.BadRequestException;
  * @author aviolette
  * @since 12/5/12
  */
-@Provider @Produces(MediaType.APPLICATION_JSON)
-public class TwitterNotificationAccountWriter implements MessageBodyWriter<TwitterNotificationAccount>,
-    JSONWriter<TwitterNotificationAccount> {
-  @Override public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+@Provider
+@Produces(MediaType.APPLICATION_JSON)
+public class TwitterNotificationAccountWriter implements MessageBodyWriter<TwitterNotificationAccount>, JSONWriter<TwitterNotificationAccount> {
+  @Override
+  public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
     return type.equals(TwitterNotificationAccount.class);
   }
 
-  @Override public long getSize(TwitterNotificationAccount twitterNotificationAccount, Class<?> type, Type genericType,
+  @Override
+  public long getSize(TwitterNotificationAccount twitterNotificationAccount, Class<?> type, Type genericType,
       Annotation[] annotations, MediaType mediaType) {
     return -1;
   }
 
-  @Override public void writeTo(TwitterNotificationAccount twitterNotificationAccount, Class<?> type, Type genericType,
+  @Override
+  public void writeTo(TwitterNotificationAccount twitterNotificationAccount, Class<?> type, Type genericType,
       Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
       OutputStream entityStream) throws IOException, WebApplicationException {
     try {
@@ -45,10 +48,10 @@ public class TwitterNotificationAccountWriter implements MessageBodyWriter<Twitt
   }
 
   public JSONObject asJSON(TwitterNotificationAccount notificationAccount) throws JSONException {
-    return new JSONObject()
-        .put("name", notificationAccount.getName())
+    return new JSONObject().put("name", notificationAccount.getName())
         .put("id", notificationAccount.getKey())
-        .put("location", notificationAccount.getLocation().getName())
+        .put("location", notificationAccount.getLocation()
+            .getName())
         .put("token", notificationAccount.getOauthToken())
         .put("tokenSecret", notificationAccount.getOauthTokenSecret())
         .put("active", notificationAccount.isActive())

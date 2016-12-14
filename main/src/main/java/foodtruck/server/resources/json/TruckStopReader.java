@@ -36,7 +36,8 @@ import foodtruck.time.HtmlDateFormatter;
  * @author aviolette@gmail.com
  * @since 10/11/12
  */
-@Provider @Consumes(MediaType.APPLICATION_JSON)
+@Provider
+@Consumes(MediaType.APPLICATION_JSON)
 public class TruckStopReader implements MessageBodyReader<TruckStop> {
   private final TruckDAO truckDAO;
   private final Clock clock;
@@ -45,8 +46,8 @@ public class TruckStopReader implements MessageBodyReader<TruckStop> {
   private final LocationReader locationReader;
 
   @Inject
-  public TruckStopReader(Clock clock, TruckDAO trucks, GeoLocator geolocator,
-      LocationReader locationReader, @HtmlDateFormatter DateTimeFormatter formatter) {
+  public TruckStopReader(Clock clock, TruckDAO trucks, GeoLocator geolocator, LocationReader locationReader,
+      @HtmlDateFormatter DateTimeFormatter formatter) {
     this.truckDAO = trucks;
     this.clock = clock;
     this.format = formatter;
@@ -55,15 +56,14 @@ public class TruckStopReader implements MessageBodyReader<TruckStop> {
   }
 
   @Override
-  public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations,
-      MediaType mediaType) {
+  public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
     return type.equals(TruckStop.class);
   }
 
   @Override
-  public TruckStop readFrom(Class<TruckStop> type, Type genericType, Annotation[] annotations,
-      MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
-      throws IOException, WebApplicationException {
+  public TruckStop readFrom(Class<TruckStop> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+      MultivaluedMap<String, String> httpHeaders,
+      InputStream entityStream) throws IOException, WebApplicationException {
     final String json = new String(ByteStreams.toByteArray(entityStream));
     try {
       JSONObject obj = new JSONObject(json);
@@ -73,12 +73,14 @@ public class TruckStopReader implements MessageBodyReader<TruckStop> {
       }
       DateTime startTime, endTime;
       try {
-        startTime = format.parseDateTime(obj.getString("startTime").toUpperCase());
+        startTime = format.parseDateTime(obj.getString("startTime")
+            .toUpperCase());
       } catch (IllegalArgumentException iae) {
         throw new BadRequestException("Start time incorrect or unspecified");
       }
       try {
-        endTime = format.parseDateTime(obj.getString("endTime").toUpperCase());
+        endTime = format.parseDateTime(obj.getString("endTime")
+            .toUpperCase());
       } catch (IllegalArgumentException iae) {
         throw new BadRequestException("Could not parse end time");
       }
@@ -103,7 +105,13 @@ public class TruckStopReader implements MessageBodyReader<TruckStop> {
       boolean locked = obj.optBoolean("locked", false);
       return TruckStop.builder()
           .origin(StopOrigin.valueOf(origin))
-          .truck(truck).startTime(startTime).endTime(endTime).location(location).key((key > 0) ? key : null).locked(locked).build();
+          .truck(truck)
+          .startTime(startTime)
+          .endTime(endTime)
+          .location(location)
+          .key((key > 0) ? key : null)
+          .locked(locked)
+          .build();
     } catch (JSONException e) {
       throw Throwables.propagate(e);
     }

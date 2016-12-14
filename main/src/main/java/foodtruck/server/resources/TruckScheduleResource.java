@@ -10,7 +10,6 @@ import javax.ws.rs.WebApplicationException;
 import com.google.inject.Inject;
 import com.sun.jersey.api.JResponse;
 
-import foodtruck.dao.TruckDAO;
 import foodtruck.model.TruckSchedule;
 import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.server.security.SecurityChecker;
@@ -30,14 +29,14 @@ public class TruckScheduleResource {
   private final SecurityChecker securityChecker;
 
   @Inject
-  public TruckScheduleResource(FoodTruckStopService stopService, Clock clock, TruckDAO dao,
-      SecurityChecker securityChecker) {
+  public TruckScheduleResource(FoodTruckStopService stopService, Clock clock, SecurityChecker securityChecker) {
     this.stopService = stopService;
     this.clock = clock;
     this.securityChecker = securityChecker;
   }
 
-  @GET @Path("{truckId}")
+  @GET
+  @Path("{truckId}")
   public JResponse<TruckSchedule> findSchedule(@PathParam("truckId") String truckId) {
     securityChecker.requiresLoggedInAs(truckId);
     try {

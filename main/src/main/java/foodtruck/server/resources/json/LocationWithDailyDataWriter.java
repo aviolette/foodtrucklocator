@@ -44,10 +44,13 @@ public class LocationWithDailyDataWriter implements JSONWriter<LocationWithDaily
     JSONObject jsonObject = locationWriter.asJSON(locationWithDailyData.getLocation());
     if (locationWithDailyData.getDailyData() != null) {
       JSONObject specialsJson = new JSONObject();
-      specialsJson.put("forDate", dateOnlyFormatter.print(locationWithDailyData.getDailyData().getOnDate()));
+      specialsJson.put("forDate", dateOnlyFormatter.print(locationWithDailyData.getDailyData()
+          .getOnDate()));
       JSONArray specials = new JSONArray();
-      for (DailyData.SpecialInfo special : locationWithDailyData.getDailyData().getSpecials()) {
-        JSONObject obj = new JSONObject().put("special", special.getSpecial()).put("soldOut", special.isSoldOut());
+      for (DailyData.SpecialInfo special : locationWithDailyData.getDailyData()
+          .getSpecials()) {
+        JSONObject obj = new JSONObject().put("special", special.getSpecial())
+            .put("soldOut", special.isSoldOut());
         specials.put(obj);
 
       }

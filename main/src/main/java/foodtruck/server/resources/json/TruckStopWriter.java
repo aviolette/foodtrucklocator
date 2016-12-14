@@ -32,12 +32,13 @@ public class TruckStopWriter implements JSONWriter<TruckStop> {
     this.dateFormatter = dateFormatter;
   }
 
-  @Override public JSONObject asJSON(TruckStop stop) throws JSONException {
+  @Override
+  public JSONObject asJSON(TruckStop stop) throws JSONException {
     Period p = new Period(stop.getStartTime(), stop.getEndTime());
-    return new JSONObject()
-        .put("location", locationWriter.asJSON(stop.getLocation()))
+    return new JSONObject().put("location", locationWriter.asJSON(stop.getLocation()))
         .put("id", stop.getKey())
-        .put("truckId", stop.getTruck().getId())
+        .put("truckId", stop.getTruck()
+            .getId())
         .put("duration", period(p))
         .put("origin", stop.getOrigin())
         .put("locked", stop.isLocked())
@@ -46,9 +47,11 @@ public class TruckStopWriter implements JSONWriter<TruckStop> {
         .put("deviceId", stop.getCreatedWithDeviceId())
         .put("startDate", dateFormatter.print(stop.getStartTime()))
         .put("startTime", formatter.print(stop.getStartTime()))
-        .put("startMillis", stop.getStartTime().getMillis())
+        .put("startMillis", stop.getStartTime()
+            .getMillis())
         .put("startTimeH", htmlDateFormatter.print(stop.getStartTime()))
-        .put("endMillis", stop.getEndTime().getMillis())
+        .put("endMillis", stop.getEndTime()
+            .getMillis())
         .put("endTimeH", htmlDateFormatter.print(stop.getEndTime()))
         .put("endTime", formatter.print(stop.getEndTime()));
   }

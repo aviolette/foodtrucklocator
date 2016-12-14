@@ -12,11 +12,11 @@ import javax.ws.rs.PathParam;
 import com.google.inject.Inject;
 import com.sun.jersey.api.JResponse;
 
+import foodtruck.annotations.RequiresAdmin;
 import foodtruck.dao.TwitterNotificationAccountDAO;
 import foodtruck.model.TwitterNotificationAccount;
 
 import static foodtruck.server.resources.Resources.noCache;
-import static foodtruck.server.resources.Resources.requiresAdmin;
 
 /**
  * @author aviolette
@@ -31,27 +31,29 @@ public class TwitterNotificationAccountResource {
     this.dao = dao;
   }
 
-  @DELETE @Path("{id}")
+  @DELETE
+  @Path("{id}")
+  @RequiresAdmin
   public void delete(@PathParam("id") long id) {
-    requiresAdmin();
     dao.delete(id);
   }
 
-  @PUT @Path("{id}")
+  @PUT
+  @Path("{id}")
+  @RequiresAdmin
   public void update(@PathParam("id") long id, TwitterNotificationAccount account) {
-    requiresAdmin();
     dao.save(account);
   }
 
   @GET
+  @RequiresAdmin
   public JResponse<Collection<TwitterNotificationAccount>> findAll() {
-    requiresAdmin();
-    return noCache(JResponse.ok((Collection<TwitterNotificationAccount>)dao.findAll())).build();
+    return noCache(JResponse.ok((Collection<TwitterNotificationAccount>) dao.findAll())).build();
   }
 
   @POST
+  @RequiresAdmin
   public void create(TwitterNotificationAccount account) {
-    requiresAdmin();
     dao.save(account);
   }
 }

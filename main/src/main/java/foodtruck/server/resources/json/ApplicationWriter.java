@@ -22,28 +22,32 @@ import foodtruck.server.resources.BadRequestException;
  * @author aviolette
  * @since 1/25/13
  */
-@Provider @Produces(MediaType.APPLICATION_JSON)
+@Provider
+@Produces(MediaType.APPLICATION_JSON)
 public class ApplicationWriter implements JSONWriter<Application>, MessageBodyWriter<Application> {
-  @Override public JSONObject asJSON(Application application) throws JSONException {
-    return new JSONObject()
-        .put("name", application.getName())
+  @Override
+  public JSONObject asJSON(Application application) throws JSONException {
+    return new JSONObject().put("name", application.getName())
         .put("appKey", application.getAppKey())
         .put("enabled", application.isEnabled())
         .put("description", application.getDescription());
   }
 
-  @Override public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+  @Override
+  public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
     return type.equals(Application.class);
   }
 
-  @Override public long getSize(Application application, Class<?> type, Type genericType, Annotation[] annotations,
+  @Override
+  public long getSize(Application application, Class<?> type, Type genericType, Annotation[] annotations,
       MediaType mediaType) {
     return -1;
   }
 
-  @Override public void writeTo(Application application, Class<?> type, Type genericType, Annotation[] annotations,
-      MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
-      throws IOException, WebApplicationException {
+  @Override
+  public void writeTo(Application application, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
+      OutputStream entityStream) throws IOException, WebApplicationException {
     try {
       JSONSerializer.writeJSON(asJSON(application), entityStream);
     } catch (JSONException e) {

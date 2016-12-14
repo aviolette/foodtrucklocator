@@ -12,6 +12,7 @@ import com.google.inject.Inject;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import foodtruck.annotations.RequiresAdmin;
 import foodtruck.notifications.PublicEventNotificationService;
 
 /**
@@ -29,7 +30,9 @@ public class TweetsResource {
     this.notifier = notifier;
   }
 
-  @Path("retweets") @POST
+  @Path("retweets")
+  @POST
+  @RequiresAdmin
   public void retweet(JSONObject payload) {
     try {
       notifier.retweet(payload.getString("account"), payload.getString("tweetId"));

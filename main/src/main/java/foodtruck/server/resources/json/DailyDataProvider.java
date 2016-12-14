@@ -43,14 +43,15 @@ public class DailyDataProvider implements MessageBodyReader<DailyData> {
     this.formatter = formatter;
   }
 
-  @Override public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations,
-      MediaType mediaType) {
+  @Override
+  public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
     return type.equals(DailyData.class);
   }
 
-  @Override public DailyData readFrom(Class<DailyData> type, Type genericType, Annotation[] annotations,
-      MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
-      throws IOException, WebApplicationException {
+  @Override
+  public DailyData readFrom(Class<DailyData> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+      MultivaluedMap<String, String> httpHeaders,
+      InputStream entityStream) throws IOException, WebApplicationException {
     try {
       return asJSON(readJSON(entityStream));
     } catch (JSONException e) {

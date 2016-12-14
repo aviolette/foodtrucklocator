@@ -23,26 +23,31 @@ import foodtruck.model.AddressRuleScript;
  * @author aviolette@gmail.com
  * @since 8/20/12
  */
-@Provider @Produces(MediaType.APPLICATION_JSON)
+@Provider
+@Produces(MediaType.APPLICATION_JSON)
 public class AddressRuleWriter implements JSONWriter<AddressRuleScript>, MessageBodyWriter<AddressRuleScript> {
-  @Override public JSONObject asJSON(AddressRuleScript AddressRuleScript) throws JSONException {
+
+  @Override
+  public JSONObject asJSON(AddressRuleScript AddressRuleScript) throws JSONException {
     JSONObject jsonObject = new JSONObject();
     jsonObject.put("script", AddressRuleScript.getScript());
     return jsonObject;
   }
 
-  @Override public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations,
-      MediaType mediaType) {
+  @Override
+  public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
     return type.equals(AddressRuleScript.class);
   }
 
-  @Override public long getSize(AddressRuleScript AddressRuleScript, Class<?> type, Type genericType,
-      Annotation[] annotations, MediaType mediaType) {
+  @Override
+  public long getSize(AddressRuleScript AddressRuleScript, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType) {
     return -1;
   }
 
-  @Override public void writeTo(AddressRuleScript AddressRuleScript, Class<?> type, Type genericType,
-      Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
+  @Override
+  public void writeTo(AddressRuleScript AddressRuleScript, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
       OutputStream entityStream) throws IOException, WebApplicationException {
     try {
       JSONSerializer.writeJSON(asJSON(AddressRuleScript), entityStream);

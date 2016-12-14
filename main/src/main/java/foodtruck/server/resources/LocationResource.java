@@ -17,6 +17,9 @@ import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 import com.sun.jersey.api.JResponse;
 
+import foodtruck.annotations.AppKey;
+import foodtruck.annotations.RequiresAdmin;
+import foodtruck.annotations.RequiresAppKeyWithCountRestriction;
 import foodtruck.dao.DailyDataDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.geolocation.GeoLocator;
@@ -28,27 +31,23 @@ import foodtruck.monitoring.Monitored;
 import foodtruck.time.Clock;
 import foodtruck.util.ServiceException;
 
-import static foodtruck.server.resources.Resources.requiresAdmin;
-
 /**
  * @author aviolette
  * @since 3/6/13
  */
-@Path("/locations") @Produces(MediaType.APPLICATION_JSON)
+@Path("/locations")
+@Produces(MediaType.APPLICATION_JSON)
 public class LocationResource {
   private static final Logger log = Logger.getLogger(LocationResource.class.getName());
   private static final Joiner JOINER = Joiner.on("\n");
   private final GeoLocator locator;
-  private final AuthorizationChecker authorizationChecker;
   private final LocationDAO locationDAO;
   private final DailyDataDAO dailyDataDAO;
   private final Clock clock;
 
   @Inject
-  public LocationResource(GeoLocator locator, AuthorizationChecker checker, LocationDAO locationDAO,
-      DailyDataDAO dailyDataDAO, Clock clock) {
+  public LocationResource(GeoLocator locator, LocationDAO locationDAO, DailyDataDAO dailyDataDAO, Clock clock) {
     this.locator = locator;
-    this.authorizationChecker = checker;
     this.locationDAO = locationDAO;
     this.dailyDataDAO = dailyDataDAO;
     this.clock = clock;
@@ -57,8 +56,8 @@ public class LocationResource {
   @GET
   @Path("alexa")
   @Produces("text/plain")
+  @RequiresAdmin
   public String findAlexaStops() {
-    requiresAdmin();
     return FluentIterable.from(locationDAO.findAlexaStops())
         .transform(new Function<Location, String>() {
           public String apply(Location input) {
@@ -68,16 +67,19 @@ public class LocationResource {
         .join(JOINER);
   }
 
-  @GET @Path("designated")
-  public Collection<Location> findStops(@QueryParam("appKey") String appKey) {
-    authorizationChecker.requireAppKey(appKey);
+  @GET
+  @Path("designated")
+  @RequiresAppKeyWithCountRestriction
+  public Collection<Location> findStops(@AppKey @QueryParam("appKey") String appKey) {
     return locationDAO.findDesignatedStops();
   }
 
-  @GET @Path("{location}") @Monitored
+  @GET
+  @Path("{location}")
+  @Monitored
+  @RequiresAppKeyWithCountRestriction
   public JResponse<LocationWithDailyData> findLocation(@PathParam("location") String locationName,
-      @QueryParam("appKey") String appKey) {
-    authorizationChecker.requireAppKey(appKey);
+      @AppKey @QueryParam("appKey") String appKey) {
     try {
       Location loc;
       if (locationName.matches("^\\d+$")) {
@@ -87,9 +89,9 @@ public class LocationResource {
       }
       if (loc != null) {
         DailyData byLocationAndDay = dailyDataDAO.findByLocationAndDay(loc.getName(), clock.currentDay());
-        LocationWithDailyData locationWithDailyData =
-            new LocationWithDailyData(loc, byLocationAndDay);
-        return JResponse.ok(locationWithDailyData).build();
+        LocationWithDailyData locationWithDailyData = new LocationWithDailyData(loc, byLocationAndDay);
+        return JResponse.ok(locationWithDailyData)
+            .build();
       }
       return JResponse.<LocationWithDailyData>status(Response.Status.NOT_FOUND).build();
     } catch (ServiceException se) {

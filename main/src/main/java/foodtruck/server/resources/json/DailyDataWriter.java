@@ -41,21 +41,20 @@ public class DailyDataWriter implements MessageBodyWriter<DailyData>, JSONWriter
 
   @Override
   public JSONObject asJSON(DailyData dailyData) throws JSONException {
-    return new JSONObject()
-        .put("truckId", dailyData.getTruckId())
+    return new JSONObject().put("truckId", dailyData.getTruckId())
         .put("date", formatter.print(dailyData.getOnDate()))
-        .put("specials",
-            FluentIterable.from(dailyData.getSpecials()).transform(new Function<DailyData.SpecialInfo, JSONObject>() {
+        .put("specials", FluentIterable.from(dailyData.getSpecials())
+            .transform(new Function<DailyData.SpecialInfo, JSONObject>() {
               public JSONObject apply(DailyData.SpecialInfo input) {
                 try {
-                  return new JSONObject()
-                      .put("special", input.getSpecial())
+                  return new JSONObject().put("special", input.getSpecial())
                       .put("soldout", input.isSoldOut());
                 } catch (JSONException e) {
                   throw Throwables.propagate(e);
                 }
               }
-            }).toList());
+            })
+            .toList());
   }
 
   @Override

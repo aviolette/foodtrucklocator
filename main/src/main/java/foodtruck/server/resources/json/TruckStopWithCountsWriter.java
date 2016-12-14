@@ -15,7 +15,8 @@ import foodtruck.model.TruckStopWithCounts;
  * @author aviolette
  * @since 4/8/15
  */
-@Provider @Produces("application/json")
+@Provider
+@Produces("application/json")
 public class TruckStopWithCountsWriter implements JSONWriter<TruckStopWithCounts> {
   private TruckStopWriter writer;
 
@@ -27,8 +28,10 @@ public class TruckStopWithCountsWriter implements JSONWriter<TruckStopWithCounts
   @Override
   public JSONObject asJSON(TruckStopWithCounts truckStopWithCounts) throws JSONException {
     JSONObject obj = writer.asJSON(truckStopWithCounts.getStop());
-    obj.put("totalTruckCount", truckStopWithCounts.getTruckNames().size());
-    obj.put("truckNames", Joiner.on(", ").join(truckStopWithCounts.getTruckNames()));
+    obj.put("totalTruckCount", truckStopWithCounts.getTruckNames()
+        .size());
+    obj.put("truckNames", Joiner.on(", ")
+        .join(truckStopWithCounts.getTruckNames()));
     return obj;
   }
 }

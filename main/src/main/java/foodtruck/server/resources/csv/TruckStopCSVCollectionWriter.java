@@ -33,6 +33,7 @@ import foodtruck.time.FriendlyDateTimeFormat;
 @Provider
 @Produces("text/csv")
 public class TruckStopCSVCollectionWriter implements MessageBodyWriter<Iterable<TruckStop>> {
+  private static final String[] HEADER = new String[]{"START TIME", "END TIME", "TRUCK NAME", "LOCATION NAME", "LATITUDE", "LONGITUDE"};
   private final DateTimeFormatter format;
 
   @Inject
@@ -40,21 +41,20 @@ public class TruckStopCSVCollectionWriter implements MessageBodyWriter<Iterable<
     this.format = format;
   }
 
-  private static final String[] HEADER =
-      new String[] {"START TIME", "END TIME", "TRUCK NAME", "LOCATION NAME", "LATITUDE", "LONGITUDE"};
-
-  @Override public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations,
-      MediaType mediaType) {
+  @Override
+  public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
     return JSONSerializer.isParameterizedCollectionOf(genericType, type, TruckStop.class);
   }
 
-  @Override public long getSize(Iterable<TruckStop> truckStops, Class<?> type, Type genericType,
-      Annotation[] annotations, MediaType mediaType) {
+  @Override
+  public long getSize(Iterable<TruckStop> truckStops, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType) {
     return -1;
   }
 
-  @Override public void writeTo(Iterable<TruckStop> truckStops, Class<?> type, Type genericType,
-      Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
+  @Override
+  public void writeTo(Iterable<TruckStop> truckStops, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
       OutputStream entityStream) throws IOException, WebApplicationException {
 
     final StringWriter stringWriter = new StringWriter();
@@ -64,17 +64,23 @@ public class TruckStopCSVCollectionWriter implements MessageBodyWriter<Iterable<
       writer.writeNext(truckEntries(truckStop));
     }
     writer.close();
-    entityStream.write(stringWriter.getBuffer().toString().getBytes("UTF-8"));
+    entityStream.write(stringWriter.getBuffer()
+        .toString()
+        .getBytes("UTF-8"));
   }
 
   private String[] truckEntries(TruckStop truckStop) {
     List<String> entries = Lists.newArrayListWithCapacity(HEADER.length);
     entries.add(format.print(truckStop.getStartTime()));
     entries.add(format.print(truckStop.getEndTime()));
-    entries.add(truckStop.getTruck().getName());
-    entries.add(truckStop.getLocation().getName());
-    entries.add(String.format("%f", truckStop.getLocation().getLatitude()));
-    entries.add(String.format("%f", truckStop.getLocation().getLongitude()));
+    entries.add(truckStop.getTruck()
+        .getName());
+    entries.add(truckStop.getLocation()
+        .getName());
+    entries.add(String.format("%f", truckStop.getLocation()
+        .getLatitude()));
+    entries.add(String.format("%f", truckStop.getLocation()
+        .getLongitude()));
     return entries.toArray(new String[entries.size()]);
   }
 
@@ -86,7 +92,8 @@ public class TruckStopCSVCollectionWriter implements MessageBodyWriter<Iterable<
     return "http://www.foursquare.com/v/" + foursquareUrl;
   }
 
-  private @Nullable
+  private
+  @Nullable
   String completeFacebook(String facebook) {
     String uri = Strings.emptyToNull(facebook);
     if (uri == null) {

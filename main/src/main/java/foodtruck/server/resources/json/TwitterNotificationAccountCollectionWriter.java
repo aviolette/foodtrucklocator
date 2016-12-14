@@ -12,7 +12,8 @@ import foodtruck.model.TwitterNotificationAccount;
  * @author aviolette
  * @since 12/5/12
  */
-@Provider @Produces(MediaType.APPLICATION_JSON)
+@Provider
+@Produces(MediaType.APPLICATION_JSON)
 public class TwitterNotificationAccountCollectionWriter extends CollectionWriter<TwitterNotificationAccount, TwitterNotificationAccountWriter> {
   /**
    * Constructs the collection writer

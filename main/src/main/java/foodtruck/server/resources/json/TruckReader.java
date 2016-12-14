@@ -30,14 +30,15 @@ import static foodtruck.server.resources.json.JSONSerializer.readJSON;
 @Provider
 @Consumes(MediaType.APPLICATION_JSON)
 public class TruckReader implements MessageBodyReader<Truck> {
-  @Override public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations,
-      MediaType mediaType) {
+  @Override
+  public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
     return type.equals(Truck.class);
   }
 
-  @Override public Truck readFrom(Class<Truck> type, Type genericType, Annotation[] annotations,
-      MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
-      throws IOException, WebApplicationException {
+  @Override
+  public Truck readFrom(Class<Truck> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+      MultivaluedMap<String, String> httpHeaders,
+      InputStream entityStream) throws IOException, WebApplicationException {
     try {
       return asJSON(readJSON(entityStream));
     } catch (JSONException e) {
@@ -62,7 +63,7 @@ public class TruckReader implements MessageBodyReader<Truck> {
     JSONArray arr = json.optJSONArray("categories");
     if (arr != null) {
       ImmutableSet.Builder<String> catBuilder = ImmutableSet.builder();
-      for (int i=0; i < arr.length(); i++) {
+      for (int i = 0; i < arr.length(); i++) {
         catBuilder.add(arr.getString(i));
       }
       builder.categories(catBuilder.build());

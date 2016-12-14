@@ -20,6 +20,7 @@ import com.sun.jersey.api.JResponse;
 
 import org.joda.time.DateTime;
 
+import foodtruck.annotations.RequiresAdmin;
 import foodtruck.dao.TimeSeriesDAO;
 import foodtruck.model.Slots;
 import foodtruck.model.StatVector;
@@ -50,7 +51,10 @@ public class StatsResource {
     this.scheduleCounter = counter;
   }
 
-  @GET @Path("counts/{statList}") @Produces(MediaType.APPLICATION_JSON)
+  @GET
+  @Path("counts/{statList}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @RequiresAdmin
   public JResponse<List<StatVector>> getStatsFor(@PathParam("statList") final String statNames,
       @QueryParam("start") final long startTime, @QueryParam("end") final long endTime,
       @QueryParam("interval") final long interval, @QueryParam("nocache") boolean nocache) {
@@ -58,7 +62,7 @@ public class StatsResource {
     //TODO: what if statList empty?
     TimeSeriesDAO timeSeriesDAO = seriesSelector.select(interval, statList[0]);
     Slots slots = timeSeriesDAO.getSlots();
-    if (statList.length  == 1 && !nocache) {
+    if (statList.length == 1 && !nocache) {
       List<StatVector> vectors = (List<StatVector>) cache.get(statList[0]);
       if (vectors != null) {
         log.log(Level.INFO, "Stats for {0} retrieved from cache", statList[0]);
@@ -81,20 +85,22 @@ public class StatsResource {
       log.log(Level.INFO, "Stats for {0} stored in cache", statList[0]);
       cache.put(statList[0], statVectors, Expiration.byDeltaSeconds(86400));
     }
-    return JResponse.ok(statVectors).build();
+    return JResponse.ok(statVectors)
+        .build();
   }
 
   private List<SystemStats> augmentWithTodaysCounts(List<SystemStats> stats, String statName, Slots slots) {
     // TODO: not efficient
     DateTime now = clock.now();
     ImmutableList.Builder<SystemStats> builder = ImmutableList.builder();
-    long timeSlot = slots.getSlot(clock.now().getMillis());
+    long timeSlot = slots.getSlot(clock.now()
+        .getMillis());
     boolean found = false;
     String suffix = statName.substring(statName.lastIndexOf(".") + 1);
     for (SystemStats stat : stats) {
       if (timeSlot == stat.getTimeStamp()) {
         long count = scheduleCounter.getCount(suffix);
-        SystemStats systemStats = new SystemStats((Long)stat.getKey(),timeSlot, ImmutableMap.of(statName, count));
+        SystemStats systemStats = new SystemStats((Long) stat.getKey(), timeSlot, ImmutableMap.of(statName, count));
         builder.add(stat.merge(systemStats));
         found = true;
       } else {

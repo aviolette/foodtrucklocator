@@ -23,6 +23,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormatter;
 
+import foodtruck.annotations.RequiresAdmin;
 import foodtruck.dao.TrackingDeviceDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.TrackingDevice;
@@ -32,8 +33,6 @@ import foodtruck.server.security.SecurityChecker;
 import foodtruck.time.Clock;
 import foodtruck.time.DateOnlyFormatter;
 
-import static foodtruck.server.resources.Resources.requiresAdmin;
-
 /**
  * @author aviolette@gmail.com
  * @since 6/13/12
@@ -41,7 +40,8 @@ import static foodtruck.server.resources.Resources.requiresAdmin;
 @Path("/trucks{view : (\\.[a-z]{3})?}")
 public class TruckResource {
   private static final Predicate<Truck> NOT_HIDDEN = new Predicate<Truck>() {
-    @Override public boolean apply(Truck truck) {
+    @Override
+    public boolean apply(Truck truck) {
       return !truck.isHidden();
     }
   };
@@ -55,9 +55,10 @@ public class TruckResource {
   private final SecurityChecker securityChecker;
 
   @Inject
-  public TruckResource(TruckDAO truckDAO, Clock clock, DateTimeZone zone, @DateOnlyFormatter DateTimeFormatter formatter,
-      ProfileSyncService profileSyncService, DailySpecialResourceFactory dailySpecialResourceFactory,
-      TrackingDeviceDAO trackingDeviceDAO, SecurityChecker securityChecker) {
+  public TruckResource(TruckDAO truckDAO, Clock clock, DateTimeZone zone,
+      @DateOnlyFormatter DateTimeFormatter formatter, ProfileSyncService profileSyncService,
+      DailySpecialResourceFactory dailySpecialResourceFactory, TrackingDeviceDAO trackingDeviceDAO,
+      SecurityChecker securityChecker) {
     this.truckDAO = truckDAO;
     this.clock = clock;
     this.zone = zone;
@@ -70,8 +71,8 @@ public class TruckResource {
 
   @GET
   @Produces({"application/json", "text/csv", "text/plain"})
-  public JResponse<Collection<Truck>> getTrucks(@PathParam("view") String view, @QueryParam("active") final String active,
-      @QueryParam("tag") final String filteredBy) {
+  public JResponse<Collection<Truck>> getTrucks(@PathParam("view") String view,
+      @QueryParam("active") final String active, @QueryParam("tag") final String filteredBy) {
     MediaType mediaType = MediaType.APPLICATION_JSON_TYPE;
     if (".csv".equals(view)) {
       mediaType = new MediaType("text", "csv");
@@ -86,39 +87,48 @@ public class TruckResource {
     } else {
       response = Strings.isNullOrEmpty(filteredBy) ? truckDAO.findActiveTrucks() : truckDAO.findByCategory(filteredBy);
     }
-    return JResponse.ok(Collections2.filter(response, NOT_HIDDEN), mediaType).build();
+    return JResponse.ok(Collections2.filter(response, NOT_HIDDEN), mediaType)
+        .build();
   }
 
-  @GET @Produces("application/json") @Path("{truckId}")
+  @GET
+  @Produces("application/json")
+  @Path("{truckId}")
   public JResponse<Truck> getTruck(@PathParam("truckId") String truckId) {
     Truck t = truckDAO.findById(truckId);
-    return JResponse.ok(t).build();
+    return JResponse.ok(t)
+        .build();
   }
 
-  @POST @Path("{truckId}/mute")
+  @POST
+  @Path("{truckId}/mute")
+  @RequiresAdmin
   public void muteTruck(@PathParam("truckId") String truckId, @QueryParam("until") String until) {
-    requiresAdmin();
-    DateTime muteUntil = Strings.isNullOrEmpty(until) ?
-        clock.currentDay().toDateTimeAtStartOfDay(zone).plusDays(1) :
-        formatter.parseDateTime(until);
+    DateTime muteUntil = Strings.isNullOrEmpty(until) ? clock.currentDay()
+        .toDateTimeAtStartOfDay(zone)
+        .plusDays(1) : formatter.parseDateTime(until);
     Truck t = truckDAO.findById(truckId);
-    t = Truck.builder(t).muteUntil(muteUntil)
+    t = Truck.builder(t)
+        .muteUntil(muteUntil)
         .build();
     truckDAO.save(t);
   }
 
-  @POST @Path("{truckId}/unmute")
+  @POST
+  @Path("{truckId}/unmute")
+  @RequiresAdmin
   public void unmuteTruck(@PathParam("truckId") String truckId) {
-    requiresAdmin();
     Truck t = truckDAO.findById(truckId);
-    t = Truck.builder(t).muteUntil(null)
+    t = Truck.builder(t)
+        .muteUntil(null)
         .build();
     truckDAO.save(t);
   }
 
-  @DELETE @Path("{truckId}")
+  @DELETE
+  @Path("{truckId}")
+  @RequiresAdmin
   public void delete(@PathParam("truckId") String truckId) {
-    requiresAdmin();
     truckDAO.delete(truckId);
   }
 
@@ -127,18 +137,22 @@ public class TruckResource {
     return dailySpecialResourceFactory.create(truckDAO.findById(truckId));
   }
 
-  @GET @Path("{truckId}/beacons")
+  @GET
+  @Path("{truckId}/beacons")
   public List<TrackingDevice> findBeacons(@PathParam("truckId") String truckId) {
     securityChecker.requiresLoggedInAs(truckId);
     return trackingDeviceDAO.findByTruckId(truckId);
   }
 
-  @POST @Consumes(MediaType.APPLICATION_JSON) @Produces(MediaType.APPLICATION_JSON)
+  @POST
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @RequiresAdmin
   public JResponse<Truck> createTruck(Truck truck) {
-    Resources.requiresAdmin();
     if (truckDAO.findById(truck.getId()) != null) {
       throw new BadRequestException("POST can only be used , for creating objects");
     }
-    return JResponse.ok(profileSyncService.createFromTwitter(truck)).build();
+    return JResponse.ok(profileSyncService.createFromTwitter(truck))
+        .build();
   }
 }

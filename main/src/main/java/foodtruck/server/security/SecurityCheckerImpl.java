@@ -11,10 +11,10 @@ import com.google.appengine.api.users.UserService;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
-import foodtruck.session.Session;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
 import foodtruck.server.resources.ErrorPayload;
+import foodtruck.session.Session;
 
 /**
  * @author aviolette
@@ -31,17 +31,6 @@ public class SecurityCheckerImpl implements SecurityChecker {
     this.userServiceProvider = userServiceProvider;
     this.truckDAO = truckDAO;
     this.sessionProvider = sessionProvider;
-  }
-
-  @Override
-  public void requiresAdmin() {
-    UserService userService = userServiceProvider.get();
-    if (!userService.isUserLoggedIn() || !userService.isUserAdmin()) {
-      Response response = Response.status(Response.Status.FORBIDDEN)
-          .type(MediaType.APPLICATION_JSON_TYPE).entity(new ErrorPayload("fobidden"))
-          .build();
-      throw new WebApplicationException(response);
-    }
   }
 
   @Override

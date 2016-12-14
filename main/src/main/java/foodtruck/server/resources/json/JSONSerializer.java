@@ -19,8 +19,7 @@ import org.codehaus.jettison.json.JSONObject;
  * @since 4/19/12
  */
 public class JSONSerializer {
-  public static boolean isParameterizedCollectionOf(Type type, Class<?> aClass,
-      Class<?> contained) {
+  public static boolean isParameterizedCollectionOf(Type type, Class<?> aClass, Class<?> contained) {
     if (!(type instanceof ParameterizedType)) {
       return false;
     }
@@ -38,7 +37,8 @@ public class JSONSerializer {
 
   public static void writeJSON(Object obj, OutputStream os) {
     try {
-      os.write(obj.toString().getBytes("UTF-8"));
+      os.write(obj.toString()
+          .getBytes("UTF-8"));
     } catch (IOException io) {
       throw new RuntimeException(io);
     }
@@ -53,8 +53,7 @@ public class JSONSerializer {
     }
   }
 
-  public static <E> JSONArray buildArray(Iterable<E> objs, JSONWriter<E> writer)
-      throws JSONException {
+  public static <E> JSONArray buildArray(Iterable<E> objs, JSONWriter<E> writer) throws JSONException {
     JSONArray arr = new JSONArray();
     for (E t : objs) {
       arr.put(writer.asJSON(t));
@@ -64,7 +63,7 @@ public class JSONSerializer {
 
   public static List<String> toStringList(JSONArray truckIds) throws JSONException {
     ImmutableList.Builder<String> list = ImmutableList.builder();
-    for (int i=0; i < truckIds.length(); i++) {
+    for (int i = 0; i < truckIds.length(); i++) {
       list.add(truckIds.getString(i));
     }
     return list.build();

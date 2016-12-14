@@ -33,7 +33,8 @@ import static foodtruck.server.resources.json.JSONSerializer.readJSON;
  * @author aviolette
  * @since 6/11/13
  */
-@Provider @Consumes(MediaType.APPLICATION_JSON)
+@Provider
+@Consumes(MediaType.APPLICATION_JSON)
 public class TruckObserverReader implements MessageBodyReader<TruckObserver> {
   private final GeoLocator geolocator;
 
@@ -42,13 +43,15 @@ public class TruckObserverReader implements MessageBodyReader<TruckObserver> {
     this.geolocator = locator;
   }
 
-  @Override public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+  @Override
+  public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
     return type.equals(TruckObserver.class);
   }
 
-  @Override public TruckObserver readFrom(Class<TruckObserver> type, Type genericType, Annotation[] annotations,
-      MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
-      throws IOException, WebApplicationException {
+  @Override
+  public TruckObserver readFrom(Class<TruckObserver> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType, MultivaluedMap<String, String> httpHeaders,
+      InputStream entityStream) throws IOException, WebApplicationException {
     try {
       JSONObject obj = readJSON(entityStream);
       Location loc = geolocator.locate(obj.getString("locationName"), GeolocationGranularity.BROAD);
@@ -56,7 +59,9 @@ public class TruckObserverReader implements MessageBodyReader<TruckObserver> {
         throw new WebApplicationException(Response.Status.BAD_REQUEST);
       }
       List<String> keywords = ImmutableList.copyOf(Splitter.on(",")
-          .omitEmptyStrings().trimResults().split(obj.getString("keywords")));
+          .omitEmptyStrings()
+          .trimResults()
+          .split(obj.getString("keywords")));
       return new TruckObserver(obj.getString("twitterHandle"), loc, keywords);
     } catch (JSONException e) {
       throw Throwables.propagate(e);

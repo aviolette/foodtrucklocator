@@ -24,18 +24,20 @@ import foodtruck.server.resources.ErrorPayload;
  */
 @Provider
 public class ErrorPayloadWriter implements MessageBodyWriter<ErrorPayload> {
-  @Override public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations,
-      MediaType mediaType) {
+  @Override
+  public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
     return ErrorPayload.class.equals(type);
   }
 
-  @Override public long getSize(ErrorPayload errorPayload, Class<?> type, Type genericType,
-      Annotation[] annotations, MediaType mediaType) {
+  @Override
+  public long getSize(ErrorPayload errorPayload, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType) {
     return -1;
   }
 
-  @Override public void writeTo(ErrorPayload errorPayload, Class<?> type, Type genericType,
-      Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
+  @Override
+  public void writeTo(ErrorPayload errorPayload, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
       OutputStream entityStream) throws IOException, WebApplicationException {
     try {
       JSONSerializer.writeJSON(new JSONObject().put("error", errorPayload.getMessage())

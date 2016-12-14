@@ -27,7 +27,8 @@ import foodtruck.model.TwitterNotificationAccount;
  * @author aviolette
  * @since 12/4/12
  */
-@Provider @Consumes(MediaType.APPLICATION_JSON)
+@Provider
+@Consumes(MediaType.APPLICATION_JSON)
 public class TwitterNotificationAccountReader implements MessageBodyReader<TwitterNotificationAccount> {
   private final GeoLocator geoLocator;
 
@@ -36,11 +37,13 @@ public class TwitterNotificationAccountReader implements MessageBodyReader<Twitt
     this.geoLocator = geoLocator;
   }
 
-  @Override public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+  @Override
+  public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
     return type.equals(TwitterNotificationAccount.class);
   }
 
-  @Override public TwitterNotificationAccount readFrom(Class<TwitterNotificationAccount> type, Type genericType,
+  @Override
+  public TwitterNotificationAccount readFrom(Class<TwitterNotificationAccount> type, Type genericType,
       Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> httpHeaders,
       InputStream entityStream) throws IOException, WebApplicationException {
     try {

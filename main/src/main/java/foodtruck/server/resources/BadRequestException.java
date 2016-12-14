@@ -12,12 +12,16 @@ import com.sun.jersey.api.Responses;
 public class BadRequestException extends WebApplicationException {
   public BadRequestException(Throwable cause, MediaType mediaType) {
     super(Responses.clientError()
-        .entity(new ErrorPayload(cause.getMessage())).type(mediaType).build());
+        .entity(new ErrorPayload(cause.getMessage()))
+        .type(mediaType)
+        .build());
   }
 
   public BadRequestException(String message) {
-    super(Responses.clientError().entity(new ErrorPayload(message))
-        .type(MediaType.APPLICATION_JSON_TYPE).build());
+    super(Responses.clientError()
+        .entity(new ErrorPayload(message))
+        .type(MediaType.APPLICATION_JSON_TYPE)
+        .build());
   }
 
   public BadRequestException(String message, String extraData) {

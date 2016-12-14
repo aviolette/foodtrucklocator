@@ -60,8 +60,7 @@ public class BeaconWriter implements MessageBodyWriter<TrackingDevice>, JSONWrit
   }
 
   public JSONObject asJSON(TrackingDevice trackingDevice) throws JSONException {
-    return new JSONObject()
-        .put("truckOwnerId", trackingDevice.getTruckOwnerId())
+    return new JSONObject().put("truckOwnerId", trackingDevice.getTruckOwnerId())
         .put("deviceNumber", trackingDevice.getDeviceNumber())
         .put("lastLocation", locationWriter.asJSON(trackingDevice.getLastLocation()))
         .put("label", trackingDevice.getLabel())

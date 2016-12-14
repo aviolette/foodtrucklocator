@@ -14,6 +14,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 
+import foodtruck.annotations.RequiresAdmin;
 import foodtruck.dao.ApplicationDAO;
 import foodtruck.model.Application;
 import foodtruck.model.ApplicationWithUsageCounts;
@@ -21,13 +22,12 @@ import foodtruck.monitoring.Counter;
 import foodtruck.monitoring.DailyScheduleCounter;
 import foodtruck.util.RandomString;
 
-import static foodtruck.server.resources.Resources.requiresAdmin;
-
 /**
  * @author aviolette
  * @since 1/25/13
  */
-@Path("/applications") @Produces(MediaType.APPLICATION_JSON)
+@Path("/applications")
+@Produces(MediaType.APPLICATION_JSON)
 public class ApplicationResource {
   private final ApplicationDAO appDao;
   private final Counter counter;
@@ -39,8 +39,8 @@ public class ApplicationResource {
   }
 
   @GET
+  @RequiresAdmin
   public Iterable<ApplicationWithUsageCounts> findAll() {
-    requiresAdmin();
     return Iterables.transform(appDao.findAll(), new Function<Application, ApplicationWithUsageCounts>() {
       public ApplicationWithUsageCounts apply(Application application) {
         return new ApplicationWithUsageCounts(application, counter.getCount(application.getAppKey()));
@@ -49,9 +49,11 @@ public class ApplicationResource {
   }
 
   @POST
+  @RequiresAdmin
   public void create(Application app) {
-    requiresAdmin();
-    app = Application.builder(app).appKey(RandomString.nextString(8)).build();
+    app = Application.builder(app)
+        .appKey(RandomString.nextString(8))
+        .build();
     try {
       app.validate();
     } catch (IllegalArgumentException iae) {
@@ -60,15 +62,17 @@ public class ApplicationResource {
     appDao.save(app);
   }
 
-  @DELETE @Path("{appKey}")
+  @DELETE
+  @Path("{appKey}")
+  @RequiresAdmin
   public void delete(@PathParam("appKey") String appKey) {
-    requiresAdmin();
     appDao.delete(appKey);
   }
 
-  @PUT @Path("{appKey}")
+  @PUT
+  @Path("{appKey}")
+  @RequiresAdmin
   public void update(@PathParam("appKey") String appKey, Application app) {
-    requiresAdmin();
     try {
       app.validate();
     } catch (IllegalArgumentException iae) {

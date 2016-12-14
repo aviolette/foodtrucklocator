@@ -10,9 +10,9 @@ import foodtruck.model.Truck;
  * @since 3/19/14
  */
 public class AbbreviatedTruckWriter implements JSONWriter<Truck> {
-  @Override public JSONObject asJSON(Truck truck) throws JSONException {
-    JSONObject obj = new JSONObject()
-        .put("id", truck.getId())
+  @Override
+  public JSONObject asJSON(Truck truck) throws JSONException {
+    JSONObject obj = new JSONObject().put("id", truck.getId())
         .put("iconUrl", truck.getIconUrl())
         .put("twitterHandle", truck.getTwitterHandle())
         .put("instagram", truck.getInstagramId())
