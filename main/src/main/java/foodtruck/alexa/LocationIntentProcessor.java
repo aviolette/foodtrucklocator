@@ -36,7 +36,6 @@ import foodtruck.model.Location;
 import foodtruck.model.TruckStop;
 import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.schedule.ScheduleCacher;
-import foodtruck.server.resources.json.DailyScheduleWriter;
 import foodtruck.time.Clock;
 import foodtruck.time.TimeOnlyFormatter;
 
@@ -56,21 +55,19 @@ class LocationIntentProcessor implements IntentProcessor {
   private final Clock clock;
   private final ScheduleCacher scheduleCacher;
   private final LocationDAO locationDAO;
-  private final DailyScheduleWriter dailyScheduleWriter;
   private final Location defaultCenter;
   private final DateTimeFormatter formatter;
   private final boolean testingMode;
 
   @Inject
   public LocationIntentProcessor(GeoLocator locator, FoodTruckStopService service, Clock clock, LocationDAO locationDAO,
-      ScheduleCacher cacher, DailyScheduleWriter dailyScheduleWriter, @DefaultCenter Location center,
-      @TimeOnlyFormatter DateTimeFormatter formatter, @Named(TESTING_MODE) boolean testingMode) {
+      ScheduleCacher cacher, @DefaultCenter Location center, @TimeOnlyFormatter DateTimeFormatter formatter,
+      @Named(TESTING_MODE) boolean testingMode) {
     this.locator = locator;
     this.service = service;
     this.clock = clock;
     this.locationDAO = locationDAO;
     scheduleCacher = cacher;
-    this.dailyScheduleWriter = dailyScheduleWriter;
     this.defaultCenter = center;
     this.formatter = formatter;
     this.testingMode = testingMode;
