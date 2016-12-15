@@ -1,5 +1,6 @@
 package foodtruck.user;
 
+import java.io.Serializable;
 import java.security.Principal;
 
 import javax.security.auth.Subject;
@@ -10,7 +11,7 @@ import com.google.common.base.MoreObjects;
  * @author aviolette
  * @since 12/6/16
  */
-public class LoggedInUser implements Principal {
+public class LoggedInUser implements Principal, Serializable {
   private final String name;
   private final boolean admin;
 
