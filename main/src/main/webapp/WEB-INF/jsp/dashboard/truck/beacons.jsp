@@ -73,7 +73,7 @@
                   item.enabled, item.parked, item.blacklisted, item.direction);
 
               var $tr = $("<tr></tr>");
-              $tr.append("<td><a href='/admin/trucks/${truck.id}/beacons/" + item.id + "'>" + item.label + "</a></td>");
+              $tr.append("<td><a href='/admin/beacons/" + item.id + "'>" + item.label + "</a></td>");
               $tr.append("<td class='large-screen-only'>" + item.deviceNumber + "</td>");
               if (item.lastLocation) {
                 $tr.append("<td><a href=\"/admin/locations/" + item.lastLocation.key + "\">" + item.lastLocation.shortenedName + "</a> at " + item.lastBroadcast + "</td>");

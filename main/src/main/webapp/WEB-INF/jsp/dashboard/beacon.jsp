@@ -9,6 +9,14 @@
       <dd>${beacon.label}</dd>
       <dt>Device Number</dt>
       <dd>${beacon.deviceNumber}</dd>
+      <dt>Last Broadcast</dt>
+      <dd><joda:format value="${beacon.lastBroadcast}" style="MM"/></dd>
+      <dt>Last Location</dt>
+      <dd>${beacon.lastLocation.name}</dd>
+      <dt>Fuel Level</dt>
+      <dd>${beacon.fuelLevel}</dd>
+      <dt>Battery</dt>
+      <dd>${beacon.batteryCharge}</dd>
     </dl>
 
     <form action="" method="post">
@@ -34,7 +42,6 @@
 
   </div>
   <div class="col-md-6">
-    <p>Last broadcast received at <joda:format value="${beacon.lastBroadcast}" style="MM"/> at ${beacon.lastLocation.name}</p>
     <div id="map_canvas" style="width:100%; height:300px; padding-bottom:20px;"></div>
   </div>
 </div>
