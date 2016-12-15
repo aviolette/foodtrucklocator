@@ -40,7 +40,17 @@ public interface Cacher {
   @Nullable
   Object get(String key);
 
+  /**
+   * Returns true if the cache has an object defined by the key
+   * @param key the key
+   * @return true if the cacher contains an object defined by the key
+   */
   boolean contains(String key);
 
+  /**
+   * Deletes the object from the cache
+   * @param key the key that identifies the object
+   * @return true if the object was in the cache
+   */
   boolean delete(String key);
 }

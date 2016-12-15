@@ -4,6 +4,8 @@ import java.security.Principal;
 
 import javax.security.auth.Subject;
 
+import com.google.common.base.MoreObjects;
+
 /**
  * @author aviolette
  * @since 12/6/16
@@ -19,6 +21,14 @@ public class LoggedInUser implements Principal {
 
   public boolean isAdmin() {
     return this.admin;
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("name", name)
+        .add("admin", admin)
+        .toString();
   }
 
   @Override
