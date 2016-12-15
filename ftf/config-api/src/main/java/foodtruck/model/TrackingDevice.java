@@ -48,7 +48,6 @@ public class TrackingDevice extends ModelEntity {
     this.atBlacklistedLocation = builder.atBlacklistedLocation;
     this.fuelLevel = builder.fuelLevel;
     this.batteryCharge = builder.batteryCharge;
-    this.fuelLevel = builder.fuelLevel;
     this.batteryCharge = builder.batteryCharge;
     this.degreesFromNorth = builder.degreesFromNorth;
     this.lastActualLocation = builder.lastActualLocation;
