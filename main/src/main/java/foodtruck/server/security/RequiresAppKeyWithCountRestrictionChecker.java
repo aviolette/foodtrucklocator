@@ -74,7 +74,7 @@ class RequiresAppKeyWithCountRestrictionChecker implements MethodInterceptor {
         .getParameterAnnotations(), AppKey.class);
   }
 
-  public void requireAppKeyWithCount(String appKey, long hourlyCount, long dailyCount) throws WebApplicationException {
+  private void requireAppKeyWithCount(String appKey, long hourlyCount, long dailyCount) throws WebApplicationException {
     if (!Strings.isNullOrEmpty(appKey)) {
       Application app = applicationDAO.findById(appKey);
       if (app != null && app.isEnabled()) {
@@ -86,6 +86,7 @@ class RequiresAppKeyWithCountRestrictionChecker implements MethodInterceptor {
         return;
       }
     }
+    log.warning("App key not specified");
     throw new WebApplicationException(Response.Status.UNAUTHORIZED);
   }
 }

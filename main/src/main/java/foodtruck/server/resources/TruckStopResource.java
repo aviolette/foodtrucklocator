@@ -33,6 +33,7 @@ import com.google.inject.Provider;
 
 import org.joda.time.DateTime;
 
+import foodtruck.annotations.AppKey;
 import foodtruck.annotations.RequiresAppKeyWithCountRestriction;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TruckStopWithCounts;
@@ -98,10 +99,10 @@ public class TruckStopResource {
     foodTruckService.update(truckStop, whom);
   }
 
+  // TODO: should require login
   @GET
-  @RequiresAppKeyWithCountRestriction
   public List<TruckStopWithCounts> getStops(@QueryParam("truck") String truckId, @Context DateTime startTime,
-      @QueryParam("includeCounts") boolean includeCounts) {
+      @QueryParam("includeCounts") boolean includeCounts, @AppKey @QueryParam("appKey") final String appKey) {
     if (Strings.isNullOrEmpty(truckId)) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
@@ -123,7 +124,8 @@ public class TruckStopResource {
   @GET
   @Path("{truckId}")
   @RequiresAppKeyWithCountRestriction
-  public List<TruckStopWithCounts> getStop(@PathParam("truckId") String truckId, @QueryParam("appKey") String appKey,
+  public List<TruckStopWithCounts> getStop(@PathParam("truckId") String truckId,
+      @AppKey @QueryParam("appKey") String appKey,
       @Context DateTime startTime, @QueryParam("includeCounts") boolean includeStops) {
     startTime = (startTime == null) ? clock.currentDay()
         .toDateTimeAtStartOfDay() : startTime;
