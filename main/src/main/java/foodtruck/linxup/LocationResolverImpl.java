@@ -8,11 +8,11 @@ import javax.annotation.Nullable;
 import com.google.inject.Inject;
 
 import foodtruck.caching.Cacher;
+import foodtruck.mail.SystemNotificationService;
 import foodtruck.model.LinxupAccount;
 import foodtruck.model.Location;
 import foodtruck.model.Stop;
 import foodtruck.model.TrackingDevice;
-import foodtruck.mail.SystemNotificationService;
 import foodtruck.time.Clock;
 
 /**
@@ -80,7 +80,9 @@ class LocationResolverImpl implements LocationResolver {
       Stop stop = response.lastStopFor(device.getDeviceNumber());
       if (stop != null && !stop.getLocation()
           .withinToleranceOf(currentLocation)) {
-        systemNotificationService.notifyDeviceAnomalyDetected(stop, device);
+        if ("true".equals(System.getProperty("foodtrucklocator.location.anomaly.detection"))) {
+          systemNotificationService.notifyDeviceAnomalyDetected(stop, device);
+        }
         log.log(Level.WARNING, "Anomaly detected {0} {1}", new Object[]{stop.getLocation(), currentLocation});
         // only perform anomaly detection once per-broadcast (the device usually broadcasts every hour when parked)
         cache.put(key, true, device.getLastBroadcast()
