@@ -36,6 +36,7 @@ import foodtruck.server.dashboard.SyncServlet;
 import foodtruck.server.dashboard.TestNotificationServlet;
 import foodtruck.server.dashboard.TruckListServlet;
 import foodtruck.server.dashboard.TruckStopServlet;
+import foodtruck.server.dashboard.VersionInfo;
 import foodtruck.server.dashboard.truck.LinxupConfigServlet;
 import foodtruck.server.dashboard.truck.OffTheRoadServlet;
 import foodtruck.server.dashboard.truck.TruckBeaconServlet;
@@ -140,6 +141,7 @@ class FoodtruckServletModule extends ServletModule {
     serve("/admin/event_at/*").with(CompoundEventServlet.class);
     serve("/admin/profileSync").with(ProfileSyncServlet.class);
     serve("/admin/invalidateCache").with(InvalidateScheduleCache.class);
+    serve("/admin/versioninfo").with(VersionInfo.class);
 
     // Vendor dashboard endpoints
     serve("/vendor").with(VendorServlet.class);
