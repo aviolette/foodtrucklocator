@@ -37,7 +37,7 @@ class RequiresAdminChecker implements MethodInterceptor {
       log.log(Level.WARNING, "User is not logged in but requesting admin resource");
       forbidden();
     }
-    LoggedInUser user = loggedInUser.get();
+    @SuppressWarnings("OptionalGetWithoutIsPresent") LoggedInUser user = loggedInUser.get();
     log.log(Level.INFO, "Checking for admin privileges {0}", user);
     if (!user.isAdmin()) {
       forbidden();
@@ -45,7 +45,7 @@ class RequiresAdminChecker implements MethodInterceptor {
     return invocation.proceed();
   }
 
-  void forbidden() {
+  private void forbidden() throws WebApplicationException {
     Response response = Response.status(Response.Status.FORBIDDEN)
         .type(MediaType.APPLICATION_JSON_TYPE)
         .entity(new ErrorPayload("fobidden"))
