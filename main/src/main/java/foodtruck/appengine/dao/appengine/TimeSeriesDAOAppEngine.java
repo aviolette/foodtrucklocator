@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
+import com.google.appengine.api.datastore.DatastoreFailureException;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
@@ -94,6 +95,11 @@ abstract class TimeSeriesDAOAppEngine extends AppEngineDAO<Long, SystemStats> im
         long statValue = Attributes.getLongProperty(entity, statName, 0);
         entity.setProperty(statName, statValue + by);
         dataStore.put(entity);
+      }
+    } catch (DatastoreFailureException dsf) {
+      // just ignore
+      if (txn.isActive()) {
+        txn.rollback();
       }
     } catch (Exception e) {
       log.log(Level.WARNING, "Error saving slot: " + slot, e);
