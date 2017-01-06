@@ -29,7 +29,6 @@ import foodtruck.time.FriendlyDateTimeFormat;
 
 /**
  * Job that handles sending out notifications when a new stop has been created.
- *
  * @author aviolette
  * @since 11/18/16
  */
@@ -91,7 +90,8 @@ public class NotifyNewStopServlet extends HttpServlet {
           device.getFuelLevel() + "%\nDevice id: " +
           device.getDeviceNumber() + "\nBattery charge      " +
           device.getBatteryCharge() + " V\nLast broadcast: " +
-          formatter.print(device.getLastBroadcast());
+          formatter.print(device.getLastBroadcast()) + "\n\n\n" +
+          config.getBaseUrl() + "/vendor/beacons/" + device.getKey() + "\n";
       emailSender.sendMessage(subject, ImmutableList.of(truck.getEmail()), msgBody, config.getSystemNotificationList(),
           null);
     }
