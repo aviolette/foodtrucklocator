@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MediaType;
 
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 import com.sun.jersey.api.client.Client;
 
@@ -78,7 +77,7 @@ public class SyncServlet extends HttpServlet {
           Truck truck = truckReader.asJSON(arr.getJSONObject(i));
           truckDAO.save(Truck.builder(truck).useTwittalyzer(true).build());
         } catch (JSONException e) {
-          throw Throwables.propagate(e);
+          throw new ServletException(e);
         }
       }
     }
@@ -113,7 +112,7 @@ public class SyncServlet extends HttpServlet {
           truckStopDAO.save(stop);
         }
       } catch (JSONException e) {
-        throw Throwables.propagate(e);
+        throw new ServletException(e);
       }
     }
     resp.sendRedirect("/admin/trucks");

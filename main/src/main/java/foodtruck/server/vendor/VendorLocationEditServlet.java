@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.api.client.http.HttpStatusCodes;
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
 import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -121,7 +120,7 @@ public class VendorLocationEditServlet extends HttpServlet {
   }
 
   @Override
-  protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+  protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
     final String json = new String(ByteStreams.toByteArray(req.getInputStream()));
     Principal principal = (Principal) req.getAttribute(PRINCIPAL);
     try {
@@ -155,7 +154,7 @@ public class VendorLocationEditServlet extends HttpServlet {
       notificationService.systemNotifyLocationAdded(location, principal.getName());
       resp.setStatus(204);
     } catch (JSONException e) {
-      throw Throwables.propagate(e);
+      throw new ServletException(e);
     }
   }
 }

@@ -9,10 +9,10 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Provider;
 
-import com.google.common.base.Throwables;
 import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
 
@@ -59,7 +59,7 @@ public class TwitterNotificationAccountReader implements MessageBodyReader<Twitt
           .key(obj.optLong("id", 0))
           .build();
     } catch (JSONException e) {
-      throw Throwables.propagate(e);
+      throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
     }
   }
 }

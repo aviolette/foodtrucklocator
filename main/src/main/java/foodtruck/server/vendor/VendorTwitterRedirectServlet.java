@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -50,7 +49,7 @@ public class VendorTwitterRedirectServlet extends HttpServlet {
       session.setProperty(NOLOGON_PARAM, noLogon);
       resp.sendRedirect(token.getAuthenticationURL());
     } catch (TwitterException e) {
-      throw Throwables.propagate(e);
+      throw new ServletException(e);
     }
   }
 }

@@ -7,13 +7,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
-import foodtruck.session.Session;
 import foodtruck.model.StaticConfig;
+import foodtruck.session.Session;
 import foodtruck.socialmedia.TwitterFactoryWrapper;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -47,7 +46,7 @@ public class NotificationSetupServlet extends HttpServlet {
       session.setProperty("requestToken", token);
       resp.sendRedirect(token.getAuthenticationURL());
     } catch (TwitterException e) {
-      throw Throwables.propagate(e);
+      throw new IOException(e);
     }
   }
 

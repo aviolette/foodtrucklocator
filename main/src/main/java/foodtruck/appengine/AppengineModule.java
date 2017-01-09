@@ -29,7 +29,6 @@ import com.google.appengine.tools.cloudstorage.GcsService;
 import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
 import com.google.appengine.tools.cloudstorage.RetryParams;
 import com.google.common.base.Optional;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -110,7 +109,7 @@ public class AppengineModule extends AbstractModule {
                 new File("/Users/andrew" + File.separator + ".store" + File.separator + "/google_auth.p12"))
             .build();
       } catch (Exception e) {
-        throw Throwables.propagate(e);
+        throw new RuntimeException(e);
       }
     }
     log.info("Using production credentials for Google APIs");

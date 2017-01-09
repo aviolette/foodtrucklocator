@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.io.ByteStreams;
@@ -70,7 +69,7 @@ public class LocationEditServlet extends HttpServlet {
         req.setAttribute("locationId", location.getKey());
         req.setAttribute("aliases", locationDAO.findAliasesFor(location.getName()));
       } catch (JSONException e) {
-        throw Throwables.propagate(e);
+        throw new ServletException(e);
       }
     }
     List<String> locationNames = ImmutableList.copyOf(
@@ -92,7 +91,7 @@ public class LocationEditServlet extends HttpServlet {
       notificationService.updateLocationInNotifications(location);
       resp.setStatus(204);
     } catch (JSONException e) {
-      throw Throwables.propagate(e);
+      throw new ServletException(e);
     }
   }
 }

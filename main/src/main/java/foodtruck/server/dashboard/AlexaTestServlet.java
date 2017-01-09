@@ -17,7 +17,6 @@ import com.amazon.speech.speechlet.IntentRequest;
 import com.amazon.speech.speechlet.Speechlet;
 import com.amazon.speech.speechlet.SpeechletException;
 import com.amazon.speech.speechlet.SpeechletResponse;
-import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
 import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
@@ -56,7 +55,7 @@ public class AlexaTestServlet extends HttpServlet {
         intentObj.put(processorEntry.getKey(), processorEntry.getValue()
             .getSlotNames());
       } catch (JSONException e) {
-        throw Throwables.propagate(e);
+        throw new ServletException(e);
       }
     }
     req.setAttribute("intents", intentObj);
@@ -85,7 +84,7 @@ public class AlexaTestServlet extends HttpServlet {
       resp.getOutputStream()
           .print(envelope.toJsonString());
     } catch (JSONException | SpeechletException e) {
-      throw Throwables.propagate(e);
+      throw new ServletException(e);
     }
   }
 

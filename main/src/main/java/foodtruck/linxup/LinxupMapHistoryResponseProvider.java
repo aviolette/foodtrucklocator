@@ -9,9 +9,9 @@ import javax.annotation.Nullable;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.MessageBodyReader;
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 
 import org.codehaus.jettison.json.JSONArray;
@@ -44,7 +44,7 @@ public class LinxupMapHistoryResponseProvider implements MessageBodyReader<Linxu
       obj = JSONSerializer.readJSON(entityStream);
       return fromJson(obj);
     } catch (JSONException e) {
-      throw Throwables.propagate(e);
+      throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
     }
   }
 

@@ -8,9 +8,9 @@ import java.lang.reflect.Type;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.MessageBodyReader;
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 
 import org.codehaus.jettison.json.JSONArray;
@@ -52,7 +52,7 @@ public class LinxupMapResponseProvider implements MessageBodyReader<LinxupMapRes
         return new LinxupMapResponse(positions.build());
       }
     } catch (JSONException e) {
-      throw Throwables.propagate(e);
+      throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
     }
   }
 }

@@ -8,9 +8,8 @@ import java.lang.reflect.Type;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.MessageBodyWriter;
-
-import com.google.common.base.Throwables;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -43,7 +42,7 @@ public class LinxupMapRequestWriter implements MessageBodyWriter<LinxupMapReques
           .put("username", request.getUserName())
           .put("password", request.getPassword()), entityStream);
     } catch (JSONException e) {
-      throw Throwables.propagate(e);
+      throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
     }
   }
 }

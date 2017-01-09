@@ -8,10 +8,9 @@ import java.lang.reflect.Type;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
-
-import com.google.common.base.Throwables;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -43,7 +42,7 @@ public class ErrorPayloadWriter implements MessageBodyWriter<ErrorPayload> {
       JSONSerializer.writeJSON(new JSONObject().put("error", errorPayload.getMessage())
           .putOpt("data", errorPayload.getExtra()), entityStream);
     } catch (JSONException e) {
-      throw Throwables.propagate(e);
+      throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
     }
   }
 }

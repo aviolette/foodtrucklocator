@@ -12,11 +12,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
 import com.google.common.base.Function;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
@@ -99,7 +99,7 @@ public class DailyScheduleWriter implements MessageBodyWriter<DailySchedule>, JS
         schedules.put(truckStop);
       } catch (Exception e) {
         log.log(Level.WARNING, "Stop {0} caused an error", stop);
-        Throwables.propagate(e);
+        throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
       }
     }
     payload.put("trucks", JSONSerializer.buildArray(ImmutableSet.copyOf(trucks), truckWriter));

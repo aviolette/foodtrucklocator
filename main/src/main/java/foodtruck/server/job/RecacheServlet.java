@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -80,13 +79,13 @@ public class RecacheServlet extends HttpServlet {
     retweetsDAO.deleteAll();
   }
 
-  private LocalDate parseDate(String date) {
+  private LocalDate parseDate(String date) throws ServletException {
     if (!Strings.isNullOrEmpty(date)) {
       try {
         return timeFormatter.parseDateTime(date).withTimeAtStartOfDay().toLocalDate();
       } catch (Exception e) {
         log.log(Level.WARNING, "Error formatting time", e);
-        Throwables.propagate(e);
+        throw new ServletException(e);
       }
     }
     return clock.currentDay();

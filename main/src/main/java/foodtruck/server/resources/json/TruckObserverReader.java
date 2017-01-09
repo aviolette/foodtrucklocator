@@ -15,7 +15,6 @@ import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Provider;
 
 import com.google.common.base.Splitter;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 
@@ -64,7 +63,7 @@ public class TruckObserverReader implements MessageBodyReader<TruckObserver> {
           .split(obj.getString("keywords")));
       return new TruckObserver(obj.getString("twitterHandle"), loc, keywords);
     } catch (JSONException e) {
-      throw Throwables.propagate(e);
+      throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
     }
   }
 }

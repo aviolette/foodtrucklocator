@@ -5,8 +5,9 @@ import java.util.logging.Logger;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 
-import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 
 import org.codehaus.jettison.json.JSONException;
@@ -37,7 +38,7 @@ public class TweetsResource {
     try {
       notifier.retweet(payload.getString("account"), payload.getString("tweetId"));
     } catch (JSONException e) {
-      throw Throwables.propagate(e);
+      throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
     }
   }
 }

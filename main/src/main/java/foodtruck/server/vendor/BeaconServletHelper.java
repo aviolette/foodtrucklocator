@@ -4,7 +4,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
-import com.google.common.base.Throwables;
 import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 
@@ -48,7 +47,7 @@ public class BeaconServletHelper {
                   .put("longitude", location.getLongitude())
                   .put("radius", location.getRadius());
             } catch (JSONException e) {
-              throw Throwables.propagate(e);
+              throw new RuntimeException(e);
             }
           }
         })

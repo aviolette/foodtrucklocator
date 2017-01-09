@@ -14,7 +14,6 @@ import com.amazon.speech.speechlet.Speechlet;
 import com.amazon.speech.speechlet.SpeechletException;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 
@@ -80,7 +79,7 @@ class FTFSpeechlet implements Speechlet {
       return response;
     } catch (Exception e) {
       log.log(Level.SEVERE, e.getMessage(), e);
-      throw Throwables.propagate(e);
+      throw new SpeechletException(e);
     }
   }
 

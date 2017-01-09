@@ -9,11 +9,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
 import com.google.common.base.Function;
-import com.google.common.base.Throwables;
 import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 
@@ -50,7 +50,7 @@ public class DailyDataWriter implements MessageBodyWriter<DailyData>, JSONWriter
                   return new JSONObject().put("special", input.getSpecial())
                       .put("soldout", input.isSoldOut());
                 } catch (JSONException e) {
-                  throw Throwables.propagate(e);
+                  throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
                 }
               }
             })
@@ -77,6 +77,5 @@ public class DailyDataWriter implements MessageBodyWriter<DailyData>, JSONWriter
     } catch (JSONException e) {
       throw new BadRequestException(e, MediaType.APPLICATION_JSON_TYPE);
     }
-
   }
 }
