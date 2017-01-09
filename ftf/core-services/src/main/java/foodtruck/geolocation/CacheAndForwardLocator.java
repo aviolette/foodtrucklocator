@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 import foodtruck.dao.LocationDAO;
@@ -88,8 +89,13 @@ class CacheAndForwardLocator implements GeoLocator {
         if (existing == null) {
           return dao.saveAndFetch(loc)
               .wasJustResolved();
-        } else {
+        // if there was no alias to the looked-up location the names would be same.  Return more precise location in that case
+        } else if (existing.sameName(loc)) {
           return loc;
+        // if there was an alias, the names would be different and we would want to pick the alias
+        } else {
+          log.log(Level.INFO, "Choosing existing location: {0} {1}", new Object[] {loc, existing});
+          return existing;
         }
       }
     } catch (UnsupportedOperationException ignored) {
