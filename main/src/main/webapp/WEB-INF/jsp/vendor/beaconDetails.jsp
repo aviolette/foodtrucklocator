@@ -7,6 +7,12 @@
     <h2>${beacon.label}</h2>
   </div>
 </div>
+<c:if test="${beacon.hasWarning}">
+
+  <div class="alert alert-danger" role="alert">
+    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> ${beacon.warning}
+  </div>
+</c:if>
 <div class="row">
   <div class="col-md-3">
 

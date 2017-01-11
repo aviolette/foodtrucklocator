@@ -91,6 +91,9 @@
             TruckMap.addBeacon(item.lastLocation.latitude, item.lastLocation.longitude,
                 item.enabled, item.parked, item.blacklisted, item.direction);
             var $tr = $("<tr></tr>");
+            if (item.hasWarning) {
+              $tr.addClass("danger");
+            }
             $tr.append("<td><a href='/vendor/beacons/" + item.id + "'>" + item.label + "</a></td>");
             $tr.append("<td class='large-screen-only'>" + item.deviceNumber + "</td>");
             if (item.lastLocation) {

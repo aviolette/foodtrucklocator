@@ -66,6 +66,10 @@ public class TrackingDevice extends ModelEntity {
     return lastActualLocation;
   }
 
+  public boolean isHasWarning() {
+    return !Strings.isNullOrEmpty(getWarning());
+  }
+
   public TrackingDeviceState getState() {
     if (enabled) {
       if (!parked) {
@@ -201,6 +205,17 @@ public class TrackingDevice extends ModelEntity {
   @Nullable
   public Location getPreciseLocation() {
     return MoreObjects.firstNonNull(getLastActualLocation(), getLastLocation());
+  }
+
+  @Nullable
+  public String getWarning() {
+    if (lastBroadcast == null) {
+      return "Device has never broadcasted";
+    }
+    if (lastBroadcast.isAfter(new DateTime().minusDays(1))) {
+      return null;
+    }
+    return "Device hasn't broadcast in more than a day. Is it connected properly?";
   }
 
   public static class Builder {
