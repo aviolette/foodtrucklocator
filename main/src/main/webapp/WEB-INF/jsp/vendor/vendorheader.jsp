@@ -12,9 +12,11 @@
   <c:choose>
     <c:when test="${localFrameworks}">
       <link rel="stylesheet" href="/bootstrap3.0.3/css/bootstrap.min.css"/>
+      <link href="/css/bootstrap-toggle.css" rel="stylesheet">
     </c:when>
     <c:otherwise>
       <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+      <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     </c:otherwise>
   </c:choose>
   <link href="/css/foodtruckfinder.css?ver=11" rel="stylesheet"/>
@@ -58,6 +60,7 @@
                   <li><a href="/vendor/settings/${truck.id}">General</a></li>
                   <li><a href="/vendor/menu/${truck.id}">Menu</a></li>
                   <li><a href="/vendor/socialmedia/${truck.id}">Social Media</a></li>
+                  <li><a href="/vendor/notifications/${truck.id}">Notifications</a></li>
                 </ul>
               </li>
 

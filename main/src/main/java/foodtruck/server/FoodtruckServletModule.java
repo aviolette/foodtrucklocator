@@ -77,6 +77,7 @@ import foodtruck.server.vendor.VendorCallbackServlet;
 import foodtruck.server.vendor.VendorInfoServlet;
 import foodtruck.server.vendor.VendorLocationEditServlet;
 import foodtruck.server.vendor.VendorLogoutServlet;
+import foodtruck.server.vendor.VendorNotificationSettingsServlet;
 import foodtruck.server.vendor.VendorOffTheRoadServlet;
 import foodtruck.server.vendor.VendorPageFilter;
 import foodtruck.server.vendor.VendorRecacheServlet;
@@ -157,6 +158,7 @@ class FoodtruckServletModule extends ServletModule {
     serveRegex("/vendor/socialmedia/[\\S]*/unlink").with(VendorUnlinkAccountServlet.class);
     serve("/vendor/socialmedia/*").with(VendorSocialMediaSettingsServlet.class);
     serve("/vendor/schedule").with(PostScheduleServlet.class);
+    serve("/vendor/notifications/*").with(VendorNotificationSettingsServlet.class);
 
     // Alexa integration
     serve("/amazonalexa").with(AlexaServlet.class);
