@@ -82,6 +82,8 @@ public class Truck extends ModelEntity implements Serializable {
   private @Nullable DateTime facebookAccessTokenExpires;
   private boolean notifyOfLocationChanges;
   private boolean disableBeaconsUntilLunchtime;
+  private boolean notifyWhenLeaving;
+  private boolean notifyWhenDeviceIssues;
 
   // For serialization (for storage in memcached)
   private Truck() {
@@ -136,6 +138,8 @@ public class Truck extends ModelEntity implements Serializable {
     this.facebookAccessTokenExpires = builder.facebookAccessTokenExpires;
     this.notifyOfLocationChanges = builder.notifyOfLocationChanges;
     this.disableBeaconsUntilLunchtime = builder.disableBeaconsUntilLunchtime;
+    this.notifyWhenDeviceIssues = builder.notifyWhenDeviceIssues;
+    this.notifyWhenLeaving = builder.notifyWhenLeaving;
   }
 
   public static Builder builder() {
@@ -156,6 +160,14 @@ public class Truck extends ModelEntity implements Serializable {
 
   public Builder append() {
     return new Builder(this);
+  }
+
+  public boolean isNotifyWhenLeaving() {
+    return notifyWhenLeaving;
+  }
+
+  public boolean isNotifyWhenDeviceIssues() {
+    return notifyWhenDeviceIssues;
   }
 
   public boolean isNotifyOfLocationChanges() {
@@ -726,6 +738,8 @@ public class Truck extends ModelEntity implements Serializable {
     private @Nullable String facebookAccessToken;
     private @Nullable DateTime facebookAccessTokenExpires;
     private boolean notifyOfLocationChanges;
+    private boolean notifyWhenLeaving;
+    private boolean notifyWhenDeviceIssues;
 
     public Builder() {
     }
@@ -778,6 +792,18 @@ public class Truck extends ModelEntity implements Serializable {
       this.facebookAccessTokenExpires = truck.facebookAccessTokenExpires;
       this.notifyOfLocationChanges = truck.notifyOfLocationChanges;
       this.disableBeaconsUntilLunchtime = truck.disableBeaconsUntilLunchtime;
+      this.notifyWhenDeviceIssues = truck.notifyWhenDeviceIssues;
+      this.notifyWhenLeaving = truck.notifyWhenLeaving;
+    }
+
+    public Builder notifyWhenDeviceIssues(boolean notify) {
+      this.notifyWhenDeviceIssues = notify;
+      return this;
+    }
+
+    public Builder notifyWhenLeaving(boolean notify) {
+      this.notifyWhenLeaving = notify;
+      return this;
     }
 
     public Builder notifyOfLocationChanges(boolean notify) {
