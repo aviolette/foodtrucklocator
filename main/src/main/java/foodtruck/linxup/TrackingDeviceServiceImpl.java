@@ -47,6 +47,7 @@ import foodtruck.time.FriendlyDateTimeFormat;
  * @since 8/4/16
  */
 class TrackingDeviceServiceImpl implements TrackingDeviceService {
+
   private static final Logger log = Logger.getLogger(TrackingDeviceServiceImpl.class.getName());
   private final LinxupConnector connector;
   private final TrackingDeviceDAO trackingDeviceDAO;
@@ -243,11 +244,17 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
     for (TruckStop stop : activeStops) {
       if (stop.activeDuring(clock.now()) && device.getId()
           .equals(stop.getCreatedWithDeviceId())) {
-        truckStopDAO.save(TruckStop.builder(stop)
+        long stopId = truckStopDAO.save(TruckStop.builder(stop)
             .endTime(clock.now())
             .appendNote(
                 device.isEnabled() ? "Ended stop since because truck is moving" : "Ended stop since beacon was disabled")
             .build());
+        if (device.isEnabled()) {
+          Queue queue = queueProvider.get();
+          queue.add(TaskOptions.Builder.withUrl("/cron/notify_stop_ended")
+              .param("stopId", String.valueOf(stopId))
+              .param("deviceId", String.valueOf(device.getKey())));
+        }
         return;
       }
     }
@@ -391,6 +398,7 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
   }
 
   private static class Matches {
+
     private final TruckStop current, after;
     private final Truck truck;
 

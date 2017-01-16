@@ -40,6 +40,7 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class TrackingDeviceServiceImplTest {
+
   private static final String TRUCKID = "truckid";
   private static final String DEVICEID1 = "device1";
   private static final String DEVICELABEL1 = "label1";
@@ -187,6 +188,8 @@ public class TrackingDeviceServiceImplTest {
         .categories(ImmutableSet.of("Lunch"))
         .build();
     when(truckDAO.findById(TRUCKID)).thenReturn(truck);
+    Queue queue = mock(Queue.class);
+    when(queueProvider.get()).thenReturn(queue);
 
     service.synchronizeFor(account);
 
@@ -203,8 +206,6 @@ public class TrackingDeviceServiceImplTest {
         .appendNote("Ended stop since beacon was disabled")
         .build());
   }
-
-
 
   // create a tracking device when none exists.  This tracking device is associated with the linxupaccount that
   // was queried.  During the merge phase it will try to cancel all stops, but none exist since nothing has been

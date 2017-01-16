@@ -39,6 +39,7 @@ import static foodtruck.appengine.dao.appengine.Attributes.setDateProperty;
  * @since 2/26/12
  */
 class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO {
+
   private static final String TRUCK_KIND = "Store";
   private static final String TRUCK_NAME_FIELD = "name";
   private static final String TRUCK_CANONICAL_NAME = "canonical_name";
@@ -98,6 +99,8 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
   private static final String FACEBOOK_ACCESS_TOKEN = "facebook_access_token";
   private static final String FACEBOOK_ACCESS_TOKEN_EXPIRY = "facebook_access_token_expiry";
   private static final String NOTIFY_OF_LOCATION_CHANGES = "notify_of_location_changes";
+  private static final String NOTIFY_WHEN_LEAVING = "notify_when_leaving";
+  private static final String NOTIFY_WHEN_DEVICE_ISSUES = "notify_when_device_issues";
 
   private DateTimeZone zone;
 
@@ -187,6 +190,8 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
         .neverLinkTwitter(getBooleanProperty(entity, NEVER_LINK_TWITTER, false))
         .facebookAccessToken(getStringProperty(entity, FACEBOOK_ACCESS_TOKEN, null))
         .facebookAccessTokenExpires(getDateTime(entity, FACEBOOK_ACCESS_TOKEN_EXPIRY, zone))
+        .notifyWhenLeaving(getBooleanProperty(entity, NOTIFY_WHEN_LEAVING, false))
+        .notifyWhenDeviceIssues(getBooleanProperty(entity, NOTIFY_WHEN_DEVICE_ISSUES, false))
         .build();
   }
 
@@ -364,6 +369,8 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     entity.setProperty(FACEBOOK_ACCESS_TOKEN, truck.getFacebookAccessToken());
     Attributes.setDateProperty(TRUCK_MUTE_UNTIL, entity, truck.getMuteUntil());
     entity.setProperty(NEVER_LINK_TWITTER, truck.isNeverLinkTwitter());
+    entity.setProperty(NOTIFY_WHEN_LEAVING, truck.isNotifyWhenLeaving());
+    entity.setProperty(NOTIFY_WHEN_DEVICE_ISSUES, truck.isNotifyWhenDeviceIssues());
     Truck.Stats stats = truck.getStats();
     if (stats == null) {
       stats = Truck.Stats.builder()

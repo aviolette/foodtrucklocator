@@ -46,6 +46,7 @@ public class VendorNotificationSettingsServlet extends HttpServlet {
     Set<String> options = ImmutableSet.copyOf(optionsArray == null ? new String[0] : optionsArray);
     truck = Truck.builder(truck)
         .notifyOfLocationChanges(options.contains("notifyOfLocationChanges"))
+        .notifyWhenLeaving(options.contains("notifyWhenLeaving"))
         .build();
     truckDAO.save(truck);
   }

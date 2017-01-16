@@ -1,24 +1,35 @@
 <%@ include file="vendorheader.jsp" %>
 <%@ include file="../include/core_js.jsp" %>
 
-<h2>Notifications</h2>
-<p>Notifications will be sent as emails to the email specified on the <a href="/vendor/settings/${truck.id}">General
-  Settings Page</a></p>
+
+<div class="row">
+  <div class="col-md-12">
+    <h2>Notifications</h2>
+    <p class="lead">
+      If you have tracking devices enabled in your truck, you can configure email notifications to be sent to your email
+      based on truck events. Emails will be sent to the email configured on <a href="/vendor/settings/${truck.id}">General
+      Settings Page</a>.
+    </p>
+  </div>
+</div>
+
+
 <form id="settingsForm" method="POST" action="">
   <div class="checkbox">
     <label>
       <input type="checkbox" name="options" value="notifyOfLocationChanges"
              data-toggle="toggle" ${truck.notifyOfLocationChanges ? "checked='checked'" : ""}>
-      Notify when truck stops at location
+      Send email when truck arrives at a location. This email includes location, gas level, and battery charge.
+    </label>
+  </div>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" data-toggle="toggle" name="options"
+             value="notifyWhenLeaving" ${truck.notifyWhenLeaving ? "checked='checked'" : ""}>
+      Send email when truck leaves a location
     </label>
   </div>
   <%--
-    <div class="checkbox">
-      <label>
-        <input type="checkbox" data-toggle="toggle">
-        Notify when truck leaves a location
-      </label>
-    </div>
     <div class="checkbox">
       <label>
         <input type="checkbox" data-toggle="toggle">
@@ -26,7 +37,11 @@
       </label>
     </div>
     --%>
-  <button id="settingsButton" type="button" class="btn btn-primary">Save</button>
+  <div class="btn-toolbar" style="padding-top:20px">
+    <div class="btn-group">
+      <button id="settingsButton" type="button" class="btn btn-primary">Save</button>
+    </div>
+  </div>
 </form>
 <script type="text/javascript">
   (function () {

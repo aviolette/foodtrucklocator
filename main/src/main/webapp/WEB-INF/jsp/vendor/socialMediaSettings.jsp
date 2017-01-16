@@ -1,6 +1,14 @@
 <%@ include file="vendorheader.jsp" %>
 
-<h2>Linked Social Media Accounts</h2>
+<div class="row">
+  <div class="col-md-12">
+    <h2>Linked Social Media Accounts</h2>
+    <p class="lead">
+      Link social media accounts so that you can cross-post your schedule and auto-post to social media sites when a
+      truck event occurs.
+    </p>
+  </div>
+</div>
 <div class="row">
   <div class="col-md-3">
     <div class="panel panel-info">
@@ -40,12 +48,16 @@
       </div>
       --%>
       <div class="checkbox">
-        <label><input type="checkbox" name="options"
+        <label><input type="checkbox" name="options" data-toggle="toggle"
                       value="postAtNewStop" ${truck.postAtNewStop ? "checked='checked'" : ""}/>
-          Post at at non-blacklisted location</label>
+          Post to your linked social media accounts when truck arrives at a location.</label>
       </div>
 
-      <button id="settingsButton" type="button" class="btn btn-primary">Save</button>
+      <div class="btn-toolbar" style="padding-top:20px">
+        <div class="btn-group">
+          <button id="settingsButton" type="button" class="btn btn-primary">Save</button>
+        </div>
+      </div>
     </form>
 
   </div>

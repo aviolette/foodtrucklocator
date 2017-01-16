@@ -1,5 +1,14 @@
 <%@ include file="vendorheader.jsp" %>
 
+<div class="row">
+  <div class="col-md-12">
+    <h2>General Settings</h2>
+    <p class="lead">
+      This data is reflected throughout the site, especially on <a href="/trucks/${truck.id}">your truck's page</a>
+      on The Chicago Food Truck Finder.
+    </p>
+  </div>
+</div>
 <form id="settingsForm" method="POST" action="">
   <div class="form-group">
     <label for="name">Name</label>
@@ -15,7 +24,8 @@
   </div>
   <div class="form-group">
     <label for="url">URL</label>
-    <input class="form-control" id="url" name="url" type="text" value="${truck.url}" placeholder="The URL to your website"/>
+    <input class="form-control" id="url" name="url" type="text" value="${truck.url}"
+           placeholder="The URL to your website"/>
   </div>
   <div class="form-group">
     <label for="description">Description</label>
@@ -25,20 +35,20 @@
 </form>
 <%@ include file="../include/core_js.jsp" %>
 <script type="text/javascript">
-  (function() {
-    $("#settingsButton").click(function(e) {
+  (function () {
+    $("#settingsButton").click(function (e) {
       e.preventDefault();
       $.ajax({
         type: "POST",
         url: "/vendor/settings/${truck.id}",
         data: $("#settingsForm").serialize(),
-        error: function(resp, textStatus, errorThrown) {
+        error: function (resp, textStatus, errorThrown) {
           $("#flash").css("display", "block");
           $("#flash").removeClass("alert-info");
           $("#flash").addClass("alert-error");
           $("#flash").html(resp.responseText);
         },
-        success : function() {
+        success: function () {
           location.href = "/vendor";
         }
       });

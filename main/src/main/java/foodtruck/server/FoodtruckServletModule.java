@@ -55,8 +55,10 @@ import foodtruck.server.front.TruckBusinessesServlet;
 import foodtruck.server.front.TruckTimelineServlet;
 import foodtruck.server.front.TrucksServlet;
 import foodtruck.server.front.WeeklyScheduleServlet;
+import foodtruck.server.job.CheckDeviceIssuesServlet;
 import foodtruck.server.job.ErrorCountServlet;
 import foodtruck.server.job.InvalidateScheduleCache;
+import foodtruck.server.job.NotifyLeavingStopServlet;
 import foodtruck.server.job.NotifyNewStopServlet;
 import foodtruck.server.job.ProfileSyncServlet;
 import foodtruck.server.job.PurgeStatsServlet;
@@ -106,10 +108,12 @@ class FoodtruckServletModule extends ServletModule {
     serve("/cron/updateLocationStats").with(UpdateLocationStats.class);
     serve("/cron/error_stats").with(ErrorCountServlet.class);
     serve("/cron/activate_beacon").with(TruckMonitorServlet.class);
+    serve("/cron/check_device_issues").with(CheckDeviceIssuesServlet.class);
 
     // Queue activated servlets
     serve("/cron/update_count").with(StatUpdateQueueServlet.class);
     serve("/cron/notify_stop_created").with(NotifyNewStopServlet.class);
+    serve("/cron/notify_stop_ended").with(NotifyLeavingStopServlet.class);
 
     // Dashboard endpoints
     serve("/admin").with(AdminDashboardServlet.class);
@@ -188,7 +192,6 @@ class FoodtruckServletModule extends ServletModule {
     serve("/support/iphone").with(IPhoneSupportServlet.class);
     serve("/.well-known/acme-challenge/*").with(SSLVerificationServlet.class);
     serve("/").with(FoodTruckServlet.class);
-
 
     // Services
     install(new FactoryModuleBuilder().build(DailySpecialResourceFactory.class));

@@ -6,16 +6,16 @@
 <div class="row">
   <div class="col-md-12">
     <p class="lead">
-      This page allows you to build a menu that will be displayed on <a href="/trucks/${truck.id}">your truck's page</a>
+      Build a custom menu organized by menu sections to display on <a href="/trucks/${truck.id}">your truck's page</a>
       on
-      The Chicago Food Truck Finder.
+      The Chicago Food Truck Finder. Start by clicking the "Menu Section" button.
     </p>
 
-      <div class="btn-group">
-        <button id="add-section-button" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Menu
-          Section
-        </button>
-      </div>
+    <div class="btn-group">
+      <button id="add-section-button" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Menu
+        Section
+      </button>
+    </div>
   </div>
 </div>
 
@@ -24,7 +24,7 @@
     <form id="menu" class="form-horizontal">
     </form>
     <div class="btn-group">
-      <button id="save-button" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-save"></span> Save
+      <button id="save-button" class="btn btn-primary"> Save
       </button>
     </div>
 
@@ -71,7 +71,7 @@
           stale();
           $item.remove();
         }
-      })
+      });
       return $nameField;
     }
 
@@ -133,7 +133,7 @@
         });
         section["items"] = items;
         sections.push(section);
-      })
+      });
       menuJson = {"sections": sections};
       $.ajax({
         url: endpoint,
