@@ -29,14 +29,12 @@
       Send email when truck leaves a location
     </label>
   </div>
-  <%--
     <div class="checkbox">
       <label>
-        <input type="checkbox" data-toggle="toggle">
+        <input type="checkbox" data-toggle="toggle" name="options" value="notifyWhenDeviceIssues" ${truck.notifyWhenDeviceIssues ? "checked='checked'" : ""}>
         Notify when there is a problem with a device
       </label>
     </div>
-    --%>
   <div class="btn-toolbar" style="padding-top:20px">
     <div class="btn-group">
       <button id="settingsButton" type="button" class="btn btn-primary">Save</button>

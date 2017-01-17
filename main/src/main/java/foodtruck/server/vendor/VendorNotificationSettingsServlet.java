@@ -47,6 +47,7 @@ public class VendorNotificationSettingsServlet extends HttpServlet {
     truck = Truck.builder(truck)
         .notifyOfLocationChanges(options.contains("notifyOfLocationChanges"))
         .notifyWhenLeaving(options.contains("notifyWhenLeaving"))
+        .notifyWhenDeviceIssues(options.contains("notifyWhenDeviceIssues"))
         .build();
     truckDAO.save(truck);
   }

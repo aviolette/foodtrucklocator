@@ -21,6 +21,7 @@ import foodtruck.util.UrlBuilder;
  */
 @Singleton
 class SSLRedirectFilter implements Filter {
+
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {
   }
@@ -31,8 +32,7 @@ class SSLRedirectFilter implements Filter {
     if (!req.isSecure()) {
       HttpServletResponse resp = (HttpServletResponse) response;
       HttpServletRequest request = (HttpServletRequest) req;
-      resp.sendRedirect(new UrlBuilder(request)
-          .protocol("https")
+      resp.sendRedirect(new UrlBuilder(request).protocol("https")
           .port(443)
           .host(System.getProperty("foodtrucklocator.host", "www.chicagofoodtruckfinder.com"))
           .build());
