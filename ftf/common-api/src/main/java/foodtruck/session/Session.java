@@ -26,6 +26,7 @@ import foodtruck.time.HttpHeaderFormat;
  * @author aviolette
  * @since 6/18/14
  */
+@SuppressWarnings("unused")
 @RequestScoped
 public class Session {
   private final Cacher cache;
@@ -69,6 +70,7 @@ public class Session {
     } else {
       contents = Maps.newHashMap();
     }
+    //noinspection ConstantConditions
     contents.put(name, value);
     cache.put(fullSessionKey(), contents, 1440);
   }
@@ -77,6 +79,7 @@ public class Session {
     if (cache.contains(fullSessionKey())) {
       //noinspection unchecked
       Map<String, Object> map = (Map<String, Object>) cache.get(fullSessionKey());
+      //noinspection ConstantConditions
       return map.get(name);
     }
     return null;
@@ -90,6 +93,7 @@ public class Session {
     if (cache.contains(fullSessionKey())) {
       //noinspection unchecked
       Map<String, Object> contents = (Map<String, Object>) cache.get(fullSessionKey());
+      //noinspection ConstantConditions
       contents.remove(name);
       cache.put(fullSessionKey(), contents);
     }

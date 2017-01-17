@@ -45,7 +45,7 @@ import twitter4j.conf.PropertyConfiguration;
  * @author aviolette
  * @since 12/3/12
  */
-public class TwitterEventNotificationService implements PublicEventNotificationService {
+class TwitterEventNotificationService implements PublicEventNotificationService {
   private static final Joiner HANDLE_JOINER = Joiner.on(" ")
       .skipNulls();
   private static final Logger log = Logger.getLogger(TwitterEventNotificationService.class.getName());
@@ -80,7 +80,7 @@ public class TwitterEventNotificationService implements PublicEventNotificationS
       try {
         Set<Truck> trucks = truckService.findTrucksNearLocation(account.getLocation(), clock.now());
         if (!trucks.isEmpty()) {
-          updateStatus(account, String.format("Trucks at %s today: %s ", account.getName(), FluentIterable.from(trucks)
+          String format = String.format("Trucks at %s today: %s ", account.getName(), FluentIterable.from(trucks)
               .transform(new Function<Truck, String>() {
                 public String apply(Truck input) {
                   if (Strings.isNullOrEmpty(input.getTwitterHandle())) {
@@ -89,7 +89,13 @@ public class TwitterEventNotificationService implements PublicEventNotificationS
                   return "@" + input.getTwitterHandle();
                 }
               })
-              .join(HANDLE_JOINER)));
+              .join(HANDLE_JOINER));
+          // include base URL in tweet (when possible) to drive web traffic
+          String potential = format + "\n\n" + config.getBaseUrl();
+          if (potential.length() <= 140) {
+            format = potential;
+          }
+          updateStatus(account, format);
         }
       } catch (Exception e) {
         log.log(Level.WARNING, "An exception occurred", e);
@@ -129,6 +135,7 @@ public class TwitterEventNotificationService implements PublicEventNotificationS
   @Nullable
   private AccessToken twitterAccessToken(Truck truck) {
     if (truck.getHasTwitterCredentials()) {
+      //noinspection ConstantConditions
       return new AccessToken(truck.getTwitterToken(), truck.getTwitterTokenSecret());
     }
     return null;
