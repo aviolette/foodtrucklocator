@@ -9,6 +9,8 @@ import com.google.common.base.Strings;
 import com.google.common.primitives.Ints;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import static foodtruck.model.TrackingDeviceState.BROADCASTING;
 import static foodtruck.model.TrackingDeviceState.HIDDEN;
@@ -215,7 +217,9 @@ public class TrackingDevice extends ModelEntity {
     if (lastBroadcast.isAfter(new DateTime().minusDays(1))) {
       return null;
     }
-    return "Device hasn't broadcast in more than a day. Is it connected properly?";
+    DateTimeFormatter formatter = DateTimeFormat.forStyle("M-");
+
+    return "Device hasn't broadcast since " + formatter.print(lastBroadcast) + " . Is it connected properly?";
   }
 
   public static class Builder {
