@@ -1,7 +1,6 @@
 package foodtruck.server;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -18,8 +17,6 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class CommonConfigFilter implements Filter {
-  private static final Logger log = Logger.getLogger(SiteScraperFilter.class.getName());
-
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {
   }
