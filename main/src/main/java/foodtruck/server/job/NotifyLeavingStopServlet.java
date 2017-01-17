@@ -33,7 +33,7 @@ public class NotifyLeavingStopServlet extends AbstractNotificationServlet {
   protected void privateNotify(TruckStop stop, TrackingDevice device, Truck truck) {
     String subject = device.getLabel() + " has left " + stop.getLocation()
         .getShortenedName();
-    String msgBody = urls(device.getDeviceNumber(), truck.getId());
+    String msgBody = urls(String.valueOf(device.getKey()), truck.getId());
     Iterable<String> emails =
         truck.isNotifyWhenLeaving() && !Strings.isNullOrEmpty(truck.getEmail()) ? ImmutableList.of(
             truck.getEmail()) : getConfig().getSystemNotificationList();
