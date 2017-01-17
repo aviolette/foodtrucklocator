@@ -31,14 +31,13 @@ public class NotifyLeavingStopServlet extends AbstractNotificationServlet {
 
   @Override
   protected void privateNotify(TruckStop stop, TrackingDevice device, Truck truck) {
-    //noinspection ConstantConditions
-    if (truck.isNotifyWhenLeaving() && !Strings.isNullOrEmpty(truck.getEmail())) {
-      String subject = device.getLabel() + " has left " + stop.getLocation()
-          .getShortenedName();
-      String msgBody = getConfig().getBaseUrl() + "/vendor/beacons/" + device.getKey() + "\n";
-      getEmailSender().sendMessage(subject, ImmutableList.of(truck.getEmail()), msgBody,
-          getConfig().getSystemNotificationList(), null);
-    }
+    String subject = device.getLabel() + " has left " + stop.getLocation()
+        .getShortenedName();
+    String msgBody = urls(device.getDeviceNumber(), truck.getId());
+    Iterable<String> emails =
+        truck.isNotifyWhenLeaving() && !Strings.isNullOrEmpty(truck.getEmail()) ? ImmutableList.of(
+            truck.getEmail()) : getConfig().getSystemNotificationList();
+    getEmailSender().sendMessage(subject, emails, msgBody, getConfig().getSystemNotificationList(), null);
   }
 
   @Override

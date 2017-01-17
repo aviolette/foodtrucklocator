@@ -1,14 +1,5 @@
 package foodtruck.server.job;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
@@ -33,55 +24,19 @@ import foodtruck.time.FriendlyDateTimeFormat;
  * @since 11/18/16
  */
 @Singleton
-public class NotifyNewStopServlet extends HttpServlet {
-  private static final Logger log = Logger.getLogger(NotifyNewStopServlet.class.getName());
-
-  private final PublicEventNotificationService notificationService;
-  private final EmailSender emailSender;
-  private final TruckStopDAO truckStopDAO;
-  private final TrackingDeviceDAO trackingDeviceDAO;
-  private final TruckDAO truckDAO;
-  private final StaticConfig config;
+public class NotifyNewStopServlet extends AbstractNotificationServlet {
   private final DateTimeFormatter formatter;
 
   @Inject
   public NotifyNewStopServlet(PublicEventNotificationService notificationService, EmailSender emailSender,
       TruckStopDAO truckStopDAO, TrackingDeviceDAO trackingDeviceDAO, TruckDAO truckDAO, StaticConfig config,
       @FriendlyDateTimeFormat DateTimeFormatter formatter) {
-    this.notificationService = notificationService;
-    this.emailSender = emailSender;
-    this.truckStopDAO = truckStopDAO;
-    this.trackingDeviceDAO = trackingDeviceDAO;
-    this.truckDAO = truckDAO;
-    this.config = config;
+    super(truckStopDAO, trackingDeviceDAO, truckDAO, notificationService, emailSender, config);
     this.formatter = formatter;
   }
 
-  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    String stopId = request.getParameter("stopId");
-    String deviceId = request.getParameter("deviceId");
-    TruckStop stop = truckStopDAO.findById(Long.parseLong(stopId));
-    TrackingDevice device = trackingDeviceDAO.findById(Long.parseLong(deviceId));
-
-    if (stop == null) {
-      // just a warning since it's possible and legitimate to delete a stop before this actually gets invoked.
-      log.log(Level.WARNING, "Stop not found {0}", stopId);
-      return;
-    }
-
-    if (device == null) {
-      log.log(Level.SEVERE, "Device not found {0}", deviceId);
-      return;
-    }
-
-    Truck truck = truckDAO.findById(stop.getTruck()
-        .getId());
-    stop = TruckStop.builder(stop)
-        .truck(truck)
-        .build();
-
-    notificationService.notifyStopStart(stop);
-
+  @Override
+  protected void privateNotify(TruckStop stop, TrackingDevice device, Truck truck) {
     //noinspection ConstantConditions
     if (truck.isNotifyOfLocationChanges() && !Strings.isNullOrEmpty(truck.getEmail())) {
       String subject = device.getLabel() + " has parked at " + stop.getLocation()
@@ -90,10 +45,15 @@ public class NotifyNewStopServlet extends HttpServlet {
           device.getFuelLevel() + "%\nDevice id: " +
           device.getDeviceNumber() + "\nBattery charge      " +
           device.getBatteryCharge() + " V\nLast broadcast: " +
-          formatter.print(device.getLastBroadcast()) + "\n\n\n" +
-          config.getBaseUrl() + "/vendor/beacons/" + device.getKey() + "\n";
-      emailSender.sendMessage(subject, ImmutableList.of(truck.getEmail()), msgBody, config.getSystemNotificationList(),
+          formatter.print(device.getLastBroadcast()) + "\n\n\n" + urls(device.getDeviceNumber(), truck.getId());
+      getEmailSender().sendMessage(subject, ImmutableList.of(truck.getEmail()), msgBody,
+          getConfig().getSystemNotificationList(),
           null);
     }
+  }
+
+  @Override
+  protected void publicNotify(TruckStop stop) {
+    getNotificationService().notifyStopStart(stop);
   }
 }

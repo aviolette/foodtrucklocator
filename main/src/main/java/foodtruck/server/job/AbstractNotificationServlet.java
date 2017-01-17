@@ -45,7 +45,7 @@ public abstract class AbstractNotificationServlet extends HttpServlet {
   }
 
   @Override
-  protected final void doGet(HttpServletRequest request,
+  protected final void doPost(HttpServletRequest request,
       HttpServletResponse resp) throws ServletException, IOException {
     String stopId = request.getParameter("stopId");
     String deviceId = request.getParameter("deviceId");
@@ -88,5 +88,10 @@ public abstract class AbstractNotificationServlet extends HttpServlet {
 
   PublicEventNotificationService getNotificationService() {
     return notificationService;
+  }
+
+  String urls(String key, String truckId) {
+    return "Beacon Information:\n" + config.getBaseUrl() + "/vendor/beacons/" + key + "\n\n" +
+        "To disable or enable these notifications:\n" + config.getBaseUrl() + "/vendor/notifications/" + truckId + "\n";
   }
 }
