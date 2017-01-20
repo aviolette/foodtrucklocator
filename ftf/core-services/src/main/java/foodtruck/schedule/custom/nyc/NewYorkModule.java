@@ -26,6 +26,7 @@ public class NewYorkModule extends AbstractModule {
         .to(USATruckMatcher.class);
     binder.addBinding("gcnyc1")
         .to(GorillaCheeseNYCMatcher.class);
+    binder.addBinding("disosnyc").to(DisosNycMatcher.class);
   }
 
   @Provides

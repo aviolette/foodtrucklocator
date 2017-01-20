@@ -13,12 +13,13 @@ import foodtruck.time.FriendlyDateTimeFormat;
 
 /**
  * @author aviolette
- * @since 10/6/16
+ * @since 1/19/17
  */
-class GorillaCheeseNYCMatcher extends MultipleTruckMatcher {
+class DisosNycMatcher extends MultipleTruckMatcher {
+
   @Inject
-  public GorillaCheeseNYCMatcher(GeoLocator geoLocator, ImmutableList<Spot> commonSpots,
-      @FriendlyDateTimeFormat DateTimeFormatter formatter, Clock clock) {
+  public DisosNycMatcher(GeoLocator geoLocator, ImmutableList<Spot> commonSpots, @FriendlyDateTimeFormat DateTimeFormatter formatter,
+      Clock clock) {
     super(geoLocator, commonSpots, formatter, clock);
   }
 }
