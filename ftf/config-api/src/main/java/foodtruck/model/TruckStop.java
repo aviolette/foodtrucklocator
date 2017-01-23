@@ -21,14 +21,15 @@ import org.joda.time.format.DateTimeFormatter;
 
 /**
  * Specifies an truck at a location at a date and time.
- *
  * @author aviolette@gmail.com
  * @since Jul 12, 2011
  */
 public class TruckStop extends ModelEntity {
+
   public static final Function TO_TRUCK_NAME = new Function<TruckStop, String>() {
     public String apply(TruckStop input) {
-      return input.getTruck().getNameInSSML();
+      return input.getTruck()
+          .getNameInSSML();
     }
   };
   public static final Function<TruckStop, String> TO_LOCATION_NAME = new Function<TruckStop, String>() {
@@ -59,6 +60,8 @@ public class TruckStop extends ModelEntity {
   private final List<String> notes;
   private final StopOrigin origin;
   private final @Nullable Long createdWithDeviceId;
+  private final @Nullable String description;
+  private final @Nullable String imageUrl;
 
   private TruckStop(Builder builder) {
     super(builder.key);
@@ -73,6 +76,18 @@ public class TruckStop extends ModelEntity {
     origin = builder.origin;
     createdWithDeviceId = builder.createdWithDeviceId;
     manuallyUpdated = builder.manuallyUpdated;
+    description = builder.description;
+    imageUrl = builder.imageUrl;
+  }
+
+  @Nullable
+  public String getDescription() {
+    return description;
+  }
+
+  @Nullable
+  public String getImageUrl() {
+    return imageUrl;
   }
 
   public static Builder builder() {
@@ -111,7 +126,8 @@ public class TruckStop extends ModelEntity {
   /**
    * Returns the time the stop was last automatically updated (could be null if it was only manually entered).
    */
-  public @Nullable DateTime getLastUpdated() {
+  @Nullable
+  public DateTime getLastUpdated() {
     return lastUpdated;
   }
 
@@ -172,14 +188,18 @@ public class TruckStop extends ModelEntity {
    * Returns a new TruckStop with a new startTime
    */
   public TruckStop withStartTime(DateTime startTime) {
-    return TruckStop.builder(this).startTime(startTime).build();
+    return TruckStop.builder(this)
+        .startTime(startTime)
+        .build();
   }
 
   /**
    * Returns a new TruckStop with a new endTime
    */
   public TruckStop withEndTime(DateTime endTime) {
-    return TruckStop.builder(this).endTime(endTime).build();
+    return TruckStop.builder(this)
+        .endTime(endTime)
+        .build();
   }
 
   public boolean activeDuring(DateTime dateTime) {
@@ -191,7 +211,9 @@ public class TruckStop extends ModelEntity {
   }
 
   public TruckStop withLocation(Location location) {
-    return TruckStop.builder(this).location(location).build();
+    return TruckStop.builder(this)
+        .location(location)
+        .build();
   }
 
   /**
@@ -201,7 +223,9 @@ public class TruckStop extends ModelEntity {
     return endTime.isBefore(currentTime);
   }
 
-  public @Nullable DateTime getBeaconTime() {
+  public
+  @Nullable
+  DateTime getBeaconTime() {
     return fromBeacon;
   }
 
@@ -214,6 +238,7 @@ public class TruckStop extends ModelEntity {
   }
 
   public static class ActiveAfterPredicate implements Predicate<TruckStop> {
+
     private DateTime requestTime;
 
     public ActiveAfterPredicate(DateTime requestTime) {
@@ -222,11 +247,13 @@ public class TruckStop extends ModelEntity {
 
     @Override
     public boolean apply(TruckStop input) {
-      return input.getStartTime().isAfter(requestTime);
+      return input.getStartTime()
+          .isAfter(requestTime);
     }
   }
 
   public static class ActiveDuringPredicate implements Predicate<TruckStop> {
+
     private DateTime requestTime;
 
     public ActiveDuringPredicate(DateTime requestTime) {
@@ -240,6 +267,7 @@ public class TruckStop extends ModelEntity {
   }
 
   public static class Builder {
+
     private Truck truck;
     private DateTime startTime;
     private DateTime endTime;
@@ -252,6 +280,8 @@ public class TruckStop extends ModelEntity {
     private StopOrigin origin = StopOrigin.UNKNOWN;
     private @Nullable Long createdWithDeviceId;
     private @Nullable DateTime manuallyUpdated;
+    private String description;
+    private String imageUrl;
 
     private Builder() {
     }
@@ -269,6 +299,8 @@ public class TruckStop extends ModelEntity {
       origin = stop.getOrigin();
       createdWithDeviceId = stop.createdWithDeviceId;
       manuallyUpdated = stop.manuallyUpdated;
+      description = stop.description;
+      imageUrl = stop.imageUrl;
     }
 
     public Builder createdWithDeviceId(Long deviceId) {
@@ -336,6 +368,16 @@ public class TruckStop extends ModelEntity {
       return this;
     }
 
+    public Builder imageUrl(String imageUrl) {
+      this.imageUrl = imageUrl;
+      return this;
+    }
+
+    public Builder description(String description) {
+      this.description = description;
+      return this;
+    }
+
     public TruckStop build() {
       return new TruckStop(this);
     }
@@ -360,7 +402,8 @@ public class TruckStop extends ModelEntity {
     }
 
     public boolean hasCategory(String category) {
-      return (truck != null && truck.getCategories().contains(category));
+      return (truck != null && truck.getCategories()
+          .contains(category));
     }
   }
 }
