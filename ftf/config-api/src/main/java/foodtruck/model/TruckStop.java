@@ -171,6 +171,7 @@ public class TruckStop extends ModelEntity {
   public String toString() {
     try {
       return MoreObjects.toStringHelper(this)
+          .add("id", getKey())
           .add("truck", truck.getId())
           .add("startTime", startTime)
           .add("endTime", endTime)
