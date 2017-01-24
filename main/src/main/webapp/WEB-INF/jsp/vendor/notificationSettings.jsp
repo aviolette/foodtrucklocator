@@ -37,7 +37,7 @@
     </div>
   <div class="btn-toolbar" style="padding-top:20px">
     <div class="btn-group">
-      <button id="settingsButton" type="button" class="btn btn-primary">Save</button>
+      <button id="settingsButton" type="button" class="btn btn-primary btn-lg">Save</button>
     </div>
   </div>
 </form>

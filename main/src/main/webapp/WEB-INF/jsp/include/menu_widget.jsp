@@ -24,7 +24,7 @@
     <form id="menu" class="form-horizontal">
     </form>
     <div class="btn-group">
-      <button id="save-button" class="btn btn-primary"> Save
+      <button id="save-button" class="btn btn-primary btn-lg"> Save
       </button>
     </div>
 
