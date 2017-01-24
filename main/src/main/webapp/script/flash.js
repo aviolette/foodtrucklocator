@@ -1,3 +1,23 @@
+function flash(message, type) {
+  type = type || "alert-danger";
+  var $flash = $("#flash");
+  if (!message) {
+    $flash.addClass("hidden");
+    return;
+  }
+  $flash.empty();
+  $flash.append("<p>" + message + "</p>");
+  $flash.removeClass("hidden");
+  $flash.addClass(type);
+  $flash.css("display", "block");
+}
+
+function dissolveFlash() {
+  setTimeout(function () {
+    $("#flash").css("display", "none");
+  }, 5000);
+}
+
 (function () {
   function deleteCookie(name) {
     document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
@@ -14,10 +34,7 @@
     return null;
   }
 
-  var flash = getCookie("flash");
+  var flashMsg = getCookie("flash");
   deleteCookie("flash");
-  if (flash) {
-    $("#flash").append(flash);
-    $("#flash").removeClass("hidden");
-  }
+  flash(flashMsg);
 })();

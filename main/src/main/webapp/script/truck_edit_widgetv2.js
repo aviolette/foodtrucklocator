@@ -455,7 +455,6 @@ var TruckScheduleWidget = function () {
 
       if (_options["vendorEndpoints"]) {
         _locationEndpoint = '/locations';
-        _useFormSubmitOnTouch = false;
         _baseEndpoint = '/vendor';
       } else {
         $("#delay-warning").addClass("hidden");

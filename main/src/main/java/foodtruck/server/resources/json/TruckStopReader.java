@@ -29,7 +29,6 @@ import foodtruck.model.StopOrigin;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.server.resources.BadRequestException;
-import foodtruck.time.Clock;
 import foodtruck.time.HtmlDateFormatter;
 
 /**
@@ -40,16 +39,14 @@ import foodtruck.time.HtmlDateFormatter;
 @Consumes(MediaType.APPLICATION_JSON)
 public class TruckStopReader implements MessageBodyReader<TruckStop> {
   private final TruckDAO truckDAO;
-  private final Clock clock;
   private final DateTimeFormatter format;
   private final GeoLocator geolocator;
   private final LocationReader locationReader;
 
   @Inject
-  public TruckStopReader(Clock clock, TruckDAO trucks, GeoLocator geolocator, LocationReader locationReader,
+  public TruckStopReader(TruckDAO trucks, GeoLocator geolocator, LocationReader locationReader,
       @HtmlDateFormatter DateTimeFormatter formatter) {
     this.truckDAO = trucks;
-    this.clock = clock;
     this.format = formatter;
     this.geolocator = geolocator;
     this.locationReader = locationReader;

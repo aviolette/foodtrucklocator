@@ -1,6 +1,14 @@
 </div>
 </div>
+<script type="text/javascript" src="/script/flash.js"></script>
+
 <script>
+  function headerFlash(msg) {
+    var $flash = $("#flash");
+    $flash.empty();
+    $flash.append(msg);
+    $flash.removeClass("hidden");
+  }
   (function () {
     function deleteCookie(name) {
       document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
@@ -20,8 +28,7 @@
     var flash = getCookie("flash");
     deleteCookie("flash");
     if (flash) {
-      $("#flash").append(flash);
-      $("#flash").removeClass("hidden");
+      headerFlash(msg);
     }
   })();
 </script>
