@@ -9,9 +9,9 @@ import foodtruck.model.Story;
  * @author aviolette@gmail.com
  * @since 10/20/11
  */
-public class TerminationDetector {
+class TerminationDetector {
   // TODO: probably need an abstraction like TruckStopMatch to handle terminations
-  public DateTime detect(Story tweet) {
+  DateTime detect(Story tweet) {
     if (tweet.isManualRetweet() || tweet.isReply()) {
       return null;
     }
@@ -35,6 +35,10 @@ public class TerminationDetector {
 
     if (tweetText.contains("til sold out") || tweetText.contains("till sold out")) {
       return null;
+    }
+
+    if (tweetText.contains("billy is done")) {
+      return tweet.getTime();
     }
 
     if (tweetText.contains("or sold out")) {

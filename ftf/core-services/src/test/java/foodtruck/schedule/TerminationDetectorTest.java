@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import foodtruck.model.Story;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -34,6 +35,12 @@ public class TerminationDetectorTest {
   @Test
   public void testBeeNTea() {
     assertTweet(tweetTime, "Buzzing to our next spot");
+  }
+
+  @Test
+  public void testForBillyIsDone() {
+    assertThat(detector.detect(tweetBuilder.text("Billy is done at Lasalle & Adams for today.")
+        .build())).isEqualTo(tweetTime);
   }
 
   @Test
