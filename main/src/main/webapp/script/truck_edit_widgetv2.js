@@ -446,7 +446,7 @@ var TruckScheduleWidget = function () {
       $cal.append($tr);
     }
     $.each(schedule, function (i, stop) {
-      var d = new Date(stop.startMillis), link = "<a href='" + _locationEndpoint + "?q=" + encodeURIComponent(stop.location.name) +
+      var d = new Date(stop.startMillis), link = "<a href='" + _baseEndpoint + "/stops/" + stop.id +
           "'>" + stop.location.shortenedName + "</a><br/>";
       $("#calendar-day-" + d.getMonth() + "-" + d.getDate()).append(link);
     });

@@ -29,6 +29,7 @@
   </div>
   <div>
     <a href="${backUrl}" id="cancelButton" class="btn btn-default">Cancel</a>
+    <button class="btn btn-danger hidden" id="deleteButton">Delete</button>
     <button id="saveButton" class="btn btn-primary" autocomplete="off" data-loading-text="Saving...">
       Save
     </button>
@@ -44,6 +45,24 @@
     e.preventDefault();
     location.href = "${backUrl}";
   });
+  $("#deleteButton").click(function (e) {
+    e.preventDefault();
+    if (confirm("Are you sure you want to delete this stop?")) {
+      $.ajax({
+        url: "/services/v2/stops/${stopId}",
+        type: 'DELETE',
+        error: function (e) {
+          flash("There was a problem deleting this stop.");
+        },
+        success: function () {
+          location.href = "${backUrl}";
+        }
+      });
+    }
+  });
+  if ("${stopId}" != "new") {
+    $("#deleteButton").removeClass("hidden");
+  }
   $("#saveButton").click(function (e) {
     e.preventDefault();
     var $btn = $(this).button('loading'),
