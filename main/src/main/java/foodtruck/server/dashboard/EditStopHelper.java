@@ -53,7 +53,7 @@ public class EditStopHelper {
     String backUrl = vendor ? "/vendor" : "/admin/trucks/" + truck.getId();
     String jsp = vendor ? VENDOR_JSP : ADMIN_JSP;
     DateTime startTime, endTime;
-    String title, locationName = "";
+    String title, locationName = "", description = "", imageUrl = "";
     boolean locked = false;
     req = new GuiceHackRequestWrapper(req, jsp);
     if ("new".equals(stopId)) {
@@ -77,13 +77,31 @@ public class EditStopHelper {
       locked = stop.isLocked();
       startTime = stop.getStartTime();
       endTime = stop.getEndTime();
+      description = stop.getDescription();
+      imageUrl = stop.getImageUrl();
       title = stop.getLocation()
           .getName();
       locationName = title;
     }
+    if (req.getParameter("locked") != null) {
+      locked = req.getParameter("locked")
+          .equals("true");
+    }
+    if (req.getParameter("location") != null) {
+      locationName = req.getParameter("location");
+      title = locationName;
+    }
     String endpoint = vendor ? "/vendor/stops/" + stopId : "/admin/trucks/" + truck.getId() + "/stops/" + stopId;
+    if (req.getParameter("startTime") != null) {
+      startTime = new DateTime(Long.parseLong(req.getParameter("startTime")));
+    }
+    if (req.getParameter("endTime") != null) {
+      endTime = new DateTime(Long.parseLong(req.getParameter("endTime")));
+    }
     req.setAttribute("startTime", timeFormatter.print(startTime));
     req.setAttribute("endTime", timeFormatter.print(endTime));
+    req.setAttribute("description", description);
+    req.setAttribute("imageUrl", imageUrl);
     req.setAttribute("baseEndPoint", vendor ? "/vendor" : "/admin");
     req.setAttribute("truck", truck);
     req.setAttribute("stopId", stopId);

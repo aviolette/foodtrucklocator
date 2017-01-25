@@ -1,12 +1,5 @@
 <%@include file="../common.jsp" %>
 
-<%--
-<div id="truck-schedule-alert" class="alert alert-danger hidden" role="alert">
-  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-  <span class="sr-only">Error:</span><span id="truck-schedule-error"></span>
-</div>
---%>
-
 <form role="form" action="" method="POST" id="stopEditForm">
   <input type="hidden" name="truckId" value="${truck.id}"/>
   <input type="hidden" name="stopId" value="${stopId}"/>
@@ -29,6 +22,10 @@
   <div class="form-group">
     <label><input id="lockStop" name="lockStop" type="checkbox" <c:if test="${locked}">checked="checked"</c:if>>&nbsp;Prevent
       twittalyzer from changing location</label>
+  </div>
+  <div class="form-group">
+    <label class="control-label" for="description">Description (optional)</label>
+    <textarea class="form-control" id="description" rows="4">${description}</textarea>
   </div>
   <div>
     <a href="${backUrl}" id="cancelButton" class="btn btn-default">Cancel</a>
@@ -58,6 +55,7 @@
           startTime: $startTimeInput.val(),
           endTime: $endTimeInput.val(),
           locationName: locationName,
+          description: $("#description").val(),
           <c:if test="${!empty(stopId) && stopId != 'new'}">
           id: ${stopId},
           </c:if>
@@ -74,8 +72,6 @@
         type: 'PUT',
         contentType: 'application/json',
         data: JSON.stringify(stop),
-        complete: function () {
-        },
         error: function (e) {
           var obj = JSON.parse(e.responseText),
               message = obj.error;

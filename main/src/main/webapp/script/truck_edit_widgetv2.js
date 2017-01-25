@@ -187,6 +187,14 @@ var TruckScheduleWidget = function () {
         });
       }
     });
+    var $advancedOptionsButton = $("#advancedOptionsButton");
+    $advancedOptionsButton.unbind("click");
+    $advancedOptionsButton.click(function (e) {
+      e.preventDefault();
+      var startTime = fromDate($startTimeInput.val()),
+          endTime = fromDate($endTimeInput.val());
+      location.href = _baseEndpoint + '/stops/' + stop.id + "?location=" + encodeURIComponent($("#locationInput").val()) + "&locked=" + $("#lockStop").is(":checked") + "&startTime=" + startTime.getTime() + "&endTime=" + endTime.getTime();
+    });
     var $cancelButton = $("#cancelButton");
     $cancelButton.unbind("click");
     $cancelButton.click(function (e) {

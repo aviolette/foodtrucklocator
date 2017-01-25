@@ -61,6 +61,9 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
   private static final String ORIGIN = "origin";
   private static final String DEVICE_ID = "device_id";
   private static final String MANUALLY_UPDATED = "manually_updated";
+  private static final String IMAGE_URL = "image_url";
+  private static final String STOP_DESCRIPTION = "stop_description";
+
   private static final Predicate<TruckStop> VENDOR_STOP_PREDICATE = new Predicate<TruckStop>() {
     public boolean apply(TruckStop truckStop) {
       return truckStop.getOrigin() == StopOrigin.VENDORCAL;
@@ -109,6 +112,8 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
         .prop(ORIGIN, stop.getOrigin()
             .toString())
         .prop(NOTES, stop.getNotes())
+        .prop(IMAGE_URL, stop.getImageUrl())
+        .prop(STOP_DESCRIPTION, stop.getDescription())
         .prop(MANUALLY_UPDATED, stop.getManuallyUpdated())
         .prop(BEACON_FIELD, stop.getBeaconTime())
         .prop(LAST_UPDATED, stop.getLastUpdated())
@@ -135,6 +140,8 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
         .manuallyUpdated(Attributes.getDateTime(entity, MANUALLY_UPDATED, zone))
         .fromBeacon(Attributes.getDateTime(entity, BEACON_FIELD, zone))
         .createdWithDeviceId((Long) entity.getProperty(DEVICE_ID))
+        .description(getStringProperty(entity, STOP_DESCRIPTION))
+        .imageUrl(getStringProperty(entity, IMAGE_URL))
         .location(Location.builder()
             .lat((Double) entity.getProperty(LATITUDE_FIELD))
             .lng((Double) entity.getProperty(LONGITUDE_FIELD))

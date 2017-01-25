@@ -89,6 +89,9 @@
                 value="${stop.startTime}"
                 style="-S"/> - <joda:format value="${stop.endTime}" style="-S"/>
               <ftl:location at="${stop.startTime}" location="${stop.location}"/>
+              <c:if test="${!empty(stop.description)}">
+                <p class="stop-description">${stop.description}</p>
+              </c:if>
             </dd>
           </c:forEach>
 

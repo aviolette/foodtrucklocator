@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Provider;
 
+import com.google.common.html.HtmlEscapers;
 import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
 
@@ -103,6 +104,8 @@ public class TruckStopReader implements MessageBodyReader<TruckStop> {
       return TruckStop.builder()
           .origin(StopOrigin.valueOf(origin))
           .truck(truck)
+          .description(HtmlEscapers.htmlEscaper()
+              .escape(obj.optString("description")))
           .startTime(startTime)
           .endTime(endTime)
           .location(location)
