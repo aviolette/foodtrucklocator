@@ -192,8 +192,9 @@ var TruckScheduleWidget = function () {
     $advancedOptionsButton.click(function (e) {
       e.preventDefault();
       var startTime = fromDate($startTimeInput.val()),
-          endTime = fromDate($endTimeInput.val());
-      location.href = _baseEndpoint + '/stops/' + stop.id + "?location=" + encodeURIComponent($("#locationInput").val()) + "&locked=" + $("#lockStop").is(":checked") + "&startTime=" + startTime.getTime() + "&endTime=" + endTime.getTime();
+          endTime = fromDate($endTimeInput.val()),
+          stopId = (typeof stop.id) == "undefined" ? "new" : stop.id;
+      location.href = _baseEndpoint + '/stops/' + stopId + "?location=" + encodeURIComponent($("#locationInput").val()) + "&locked=" + $("#lockStop").is(":checked") + "&startTime=" + startTime.getTime() + "&endTime=" + endTime.getTime();
     });
     var $cancelButton = $("#cancelButton");
     $cancelButton.unbind("click");
