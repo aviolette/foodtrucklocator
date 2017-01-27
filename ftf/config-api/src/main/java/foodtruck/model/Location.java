@@ -241,6 +241,7 @@ public class Location extends ModelEntity implements Serializable {
         .add("Radius", String.valueOf(radius))
         .add("Owned by", ownedBy)
         .add("Created by ", createdBy)
+        .add("Alias for", alias)
         .toString();
   }
 
