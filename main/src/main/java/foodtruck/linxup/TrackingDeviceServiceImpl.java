@@ -296,8 +296,9 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
           // no need to update anything
           return;
         }
-      } else if (current.getManuallyUpdated() != null && device.getLastBroadcast() != null && current.getManuallyUpdated()
-          .isAfter(device.getLastBroadcast())) {
+      } else if (current.getManuallyUpdated() != null && device.getLastBroadcast() != null &&
+          current.getManuallyUpdated()
+              .isAfter(device.getLastBroadcast())) {
         log.log(Level.WARNING, "Stop was manually edited {0}.  Ignoring until new broadcast.", current);
         // this stop was manually edited so do thing.
         return;
@@ -373,11 +374,18 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
       Location location = locationResolver.resolve(position, device, linxupAccount);
       location = MoreObjects.firstNonNull(locator.reverseLookup(location), location);
       // TODO: it would be nice if the actual device could calculate this, but for now we look to see if it changed.
-      boolean parked = position.getSpeedMph() == 0 && (device == null || device.getLastLocation() == null || device.getLastLocation()
-          .getName()
-          .equals(location.getName()) || device.getLastLocation()
+      boolean parked = position.getSpeedMph() == 0 && (device == null || device.getLastLocation() == null ||
+          device.getLastLocation()
+              .getName()
+              .equals(location.getName()) || device.getLastLocation()
           .within(0.05)
           .milesOf(location));
+      // Trying to tame the blips where the GPS goes all over the place when its still parked.
+      if (device != null && device.getLastLocation() != null && location != null && device.getLastLocation()
+          .getName()
+          .equals(location.getAlias())) {
+        location = device.getLastLocation();
+      }
       log.log(Level.INFO, "Device State: {0}\n {1}\n {2}\n{3}", new Object[]{position, device, location, parked});
       builder.deviceNumber(position.getDeviceNumber())
           .lastLocation(locator.reverseLookup(location))
