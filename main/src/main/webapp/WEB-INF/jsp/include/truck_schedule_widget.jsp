@@ -89,13 +89,6 @@
             <label class="control-label" for="locationInput">Location</label>
             <input class="form-control" id="locationInput" type="text" data-provide="typeahead" data-items="4"/>
           </div>
-          <div class="form-group">
-            <label><input id="lockStop" name="lockStop" type="checkbox">&nbsp;Prevent
-              twittalyzer from changing location</label>
-          </div>
-          <div>
-
-          </div>
         </form>
       </div>
       <div class="modal-footer">
