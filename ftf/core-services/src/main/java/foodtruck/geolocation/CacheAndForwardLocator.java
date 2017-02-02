@@ -46,7 +46,7 @@ class CacheAndForwardLocator implements GeoLocator {
           .lat(latitude)
           .lng(longitude)
           .build());
-      log.log(Level.INFO, "Reverse lookup location: {0}", foundLocation);
+      log.log(Level.FINE, "Reverse lookup location: {0}", foundLocation);
       return foundLocation;
     }
     counterPublisher.increment("cacheLookup_total");
