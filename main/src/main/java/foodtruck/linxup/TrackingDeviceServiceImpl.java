@@ -385,6 +385,7 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
       if (device != null && device.getLastLocation() != null && location != null && device.getLastLocation()
           .getName()
           .equals(location.getAlias())) {
+        log.info("Detected blip");
         location = device.getLastLocation();
       }
       log.log(Level.INFO, "Device State: {0}\n {1}\n {2}\n{3}", new Object[]{position, device, location, parked});
