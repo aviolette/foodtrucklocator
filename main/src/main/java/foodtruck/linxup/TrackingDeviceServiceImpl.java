@@ -371,6 +371,7 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
     for (Position position : positions) {
       TrackingDevice device = deviceMap.get(position.getDeviceNumber());
       TrackingDevice.Builder builder = TrackingDevice.builder(device);
+      log.log(Level.INFO, "Synchronizing: {0} {1}", new Object[] {position, device});
       Location location = locationResolver.resolve(position, device, linxupAccount);
       location = MoreObjects.firstNonNull(locator.reverseLookup(location), location);
       // TODO: it would be nice if the actual device could calculate this, but for now we look to see if it changed.
