@@ -77,7 +77,7 @@ class LocationResolverImpl implements LocationResolver {
     }
 
     try {
-      LinxupMapHistoryResponse response = connector.tripList(linxupAccount, clock.timeAt(0, 0), clock.timeAt(23, 59),
+      LinxupMapHistoryResponse response = connector.tripList(linxupAccount, clock.now().minusHours(12), clock.now().plusHours(12),
           device.getDeviceNumber());
       Stop stop = response.lastStopFor(device.getDeviceNumber());
       // if the current location is within tolerance of the last location or if the last location that was recorded
