@@ -54,7 +54,7 @@ class GoogleGeolocator implements GeoLocator {
     try {
       log.log(Level.INFO, "Looking up location: {0}", location);
       JSONObject obj = googleResource.reverseLookup(location);
-      log.log(Level.INFO, "Reverse lookup results for {0}: \n{1}",
+      log.log(Level.FINE, "Reverse lookup results for {0}: \n{1}",
           new Object[] {location, obj});
       checkStatus(obj);
       JSONArray results = obj.getJSONArray("results");
