@@ -97,6 +97,7 @@ class CacheAndForwardLocator implements GeoLocator {
             .valid(true)
             .build();
         Location existing = dao.findByAddress(loc.getName());
+        log.log(Level.INFO, "Result location: {0}\n\n {1}", new Object[] {loc, existing});
         if (existing == null) {
           return dao.saveAndFetch(loc)
               .wasJustResolved();
