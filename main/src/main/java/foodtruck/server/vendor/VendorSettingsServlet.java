@@ -19,6 +19,7 @@ import com.google.inject.Singleton;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
 import foodtruck.server.GuiceHackRequestWrapper;
+import foodtruck.util.FormDataMassager;
 
 /**
  * @author aviolette
@@ -54,6 +55,10 @@ public class VendorSettingsServlet extends HttpServlet {
         description = req.getParameter("description");
     try {
       Preconditions.checkState(!Strings.isNullOrEmpty(name), "Name cannot be unspecified");
+      if (!Strings.isNullOrEmpty(phone)) {
+        Preconditions.checkState(FormDataMassager.normalizePhone(phone)
+            .length() == 12, "Phone must be in formation XXX-XXX-XXXX");
+      }
       url = url == null ? null : escaper.escape(url);
       if (!Strings.isNullOrEmpty(url) && !url.startsWith("http")) {
         url = "http://" + url;

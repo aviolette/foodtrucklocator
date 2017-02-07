@@ -45,7 +45,8 @@
         error: function (resp, textStatus, errorThrown) {
           $("#flash").css("display", "block");
           $("#flash").removeClass("alert-info");
-          $("#flash").addClass("alert-error");
+          $("#flash").removeClass("hidden");
+          $("#flash").addClass("alert-danger");
           $("#flash").html(resp.responseText);
         },
         success: function () {
