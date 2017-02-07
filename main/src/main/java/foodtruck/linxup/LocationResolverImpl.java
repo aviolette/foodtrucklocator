@@ -36,28 +36,30 @@ class LocationResolverImpl implements LocationResolver {
   }
 
   @Override
-  public Location resolve(Position position, @Nullable TrackingDevice device, LinxupAccount linxupAccount) {
+  public Location resolve(Position position, @Nullable TrackingDevice previousDeviceRecording,
+      LinxupAccount linxupAccount) {
     Location currentlyRecordPosition = position.toLocation();
     // device will be null when this is the first time we've seen a particular device
-    if (device == null) {
+    if (previousDeviceRecording == null || position.getSpeedMph() > 0) {
       return currentlyRecordPosition;
     }
     // In the case where the CURRENT and LAST position have not varied by much, return the last position
-    Location lastRecordedPosition = device.getPreciseLocation();
+    Location lastRecordedPosition = previousDeviceRecording.getPreciseLocation();
     if (lastRecordedPosition == null || currentlyRecordPosition.within(0.01)
         .milesOf(lastRecordedPosition)) {
       return lastRecordedPosition;
     }
     log.log(Level.INFO, "Sanity check: position-parked: {0} device-parked: {1} distance from last position {2}",
-        new Object[]{position.isParked(), device.isParked(), currentlyRecordPosition.distanceFrom(
-            device.getLastLocation())});
+        new Object[]{position.isParked(), previousDeviceRecording.isParked(),
+            currentlyRecordPosition.distanceFrom(previousDeviceRecording.getLastLocation())});
     // the case where there was no intermediate movement, means there may be an anomaly
-    if (position.isParked() && device.isParked() && currentlyRecordPosition.within(0.20)
-        .milesOf(device.getLastLocation())) {
-      log.log(Level.INFO, "Checking for anomaly {0}\n\n {1}", new Object[]{currentlyRecordPosition, device});
-      if (detectAnomaly(device, linxupAccount, currentlyRecordPosition)) {
-        log.log(Level.INFO, "Returning {0}", device.getLastLocation());
-        return device.getLastLocation();
+    if (position.isParked() && previousDeviceRecording.isParked() && currentlyRecordPosition.within(0.50)
+        .milesOf(previousDeviceRecording.getLastLocation())) {
+      log.log(Level.INFO, "Checking for anomaly {0}\n\n {1}",
+          new Object[]{currentlyRecordPosition, previousDeviceRecording});
+      if (detectAnomaly(previousDeviceRecording, linxupAccount, currentlyRecordPosition)) {
+        log.log(Level.INFO, "Returning {0}", previousDeviceRecording.getLastLocation());
+        return previousDeviceRecording.getLastLocation();
       }
     }
     return currentlyRecordPosition;
@@ -78,8 +80,12 @@ class LocationResolverImpl implements LocationResolver {
       LinxupMapHistoryResponse response = connector.tripList(linxupAccount, clock.timeAt(0, 0), clock.timeAt(23, 59),
           device.getDeviceNumber());
       Stop stop = response.lastStopFor(device.getDeviceNumber());
-      if (stop != null && !stop.getLocation()
-          .withinToleranceOf(currentLocation)) {
+      // if the current location is within tolerance of the last location or if the last location that was recorded
+      // was actually recorded a long time ago.
+      if (stop != null && (!stop.getLocation()
+          .withinToleranceOf(currentLocation) || stop.getEndTime()
+          .isBefore(clock.now()
+              .minusMinutes(30)))) {
         if ("true".equals(System.getProperty("foodtrucklocator.location.anomaly.detection"))) {
           systemNotificationService.notifyDeviceAnomalyDetected(stop, device);
         }
