@@ -44,6 +44,7 @@ class LocationResolverImpl implements LocationResolver {
       log.log(Level.INFO, "Returning current recorded position {0}", currentlyRecordPosition);
       return currentlyRecordPosition;
     }
+    /*
     // In the case where the CURRENT and LAST position have not varied by much, return the last position
     Location lastRecordedPosition = previousDeviceRecording.getPreciseLocation();
     if (lastRecordedPosition == null || currentlyRecordPosition.within(0.01)
@@ -51,6 +52,7 @@ class LocationResolverImpl implements LocationResolver {
       log.log(Level.INFO, "Returning last recorded position {0}", lastRecordedPosition);
       return lastRecordedPosition;
     }
+    */
     log.log(Level.INFO, "Sanity check: position-parked: {0} device-parked: {1} distance from last position {2}",
         new Object[]{position.isParked(), previousDeviceRecording.isParked(),
             currentlyRecordPosition.distanceFrom(previousDeviceRecording.getLastLocation())});
