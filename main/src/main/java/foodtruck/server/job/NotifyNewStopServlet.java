@@ -42,7 +42,7 @@ public class NotifyNewStopServlet extends AbstractNotificationServlet {
       String subject = device.getLabel() + " has parked at " + stop.getLocation()
           .getShortenedName();
       String msgBody = "Truck stats:\n\nFuel:           " +
-          device.getFuelLevel() + "%\nDevice id: " +
+          device.getFuelLevel() + "\nDevice id: " +
           device.getDeviceNumber() + "\nBattery charge      " +
           device.getBatteryCharge() + " V\nLast broadcast: " +
           formatter.print(device.getLastBroadcast()) + "\n\n\n" + urls(String.valueOf(device.getKey()), truck.getId());
