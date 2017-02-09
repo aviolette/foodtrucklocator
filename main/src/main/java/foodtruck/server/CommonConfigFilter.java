@@ -25,6 +25,7 @@ public class CommonConfigFilter implements Filter {
   public void doFilter(ServletRequest request, ServletResponse response,
       FilterChain filterChain) throws IOException, ServletException {
     request.setAttribute("localFrameworks", "true".equals(System.getProperty("use.local.frameworks")));
+    request.setAttribute("googleAnalytics", System.getProperty("foodtrucklocator.google.analytics", "UA-24765719-1"));
     filterChain.doFilter(request, response);
   }
 
