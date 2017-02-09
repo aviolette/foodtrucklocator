@@ -97,5 +97,4 @@ class LocationResolverImpl implements LocationResolver {
     }
     return false;
   }
-
 }
