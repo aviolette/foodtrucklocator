@@ -168,23 +168,23 @@
       Truck is hidden from public listings</label>
   </div>
 </form>
-<button id="submitButton" class="btn btn-primary">Save</button>
-<button id="updateStats" class="btn btn-warning">Update Stats</button>
-<button id="syncProfile" class="btn btn-warning">Sync Profile</button>
+<button id="submitButton" class="btn btn-primary btn-lg">Save</button>
+
+<h2>Synchronize</h2>
+<p>
+  This button synchronizes images, descriptions, contact info from the specified social media accounts.
+</p>
+<button id="syncProfile" class="btn btn-warning">Synchronize</button>
+
+<h2>DANGER ZONE!</h2>
+<p>
+  This button deletes the truck. There is no going back.
+</p>
 <button id="deleteTruck" class="btn btn-danger">DELETE THIS TRUCK</button>
 
 <script>
   $("#submitButton").click(function(e) {
     $("#theForm").submit();
-  });
-  $("#updateStats").click(function(e) {
-    e.preventDefault();
-    $.ajax({
-      url: '/cron/updateTruckStats?truckId=${truck.id}&force=true',
-      complete: function() {
-        location.href='/trucks/${truck.id}';
-      }
-    });
   });
   $("#syncProfile").click(function(e) {
     e.preventDefault();
@@ -192,7 +192,7 @@
       url: '/admin/profileSync?truckId=${truck.id }',
       type: 'POST',
       complete: function() {
-        location.href='/trucks/${truck.id}';
+        location.reload();
       }
     });
   });

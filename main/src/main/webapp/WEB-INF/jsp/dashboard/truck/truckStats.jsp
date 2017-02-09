@@ -5,6 +5,11 @@
     <h2>Statistics</h2>
     <table class="table">
       <tr>
+        <td>First active</td>
+        <td><joda:format value="${truck.stats.firstSeen}" style="MS"/> @ <ftl:location
+            location="${truck.stats.whereFirstSeen}"/></td>
+      </tr>
+      <tr>
         <td>Last active</td>
         <td><joda:format value="${truck.stats.lastSeen}" style="MS"/> @ <ftl:location
             location="${truck.stats.whereLastSeen}"/></td>
@@ -30,6 +35,10 @@
         <td>${truck.postAtNewStop ? "YES" : "NO"}</td>
       </tr>
     </table>
+    <p>
+      This button syncs all timeseries stats from the beginning of the chicago food truck finder.
+    </p>
+    <button id="updateStats" class="btn btn-warning">Update Stats</button>
   </div>
   <div class="col-md-12">
     <h2>Images</h2>
@@ -61,5 +70,17 @@
     </table>
   </div>
 </div>
+
+<script type="text/javascript">
+  $("#updateStats").click(function (e) {
+    e.preventDefault();
+    $.ajax({
+      url: '/cron/updateTruckStats?truckId=${truck.id}&force=true',
+      complete: function () {
+        location.reload();
+      }
+    });
+  });
+</script>
 
 <%@ include file="truckFooter.jsp" %>
