@@ -4,6 +4,7 @@ var FoodTruckLocator = function () {
       _trucks = null,
       _mode = null,
       _markers = null,
+      _initializedWithoutMap = false,
       _center = null,
       _userLocation = null,
       _defaultCityRegex = null,
@@ -439,6 +440,10 @@ var FoodTruckLocator = function () {
   function setupGlobalEventHandlers() {
     $(window).resize(function () {
       resize();
+      if (_initializedWithoutMap && $("#map_wrapper").css("display") != "none") {
+        _initializedWithoutMap = false;
+        fitAll();
+      }
     });
     $('a[href="#nowTrucks"]').click(function (e) {
       e.preventDefault();
@@ -616,6 +621,10 @@ var FoodTruckLocator = function () {
     clear: function() {
       _markers.clear();
     },
+    refreshIt: function() {
+      fitAll();
+      refreshViewData();
+    },
     extend: function () {
       var bounds = new google.maps.LatLngBounds();
       $.each(_trucks.openNowAndLater(), function (idx, stop) {
@@ -632,6 +641,7 @@ var FoodTruckLocator = function () {
       _defaultCityLength = defaultCity.length;
       _center = center;
       buttons = buttons || [];
+      _initializedWithoutMap = $("#map_wrapper").css("display") == "none";
       resize();
       displayMessageOfTheDay(modelPayload);
       _markers = new Markers();
