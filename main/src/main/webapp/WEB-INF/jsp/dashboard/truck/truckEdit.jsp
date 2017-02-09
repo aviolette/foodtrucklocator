@@ -168,19 +168,18 @@
       Truck is hidden from public listings</label>
   </div>
 </form>
-<button id="submitButton" class="btn btn-primary btn-lg">Save</button>
-
-<h2>Synchronize</h2>
-<p>
-  This button synchronizes images, descriptions, contact info from the specified social media accounts.
-</p>
-<button id="syncProfile" class="btn btn-warning">Synchronize</button>
-
-<h2>DANGER ZONE!</h2>
-<p>
-  This button deletes the truck. There is no going back.
-</p>
-<button id="deleteTruck" class="btn btn-danger">DELETE THIS TRUCK</button>
+<div class="btn-toolbar">
+  <div class="btn-group">
+    <button id="syncProfile" class="btn btn-default"><span class="glyphicon glyphicon-cloud-download"></span>
+      Synchronize
+    </button>
+  </div>
+  <div class="btn-group">
+    <button id="submitButton" class="btn btn-primary"><span class="glyphicon glyphicon glyphicon-floppy-disk"></span>
+      Save
+    </button>
+  </div>
+</div>
 
 <script>
   $("#submitButton").click(function(e) {
@@ -195,17 +194,6 @@
         location.reload();
       }
     });
-  });
-  $("#deleteTruck").click(function () {
-    if (confirm("ARE YOU SURE?")) {
-      $.ajax({
-        url: "/services/trucks/${truck.id}",
-        type: "DELETE",
-        success: function () {
-          location.href = '/admin/trucks';
-        }
-      });
-    }
   });
 </script>
 
