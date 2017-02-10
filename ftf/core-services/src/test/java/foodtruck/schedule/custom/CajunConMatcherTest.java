@@ -31,6 +31,7 @@ import static com.google.common.truth.Truth.assertThat;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class CajunConMatcherTest extends Mockito {
+
   private Truck truck;
   private Location loc1;
   private Location loc2;
@@ -62,13 +63,9 @@ public class CajunConMatcherTest extends Mockito {
   @Test
   public void testHandle() {
     Story story = Story.builder()
-        .text("Happy WEDNESDAY TCC family. \n" +
-            "\n" +
-            "27th California: 6am-830am\n" +
-            "11th Hamilton: 1030am-130p\n" +
-            "@chifoodtruckz @TrucksforLunch \n" +
-            "\n" +
-            "#CookCountyWed")
+        .text(
+            "Happy WEDNESDAY TCC family. \n" + "\n" + "27th California: 6am-830am\n" + "11th Hamilton: 1030am-130p\n" +
+                "@chifoodtruckz @TrucksforLunch \n" + "\n" + "#CookCountyWed")
         .time(tweetTime.withTime(5, 0, 0, 0))
         .userId("")
         .build();
@@ -99,6 +96,45 @@ public class CajunConMatcherTest extends Mockito {
     assertThat(match.getAdditionalStops()
         .get(0)
         .getLocation()).isEqualTo(loc2);
+  }
+
+  @Test
+  public void testHandle2() {
+    Story story = Story.builder()
+        .text(
+            "Happy Friday Family. We're back!!\n\n" + "27th California\n" + "6a-8a\n" + "\n" + "@MX_College \n" +
+                "1900 w Jackson\n" + "11a-2p\n" + "@TSpotting @chifoodtruckz @staticmm_chi")
+        .time(tweetTime.withTime(5, 0, 0, 0))
+        .userId("")
+        .build();
+    TruckStopMatch.Builder builder = TruckStopMatch.builder();
+    builder.stop(TruckStop.builder()
+        .location(loc1)
+        .truck(truck)
+        .endTime(tweetTime.withTime(8, 30, 0, 0))
+        .startTime(tweetTime.withTime(6, 0, 0, 0))
+        .build());
+    geolocate("1900 West Jackson, Chicago, IL", loc2);
+
+    matcher.handle(builder, story, truck);
+    TruckStopMatch match = builder.build();
+    assertThat(match.getStop()
+        .getStartTime()).isEqualTo(tweetTime.withTime(6, 0, 0, 0));
+    assertThat(match.getStop()
+        .getEndTime()).isEqualTo(tweetTime.withTime(8, 30, 0, 0));
+    assertThat(match.getStop()
+        .getLocation()).isEqualTo(loc1);
+    assertThat(match.getAdditionalStops()).hasSize(1);
+    assertThat(match.getAdditionalStops()
+        .get(0)
+        .getStartTime()).isEqualTo(tweetTime.withTime(10, 30, 0, 0));
+    assertThat(match.getAdditionalStops()
+        .get(0)
+        .getEndTime()).isEqualTo(tweetTime.withTime(13, 30, 0, 0));
+    assertThat(match.getAdditionalStops()
+        .get(0)
+        .getLocation()).isEqualTo(loc2);
+
   }
 
   private void geolocate(String address, Location location) {
