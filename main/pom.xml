@@ -126,10 +126,11 @@
       <version>1.9.49</version>
       <scope>provided</scope>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/com.google.appengine.tools/appengine-gcs-client -->
     <dependency>
       <groupId>com.google.appengine.tools</groupId>
       <artifactId>appengine-gcs-client</artifactId>
-      <version>0.4.3</version>
+      <version>RELEASE</version>
     </dependency>
     <dependency>
       <groupId>com.google</groupId>

@@ -110,6 +110,7 @@ public class EditStopHelper {
     req.setAttribute("endpoint", endpoint);
     req.setAttribute("locationName", locationName);
     req.setAttribute("title", title);
+    req.setAttribute("enableImages", !vendor);
     req.setAttribute("backUrl", backUrl);
     req.setAttribute("locations", locationNamesAsJsonArray());
     if (!vendor) {

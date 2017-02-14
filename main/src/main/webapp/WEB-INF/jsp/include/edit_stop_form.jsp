@@ -40,8 +40,10 @@
 </form>
   </div>
   <div class="col-md-4">
-    <form action="/admin/images" class="dropzone" id="file-upload-form">
-    </form>
+    <c:if test="${enableImages}">
+      <form action="/admin/images" class="dropzone" id="upload">
+      </form>
+    </c:if>
   </div>
 
   </div>
@@ -49,13 +51,16 @@
 
 <script type="text/javascript" src="/script/truck_edit_widget.js"></script>
 <script type="text/javascript">
-  $("#file-upload-form").dropzone({
+  <c:if test="${enableImages}">
+  Dropzone.options.upload = {
     headers : {"X-Dropzone-Truck" : "${truck.id}"},
+    maxFiles : 1,
     acceptedFiles: "image/*",
-    success: function(e, response) {
+    success: function(foo, response) {
       console.log(response);
     }
-  });
+  };
+  </c:if>
   enhancedDateWidget("start");
   unifiedDateControls(enhancedDateWidget("end"));
   locationMatching(${locations});
