@@ -177,6 +177,8 @@ public class TruckStop extends ModelEntity {
           .add("endTime", endTime)
           .add("lastUpdated", lastUpdated)
           .add("location", location)
+          .add("description", description)
+          .add("image URL", imageUrl)
           .add("createdWithDevice", createdWithDeviceId)
           .toString();
     } catch (Throwable t) {
