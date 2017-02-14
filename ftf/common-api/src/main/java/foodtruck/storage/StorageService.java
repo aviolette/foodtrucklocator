@@ -1,6 +1,7 @@
 package foodtruck.storage;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author aviolette
@@ -16,4 +17,6 @@ public interface StorageService {
    * @return the URL of the new resource
    */
   String copyUrl(String fromUrl, String toBucket, String destinationFileName) throws IOException;
+
+  String syncStream(InputStream stream, String toBucket, String destinationFileName) throws Exception;
 }

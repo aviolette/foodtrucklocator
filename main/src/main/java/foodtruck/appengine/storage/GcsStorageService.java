@@ -30,15 +30,21 @@ public class GcsStorageService implements StorageService {
 
   @Override
   public String copyUrl(String fromUrl, String bucket, String fileName) throws IOException {
-    // copy icon to google cloud storage
+    URL iconUrl = new URL(fromUrl);
+    try (InputStream in = iconUrl.openStream()) {
+      return syncStream(in, bucket, fileName);
+    }
+  }
+
+  @Override
+  public String syncStream(InputStream inputStream, String bucket, String fileName) throws IOException {
     GcsFilename gcsFilename = new GcsFilename(bucket, fileName);
     GcsOutputChannel channel = cloudStorage.createOrReplace(gcsFilename,
         new GcsFileOptions.Builder().cacheControl("public, max-age=2591000")
             .mimeType(fileName.matches("png") ? "image/png" : "image/jpeg")
             .build());
-    URL iconUrl = new URL(fromUrl);
-    try (InputStream in = iconUrl.openStream(); OutputStream out = Channels.newOutputStream(channel)) {
-      ByteStreams.copy(in, out);
+    try (OutputStream out = Channels.newOutputStream(channel)) {
+      ByteStreams.copy(inputStream, out);
     }
     return "http://storage.googleapis.com/" + bucket + "/" + fileName;
   }

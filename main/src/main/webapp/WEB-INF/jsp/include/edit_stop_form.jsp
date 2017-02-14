@@ -1,5 +1,8 @@
 <%@include file="../common.jsp" %>
 
+<div class="row">
+  <div class="col-md-8">
+
 <form role="form" action="" method="POST" id="stopEditForm">
   <input type="hidden" name="truckId" value="${truck.id}"/>
   <input type="hidden" name="stopId" value="${stopId}"/>
@@ -35,9 +38,24 @@
     </button>
   </div>
 </form>
+  </div>
+  <div class="col-md-4">
+    <form action="/admin/images" class="dropzone" id="file-upload-form">
+    </form>
+  </div>
+
+  </div>
+</div>
 
 <script type="text/javascript" src="/script/truck_edit_widget.js"></script>
 <script type="text/javascript">
+  $("#file-upload-form").dropzone({
+    headers : {"X-Dropzone-Truck" : "${truck.id}"},
+    acceptedFiles: "image/*",
+    success: function(e, response) {
+      console.log(response);
+    }
+  });
   enhancedDateWidget("start");
   unifiedDateControls(enhancedDateWidget("end"));
   locationMatching(${locations});

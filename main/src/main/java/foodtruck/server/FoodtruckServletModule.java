@@ -24,6 +24,7 @@ import foodtruck.server.dashboard.ApplicationServlet;
 import foodtruck.server.dashboard.BeaconServlet;
 import foodtruck.server.dashboard.BeaconsServlet;
 import foodtruck.server.dashboard.CompoundEventServlet;
+import foodtruck.server.dashboard.ImageUploadServlet;
 import foodtruck.server.dashboard.LocationEditServlet;
 import foodtruck.server.dashboard.LocationListServlet;
 import foodtruck.server.dashboard.MessageEditServlet;
@@ -133,6 +134,7 @@ class FoodtruckServletModule extends ServletModule {
     serveRegex("/admin/trucks/[\\S]*/linxup_config").with(LinxupConfigServlet.class);
     serveRegex("/admin/trucks/[\\S]*/danger").with(DangerZoneServlet.class);
     serve("/admin/trucks/*").with(TruckServlet.class);
+    serve("/admin/images").with(ImageUploadServlet.class);
     serve("/admin/trucks").with(TruckListServlet.class);
     serve("/admin/locations/*").with(LocationEditServlet.class);
     serve("/admin/locations", "/admin/locations;*").with(LocationListServlet.class);
