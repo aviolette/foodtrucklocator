@@ -40,6 +40,7 @@
 </form>
   </div>
   <div class="col-md-4">
+    <img src="${imageUrl}" id="imageUrl" width="240" />
     <c:if test="${enableImages}">
       <form action="/admin/images" class="dropzone" id="upload">
       </form>
@@ -56,8 +57,11 @@
     headers : {"X-Dropzone-Truck" : "${truck.id}"},
     maxFiles : 1,
     acceptedFiles: "image/*",
+    complete: function(foo) {
+      this.removeAllFiles();
+    },
     success: function(foo, response) {
-      console.log(response);
+      $("#imageUrl").attr("src", response);
     }
   };
   </c:if>
@@ -92,10 +96,11 @@
         $startTimeInput = $("#startTimeInput"),
         $endTimeInput = $("#endTimeInput"),
         locationName = $("#locationInput").val(),
-
+        imageInput = $("#imageUrl").attr("src");
         stop = {
           startTime: $startTimeInput.val(),
           endTime: $endTimeInput.val(),
+          imageUrl: imageInput,
           locationName: locationName,
           description: $("#description").val(),
           <c:if test="${!empty(stopId) && stopId != 'new'}">

@@ -57,7 +57,7 @@ public class ImageUploadServlet extends HttpServlet {
     try {
       ServletFileUpload upload = new ServletFileUpload();
       FileItemIterator iterator = upload.getItemIterator(request);
-      while (iterator.hasNext()) {
+      if (iterator.hasNext()) {
         FileItemStream item = iterator.next();
         String contentType = item.getContentType();
         String extension = extensionFromContentType(contentType);
@@ -68,14 +68,11 @@ public class ImageUploadServlet extends HttpServlet {
         }
         log.log(Level.INFO, "File {0} for field {1} {2}\n", new Object[]{ item.getName(), item.getFieldName(), contentType});
         try (InputStream stream = item.openStream()) {
-          storageService.syncStream(stream, bucket, filenameBase + "." + extension);
-        } catch (Exception e) {
-          throw new ServletException(e);
+          response.getWriter().print(storageService.syncStream(stream, bucket, filenameBase + "." + extension));
         }
-        response.getWriter().print("//storage.googleapis.com/" + bucket + "/" + filenameBase + "." + extension );
-        return;
       }
-    } catch (FileUploadException e) {
+    } catch (Exception e) {
+      log.log(Level.SEVERE, e.getMessage(), e);
       throw new ServletException(e);
     }
   }

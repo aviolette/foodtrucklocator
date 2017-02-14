@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.nio.channels.Channels;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.api.client.util.ByteStreams;
 import com.google.appengine.tools.cloudstorage.GcsFileOptions;
@@ -20,6 +22,8 @@ import foodtruck.storage.StorageService;
  * @since 12/2/16
  */
 public class GcsStorageService implements StorageService {
+
+  private static final Logger log = Logger.getLogger(GcsStorageService.class.getName());
 
   private final GcsService cloudStorage;
 
@@ -44,7 +48,8 @@ public class GcsStorageService implements StorageService {
             .mimeType(fileName.matches("png") ? "image/png" : "image/jpeg")
             .build());
     try (OutputStream out = Channels.newOutputStream(channel)) {
-      ByteStreams.copy(inputStream, out);
+      long copied = ByteStreams.copy(inputStream, out);
+      log.log(Level.INFO, "Uploaded {0} bytes to {1}/{2}", new Object[] {copied, bucket, fileName});
     }
     return "http://storage.googleapis.com/" + bucket + "/" + fileName;
   }

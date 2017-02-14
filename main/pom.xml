@@ -337,12 +337,12 @@
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-appengine</artifactId>
-      <version>1.19.0</version>
+      <version>1.22.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.http-client</groupId>
       <artifactId>google-http-client-appengine</artifactId>
-      <version>1.19.0</version>
+      <version>1.22.0</version>
       <exclusions>
         <exclusion>
           <groupId>com.google.guava</groupId>
