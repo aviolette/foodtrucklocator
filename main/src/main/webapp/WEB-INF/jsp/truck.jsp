@@ -95,7 +95,7 @@
               <c:if test="${!empty(stop.imageUrl)}">
                 <div>
                   <img src="${stop.imageUrl}"/>
-\                </div>
+                </div>
               </c:if>
             </dd>
           </c:forEach>
