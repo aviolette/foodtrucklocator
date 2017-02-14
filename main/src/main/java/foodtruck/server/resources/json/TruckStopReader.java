@@ -107,6 +107,8 @@ public class TruckStopReader implements MessageBodyReader<TruckStop> {
           .description(HtmlEscapers.htmlEscaper()
               .escape(obj.optString("description")))
           .startTime(startTime)
+          .imageUrl(HtmlEscapers.htmlEscaper()
+              .escape(obj.optString("imageUrl")))
           .endTime(endTime)
           .location(location)
           .key((key > 0) ? key : null)
