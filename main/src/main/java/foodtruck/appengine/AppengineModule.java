@@ -105,8 +105,8 @@ public class AppengineModule extends AbstractModule {
             .setJsonFactory(jsonFactory)
             .setServiceAccountId("891347525506-0ktp2j5ll7ifbt766ii64p207q67vjm7@developer.gserviceaccount.com")
             .setServiceAccountScopes(ImmutableList.of("https://www.googleapis.com/auth/calendar"))
-            .setServiceAccountPrivateKeyFromP12File(
-                new File("/Users/aviolette" + File.separator + ".store" + File.separator + "/google_auth.p12"))
+            .setServiceAccountPrivateKeyFromP12File(new File(
+                System.getProperty("user.home") + File.separator + ".store" + File.separator + "/google_auth.p12"))
             .build();
       } catch (Exception e) {
         throw new RuntimeException(e);
