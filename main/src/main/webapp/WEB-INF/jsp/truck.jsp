@@ -92,6 +92,11 @@
               <c:if test="${!empty(stop.description)}">
                 <p class="stop-description">${stop.description}</p>
               </c:if>
+              <c:if test="${!empty(stop.imageUrl)}">
+                <div>
+                  <img src="${stop.imageUrl}"/>
+\                </div>
+              </c:if>
             </dd>
           </c:forEach>
 
