@@ -79,6 +79,7 @@ import foodtruck.server.vendor.PostScheduleServlet;
 import foodtruck.server.vendor.VendorBeaconDetailsServlet;
 import foodtruck.server.vendor.VendorCallbackServlet;
 import foodtruck.server.vendor.VendorEditStopServlet;
+import foodtruck.server.vendor.VendorImageUploadServlet;
 import foodtruck.server.vendor.VendorInfoServlet;
 import foodtruck.server.vendor.VendorLocationEditServlet;
 import foodtruck.server.vendor.VendorLogoutServlet;
@@ -161,6 +162,7 @@ class FoodtruckServletModule extends ServletModule {
     serve("/vendor/offtheroad/*").with(VendorOffTheRoadServlet.class);
     serve("/vendor/settings/*").with(VendorSettingsServlet.class);
     serve("/vendor/twitter").with(VendorTwitterRedirectServlet.class);
+    serve("/vendor/images").with(VendorImageUploadServlet.class);
     serve("/vendor/callback").with(VendorCallbackServlet.class);
     serve("/vendor/logout").with(VendorLogoutServlet.class);
     serve("/vendor/menu/*").with(MenuServlet.class);
