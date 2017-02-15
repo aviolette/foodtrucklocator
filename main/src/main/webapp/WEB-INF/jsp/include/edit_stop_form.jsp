@@ -40,7 +40,10 @@
 </form>
   </div>
   <div class="col-md-4">
-    <img src="${imageUrl}" id="imageUrl" width="240" />
+    <img <c:if test="${empty(imageUrl)}">class="hidden"</c:if> src="${imageUrl}" id="imageUrl" width="240" />
+    <div class="hidden" id="remove-image-button-section">
+      <button id="remove-image-button" class="btn-danger btn">Remove</button>
+    </div>
     <c:if test="${enableImages}">
       <form action="/admin/images" class="dropzone" id="upload">
       </form>
@@ -62,6 +65,8 @@
     },
     success: function(foo, response) {
       $("#imageUrl").attr("src", response);
+      $("#imageUrl").removeClass("hidden");
+      toggleRemoveButton();
     }
   };
   </c:if>
@@ -144,5 +149,19 @@
         }
       });
     }
+
   });
+  function toggleRemoveButton() {
+    if ($("#imageUrl").attr("src")) {
+      $("#remove-image-button-section").removeClass("hidden");
+    } else {
+      $("#remove-image-button-section").addClass("hidden");
+    }
+  }
+  $("#remove-image-button").click(function() {
+    $("#imageUrl").attr("src", "");
+    $("#imageUrl").addClass("hidden");
+    $("#remove-image-button").addClass("hidden");
+  });
+  toggleRemoveButton();
 </script>
