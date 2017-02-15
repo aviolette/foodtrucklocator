@@ -12,6 +12,9 @@
   h3.panel-title {
     font-size: 20px;
   }
+  .tab-content {
+    padding-top:20px;
+  }
 </style>
 
 <div id="content">
@@ -29,7 +32,7 @@
     </div>
   </div>
   <div class="row second-top-row">
-    <div class="col-md-6">
+    <div class="col-md-4">
       <h1>${truck.name}<c:if test="${isAdmin}">
         <a class="btn btn-default" href="/admin/trucks/${truck.id}"><span class='glyphicon glyphicon-pencil'></span></a>
         </c:if></h1>
@@ -74,121 +77,78 @@
           </c:forEach>
         </ul>
       </c:if>
-    </div>
-    <div class="col-md-6">
-      <h2>This Week's Schedule</h2>
-      <dl class="schedule">
-        <c:forEach items="${stops}" var="schedule" varStatus="scheduleStatus">
-
-          <c:forEach items="${schedule.stops}" var="stop" varStatus="stopStatus">
-            <c:if test="${stopStatus.first}">
-              <dt><joda:format value="${stop.startTime}" pattern="EEEE MM/dd"/>
-              </dt>
-            </c:if>
-            <dd <c:if test="${stop.activeNow}">class="alert-success"</c:if>><!-- ${stop.key} --><joda:format
-                value="${stop.startTime}"
-                style="-S"/> - <joda:format value="${stop.endTime}" style="-S"/>
-              <ftl:location at="${stop.startTime}" location="${stop.location}"/>
-              <c:if test="${!empty(stop.description)}">
-                <p class="stop-description">${stop.description}</p>
-              </c:if>
-              <c:if test="${!empty(stop.imageUrl)}">
-                <div>
-                  <img src="${stop.imageUrl}"/>
-                </div>
-              </c:if>
-            </dd>
-          </c:forEach>
-
-        </c:forEach>
+      <h3>Stats</h3>
+      <dl>
+        <dt>First Seen</dt>
+        <dd>          <joda:format value="${truck.stats.firstSeen}" style="MS"/> <c:if
+            test="${!empty(truck.stats.whereFirstSeen.name)}">@
+          <ftl:location at="${truck.stats.firstSeen}" location="${truck.stats.whereFirstSeen}"/></c:if>
+        </dd>
+        <dt>Last Seen</dt>
+        <dd><joda:format value="${truck.stats.lastSeen}" style="MS"/> <c:if
+            test="${!empty(truck.stats.whereLastSeen.name)}">@
+          <ftl:location at="${truck.stats.lastSeen}" location="${truck.stats.whereLastSeen}"/></c:if></dd>
       </dl>
     </div>
-  </div>
+    <div class="col-md-8">
+      <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#schedule-section" aria-controls="schedule-section" role="tab" data-toggle="tab">Upcoming Schedule</a></li>
+        <li role="presentation"><a href="#menu-section" aria-controls="menu-section" role="tab" data-toggle="tab">Menu</a></li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane active" role="tabpanel" id="schedule-section">
+          <dl class="schedule">
+            <c:forEach items="${stops}" var="schedule" varStatus="scheduleStatus">
 
+              <c:forEach items="${schedule.stops}" var="stop" varStatus="stopStatus">
+                <c:if test="${stopStatus.first}">
+                  <dt><joda:format value="${stop.startTime}" pattern="EEEE MM/dd"/>
+                  </dt>
+                </c:if>
+                <dd <c:if test="${stop.activeNow}">class="alert-success"</c:if>><!-- ${stop.key} --><joda:format
+                    value="${stop.startTime}"
+                    style="-S"/> - <joda:format value="${stop.endTime}" style="-S"/>
+                  <ftl:location at="${stop.startTime}" location="${stop.location}"/>
+                  <c:if test="${!empty(stop.description)}">
+                    <p class="stop-description">${stop.description}</p>
+                  </c:if>
+                  <c:if test="${!empty(stop.imageUrl)}">
+                    <div>
+                      <img src="${stop.imageUrl}"/>
+                    </div>
+                  </c:if>
+                </dd>
+              </c:forEach>
 
-  <c:choose>
-  <c:when test="${!empty(menu)}">
-    <div class="row">
-      <div class="col-md-12">
-        <a name="truckmenu"></a>
-        <h2>Menu</h2>
-      </div>
-    </div>
-    <div class="row" id="menu">
+            </c:forEach>
+          </dl>
+        </div>
+        <div class="tab-pane" role="tabpanel" id="menu-section">
+          <c:choose>
+            <c:when test="${!empty(menu)}">
+              <div class="row" id="menu">
 
-    </div>
-  </c:when>
-  <c:when test="${empty(meny) && !empty(truck.menuUrl)}">
-    <div class="row" id="menu">
-      <div class="col-md-6">
-        <a name="menulink"></a>
-        <h2>Menu</h2>
-        <div>
-          <a target="_blank" href="${truck.menuUrl}">Click here to see this truck's current menu!</a>
-        </div>
-        <small><em>*disclaimer - this data may or may not be accurate or up-to-date.</em></small>
-      </div>
-    </div>
-  </c:when>
-</c:choose>
-
-  <c:if test="${enableGraphs}">
-
-
-  <div class="row">
-    <div class="col-md-12">
-      <h2>Days on the Road (by week)</h2>
-      <div id="chart"></div>
-    </div>
-  </div>
-
-  <div class="row" style="padding-top: 20px">
-    <div class="col-md-3">
-      <div class="panel panel-primary">
-        <div class="panel-heading">
-          <div class="panel-title text-center">First Seen</div>
-        </div>
-        <div class="panel-body">
-          <joda:format value="${truck.stats.firstSeen}" style="MS"/> <c:if
-            test="${!empty(truck.stats.whereFirstSeen.name)}">@ <br/>
-          <ftl:location at="${truck.stats.firstSeen}" location="${truck.stats.whereFirstSeen}"/></c:if>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="panel panel-primary">
-        <div class="panel-heading">
-          <div class="panel-title text-center">Last Seen</div>
-        </div>
-        <div class="panel-body">
-          <joda:format value="${truck.stats.lastSeen}" style="MS"/> <c:if
-            test="${!empty(truck.stats.whereLastSeen.name)}">@ <br/>
-          <ftl:location at="${truck.stats.lastSeen}" location="${truck.stats.whereLastSeen}"/></c:if>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="panel panel-primary">
-        <div class="panel-heading">
-          <div class="panel-title text-center">Stops This Year</div>
-        </div>
-        <div class="panel-body text-center" style="font-size:2em">
-          <strong>${truck.stats.stopsThisYear}</strong>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="panel panel-primary">
-        <div class="panel-heading">
-          <div class="panel-title text-center">Total Stops</div>
-        </div>
-        <div class="panel-body text-center" style="font-size:2em">
-          <strong>${truck.stats.totalStops}</strong>
+              </div>
+            </c:when>
+            <c:when test="${empty(meny) && !empty(truck.menuUrl)}">
+              <div class="row" id="menu">
+                <div class="col-md-6">
+                  <a name="menulink"></a>
+                  <div>
+                    <a target="_blank" href="${truck.menuUrl}">Click here to see this truck's current menu!</a>
+                  </div>
+                  <small><em>*disclaimer - this data may or may not be accurate or up-to-date.</em></small>
+                </div>
+              </div>
+            </c:when>
+          </c:choose>
         </div>
       </div>
     </div>
   </div>
-  </c:if>
+
+
+
 </div>
 <%@include file="include/core_js.jsp" %>
 <script>
@@ -198,7 +158,7 @@
 
     function addSection(sectionName, description) {
       var body = (description) ? "<div class='panel-body'><p>" + description + " </p></div>" : "";
-      var $panelSection = $("<div class='col-md-4'><div class='panel panel-default'><div class='panel-heading'><h3 class='panel-title'>" + sectionName + "</h3></div>" + body + "<div class='list-group'></div></div></div>")
+      var $panelSection = $("<div class='col-md-6'><div class='panel panel-default'><div class='panel-heading'><h3 class='panel-title'>" + sectionName + "</h3></div>" + body + "<div class='list-group'></div></div></div>")
       $menu.append($panelSection);
       var items = $menu.find("div.list-group");
       return $(items[items.length - 1]);
