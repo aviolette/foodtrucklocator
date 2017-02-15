@@ -61,6 +61,7 @@
   Dropzone.options.upload = {
     headers: {"X-Dropzone-Truck": "${truck.id}"},
     maxFiles: 1,
+    dictDefaultMessage: "Click or drop images here to upload",
     acceptedFiles: "image/*",
     complete: function (foo) {
       this.removeAllFiles();
