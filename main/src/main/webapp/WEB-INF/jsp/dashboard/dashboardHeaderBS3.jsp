@@ -8,6 +8,7 @@
   <meta name="author" content="Andrew Violette, @aviolette/@chifoodtruckz on twitter"/>
   <title>${title}</title>
   <%@ include file="../include/bootstrap_css.jsp" %>
+  <link href="/css/dropzone.css" rel="stylesheet"/>
   <link href="/css/foodtruckfinder.css" rel="stylesheet"/>
   <link rel="stylesheet" href="/css/dashboard.css"/>
   <link rel="stylesheet" href="/css/truck_edit_widget.css"/>

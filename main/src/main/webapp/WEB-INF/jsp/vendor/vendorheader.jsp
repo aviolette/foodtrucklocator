@@ -19,6 +19,7 @@
       <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     </c:otherwise>
   </c:choose>
+  <link href="/css/dropzone.css" rel="stylesheet"/>
   <link href="/css/foodtruckfinder.css?ver=11" rel="stylesheet"/>
   <link rel="stylesheet" href="//storage.googleapis.com/ftf_static/css/typeahead.css"/>
   <link rel="stylesheet" href="/css/truck_edit_widget.css"/>
