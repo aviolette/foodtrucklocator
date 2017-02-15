@@ -9,15 +9,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.DailyDataDAO;
 import foodtruck.dao.MenuDAO;
@@ -29,13 +26,13 @@ import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.time.Clock;
 
-
 /**
  * @author aviolette
  * @since 5/20/13
  */
 @Singleton
 public class TrucksServlet extends HttpServlet {
+
   private final TruckDAO truckDAO;
   private final FoodTruckStopService stops;
   private final Clock clock;
@@ -76,8 +73,7 @@ public class TrucksServlet extends HttpServlet {
       }
       req.setAttribute("truck", truck);
       LocalDate firstDay = clock.firstDayOfWeek();
-      req.setAttribute("stops", getSchedules(truck, firstDay));
-      req.setAttribute("daysOfWeek", daysOfWeek(firstDay));
+      req.setAttribute("stops", getSchedules(truck, clock.currentDay()));
       req.setAttribute("enableGraphs", staticConfig.getShowTruckGraphs());
       req.setAttribute("title", truck.getName());
       req.setAttribute("suffix", "-fluid");
@@ -106,16 +102,5 @@ public class TrucksServlet extends HttpServlet {
     return stops.findSchedules(truck.getId(), new Interval(firstDay.toDateTimeAtStartOfDay(zone),
         firstDay.toDateTimeAtStartOfDay(zone)
             .plusDays(8)));
-  }
-
-  private Iterable<String> daysOfWeek(LocalDate firstDay) {
-    DateTimeFormatter formatter = DateTimeFormat.forPattern("EEE MM/dd");
-    ImmutableList.Builder builder = ImmutableList.builder();
-    LocalDate date = firstDay;
-    for (int i = 0; i < 7; i++) {
-      builder.add(formatter.print(date));
-      date = date.plusDays(1);
-    }
-    return builder.build();
   }
 }
