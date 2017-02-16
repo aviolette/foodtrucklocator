@@ -110,7 +110,7 @@
                     </c:if>
                     <c:if test="${!empty(stop.imageUrl)}">
                       <div>
-                        <img src="${stop.imageUrl}"/>
+                        <img width="500" src="${stop.imageUrl}"/>
                       </div>
                     </c:if>
                   </div>
