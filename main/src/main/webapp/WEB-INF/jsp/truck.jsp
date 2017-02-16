@@ -15,6 +15,11 @@
   .tab-content {
     padding-top:20px;
   }
+  h2.date-header {
+    background-color: #5e5e5e;
+    color:white;
+    padding: 5px 0 5px 10px;
+  }
 </style>
 
 <div id="content">
@@ -77,18 +82,6 @@
           </c:forEach>
         </ul>
       </c:if>
-      <h3>Stats</h3>
-      <dl>
-        <dt>First Seen</dt>
-        <dd>          <joda:format value="${truck.stats.firstSeen}" style="MS"/> <c:if
-            test="${!empty(truck.stats.whereFirstSeen.name)}">@
-          <ftl:location at="${truck.stats.firstSeen}" location="${truck.stats.whereFirstSeen}"/></c:if>
-        </dd>
-        <dt>Last Seen</dt>
-        <dd><joda:format value="${truck.stats.lastSeen}" style="MS"/> <c:if
-            test="${!empty(truck.stats.whereLastSeen.name)}">@
-          <ftl:location at="${truck.stats.lastSeen}" location="${truck.stats.whereLastSeen}"/></c:if></dd>
-      </dl>
     </div>
     <div class="col-md-8">
       <ul class="nav nav-tabs" role="tablist">
@@ -97,31 +90,35 @@
       </ul>
       <div class="tab-content">
         <div class="tab-pane active" role="tabpanel" id="schedule-section">
-          <dl class="schedule">
+          <div>
             <c:forEach items="${stops}" var="schedule" varStatus="scheduleStatus">
 
               <c:forEach items="${schedule.stops}" var="stop" varStatus="stopStatus">
                 <c:if test="${stopStatus.first}">
-                  <dt><joda:format value="${stop.startTime}" pattern="EEEE MM/dd"/>
-                  </dt>
+                  <h2 class="date-header"><joda:format value="${stop.startTime}" pattern="EEEE MMMM dd"/></h2>
                 </c:if>
-                <dd <c:if test="${stop.activeNow}">class="alert-success"</c:if>><!-- ${stop.key} --><joda:format
-                    value="${stop.startTime}"
-                    style="-S"/> - <joda:format value="${stop.endTime}" style="-S"/>
-                  <ftl:location at="${stop.startTime}" location="${stop.location}"/>
-                  <c:if test="${!empty(stop.description)}">
-                    <p class="stop-description">${stop.description}</p>
-                  </c:if>
-                  <c:if test="${!empty(stop.imageUrl)}">
-                    <div>
-                      <img src="${stop.imageUrl}"/>
-                    </div>
-                  </c:if>
-                </dd>
+                <div class="row<c:if test="${stop.activeNow}"> alert-success</c:if>"><!-- ${stop.key} -->
+                <div class="col-md-4" style="padding-left:0">
+                  <h3><joda:format
+                      value="${stop.startTime}"
+                      style="-S"/> - <joda:format value="${stop.endTime}" style="-S"/></h3>
+                  <p class="lead"><span class="glyphicon glyphicon-map-marker"></span> <ftl:location at="${stop.startTime}" location="${stop.location}"/></p>
+                </div>
+                  <div class="col-md-8">
+                    <c:if test="${!empty(stop.description)}">
+                      <p class="stop-description">${stop.description}</p>
+                    </c:if>
+                    <c:if test="${!empty(stop.imageUrl)}">
+                      <div>
+                        <img src="${stop.imageUrl}"/>
+                      </div>
+                    </c:if>
+                  </div>
+                </div>
               </c:forEach>
 
             </c:forEach>
-          </dl>
+          </div>
         </div>
         <div class="tab-pane" role="tabpanel" id="menu-section">
           <c:choose>
