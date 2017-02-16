@@ -99,8 +99,12 @@ public class TrucksServlet extends HttpServlet {
   }
 
   private List<DailySchedule> getSchedules(Truck truck, LocalDate firstDay) {
-    return stops.findSchedules(truck.getId(), new Interval(firstDay.toDateTimeAtStartOfDay(zone),
+    List<DailySchedule> schedule = stops.findSchedules(truck.getId(), new Interval(firstDay.toDateTimeAtStartOfDay(zone),
         firstDay.toDateTimeAtStartOfDay(zone)
-            .plusDays(8)));
+            .plusDays(60)));
+    if (schedule.size() > 10) {
+      return schedule.subList(0, 10);
+    }
+    return schedule;
   }
 }
