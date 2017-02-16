@@ -12,13 +12,19 @@
   h3.panel-title {
     font-size: 20px;
   }
+
   .tab-content {
-    padding-top:20px;
+    padding-top: 20px;
   }
+
   h2.date-header {
     background-color: #5e5e5e;
-    color:white;
+    color: white;
     padding: 5px 0 5px 10px;
+  }
+
+  p.location {
+    font-size: 24px;
   }
 </style>
 
@@ -85,8 +91,10 @@
     </div>
     <div class="col-md-8">
       <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#schedule-section" aria-controls="schedule-section" role="tab" data-toggle="tab">Upcoming Schedule</a></li>
-        <li role="presentation"><a href="#menu-section" aria-controls="menu-section" role="tab" data-toggle="tab">Menu</a></li>
+        <li role="presentation" class="active"><a href="#schedule-section" aria-controls="schedule-section" role="tab"
+                                                  data-toggle="tab">Schedule</a></li>
+        <li role="presentation"><a href="#menu-section" aria-controls="menu-section" role="tab"
+                                   data-toggle="tab">Menu</a></li>
       </ul>
       <div class="tab-content">
         <div class="tab-pane active" role="tabpanel" id="schedule-section">
@@ -98,22 +106,27 @@
                   <h2 class="date-header"><joda:format value="${stop.startTime}" pattern="EEEE MMMM dd"/></h2>
                 </c:if>
                 <div class="row<c:if test="${stop.activeNow}"> alert-success</c:if>"><!-- ${stop.key} -->
-                <div class="col-md-4" style="padding-left:0">
-                  <h3><joda:format
-                      value="${stop.startTime}"
-                      style="-S"/> - <joda:format value="${stop.endTime}" style="-S"/></h3>
-                  <p class="lead"><span class="glyphicon glyphicon-map-marker"></span> <ftl:location at="${stop.startTime}" location="${stop.location}"/></p>
-                </div>
-                  <div class="col-md-8">
-                    <c:if test="${!empty(stop.description)}">
-                      <p class="stop-description">${stop.description}</p>
-                    </c:if>
-                    <c:if test="${!empty(stop.imageUrl)}">
-                      <div>
-                        <img width="500" src="${stop.imageUrl}"/>
-                      </div>
-                    </c:if>
+                  <div
+                      class="<c:choose><c:when test="${empty(stop.description) and empty(stop.imageUrl)}">col-md-12</c:when><c:otherwise>col-md-5</c:otherwise></c:choose>"
+                      style="padding-left:0">
+                    <h3><joda:format
+                        value="${stop.startTime}"
+                        style="-S"/> - <joda:format value="${stop.endTime}" style="-S"/></h3>
+                    <p class="location"><span class="glyphicon glyphicon-map-marker"></span> <ftl:location
+                        at="${stop.startTime}" location="${stop.location}"/></p>
                   </div>
+                  <c:if test="${!empty(stop.description) or !empty(stop.imageUrl)}">
+                    <div class="col-md-7">
+                      <c:if test="${!empty(stop.description)}">
+                        <p class="stop-description">${stop.description}</p>
+                      </c:if>
+                      <c:if test="${!empty(stop.imageUrl)}">
+                        <div>
+                          <img width="100%" src="${stop.imageUrl}"/>
+                        </div>
+                      </c:if>
+                    </div>
+                  </c:if>
                 </div>
               </c:forEach>
 
@@ -138,12 +151,18 @@
                 </div>
               </div>
             </c:when>
+            <c:otherwise>
+              <div class="row">
+                <div class="col-md-12">
+                  <p class="lead text-center">There is no published menu for this truck</p>
+                </div>
+              </div>
+            </c:otherwise>
           </c:choose>
         </div>
       </div>
     </div>
   </div>
-
 
 
 </div>
