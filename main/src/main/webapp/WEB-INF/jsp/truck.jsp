@@ -26,6 +26,10 @@
   p.location {
     font-size: 24px;
   }
+  div.location-row {
+    margin-left:0;
+    margin-right:0;
+  }
 </style>
 
 <div id="content">
@@ -103,9 +107,9 @@
 
               <c:forEach items="${schedule.stops}" var="stop" varStatus="stopStatus">
                 <c:if test="${stopStatus.first}">
-                  <h2 class="date-header"><joda:format value="${stop.startTime}" pattern="EEEE MMMM dd"/></h2>
+                  <h2 class="date-header"><joda:format value="${stop.startTime}" pattern="EEEE MMM dd"/></h2>
                 </c:if>
-                <div class="row<c:if test="${stop.activeNow}"> alert-success</c:if>"><!-- ${stop.key} -->
+                <div class="row location-row<c:if test="${stop.activeNow}"> alert-success</c:if>"><!-- ${stop.key} -->
                   <div
                       class="<c:choose><c:when test="${empty(stop.description) and empty(stop.imageUrl)}">col-md-12</c:when><c:otherwise>col-md-5</c:otherwise></c:choose>"
                       style="padding-left:0">
