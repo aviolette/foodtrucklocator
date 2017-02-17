@@ -8,7 +8,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
+import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -72,8 +74,14 @@ public class TrucksServlet extends HttpServlet {
         return;
       }
       req.setAttribute("truck", truck);
-      LocalDate firstDay = clock.firstDayOfWeek();
-      req.setAttribute("stops", getSchedules(truck, clock.currentDay()));
+      List<DailySchedule> schedules = getSchedules(truck, clock.currentDay());
+      boolean hasStops = FluentIterable.from(schedules).anyMatch(new Predicate<DailySchedule>() {
+        public boolean apply(DailySchedule dailySchedule) {
+          return dailySchedule.isHasStops();
+        }
+      });
+      req.setAttribute("stops", schedules);
+      req.setAttribute("hasStops", hasStops);
       req.setAttribute("enableGraphs", staticConfig.getShowTruckGraphs());
       req.setAttribute("title", truck.getName());
       req.setAttribute("suffix", "-fluid");

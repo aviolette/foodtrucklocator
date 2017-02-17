@@ -104,7 +104,6 @@
         <div class="tab-pane active" role="tabpanel" id="schedule-section">
           <div>
             <c:forEach items="${stops}" var="schedule" varStatus="scheduleStatus">
-
               <c:forEach items="${schedule.stops}" var="stop" varStatus="stopStatus">
                 <c:if test="${stopStatus.first}">
                   <h2 class="date-header"><joda:format value="${stop.startTime}" pattern="EEEE MMM dd"/></h2>
@@ -135,6 +134,14 @@
               </c:forEach>
 
             </c:forEach>
+            <c:if test="${!hasStops}">
+              <div class="row">
+                <div class="col-md-12">
+                  <p class="lead text-center">There are no stops scheduled for this food truck</p>
+                </div>
+              </div>
+
+            </c:if>
           </div>
         </div>
         <div class="tab-pane" role="tabpanel" id="menu-section">
