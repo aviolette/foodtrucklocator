@@ -1,8 +1,5 @@
 <%@ include file="header.jsp" %>
 <style type="text/css">
-  .thumbnail {
-    border: none;
-  }
 
   @media (max-width: 1000px) {
     .category-selection {

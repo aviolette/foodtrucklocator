@@ -105,7 +105,7 @@ public class LocationServlet extends HttpServlet {
       }
     } else {
       showStops = false;
-      LocalDate startDate = clock.firstDayOfWeekFrom(clock.now());
+      LocalDate startDate = clock.currentDay();
       List<DailySchedule> truckStops = truckStopService.findStopsNearLocationOverRange(location,
           new Interval(startDate.toDateTimeAtStartOfDay(), startDate.plusDays(8)
               .toDateTimeAtStartOfDay()));
