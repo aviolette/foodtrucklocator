@@ -42,6 +42,7 @@ public class FoodTruckServlet extends HttpServlet {
       resp.setHeader("Location", "http://www.chicagofoodtruckfinder.com" + path);
       return;
     }
+    req.setAttribute("additionalCss", "/css/front-page.css");
     req.setAttribute("center", staticConfig.getCenter());
     final String mode = req.getParameter("mode");
     req.setAttribute("mobile", "mobile".equals(mode));

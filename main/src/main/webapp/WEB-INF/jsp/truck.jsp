@@ -1,36 +1,4 @@
 <%@ include file="header.jsp" %>
-<%@ include file="include/rickshaw_css.jsp" %>
-<style>
-  dl.schedule {
-    font-size: 125%;
-  }
-
-  dl.schedule dd {
-    padding-bottom: 10px;
-  }
-
-  h3.panel-title {
-    font-size: 20px;
-  }
-
-  .tab-content {
-    padding-top: 20px;
-  }
-
-  h2.date-header {
-    background-color: #5e5e5e;
-    color: white;
-    padding: 5px 0 5px 10px;
-  }
-
-  p.location {
-    font-size: 24px;
-  }
-  div.location-row {
-    margin-left:0;
-    margin-right:0;
-  }
-</style>
 
 <div id="content">
   <ol class="breadcrumb">

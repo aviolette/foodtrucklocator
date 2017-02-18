@@ -14,19 +14,9 @@
   <title>${title}</title>
   <%@ include file="include/bootstrap_css.jsp" %>
   <link href="/css/foodtruckfinder${suffix}-1.1.css" rel="stylesheet"/>
-  <style type="text/css">
-    #listContainer {
-      overflow-y: auto !important;
-    }
-    .tooltip-inner {
-      text-align: left;
-      padding: 10px;
-    }
-    .tooltip-inner ul {
-      padding-left:10px;
-      margin:0;
-    }
-  </style>
+  <c:if test="${!empty(additionalCss)}">
+    <link href="${additionalCss}" rel="stylesheet"/>
+  </c:if>
 </head>
 <body>
 <div class="container${suffix} cftf-main-container">

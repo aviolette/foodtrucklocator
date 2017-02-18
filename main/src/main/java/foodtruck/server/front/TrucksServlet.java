@@ -80,6 +80,7 @@ public class TrucksServlet extends HttpServlet {
           return dailySchedule.isHasStops();
         }
       });
+      req.setAttribute("additionalCss", "/css/truck-page.css");
       req.setAttribute("stops", schedules);
       req.setAttribute("hasStops", hasStops);
       req.setAttribute("enableGraphs", staticConfig.getShowTruckGraphs());
