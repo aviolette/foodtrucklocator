@@ -80,11 +80,21 @@
                   <div
                       class="<c:choose><c:when test="${empty(stop.description) and empty(stop.imageUrl)}">col-md-12</c:when><c:otherwise>col-md-5</c:otherwise></c:choose>"
                       style="padding-left:0">
-                    <h3><joda:format
-                        value="${stop.startTime}"
-                        style="-S"/> - <joda:format value="${stop.endTime}" style="-S"/></h3>
+                    <h3><c:choose><c:when test="${stop.fromBeacon}">
+
+                      <em>Transmitting from beacon since <joda:format
+                          value="${stop.startTime}"
+                          style="-S"/> <span class='glyphicon glyphicon-flash'></span></em>
+
+                        </c:when><c:otherwise>
+
+                      <joda:format
+                          value="${stop.startTime}"
+                          style="-S"/> - <joda:format value="${stop.endTime}" style="-S"/></h3>
                     <p class="location"><span class="glyphicon glyphicon-map-marker"></span> <ftl:location
                         at="${stop.startTime}" location="${stop.location}"/></p>
+
+                      </c:otherwise></c:choose>
                   </div>
                   <c:if test="${!empty(stop.description) or !empty(stop.imageUrl)}">
                     <div class="col-md-7">
