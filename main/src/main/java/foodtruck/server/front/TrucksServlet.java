@@ -1,32 +1,17 @@
 package foodtruck.server.front;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
-import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import org.joda.time.DateTimeZone;
-import org.joda.time.Interval;
-import org.joda.time.LocalDate;
-
-import foodtruck.dao.DailyDataDAO;
-import foodtruck.dao.MenuDAO;
-import foodtruck.dao.TruckDAO;
-import foodtruck.model.DailySchedule;
 import foodtruck.model.StaticConfig;
-import foodtruck.model.Truck;
-import foodtruck.schedule.FoodTruckStopService;
-import foodtruck.server.GuiceHackRequestWrapper;
-import foodtruck.time.Clock;
 
 /**
  * @author aviolette
@@ -35,85 +20,31 @@ import foodtruck.time.Clock;
 @Singleton
 public class TrucksServlet extends HttpServlet {
 
-  private final TruckDAO truckDAO;
-  private final FoodTruckStopService stops;
-  private final Clock clock;
-  private final DateTimeZone zone;
-  private final DailyDataDAO dailyDataDAO;
-  private final MenuDAO menuDAO;
+  private static final String JSP = "/WEB-INF/jsp/trucks.jsp";
   private final StaticConfig staticConfig;
 
   @Inject
-  public TrucksServlet(TruckDAO trucks, FoodTruckStopService stops, Clock clock, DateTimeZone zone,
-      StaticConfig staticConfig, DailyDataDAO dailyDataDAO, MenuDAO menuDAO) {
-    this.truckDAO = trucks;
+  public TrucksServlet(StaticConfig staticConfig) {
     this.staticConfig = staticConfig;
-    this.stops = stops;
-    this.clock = clock;
-    this.zone = zone;
-    this.dailyDataDAO = dailyDataDAO;
-    this.menuDAO = menuDAO;
   }
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    final String requestURI = req.getRequestURI();
-    String truckId = (requestURI.equals("/trucks") || requestURI.equals("/trucks/") ? null : requestURI.substring(8));
-    String jsp = "/WEB-INF/jsp/trucks.jsp";
-    if ("/".equals(truckId)) {
+    if (req.getRequestURI()
+        .endsWith("/")) {
       resp.sendRedirect("/trucks");
       return;
-    } else if (!Strings.isNullOrEmpty(truckId)) {
-      jsp = "/WEB-INF/jsp/truck.jsp";
-      if (truckId.endsWith("/")) {
-        truckId = truckId.substring(0, truckId.length() - 1);
-      }
-      Truck truck = truckDAO.findById(truckId);
-      if (truck == null) {
-        resp.sendError(404, "Page cannot be found: " + truckId);
-        return;
-      }
-      req.setAttribute("truck", truck);
-      List<DailySchedule> schedules = getSchedules(truck, clock.currentDay());
-      boolean hasStops = FluentIterable.from(schedules).anyMatch(new Predicate<DailySchedule>() {
-        public boolean apply(DailySchedule dailySchedule) {
-          return dailySchedule.isHasStops();
-        }
-      });
-      req.setAttribute("additionalCss", "/css/truck-page.css");
-      req.setAttribute("stops", schedules);
-      req.setAttribute("hasStops", hasStops);
-      req.setAttribute("enableGraphs", staticConfig.getShowTruckGraphs());
-      req.setAttribute("title", truck.getName());
-      req.setAttribute("suffix", "-fluid");
-      req.setAttribute("menu", menuDAO.findByTruck(truckId));
-      req.setAttribute("dailyData", dailyDataDAO.findByTruckAndDay(truck.getId(), clock.currentDay()));
-      req.setAttribute("description",
-          Strings.isNullOrEmpty(truck.getDescription()) ? truck.getName() : truck.getDescription());
-    } else {
-      String tag = req.getParameter("tag");
-      if (!Strings.isNullOrEmpty(tag)) {
-        req.setAttribute("filteredBy", tag);
-      }
-      req.setAttribute("foodTruckRequestOn", false);
-      req.setAttribute("description", "Catalogue of all the food trucks in " + staticConfig.getCity());
-      req.setAttribute("title", "Food Trucks in " + staticConfig.getCity());
     }
-
-    req = new GuiceHackRequestWrapper(req, jsp);
+    String tag = req.getParameter("tag");
+    if (!Strings.isNullOrEmpty(tag)) {
+      req.setAttribute("filteredBy", tag);
+    }
+    req.setAttribute("foodTruckRequestOn", false);
+    req.setAttribute("description", "Catalogue of all the food trucks in " + staticConfig.getCity());
+    req.setAttribute("title", "Food Trucks in " + staticConfig.getCity());
     req.setAttribute("tab", "trucks");
     req.setAttribute("supportsBooking", staticConfig.getSupportsBooking());
-    req.getRequestDispatcher(jsp)
+    req.getRequestDispatcher(JSP)
         .forward(req, resp);
-  }
-
-  private List<DailySchedule> getSchedules(Truck truck, LocalDate firstDay) {
-    List<DailySchedule> schedule = stops.findSchedules(truck.getId(), new Interval(firstDay.toDateTimeAtStartOfDay(zone),
-        firstDay.toDateTimeAtStartOfDay(zone)
-            .plusDays(60)));
-    if (schedule.size() > 10) {
-      return schedule.subList(0, 10);
-    }
-    return schedule;
   }
 }

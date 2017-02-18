@@ -191,7 +191,8 @@ class FoodtruckServletModule extends ServletModule {
     serve("/popular").with(PopularServlet.class);
     serve("/businesses").with(TruckBusinessesServlet.class);
     serve("/booze").with(BoozeAndTrucksServlet.class);
-    serve("/trucks*").with(TrucksServlet.class);
+    serve("/trucks", "/trucks/").with(TrucksServlet.class);
+    serve("/trucks/*").with(foodtruck.server.front.TruckServlet.class);
     serve("/about").with(AboutServlet.class);
     serve("/locations*").with(LocationServlet.class);
     serve("/images/*").with(ImageServlet.class);
