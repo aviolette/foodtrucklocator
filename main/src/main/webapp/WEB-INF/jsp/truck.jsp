@@ -90,11 +90,13 @@
 
                       <joda:format
                           value="${stop.startTime}"
-                          style="-S"/> - <joda:format value="${stop.endTime}" style="-S"/></h3>
-                    <p class="location"><span class="glyphicon glyphicon-map-marker"></span> <ftl:location
-                        at="${stop.startTime}" location="${stop.location}"/></p>
+                          style="-S"/> - <joda:format value="${stop.endTime}" style="-S"/>
+
 
                       </c:otherwise></c:choose>
+                    </h3>
+                    <p class="location"><span class="glyphicon glyphicon-map-marker"></span> <ftl:location
+                        at="${stop.startTime}" location="${stop.location}"/></p>
                   </div>
                   <c:if test="${!empty(stop.description) or !empty(stop.imageUrl)}">
                     <div class="col-md-7">
