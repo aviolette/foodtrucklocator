@@ -56,7 +56,7 @@
       $truckList.empty();
       $.each(dataSet, function(i, datum) {
         var icon = makeRelative(datum["previewIcon"]);
-        var $section = $("<div class='col-xs-6 col-md-3'></div>");
+        var $section = $("<div class='col-xs-6 col-md-3 col-lg-2'></div>");
         var thumbnailId ="thumbnail-" + i;
         var $thumbnail = $("<div class='thumbnail' id='" + thumbnailId + "'></div>");
         var $a = $("<a href='/trucks/" + datum["id"] + "'></a>");
