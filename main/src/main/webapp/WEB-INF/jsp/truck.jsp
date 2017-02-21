@@ -80,7 +80,7 @@
                   <div
                       class="<c:choose><c:when test="${empty(stop.description) and empty(stop.imageUrl)}">col-md-12</c:when><c:otherwise>col-md-5</c:otherwise></c:choose>"
                       style="padding-left:0">
-                    <h3><c:choose><c:when test="${stop.fromBeacon}">
+                    <h3><c:choose><c:when test="${stop.fromBeacon && stop.activeNow}">
 
                       <em>Transmitting from beacon since <joda:format
                           value="${stop.startTime}"
