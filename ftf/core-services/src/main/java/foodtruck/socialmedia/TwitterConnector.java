@@ -114,6 +114,9 @@ public class TwitterConnector implements SocialMediaConnector {
     if (status.isRetweet()) {
       return null;
     }
+    if (status.isTruncated()) {
+      log.log(Level.WARNING, "Status truncated: {0}", status);
+    }
     final GeoLocation geoLocation = status.getGeoLocation();
     Location location = null;
     if (geoLocation != null) {
