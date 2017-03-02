@@ -65,6 +65,10 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
   @Override
   public void pullCustomCalendarFor(Interval range, Truck truck) {
     List<TruckStop> stops = scheduleStrategy.findForTime(range, truck);
+    if ("mytoastycheese".equals(truck.getId())) {
+      // HACK: these two trucks share the same calendar
+      truckStopDAO.deleteStops(truckStopDAO.findVendorStopsAfter(range.getStart(), "besttruckinbbq"));
+    }
     truckStopDAO.deleteStops(truckStopDAO.findVendorStopsAfter(range.getStart(), truck.getId()));
     truckStopDAO.addStops(stops);
   }

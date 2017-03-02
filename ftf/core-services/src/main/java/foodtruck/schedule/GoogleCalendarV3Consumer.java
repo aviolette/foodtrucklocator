@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -114,10 +115,16 @@ class GoogleCalendarV3Consumer implements ScheduleStrategy {
 
   private void buildTruckStop(Interval range, Truck truck, ImmutableList.Builder<TruckStop> builder,
       int timezoneAdjustment, Event event) {
-    final String titleText = event.getSummary();
+    String titleText = event.getSummary();
     if (hasInvalidTitle(titleText)) {
       log.log(Level.INFO, "Skipping {0} for {1}", new Object[]{titleText, truck.getId()});
       return;
+    }
+    if ("mytoastycheese".equals(truck.getId()) && titleText.endsWith("- B1")) {
+      truck = MoreObjects.firstNonNull(truckDAO.findById("besttruckinbbq"), truck);
+      titleText = titleText.substring(0, titleText.length() - 4)
+          .trim();
+      log.log(Level.INFO, "Creating event on besttruckinbbq's schedule from toasty cheese' calendar: {0}", titleText);
     }
     Location location = locationFromWhereField(event, truck);
     String where = (location == null) ? null : location.getName();
