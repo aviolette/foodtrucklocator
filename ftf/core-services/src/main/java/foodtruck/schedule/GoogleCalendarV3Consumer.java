@@ -120,11 +120,14 @@ class GoogleCalendarV3Consumer implements ScheduleStrategy {
       log.log(Level.INFO, "Skipping {0} for {1}", new Object[]{titleText, truck.getId()});
       return;
     }
+    // HACK: toasty cheese adds codes to the end of their locations noting which trucks are going where
     if ("mytoastycheese".equals(truck.getId()) && titleText.endsWith("- B1")) {
       truck = MoreObjects.firstNonNull(truckDAO.findById("besttruckinbbq"), truck);
       titleText = titleText.substring(0, titleText.length() - 4)
           .trim();
       log.log(Level.INFO, "Creating event on besttruckinbbq's schedule from toasty cheese' calendar: {0}", titleText);
+    } else if ("mytoastycheese".equals(truck.getId()) && (titleText.endsWith("- T1") || titleText.endsWith("- T2"))) {
+      titleText = titleText.substring(0, titleText.length() - 4);
     }
     Location location = locationFromWhereField(event, truck);
     String where = (location == null) ? null : location.getName();
