@@ -153,7 +153,7 @@
         <label><input id="alexaProvided" type="checkbox">&nbsp;Available to Alexa?</label>
       </div>
       <div class="btn-group>">
-        <button id="submitButton" class="btn btn-primary"><span class="glyphicon glyphicon-save"></span> Save</button>
+        <button id="submitButton" class="btn btn-primary btn-lg">Save</button>
       </div>
     </div>
   </div>
