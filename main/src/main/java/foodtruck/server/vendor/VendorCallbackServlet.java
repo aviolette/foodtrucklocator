@@ -60,7 +60,12 @@ public class VendorCallbackServlet extends HttpServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     Session session = sessionProvider.get();
     Twitter twitter = (Twitter) session.getProperty("twitter");
-    boolean noLogon = (Boolean) session.getProperty(NOLOGON_PARAM);
+    if (twitter == null) {
+      log.log(Level.WARNING, "User came to callback without going to interstitial page.");
+      resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+      return;
+    }
+    boolean noLogon = (Boolean) session.getProperty(NOLOGON_PARAM, false);
     RequestToken requestToken = (RequestToken) session.getProperty("requestToken");
     String verifier = req.getParameter("oauth_verifier");
     try {

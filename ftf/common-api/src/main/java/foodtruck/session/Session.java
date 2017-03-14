@@ -7,6 +7,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.Maps;
 import com.google.common.net.HttpHeaders;
 import com.google.inject.Inject;
@@ -75,14 +76,23 @@ public class Session {
     cache.put(fullSessionKey(), contents, 1440);
   }
 
-  public @Nullable Object getProperty(String name) {
+  public @Nullable Object getProperty(String name, @Nullable Object defaultValue) {
     if (cache.contains(fullSessionKey())) {
       //noinspection unchecked
       Map<String, Object> map = (Map<String, Object>) cache.get(fullSessionKey());
       //noinspection ConstantConditions
       return map.get(name);
     }
-    return null;
+    return defaultValue;
+
+  }
+
+  public @Nullable Object getProperty(String name) {
+    return getProperty(name, null);
+  }
+
+  public boolean getBooleanProperty(String name, boolean defaultValue) {
+    return (Boolean)MoreObjects.firstNonNull(getProperty(name), defaultValue);
   }
 
   private String fullSessionKey() {
