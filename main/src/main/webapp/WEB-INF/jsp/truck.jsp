@@ -133,12 +133,12 @@
 
               </div>
             </c:when>
-            <c:when test="${empty(meny) && !empty(truck.menuUrl)}">
+            <c:when test="${empty(menu) && !empty(truck.menuUrl)}">
               <div class="row" id="menu">
                 <div class="col-md-6">
                   <a name="menulink"></a>
                   <div>
-                    <a target="_blank" href="${truck.menuUrl}">Click here to see this truck's current menu!</a>
+                    <img src="${truck.menuUrl}" width="100%" id="menu-image" title="Truck Menu"/>
                   </div>
                   <small><em>*disclaimer - this data may or may not be accurate or up-to-date.</em></small>
                 </div>
