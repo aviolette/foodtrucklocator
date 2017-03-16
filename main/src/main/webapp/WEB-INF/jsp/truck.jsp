@@ -135,7 +135,7 @@
             </c:when>
             <c:when test="${empty(menu) && !empty(truck.menuUrl)}">
               <div class="row" id="menu">
-                <div class="col-md-6">
+                <div class="col-md-12">
                   <a name="menulink"></a>
                   <div>
                     <img src="${truck.menuUrl}" width="100%" id="menu-image" title="Truck Menu"/>
