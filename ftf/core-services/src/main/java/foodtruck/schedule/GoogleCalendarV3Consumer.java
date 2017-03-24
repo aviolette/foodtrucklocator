@@ -227,7 +227,7 @@ class GoogleCalendarV3Consumer implements ScheduleStrategy {
   private boolean hasInvalidTitle(String titleText) {
     if (!Strings.isNullOrEmpty(titleText)) {
       String lowerTitle = titleText.toLowerCase();
-      if (lowerTitle.contains("private") || lowerTitle.contains("catering") || lowerTitle.contains(
+      if (lowerTitle.contains("private") || lowerTitle.contains("wedding") || lowerTitle.contains("catering") || lowerTitle.contains(
           "downtown chicago") || titleText.contains("TBD") || titleText.contains("TBA")) {
         return true;
       }
