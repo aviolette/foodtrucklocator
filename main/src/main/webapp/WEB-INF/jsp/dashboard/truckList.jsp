@@ -81,7 +81,7 @@
           <tr <c:choose><c:when test="${truckStops.truck.muted}">class="muted rowItem"</c:when><c:otherwise>class="rowItem"</c:otherwise></c:choose>>
             <td class="gutter"></td>
             <td><a class="truckLink" href="/admin/trucks/${truckStops.truck.id}">${truckStops.truck.name}</a></td>
-            <td>${truckStops.truck.categoryList}</td>
+            <td><c:forEach var="category" items="${truckStops.truck.categories}">&nbsp;<span class="label label-primary">${category}</span></c:forEach></td>
             <td><c:choose><c:when
                 test="${truckStops.truck.usingTwittalyzer}"></c:when><c:otherwise><span
                 class="label warning">off</span></c:otherwise></c:choose></td>
