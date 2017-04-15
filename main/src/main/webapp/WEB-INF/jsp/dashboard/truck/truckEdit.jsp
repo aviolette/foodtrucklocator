@@ -170,13 +170,7 @@
 </form>
 <div class="btn-toolbar">
   <div class="btn-group">
-    <button id="syncProfile" class="btn btn-default"><span class="glyphicon glyphicon-cloud-download"></span>
-      Synchronize
-    </button>
-  </div>
-  <div class="btn-group">
-    <button id="submitButton" class="btn btn-primary"><span class="glyphicon glyphicon glyphicon-floppy-disk"></span>
-      Save
+    <button id="submitButton" class="btn btn-primary btn-lg">Save
     </button>
   </div>
 </div>
@@ -184,16 +178,6 @@
 <script>
   $("#submitButton").click(function(e) {
     $("#theForm").submit();
-  });
-  $("#syncProfile").click(function(e) {
-    e.preventDefault();
-    $.ajax({
-      url: '/admin/profileSync?truckId=${truck.id }',
-      type: 'POST',
-      complete: function() {
-        location.reload();
-      }
-    });
   });
 </script>
 
