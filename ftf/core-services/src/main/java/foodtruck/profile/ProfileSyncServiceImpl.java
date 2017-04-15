@@ -78,6 +78,7 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
       log.log(Level.WARNING, "Error contacting twitter", e.getMessage());
     }
     truckDAO.save(truck);
+    syncProfile(truck);
     return truck;
   }
 
