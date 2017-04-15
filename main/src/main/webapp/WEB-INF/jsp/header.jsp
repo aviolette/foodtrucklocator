@@ -57,7 +57,6 @@
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Info <b class="caret"></b></a>
           <ul class="dropdown-menu">
             <li><a href="/about">About</a></li>
-            <li><a href="http://blog.chicagofoodtruckfinder.com/">Blog</a></li>
             <li><a href="http://twitter.com/${twitterHandle}">Twitter</a></li>
             <li><a href="http://facebook.com/${facebookPage}">Facebook</a></li>
             <li><a href="/vendinfo">For Food Truck Owners</a></li>
