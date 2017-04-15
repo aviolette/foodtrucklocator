@@ -4,6 +4,7 @@
   "description": "Food Truck Finder application",
   "main": "index.js",
   "scripts": {
+    "appserver": "npm run package && ${APPENGINE_HOME}/bin/dev_appserver.sh target/foodtrucklocator-1.0-SNAPSHOT",
     "test": "echo \"Error: no test specified\" && exit 1",
     "babel": "babel --extensions .jsx src/main/webapp/js -d src/main/webapp/lib",
     "build": "browserify -t [ babelify --extensions .jsx --presets [ es2015 react ] ] src/main/webapp/lib/location/index.js -o src/main/webapp/script/location.js",
