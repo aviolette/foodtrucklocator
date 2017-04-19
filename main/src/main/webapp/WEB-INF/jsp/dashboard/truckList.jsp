@@ -69,8 +69,8 @@
       <tr>
         <th class="img-col"></th>
         <th>Truck</th>
-        <th>Categories</th>
-        <th>Twittalyzer</th>
+        <th class="hidden-xs">Categories</th>
+        <th class="hidden-xs">Twittalyzer</th>
       </tr>
       </thead>
       <tbody>
@@ -79,8 +79,10 @@
           <tr <c:choose><c:when test="${truckStops.truck.muted}">class="muted rowItem"</c:when><c:otherwise>class="rowItem"</c:otherwise></c:choose>>
             <td class="img-col"><a class="truckLink" href="/admin/trucks/${truckStops.truck.id}"><img alt="truck icon" class="media-object img-responsive img-rounded" src="${truckStops.truck.iconUrlObj.protocolRelative}" /></a></td>
             <td><a class="truckLink" href="/admin/trucks/${truckStops.truck.id}">${truckStops.truck.name}</a></td>
-            <td><c:forEach var="category" items="${truckStops.truck.categories}">&nbsp;<span class="label label-primary">${category}</span></c:forEach></td>
-            <td><c:choose><c:when
+            <td class="hidden-xs"><c:forEach var="category"
+                                             items="${truckStops.truck.categories}">&nbsp;<span class="label label-primary">${category}</span></c:forEach>
+            </td>
+            <td class="hidden-xs"><c:choose><c:when
                 test="${truckStops.truck.usingTwittalyzer}"></c:when><c:otherwise><span
                 class="label warning">off</span></c:otherwise></c:choose></td>
           </tr>
