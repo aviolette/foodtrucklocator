@@ -52,6 +52,7 @@ import foodtruck.server.front.IPhoneSupportServlet;
 import foodtruck.server.front.LocationServlet;
 import foodtruck.server.front.PopularServlet;
 import foodtruck.server.front.SSLVerificationServlet;
+import foodtruck.server.front.ShuntServlet;
 import foodtruck.server.front.SupportServlet;
 import foodtruck.server.front.TruckBusinessesServlet;
 import foodtruck.server.front.TruckTimelineServlet;
@@ -102,6 +103,27 @@ class FoodtruckServletModule extends ServletModule {
 
   @Override
   protected void configureServlets() {
+    if ("true".equals(System.getProperty("foodtrucklocator.shunt"))) {
+      shunt();
+    } else {
+      serveCommonEndpoints();
+    }
+    // Filters
+    if ("true".equals(System.getProperty("foodtrucklocator.supports.ssl"))) {
+      filterRegex("/admin/.*", "/", "/vendor.*", "/book.*").through(SSLRedirectFilter.class);
+    }
+    filterRegex("/", "/popular.*", "/businesses.*", "/booze.*", "/trucks.*", "/about.*", "/locations.*",
+        "/stats/timeline", "/support.*", "/vendinfo.*").through(PublicPageFilter.class);
+    filterRegex("/vendor.*").through(VendorPageFilter.class);
+    filter("/*").through(SiteScraperFilter.class);
+    filter("/*").through(CommonConfigFilter.class);
+  }
+
+  private void shunt() {
+    serve("/").with(ShuntServlet.class);
+  }
+
+  private void serveCommonEndpoints() {
     // Offline endpoints called via cron-jobs
     serve("/cron/recache").with(RecacheServlet.class);
     serve("/cron/tweets").with(TweetCacheUpdateServlet.class);
@@ -204,18 +226,7 @@ class FoodtruckServletModule extends ServletModule {
 
     // Services
     install(new FactoryModuleBuilder().build(DailySpecialResourceFactory.class));
-    serve("/services/*").with(GuiceContainer.class,
-        ImmutableMap.of(PackagesResourceConfig.PROPERTY_PACKAGES, "foodtruck.server.resources"));
-
-    // Filters
-    if ("true".equals(System.getProperty("foodtrucklocator.supports.ssl"))) {
-      filterRegex("/admin/.*", "/", "/vendor.*", "/book.*").through(SSLRedirectFilter.class);
-    }
-    filterRegex("/", "/popular.*", "/businesses.*", "/booze.*", "/trucks.*", "/about.*", "/locations.*",
-        "/stats/timeline", "/support.*", "/vendinfo.*").through(PublicPageFilter.class);
-    filterRegex("/vendor.*").through(VendorPageFilter.class);
-    filter("/*").through(SiteScraperFilter.class);
-    filter("/*").through(CommonConfigFilter.class);
+    serve("/services/*").with(GuiceContainer.class, ImmutableMap.of(PackagesResourceConfig.PROPERTY_PACKAGES, "foodtruck.server.resources"));
   }
 
   @Provides
