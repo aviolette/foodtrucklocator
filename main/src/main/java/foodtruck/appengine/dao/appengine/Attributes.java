@@ -92,7 +92,8 @@ class Attributes {
 
   static double getDoubleProperty(Entity entity, String statName, double defaultValue) {
     if (entity.hasProperty(statName)) {
-      return (Double) entity.getProperty(statName);
+      Number n = (Number) entity.getProperty(statName);
+      return n == null ? 0 : n.doubleValue();
     }
     return defaultValue;
   }
