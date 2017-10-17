@@ -123,7 +123,7 @@
     <dependency>
       <groupId>com.google</groupId>
       <artifactId>appengine-local-runtime-shared</artifactId>
-      <version>1.9.49</version>
+      <version>1.9.58</version>
       <scope>provided</scope>
     </dependency>
     <!-- https://mvnrepository.com/artifact/com.google.appengine.tools/appengine-gcs-client -->
@@ -135,7 +135,7 @@
     <dependency>
       <groupId>com.google</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.49</version>
+      <version>1.9.58</version>
     </dependency>
     <dependency>
       <groupId>com.google.truth</groupId>
