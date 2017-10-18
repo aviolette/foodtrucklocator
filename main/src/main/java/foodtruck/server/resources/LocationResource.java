@@ -1,7 +1,6 @@
 package foodtruck.server.resources;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.ws.rs.GET;
@@ -73,13 +72,6 @@ public class LocationResource {
   @RequiresAppKeyWithCountRestriction
   public Collection<Location> findStops(@AppKey @QueryParam("appKey") String appKey) {
     return locationDAO.findDesignatedStops();
-  }
-
-  @GET
-  @Path("autocomplete")
-  @RequiresAppKeyWithCountRestriction
-  public List<Location> findAutocompleteLocations(@AppKey @QueryParam("appKey") String appKey) {
-    return locationDAO.findAutocompleteLocations();
   }
 
   @GET

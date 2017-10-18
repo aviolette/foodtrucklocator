@@ -10,9 +10,8 @@ foodtrucklocator.*
 output
 npm-debug.log
 src/main/resources
-node_modules
-main/src/main/webapp/lib
-main/src/main/webapp/script/location.js
+
+
 
 src/main/webapp/WEB-INF/appengine-web.xml
 
