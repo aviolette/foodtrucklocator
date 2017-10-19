@@ -40,7 +40,7 @@ class LocationResolverImpl implements LocationResolver {
       LinxupAccount linxupAccount) {
     Location currentlyRecordPosition = position.toLocation();
     // device will be null when this is the first time we've seen a particular device
-    if (previousDeviceRecording == null || position.getSpeedMph() > 0) {
+    if (previousDeviceRecording == null || position.getSpeedMph() > 0 || previousDeviceRecording.getLastLocation() == null) {
       log.log(Level.INFO, "Returning current recorded position {0}", currentlyRecordPosition);
       return currentlyRecordPosition;
     }
