@@ -13,19 +13,4 @@
     <module>config-api</module>
     <module>core-services</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>jdk-1-8</id>
-      <activation>
-        <jdk>1.8</jdk>
-      </activation>
-      <modules>
-        <module>web-services</module>
-	<module>gcloud-services</module>
-        <module>confighub</module>
-        <module>foodtruckfinder</module>
-      </modules>
-    </profile>
-  </profiles>
 </project>
