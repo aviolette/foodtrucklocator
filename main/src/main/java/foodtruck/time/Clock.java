@@ -1,5 +1,7 @@
 package foodtruck.time;
 
+import java.time.ZonedDateTime;
+
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -14,6 +16,12 @@ public interface Clock {
    * Returns the date time for the current instant.
    */
   DateTime now();
+
+  /**
+   * Returns a java 8 zoned date time for the current instant.
+   * @return
+   */
+  ZonedDateTime now8();
 
   /**
    * Returns the current day in the current time zone.

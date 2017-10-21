@@ -1,5 +1,7 @@
 package foodtruck.time;
 
+import java.time.ZoneId;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 
@@ -22,6 +24,11 @@ public class TimeModule extends AbstractModule {
   @Provides
   public DateTimeZone provideDefaultZone() {
     return DateTimeZone.forID(System.getProperty("foodtrucklocator.timezone", "America/Chicago"));
+  }
+
+  @Provides
+  ZoneId providesZoneId() {
+    return ZoneId.of(System.getProperty("foodtrucklocator.timezone", "America/Chicago"));
   }
 
   @TimeFormatter @Provides

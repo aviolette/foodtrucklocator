@@ -1,5 +1,8 @@
 package foodtruck.appengine.dao.appengine;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -65,6 +68,25 @@ class Attributes {
     } else {
       entity.setProperty(propertyName, value.getUrl());
     }
+  }
+
+
+  public static void setZonedDateProperty(String propertyName, Entity entity,
+      ZonedDateTime dateTime) {
+    if (dateTime == null) {
+      entity.setProperty(propertyName, null);
+    } else {
+      entity.setProperty(propertyName, new Date(dateTime.toInstant().toEpochMilli()));
+    }
+  }
+
+  @Nullable
+  static ZonedDateTime getZonedDateProperty(String propertyName, PropertyContainer entity, ZoneId zone) {
+    if (entity.hasProperty(propertyName)) {
+      Date date = (Date) entity.getProperty(propertyName);
+      return ZonedDateTime.ofInstant(Instant.ofEpochMilli(date.getTime()), zone);
+    }
+    return null;
   }
 
   static void setDateProperty(String propertyName, PropertyContainer entity, @Nullable DateTime dateTime) {

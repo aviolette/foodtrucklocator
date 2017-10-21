@@ -1,5 +1,8 @@
 package foodtruck.time;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
@@ -15,16 +18,23 @@ import org.joda.time.format.DateTimeFormatter;
 class ClockImpl implements Clock {
   private final DateTimeZone zone;
   private final DateTimeFormatter timeFormatter;
+  private ZoneId zoneId;
 
   @Inject
-  public ClockImpl(DateTimeZone zone, @FriendlyDateTimeFormat DateTimeFormatter timeFormatter) {
+  public ClockImpl(DateTimeZone zone, @FriendlyDateTimeFormat DateTimeFormatter timeFormatter, ZoneId zoneId) {
     this.zone = zone;
     this.timeFormatter = timeFormatter;
+    this.zoneId = zoneId;
   }
 
   @Override
   public DateTime now() {
     return new DateTime(zone);
+  }
+
+  @Override
+  public ZonedDateTime now8() {
+    return ZonedDateTime.now(zoneId);
   }
 
   @Override
