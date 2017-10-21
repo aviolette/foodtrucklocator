@@ -15,6 +15,28 @@ Run this once.  This will install the maven dependencies that aren't in a public
 
 > ./setup.sh
 
+## Twitter Configuration
+
+This cofiguration is needed to read and post to twitter
+
+```
+> mkdir -p main/src/main/resources
+> cd main/src/main/resources
+> emacs twitter4j.properties
+```
+
+Add these properties to twitter4j.properties
+
+```
+debug=true
+oauth.consumerKey=....
+oauth.consumerSecret=....
+oauth.accessToken=...
+oauth.accessTokenSecret=...
+http.retryCount=1
+http.enableSSL=true
+```
+
 # Building
 
 > mvn package
