@@ -73,10 +73,11 @@
       <version>2.8.4</version>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/com.amazon.alexa/alexa-skills-kit -->
     <dependency>
       <groupId>com.amazon.alexa</groupId>
       <artifactId>alexa-skills-kit</artifactId>
-      <version>1.1.2</version>
+      <version>1.6.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
