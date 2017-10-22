@@ -1,21 +1,18 @@
 package foodtruck.alexa;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
-import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -60,9 +57,9 @@ class LocationIntentProcessor implements IntentProcessor {
   private final boolean testingMode;
 
   @Inject
-  public LocationIntentProcessor(GeoLocator locator, FoodTruckStopService service, Clock clock, LocationDAO locationDAO,
-      ScheduleCacher cacher, @DefaultCenter Location center, @TimeOnlyFormatter DateTimeFormatter formatter,
-      @Named(TESTING_MODE) boolean testingMode) {
+  public LocationIntentProcessor(GeoLocator locator, FoodTruckStopService service, Clock clock,
+      LocationDAO locationDAO, ScheduleCacher cacher, @DefaultCenter Location center,
+      @TimeOnlyFormatter DateTimeFormatter formatter, @Named(TESTING_MODE) boolean testingMode) {
     this.locator = locator;
     this.service = service;
     this.clock = clock;
@@ -102,52 +99,55 @@ class LocationIntentProcessor implements IntentProcessor {
     boolean inFuture = requestDate.isAfter(currentDay);
     String dateRepresentation = toDate(requestDate);
     SpeechletResponseBuilder builder = SpeechletResponseBuilder.builder();
-    @SuppressWarnings("unchecked") List<TruckStop> trucks = FluentIterable.from(
-        service.findStopsNearALocation(location, requestDate))
-        .toList();
-    List<String> truckNames = Lists.transform(trucks, TruckStop.TO_TRUCK_NAME);
-    List<String> truckTimes = Lists.transform(trucks, new Function<TruckStop, String>() {
-      public String apply(TruckStop input) {
-        return formatter.print(input.getStartTime()) + " to " + formatter.print(input.getEndTime());
-      }
-    });
+    List<TruckStop> trucks = service.findStopsNearALocation(location, requestDate);
+    List<String> truckNames = trucks.stream()
+        .map(truckStop -> truckStop.getTruck()
+            .getNameInSSML())
+        .collect(Collectors.toList());
+    List<String> truckTimes = trucks.stream()
+        .map(input -> formatter.print(input.getStartTime()) + " to " +
+            formatter.print(input.getEndTime()))
+        .collect(Collectors.toList());
     boolean allSame = Sets.newHashSet(truckTimes)
         .size() == 1;
     String futurePhrase = inFuture ? "scheduled to be " : "";
     int count = truckNames.size();
     switch (count) {
       case 0:
-        String nearby = AlexaUtils.toAlexaList(findAlternateLocations(tomorrow, location, requestDate), true,
-            Conjunction.or);
+        String nearby = AlexaUtils.toAlexaList(
+            findAlternateLocations(tomorrow, location, requestDate), true, Conjunction.or);
         String noTrucks;
         if (Strings.isNullOrEmpty(nearby)) {
           noTrucks = String.format(
-              "There are no trucks %sat %s %s and there don't appear to be any nearby that location.", futurePhrase,
-              location.getShortenedName(), dateRepresentation);
+              "There are no trucks %sat %s %s and there don't appear to be any nearby that location.",
+              futurePhrase, location.getShortenedName(), dateRepresentation);
           builder.speechSSML(noTrucks);
         } else {
-          builder.speechSSML(
-              String.format("There are no trucks %sat %s %s.  These nearby locations have food trucks: %s.",
-                  futurePhrase, location.getShortenedName(), dateRepresentation, nearby));
+          builder.speechSSML(String.format(
+              "There are no trucks %sat %s %s.  These nearby locations have food trucks: %s.",
+              futurePhrase, location.getShortenedName(), dateRepresentation, nearby));
         }
         break;
       case 1:
         builder.speechSSML(
-            String.format("%s is %sat %s %s from %s", truckNames.get(0), futurePhrase, location.getShortenedName(),
-                dateRepresentation, truckTimes.get(0)));
+            String.format("%s is %sat %s %s from %s", truckNames.get(0), futurePhrase,
+                location.getShortenedName(), dateRepresentation, truckTimes.get(0)));
         break;
       case 2: {
-        String schedulePart = allSame ? " from " + truckTimes.get(0) : buildSchedulePart(truckNames, truckTimes);
+        String schedulePart = allSame ?
+            " from " + truckTimes.get(0) : buildSchedulePart(truckNames, truckTimes);
         builder.speechSSML(
-            String.format("%s and %s are %sat %s %s%s", truckNames.get(0), truckNames.get(1), futurePhrase,
-                location.getShortenedName(), dateRepresentation, schedulePart));
+            String.format("%s and %s are %sat %s %s%s", truckNames.get(0), truckNames.get(1),
+                futurePhrase, location.getShortenedName(), dateRepresentation, schedulePart));
       }
-        break;
+      break;
       default: {
-        String schedulePart = allSame ? " from " + truckTimes.get(0) : buildSchedulePart(truckNames, truckTimes);
+        String schedulePart = allSame ?
+            " from " + truckTimes.get(0) : buildSchedulePart(truckNames, truckTimes);
         builder.speechSSML(
-            String.format("There are %s trucks %sat %s %s: %s%s", count, futurePhrase, location.getShortenedName(),
-                dateRepresentation, AlexaUtils.toAlexaList(truckNames, true), schedulePart));
+            String.format("There are %s trucks %sat %s %s: %s%s", count, futurePhrase,
+                location.getShortenedName(), dateRepresentation,
+                AlexaUtils.toAlexaList(truckNames, true), schedulePart));
       }
     }
     String cardTitle = String.format("Food Trucks at %s %s", location.getShortenedName(),
@@ -183,7 +183,8 @@ class LocationIntentProcessor implements IntentProcessor {
         .ask();
   }
 
-  private SpeechletResponse locationNotFound(String locationName, boolean tomorrow, LocalDate requestDate) {
+  private SpeechletResponse locationNotFound(String locationName, boolean tomorrow,
+      LocalDate requestDate) {
     List<String> locations = findAlternateLocations(tomorrow, null, requestDate);
     log.log(Level.SEVERE, "Could not find location {0} that is specified in alexa", locationName);
     SpeechletResponseBuilder builder = SpeechletResponseBuilder.builder();
@@ -201,25 +202,27 @@ class LocationIntentProcessor implements IntentProcessor {
     }
   }
 
-  private List<String> findAlternateLocations(boolean tomorrow, Location currentLocation, LocalDate theDate) {
+  private List<String> findAlternateLocations(boolean tomorrow, Location currentLocation,
+      LocalDate theDate) {
     try {
       String schedule = tomorrow ? scheduleCacher.findTomorrowsSchedule() : scheduleCacher.findSchedule();
       List<Location> locations = extractLocations(schedule);
-      Predicate<Location> filterPredicate = Predicates.alwaysTrue();
+      Predicate<Location> filterPredicate = (foo) -> true;
       Location searchLocation = MoreObjects.firstNonNull(currentLocation, defaultCenter);
       if (searchLocation != null) {
-        Collections.sort(locations, searchLocation.distanceFromComparator());
+        locations.sort(searchLocation.distanceFromComparator());
         if (currentLocation != null) {
-          filterPredicate = currentLocation.rangedPredicate(5);
+          filterPredicate = currentLocation.rangedPredicate8(5);
         }
       }
-      return FluentIterable.from(locations)
+      return locations.stream()
           .filter(filterPredicate)
-          .transform(Location.TO_SPOKEN_NAME)
+          .map(Location.TO_SPOKEN_NAME)
           .limit(3)
-          .toList();
+          .collect(Collectors.toList());
     } catch (Exception e) {
-      log.log(Level.WARNING, "Could not parse daily schedule {0} {1}", new Object[]{tomorrow, e.getMessage()});
+      log.log(Level.WARNING, "Could not parse daily schedule {0} {1}",
+          new Object[]{tomorrow, e.getMessage()});
       return ImmutableList.of("Clark and Monroe");
     }
   }

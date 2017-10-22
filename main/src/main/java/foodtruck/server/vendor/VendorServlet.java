@@ -1,22 +1,16 @@
 package foodtruck.server.vendor;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import org.codehaus.jettison.json.JSONArray;
-
 import foodtruck.dao.LocationDAO;
-import foodtruck.model.Location;
 import foodtruck.model.Truck;
 
 /**
@@ -41,9 +35,7 @@ public class VendorServlet extends HttpServlet {
     if (truck != null) {
       helper.seedRequest(req, truck);
     }
-    final List<Location> autocompleteLocations = locationDAO.findAutocompleteLocations();
-    List<String> locationNames = ImmutableList.copyOf(Iterables.transform(autocompleteLocations, Location.TO_NAME));
-    req.setAttribute("locations", new JSONArray(locationNames).toString());
+    req.setAttribute("locations", locationDAO.findLocationNamesAsJson());
     req.setAttribute("tab", "vendorhome");
     req.getRequestDispatcher(JSP)
         .forward(req, resp);

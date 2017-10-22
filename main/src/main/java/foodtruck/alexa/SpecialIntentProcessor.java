@@ -1,12 +1,12 @@
 package foodtruck.alexa;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.google.common.base.Strings;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 
@@ -47,9 +47,10 @@ class SpecialIntentProcessor implements IntentProcessor {
           soldOutText);
     } else {
       speechText = String.format("%s's specials for today are %s", truck.getNameInSSML(), AlexaUtils.toAlexaList(
-          FluentIterable.from(dailyData.getSpecials())
-              .transform(DailyData.TO_NAME)
-              .toList(), true));
+          dailyData.getSpecials()
+              .stream()
+              .map(DailyData.SpecialInfo::getSpecial)
+              .collect(Collectors.toList()), true));
     }
     return speechText;
   }

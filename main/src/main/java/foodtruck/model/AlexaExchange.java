@@ -1,8 +1,6 @@
 package foodtruck.model;
 
-import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSortedMap;
 
 import org.joda.time.DateTime;
 
@@ -38,17 +36,8 @@ public class AlexaExchange extends ModelEntity {
     return slots;
   }
 
-  public ImmutableCollection<String> getSlotEntries() {
-    return ImmutableSortedMap.copyOf(slots)
-        .values();
-  }
-
   public String getIntentName() {
     return intentName;
-  }
-
-  public boolean isSessionEnded() {
-    return sessionEnded;
   }
 
   public DateTime getRequestTime() {

@@ -2,21 +2,16 @@ package foodtruck.server.dashboard;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
-import com.google.common.collect.FluentIterable;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
-import org.codehaus.jettison.json.JSONArray;
 
 import foodtruck.dao.LocationDAO;
 import foodtruck.geolocation.GeoLocator;
@@ -57,14 +52,10 @@ public class LocationListServlet extends HttpServlet {
       // TODO: add error message if we get here
     }
     final List<Location> autocompleteLocations = locationDAO.findAutocompleteLocations();
-    List<String> locationNames = ImmutableList.copyOf(Iterables.transform(autocompleteLocations, Location.TO_NAME));
-    req.setAttribute("locations", new JSONArray(locationNames).toString());
-    req.setAttribute("allLocations", FluentIterable.from(autocompleteLocations).filter(new Predicate<Location>() {
-      @Override
-      public boolean apply(Location input) {
-        return input.isPopular();
-      }
-    }).toList());
+    req.setAttribute("locations", locationDAO.findLocationNamesAsJson());
+    req.setAttribute("allLocations", autocompleteLocations.stream()
+        .filter(Location::isPopular)
+        .collect(Collectors.toList()));
     req.setAttribute("nav", "locations");
     req.getRequestDispatcher(jsp).forward(req, resp);
   }

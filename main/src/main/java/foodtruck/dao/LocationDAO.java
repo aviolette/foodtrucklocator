@@ -44,6 +44,11 @@ public interface LocationDAO extends DAO<Long, Location> {
    */
   List<Location> findAutocompleteLocations();
 
+  /**
+   * A convenience function for converting auto-complete locations to json string
+   */
+  String findLocationNamesAsJson();
+
   List<Location> findLocationsOwnedByFoodTrucks();
 
   /**

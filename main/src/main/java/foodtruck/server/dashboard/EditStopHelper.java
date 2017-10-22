@@ -1,22 +1,18 @@
 package foodtruck.server.dashboard;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 
-import org.codehaus.jettison.json.JSONArray;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.LocationDAO;
-import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.schedule.FoodTruckStopService;
@@ -112,7 +108,7 @@ public class EditStopHelper {
     req.setAttribute("title", title);
     req.setAttribute("enableImages", true);
     req.setAttribute("backUrl", backUrl);
-    req.setAttribute("locations", locationNamesAsJsonArray());
+    req.setAttribute("locations", locationDAO.findLocationNamesAsJson());
     if (!vendor) {
       req.setAttribute("breadcrumbs", ImmutableList.of(new Link("Trucks", "/admin/trucks"),
           new Link(truck.getName(), "/admin/trucks/" + truck.getId()),
@@ -120,11 +116,5 @@ public class EditStopHelper {
     }
     req.getRequestDispatcher(jsp)
         .forward(req, resp);
-  }
-
-  private String locationNamesAsJsonArray() {
-    List<String> locationNames = ImmutableList.copyOf(
-        Iterables.transform(locationDAO.findAutocompleteLocations(), Location.TO_NAME));
-    return new JSONArray(locationNames).toString();
   }
 }

@@ -1,13 +1,13 @@
 package foodtruck.alexa;
 
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
-import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 
@@ -20,7 +20,6 @@ import foodtruck.model.TruckStop;
 import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.time.Clock;
 
-import static foodtruck.model.TruckStop.TO_LOCATION_NAME;
 
 /**
  * @author aviolette
@@ -86,22 +85,23 @@ class TruckLocationIntentProcessor implements IntentProcessor {
     DateTime now = clock.now();
     boolean considerLater = true;
     if (tod.isOver(now) && tod.isSpecific()) {
-      currentStops = AlexaUtils.toAlexaList(FluentIterable.from(schedule.getStops())
-          .filter(new TruckStop.ActiveDuringPredicate(requestTime))
-          .transform(TO_LOCATION_NAME)
-          .toList(), false);
+      currentStops = AlexaUtils.toAlexaList(schedule.getStops()
+          .stream()
+          .filter(input -> input.activeDuring(requestTime))
+          .map(input -> input.getLocation().getShortenedName())
+          .collect(Collectors.toList()), false);
       considerLater = false;
     } else if (tod.isApplicableNow(now)) {
-      currentStops = AlexaUtils.toAlexaList(FluentIterable.from(schedule.getStops())
-          .filter(new TruckStop.ActiveDuringPredicate(now))
-          .transform(TO_LOCATION_NAME)
-          .toList(), false);
+      currentStops = AlexaUtils.toAlexaList(schedule.getStops().stream()
+          .filter(input -> input.activeDuring(now))
+          .map(input -> input.getLocation().getShortenedName())
+          .collect(Collectors.toList()), false);
     }
     if (considerLater && tod.isApplicableAfter(requestTime)) {
-      laterStops = AlexaUtils.toAlexaList(FluentIterable.from(schedule.getStops())
+      laterStops = AlexaUtils.toAlexaList(schedule.getStops().stream()
           .filter(tod.filterFuture(now))
-          .transform(TruckStop.TO_NAME_WITH_TIME)
-          .toList(), false);
+          .map(TruckStop.TO_NAME_WITH_TIME)
+          .collect(Collectors.toList()), false);
     }
     if (currentStops.length() > 0 && laterStops.isEmpty()) {
       String verbPhrase = tod.isOver(now) ? "was" : "is currently";
@@ -180,7 +180,7 @@ class TruckLocationIntentProcessor implements IntentProcessor {
 
       @Override
       public Predicate<TruckStop> filterFuture(DateTime now) {
-        return new TruckStop.ActiveDuringPredicate(now.withTime(12, 0, 0, 0));
+        return input -> input.activeDuring(now.withTime(12, 0, 0, 0));
       }
     }, ELEVENSES {
       @Override
@@ -314,8 +314,8 @@ class TruckLocationIntentProcessor implements IntentProcessor {
       return false;
     }
 
-    public Predicate<TruckStop> filterFuture(DateTime now) {
-      return new TruckStop.ActiveAfterPredicate(now);
+    public Predicate<TruckStop> filterFuture(DateTime value) {
+      return input -> input.getStartTime().isAfter(value);
     }
   }
 }

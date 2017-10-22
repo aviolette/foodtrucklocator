@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -19,6 +20,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+
+import org.codehaus.jettison.json.JSONArray;
 
 import foodtruck.dao.LocationDAO;
 import foodtruck.model.Location;
@@ -120,6 +123,13 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
     return aq().filter(or(predicate(POPULAR_FIELD, EQUAL, true), predicate(AUTOCOMPLETE, EQUAL, true)))
         .sort(NAME_FIELD)
         .execute();
+  }
+
+  @Override
+  public String findLocationNamesAsJson() {
+    return new JSONArray(findAutocompleteLocations().stream()
+        .map(Location.TO_NAME)
+        .collect(Collectors.toList())).toString();
   }
 
   @Override

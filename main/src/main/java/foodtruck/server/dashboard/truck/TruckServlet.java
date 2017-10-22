@@ -9,17 +9,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
-import org.codehaus.jettison.json.JSONArray;
 
 import foodtruck.dao.DailyDataDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.StoryDAO;
 import foodtruck.dao.TruckDAO;
-import foodtruck.model.Location;
 import foodtruck.model.Story;
 import foodtruck.model.Truck;
 import foodtruck.time.Clock;
@@ -66,18 +62,12 @@ public class TruckServlet extends AbstractTruckServlet {
     request.setAttribute("truckId", truck.getId());
     request.setAttribute("truck", truck);
     request.setAttribute("suffix", "-fluid");
-    request.setAttribute("locations", locationNamesAsJsonArray());
+    request.setAttribute("locations", locationDAO.findLocationNamesAsJson());
     forward(request, response);
   }
 
   @Override
   protected String getJsp() {
     return "/WEB-INF/jsp/dashboard/truck/truckDashboard.jsp";
-  }
-
-  private String locationNamesAsJsonArray() {
-    List<String> locationNames = ImmutableList.copyOf(
-        Iterables.transform(locationDAO.findAutocompleteLocations(), Location.TO_NAME));
-    return new JSONArray(locationNames).toString();
   }
 }

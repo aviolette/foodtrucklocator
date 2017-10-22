@@ -3,10 +3,10 @@ package foodtruck.model;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Set;
+import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
@@ -22,16 +22,8 @@ import com.javadocmd.simplelatlng.util.LengthUnit;
  * @since Jul 12, 2011
  */
 public class Location extends ModelEntity implements Serializable {
-  public static final Function<Location, String> TO_NAME = new Function<Location, String>() {
-    public String apply(Location input) {
-      return input.getName();
-    }
-  };
-  public static final Function<Location, String> TO_SPOKEN_NAME = new Function<Location, String>() {
-    public String apply(Location input) {
-      return input.getShortenedName();
-    }
-  };
+  public static final Function<Location, String> TO_NAME = Location::getName;
+  public static final Function<Location, String> TO_SPOKEN_NAME = Location::getShortenedName;
   private static final String UNKNOWN = "UNKNOWN";
 
   private static final long serialVersionUID = 1L;
@@ -326,6 +318,10 @@ public class Location extends ModelEntity implements Serializable {
         }
       }
     };
+  }
+
+  public java.util.function.Predicate<Location> rangedPredicate8(final double distance) {
+    return (input) -> input != null && input.within(distance).milesOf(Location.this);
   }
 
   public Predicate<Location> rangedPredicate(final double distance) {

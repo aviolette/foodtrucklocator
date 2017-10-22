@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.memcache.MemcacheService;
-import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -86,10 +85,10 @@ public class PurgeStatsServlet extends HttpServlet {
         .toDateTimeAtStartOfDay();
     List<TruckStop> truckStops = truckStopDAO.findOverRange(null, new Interval(startTime, endTime));
     //noinspection unchecked
-    int vendorCount = FluentIterable.from(truckStops)
-        .transform(TruckStop.TO_TRUCK_NAME)
-        .toSet()
-        .size();
+    long vendorCount = truckStops.stream()
+        .map(input -> input.getTruck().getName())
+        .distinct()
+        .count();
     dailyTruckStopDAO.updateCount(startTime.plusMinutes(1), TRUCK_STOPS, truckStops.size());
     dailyTruckStopDAO.updateCount(startTime.plusMinutes(1), UNIQUE_TRUCKS, vendorCount);
     weeklyTruckStopDAO.updateCount(startTime.plusMinutes(1), TRUCK_STOPS, truckStops.size());

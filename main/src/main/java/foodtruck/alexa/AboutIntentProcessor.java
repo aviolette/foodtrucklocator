@@ -2,12 +2,12 @@ package foodtruck.alexa;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.google.common.base.Strings;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 
@@ -63,14 +63,14 @@ class AboutIntentProcessor implements IntentProcessor {
     DateTime now = clock.now();
     TruckSchedule schedule = service.findStopsForDay(truck.getId(), clock.currentDay());
     String schedulePart;
-    List<String> remainingStops = FluentIterable.from(schedule.getStops())
-        .filter(new TruckStop.ActiveAfterPredicate(now))
-        .transform(TruckStop.TO_NAME_WITH_TIME)
-        .toList();
-    List<String> currentStops = FluentIterable.from(schedule.getStops())
-        .filter(new TruckStop.ActiveDuringPredicate(now))
-        .transform(TruckStop.TO_LOCATION_NAME)
-        .toList();
+    List<String> remainingStops = schedule.getStops().stream()
+        .filter(input -> input.getStartTime().isAfter(now))
+        .map(TruckStop.TO_NAME_WITH_TIME)
+        .collect(Collectors.toList());
+    List<String> currentStops = schedule.getStops().stream()
+        .filter(input -> input.activeDuring(now))
+        .map(TruckStop.TO_LOCATION_NAME)
+        .collect(Collectors.toList());
     if (!remainingStops.isEmpty() || !currentStops.isEmpty()) {
       String currentPart = currentStops.isEmpty() ? "" : String.format("%s is currently at %s.", truck.getNameInSSML(),
           AlexaUtils.toAlexaList(currentStops, true));
