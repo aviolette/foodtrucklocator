@@ -45,5 +45,5 @@ http.enableSSL=true
 
 To run your app on port 8080, run this command in the root directory of your code:
 
-> $APPENGINE_HOME/bin/dev_appserver.sh target
+> $APPENGINE_HOME/bin/dev_appserver.sh target/foodtrucklocator-1.0-SNAPSHOT
 

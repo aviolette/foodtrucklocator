@@ -1,10 +1,12 @@
 package foodtruck.linxup;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -39,15 +41,10 @@ public class BlacklistedLocationMatcherImpl implements BlacklistedLocationMatche
         .build(new CacheLoader<String, List<Location>>() {
           public List<Location> load(String key) throws Exception {
             Truck truck = truckDAO.findById(key);
-            //noinspection ConstantConditions,ConstantConditions
-            return FluentIterable.from(truck.getBlacklistLocationNames())
-                .transform(new Function<String, Location>() {
-                  public Location apply(String name) {
-                    return locationDAO.findByAddress(name);
-                  }
-                })
-                .filter(Predicates.<Location>notNull())
-                .toList();
+            return truck.getBlacklistLocationNames().stream()
+                .map(locationDAO::findByAddress)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
           }
         });
   }
