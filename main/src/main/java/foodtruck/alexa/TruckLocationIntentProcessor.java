@@ -109,7 +109,7 @@ class TruckLocationIntentProcessor implements IntentProcessor {
       speechText = String.format("%s %s at %s%s", truck.getName(), verbPhrase, currentStops, qualifier);
     } else if (currentStops.isEmpty() && laterStops.length() > 0) {
       speechText = String.format("%s will be at %s", truck.getName(), laterStops);
-    } else if (currentStops.length() > 0 && laterStops.length() > 0) {
+    } else if (currentStops.length() > 0) {
       speechText = String.format("%s is currently at %s and will be at %s", truck.getName(), currentStops, laterStops);
     } else if ("now".equals(when)) {
       speechText = String.format("%s is not currently on the road", truck.getName());

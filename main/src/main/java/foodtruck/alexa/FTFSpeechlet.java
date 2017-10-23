@@ -84,7 +84,6 @@ class FTFSpeechlet implements Speechlet {
   }
 
   private void record(IntentRequest intentRequest, SpeechletResponse response) {
-
     ImmutableMap.Builder<String, String> slotBuilder = ImmutableMap.builder();
     for (Slot slot : intentRequest.getIntent()
         .getSlots()

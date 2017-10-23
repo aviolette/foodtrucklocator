@@ -2,12 +2,12 @@ package foodtruck.alexa;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.google.common.base.Strings;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
@@ -25,8 +25,9 @@ import static foodtruck.util.MoreStrings.capitalize;
 class CategoryIntent implements IntentProcessor {
 
   private static final String CATEGORY_NAME = "Category";
-  private static final ImmutableList<String> NATIONALITIES = ImmutableList.of("asian", "mexican", "cajun", "german",
-      "greek", "indian", "jamaican", "korean", "polish", "venezuelan", "vietnamese");
+  private static final ImmutableList<String> NATIONALITIES = ImmutableList.of("asian", "mexican",
+      "cajun", "german", "greek", "indian", "jamaican", "korean", "polish", "venezuelan",
+      "vietnamese");
   private final TruckDAO truckDAO;
 
   @Inject
@@ -50,15 +51,20 @@ class CategoryIntent implements IntentProcessor {
               "You can search for food trucks by what type of food they sell.  For example, you can say 'What trucks sell tacos?'.  What kind of food do you want to find?")
           .ask();
     }
-    List<String> trucks = FluentIterable.from(truckDAO.findActiveTrucks())
-        .filter(new Truck.HasCategoryPredicate(capitalize(category)))
-        .transform(Truck.TO_NAME)
-        .toList();
+
+    List<String> trucks = truckDAO.findActiveTrucks()
+        .stream()
+        .filter(input -> input.getCategories()
+            .contains(capitalize(intent.getSlot(CATEGORY_NAME)
+                .getValue())))
+        .map(Truck::getName)
+        .collect(Collectors.toList());
     if (NATIONALITIES.contains(category.toLowerCase())) {
       category = capitalize(category) + " food";
     }
-    String result = trucks.isEmpty() ? "There are no trucks that have " + category : String.format(
-        "These trucks have %s: %s", category, AlexaUtils.toAlexaList(trucks, true, and));
+    String result = trucks.isEmpty() ?
+        "There are no trucks that have " + category : String.format("These trucks have %s: %s",
+        category, AlexaUtils.toAlexaList(trucks, true, and));
     return SpeechletResponseBuilder.builder()
         .speechSSML(result)
         .simpleCard("Trucks that have " + category)
