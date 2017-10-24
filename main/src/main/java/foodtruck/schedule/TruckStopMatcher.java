@@ -40,13 +40,13 @@ import foodtruck.time.Clock;
  * @since 9/22/11
  */
 public class TruckStopMatcher {
-  public static final String TIME_PATTERN = "(\\d+(:\\d+)*\\s*(p|pm|a|am|a\\.m\\.|p\\.m\\.)?)|noon";
-  static final String TIME_PATTERN_STRICT =
+  private static final String TIME_PATTERN = "(\\d+(:\\d+)*\\s*(p|pm|a|am|a\\.m\\.|p\\.m\\.)?)|noon";
+  private static final String TIME_PATTERN_STRICT =
       "(\\d+:\\d+\\s*(p|pm|a|am|a\\.m\\.|p\\.m\\.)?)|noon|(\\d+\\s*(p|pm|a|am|a\\.m\\.|p\\.m\\.)|((11|12|1|2|3|4|5|6)\\b))";
   private static final Logger log = Logger.getLogger(TruckStopMatcher.class.getName());
   private static final long ONE_HOUR_IN_MILLIS = 3600000;
   private static final long DEFAULT_STOP_LENGTH_IN_HOURS = 2 * ONE_HOUR_IN_MILLIS;
-  private static final String TIME_RANGE_PATTERN = "(" + TIME_PATTERN + ")\\s*(-|til|till)\\s*(" + TIME_PATTERN + ")[\\s|!|\\$|\\n|,|\\.&&[^\\-]]";
+  private static final String TIME_RANGE_PATTERN = "(" + TIME_PATTERN + ")\\s*(-|til|till)\\s*(" + TIME_PATTERN + ")[\\s|!|$|\\n|,|.&&[^\\-]]";
   private static final String TOMORROW = "2morrow|tmw|tmrw|tomorrow|maana|mañana";
   private final AddressExtractor addressExtractor;
   private final GeoLocator geoLocator;
@@ -135,7 +135,6 @@ public class TruckStopMatcher {
   private void verifySchedule(Story tweet) throws UnmatchedException {
     String lowerCaseTweet = tweet.getText().toLowerCase();
     final boolean morning = isMorning(tweet.getTime());
-    // TODO: generalize this eventually, but for amanecertacos we can process schedules via the custom matcher
     if ("amanecertacos".equals(tweet.getScreenName())) {
       return;
     }
@@ -436,33 +435,33 @@ public class TruckStopMatcher {
         break;
     }
 
-    if (suffix != null) {
-    } else if (after != null) {
-      // TODO: handle military time
-      tmpTime = tmpTime.trim();
-      if (tmpTime.length() == 3) {
-        tmpTime = "0" + tmpTime;
-      }
-      int hour = Integer.parseInt(tmpTime.substring(0, 2).trim());
-      int min = Integer.parseInt(tmpTime.substring(2, 4).trim());
-      if (hour > 23 || min > 59)  {
-        return null;
-      }
-      if (after.isAfter(date.toDateTime(new LocalTime(hour, min), clock.zone()))) {
-        suffix = "pm";
-      } else if (hour == 12) {
-        if (after.getHourOfDay() < 13) {
+    if (suffix == null) {
+      if (after != null) {
+        tmpTime = tmpTime.trim();
+        if (tmpTime.length() == 3) {
+          tmpTime = "0" + tmpTime;
+        }
+        int hour = Integer.parseInt(tmpTime.substring(0, 2).trim());
+        int min = Integer.parseInt(tmpTime.substring(2, 4).trim());
+        if (hour > 23 || min > 59)  {
+          return null;
+        }
+        if (after.isAfter(date.toDateTime(new LocalTime(hour, min), clock.zone()))) {
           suffix = "pm";
+        } else if (hour == 12) {
+          if (after.getHourOfDay() < 13) {
+            suffix = "pm";
+          } else {
+            suffix = "am";
+            plusDay++;
+          }
         } else {
           suffix = "am";
-          plusDay++;
         }
       } else {
-        suffix = "am";
+        int hour = Integer.parseInt(tmpTime.substring(0, 2));
+        suffix = (hour > 8 && hour < 12) ? "am" : "pm";
       }
-    } else {
-      int hour = Integer.parseInt(tmpTime.substring(0, 2));
-      suffix = (hour > 8 && hour < 12) ? "am" : "pm";
     }
     timeText = tmpTime + suffix;
     try {
@@ -491,7 +490,7 @@ public class TruckStopMatcher {
   }
 
   static class UnmatchedException extends Exception {
-    public UnmatchedException(String msg) {
+    UnmatchedException(String msg) {
       super(msg);
     }
   }
