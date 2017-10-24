@@ -1,6 +1,6 @@
 package foodtruck.schedule;
 
-import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableList;
@@ -19,12 +19,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import foodtruck.dao.RetweetsDAO;
 import foodtruck.dao.StoryDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckObserverDAO;
 import foodtruck.dao.TruckStopDAO;
-import foodtruck.dao.TwitterNotificationAccountDAO;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.mail.SystemNotificationService;
 import foodtruck.model.Location;
@@ -45,7 +43,6 @@ public class SocialMediaCacherImplTest extends Mockito {
 
   private static final String TRUCK_1_ID = "truck1";
   private static final String TRUCK_2_ID = "truck2";
-  @Mock private RetweetsDAO retweetDAO;
   @Mock private StoryDAO tweetDAO;
   @Mock private SystemNotificationService emailNotifier;
   @Mock private TruckStopMatcher matcher;
@@ -66,10 +63,7 @@ public class SocialMediaCacherImplTest extends Mockito {
   private DateTime matchStartTime;
   private DateTime matchEndTime;
   private Story basicTweet;
-  private Location uofc;
   private Truck truck1;
-  private TwitterNotificationAccountDAO notificationDAO;
-  private StoryEventCallback notificationService;
 
   @Before
   public void before() {
@@ -83,8 +77,6 @@ public class SocialMediaCacherImplTest extends Mockito {
     currentDay = now.toLocalDate();
     when(clock.now()).thenReturn(now);
     when(clock.currentDay()).thenReturn(currentDay);
-    ImmutableMap<String, Truck> truckMap =
-        ImmutableMap.of(TRUCK_1_ID, truck1, TRUCK_2_ID, truck2);
     when(truckDAO.findById(TRUCK_1_ID)).thenReturn(truck1);
     when(truckDAO.findById(TRUCK_2_ID)).thenReturn(truck2);
     when(truckDAO.findAll()).thenReturn(ImmutableList.of(truck2));
@@ -92,16 +84,14 @@ public class SocialMediaCacherImplTest extends Mockito {
     Set<SocialMediaConnector> connectors = ImmutableSet.of();
     service = new SocialMediaCacherImpl( tweetDAO, matcher,
         truckStopDAO, clock, terminationDetector, truckDAO, emailNotifier, offTheRoadDetector, locator,
-        truckObserverDAO, null, timeFormatter, new StaticConfig(), connectors, specialsUpdater, notificationService);
+        truckObserverDAO, null, timeFormatter, new StaticConfig(), connectors, specialsUpdater, mock(StoryEventCallback.class));
     loca = Location.builder().lat(1).lng(2).name("a").build();
     locb = Location.builder().lat(3).lng(4).name("b").build();
     basicTweet = new Story.Builder().time(now.minusHours(2)).text(
         "We are at Kingsbury and Erie.").build();
-    List<Story> tweets = ImmutableList.of(basicTweet);
     matchStartTime = now.minusHours(3);
     matchEndTime = now.minusHours(2);
     matchedStop = TruckStop.builder().truck(truck2).startTime(matchStartTime).endTime(matchEndTime).location(loca).build();
-    uofc = Location.builder().lat(-3).lng(-43).name("58th and Ellis, Chicago, IL").build();
   }
 
   private void expectMatched(boolean softEnding) {
@@ -110,12 +100,12 @@ public class SocialMediaCacherImplTest extends Mockito {
         .story(Story.builder().text(basicTweet.getText()).build())
             .softEnding(softEnding)
             .build();
-    when(matcher.match(truck2, basicTweet)).thenReturn(matched);
+    when(matcher.match(truck2, basicTweet)).thenReturn(Optional.of(matched));
   }
 
   private void expectTweetsIgnored() {
     // saves the lists of tweets
-    tweetDAO.save((List<Story>) anyObject());
+    tweetDAO.save(anyObject());
   }
 
   @Test
@@ -125,8 +115,8 @@ public class SocialMediaCacherImplTest extends Mockito {
     TruckStop stopBeforeCurrent = TruckStop.builder().truck(truck2).startTime(matchStartTime.minusHours(2))
         .endTime(matchStartTime.minusHours(3)).location(locb).build();
     when(truckStopDAO.findDuring(TRUCK_2_ID, currentDay))
-        .thenReturn(ImmutableList.<TruckStop>of(stopBeforeCurrent));
-    truckStopDAO.addStops(ImmutableList.<TruckStop>of(matchedStop));
+        .thenReturn(ImmutableList.of(stopBeforeCurrent));
+    truckStopDAO.addStops(ImmutableList.of(matchedStop));
     expectTweetsIgnored();
     
     service.handleTruckStories();
@@ -145,9 +135,9 @@ public class SocialMediaCacherImplTest extends Mockito {
         TruckStop.builder().truck(truck2).startTime(matchStartTime.minusMinutes(30))
             .endTime(matchEndTime.minusMinutes(30)).location(loca).build();
     when(truckStopDAO.findDuring(TRUCK_2_ID, currentDay))
-        .thenReturn(ImmutableList.<TruckStop>of(currentStop));
-    truckStopDAO.deleteStops(ImmutableList.<TruckStop>of(currentStop));
-    truckStopDAO.addStops(ImmutableList.<TruckStop>of(
+        .thenReturn(ImmutableList.of(currentStop));
+    truckStopDAO.deleteStops(ImmutableList.of(currentStop));
+    truckStopDAO.addStops(ImmutableList.of(
         matchedStop.withStartTime(currentStop.getStartTime())));
     expectTweetsIgnored();
     
@@ -162,9 +152,9 @@ public class SocialMediaCacherImplTest extends Mockito {
     TruckStop currentStop =
         TruckStop.builder().truck(truck2).startTime(matchStartTime.minusMinutes(30)).endTime(matchEndTime.plusMinutes(30)).location(loca).build();
     when(truckStopDAO.findDuring(TRUCK_2_ID, currentDay))
-        .thenReturn(ImmutableList.<TruckStop>of(currentStop));
-    truckStopDAO.deleteStops(ImmutableList.<TruckStop>of(currentStop));
-    truckStopDAO.addStops(ImmutableList.<TruckStop>of(
+        .thenReturn(ImmutableList.of(currentStop));
+    truckStopDAO.deleteStops(ImmutableList.of(currentStop));
+    truckStopDAO.addStops(ImmutableList.of(
         matchedStop.withStartTime(currentStop.getStartTime())));
     expectTweetsIgnored();
     
@@ -180,9 +170,9 @@ public class SocialMediaCacherImplTest extends Mockito {
         TruckStop.builder().truck(truck2).startTime(matchStartTime.minusMinutes(30))
             .endTime(matchEndTime.plusMinutes(30)).location(loca).build();
     when(truckStopDAO.findDuring(TRUCK_2_ID, currentDay))
-        .thenReturn(ImmutableList.<TruckStop>of(currentStop));
-    truckStopDAO.deleteStops(ImmutableList.<TruckStop>of(currentStop));
-    truckStopDAO.addStops(ImmutableList.<TruckStop>of(
+        .thenReturn(ImmutableList.of(currentStop));
+    truckStopDAO.deleteStops(ImmutableList.of(currentStop));
+    truckStopDAO.addStops(ImmutableList.of(
         matchedStop.withStartTime(currentStop.getStartTime())
             .withEndTime(currentStop.getEndTime())));
     expectTweetsIgnored();
@@ -199,10 +189,10 @@ public class SocialMediaCacherImplTest extends Mockito {
         TruckStop.builder().truck(truck2).startTime( matchStartTime.plusMinutes(3))
             .endTime(matchEndTime.minusMinutes(3)).location(loca).build();
     when(truckStopDAO.findDuring(TRUCK_2_ID, currentDay))
-        .thenReturn(ImmutableList.<TruckStop>of(currentStop));
-    truckStopDAO.deleteStops(ImmutableList.<TruckStop>of(currentStop));
+        .thenReturn(ImmutableList.of(currentStop));
+    truckStopDAO.deleteStops(ImmutableList.of(currentStop));
     truckStopDAO.addStops(
-        ImmutableList.<TruckStop>of(matchedStop.withStartTime(currentStop.getStartTime())));
+        ImmutableList.of(matchedStop.withStartTime(currentStop.getStartTime())));
     expectTweetsIgnored();
     
     service.handleTruckStories();
@@ -228,10 +218,10 @@ public class SocialMediaCacherImplTest extends Mockito {
         TruckStop.builder().truck(truck2).startTime(matchStartTime.plusMinutes(30))
             .endTime(matchEndTime.plusHours(1)).location(loca).build();
     when(truckStopDAO.findDuring(TRUCK_2_ID, currentDay)).thenReturn(
-        ImmutableList.<TruckStop>of(currentStop));
+        ImmutableList.of(currentStop));
     truckStopDAO.deleteStops(ImmutableList.of(currentStop));
     truckStopDAO.addStops(
-        ImmutableList.<TruckStop>of(matchedStop.withEndTime(currentStop.getEndTime())));
+        ImmutableList.of(matchedStop.withEndTime(currentStop.getEndTime())));
     expectTweetsIgnored();
     
     service.handleTruckStories();
@@ -245,9 +235,9 @@ public class SocialMediaCacherImplTest extends Mockito {
     TruckStop stopAfter =
         TruckStop.builder().truck(truck2).startTime(matchEndTime.plusHours(1).toDateTime()).endTime(matchEndTime.plusHours(2).toDateTime()).location(loca).build();
     when(truckStopDAO.findDuring(TRUCK_2_ID, currentDay))
-        .thenReturn(ImmutableList.<TruckStop>of(stopAfter));
+        .thenReturn(ImmutableList.of(stopAfter));
     expectTweetsIgnored();
-    truckStopDAO.addStops(ImmutableList.<TruckStop>of(matchedStop));
+    truckStopDAO.addStops(ImmutableList.of(matchedStop));
     
     service.handleTruckStories();
     
@@ -259,8 +249,8 @@ public class SocialMediaCacherImplTest extends Mockito {
     when(truckObserverDAO.findAll()).thenReturn(ImmutableList.of(
         new TruckObserver("uchinomgo", uchicago, ImmutableList.of("breakfast", "lunch")),
         new TruckObserver("mdw2mnl", uchicago, ImmutableList.of("breakfast", "lunch"))));
-    when(tweetDAO.findTweetsAfter(now.minusHours(6), "uchinomgo", false)).thenReturn(ImmutableList.<Story>of());
-    when(tweetDAO.findTweetsAfter(now.minusHours(6), "mdw2mnl", false)).thenReturn(ImmutableList.<Story>of());
+    when(tweetDAO.findTweetsAfter(now.minusHours(6), "uchinomgo", false)).thenReturn(ImmutableList.of());
+    when(tweetDAO.findTweetsAfter(now.minusHours(6), "mdw2mnl", false)).thenReturn(ImmutableList.of());
     
     service.observerAnalyze();
     
@@ -275,8 +265,8 @@ public class SocialMediaCacherImplTest extends Mockito {
     Story tweet1 = new Story.Builder().userId("uchinomgo").ignoreInTwittalyzer(false)
         .text("Today we have these food trucks: @CaponiesExp @threejsbbq").build();
     when(tweetDAO.findTweetsAfter(now.minusHours(6), "uchinomgo", false))
-        .thenReturn(ImmutableList.<Story>of(tweet1));
-    when(tweetDAO.findTweetsAfter(now.minusHours(6), "mdw2mnl", false)).thenReturn(ImmutableList.<Story>of());
+        .thenReturn(ImmutableList.of(tweet1));
+    when(tweetDAO.findTweetsAfter(now.minusHours(6), "mdw2mnl", false)).thenReturn(ImmutableList.of());
     tweetDAO.save(ImmutableList.of(tweet1));
     
     service.observerAnalyze();
@@ -298,13 +288,13 @@ public class SocialMediaCacherImplTest extends Mockito {
     truck1 = Truck.builder(truck1).categories(ImmutableSet.of("Breakfast")).twitterHandle("caponiesexp").id("caponiesexp").build();
     truck2 = Truck.builder(truck1).categories(ImmutableSet.of("Breakfast")).twitterHandle("threejsbbq").id("threejsbbq").build();
     when(tweetDAO.findTweetsAfter(now.minusHours(6), "uchinomgo", false))
-        .thenReturn(ImmutableList.<Story>of(tweet1));
-    when(tweetDAO.findTweetsAfter(now.minusHours(6), "mdw2mnl", false)).thenReturn(ImmutableList.<Story>of());
+        .thenReturn(ImmutableList.of(tweet1));
+    when(tweetDAO.findTweetsAfter(now.minusHours(6), "mdw2mnl", false)).thenReturn(ImmutableList.of());
     when(truckDAO.findByTwitterId("caponiesexp")).thenReturn(ImmutableList.of(truck1));
-    when(truckStopDAO.findDuring("caponiesexp", currentDay)).thenReturn(ImmutableList.<TruckStop>of());
+    when(truckStopDAO.findDuring("caponiesexp", currentDay)).thenReturn(ImmutableList.of());
     when(truckDAO.findByTwitterId("threejsbbq")).thenReturn(ImmutableList.of(truck2));
-    when(truckStopDAO.findDuring("threejsbbq", currentDay)).thenReturn(ImmutableList.<TruckStop>of(matchedStop));
-    when(truckDAO.findByTwitterId("somethingelse")).thenReturn(ImmutableList.<Truck>of());
+    when(truckStopDAO.findDuring("threejsbbq", currentDay)).thenReturn(ImmutableList.of(matchedStop));
+    when(truckDAO.findByTwitterId("somethingelse")).thenReturn(ImmutableList.of());
     truckStopDAO.addStops(ImmutableList.of(TruckStop.builder()
         .truck(truck1)
         .startTime(now)
@@ -335,14 +325,14 @@ public class SocialMediaCacherImplTest extends Mockito {
     truck1 = Truck.builder(truck1).categories(ImmutableSet.of("Breakfast")).twitterHandle("caponiesexp").id("caponiesexp").build();
     truck2 = Truck.builder(truck1).categories(ImmutableSet.of("Breakfast")).twitterHandle("threejsbbq").id("threejsbbq").build();
     when(tweetDAO.findTweetsAfter(now.minusHours(6), "uchinomgo", false))
-        .thenReturn(ImmutableList.<Story>of(tweet1));
+        .thenReturn(ImmutableList.of(tweet1));
     when(tweetDAO.findTweetsAfter(now.minusHours(6), "mdw2mnl", false))
-        .thenReturn(ImmutableList.<Story>of(tweet2));
+        .thenReturn(ImmutableList.of(tweet2));
     when(truckDAO.findByTwitterId("caponiesexp")).thenReturn(ImmutableList.of(truck1));
-    when(truckStopDAO.findDuring("caponiesexp", currentDay)).thenReturn(ImmutableList.<TruckStop>of());
+    when(truckStopDAO.findDuring("caponiesexp", currentDay)).thenReturn(ImmutableList.of());
     when(truckDAO.findByTwitterId("threejsbbq")).thenReturn(ImmutableList.of(truck2));
-    when(truckStopDAO.findDuring("threejsbbq", currentDay)).thenReturn(ImmutableList.<TruckStop>of(matchedStop));
-    when(truckDAO.findByTwitterId("somethingelse")).thenReturn(ImmutableList.<Truck>of());
+    when(truckStopDAO.findDuring("threejsbbq", currentDay)).thenReturn(ImmutableList.of(matchedStop));
+    when(truckDAO.findByTwitterId("somethingelse")).thenReturn(ImmutableList.of());
     truckStopDAO.addStops(ImmutableList.of(TruckStop.builder()
         .truck(truck1)
         .startTime(now)
@@ -375,7 +365,7 @@ public class SocialMediaCacherImplTest extends Mockito {
         .stop(matchedStop)
         .story(Story.builder().text(basicTweet.getText()).build())
             .build();
-    when(truckDAO.findByTwitterId("foobar")).thenReturn(ImmutableSet.<Truck>of());
+    when(truckDAO.findByTwitterId("foobar")).thenReturn(ImmutableSet.of());
     
     service.handleAdditionalTrucks(matchedStop, matched);
     
@@ -390,7 +380,7 @@ public class SocialMediaCacherImplTest extends Mockito {
             .build();
     when(truckDAO.findByTwitterId("truck1")).thenReturn(ImmutableSet.of(truck1));
     when(truckStopDAO.findOverRange("truck1", matchedStop.getInterval()))
-        .thenReturn(ImmutableList.<TruckStop>of());
+        .thenReturn(ImmutableList.of());
     emailNotifier.notifyAddMentionedTrucks(ImmutableSet.of("truck1"), matchedStop, basicTweet.getText());
     
     service.handleAdditionalTrucks(matchedStop, matched);

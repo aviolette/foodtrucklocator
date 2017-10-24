@@ -2,6 +2,7 @@ package foodtruck.schedule;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -81,7 +82,7 @@ public class TruckStopMatcher {
    * @param story a story
    * @return a TruckStopMatch if the match can be made, otherwise {@code null}
    */
-  public @Nullable TruckStopMatch match(Truck truck, Story story) {
+  public Optional<TruckStopMatch> match(Truck truck, Story story) {
     TruckStop.Builder truckStopBuilder = TruckStop.builder()
         .origin(StopOrigin.TWITTER)
         .truck(truck);
@@ -118,10 +119,10 @@ public class TruckStopMatcher {
       if (matcher != null) {
         matcher.handle(builder, story, truck);
       }
-      return builder.build();
+      return Optional.of(builder.build());
     } catch (UnmatchedException e) {
       log.info(e.getMessage());
-      return null;
+      return Optional.empty();
     }
   }
 

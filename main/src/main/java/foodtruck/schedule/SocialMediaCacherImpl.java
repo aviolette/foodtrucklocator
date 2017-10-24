@@ -3,6 +3,7 @@ package foodtruck.schedule;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -205,15 +206,16 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
         log.log(Level.FINE, "There are no social media accounts for {0}", truck.getId());
         continue;
       }
-      TruckStopMatch match = findMatch(stories, truck);
+      Optional<TruckStopMatch> match = findMatch(stories, truck);
       DateTime terminationTime = findTermination(stories, truck);
       ignoreTweets(stories);
-      if (match != null) {
-        handleStopMatch(truck, match);
-      } else if (terminationTime != null && truck.getDeriveStopsFromSocialMedia()) {
-        capLastMatchingStop(truck, terminationTime);
-      } else {
-        log.log(Level.FINE, "No matches for {0}", truck.getId());
+      match.ifPresent((m) -> handleStopMatch(truck, m));
+      if (!match.isPresent()) {
+        if (terminationTime != null && truck.getDeriveStopsFromSocialMedia()) {
+          capLastMatchingStop(truck, terminationTime);
+        } else {
+          log.log(Level.FINE, "No matches for {0}", truck.getId());
+        }
       }
       if (!stories.isEmpty()) {
         updateLocationSpecials(truck, stories);
@@ -458,8 +460,7 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
     return null;
   }
 
-  @Nullable
-  private TruckStopMatch findMatch(List<Story> tweets, Truck truck) {
+  private Optional<TruckStopMatch> findMatch(List<Story> tweets, Truck truck) {
     for (Story tweet : tweets) {
       if (tweet.getIgnoreInTwittalyzer()) {
         log.log(Level.INFO, "Ignoring tweet: {0}", tweet);
@@ -467,14 +468,16 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
       }
       DateTime terminationTime = terminationDetector.detect(tweet);
       if (terminationTime != null) {
-        return null;
+        return Optional.empty();
       }
-      TruckStopMatch match = matcher.match(truck, tweet);
-      if (match != null) {
+
+
+      Optional<TruckStopMatch> match = matcher.match(truck, tweet);
+      if (match.isPresent()) {
         return match;
       }
     }
-    return null;
+    return Optional.empty();
   }
 
   private void compressAdjacentStops(String truckId, LocalDate day) {
