@@ -2,13 +2,13 @@ package foodtruck.appengine.dao.memcached;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
 import com.google.appengine.api.memcache.MemcacheService;
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 
@@ -37,28 +37,18 @@ public class TruckDAOMemcache extends AbstractMemcachedDAO<TruckDAO> implements 
 
   @Override
   public Collection<Truck> findByTwitterId(final String screenName) {
-    return delegateIf(BY_TWITTER_ID + screenName, new Function<TruckDAO, Collection<Truck>>() {
-      public Collection<Truck> apply(TruckDAO truckDAO) {
-        return truckDAO.findByTwitterId(screenName);
-      }});
+    return delegateIf(BY_TWITTER_ID + screenName,
+        truckDAO -> truckDAO.findByTwitterId(screenName));
   }
 
   @Override
   public List<Truck> findActiveTrucks() {
-    return delegateIf(ACTIVE_TRUCKS, new Function<TruckDAO, List<Truck>>() {
-      public List<Truck> apply(TruckDAO truckDAO) {
-        return truckDAO.findActiveTrucks();
-      }
-    });
+    return delegateIf(ACTIVE_TRUCKS, TruckDAO::findActiveTrucks);
   }
 
   @Override
   public Collection<Truck> findInactiveTrucks() {
-    return delegateIf(INACTIVE_TRUCKS, new Function<TruckDAO, Collection<Truck>>() {
-      public Collection<Truck> apply(TruckDAO truckDAO) {
-        return truckDAO.findInactiveTrucks();
-      }
-    });
+    return delegateIf(INACTIVE_TRUCKS, TruckDAO::findInactiveTrucks);
   }
 
   @Override
@@ -78,11 +68,7 @@ public class TruckDAOMemcache extends AbstractMemcachedDAO<TruckDAO> implements 
 
   @Override
   public Truck findFirst() {
-    return delegateIf(FIND_FIRST, new Function<TruckDAO, Truck>() {
-      public Truck apply(TruckDAO truckDAO) {
-        return truckDAO.findFirst();
-      }
-    });
+    return delegateIf(FIND_FIRST, TruckDAO::findFirst);
   }
 
   @Override
@@ -137,13 +123,14 @@ public class TruckDAOMemcache extends AbstractMemcachedDAO<TruckDAO> implements 
             keyName(ACTIVE_TRUCKS), keyName(INACTIVE_TRUCKS), keyName(FIND_FIRST), keyName(BY_ID + truck.getId())));
   }
 
-  @Override
+  @Override @Deprecated
   public @Nullable Truck findById(final String id) {
-    return delegateIf(BY_ID + id, new Function<TruckDAO, Truck>() {
-      public @Nullable Truck apply( TruckDAO truckDAO) {
-        return truckDAO.findById(id);
-      }
-    });
+    return delegateIf(BY_ID + id, truckDAO -> truckDAO.findById(id));
+  }
+
+  @Override
+  public Optional<Truck> findByIdOpt(String id) {
+    return Optional.ofNullable(findById(id));
   }
 
   @Override

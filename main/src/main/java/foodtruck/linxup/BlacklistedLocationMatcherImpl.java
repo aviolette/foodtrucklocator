@@ -10,20 +10,16 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Location;
 import foodtruck.model.TrackingDevice;
-import foodtruck.model.Truck;
 
 /**
  * @author aviolette
@@ -39,9 +35,10 @@ public class BlacklistedLocationMatcherImpl implements BlacklistedLocationMatche
     blacklistCache = CacheBuilder.newBuilder()
         .expireAfterAccess(2, TimeUnit.MINUTES)
         .build(new CacheLoader<String, List<Location>>() {
+          @SuppressWarnings("NullableProblems")
           public List<Location> load(String key) throws Exception {
-            Truck truck = truckDAO.findById(key);
-            return truck.getBlacklistLocationNames().stream()
+            return truckDAO.findByIdOpt(key).orElseThrow(() -> new RuntimeException("truck not found: " + key))
+                .getBlacklistLocationNames().stream()
                 .map(locationDAO::findByAddress)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());

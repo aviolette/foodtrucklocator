@@ -95,10 +95,8 @@ public class ImageServlet extends HttpServlet {
       boolean isIpad) throws FileNotFoundException {
     int last = fileName.lastIndexOf("_");
     String truckId = fileName.substring(0, last);
-    Truck truck = truckDAO.findById(truckId);
-    if (truck == null) {
-      throw new FileNotFoundException("Invalid truck: " + truckId);
-    }
+    Truck truck = truckDAO.findByIdOpt(truckId)
+        .orElseThrow(() -> new FileNotFoundException("Invalid truck: " + truckId));
     String imageUrl;
     switch(suffix) {
       case "banner":

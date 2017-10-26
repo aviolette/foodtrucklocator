@@ -2,6 +2,7 @@ package foodtruck.appengine.dao.appengine;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -10,9 +11,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
-import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -28,6 +27,7 @@ import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.Location;
 import foodtruck.model.StopOrigin;
+import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 
 import static com.google.appengine.api.datastore.Query.CompositeFilterOperator.and;
@@ -63,12 +63,6 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
   private static final String MANUALLY_UPDATED = "manually_updated";
   private static final String IMAGE_URL = "image_url";
   private static final String STOP_DESCRIPTION = "stop_description";
-
-  private static final Predicate<TruckStop> VENDOR_STOP_PREDICATE = new Predicate<TruckStop>() {
-    public boolean apply(TruckStop truckStop) {
-      return truckStop.getOrigin() == StopOrigin.VENDORCAL;
-    }
-  };
 
   private final DateTimeZone zone;
   private final TruckDAO truckDAO;
@@ -130,10 +124,12 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
     Boolean locked = (Boolean) entity.getProperty(LOCKED_FIELD);
     Collection<String> notes = getListProperty(entity, NOTES);
     final String origin = getStringProperty(entity, ORIGIN);
+    Truck truck = truckDAO.findByIdOpt(getStringProperty(entity, TRUCK_ID_FIELD))
+        .orElseThrow(() -> new RuntimeException("Truck not found"));
     return TruckStop.builder()
-        .truck(truckDAO.findById(getStringProperty(entity, TRUCK_ID_FIELD)))
+        .truck(truck)
         .startTime(getDateTime(entity, START_TIME_FIELD, zone))
-        .notes(notes == null ? ImmutableList.<String>of() : ImmutableList.copyOf(notes))
+        .notes(notes == null ? ImmutableList.of() : ImmutableList.copyOf(notes))
         .endTime(getDateTime(entity, END_TIME_FIELD, zone))
         .origin(Strings.isNullOrEmpty(origin) ? StopOrigin.UNKNOWN : StopOrigin.valueOf(origin))
         .lastUpdated(Attributes.getDateTime(entity, LAST_UPDATED, zone))
@@ -162,14 +158,12 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
         .minusHours(6), day.plusDays(1)
         .toDateTimeAtStartOfDay(zone)))))
         .sort(START_TIME_FIELD, ASCENDING)
-        .execute(new Predicate<Entity>() {
-          public boolean apply(Entity entity) {
+        .execute(entity -> {
             final DateTime startTime = new DateTime(entity.getProperty(START_TIME_FIELD), zone);
             final DateTime endTime = getDateTime(entity, END_TIME_FIELD, zone);
             // make sure that this stop at least ends or starts on the current day
             return midnight.isBefore(endTime) || midnight.isBefore(startTime);
-          }
-        });
+          });
   }
 
   @Override
@@ -195,7 +189,7 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
     List<Query.Filter> filters = trucksOverRange(truckId, range);
     q.setFilter(and(filters));
     q.addSort(START_TIME_FIELD, ASCENDING);
-    return executeQuery(q, null);
+    return executeQuery(q);
   }
 
   @Override
@@ -236,20 +230,16 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
 
   @Override
   public List<TruckStop> findVendorStopsAfter(DateTime start, String truckId) {
-    return FluentIterable.from(findAfter(truckId, start))
-        .filter(new Predicate<TruckStop>() {
-          public boolean apply(TruckStop truckStop) {
-            return truckStop.getOrigin() == StopOrigin.VENDORCAL;
-          }
-        })
-        .toList();
+    return findAfter(truckId, start).stream()
+        .filter(TruckStop::isVendorStop)
+        .collect(Collectors.toList());
   }
 
   @Override
   public List<TruckStop> findVendorStopsAfter(DateTime start) {
-    return FluentIterable.from(findAfter(start))
-        .filter(VENDOR_STOP_PREDICATE)
-        .toList();
+    return findAfter(start).stream()
+        .filter(TruckStop::isVendorStop)
+        .collect(Collectors.toList());
   }
 
   private List<Query.Filter> trucksOverRange(@Nullable String truckId, Interval range) {

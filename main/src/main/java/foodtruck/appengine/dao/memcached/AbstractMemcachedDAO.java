@@ -1,10 +1,10 @@
 package foodtruck.appengine.dao.memcached;
 
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.appengine.api.memcache.MemcacheService;
-import com.google.common.base.Function;
 import com.google.common.collect.ForwardingObject;
 
 /**
@@ -14,11 +14,11 @@ import com.google.common.collect.ForwardingObject;
  */
 public abstract class AbstractMemcachedDAO<T> extends ForwardingObject {
   private static final Logger log = Logger.getLogger(AbstractMemcachedDAO.class.getName());
-  protected final MemcacheService memcacheService;
+  final MemcacheService memcacheService;
   private final T delegate;
   private final String prefix;
 
-  protected AbstractMemcachedDAO(T dao, String prefix, MemcacheService memcacheService) {
+  AbstractMemcachedDAO(T dao, String prefix, MemcacheService memcacheService) {
     this.delegate = dao;
     this.prefix = prefix;
     this.memcacheService = memcacheService;
@@ -28,16 +28,17 @@ public abstract class AbstractMemcachedDAO<T> extends ForwardingObject {
     return delegate;
   }
 
-  protected void invalidateAll() {
+  void invalidateAll() {
     log.log(Level.INFO, "Invalidating memcached for " + prefix);
     memcacheService.clearAll();
   }
 
-  protected String keyName(String suffix) {
+  String keyName(String suffix) {
     return prefix + ":" + suffix;
   }
 
-  protected <M> M delegateIf(String name, Function<T, M> func) {
+  @SuppressWarnings("unchecked")
+  <M> M delegateIf(String name, Function<T, M> func) {
     String fullName = keyName(name);
     M rc = (M)memcacheService.get(fullName);
     if (rc != null) {

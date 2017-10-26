@@ -1,6 +1,8 @@
 package foodtruck.appengine.dao.appengine;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
@@ -11,7 +13,6 @@ import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.inject.Provider;
@@ -36,17 +37,13 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
   public List<T> findAll() {
     Query q = query();
     modifyFindAllQuery(q);
-    return executeQuery(q, null);
+    return executeQuery(q);
   }
 
-  List<T> executeQuery(Query q, @Nullable Predicate<Entity> predicate) {
+  List<T> executeQuery(Query q) {
     DatastoreService dataStore = provider.get();
     ImmutableList.Builder<T> objs = ImmutableList.builder();
-    for (Entity entity : dataStore.prepare(q)
-        .asIterable()) {
-      if (predicate != null && !predicate.apply(entity)) {
-        continue;
-      }
+    for (Entity entity : dataStore.prepare(q).asIterable()) {
       T obj = fromEntity(entity);
       objs.add(obj);
     }
@@ -187,6 +184,17 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
     }
   }
 
+  public Optional<T> findByIdOpt(Long id) {
+    DatastoreService dataStore = provider.get();
+    Key key = KeyFactory.createKey(getKind(), id);
+    try {
+      Entity entity = dataStore.get(key);
+      return Optional.of(fromEntity(entity));
+    } catch (EntityNotFoundException e) {
+      return Optional.empty();
+    }
+  }
+
   @Nullable
   public T findById(String id) {
     DatastoreService dataStore = provider.get();
@@ -199,6 +207,18 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
     }
   }
 
+  public Optional<T> findByIdOpt(String id) {
+    DatastoreService dataStore = provider.get();
+    Key key = KeyFactory.createKey(getKind(), id);
+    try {
+      Entity entity = dataStore.get(key);
+      return Optional.of(fromEntity(entity));
+    } catch (EntityNotFoundException e) {
+      return Optional.empty();
+    }
+  }
+
+
   @SuppressWarnings("WeakerAccess")
   protected class AQ {
     private Query query;
@@ -209,7 +229,7 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
     }
 
     public List<T> execute() {
-      return executeQuery(query, null);
+      return executeQuery(query);
     }
 
     @Nullable
@@ -252,7 +272,7 @@ public abstract class AppEngineDAO<K, T extends ModelEntity> implements DAO<K, T
       }
       for (Entity entity : dataStore.prepare(query)
           .asIterable(fetchOptions)) {
-        if (predicate != null && !predicate.apply(entity)) {
+        if (predicate != null && !predicate.test(entity)) {
           continue;
         }
         T obj = fromEntity(entity);

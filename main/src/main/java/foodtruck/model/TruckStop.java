@@ -219,9 +219,8 @@ public class TruckStop extends ModelEntity {
     return endTime.isBefore(currentTime);
   }
 
-  public
   @Nullable
-  DateTime getBeaconTime() {
+  public DateTime getBeaconTime() {
     return fromBeacon;
   }
 
@@ -231,6 +230,10 @@ public class TruckStop extends ModelEntity {
 
   public Interval getInterval() {
     return new Interval(getStartTime(), getEndTime());
+  }
+
+  public boolean isVendorStop() {
+    return getOrigin() == StopOrigin.VENDORCAL;
   }
 
   public static class ActiveAfterPredicate implements Predicate<TruckStop> {

@@ -1,6 +1,7 @@
 package foodtruck.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 
@@ -28,7 +29,15 @@ public interface DAO<K, T extends ModelEntity> {
    * @param id the ID
    * @return the entity or {@code null} if it is not found
    */
+  @Deprecated
   @Nullable T findById(K id);
+
+  /** Finds the entity by ID.
+   *
+   * @param id the ID
+   * @return an optional that will contain the entity if it was found
+   */
+  Optional<T> findByIdOpt(K id);
 
   /**
    * Deletes the item in the data store.

@@ -1,6 +1,7 @@
 package foodtruck.server.dashboard;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -33,14 +34,14 @@ public class ApplicationDetailServlet extends HttpServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     final String path = Urls.stripSessionId(req.getRequestURI());
     final String appIndex = path.substring(path.lastIndexOf("/") + 1);
-    Application app = applicationDAO.findById(appIndex);
-    if (app == null) {
+    Optional<Application> appOpt = applicationDAO.findByIdOpt(appIndex);
+    if (!appOpt.isPresent()) {
       resp.setStatus(404);
       return;
     }
     req = new GuiceHackRequestWrapper(req, JSP_PATH);
     req.setAttribute("nav", "applications");
-    req.setAttribute("application", app);
+    req.setAttribute("application", appOpt.get());
     req.getRequestDispatcher(JSP_PATH).forward(req, resp);
   }
 }

@@ -58,7 +58,6 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
   private static final String TRUCK_CALENDAR_URL = "calendarUrl";
   private static final String TRUCK_EMAIL = "email";
   private static final String TRUCK_PHONE = "phone";
-  private static final String TRUCK_TWITTER_GEOLOCATION = "twitterGeolocation";
   private static final String TRUCK_MUTE_UNTIL = "muteUntil";
   private static final String TRUCK_YELP_SLUG = "yelp";
   private static final String TRUCK_FACEBOOK_PAGE_ID = "facebookPageId";
@@ -177,7 +176,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
         .phoneticMarkup(Strings.emptyToNull((String) entity.getProperty(PHONETIC_MARKUP)))
         .blacklistLocationNames(getListProperty(entity, BLACKLIST_LOCATION_NAMES))
         .phoneticAliases(getListProperty(entity, PHONETIC_ALIASES))
-        .categories(categoriesList == null ? ImmutableSet.<String>of() : ImmutableSet.copyOf(categoriesList))
+        .categories(categoriesList == null ? ImmutableSet.of() : ImmutableSet.copyOf(categoriesList))
         .useTwittalyzer((Boolean) entity.getProperty(TRUCK_TWITTALYZER_FIELD))
         .calendarUrl((String) entity.getProperty(TRUCK_CALENDAR_URL))
         .phone((String) entity.getProperty(TRUCK_PHONE))
@@ -217,24 +216,24 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
   @Override
   public Collection<Truck> findInactiveTrucks() {
     return executeQuery(new Query(getKind()).addSort(TRUCK_CANONICAL_NAME)
-        .setFilter(new Query.FilterPredicate(INACTIVE_FIELD, EQUAL, true)), null);
+        .setFilter(new Query.FilterPredicate(INACTIVE_FIELD, EQUAL, true)));
   }
 
   @Override
   public List<Truck> findActiveTrucks() {
     return executeQuery(new Query(getKind()).addSort(TRUCK_CANONICAL_NAME)
-        .setFilter(new Query.FilterPredicate(INACTIVE_FIELD, EQUAL, false)), null);
+        .setFilter(new Query.FilterPredicate(INACTIVE_FIELD, EQUAL, false)));
   }
 
   public List<Truck> findVisibleTrucks() {
     return executeQuery(new Query(TRUCK_KIND).setFilter(new Query.FilterPredicate(TRUCK_HIDDEN, EQUAL, false))
-        .addSort(TRUCK_CANONICAL_NAME), null);
+        .addSort(TRUCK_CANONICAL_NAME));
   }
 
   @Override
   public List<Truck> findFacebookTrucks() {
     return executeQuery(new Query(TRUCK_KIND).setFilter(new Query.FilterPredicate(SCAN_FACEBOOK, EQUAL, true))
-        .addSort(TRUCK_CANONICAL_NAME), null);
+        .addSort(TRUCK_CANONICAL_NAME));
   }
 
   @Nullable
@@ -275,7 +274,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     q.setFilter(
         Query.CompositeFilterOperator.and(new Query.FilterPredicate(TRUCK_EMAIL, Query.FilterOperator.NOT_EQUAL, null),
             new Query.FilterPredicate(TRUCK_ALLOW_SYSTEM_NOTIFICATIONS, EQUAL, true)));
-    return executeQuery(q, null);
+    return executeQuery(q);
   }
 
   @Override

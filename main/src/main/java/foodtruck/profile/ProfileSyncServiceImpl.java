@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
@@ -96,8 +95,8 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
 
   @Override
   public void syncProfile(String truckId) {
-    Truck truck = truckDAO.findById(truckId);
-    syncProfile(truck);
+    truckDAO.findByIdOpt(truckId)
+        .ifPresent(this::syncProfile);
   }
 
   private void syncProfile(Truck truck) {
@@ -133,6 +132,9 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
 
   private Truck syncFromFacebookGraph(Truck truck) {
     String uri = truck.getFacebook();
+    if (uri == null) {
+      return truck;
+    }
     Matcher m = pageUrlPattern.matcher(uri);
     if (m.find()) {
       uri = "/" + m.group(2);
@@ -191,7 +193,7 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
       return storageService.copyUrl(iconUrl.toExternalForm(), truckIconsBucket, fileName);
     } catch (Exception io) {
       log.log(Level.WARNING, io.getMessage(), io);
-      throw Throwables.propagate(io);
+      throw new RuntimeException(io);
     }
   }
 
@@ -223,7 +225,7 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
         return builder.build();
       }
     } catch (TwitterException|MalformedURLException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
     return truck;
   }

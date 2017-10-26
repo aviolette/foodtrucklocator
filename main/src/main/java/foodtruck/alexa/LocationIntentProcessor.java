@@ -115,7 +115,7 @@ class LocationIntentProcessor implements IntentProcessor {
     switch (count) {
       case 0:
         String nearby = AlexaUtils.toAlexaList(
-            findAlternateLocations(tomorrow, location, requestDate), true, Conjunction.or);
+            findAlternateLocations(tomorrow, location), true, Conjunction.or);
         String noTrucks;
         if (Strings.isNullOrEmpty(nearby)) {
           noTrucks = String.format(
@@ -171,7 +171,7 @@ class LocationIntentProcessor implements IntentProcessor {
   }
 
   private SpeechletResponse provideHelp() {
-    List<String> locations = findAlternateLocations(false, null, clock.currentDay());
+    List<String> locations = findAlternateLocations(false, null);
     if (locations.isEmpty()) {
       locations = ImmutableList.of("Clark and Monroe");
     }
@@ -185,7 +185,7 @@ class LocationIntentProcessor implements IntentProcessor {
 
   private SpeechletResponse locationNotFound(String locationName, boolean tomorrow,
       LocalDate requestDate) {
-    List<String> locations = findAlternateLocations(tomorrow, null, requestDate);
+    List<String> locations = findAlternateLocations(tomorrow, null);
     log.log(Level.SEVERE, "Could not find location {0} that is specified in alexa", locationName);
     SpeechletResponseBuilder builder = SpeechletResponseBuilder.builder();
     // See "Don’t Blame the User" https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/alexa-skills-kit-voice-design-best-practices
@@ -202,8 +202,7 @@ class LocationIntentProcessor implements IntentProcessor {
     }
   }
 
-  private List<String> findAlternateLocations(boolean tomorrow, Location currentLocation,
-      LocalDate theDate) {
+  private List<String> findAlternateLocations(boolean tomorrow, Location currentLocation) {
     try {
       String schedule = tomorrow ? scheduleCacher.findTomorrowsSchedule() : scheduleCacher.findSchedule();
       List<Location> locations = extractLocations(schedule);
@@ -221,6 +220,7 @@ class LocationIntentProcessor implements IntentProcessor {
           .limit(3)
           .collect(Collectors.toList());
     } catch (Exception e) {
+      e.printStackTrace();
       log.log(Level.WARNING, "Could not parse daily schedule {0} {1}",
           new Object[]{tomorrow, e.getMessage()});
       return ImmutableList.of("Clark and Monroe");
@@ -235,11 +235,7 @@ class LocationIntentProcessor implements IntentProcessor {
     for (int i = 0; i < locationArr.length(); i++) {
       Long key = locationArr.getJSONObject(i)
           .getLong("key");
-      Location loc = locationDAO.findById(key);
-      if (loc == null) {
-        continue;
-      }
-      locations.add(loc);
+      locationDAO.findByIdOpt(key).ifPresent(locations::add);
     }
     return locations;
   }
