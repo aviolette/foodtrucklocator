@@ -117,6 +117,7 @@ class FoodtruckServletModule extends ServletModule {
     filterRegex("/vendor.*").through(VendorPageFilter.class);
     filter("/*").through(SiteScraperFilter.class);
     filter("/*").through(CommonConfigFilter.class);
+    filter("/*").through(ExceptionMapperFilter.class);
   }
 
   private void shunt() {

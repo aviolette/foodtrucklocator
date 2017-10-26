@@ -15,6 +15,7 @@ import foodtruck.dao.TrackingDeviceDAO;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
+import foodtruck.server.CodedServletException;
 import foodtruck.server.GuiceHackRequestWrapper;
 
 /**
@@ -34,23 +35,23 @@ public class VendorBeaconDetailsServlet extends HttpServlet {
   }
 
   @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
     request = new GuiceHackRequestWrapper(request, JSP);
     String uri = request.getRequestURI();
     String deviceId = uri.substring(uri.lastIndexOf('/') + 1);
-    TrackingDevice device = deviceDAO.findById(Long.parseLong(deviceId));
+    TrackingDevice device = deviceDAO.findByIdOpt(Long.parseLong(deviceId))
+        .orElseThrow(() -> new CodedServletException(404, "Device not found: " + deviceId));
     Truck truck = (Truck) request.getAttribute(VendorPageFilter.TRUCK);
-    if (device == null || device.getTruckOwnerId() == null || truck == null) {
+    if (device.getTruckOwnerId() == null || truck == null) {
       response.sendError(404, "Device not found");
       return;
-    } else if (!device.getTruckOwnerId()
-        .equals(truck.getId())) {
+    } else if (!device.getTruckOwnerId().equals(truck.getId())) {
       response.sendError(HttpStatusCodes.STATUS_CODE_UNAUTHORIZED);
       return;
     }
     request.setAttribute("googleApiKey", config.getGoogleJavascriptApiKey());
     request.setAttribute("beacon", device);
-    request.getRequestDispatcher(JSP)
-        .forward(request, response);
+    request.getRequestDispatcher(JSP).forward(request, response);
   }
 }

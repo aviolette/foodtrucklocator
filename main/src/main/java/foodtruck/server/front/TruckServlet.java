@@ -8,9 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
-import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -24,6 +22,7 @@ import foodtruck.dao.TruckDAO;
 import foodtruck.model.DailySchedule;
 import foodtruck.model.Truck;
 import foodtruck.schedule.FoodTruckStopService;
+import foodtruck.server.CodedServletException;
 import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.time.Clock;
 
@@ -54,37 +53,27 @@ public class TruckServlet extends HttpServlet {
   }
 
   @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    String path[] = req.getRequestURI()
-        .split("/");
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+      throws ServletException, IOException {
+    String path[] = req.getRequestURI().split("/");
     String truckId = path[path.length - 1];
-    Truck truck = trucks.findById(truckId);
-    if (truck == null) {
-      resp.sendError(404, "Page cannot be found: " + truckId);
-      return;
-    }
+    Truck truck = trucks.findByIdOpt(truckId)
+        .orElseThrow(() -> new CodedServletException(404, "Truck cannot be found: " + truckId));
     req.setAttribute("truck", truck);
     List<DailySchedule> schedules = getSchedules(truck, clock.currentDay());
-    boolean hasStops = FluentIterable.from(schedules)
-        .anyMatch(new Predicate<DailySchedule>() {
-          public boolean apply(DailySchedule dailySchedule) {
-            return dailySchedule.isHasStops();
-          }
-        });
     req.setAttribute("additionalCss", "/css/truck-page.css");
     req.setAttribute("stops", schedules);
-    req.setAttribute("hasStops", hasStops);
+    req.setAttribute("hasStops", schedules.stream().anyMatch(DailySchedule::isHasStops));
     req.setAttribute("title", truck.getName());
     req.setAttribute("suffix", "-fluid");
     req.setAttribute("menu", menuDAO.findByTruck(truckId));
-    req.setAttribute("dailyData", dailyDataDAO.findByTruckAndDay(truck.getId(), clock.currentDay()));
+    req.setAttribute("dailyData",
+        dailyDataDAO.findByTruckAndDay(truck.getId(), clock.currentDay()));
     req.setAttribute("description",
         Strings.isNullOrEmpty(truck.getDescription()) ? truck.getName() : truck.getDescription());
     req = new GuiceHackRequestWrapper(req, JSP);
     req.setAttribute("tab", "trucks");
-    req.getRequestDispatcher(JSP)
-        .forward(req, resp);
-
+    req.getRequestDispatcher(JSP).forward(req, resp);
   }
 
   private List<DailySchedule> getSchedules(Truck truck, LocalDate firstDay) {

@@ -21,7 +21,7 @@ public class AlexaModule extends AbstractModule {
   static final String WHERE_IS_TRUCK = "WhereIsTruck";
   static final String DAILY_SPECIALS = "DailySpecials";
   static final String ABOUT_TRUCK = "AboutTruck";
-  static final String CATEGORY_SEARCH = "CategorySearch";
+  private static final String CATEGORY_SEARCH = "CategorySearch";
   static final String TESTING_MODE = "foodtrucklocator.alexa.testing.mode";
 
   private static final Splitter LOCATION_SPLITTER = Splitter.on(";")
