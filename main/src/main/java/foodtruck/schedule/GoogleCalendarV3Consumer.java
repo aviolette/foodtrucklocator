@@ -10,7 +10,6 @@ import javax.annotation.Nullable;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
-import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -101,10 +100,8 @@ class GoogleCalendarV3Consumer implements ScheduleStrategy {
             .setTimeMax(toGoogleDateTime(range.getEnd()))
             .setPageToken(pageToken);
         Events events = query.execute();
-        List<Event> items = events.getItems();
-        for (Event event : items) {
-          buildTruckStop(range, truck, builder, timezoneAdjustment, event);
-        }
+        events.getItems()
+            .forEach(event -> buildTruckStop(range, truck, builder, timezoneAdjustment, event));
         pageToken = events.getNextPageToken();
       } while (pageToken != null);
     } catch (IOException e) {
@@ -123,7 +120,7 @@ class GoogleCalendarV3Consumer implements ScheduleStrategy {
     // HACK: toasty cheese adds codes to the end of their locations noting which trucks are going where
     if ("mytoastycheese".equals(truck.getId())) {
       if (titleText.endsWith("- B1")) {
-        truck = MoreObjects.firstNonNull(truckDAO.findById("besttruckinbbq"), truck);
+        truck = truckDAO.findByIdOpt("besttruckinbbq").orElse(truck);
         titleText = titleText.substring(0, titleText.length() - 4)
             .trim();
         log.log(Level.INFO, "Creating event on besttruckinbbq's schedule from toasty cheese' calendar: {0}", titleText);
