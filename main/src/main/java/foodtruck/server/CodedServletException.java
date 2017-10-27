@@ -11,6 +11,10 @@ public class CodedServletException extends ServletException {
 
   private final int code;
 
+  public CodedServletException(int code) {
+    this(code, "");
+  }
+
   public CodedServletException(int code, String message) {
     super(message);
     this.code = code;

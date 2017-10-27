@@ -14,6 +14,7 @@ import foodtruck.dao.TrackingDeviceDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.TrackingDevice;
+import foodtruck.server.CodedServletException;
 import foodtruck.server.GuiceHackRequestWrapper;
 
 /**
@@ -38,11 +39,8 @@ public class BeaconServlet extends HttpServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     req = new GuiceHackRequestWrapper(req, JSP_PATH);
     String id = req.getRequestURI().substring(req.getRequestURI().lastIndexOf('/')+1);
-    TrackingDevice device = trackingDeviceDAO.findById(Long.parseLong(id));
-    if (device == null) {
-      resp.sendError(404);
-      return;
-    }
+    TrackingDevice device = trackingDeviceDAO.findByIdOpt(Long.parseLong(id))
+        .orElseThrow(() -> new CodedServletException(404, "Beacon not found: " + id));
     req.setAttribute("nav", "beacons");
     req.setAttribute("title", "Beacons");
     req.setAttribute("beacon", device);
@@ -55,11 +53,8 @@ public class BeaconServlet extends HttpServlet {
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     req = new GuiceHackRequestWrapper(req, JSP_PATH);
     String id = req.getRequestURI().substring(req.getRequestURI().lastIndexOf('/')+1);
-    TrackingDevice device = trackingDeviceDAO.findById(Long.parseLong(id));
-    if (device == null) {
-      resp.sendError(404);
-      return;
-    }
+    TrackingDevice device = trackingDeviceDAO.findByIdOpt(Long.parseLong(id))
+        .orElseThrow(() -> new CodedServletException(404, "Beacon not found: " + id));
     String associatedTruck = req.getParameter("associatedTruck");
     if ("unset".equals(associatedTruck)) {
       associatedTruck = null;

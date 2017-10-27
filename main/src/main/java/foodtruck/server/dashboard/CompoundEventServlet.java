@@ -13,7 +13,7 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import foodtruck.dao.LocationDAO;
-import foodtruck.model.Location;
+import foodtruck.server.CodedServletException;
 
 /**
  * @author aviolette
@@ -34,24 +34,18 @@ public class CompoundEventServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    Location location = locationDAO.findById(Long.valueOf(req.getRequestURI().substring(
-        req.getRequestURI().lastIndexOf('/') + 1)));
-    if (location == null) {
-      resp.sendError(404);
-      return;
-    }
     UserService userService = userServiceProvider.get();
-    eventServletSupportProvider.get().post(location, userService.getCurrentUser().getEmail(), "/admin/trucks");
+    eventServletSupportProvider.get()
+        .post(locationDAO.findByIdOpt(Long.valueOf(req.getRequestURI().substring(req.getRequestURI().lastIndexOf('/') + 1)))
+            .orElseThrow(() -> new CodedServletException(404)),
+            userService.getCurrentUser().getEmail(), "/admin/trucks");
   }
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     String locationID = req.getRequestURI().substring(req.getRequestURI().lastIndexOf('/') + 1);
-    Location location = locationDAO.findById(Long.valueOf(locationID));
-    if (location == null) {
-      resp.sendError(404);
-      return;
-    }
-    eventServletSupportProvider.get().get(location, "/admin/locations/" + locationID);
+    eventServletSupportProvider.get()
+        .get(locationDAO.findByIdOpt(Long.valueOf(locationID))
+            .orElseThrow(() -> new CodedServletException(404)), "/admin/locations/" + locationID);
   }
 }
