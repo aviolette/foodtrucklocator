@@ -4,17 +4,15 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
-import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 
 import org.codehaus.jettison.json.JSONException;
@@ -43,18 +41,18 @@ public class DailyDataWriter implements MessageBodyWriter<DailyData>, JSONWriter
   public JSONObject asJSON(DailyData dailyData) throws JSONException {
     return new JSONObject().put("truckId", dailyData.getTruckId())
         .put("date", formatter.print(dailyData.getOnDate()))
-        .put("specials", FluentIterable.from(dailyData.getSpecials())
-            .transform(new Function<DailyData.SpecialInfo, JSONObject>() {
-              public JSONObject apply(DailyData.SpecialInfo input) {
-                try {
-                  return new JSONObject().put("special", input.getSpecial())
-                      .put("soldout", input.isSoldOut());
-                } catch (JSONException e) {
-                  throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
-                }
-              }
-            })
-            .toList());
+        .put("specials", dailyData.getSpecials().stream()
+            .map(this::toJson)
+            .collect(Collectors.toList()));
+  }
+
+  private JSONObject toJson(DailyData.SpecialInfo specialInfo) {
+    try {
+      return new JSONObject().put("special", specialInfo.getSpecial())
+          .put("soldout", specialInfo.isSoldOut());
+    } catch (JSONException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override
