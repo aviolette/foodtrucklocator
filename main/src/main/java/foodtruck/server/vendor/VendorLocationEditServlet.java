@@ -29,6 +29,7 @@ import foodtruck.model.StopOrigin;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.schedule.FoodTruckStopService;
+import foodtruck.server.CodedServletException;
 import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.server.resources.json.LocationReader;
 import foodtruck.server.resources.json.LocationWriter;
@@ -43,6 +44,7 @@ import static foodtruck.server.vendor.VendorPageFilter.PRINCIPAL;
  */
 @Singleton
 public class VendorLocationEditServlet extends HttpServlet {
+
   private static final Logger log = Logger.getLogger(VendorLocationEditServlet.class.getName());
   private static final String JSP = "/WEB-INF/jsp/vendor/locationEdit.jsp";
   private final StaticConfig config;
@@ -54,8 +56,9 @@ public class VendorLocationEditServlet extends HttpServlet {
   private final SystemNotificationService notificationService;
 
   @Inject
-  public VendorLocationEditServlet(LocationDAO locationDAO, StaticConfig config, LocationWriter locationWriter,
-      LocationReader reader, @HtmlDateFormatter DateTimeFormatter formatter, FoodTruckStopService stopService,
+  public VendorLocationEditServlet(LocationDAO locationDAO, StaticConfig config,
+      LocationWriter locationWriter, LocationReader reader,
+      @HtmlDateFormatter DateTimeFormatter formatter, FoodTruckStopService stopService,
       SystemNotificationService notificationService) {
     this.locationDAO = locationDAO;
     this.config = config;
@@ -67,14 +70,12 @@ public class VendorLocationEditServlet extends HttpServlet {
   }
 
   @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    String locationId = req.getRequestURI()
-        .substring(18);
-    Location location = locationDAO.findById(Long.parseLong(locationId.substring(0, locationId.lastIndexOf('/'))));
-    if (location == null) {
-      resp.sendError(404);
-      return;
-    }
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+      throws ServletException, IOException {
+    String locationId = req.getRequestURI().substring(18);
+    Location location = locationDAO.findByIdOpt(
+        Long.parseLong(locationId.substring(0, locationId.lastIndexOf('/'))))
+        .orElseThrow(() -> new CodedServletException(404, "Location not found: " + locationId));
     req = new GuiceHackRequestWrapper(req, JSP);
     req.setAttribute("locationId", location.getKey());
     req.setAttribute("googleApiKey", config.getGoogleJavascriptApiKey());
@@ -95,16 +96,15 @@ public class VendorLocationEditServlet extends HttpServlet {
   }
 
   @Override
-  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    DateTime startTime = formatter.parseDateTime(req.getParameter("startTime")), endTime = formatter.parseDateTime(
+  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+    DateTime startTime = formatter.parseDateTime(
+        req.getParameter("startTime")), endTime = formatter.parseDateTime(
         req.getParameter("endTime"));
     Truck truck = (Truck) req.getAttribute(VendorPageFilter.TRUCK);
     String locationId = req.getParameter("locationId");
-    Location location = locationDAO.findById(Long.parseLong(locationId));
-    if (location == null) {
-      resp.sendError(404, "Could not find location with ID: " + locationId);
-      return;
-    }
+    Location location = locationDAO.findByIdOpt(
+        Long.parseLong(locationId.substring(0, locationId.lastIndexOf('/'))))
+        .orElseThrow(() -> new CodedServletException(404, "Location not found: " + locationId));
     // TODO: what if startTime poorly formatted
     // TODO: what if endtime poorly formatted
 
@@ -120,19 +120,23 @@ public class VendorLocationEditServlet extends HttpServlet {
   }
 
   @Override
-  protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+  protected void doPut(HttpServletRequest req, HttpServletResponse resp)
+      throws IOException, ServletException {
     final String json = new String(ByteStreams.toByteArray(req.getInputStream()));
     Principal principal = (Principal) req.getAttribute(PRINCIPAL);
     try {
       // TODO: use FormDataMassager in VendorSettingsServlet
       JSONObject jsonPayload = new JSONObject(json);
       Location location = reader.toLocation(jsonPayload);
-      Location existing = locationDAO.findById((Long) location.getKey());
+      Location existing = locationDAO.findByIdOpt((Long) location.getKey())
+          .orElseThrow(() -> new CodedServletException(404, "Location not found"));
 
       if (existing.isValid() && !principal.getName()
           .equals(existing.getCreatedBy())) {
-        log.log(Level.WARNING, "User {0} cannot edit {1}", new Object[]{principal.getName(), existing});
-        resp.sendError(HttpStatusCodes.STATUS_CODE_UNAUTHORIZED, "You can only edit this location if you created it");
+        log.log(Level.WARNING, "User {0} cannot edit {1}",
+            new Object[]{principal.getName(), existing});
+        resp.sendError(HttpStatusCodes.STATUS_CODE_UNAUTHORIZED,
+            "You can only edit this location if you created it");
         return;
       }
       location = Location.builder(existing)

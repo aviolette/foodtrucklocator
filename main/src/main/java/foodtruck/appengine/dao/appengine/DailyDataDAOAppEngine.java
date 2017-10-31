@@ -39,22 +39,20 @@ class DailyDataDAOAppEngine extends AppEngineDAO<Long, DailyData> implements Dai
     this.defaultZone = zone;
   }
 
-  @Override
-  public
   @Nullable
-  DailyData findByLocationAndDay(String locationId, LocalDate date) {
-    return aq().filter(and(predicate(SPECIALS_LOCATION_ID, EQUAL, locationId), predicate(SPECIALS_DATE, EQUAL,
-        date.toDateTimeAtStartOfDay(defaultZone)
+  @Override
+  public DailyData findByLocationAndDay(String locationId, LocalDate date) {
+    return aq().filter(and(predicate(SPECIALS_LOCATION_ID, EQUAL, locationId),
+        predicate(SPECIALS_DATE, EQUAL, date.toDateTimeAtStartOfDay(defaultZone)
             .toDate())))
         .findOne();
   }
 
   @Override
-  public
   @Nullable
-  DailyData findByTruckAndDay(String truckId, LocalDate date) {
-    return aq().filter(and(predicate(SPECIALS_TRUCK_ID, EQUAL, truckId), predicate(SPECIALS_DATE, EQUAL,
-        date.toDateTimeAtStartOfDay(defaultZone)
+  public DailyData findByTruckAndDay(String truckId, LocalDate date) {
+    return aq().filter(and(predicate(SPECIALS_TRUCK_ID, EQUAL, truckId),
+        predicate(SPECIALS_DATE, EQUAL, date.toDateTimeAtStartOfDay(defaultZone)
             .toDate())))
         .findOne();
   }

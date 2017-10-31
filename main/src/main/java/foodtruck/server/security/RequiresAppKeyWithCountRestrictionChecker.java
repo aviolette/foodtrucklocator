@@ -76,8 +76,9 @@ class RequiresAppKeyWithCountRestrictionChecker implements MethodInterceptor {
 
   private void requireAppKeyWithCount(String appKey, long hourlyCount, long dailyCount) throws WebApplicationException {
     if (!Strings.isNullOrEmpty(appKey)) {
-      Application app = applicationDAO.findById(appKey);
-      if (app != null && app.isEnabled()) {
+      Application app = applicationDAO.findByIdOpt(appKey)
+          .orElseThrow(() -> new WebApplicationException(Response.Status.NOT_FOUND));
+      if (app.isEnabled()) {
         if (app.isRateLimitEnabled() && (hourlyCount > 6 || dailyCount > 100)) {
           log.warning("Rate limit exceeded for " + app.getName());
           throw new WebApplicationException(Response.Status.UNAUTHORIZED);
