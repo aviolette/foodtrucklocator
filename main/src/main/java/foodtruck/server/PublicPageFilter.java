@@ -67,5 +67,6 @@ public class PublicPageFilter implements Filter {
 
   @Override
   public void destroy() {
+
   }
 }

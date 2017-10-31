@@ -22,6 +22,7 @@ import foodtruck.dao.TruckDAO;
 import foodtruck.mail.EmailSender;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.TrackingDevice;
+import foodtruck.model.Truck;
 
 /**
  * @author aviolette
@@ -64,35 +65,34 @@ public class CheckDeviceIssuesServlet extends HttpServlet {
   }
 
   private void sendEmail(String truckId, Collection<TrackingDevice> trackingDevices) {
-    truckDAO.findByIdOpt(truckId).ifPresent(truck -> {
-      if (Strings.isNullOrEmpty(truck.getEmail()) || !truck.isNotifyWhenDeviceIssues()) {
-        log.log(Level.INFO, "Device issue notifications disabled for {0}", truckId);
-        return;
-      }
-      String subject = "There are issues with your devices";
-      StringBuilder msgBuilder = new StringBuilder();
-      for (TrackingDevice device : trackingDevices) {
-        msgBuilder.append("Device: ")
-            .append(device.getLabel())
-            .append(" ")
-            .append(config.getBaseUrl())
-            .append("/vendor/beacons/")
-            .append(device.getKey())
-            .append("\n")
-            .append("Message: ")
-            .append(device.getWarning())
-            .append("\n\n\n");
-      }
-      msgBuilder.append("To enable/disable these notifications:\n")
+    Truck truck = truckDAO.findById(truckId);
+    if (truck == null || Strings.isNullOrEmpty(truck.getEmail()) || !truck.isNotifyWhenDeviceIssues()) {
+      log.log(Level.INFO, "Device issue notifications disabled for {0}", truckId);
+      return;
+    }
+    String subject = "There are issues with your devices";
+    StringBuilder msgBuilder = new StringBuilder();
+    for (TrackingDevice device : trackingDevices) {
+      msgBuilder.append("Device: ")
+          .append(device.getLabel())
+          .append(" ")
           .append(config.getBaseUrl())
-          .append("/vendor/notifications/")
-          .append(truckId)
-          .append("\n");
+          .append("/vendor/beacons/")
+          .append(device.getKey())
+          .append("\n")
+          .append("Message: ")
+          .append(device.getWarning())
+          .append("\n\n\n");
+    }
+    msgBuilder.append("To enable/disable these notifications:\n")
+        .append(config.getBaseUrl())
+        .append("/vendor/notifications/")
+        .append(truckId)
+        .append("\n");
 
-      String msg = msgBuilder.toString();
-      log.log(Level.INFO, msg);
-      emailSender.sendMessage(subject, ImmutableList.of(truck.getEmail()), msgBuilder.toString(),
-          config.getSystemNotificationList(), null);
-    });
+    String msg = msgBuilder.toString();
+    log.log(Level.INFO, msg);
+    emailSender.sendMessage(subject, ImmutableList.of(truck.getEmail()), msgBuilder.toString(),
+        config.getSystemNotificationList(), null);
   }
 }
