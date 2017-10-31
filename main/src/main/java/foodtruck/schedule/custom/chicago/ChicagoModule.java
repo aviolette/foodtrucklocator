@@ -17,20 +17,14 @@ public class ChicagoModule extends AbstractModule {
   @Override
   protected void configure() {
     MapBinder<String, SpecialMatcher> binder = MapBinder.newMapBinder(binder(), String.class, SpecialMatcher.class);
-    binder.addBinding("beaversdonuts")
-        .to(BeaverMatcher.class);
-    binder.addBinding("patronachicago")
-        .to(LaJefaMatcher.class);
-    binder.addBinding("theroostkitchen")
-        .to(RoostMatcher.class);
-    binder.addBinding("bobchafoodtruck")
-        .to(BobChaMatcher.class);
-    binder.addBinding("pierogiwagon")
-        .to(PierogiWagonMatcher.class);
-    binder.addBinding("amanecertacos")
-        .to(AmanecerTacosMatcher.class);
-    binder.addBinding("thecajuncon")
-        .to(CajunConMatcher.class);
+    binder.addBinding("beaversdonuts").to(BeaverMatcher.class);
+    binder.addBinding("patronachicago").to(LaJefaMatcher.class);
+    binder.addBinding("theroostkitchen").to(RoostMatcher.class);
+    binder.addBinding("bobchafoodtruck").to(BobChaMatcher.class);
+    binder.addBinding("pierogiwagon").to(PierogiWagonMatcher.class);
+    binder.addBinding("amanecertacos").to(AmanecerTacosMatcher.class);
+    binder.addBinding("thecajuncon").to(CajunConMatcher.class);
+    binder.addBinding("thefatshallot").to(FatShallotMatcher.class);
   }
 
   @Provides
@@ -44,7 +38,10 @@ public class ChicagoModule extends AbstractModule {
         new Spot("lasalle/adams", "Lasalle and Adams, Chicago, IL"),
         new Spot("clark/monroe", "Clark and Monroe, Chicago, IL"),
         new Spot("wabash/jackson", "Wabash and Jackson, Chicago, IL"),
-        new Spot("michigan/monroe", "Michigan and Monroe, Chicago, IL"), new Spot("uchicago", "University of Chicago"),
-        new Spot("uofc", "University of Chicago"), new Spot("58th/ellis", "University of Chicago"));
+        new Spot("michigan/monroe", "Michigan and Monroe, Chicago, IL"),
+        new Spot("uchicago", "University of Chicago"),
+        new Spot("58th/university", "58th and University, Chicago, IL"),
+        new Spot("uofc", "University of Chicago"),
+        new Spot("58th/ellis", "University of Chicago"));
   }
 }
