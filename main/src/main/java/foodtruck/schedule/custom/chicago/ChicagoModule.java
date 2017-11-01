@@ -25,6 +25,7 @@ public class ChicagoModule extends AbstractModule {
     binder.addBinding("amanecertacos").to(AmanecerTacosMatcher.class);
     binder.addBinding("thecajuncon").to(CajunConMatcher.class);
     binder.addBinding("thefatshallot").to(FatShallotMatcher.class);
+    binder.addBinding("aztec_daves").to(AztecDavesMatcher.class);
   }
 
   @Provides
