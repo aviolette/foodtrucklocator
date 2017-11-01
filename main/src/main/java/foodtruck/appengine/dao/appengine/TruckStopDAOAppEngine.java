@@ -124,8 +124,9 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
     Boolean locked = (Boolean) entity.getProperty(LOCKED_FIELD);
     Collection<String> notes = getListProperty(entity, NOTES);
     final String origin = getStringProperty(entity, ORIGIN);
-    Truck truck = truckDAO.findByIdOpt(getStringProperty(entity, TRUCK_ID_FIELD))
-        .orElseThrow(() -> new RuntimeException("Truck not found"));
+    String truckId = getStringProperty(entity, TRUCK_ID_FIELD);
+    Truck truck = truckDAO.findByIdOpt(truckId)
+        .orElseThrow(() -> new RuntimeException("Truck not found: " + truckId));
     return TruckStop.builder()
         .truck(truck)
         .startTime(getDateTime(entity, START_TIME_FIELD, zone))
