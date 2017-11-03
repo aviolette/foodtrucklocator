@@ -1,5 +1,7 @@
 package foodtruck.server;
 
+import java.util.function.Supplier;
+
 import javax.servlet.ServletException;
 
 /**
@@ -9,6 +11,7 @@ import javax.servlet.ServletException;
  */
 public class CodedServletException extends ServletException {
 
+  public static final Supplier<CodedServletException> NOT_FOUND = () -> new CodedServletException(404);
   private final int code;
 
   public CodedServletException(int code) {
