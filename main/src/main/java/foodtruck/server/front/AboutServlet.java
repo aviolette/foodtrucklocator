@@ -13,9 +13,9 @@ import com.google.inject.Singleton;
 
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TwitterNotificationAccountDAO;
-import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.TwitterNotificationAccount;
+import foodtruck.server.CodedServletException;
 
 /**
  * @author aviolette
@@ -40,10 +40,10 @@ public class AboutServlet extends HttpServlet {
     ImmutableSet.Builder<TwitterNotificationAccount> builder = ImmutableSet.builder();
     for (TwitterNotificationAccount account : notificationAccountDAO.findAll()) {
       if (account.isActive()) {
-        Location location = locationDAO.findByAddress(account.getLocation()
-            .getName());
         builder.add(TwitterNotificationAccount.builder(account)
-            .location(location)
+            .location(locationDAO.findByName(account.getLocation().getName())
+                .orElseThrow(() -> new CodedServletException(404, "Location not found: " +
+                    account.getLocation().getName())))
             .build());
       }
     }
