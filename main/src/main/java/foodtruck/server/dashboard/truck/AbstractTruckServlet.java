@@ -11,6 +11,7 @@ import com.google.common.collect.ImmutableList;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
+import foodtruck.server.CodedServletException;
 import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.util.Link;
 
@@ -29,10 +30,6 @@ public abstract class AbstractTruckServlet extends HttpServlet {
   protected final void doGet(HttpServletRequest request,
       HttpServletResponse response) throws ServletException, IOException {
     Truck truck = truckFromRequest(request);
-    if (truck == null) {
-      response.sendError(404);
-      return;
-    }
     request.setAttribute("nav", "trucks");
     request.setAttribute("truck", truck);
     request.setAttribute("breadcrumbs", breadcrumbs(truck));
@@ -42,26 +39,23 @@ public abstract class AbstractTruckServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    Truck truck = truckFromRequest(request);
-    if (truck == null) {
-      response.sendError(404);
-      return;
-    }
-    doPostProtected(request, response, truck);
+    doPostProtected(request, response, truckFromRequest(request));
   }
 
   protected void doPostProtected(HttpServletRequest request, HttpServletResponse response,
       Truck truck) throws IOException {
   }
 
-  private Truck truckFromRequest(HttpServletRequest request) {
+  private Truck truckFromRequest(HttpServletRequest request) throws ServletException {
     final String requestURI = request.getRequestURI();
     String truckId = requestURI.substring(14);
     int idx = truckId.indexOf("/");
     if (idx != -1) {
       truckId = truckId.substring(0, idx);
     }
-    return truckDAO.findById(truckId);
+    final String truck = truckId;
+    return truckDAO.findByIdOpt(truckId)
+        .orElseThrow(() -> new CodedServletException(404, truck));
   }
 
   protected abstract ImmutableList<Link> breadcrumbs(Truck truck);
