@@ -2,6 +2,7 @@ package foodtruck.dao;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 
@@ -18,7 +19,15 @@ public interface LocationDAO extends DAO<Long, Location> {
    * @param keyword an address to search on
    * @return the location or null if it could not be found
    */
+  @Deprecated // use findByName
   @Nullable Location findByAddress(String keyword);
+
+  /**
+   * Looks up a location by an address.
+   * @param name the address
+   * @return the location
+   */
+  Optional<Location> findByName(String name);
 
   /**
    * Finds a location keyed by the specified latitude and longitude in the database.
@@ -64,10 +73,6 @@ public interface LocationDAO extends DAO<Long, Location> {
   Iterable<Location> findBoozyLocations();
 
   Location findByAlias(String location);
-
-  Collection<Location> findByTwitterId(String twitterId);
-
-  Collection<Location> findByManagerEmail(String email);
 
   List<Location> findAlexaStops();
 }

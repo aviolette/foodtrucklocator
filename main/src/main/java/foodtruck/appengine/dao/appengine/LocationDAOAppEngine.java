@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -17,7 +18,6 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
@@ -29,7 +29,6 @@ import foodtruck.time.Clock;
 
 import static com.google.appengine.api.datastore.Query.CompositeFilterOperator.or;
 import static com.google.appengine.api.datastore.Query.FilterOperator.EQUAL;
-import static com.google.appengine.api.datastore.Query.FilterOperator.IN;
 import static com.google.appengine.api.datastore.Query.FilterOperator.NOT_EQUAL;
 import static foodtruck.appengine.dao.appengine.Attributes.getIntProperty;
 import static foodtruck.appengine.dao.appengine.Attributes.getSetProperty;
@@ -83,23 +82,28 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
   @Nullable
   @Override
   public Location findByAddress(String keyword) {
+    return findByName(keyword).orElse(null);
+  }
+
+  @Override
+  public Optional<Location> findByName(String name) {
     DatastoreService dataStore = provider.get();
     Entity entity = null;
     try {
-      entity = dataStore.prepare(locationQuery(keyword))
+      entity = dataStore.prepare(locationQuery(name))
           .asSingleEntity();
     } catch (PreparedQuery.TooManyResultsException tmr) {
-      log.log(Level.WARNING, "Got too many results exception for: {0}", keyword);
+      log.log(Level.WARNING, "Got too many results exception for: {0}", name);
       try {
-        entity = deleteDuplicates(keyword, dataStore);
+        entity = deleteDuplicates(name, dataStore);
       } catch (Exception e) {
         log.log(Level.WARNING, "Error deleting duplicates", e);
       }
     }
     if (entity != null) {
-      return fromEntity(entity);
+      return Optional.of(fromEntity(entity));
     }
-    return null;
+    return Optional.empty();
   }
 
   @Nullable
@@ -157,18 +161,6 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
   }
 
   @Override
-  public Collection<Location> findByTwitterId(String twitterId) {
-    return aq().filter(predicate(TWITTERHANDLE, EQUAL, twitterId.toLowerCase()))
-        .execute();
-  }
-
-  @Override
-  public Collection<Location> findByManagerEmail(String email) {
-    return aq().filter(predicate(MANAGER_EMAILS, IN, ImmutableSet.of(email)))
-        .execute();
-  }
-
-  @Override
   public List<Location> findAlexaStops() {
     return aq().filter(predicate(ALEXA_PROVIDED, EQUAL, true))
         .sort(NAME_FIELD)
@@ -177,14 +169,14 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
 
   @Nullable
   @Override
-  public Location findByAlias(String location) {
+  public Location findByAlias(String name) {
     // max of three marches up the alias-tree
     for (int i = 0; i < 3; i++) {
-      Location loc = findByAddress(location);
+      Location loc = findByName(name).orElse(null);
       if (loc == null || Strings.isNullOrEmpty(loc.getAlias())) {
         return loc;
       }
-      location = loc.getAlias();
+      name = loc.getAlias();
     }
     return null;
   }
