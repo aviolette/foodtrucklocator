@@ -44,7 +44,7 @@ public class LocationWriter implements JSONWriter<Location>, MessageBodyWriter<L
   public JSONObject writeLocation(Location location, int id, boolean fullOptions) throws JSONException {
     // this is kind of a hack
     if (location.getKey() == null) {
-      Location loc = locationDAO.findByAddress(location.getName());
+      Location loc = locationDAO.findByName(location.getName()).orElse(null);
       if (loc != null) {
         location = Location.builder(loc)
             .key(loc.getKey())
