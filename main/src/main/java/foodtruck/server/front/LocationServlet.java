@@ -27,6 +27,8 @@ import foodtruck.time.Clock;
 import foodtruck.time.DateOnlyFormatter;
 import foodtruck.time.FriendlyDateOnlyFormat;
 
+import static foodtruck.server.CodedServletException.NOT_FOUND;
+
 /**
  * @author aviolette
  * @since 12/6/13
@@ -55,8 +57,7 @@ public class LocationServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     final String requestURI = req.getRequestURI();
-    String locationId = (requestURI.equals("/locations") || requestURI.equals(
-        "/locations/") ? null : requestURI.substring(11));
+    String locationId = (requestURI.equals("/locations") || requestURI.equals("/locations/") ? null : requestURI.substring(11));
     Location location;
     long locId;
     String query = req.getParameter("q");
@@ -71,10 +72,10 @@ public class LocationServlet extends HttpServlet {
         resp.setStatus(404);
         return;
       }
-      location = locationDAO.findById(locId);
+      location = locationDAO.findByIdOpt(locId).orElseThrow(NOT_FOUND);
     } else {
-      location = locationDAO.findByAddress(query);
-      if (location != null && location.isResolved()) {
+      location = locationDAO.findByName(query).orElseThrow(NOT_FOUND);
+      if (location.isResolved()) {
         String date = req.getParameter("date"), dateString = "";
         if (!Strings.isNullOrEmpty(date)) {
           dateString = "?date=" + date;
@@ -83,7 +84,7 @@ public class LocationServlet extends HttpServlet {
         return;
       }
     }
-    if (location == null || !location.isResolved()) {
+    if (!location.isResolved()) {
       resp.setStatus(404);
       return;
     }

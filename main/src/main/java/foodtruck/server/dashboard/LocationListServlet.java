@@ -19,6 +19,8 @@ import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
 import foodtruck.server.GuiceHackRequestWrapper;
 
+import static foodtruck.server.CodedServletException.NOT_FOUND;
+
 /**
  * @author aviolette@gmail.com
  * @since 12/19/11
@@ -43,13 +45,9 @@ public class LocationListServlet extends HttpServlet {
     if (!Strings.isNullOrEmpty(searchField)) {
       Location location = locator.locate(searchField, GeolocationGranularity.BROAD);
       if (location == null) {
-        location = locationDAO.findByAddress(searchField);
+        location = locationDAO.findByName(searchField).orElseThrow(NOT_FOUND);
       }
-      if (location != null) {
-        resp.sendRedirect("/admin/locations/" + location.getKey());
-        return;
-      }
-      // TODO: add error message if we get here
+      resp.sendRedirect("/admin/locations/" + location.getKey());
     }
     final List<Location> autocompleteLocations = locationDAO.findAutocompleteLocations();
     req.setAttribute("locations", locationDAO.findLocationNamesAsJson());

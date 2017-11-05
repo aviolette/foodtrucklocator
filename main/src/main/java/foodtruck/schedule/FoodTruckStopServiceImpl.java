@@ -344,8 +344,7 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
   @Override
   public Set<Truck> findTrucksNearLocation(Location location, DateTime currentTime) {
     ImmutableSet.Builder<Truck> builder = ImmutableSet.builder();
-    Location existing = locationDAO.findByAddress(location.getName());
-    location = existing == null ? location : existing;
+    location = locationDAO.findByName(location.getName()).orElse(location);
     for (TruckStop stop : truckStopDAO.findDuring(null, currentTime.toLocalDate())) {
       if (stop.hasExpiredBy(currentTime)) {
         continue;

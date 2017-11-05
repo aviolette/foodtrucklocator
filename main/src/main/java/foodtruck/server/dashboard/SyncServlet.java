@@ -92,10 +92,8 @@ public class SyncServlet extends HttpServlet {
         Location loc[] = new Location[locations.length()];
         for (int i=0; i < locations.length(); i++) {
           Location location = locationReader.toLocation(locations.getJSONObject(i));
-          Location existing = locationDAO.findByAddress(location.getName());
-          if (existing != null) {
-            locationDAO.delete((Long) location.getKey());
-          }
+          locationDAO.findByName(location.getName())
+              .ifPresent(existing -> locationDAO.delete((Long) location.getKey()));
           locationDAO.save(location);
           loc[i] = location;
         }
@@ -103,10 +101,11 @@ public class SyncServlet extends HttpServlet {
         for (int i=0; i < schedules.length(); i++) {
           JSONObject stopJSON = schedules.getJSONObject(i);
           Location location = loc[stopJSON.getInt("location") - 1];
+          String truckId = stopJSON.getString("truckId");
           TruckStop stop = TruckStop.builder()
               .endTime(new DateTime(stopJSON.getLong("endMillis")))
               .startTime(new DateTime(stopJSON.getLong("startMillis")))
-              .truck(truckDAO.findById(stopJSON.getString("truckId")))
+              .truck(truckDAO.findByIdOpt(truckId).orElse(Truck.builder().id(truckId).build()))
               .location(location)
               .build();
           truckStopDAO.save(stop);
