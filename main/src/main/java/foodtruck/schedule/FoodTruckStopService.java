@@ -1,9 +1,8 @@
 package foodtruck.schedule;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
-
-import javax.annotation.Nullable;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -49,9 +48,9 @@ public interface FoodTruckStopService {
   /**
    * Finds a food truck stop by id.
    * @param stopId the stop id
-   * @return the truck stop or {@code null} if it could not be found
+   * @return the truck stop
    */
-  @Nullable TruckStop findById(long stopId);
+  Optional<TruckStop> findById(long stopId);
 
   /**
    * Deletes a stop specified by id

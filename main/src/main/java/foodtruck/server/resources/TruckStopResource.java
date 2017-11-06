@@ -3,6 +3,7 @@ package foodtruck.server.resources;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -72,11 +73,11 @@ public class TruckStopResource {
   @Path("{stopId: \\d+}")
   public void delete(@PathParam("stopId") final long stopId) throws ServletException, IOException {
     if (!checker.isAdmin()) {
-      TruckStop stop = foodTruckService.findById(stopId);
-      if (stop == null) {
+      Optional<TruckStop> stop = foodTruckService.findById(stopId);
+      if (!stop.isPresent()) {
         return;
       }
-      checker.requiresLoggedInAs(stop.getTruck()
+      checker.requiresLoggedInAs(stop.get().getTruck()
           .getId());
     }
     foodTruckService.delete(stopId);

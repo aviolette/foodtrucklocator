@@ -21,6 +21,8 @@ import foodtruck.time.Clock;
 import foodtruck.time.HtmlDateFormatter;
 import foodtruck.util.Link;
 
+import static foodtruck.server.CodedServletException.NOT_FOUND;
+
 /**
  * @author aviolette
  * @since 1/21/17
@@ -65,11 +67,7 @@ public class EditStopHelper {
       endTime = endTime.withMinuteOfHour(0);
       title = "New Stop";
     } else {
-      TruckStop stop = stopService.findById(Long.parseLong(stopId));
-      if (stop == null) {
-        resp.sendError(404, "Stop could not be found");
-        return;
-      }
+      TruckStop stop = stopService.findById(Long.parseLong(stopId)).orElseThrow(NOT_FOUND);
       locked = stop.isLocked();
       startTime = stop.getStartTime();
       endTime = stop.getEndTime();

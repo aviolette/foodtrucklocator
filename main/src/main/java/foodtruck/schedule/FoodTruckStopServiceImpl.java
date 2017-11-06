@@ -2,6 +2,7 @@ package foodtruck.schedule;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -74,9 +75,8 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
   }
 
   @Override
-  @Nullable
-  public TruckStop findById(long stopId) {
-    return truckStopDAO.findById(stopId);
+  public Optional<TruckStop> findById(long stopId) {
+    return truckStopDAO.findByIdOpt(stopId);
   }
 
   @Override
@@ -121,10 +121,8 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
 
   @Override
   public TruckSchedule findStopsForDay(String truckId, LocalDate day) {
-    Truck truck = truckDAO.findById(truckId);
-    if (truck == null) {
-      throw new IllegalStateException("Invalid truck id specified: " + truckId);
-    }
+    Truck truck = truckDAO.findByIdOpt(truckId)
+        .orElseThrow(() -> new IllegalStateException("Not found: " + truckId));
     return new TruckSchedule(truck, day, truckStopDAO.findDuring(truckId, day));
   }
 
