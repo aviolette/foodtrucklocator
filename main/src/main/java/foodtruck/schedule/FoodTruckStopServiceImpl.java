@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -93,7 +94,8 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
           .notes(ImmutableList.of("Entered manually by " + modifier + " at " + clock.nowFormattedAsTime()))
           .build();
     } else {
-      TruckStop stop = truckStopDAO.findById((Long) truckStop.getKey());
+      Long stopKey = (Long) truckStop.getKey();
+      TruckStop stop = truckStopDAO.findByIdOpt((Long) truckStop.getKey()).orElseThrow(() -> new IllegalStateException("Invalid ID: " + stopKey));
       truckStop = TruckStop.builder(truckStop)
           .notes(stop.getNotes())
           .origin(stop.getOrigin())
@@ -128,8 +130,7 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
 
   @Override
   public DailySchedule findStopsForDay(LocalDate day) {
-    List<TruckStop> stops = truckStopDAO.findDuring(null, day);
-    return dailySchedule(day, stops);
+    return dailySchedule(day, truckStopDAO.findDuring(null, day));
   }
 
   private DailySchedule dailySchedule(LocalDate day, List<TruckStop> stops) {
@@ -145,15 +146,9 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
   public DailySchedule findStopsForDayAfter(final DateTime dateTime) {
     LocalDate day = dateTime.toLocalDate();
     List<TruckStop> stops = truckStopDAO.findDuring(null, day);
-    return dailySchedule(day, FluentIterable.from(stops)
-        .filter(new Predicate<TruckStop>() {
-          @Override
-          public boolean apply(TruckStop truckStop) {
-            return truckStop.getEndTime()
-                .isAfter(dateTime);
-          }
-        })
-        .toList());
+    return dailySchedule(day, stops.stream()
+        .filter(truckStop -> truckStop.getEndTime().isAfter(dateTime))
+        .collect(Collectors.toList()));
   }
 
   @Override
@@ -162,13 +157,11 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
     for (TruckStop stop : stops.getStops()) {
       delete((Long) stop.getKey());
     }
-    Truck t = truckDAO.findById(truckId);
-    t = Truck.builder(t)
+    truckDAO.findByIdOpt(truckId).ifPresent(truck -> truckDAO.save(Truck.builder(truck)
         .muteUntil(clock.currentDay()
             .toDateTimeAtStartOfDay(clock.zone())
             .plusDays(1))
-        .build();
-    truckDAO.save(t);
+        .build()));
   }
 
   @Override
@@ -185,13 +178,12 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
         count++;
       }
     }
-    Truck t = truckDAO.findById(truckId);
-    t = Truck.builder(t)
-        .muteUntil(clock.currentDay()
-            .toDateTimeAtStartOfDay(clock.zone())
-            .plusDays(1))
-        .build();
-    truckDAO.save(t);
+    truckDAO.findByIdOpt(truckId)
+        .ifPresent(truck -> truckDAO.save(Truck.builder(truck)
+            .muteUntil(clock.currentDay()
+                .toDateTimeAtStartOfDay(clock.zone())
+                .plusDays(1))
+            .build()));
     return count;
   }
 
@@ -207,16 +199,11 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
       log.log(Level.INFO, "Boozy location {0}", loc);
       locations.put(loc.getName(), loc);
     }
-    return FluentIterable.from(truckStopDAO.findOverRange(null,
-        new Interval(startDate.toDateTimeAtStartOfDay(clock.zone()), startDate.plusDays(daysOut)
-            .toDateTimeAtStartOfDay(clock.zone()))))
-        .filter(new Predicate<TruckStop>() {
-          public boolean apply(TruckStop truckStop) {
-            return locations.containsKey(truckStop.getLocation()
-                .getName());
-          }
-        })
-        .toList();
+    return truckStopDAO.findOverRange(null, new Interval(startDate.toDateTimeAtStartOfDay(clock.zone()), startDate.plusDays(daysOut)
+            .toDateTimeAtStartOfDay(clock.zone()))).stream()
+        .filter(truckStop -> locations.containsKey(truckStop.getLocation()
+            .getName()))
+        .collect(Collectors.toList());
   }
 
   @Override
@@ -294,19 +281,6 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
     }
     if (schedule != null && schedule.hasStops()) {
       builder.add(schedule.build());
-    }
-    return builder.build();
-  }
-
-  @Override
-  public List<TruckStop> findStopsAtLocationOverRange(Location location, Interval range) {
-    ImmutableList.Builder<TruckStop> builder = ImmutableList.builder();
-    for (TruckStop stop : truckStopDAO.findOverRange(null, range)) {
-      if (stop.getLocation()
-          .getName()
-          .equals(location.getName())) {
-        builder.add(stop);
-      }
     }
     return builder.build();
   }
