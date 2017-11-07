@@ -13,6 +13,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -88,33 +89,23 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
   protected Entity toEntity(TruckStop stop, Entity truckStop) {
     return new FluidEntity(truckStop).prop(TRUCK_ID_FIELD, stop.getTruck()
         .getId())
-        .prop(START_TIME_FIELD, stop.getStartTime()
-            .toDate())
-        .prop(END_TIME_FIELD, stop.getEndTime()
-            .toDate())
-        .prop(LATITUDE_FIELD, stop.getLocation()
-            .getLatitude())
-        .prop(LONGITUDE_FIELD, stop.getLocation()
-            .getLongitude())
-        .prop(LOCATION_NAME_FIELD, stop.getLocation()
-            .getName())
-        .prop(DESCRIPTION_FIELD, stop.getLocation()
-            .getDescription())
-        .prop(URL_FIELD, stop.getLocation()
-            .getUrl())
+        .prop(START_TIME_FIELD, stop.getStartTime().toDate())
+        .prop(END_TIME_FIELD, stop.getEndTime().toDate())
+        .prop(LATITUDE_FIELD, stop.getLocation().getLatitude())
+        .prop(LONGITUDE_FIELD, stop.getLocation().getLongitude())
+        .prop(LOCATION_NAME_FIELD, stop.getLocation().getName())
+        .prop(DESCRIPTION_FIELD, stop.getLocation().getDescription())
+        .prop(URL_FIELD, stop.getLocation().getUrl())
         .prop(LOCKED_FIELD, stop.isLocked())
-        .prop(ORIGIN, stop.getOrigin()
-            .toString())
+        .prop(ORIGIN, stop.getOrigin().toString())
         .prop(NOTES, stop.getNotes())
         .prop(IMAGE_URL, stop.getImageUrl())
         .prop(STOP_DESCRIPTION, stop.getDescription())
         .prop(MANUALLY_UPDATED, stop.getManuallyUpdated())
         .prop(BEACON_FIELD, stop.getBeaconTime())
         .prop(LAST_UPDATED, stop.getLastUpdated())
-        .prop(END_TIMESTAMP, stop.getEndTime()
-            .getMillis())
-        .prop(START_TIMESTAMP, stop.getStartTime()
-            .getMillis())
+        .prop(END_TIMESTAMP, stop.getEndTime().getMillis())
+        .prop(START_TIMESTAMP, stop.getStartTime().getMillis())
         .prop(DEVICE_ID, stop.getCreatedWithDeviceId())
         .toEntity();
   }
@@ -125,8 +116,14 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
     Collection<String> notes = getListProperty(entity, NOTES);
     final String origin = getStringProperty(entity, ORIGIN);
     String truckId = getStringProperty(entity, TRUCK_ID_FIELD);
+    // In a few cases I actually deleted trucks which causes old truck stop look ups to blow up
+    // Here I just construct a placeholder truck if none exists
     Truck truck = truckDAO.findByIdOpt(truckId)
-        .orElseThrow(() -> new RuntimeException("Truck not found: " + truckId));
+        .orElseGet(() -> Truck.builder()
+            .id(truckId)
+            .name(truckId)
+            .categories(ImmutableSet.of("Lunch"))
+            .build());
     return TruckStop.builder()
         .truck(truck)
         .startTime(getDateTime(entity, START_TIME_FIELD, zone))
