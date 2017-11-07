@@ -315,20 +315,14 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
 
   @Override
   public Set<Truck> findTrucksNearLocation(Location location, DateTime currentTime) {
-    ImmutableSet.Builder<Truck> builder = ImmutableSet.builder();
-    location = locationDAO.findByName(location.getName()).orElse(location);
-    for (TruckStop stop : truckStopDAO.findDuring(null, currentTime.toLocalDate())) {
-      if (stop.hasExpiredBy(currentTime)) {
-        continue;
-      }
-      if (location.getName()
-          .equals(stop.getLocation()
-              .getName()) || location.within(location.getRadius())
-          .milesOf(stop.getLocation())) {
-        builder.add(stop.getTruck());
-      }
-    }
-    return builder.build();
+    final Location center = locationDAO.findByName(location.getName()).orElse(location);
+    return truckStopDAO.findDuring(null, currentTime.toLocalDate())
+        .stream()
+        .filter(stop -> !stop.hasExpiredBy(currentTime)
+            && (center.getName().equals(stop.getLocation().getName())
+              || center.within(center.getRadius()).milesOf(stop.getLocation())))
+        .map(TruckStop::getTruck)
+        .collect(Collectors.toSet());
   }
 
   @Override

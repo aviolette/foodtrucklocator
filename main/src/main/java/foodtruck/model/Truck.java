@@ -698,7 +698,7 @@ public class Truck extends ModelEntity implements Serializable {
     private String id;
     private String name;
     private @Nullable String url;
-    private String iconUrl;
+    private String iconUrl = "https://storage.googleapis.com/truckpreviews/truck_holder.svg";
     private @Nullable String twitter;
     private String foursquareUrl;
     private boolean twittalyzer;
