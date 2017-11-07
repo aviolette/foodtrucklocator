@@ -13,9 +13,9 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.LocationDAO;
+import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
-import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.server.GuiceHackRequestWrapper;
 import foodtruck.time.Clock;
 import foodtruck.time.HtmlDateFormatter;
@@ -33,17 +33,17 @@ public class EditStopHelper {
   private static final String VENDOR_JSP = "/WEB-INF/jsp/vendor/editStop.jsp";
 
   private final Clock clock;
-  private final FoodTruckStopService stopService;
+  private final TruckStopDAO truckStopDAO;
   private final DateTimeFormatter timeFormatter;
   private final LocationDAO locationDAO;
 
   @Inject
-  public EditStopHelper(Clock clock, FoodTruckStopService stopService, @HtmlDateFormatter DateTimeFormatter formatter,
-      LocationDAO locationDAO) {
+  public EditStopHelper(Clock clock, @HtmlDateFormatter DateTimeFormatter formatter,
+      LocationDAO locationDAO, TruckStopDAO truckStopDAO) {
     this.clock = clock;
-    this.stopService = stopService;
     this.timeFormatter = formatter;
     this.locationDAO = locationDAO;
+    this.truckStopDAO = truckStopDAO;
   }
 
   public void setupEditPage(String stopId, Truck truck, HttpServletRequest req, HttpServletResponse resp,
@@ -67,7 +67,7 @@ public class EditStopHelper {
       endTime = endTime.withMinuteOfHour(0);
       title = "New Stop";
     } else {
-      TruckStop stop = stopService.findById(Long.parseLong(stopId)).orElseThrow(NOT_FOUND);
+      TruckStop stop = truckStopDAO.findByIdOpt(Long.parseLong(stopId)).orElseThrow(NOT_FOUND);
       locked = stop.isLocked();
       startTime = stop.getStartTime();
       endTime = stop.getEndTime();

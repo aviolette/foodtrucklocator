@@ -46,13 +46,6 @@ public interface FoodTruckStopService {
   void pullCustomCalendarFor(Interval instant, Truck truck);
 
   /**
-   * Finds a food truck stop by id.
-   * @param stopId the stop id
-   * @return the truck stop
-   */
-  Optional<TruckStop> findById(long stopId);
-
-  /**
    * Deletes a stop specified by id
    * @param stopId the stop id
    */

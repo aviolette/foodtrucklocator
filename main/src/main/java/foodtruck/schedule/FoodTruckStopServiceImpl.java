@@ -76,11 +76,6 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
   }
 
   @Override
-  public Optional<TruckStop> findById(long stopId) {
-    return truckStopDAO.findByIdOpt(stopId);
-  }
-
-  @Override
   public void delete(long stopId) {
     truckStopDAO.delete(stopId);
   }

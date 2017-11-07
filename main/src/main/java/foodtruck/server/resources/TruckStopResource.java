@@ -36,6 +36,7 @@ import org.joda.time.DateTime;
 
 import foodtruck.annotations.AppKey;
 import foodtruck.annotations.RequiresAppKeyWithCountRestriction;
+import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TruckStopWithCounts;
 import foodtruck.schedule.FoodTruckStopService;
@@ -58,22 +59,25 @@ public class TruckStopResource {
   private final SecurityChecker checker;
   private final Provider<UserService> userServiceProvider;
   private final Provider<Session> sessionProvider;
+  private final TruckStopDAO truckStopDAO;
 
   @Inject
   public TruckStopResource(FoodTruckStopService service, Clock clock, SecurityChecker checker,
-      Provider<UserService> userServiceProvider, Provider<Session> sessionProvider) {
+      Provider<UserService> userServiceProvider, Provider<Session> sessionProvider,
+      TruckStopDAO truckStopDAO) {
     this.foodTruckService = service;
     this.clock = clock;
     this.checker = checker;
     this.userServiceProvider = userServiceProvider;
     this.sessionProvider = sessionProvider;
+    this.truckStopDAO = truckStopDAO;
   }
 
   @DELETE
   @Path("{stopId: \\d+}")
   public void delete(@PathParam("stopId") final long stopId) throws ServletException, IOException {
     if (!checker.isAdmin()) {
-      Optional<TruckStop> stop = foodTruckService.findById(stopId);
+      Optional<TruckStop> stop = truckStopDAO.findByIdOpt(stopId);
       if (!stop.isPresent()) {
         return;
       }
