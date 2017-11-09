@@ -1,6 +1,7 @@
 package foodtruck.server.front;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -27,6 +28,7 @@ import foodtruck.dao.LocationDAO;
 import foodtruck.model.Location;
 import foodtruck.model.TruckStop;
 import foodtruck.schedule.FoodTruckStopService;
+import foodtruck.server.CodedServletException;
 import foodtruck.time.Clock;
 import foodtruck.time.DateOnlyFormatter;
 import foodtruck.time.FriendlyDateOnlyFormat;
@@ -59,14 +61,15 @@ public class BoozeAndTrucksServlet extends HttpServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     ImmutableList.Builder<ScheduleForDay> schedules = ImmutableList.builder();
     LocalDate currentDay = null;
-    Map<String, TruckStopGroup> tsgs = Maps.newHashMap();
+    Map<String, TruckStopGroup> tsgs = new HashMap<>();
     String dateString = req.getParameter("date");
     LocalDate date = clock.currentDay();
     LoadingCache<String, Location> locationCache = CacheBuilder.newBuilder()
         .maximumSize(200)
         .build(new CacheLoader<String, Location>() {
           public Location load(String key) throws Exception {
-            return locationDAO.findByAddress(key);
+            return locationDAO.findByName(key)
+                .orElseThrow(() -> new CodedServletException(404, "Location not found: " + key));
           }
         });
     int daysOut = 7;
@@ -86,21 +89,17 @@ public class BoozeAndTrucksServlet extends HttpServlet {
         schedules.add(new ScheduleForDay(currentDay, ImmutableList.copyOf(tsgs.values())));
         tsgs = Maps.newHashMap();
       }
-      TruckStopGroup tsg = tsgs.get(stop.getLocation()
-          .getName());
-      currentDay = stop.getStartTime()
-          .toLocalDate();
+      TruckStopGroup tsg = tsgs.get(stop.getLocation().getName());
+      currentDay = stop.getStartTime().toLocalDate();
       if (tsg == null) {
         Location location;
         try {
-          location = locationCache.get(stop.getLocation()
-              .getName());
+          location = locationCache.get(stop.getLocation().getName());
         } catch (ExecutionException e) {
           location = stop.getLocation();
         }
         tsg = new TruckStopGroup(location, currentDay);
-        tsgs.put(stop.getLocation()
-            .getName(), tsg);
+        tsgs.put(stop.getLocation().getName(), tsg);
         builder.add(tsg);
       }
       tsg.addStop(stop);
@@ -119,10 +118,10 @@ public class BoozeAndTrucksServlet extends HttpServlet {
       req.setAttribute("title", "Upcoming Boozy Events");
     }
     req.setAttribute("description", "Lists upcoming events that combine food trucks and booze.");
-    req.getRequestDispatcher(JSP)
-        .forward(req, resp);
+    req.getRequestDispatcher(JSP).forward(req, resp);
   }
 
+  @SuppressWarnings("WeakerAccess")
   public static class TruckStopGroup {
     private Location location;
     private LocalDate day;
@@ -150,6 +149,7 @@ public class BoozeAndTrucksServlet extends HttpServlet {
     }
   }
 
+  @SuppressWarnings("WeakerAccess")
   public static class ScheduleForDay {
     private final LocalDate day;
     private final List<TruckStopGroup> groups;
