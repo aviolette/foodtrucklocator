@@ -2,18 +2,17 @@ package foodtruck.server.front;
 
 import java.io.IOException;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
-import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -21,6 +20,9 @@ import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
+import foodtruck.server.CodedServletException;
+
+import static foodtruck.server.CodedServletException.NOT_FOUND;
 
 /**
  * @author aviolette
@@ -40,31 +42,21 @@ public class TruckBusinessesServlet extends HttpServlet {
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    req.setAttribute("locations", FluentIterable.from(locationDAO.findLocationsOwnedByFoodTrucks())
-        .transform(new Function<Location, LocationWithTruck>() {
-          public LocationWithTruck apply(Location location) {
-            try {
-              //TODO: this shouldn't happen
-              if (Strings.isNullOrEmpty(location.getOwnedBy())) {
-                return null;
-              }
-              return new LocationWithTruck(truckDAO.findById(location.getOwnedBy()), location);
-            } catch (Exception e) {
-              log.log(Level.WARNING, "Problem with location {0}", location);
-              return null;
-            }
+    req.setAttribute("locations", locationDAO.findLocationsOwnedByFoodTrucks().stream()
+        .map(location -> {
+          if (Strings.isNullOrEmpty(location.getOwnedBy())) {
+            return null;
           }
-
+          try {
+            return new LocationWithTruck(truckDAO.findByIdOpt(location.getOwnedBy()).orElseThrow(NOT_FOUND), location);
+          } catch (CodedServletException e) {
+            log.log(Level.WARNING, "Problem with location {0}", location);
+            return null;
+          }
         })
-        .filter(Predicates.notNull())
-        .toSortedList(new Comparator<LocationWithTruck>() {
-          public int compare(LocationWithTruck o1, LocationWithTruck o2) {
-            return o1.getLocation()
-                .getName()
-                .compareTo(o2.getLocation()
-                    .getName());
-          }
-        }));
+        .filter(Objects::nonNull)
+        .sorted(Comparator.comparing(o -> o.getLocation().getName()))
+        .collect(Collectors.toList()));
     req.setAttribute("tab", "location");
     req.getRequestDispatcher("/WEB-INF/jsp/businesses.jsp")
         .forward(req, resp);
