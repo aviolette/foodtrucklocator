@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
@@ -41,9 +43,9 @@ public class TruckTextCollectionWriter implements MessageBodyWriter<Iterable<Tru
   public void writeTo(Iterable<Truck> trucks, Class<?> type, Type genericType, Annotation[] annotations,
       MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
       OutputStream entityStream) throws IOException, WebApplicationException {
-    entityStream.write(FluentIterable.from(trucks)
-        .transform(Truck.TO_NAME)
-        .join(Joiner.on("\n"))
+    entityStream.write(StreamSupport.stream(trucks.spliterator(), false)
+        .map(Truck::getName)
+        .collect(Collectors.joining("\n"))
         .getBytes("UTF-8"));
   }
 }

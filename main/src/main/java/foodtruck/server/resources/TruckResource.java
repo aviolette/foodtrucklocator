@@ -2,6 +2,7 @@ package foodtruck.server.resources;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -11,11 +12,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
-import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
-import com.google.common.collect.Collections2;
 import com.google.inject.Inject;
 import com.sun.jersey.api.JResponse;
 
@@ -39,12 +39,6 @@ import foodtruck.time.DateOnlyFormatter;
  */
 @Path("/trucks{view : (\\.[a-z]{3})?}")
 public class TruckResource {
-  private static final Predicate<Truck> NOT_HIDDEN = new Predicate<Truck>() {
-    @Override
-    public boolean apply(Truck truck) {
-      return !truck.isHidden();
-    }
-  };
   private final TruckDAO truckDAO;
   private final Clock clock;
   private final DateTimeZone zone;
@@ -71,7 +65,7 @@ public class TruckResource {
 
   @GET
   @Produces({"application/json", "text/csv", "text/plain"})
-  public JResponse<Collection<Truck>> getTrucks(@PathParam("view") String view,
+  public JResponse<List<Truck>> getTrucks(@PathParam("view") String view,
       @QueryParam("active") final String active, @QueryParam("tag") final String filteredBy) {
     MediaType mediaType = MediaType.APPLICATION_JSON_TYPE;
     if (".csv".equals(view)) {
@@ -87,7 +81,9 @@ public class TruckResource {
     } else {
       response = Strings.isNullOrEmpty(filteredBy) ? truckDAO.findActiveTrucks() : truckDAO.findByCategory(filteredBy);
     }
-    return JResponse.ok(Collections2.filter(response, NOT_HIDDEN), mediaType)
+    return JResponse.ok(response.stream()
+        .filter(Truck::isVisible)
+        .collect(Collectors.toList()), mediaType)
         .build();
   }
 
@@ -95,7 +91,7 @@ public class TruckResource {
   @Produces("application/json")
   @Path("{truckId}")
   public JResponse<Truck> getTruck(@PathParam("truckId") String truckId) {
-    Truck t = truckDAO.findById(truckId);
+    Truck t = truckDAO.findByIdOpt(truckId).orElseThrow(() -> new WebApplicationException(404));
     return JResponse.ok(t)
         .build();
   }
@@ -107,22 +103,18 @@ public class TruckResource {
     DateTime muteUntil = Strings.isNullOrEmpty(until) ? clock.currentDay()
         .toDateTimeAtStartOfDay(zone)
         .plusDays(1) : formatter.parseDateTime(until);
-    Truck t = truckDAO.findById(truckId);
-    t = Truck.builder(t)
+    truckDAO.findByIdOpt(truckId).ifPresent(truck -> truckDAO.save(Truck.builder(truck)
         .muteUntil(muteUntil)
-        .build();
-    truckDAO.save(t);
+        .build()));
   }
 
   @POST
   @Path("{truckId}/unmute")
   @RequiresAdmin
   public void unmuteTruck(@PathParam("truckId") String truckId) {
-    Truck t = truckDAO.findById(truckId);
-    t = Truck.builder(t)
+    truckDAO.findByIdOpt(truckId).ifPresent(truck -> truckDAO.save(Truck.builder(truck)
         .muteUntil(null)
-        .build();
-    truckDAO.save(t);
+        .build()));
   }
 
   @DELETE
@@ -134,7 +126,8 @@ public class TruckResource {
 
   @Path("{truckId}/specials")
   public DailySpecialResource getDailySpecialResource(@PathParam("truckId") String truckId) {
-    return dailySpecialResourceFactory.create(truckDAO.findById(truckId));
+    return dailySpecialResourceFactory.create(truckDAO.findByIdOpt(truckId)
+        .orElseThrow(() -> new WebApplicationException(404)));
   }
 
   @GET
@@ -149,9 +142,10 @@ public class TruckResource {
   @Produces(MediaType.APPLICATION_JSON)
   @RequiresAdmin
   public JResponse<Truck> createTruck(Truck truck) {
-    if (truckDAO.findById(truck.getId()) != null) {
-      throw new BadRequestException("POST can only be used , for creating objects");
-    }
+    truckDAO.findByIdOpt(truck.getId())
+        .ifPresent(t -> {
+          throw new BadRequestException("POST can only be used , for creating objects");
+        });
     return JResponse.ok(profileSyncService.createFromTwitter(truck))
         .build();
   }

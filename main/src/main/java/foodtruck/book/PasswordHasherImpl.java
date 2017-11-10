@@ -1,10 +1,10 @@
 package foodtruck.book;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.hash.HashFunction;
 import com.google.inject.Inject;
 
-import org.glassfish.grizzly.http.util.Charsets;
 
 /**
  * @author aviolette
@@ -23,7 +23,7 @@ class PasswordHasherImpl implements PasswordHasher {
       return "";
     }
     return hashFunction.newHasher()
-        .putString(password, Charsets.UTF8_CHARSET)
+        .putString(password, Charsets.UTF_8)
         .hash()
         .toString();
   }

@@ -5,16 +5,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
@@ -29,11 +28,6 @@ import static com.google.common.base.Preconditions.checkState;
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class Truck extends ModelEntity implements Serializable {
-  public static final Function<Truck, String> TO_NAME = new Function<Truck, String>() {
-    public String apply(Truck input) {
-      return input.getName();
-    }
-  };
   private static final Joiner BLACKLIST_JOINER = Joiner.on("; ");
   private String id;
   private String name;
@@ -268,6 +262,10 @@ public class Truck extends ModelEntity implements Serializable {
     return this.displayEmailPublicly;
   }
 
+  public boolean isVisible() {
+    return !isHidden();
+  }
+
   public boolean isHidden() {
     return hidden;
   }
@@ -499,14 +497,12 @@ public class Truck extends ModelEntity implements Serializable {
   }
 
   public Set<String> publicCategories() {
-    return FluentIterable.from(categories)
-        .filter(new Predicate<String>() {
-          public boolean apply(String input) {
-            return !(input.equals("Lunch") || input.equals("HasStore") || input.equals("1HRStops") || input.equals("MorningSquatter") ||
-                input.equals("AssumeNoTimeEqualsLunch") || input.equals("Chicago") || input.equals("Burbs"));
-          }
-        })
-        .toSet();
+    return categories.stream()
+        .filter(input -> !(input.equals("Lunch") || input.equals("HasStore") ||
+            input.equals("1HRStops") || input.equals("MorningSquatter") ||
+            input.equals("AssumeNoTimeEqualsLunch") || input.equals("Chicago") ||
+            input.equals("Burbs")))
+        .collect(Collectors.toSet());
   }
 
   public int getFleetSize() {
