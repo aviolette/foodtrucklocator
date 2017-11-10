@@ -12,8 +12,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
-import com.google.common.base.Throwables;
-
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -47,7 +45,7 @@ public class AddressRuleWriter implements JSONWriter<AddressRuleScript>, Message
     try {
       JSONSerializer.writeJSON(asJSON(AddressRuleScript), entityStream);
     } catch (JSONException e) {
-      throw Throwables.propagate(e);
+      throw new WebApplicationException(e);
     }
   }
 }

@@ -65,7 +65,7 @@ public class CheckDeviceIssuesServlet extends HttpServlet {
   }
 
   private void sendEmail(String truckId, Collection<TrackingDevice> trackingDevices) {
-    Truck truck = truckDAO.findById(truckId);
+    Truck truck = truckDAO.findByIdOpt(truckId).orElse(null);
     if (truck == null || Strings.isNullOrEmpty(truck.getEmail()) || !truck.isNotifyWhenDeviceIssues()) {
       log.log(Level.INFO, "Device issue notifications disabled for {0}", truckId);
       return;
