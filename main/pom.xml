@@ -249,25 +249,26 @@
       <artifactId>joda-time-jsptags</artifactId>
       <version>1.1.1</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/com.sun.jersey/jersey-json -->
     <dependency>
       <groupId>com.sun.jersey</groupId>
       <artifactId>jersey-json</artifactId>
-      <version>1.6</version>
+      <version>1.19.4</version>
     </dependency>
     <dependency>
       <groupId>com.sun.jersey</groupId>
       <artifactId>jersey-server</artifactId>
-      <version>1.6</version>
+      <version>1.19.4</version>
     </dependency>
     <dependency>
       <groupId>com.sun.jersey.contribs</groupId>
       <artifactId>jersey-guice</artifactId>
-      <version>1.6</version>
+      <version>1.19.4</version>
     </dependency>
     <dependency>
       <groupId>com.sun.jersey</groupId>
       <artifactId>jersey-client</artifactId>
-      <version>1.6</version>
+      <version>1.19.4</version>
     </dependency>
     <dependency>
       <groupId>net.sf.opencsv</groupId>
