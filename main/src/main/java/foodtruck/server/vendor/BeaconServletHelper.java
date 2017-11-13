@@ -1,5 +1,8 @@
 package foodtruck.server.vendor;
 
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.common.base.Function;
@@ -22,37 +25,37 @@ import foodtruck.model.Truck;
  * @since 11/26/16
  */
 public class BeaconServletHelper {
+
   private final LocationDAO locationDAO;
   private final LinxupAccountDAO linxupAccountDAO;
   private final StaticConfig config;
 
   @Inject
-  public BeaconServletHelper(LocationDAO locationDAO, LinxupAccountDAO linxupAccountDAO, StaticConfig config) {
+  public BeaconServletHelper(LocationDAO locationDAO, LinxupAccountDAO linxupAccountDAO,
+      StaticConfig config) {
     this.locationDAO = locationDAO;
     this.linxupAccountDAO = linxupAccountDAO;
     this.config = config;
   }
 
   private JSONArray beaconsToJson(Truck truck) {
-    return new JSONArray(FluentIterable.from(truck.getBlacklistLocationNames())
-        .transform(new Function<String, JSONObject>() {
-          public JSONObject apply(String input) {
-            Location location = locationDAO.findByAddress(input);
-            if (location == null) {
-              return null;
-            }
-            try {
-              return new JSONObject().put("name", input)
-                  .put("latitude", location.getLatitude())
-                  .put("longitude", location.getLongitude())
-                  .put("radius", location.getRadius());
-            } catch (JSONException e) {
-              throw new RuntimeException(e);
-            }
+    return new JSONArray(truck .getBlacklistLocationNames().stream()
+        .map(input -> {
+          Location location = locationDAO.findByName(input).orElse(null);
+          if (location == null) {
+            return null;
+          }
+          try {
+            return new JSONObject().put("name", input)
+                .put("latitude", location.getLatitude())
+                .put("longitude", location.getLongitude())
+                .put("radius", location.getRadius());
+          } catch (JSONException e) {
+            throw new RuntimeException(e);
           }
         })
-        .filter(Predicates.notNull())
-        .toList());
+        .filter(Objects::nonNull)
+        .collect(Collectors.toList()));
   }
 
   public void seedRequest(HttpServletRequest request, Truck truck) {

@@ -65,20 +65,16 @@ public class TruckStopReader implements MessageBodyReader<TruckStop> {
     final String json = new String(ByteStreams.toByteArray(entityStream));
     try {
       JSONObject obj = new JSONObject(json);
-      Truck truck = truckDAO.findById(obj.getString("truckId"));
-      if (truck == null) {
-        throw new BadRequestException("No truck specified");
-      }
+      Truck truck = truckDAO.findByIdOpt(obj.getString("truckId"))
+          .orElseThrow(() -> new BadRequestException("No truck specified"));
       DateTime startTime, endTime;
       try {
-        startTime = format.parseDateTime(obj.getString("startTime")
-            .toUpperCase());
+        startTime = format.parseDateTime(obj.getString("startTime").toUpperCase());
       } catch (IllegalArgumentException iae) {
         throw new BadRequestException("Start time incorrect or unspecified");
       }
       try {
-        endTime = format.parseDateTime(obj.getString("endTime")
-            .toUpperCase());
+        endTime = format.parseDateTime(obj.getString("endTime").toUpperCase());
       } catch (IllegalArgumentException iae) {
         throw new BadRequestException("Could not parse end time");
       }

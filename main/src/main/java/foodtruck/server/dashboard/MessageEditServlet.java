@@ -48,7 +48,7 @@ public class MessageEditServlet extends HttpServlet {
       DateTime now = clock.now();
       message = new Message(-1L, "", now, now.plusDays(2));
     } else {
-      message = messageDAO.findById(Long.parseLong(id));
+      message = messageDAO.findByIdOpt(Long.parseLong(id)).orElse(null);
     }
     req.setAttribute("message", message);
     req.setAttribute("breadcrumbs",

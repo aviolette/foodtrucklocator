@@ -51,8 +51,8 @@ public class UpdateTruckStats extends HttpServlet {
     String truckId = req.getParameter("truckId");
     boolean forceUpdate = "true".equals(req.getParameter("force"));
     if (!Strings.isNullOrEmpty(truckId)) {
-      Truck truck = truckDAO.findById(truckId);
-      updateTruck(truck, forceUpdate);
+      truckDAO.findByIdOpt(truckId)
+          .ifPresent(truck -> updateTruck(truck, forceUpdate));
     } else {
       String range = req.getParameter("range");
       String[] flRange = null;
