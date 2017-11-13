@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.base.Strings;
 import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -26,6 +27,7 @@ import foodtruck.server.resources.json.LocationWriter;
 import foodtruck.util.Urls;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static foodtruck.server.CodedServletException.NOT_FOUND;
 
 /**
  * @author aviolette@gmail.com
@@ -59,18 +61,16 @@ public class LocationEditServlet extends HttpServlet {
     final String keyIndex = path.substring(path.lastIndexOf("/") + 1);
     req = new GuiceHackRequestWrapper(req, jsp);
     req.setAttribute("googleApiKey", config.getGoogleJavascriptApiKey());
-    Location location = locationDAO.findById(Long.valueOf(keyIndex));
-    if (location != null) {
-      try {
-        req.setAttribute("location", writer.writeLocation(location, 0, true));
-        req.setAttribute("locationId", location.getKey());
-        List<Location> aliases = locationDAO.findAliasesFor(location.getName());
-        req.setAttribute("aliases", aliases);
-        req.setAttribute("aliasCount", aliases.size());
-      } catch (JSONException e) {
-        throw new ServletException(e);
-      }
+    Location location = locationDAO.findByIdOpt(Long.valueOf(keyIndex)).orElseThrow(NOT_FOUND);
+    try {
+      req.setAttribute("location", writer.writeLocation(location, 0, true));
+    } catch (JSONException e) {
+      throw new ServletException(e);
     }
+    req.setAttribute("locationId", location.getKey());
+    List<Location> aliases = locationDAO.findAliasesFor(location.getName());
+    req.setAttribute("aliases", aliases);
+    req.setAttribute("aliasCount", aliases.size());
     req.setAttribute("locations", locationDAO.findLocationNamesAsJson());
     req.setAttribute("nav", "locations");
     req.getRequestDispatcher(jsp).forward(req, resp);
@@ -83,6 +83,10 @@ public class LocationEditServlet extends HttpServlet {
     try {
       JSONObject jsonPayload = new JSONObject(json);
       Location location = reader.toLocation(jsonPayload);
+      if (!Strings.isNullOrEmpty(location.getAlias())) {
+        // if an alias is set we always want it to resolve to the alias
+        location = Location.builder(location).valid(true).build();
+      }
       locationDAO.save(location);
       truckStopService.updateLocationInCurrentSchedule(location);
       notificationService.updateLocationInNotifications(location);
