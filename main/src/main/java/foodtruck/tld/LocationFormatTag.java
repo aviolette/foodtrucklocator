@@ -9,9 +9,7 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
 import com.google.common.escape.Escaper;
-import com.google.common.html.HtmlEscapers;
 import com.google.common.net.PercentEscaper;
-import com.google.common.net.UrlEscapers;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -53,10 +51,12 @@ public class LocationFormatTag extends TagSupport {
     this.location = location;
   }
 
+  @SuppressWarnings("unused")
   public boolean isLongFormat() {
     return longFormat;
   }
 
+  @SuppressWarnings("unused")
   public void setLongFormat(boolean longFormat) {
     this.longFormat = longFormat;
   }
@@ -82,7 +82,6 @@ public class LocationFormatTag extends TagSupport {
         log.log(Level.INFO, "Error saving location: " + location.getName());
       }
       log.log(Level.INFO, e.getMessage(), e);
-      //throw Throwables.propagate(e);
     }
     return SKIP_BODY;
   }
