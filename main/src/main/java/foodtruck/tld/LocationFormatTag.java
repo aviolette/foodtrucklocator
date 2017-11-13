@@ -8,7 +8,10 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import com.google.common.escape.Escaper;
 import com.google.common.html.HtmlEscapers;
+import com.google.common.net.PercentEscaper;
+import com.google.common.net.UrlEscapers;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -27,6 +30,8 @@ public class LocationFormatTag extends TagSupport {
   private DateTime when;
   private boolean admin;
   private boolean longFormat;
+  private static final Escaper escaper =
+      new PercentEscaper("-._~!$'()*,;=@:", false);
 
   public void setAdmin(boolean admin) {
     this.admin = admin;
@@ -64,8 +69,7 @@ public class LocationFormatTag extends TagSupport {
     }
     try {
       if (location != null) {
-        String locationName = HtmlEscapers.htmlEscaper()
-            .escape(location.getName());
+        String locationName = escaper.escape(location.getName());
         String aString = admin ? "/admin" : "";
         if (location.getKey() != null) {
           out.println("<a href='" + aString + "/locations/" + location.getKey() + "?" + dateString +"'>" + locationName + "</a>");
