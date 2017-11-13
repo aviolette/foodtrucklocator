@@ -1,16 +1,14 @@
 package foodtruck.server.dashboard;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.common.base.Function;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 
@@ -72,7 +70,7 @@ public class EventServletSupport {
           .startTime(startTime)
           .endTime(endTime)
           .origin(StopOrigin.MANUAL)
-          .truck(truckDAO.findById(truckId))
+          .truck(truckDAO.findByIdOpt(truckId).orElse(Truck.builder().id(truckId).name(truckId).build()))
           .build();
       stopService.update(stop, principal);
     }
@@ -97,12 +95,10 @@ public class EventServletSupport {
     request.setAttribute("location", location);
     request.setAttribute("cancelUrl", redirectTo);
     request.setAttribute("postMethod", request.getRequestURI());
-    request.setAttribute("trucks", ImmutableList.copyOf(
-        Iterables.transform(truckDAO.findActiveTrucks(), new Function<Truck, TruckWithSelectionIndicator>() {
-          public TruckWithSelectionIndicator apply(Truck truck) {
-            return new TruckWithSelectionIndicator(truck, selected.contains(truck.getId()));
-          }
-        })));
+    request.setAttribute("trucks", truckDAO.findActiveTrucks()
+        .stream()
+        .map(truck -> new TruckWithSelectionIndicator(truck, selected.contains(truck.getId())))
+        .collect(Collectors.toList()));
     request.setAttribute("nav", "location");
     HttpServletRequest req = new GuiceHackRequestWrapper(request, JSP_PATH);
     request.getRequestDispatcher(JSP_PATH).forward(req, response);
