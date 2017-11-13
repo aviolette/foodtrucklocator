@@ -2,7 +2,6 @@
 
 <div class="row">
   <div class="col-md-12">
-
     <form method="GET" action="">
       <div class="form-group">
         <label for="locationSearch">Location</label>

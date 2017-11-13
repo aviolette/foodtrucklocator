@@ -4,18 +4,17 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.WebApplicationException;
 
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.TaskOptions;
-import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Optional;
 import com.google.common.base.Strings;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
@@ -112,8 +111,9 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
 
   @Override
   public void enableDevice(Long beaconId, boolean enabled) {
-    TrackingDevice device = trackingDeviceDAO.findById(beaconId);
-    if (device == null || Strings.isNullOrEmpty(device.getTruckOwnerId())) {
+    TrackingDevice device = trackingDeviceDAO.findByIdOpt(beaconId)
+        .orElseThrow(() -> new WebApplicationException(4040));
+    if (Strings.isNullOrEmpty(device.getTruckOwnerId())) {
       throw new WebApplicationException(404);
     }
     securityChecker.requiresLoggedInAs(device.getTruckOwnerId());
@@ -137,8 +137,9 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
 
   @Override
   public List<Trip> getRecentTripList(Long beaconId) {
-    TrackingDevice device = trackingDeviceDAO.findById(beaconId);
-    if (device == null || Strings.isNullOrEmpty(device.getTruckOwnerId())) {
+    TrackingDevice device = trackingDeviceDAO.findByIdOpt(beaconId)
+        .orElseThrow(() -> new WebApplicationException(404));
+    if (Strings.isNullOrEmpty(device.getTruckOwnerId())) {
       throw new WebApplicationException(404);
     }
     securityChecker.requiresLoggedInAs(device.getTruckOwnerId());
@@ -204,13 +205,9 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
         trip.addPosition(position);
       }
     }
-    return FluentIterable.from(tripsBuilder.build())
-        .transform(new Function<Trip.Builder, Trip>() {
-          public Trip apply(Trip.Builder input) {
-            return input.build();
-          }
-        })
-        .toList();
+    return tripsBuilder.build().stream()
+        .map(Trip.Builder::build)
+        .collect(Collectors.toList());
   }
 
   /**
@@ -221,7 +218,7 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
   private void merge(List<TrackingDevice> devices) {
     TruckStopCache stopCache = truckStopCacheProvider.get();
     for (TrackingDevice device : devices) {
-      Truck truck = truckDAO.findById(device.getTruckOwnerId());
+      Truck truck = truckDAO.findByIdOpt(device.getTruckOwnerId()).orElse(null);
       boolean noMorningStops = truck != null && !truck.isMatchesMorningStops() && clock.timeAt(11, 0)
           .isAfter(clock.now());
       if (!device.isEnabled() || !device.isParked() || device.isAtBlacklistedLocation() ||
@@ -353,7 +350,7 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
       }
     }
     return new Matches(aCurrentStop, currentStop, afterStop,
-        truck == null ? truckDAO.findById(device.getTruckOwnerId()) : truck);
+        truck == null ? truckDAO.findByIdOpt(device.getTruckOwnerId()).orElse(null) : truck);
   }
 
   /**
@@ -423,11 +420,11 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
     }
 
     public Optional<TruckStop> getCurrent() {
-      return Optional.fromNullable(current);
+      return Optional.ofNullable(current);
     }
 
     public Optional<TruckStop> getAfter() {
-      return Optional.fromNullable(after);
+      return Optional.ofNullable(after);
     }
   }
 }

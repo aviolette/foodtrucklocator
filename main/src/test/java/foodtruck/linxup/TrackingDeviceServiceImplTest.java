@@ -1,5 +1,7 @@
 package foodtruck.linxup;
 
+import java.util.Optional;
+
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -138,6 +140,7 @@ public class TrackingDeviceServiceImplTest {
         .build();
     when(truckStopCache.get(TRUCKID)).thenReturn(ImmutableList.of(stop));
     when(clock.now()).thenReturn(now);
+    when(truckDAO.findByIdOpt(TRUCKID)).thenReturn(Optional.empty());
 
     service.synchronizeFor(account);
 
@@ -187,7 +190,7 @@ public class TrackingDeviceServiceImplTest {
     truck = Truck.builder(truck)
         .categories(ImmutableSet.of("Lunch"))
         .build();
-    when(truckDAO.findById(TRUCKID)).thenReturn(truck);
+    when(truckDAO.findByIdOpt(TRUCKID)).thenReturn(Optional.of(truck));
     Queue queue = mock(Queue.class);
     when(queueProvider.get()).thenReturn(queue);
 
@@ -199,7 +202,7 @@ public class TrackingDeviceServiceImplTest {
         .batteryCharge(position1.getBatteryCharge())
         .parked(true)
         .build());
-    verify(truckDAO).findById(TRUCKID);
+    verify(truckDAO).findByIdOpt(TRUCKID);
     verify(locator, times(2)).reverseLookup(preprocessedLocation);
     verify(truckStopDAO).save(TruckStop.builder(stop)
         .endTime(now)
@@ -221,6 +224,7 @@ public class TrackingDeviceServiceImplTest {
     when(connector.findPositions(account)).thenReturn(ImmutableList.of(position1));
     when(blacklistLocationMatcher.isBlacklisted(null)).thenReturn(false);
     when(locationResolver.resolve(position1, null, account)).thenReturn(preprocessedLocation);
+    when(truckDAO.findByIdOpt(TRUCKID)).thenReturn(Optional.empty());
 
     service.synchronizeFor(account);
 
