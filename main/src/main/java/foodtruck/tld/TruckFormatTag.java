@@ -39,7 +39,7 @@ public class TruckFormatTag extends TagSupport {
     try {
       if (truckId != null) {
         String root = admin ? "/admin" : "/";
-        Truck truck = truckDAO.findById(truckId);
+        Truck truck = truckDAO.findByIdOpt(truckId).orElse(null);
         if (truck != null) {
           out.println("<a href='" + root + "/trucks/" + truck.getId() + "'>" + truck.getName() + "</a>");
         }

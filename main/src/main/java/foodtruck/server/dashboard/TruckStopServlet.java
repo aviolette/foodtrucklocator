@@ -13,6 +13,7 @@ import com.google.inject.Singleton;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
+import foodtruck.server.CodedServletException;
 
 /**
  * @author aviolette
@@ -41,7 +42,8 @@ public class TruckStopServlet extends HttpServlet {
     int index = truckId.indexOf("/stops/");
     String actualTruckId = truckId.substring(0, index);
     String stopId = truckId.substring(index + 7);
-    final Truck truck = truckDAO.findById(actualTruckId);
+    final Truck truck = truckDAO.findByIdOpt(actualTruckId)
+        .orElseThrow(() -> new CodedServletException(404, actualTruckId));
     editStopHelper.setupEditPage(stopId, truck, req, resp, false);
   }
 }

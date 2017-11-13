@@ -48,8 +48,7 @@ class MenuDAOAppEngine extends AppEngineDAO<Long, Menu> implements MenuDAO {
   @Override
   protected Menu fromEntity(Entity entity) {
     return Menu.builder()
-        .key(entity.getKey()
-            .getId())
+        .key(entity.getKey().getId())
         .truckId((String) entity.getProperty(TRUCK_ID))
         .payload(((Text) entity.getProperty(MENU)).getValue())
         .build();

@@ -21,6 +21,7 @@ import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
+import foodtruck.model.TruckStopWithCounts;
 import foodtruck.time.Clock;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -47,7 +48,8 @@ public class FoodTruckStopServiceImplTest {
   private @Mock MessageDAO messageDAO;
   private @Mock DailyDataDAO dailyDataDAO;
   private FoodTruckStopServiceImpl service;
-
+  private final DateTime lunchStart = new DateTime(2017, 11, 6, 11, 0);
+  private final DateTime lunchEnd = new DateTime(2017, 11, 6, 14, 0);
   @Before
   public void setup() {
     service = new FoodTruckStopServiceImpl(truckStopDAO, schedule, clock, truckDAO, locationDAO,
@@ -55,33 +57,65 @@ public class FoodTruckStopServiceImplTest {
   }
 
   @Test
+  public void findStopsForTruckAfter() {
+    TruckStop stop1 = TruckStop.builder()
+        .truck(truck1())
+        .endTime(lunchEnd)
+        .startTime(lunchStart)
+        .location(clarkAndMonroe())
+        .build();
+    TruckStop stop2 = TruckStop.builder()
+        .truck(truck1())
+        .startTime(lunchStart.plusHours(7))
+        .endTime(lunchEnd.plusHours(7))
+        .location(clarkAndMonroe())
+        .build();
+    TruckStop stop3 = TruckStop.builder()
+        .startTime(lunchStart)
+        .endTime(lunchEnd)
+        .truck(truck2())
+        .location(wackerAndAdams())
+        .build();
+    TruckStop stop4 = TruckStop.builder()
+        .startTime(lunchStart)
+        .endTime(lunchEnd)
+        .location(clarkAndMonroe())
+        .truck(truck4())
+        .build();
+    final DateTime dt = lunchStart.minusHours(1);
+    List<TruckStop> truckStops = ImmutableList.of(stop1, stop2, stop3, stop4);
+    when(truckStopDAO.findAfter(dt)).thenReturn(truckStops);
+    List<TruckStopWithCounts> stops = service.findStopsForTruckAfter(truck1().getId(), dt);
+    assertThat(stops).hasSize(2);
+  }
+
+  @Test
   public void findTrucksNearLocation() {
     Location location = clarkAndMonroe();
     DateTime dt = new DateTime(2017, 11, 6, 12, 0);
-    DateTime startTime = new DateTime(2017, 11, 6, 11, 0);
     DateTime endTime = new DateTime(2017, 11, 6, 14, 0);
     when(locationDAO.findByName(location.getName())).thenReturn(Optional.of(location));
     TruckStop stop1 = TruckStop.builder()
         .truck(truck1())
         .endTime(endTime)
-        .startTime(startTime)
+        .startTime(lunchStart)
         .location(clarkAndMonroe())
         .build(),
     stop2 = TruckStop.builder()
         .truck(truck2())
         .endTime(endTime)
-        .startTime(startTime)
+        .startTime(lunchStart)
         .location(clarkAndMonroe())
         .build(),
     stop3 = TruckStop.builder()
-        .startTime(startTime)
+        .startTime(lunchStart)
         .endTime(endTime)
         .truck(truck3())
         .location(wackerAndAdams())
         .build(),
     stop4 = TruckStop.builder()
-        .startTime(startTime.minusHours(4))
-        .endTime(startTime.minusHours(2))
+        .startTime(lunchStart.minusHours(4))
+        .endTime(lunchStart.minusHours(2))
         .location(clarkAndMonroe())
         .truck(truck4())
         .build();
