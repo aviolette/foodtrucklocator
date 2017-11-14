@@ -2,7 +2,6 @@ package foodtruck.schedule;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,10 +9,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -90,7 +86,8 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
           .build();
     } else {
       Long stopKey = (Long) truckStop.getKey();
-      TruckStop stop = truckStopDAO.findByIdOpt((Long) truckStop.getKey()).orElseThrow(() -> new IllegalStateException("Invalid ID: " + stopKey));
+      TruckStop stop = truckStopDAO.findByIdOpt((Long) truckStop.getKey())
+          .orElseThrow(() -> new IllegalStateException("Invalid ID: " + stopKey));
       truckStop = TruckStop.builder(truckStop)
           .notes(stop.getNotes())
           .origin(stop.getOrigin())
@@ -208,48 +205,11 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
 
   @Override
   public List<TruckStopWithCounts> findStopsForTruckAfter(final String truckId, DateTime startTime) {
-    final List<TruckStop> stops = truckStopDAO.findAfter(startTime);
-    return FluentIterable.from(stops)
-        .filter(new Predicate<TruckStop>() {
-          public boolean apply(TruckStop truckStop) {
-            return truckId.equals(truckStop.getTruck()
-                .getId());
-          }
-        })
-        .transform(new Function<TruckStop, TruckStopWithCounts>() {
-          public TruckStopWithCounts apply(final TruckStop thisStop) {
-            ImmutableSet<String> trucks = ImmutableSet.of();
-            try {
-              final Interval thisInterval = thisStop.timeInterval();
-              trucks = FluentIterable.from(stops)
-                  .filter(new Predicate<TruckStop>() {
-                    public boolean apply(TruckStop truckStop) {
-                      try {
-                        return truckStop.timeInterval()
-                            .overlap(thisInterval) != null && truckStop.getLocation()
-                            .getName()
-                            .equals(thisStop.getLocation()
-                                .getName());
-                      } catch (RuntimeException rte) {
-                        log.log(Level.WARNING, "Error processing stop {0}", truckStop);
-                        throw rte;
-                      }
-                    }
-                  })
-                  .transform(new Function<TruckStop, String>() {
-                    public String apply(TruckStop truckStop) {
-                      return truckStop.getTruck()
-                          .getName();
-                    }
-                  })
-                  .toSet();
-            } catch (RuntimeException e) {
-              log.log(Level.SEVERE, e.getMessage(), e);
-            }
-            return new TruckStopWithCounts(thisStop, trucks);
-          }
-        })
-        .toList();
+    List<TruckStop> stops = truckStopDAO.findAfter(startTime);
+    return stops.stream()
+        .filter(truckStop -> truckId.equals(truckStop.getTruck().getId()))
+        .map(truckStop -> truckStop.overlapWithCounts(stops))
+        .collect(Collectors.toList());
   }
 
   @Override
@@ -257,20 +217,15 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
     ImmutableList.Builder<DailySchedule> builder = ImmutableList.builder();
     DailySchedule.Builder schedule = null;
     for (TruckStop stop : truckStopDAO.findOverRange(null, range)) {
-      if (!stop.getLocation()
-          .containedWithRadiusOf(location)) {
+      if (!stop.getLocation().containedWithRadiusOf(location)) {
         continue;
       }
-      if (schedule != null && !schedule.getDay()
-          .isEqual(stop.getStartTime()
-              .toLocalDate())) {
+      if (schedule != null && !schedule.getDay().isEqual(stop.getStartTime().toLocalDate())) {
         builder.add(schedule.build());
         schedule = null;
       }
       if (schedule == null) {
-        schedule = DailySchedule.builder()
-            .date(stop.getStartTime()
-                .toLocalDate());
+        schedule = DailySchedule.builder().date(stop.getStartTime().toLocalDate());
       }
       schedule.addStop(stop);
     }

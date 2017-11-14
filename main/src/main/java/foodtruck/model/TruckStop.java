@@ -2,9 +2,11 @@ package foodtruck.model;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -12,6 +14,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 
 import org.joda.time.DateTime;
@@ -234,6 +237,22 @@ public class TruckStop extends ModelEntity {
 
   public boolean isVendorStop() {
     return getOrigin() == StopOrigin.VENDORCAL;
+  }
+
+  public TruckStopWithCounts overlapWithCounts(List<TruckStop> stops) {
+    Set<String> trucks = ImmutableSet.of();
+    try {
+      final Interval thisInterval = timeInterval();
+      trucks = stops.stream()
+          .filter(truckStop -> truckStop.timeInterval()
+              .overlap(thisInterval) != null && truckStop.getLocation()
+              .sameName(getLocation()))
+          .map(truckStop -> truckStop.getTruck().getName())
+          .collect(Collectors.toSet());
+    } catch (RuntimeException e) {
+      log.log(Level.SEVERE, e.getMessage(), e);
+    }
+    return new TruckStopWithCounts(this, trucks);
   }
 
   public static class ActiveAfterPredicate implements Predicate<TruckStop> {

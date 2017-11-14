@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
-import javax.annotation.Nullable;
 import javax.servlet.ServletException;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -26,8 +26,6 @@ import com.google.appengine.api.capabilities.CapabilitiesServiceFactory;
 import com.google.appengine.api.capabilities.Capability;
 import com.google.appengine.api.capabilities.CapabilityStatus;
 import com.google.appengine.api.users.UserService;
-import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -44,7 +42,6 @@ import foodtruck.server.security.SecurityChecker;
 import foodtruck.session.Session;
 import foodtruck.time.Clock;
 
-
 /**
  * @author aviolette
  * @since 3/30/15
@@ -52,6 +49,7 @@ import foodtruck.time.Clock;
 @Path("/v2/stops")
 @Produces("application/json")
 public class TruckStopResource {
+
   private static final Logger log = Logger.getLogger(TruckStopResource.class.getName());
 
   private final FoodTruckStopService foodTruckService;
@@ -81,8 +79,7 @@ public class TruckStopResource {
       if (!stop.isPresent()) {
         return;
       }
-      checker.requiresLoggedInAs(stop.get().getTruck()
-          .getId());
+      checker.requiresLoggedInAs(stop.get().getTruck().getId());
     }
     foodTruckService.delete(stopId);
   }
@@ -106,23 +103,20 @@ public class TruckStopResource {
 
   // TODO: should require login
   @GET
-  public List<TruckStopWithCounts> getStops(@QueryParam("truck") String truckId, @Context DateTime startTime,
-      @QueryParam("includeCounts") boolean includeCounts, @AppKey @QueryParam("appKey") final String appKey) {
+  public List<TruckStopWithCounts> getStops(@QueryParam("truck") String truckId,
+      @Context DateTime startTime, @QueryParam("includeCounts") boolean includeCounts,
+      @AppKey @QueryParam("appKey") final String appKey) {
     if (Strings.isNullOrEmpty(truckId)) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
-    startTime = (startTime == null) ? clock.currentDay()
-        .toDateTimeAtStartOfDay() : startTime;
+    startTime = (startTime == null) ? clock.currentDay().toDateTimeAtStartOfDay() : startTime;
     if (includeCounts) {
       return foodTruckService.findStopsForTruckAfter(truckId, startTime);
     } else {
-      return FluentIterable.from(foodTruckService.findStopsForTruckAfterWithoutCounts(truckId, startTime))
-          .transform(new Function<TruckStop, TruckStopWithCounts>() {
-            public TruckStopWithCounts apply(@Nullable TruckStop input) {
-              return new TruckStopWithCounts(input, ImmutableSet.<String>of());
-            }
-          })
-          .toList();
+      return foodTruckService.findStopsForTruckAfterWithoutCounts(truckId, startTime)
+          .stream()
+          .map(truckStop -> new TruckStopWithCounts(truckStop, ImmutableSet.of()))
+          .collect(Collectors.toList());
     }
   }
 
@@ -130,20 +124,17 @@ public class TruckStopResource {
   @Path("{truckId}")
   @RequiresAppKeyWithCountRestriction
   public List<TruckStopWithCounts> getStop(@PathParam("truckId") String truckId,
-      @AppKey @QueryParam("appKey") String appKey,
-      @Context DateTime startTime, @QueryParam("includeCounts") boolean includeStops) {
+      @AppKey @QueryParam("appKey") String appKey, @Context DateTime startTime,
+      @QueryParam("includeCounts") boolean includeStops) {
     startTime = (startTime == null) ? clock.currentDay()
         .toDateTimeAtStartOfDay() : startTime;
     if (includeStops) {
       return foodTruckService.findStopsForTruckAfter(truckId, startTime);
     } else {
-      return FluentIterable.from(foodTruckService.findStopsForTruckAfterWithoutCounts(truckId, startTime))
-          .transform(new Function<TruckStop, TruckStopWithCounts>() {
-            public TruckStopWithCounts apply(@Nullable TruckStop input) {
-              return new TruckStopWithCounts(input, ImmutableSet.<String>of());
-            }
-          })
-          .toList();
+      return foodTruckService.findStopsForTruckAfterWithoutCounts(truckId, startTime)
+          .stream()
+          .map(truckStop -> new TruckStopWithCounts(truckStop, ImmutableSet.of()))
+          .collect(Collectors.toList());
     }
   }
 }

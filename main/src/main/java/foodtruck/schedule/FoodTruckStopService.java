@@ -1,7 +1,6 @@
 package foodtruck.schedule;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import org.joda.time.DateTime;
