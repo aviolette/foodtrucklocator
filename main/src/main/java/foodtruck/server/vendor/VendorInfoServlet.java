@@ -20,6 +20,7 @@ public class VendorInfoServlet extends HttpServlet {
   protected void doGet(HttpServletRequest request,
       HttpServletResponse response) throws ServletException, IOException {
     request.setAttribute("title", "Vendor Information");
+    request.setAttribute("suffix", "");
     request.setAttribute("website", System.getProperty("foodtrucklocator.title", "Chicago Food Truck Finder"));
     request.getRequestDispatcher("/WEB-INF/jsp/vendor/info.jsp")
         .forward(request, response);

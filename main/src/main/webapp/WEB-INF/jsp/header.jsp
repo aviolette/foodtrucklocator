@@ -53,13 +53,13 @@
             <li><a href="http://www.nycfoodtruckfinder.com">New York</a></li>
           </ul>
         </li>
+        <li><a href="/vendinfo">For Truck Operators</a></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Info <b class="caret"></b></a>
           <ul class="dropdown-menu">
             <li><a href="/about">About</a></li>
             <li><a href="http://twitter.com/${twitterHandle}">Twitter</a></li>
             <li><a href="http://facebook.com/${facebookPage}">Facebook</a></li>
-            <li><a href="/vendinfo">For Food Truck Owners</a></li>
           </ul>
         </li>
       </ul>
