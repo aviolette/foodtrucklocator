@@ -17,6 +17,7 @@ import foodtruck.dao.LocationDAO;
 import foodtruck.dao.RetweetsDAO;
 import foodtruck.dao.TwitterNotificationAccountDAO;
 import foodtruck.model.StaticConfig;
+import foodtruck.model.Story;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TwitterNotificationAccount;
@@ -25,6 +26,7 @@ import foodtruck.schedule.ModelTestHelper;
 import foodtruck.socialmedia.TwitterConnector;
 import foodtruck.time.Clock;
 
+import static foodtruck.model.StoryType.TWEET;
 import static foodtruck.notifications.TwitterEventNotificationService.NO_SPLIT_SPLITTER;
 import static foodtruck.schedule.ModelTestHelper.aonTwitterAccount;
 import static foodtruck.schedule.ModelTestHelper.clarkAndMonroeTwitterAccount;
@@ -80,8 +82,6 @@ public class TwitterEventNotificationServiceTest extends Mockito {
   @Test
   public void notifyStart() {
     Truck truck = Truck.builder(truck1())
-        .twitterToken("foo")
-        .twitterTokenSecret("hoos")
         .postAtNewStop(true)
         .build();
     TruckStop stop = TruckStop.builder()
@@ -99,8 +99,6 @@ public class TwitterEventNotificationServiceTest extends Mockito {
   @Test
   public void notifyStart_postWithLocationAccount() {
     Truck truck = Truck.builder(truck1())
-        .twitterToken("foo")
-        .twitterTokenSecret("hoos")
         .postAtNewStop(false)
         .build();
     TruckStop stop = TruckStop.builder()
@@ -110,10 +108,81 @@ public class TwitterEventNotificationServiceTest extends Mockito {
         .truck(truck)
         .build();
     TwitterNotificationAccount wa = wackerAndAdamsTwitterAccount();
+    when(retweetsDAO.hasBeenRetweeted(truck.getId(), wa.getTwitterHandle())).thenReturn(false);
     when(notificationAccountDAO.findAll()).thenReturn(ImmutableList.of(wa, clarkAndMonroeTwitterAccount()));
     when(locationDAO.findByName(wackerAndAdams().getName())).thenReturn(Optional.of(wackerAndAdams()));
     service.notifyStopStart(stop);
+    verify(retweetsDAO).hasBeenRetweeted(truck.getId(), wa.getTwitterHandle());
     verify(connector).sendStatusFor(
         ". @truck1 is now at Wacker and Adams http://foo/locations/456", wa, NO_SPLIT_SPLITTER);
+  }
+
+  // If the truck has "Post at New Stop" off, then post with the Location-specific account instead
+  @Test
+  public void notifyStart_postWithLocationAccountAlreadyTweeted() {
+    Truck truck = Truck.builder(truck1())
+        .postAtNewStop(false)
+        .build();
+    TruckStop stop = TruckStop.builder()
+        .startTime(NOW.plusHours(1))
+        .endTime(NOW.plusHours(5))
+        .location(wackerAndAdams())
+        .truck(truck)
+        .build();
+    TwitterNotificationAccount wa = wackerAndAdamsTwitterAccount();
+    when(retweetsDAO.hasBeenRetweeted(truck.getId(), wa.getTwitterHandle())).thenReturn(true);
+    when(notificationAccountDAO.findAll()).thenReturn(ImmutableList.of(wa, clarkAndMonroeTwitterAccount()));
+    when(locationDAO.findByName(wackerAndAdams().getName())).thenReturn(Optional.of(wackerAndAdams()));
+    service.notifyStopStart(stop);
+    verify(retweetsDAO).hasBeenRetweeted(truck.getId(), wa.getTwitterHandle());
+    verify(connector, never()).sendStatusFor(
+        ". @truck1 is now at Wacker and Adams http://foo/locations/456", wa, NO_SPLIT_SPLITTER);
+  }
+
+  @Test
+  public void share() {
+    Truck truck = truck1();
+    TruckStop stop = TruckStop.builder()
+        .startTime(NOW.plusHours(1))
+        .endTime(NOW.plusHours(5))
+        .location(wackerAndAdams())
+        .truck(truck)
+        .build();
+    TwitterNotificationAccount wa = wackerAndAdamsTwitterAccount();
+    when(retweetsDAO.hasBeenRetweeted(truck.getId(), wa.getTwitterHandle())).thenReturn(false);
+    when(notificationAccountDAO.findAll()).thenReturn(ImmutableList.of(aonTwitterAccount(), wa, clarkAndMonroeTwitterAccount()));
+    service.share(Story.builder()
+        .text("hello world")
+        .time(NOW)
+        .type(TWEET)
+        .id(123L)
+        .userId(truck.getTwitterHandle())
+        .build(), stop);
+    verify(retweetsDAO).markRetweeted(truck.getId(), wa.getTwitterHandle());
+    verify(connector).retweet(123L, wa);
+    verifyNoMoreInteractions(connector);
+  }
+
+  @Test
+  public void share_notActive() {
+    Truck truck = truck1();
+    TruckStop stop = TruckStop.builder()
+        .startTime(NOW.plusHours(1))
+        .endTime(NOW.plusHours(5))
+        .location(wackerAndAdams())
+        .truck(truck)
+        .build();
+    TwitterNotificationAccount wa = TwitterNotificationAccount.builder(wackerAndAdamsTwitterAccount())
+        .active(false)
+        .build();
+    when(notificationAccountDAO.findAll()).thenReturn(ImmutableList.of(aonTwitterAccount(), wa, clarkAndMonroeTwitterAccount()));
+    service.share(Story.builder()
+        .text("hello world")
+        .time(NOW)
+        .type(TWEET)
+        .id(123L)
+        .userId(truck.getTwitterHandle())
+        .build(), stop);
+    verifyZeroInteractions(connector, retweetsDAO);
   }
 }

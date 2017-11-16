@@ -2,6 +2,9 @@ package foodtruck.model;
 
 import java.util.Objects;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Strings;
+
 /**
  * @author aviolette
  * @since 12/3/12
@@ -54,6 +57,17 @@ public class TwitterNotificationAccount extends ModelEntity {
 
   public boolean isActive() {
     return active;
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this).add("name", name)
+        .add("twitterHandle", twitterHandle)
+        .add("location", location)
+        .add("active", active)
+        .add("token", Strings.isNullOrEmpty(oauthToken) ? "null" : "***")
+        .add("secret", Strings.isNullOrEmpty(oauthTokenSecret) ? "null" : "***")
+        .toString();
   }
 
   @Override

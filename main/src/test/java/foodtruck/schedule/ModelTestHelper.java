@@ -16,6 +16,8 @@ public class ModelTestHelper {
     return Truck.builder()
         .name("Truck 1")
         .twitterHandle("truck1")
+        .twitterToken("foo")
+        .twitterTokenSecret("bar")
         .categories(ImmutableSet.of("Lunch", "Italian"))
         .id("truck1")
         .build();
