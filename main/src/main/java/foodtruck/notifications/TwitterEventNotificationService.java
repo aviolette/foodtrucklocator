@@ -139,16 +139,14 @@ class TwitterEventNotificationService implements PublicEventNotificationService 
         if (!account.isActive()) {
           continue;
         }
-        if (stop.getLocation()
-            .containedWithRadiusOf(account.getLocation())) {
+        if (stop.getLocation().containedWithRadiusOf(account.getLocation())) {
           if (retweetsDAO.hasBeenRetweeted(stop.getTruck().getId(), account.getTwitterHandle())) {
             log.log(Level.INFO, "Already retweeted at {0} {1}",
                 new Object[]{stop.getTruck().getId(), account.getTwitterHandle()});
             continue;
           }
           log.log(Level.INFO, "RETWEETING:" + story.getText());
-          retweetsDAO.markRetweeted(stop.getTruck()
-              .getId(), account.getTwitterHandle());
+          retweetsDAO.markRetweeted(stop.getTruck().getId(), account.getTwitterHandle());
           try {
             twitterConnector.retweet(story.getId(), account);
           } catch (ServiceException e) {
