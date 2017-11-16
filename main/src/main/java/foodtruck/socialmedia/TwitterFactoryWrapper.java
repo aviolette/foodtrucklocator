@@ -3,6 +3,7 @@ package foodtruck.socialmedia;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
+import twitter4j.conf.PropertyConfiguration;
 
 /**
  * Had to create this so I could mock out TwitterFactory (which is marked as final and I don't want
@@ -14,7 +15,7 @@ public class TwitterFactoryWrapper {
   private final TwitterFactory factoryDetached;
   private final TwitterFactory factory;
 
-  public TwitterFactoryWrapper(TwitterFactory factory, TwitterFactory factoryDetached) {
+  TwitterFactoryWrapper(TwitterFactory factory, TwitterFactory factoryDetached) {
     this.factory = factory;
     this.factoryDetached = factoryDetached;
   }
@@ -31,8 +32,11 @@ public class TwitterFactoryWrapper {
     return factoryDetached.getInstance();
   }
 
-  public Twitter createDetached(AccessToken accessToken) {
+  Twitter createDetached(AccessToken accessToken) {
     return factoryDetached.getInstance(accessToken);
   }
 
+  Twitter createDetached(PropertyConfiguration propertyConfiguration) {
+    return new TwitterFactory(propertyConfiguration).getInstance();
+  }
 }

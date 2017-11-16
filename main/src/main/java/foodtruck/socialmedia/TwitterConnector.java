@@ -1,10 +1,12 @@
 package foodtruck.socialmedia;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Optional;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.annotation.Nullable;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -19,6 +21,7 @@ import foodtruck.model.StaticConfig;
 import foodtruck.model.Story;
 import foodtruck.model.StoryType;
 import foodtruck.model.Truck;
+import foodtruck.model.TwitterNotificationAccount;
 import foodtruck.util.ServiceException;
 import twitter4j.GeoLocation;
 import twitter4j.Paging;
@@ -26,12 +29,14 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.auth.AccessToken;
+import twitter4j.conf.PropertyConfiguration;
 
 /**
  * @author aviolette
  * @since 8/26/15
  */
 public class TwitterConnector implements SocialMediaConnector {
+
   private static final Logger log = Logger.getLogger(TwitterConnector.class.getName());
 
   private final TwitterFactoryWrapper twitterFactory;
@@ -40,8 +45,8 @@ public class TwitterConnector implements SocialMediaConnector {
   private final StoryDAO tweetDAO;
 
   @Inject
-  public TwitterConnector(TwitterFactoryWrapper twitter, DateTimeZone defaultZone, StaticConfig config,
-      StoryDAO tweetDAO) {
+  public TwitterConnector(TwitterFactoryWrapper twitter, DateTimeZone defaultZone,
+      StaticConfig config, StoryDAO tweetDAO) {
     this.twitterFactory = twitter;
     this.defaultZone = defaultZone;
     this.config = config;
@@ -69,11 +74,10 @@ public class TwitterConnector implements SocialMediaConnector {
           tweetDAO.setLastTweetId(status.getId());
           first = false;
         }
-        Story tweet = statusToTweet(status);
-        if (tweet != null) {
+        statusToTweet(status).ifPresent(tweet -> {
           log.log(Level.INFO, "Tweet {0}: ", tweet);
           stories.add(tweet);
-        }
+        });
       }
     } catch (TwitterException e) {
       throw new RuntimeException(e);
@@ -81,10 +85,10 @@ public class TwitterConnector implements SocialMediaConnector {
     return stories.build();
   }
 
+  @SuppressWarnings("ConstantConditions")
   @Override
   public void updateStatusFor(ScheduleMessage message, Truck truck) throws ServiceException {
     if (!truck.getHasTwitterCredentials()) {
-      // TODO: what to do here?
       return;
     }
     Twitter twitter = twitterFactory.createDetached(
@@ -92,6 +96,33 @@ public class TwitterConnector implements SocialMediaConnector {
     try {
       for (String messageComponent : message.getTwitterMessages()) {
         twitter.updateStatus(messageComponent);
+      }
+    } catch (TwitterException e) {
+      throw new ServiceException(e);
+    }
+  }
+
+  @Override
+  public void sendStatusFor(String message, Truck truck, MessageSplitter splitter) {
+    twitterAccessToken(truck).ifPresent(
+        token -> splitAndSend(message, splitter, twitterFactory.createDetached(token)));
+  }
+
+  @Override
+  public void sendStatusFor(String message, TwitterNotificationAccount account,
+      MessageSplitter splitter) {
+    log.log(Level.INFO, "Initial status: {0}", new Object[]{message});
+    Twitter twitter = twitterFactory.createDetached(twitterCredentials(account));
+    splitAndSend(message, splitter, twitter);
+  }
+
+  private void splitAndSend(String message, MessageSplitter splitter, Twitter twitter)
+      throws ServiceException {
+    try {
+      for (String theStatus : splitter.split(message)) {
+        log.log(Level.INFO, "Sending status update for account {0}: {1}",
+            new Object[]{twitter.getAccountSettings().getScreenName(), theStatus});
+        twitter.updateStatus(theStatus);
       }
     } catch (TwitterException e) {
       throw new ServiceException(e);
@@ -109,10 +140,12 @@ public class TwitterConnector implements SocialMediaConnector {
     return paging;
   }
 
-  private @Nullable Story statusToTweet(Status status) {
-    final String screenName = status.getUser().getScreenName().toLowerCase();
+  private Optional<Story> statusToTweet(Status status) {
+    final String screenName = status.getUser()
+        .getScreenName()
+        .toLowerCase();
     if (status.isRetweet()) {
-      return null;
+      return Optional.empty();
     }
     if (status.isTruncated()) {
       log.log(Level.WARNING, "Status truncated: {0}", status);
@@ -120,15 +153,51 @@ public class TwitterConnector implements SocialMediaConnector {
     final GeoLocation geoLocation = status.getGeoLocation();
     Location location = null;
     if (geoLocation != null) {
-      location = Location.builder().lat(geoLocation.getLatitude()).lng(geoLocation.getLongitude()).build();
+      location = Location.builder()
+          .lat(geoLocation.getLatitude())
+          .lng(geoLocation.getLongitude())
+          .build();
     }
     final DateTime tweetTime = new DateTime(status.getCreatedAt(), defaultZone);
-    return new Story.Builder().userId(screenName)
+    return Optional.of(new Story.Builder().userId(screenName)
         .location(location)
         .id(status.getId())
         .time(tweetTime)
         .type(StoryType.TWEET)
         .text(status.getText())
-        .build();
+        .build());
+  }
+
+  public void retweet(long storyId, TwitterNotificationAccount account) {
+    Twitter twitter = twitterFactory.createDetached(twitterCredentials(account));
+    try {
+      twitter.retweetStatus(storyId);
+    } catch (TwitterException e) {
+      throw new ServiceException(e);
+    }
+  }
+
+  private Optional<AccessToken> twitterAccessToken(Truck truck) {
+    if (truck.getHasTwitterCredentials()) {
+      //noinspection ConstantConditions
+      return Optional.of(new AccessToken(truck.getTwitterToken(), truck.getTwitterTokenSecret()));
+    }
+    return Optional.empty();
+  }
+
+  private PropertyConfiguration twitterCredentials(TwitterNotificationAccount account) {
+    Properties properties = new Properties();
+    InputStream in = Thread.currentThread()
+        .getContextClassLoader()
+        .getResourceAsStream("twitter4j.properties");
+    try {
+      properties.load(in);
+      in.close();
+    } catch (IOException e) {
+      throw new ServiceException(e);
+    }
+    properties.put(PropertyConfiguration.OAUTH_ACCESS_TOKEN, account.getOauthToken());
+    properties.put(PropertyConfiguration.OAUTH_ACCESS_TOKEN_SECRET, account.getOauthTokenSecret());
+    return new PropertyConfiguration(properties);
   }
 }

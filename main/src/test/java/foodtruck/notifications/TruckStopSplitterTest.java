@@ -2,10 +2,7 @@ package foodtruck.notifications;
 
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
-
-import foodtruck.model.StaticConfig;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -13,20 +10,12 @@ import static com.google.common.truth.Truth.assertThat;
  * @author aviolette
  * @since 12/6/12
  */
-public class TwitterPublicEventNotificationServiceTest {
-
-  private TwitterEventNotificationService service;
-
-  @Before
-  public void before() {
-    service = new TwitterEventNotificationService(null, null, null, null, new StaticConfig(),
-        null, null);
-  }
+public class TruckStopSplitterTest {
 
   @Test
   public void splitLessThan140() {
     String foo = "This is foo bar @abcd1234 @abcd1234 @abcd1234 @abcd1234 @abcd1234";
-    List<String> notifications = service.twitterSplitter(null, foo);
+    List<String> notifications = new TruckStopSplitter(null).split(foo);
     assertThat(notifications).hasSize(1);
     assertThat(notifications).contains(foo);
   }
@@ -34,7 +23,7 @@ public class TwitterPublicEventNotificationServiceTest {
   @Test
   public void splitExactly140() {
     String foo = "0123456789 0123456789 0123456789 0123456789 0123456789 0123456789 0123456789 0123456789 0123456789 0123456789 0123456789 0123456789 0123456";
-    List<String> notifications = service.twitterSplitter(null, foo);
+    List<String> notifications = new TruckStopSplitter(null).split(foo);
     assertThat(notifications).hasSize(1);
     assertThat(notifications).contains(foo);
   }
@@ -44,7 +33,7 @@ public class TwitterPublicEventNotificationServiceTest {
     String foo =
 "Trucks at 600W @abcd1234 @abcd1234 @abcd1234 @abcd1234 @abcd1234 @abc1234 @abcd1234 @abcd1234 @abcd1234 @abcd1234 @abcd1234 @abcd1234 @splitsonthis @abc1234 " +
         "@abcd1234 @abcd1234";
-    List<String> notifications = service.twitterSplitter("600 West", foo);
+    List<String> notifications = new TruckStopSplitter("600 West").split(foo);
     assertThat(notifications).hasSize(2);
     assertThat(notifications).containsExactly("Additional trucks at 600 West: @splitsonthis @abc1234 @abcd1234 @abcd1234", "Trucks at 600W @abcd1234 @abcd1234 @abcd1234 @abcd1234 @abcd1234 @abc1234 @abcd1234 @abcd1234 @abcd1234 @abcd1234 @abcd1234 @abcd1234");
   }

@@ -546,6 +546,13 @@ public class Truck extends ModelEntity implements Serializable {
     return isUsingTwittalyzer() || getScanFacebook();
   }
 
+  public String nameForTwitterDisplay() {
+    if (Strings.isNullOrEmpty(twitterHandle)) {
+      return name;
+    }
+    return "@" + twitterHandle;
+  }
+
   public static class HasCategoryPredicate implements Predicate<Truck> {
     private String category;
 

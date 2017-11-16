@@ -1,5 +1,7 @@
 package foodtruck.model;
 
+import java.util.Objects;
+
 /**
  * @author aviolette
  * @since 12/3/12
@@ -52,6 +54,24 @@ public class TwitterNotificationAccount extends ModelEntity {
 
   public boolean isActive() {
     return active;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(location, oauthToken, oauthTokenSecret, name, twitterHandle, active);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == this) {
+      return true;
+    } else if (!(obj instanceof TwitterNotificationAccount)) {
+      return false;
+    }
+    TwitterNotificationAccount twa = (TwitterNotificationAccount) obj;
+    return location.equals(twa.location) && oauthToken.equals(twa.oauthToken) &&
+        oauthTokenSecret.equals(twa.oauthTokenSecret) && name.equals(twa.name) &&
+        twitterHandle.equals(twa.twitterHandle) && active == twa.active;
   }
 
   public static class Builder {

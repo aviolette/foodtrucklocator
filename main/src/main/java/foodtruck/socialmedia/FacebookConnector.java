@@ -20,6 +20,7 @@ import foodtruck.model.StaticConfig;
 import foodtruck.model.Story;
 import foodtruck.model.StoryType;
 import foodtruck.model.Truck;
+import foodtruck.model.TwitterNotificationAccount;
 import foodtruck.time.Clock;
 import foodtruck.time.FacebookTimeFormat;
 import foodtruck.util.Secondary;
@@ -63,7 +64,18 @@ public class FacebookConnector implements SocialMediaConnector {
 
   @Override
   public void updateStatusFor(ScheduleMessage message, Truck truck) throws ServiceException {
-    // TODO: implement
+    // TODO: don't implement
+  }
+
+  @Override
+  public void sendStatusFor(String message, Truck truck, MessageSplitter messageSplitter) {
+
+  }
+
+  @Override
+  public void sendStatusFor(String message, TwitterNotificationAccount account,
+      MessageSplitter noSplitSplitter) {
+
   }
 
   private ImmutableList<Story> retrieveStoriesForTruck(Truck truck) throws JSONException {
