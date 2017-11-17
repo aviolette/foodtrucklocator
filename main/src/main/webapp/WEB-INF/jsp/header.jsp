@@ -13,7 +13,7 @@
   <link rel="apple-touch-icon" sizes="152x152" href="/img/apple-touch-icon-ipad-retina.png">
   <title>${title}</title>
   <%@ include file="include/bootstrap_css.jsp" %>
-  <link href="/css/foodtruckfinder${suffix}-1.2.css" rel="stylesheet"/>
+  <link href="/css/foodtruckfinder${suffix}-1.3.css" rel="stylesheet"/>
   <c:if test="${!empty(additionalCss)}">
     <link href="${additionalCss}" rel="stylesheet"/>
   </c:if>
@@ -46,14 +46,7 @@
             </ul>
           </li>
         </c:if>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cities <b class="caret"></b></a>
-          <ul class="dropdown-menu">
-            <li><a href="http://www.chicagofoodtruckfinder.com">Chicago</a></li>
-            <li><a href="http://www.nycfoodtruckfinder.com">New York</a></li>
-          </ul>
-        </li>
-        <li><a href="/vendinfo">For Truck Operators</a></li>
+        <li<c:if test="${tab == 'vendorinfo'}"> class="active"</c:if>><a href="/vendinfo">For Truck Operators</a></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Info <b class="caret"></b></a>
           <ul class="dropdown-menu">

@@ -100,3 +100,9 @@ h2.date-header {
   border: none;
 }
 
+.alert-warning {
+  background-color: #eee;
+  border-color: #aaa;
+  color: #222;
+}
+

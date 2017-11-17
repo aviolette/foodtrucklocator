@@ -1,22 +1,10 @@
 <%@ include file="../header.jsp" %>
-
-<style>
-  .jumbotron {
-    text-align: center;
-    background-color: transparent;
-    margin-bottom: 0;
-  }
-</style>
 <div class="jumbotron">
   <p class="lead">
-    This ${website}'s mission is to help people find food trucks. It publishes your truck's schedule on this website and
-    linked
-    applications. It publishes alerts via linked applications and social media accounts targeted at users who are
-    interested
-    in
-    food trucks at a specific location. It provides tools for the truck owner to help you control the display of your
-    data
-    on this website via <a href="/vendor">the vendor portal</a>.
+    The ${website}'s mission is to help people find food trucks. It publishes your truck's schedule on this website and
+    linked applications. It publishes alerts via linked applications and social media accounts targeted at users who are
+    interested in food trucks at a specific location. It provides tools for the truck owner to help you control the display
+    of your data on this website via <a href="/vendor">the vendor portal</a>.
   </p>
 </div>
 

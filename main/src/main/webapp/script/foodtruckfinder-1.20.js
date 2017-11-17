@@ -528,7 +528,7 @@ var FoodTruckLocator = function () {
       var $motd = $("#motd");
       $motd.removeClass("hidden");
       $motd.on('closed.bs.alert', function () {
-        setCookie("motd", model["message"]["id"])
+        setCookie("motd", model["message"]["id"], 30)
       });
     }
   }
