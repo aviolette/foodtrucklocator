@@ -39,8 +39,9 @@ public class SocialMediaModule extends AbstractModule {
     InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("twitter4j.properties");
     properties.load(in);
     in.close();
-    properties.remove(PropertyConfiguration.OAUTH_ACCESS_TOKEN);
-    properties.remove(PropertyConfiguration.OAUTH_ACCESS_TOKEN_SECRET);
+    properties.put("tweetModeExtended", true);
+    properties.remove("oauth.accessToken");
+    properties.remove("oauth.accessTokenSecret");
     return new TwitterFactoryWrapper(new TwitterFactory(), new TwitterFactory(new PropertyConfiguration(properties)));
   }
 

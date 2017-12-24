@@ -196,8 +196,8 @@ public class TwitterConnector implements SocialMediaConnector {
     } catch (IOException e) {
       throw new ServiceException(e);
     }
-    properties.put(PropertyConfiguration.OAUTH_ACCESS_TOKEN, account.getOauthToken());
-    properties.put(PropertyConfiguration.OAUTH_ACCESS_TOKEN_SECRET, account.getOauthTokenSecret());
+    properties.put("oauth.accessToken", account.getOauthToken());
+    properties.put("oauth.accessTokenSecret", account.getOauthTokenSecret());
     return new PropertyConfiguration(properties);
   }
 }
