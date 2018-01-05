@@ -3,6 +3,8 @@ package foodtruck.alexa;
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.SpeechletResponse;
+import com.amazon.speech.ui.Image;
+import com.amazon.speech.ui.StandardCard;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -130,9 +132,9 @@ public class AboutIntentProcessorTest extends EasyMockSupport {
         "<speak>This truck sells tacos.<break time=\"0.3s\"/> Hoos Foos will be at Location A at 11:10 AM.</speak>");
     assertThat(response.getReprompt()).isNull();
     assertThat(response.getCard()).isNotNull();
-    ImageCard imageCard = (ImageCard) response.getCard();
+    StandardCard imageCard = (StandardCard) response.getCard();
     assertThat(imageCard.getText()).isEqualTo("This truck sells tacos.\nHoos Foos will be at Location A at 11:10 AM.");
-    ImageSet imageSet = imageCard.getImage();
+    Image imageSet = imageCard.getImage();
     assertThat(imageSet.getSmallImageUrl()).isEqualTo("https://hoos.com/foos.png");
     verifyAll();
   }
@@ -148,10 +150,10 @@ public class AboutIntentProcessorTest extends EasyMockSupport {
         "<speak>This truck sells tacos.<break time=\"0.3s\"/> Hoos Foos is currently at Location A. Hoos Foos will be at Location B at 11:10 AM.</speak>");
     assertThat(response.getReprompt()).isNull();
     assertThat(response.getCard()).isNotNull();
-    ImageCard imageCard = (ImageCard) response.getCard();
+    StandardCard imageCard = (StandardCard) response.getCard();
     assertThat(imageCard.getText()).isEqualTo(
         "This truck sells tacos.\nHoos Foos is currently at Location A. Hoos Foos will be at Location B at 11:10 AM.");
-    ImageSet imageSet = imageCard.getImage();
+    Image imageSet = imageCard.getImage();
     assertThat(imageSet.getSmallImageUrl()).isEqualTo("https://hoos.com/foos.png");
     verifyAll();
   }
@@ -167,9 +169,9 @@ public class AboutIntentProcessorTest extends EasyMockSupport {
         "<speak>This truck sells tacos.<break time=\"0.3s\"/> Hoos Foos is currently at Location A.</speak>");
     assertThat(response.getReprompt()).isNull();
     assertThat(response.getCard()).isNotNull();
-    ImageCard imageCard = (ImageCard) response.getCard();
+    StandardCard imageCard = (StandardCard) response.getCard();
     assertThat(imageCard.getText()).isEqualTo("This truck sells tacos.\nHoos Foos is currently at Location A.");
-    ImageSet imageSet = imageCard.getImage();
+    Image imageSet = imageCard.getImage();
     assertThat(imageSet.getSmallImageUrl()).isEqualTo("https://hoos.com/foos.png");
     verifyAll();
   }
@@ -185,9 +187,9 @@ public class AboutIntentProcessorTest extends EasyMockSupport {
         "<speak>This truck sells tacos.<break time=\"0.3s\"/> Hoos Foos was last seen today at Location C.</speak>");
     assertThat(response.getReprompt()).isNull();
     assertThat(response.getCard()).isNotNull();
-    ImageCard imageCard = (ImageCard) response.getCard();
+    StandardCard imageCard = (StandardCard) response.getCard();
     assertThat(imageCard.getText()).isEqualTo("This truck sells tacos.\nHoos Foos was last seen today at Location C.");
-    ImageSet imageSet = imageCard.getImage();
+    Image imageSet = imageCard.getImage();
     assertThat(imageSet.getSmallImageUrl()).isEqualTo("https://hoos.com/foos.png");
     verifyAll();
   }
@@ -211,10 +213,10 @@ public class AboutIntentProcessorTest extends EasyMockSupport {
         "<speak>This truck sells tacos.<break time=\"0.3s\"/> Hoos Foos was last seen 31 days ago at Location C.</speak>");
     assertThat(response.getReprompt()).isNull();
     assertThat(response.getCard()).isNotNull();
-    ImageCard imageCard = (ImageCard) response.getCard();
+    StandardCard imageCard = (StandardCard) response.getCard();
     assertThat(imageCard.getText()).isEqualTo(
         "This truck sells tacos.\nHoos Foos was last seen 31 days ago at Location C.");
-    ImageSet imageSet = imageCard.getImage();
+    Image imageSet = imageCard.getImage();
     assertThat(imageSet.getSmallImageUrl()).isEqualTo("https://hoos.com/foos.png");
     verifyAll();
   }
@@ -235,9 +237,9 @@ public class AboutIntentProcessorTest extends EasyMockSupport {
         "<speak>This truck sells tacos.<break time=\"0.3s\"/> Hoos Foos has never been seen on the road.</speak>");
     assertThat(response.getReprompt()).isNull();
     assertThat(response.getCard()).isNotNull();
-    ImageCard imageCard = (ImageCard) response.getCard();
+    StandardCard imageCard = (StandardCard) response.getCard();
     assertThat(imageCard.getText()).isEqualTo("This truck sells tacos.\nHoos Foos has never been seen on the road.");
-    ImageSet imageSet = imageCard.getImage();
+    Image imageSet = imageCard.getImage();
     assertThat(imageSet.getSmallImageUrl()).isEqualTo("https://hoos.com/foos.png");
     verifyAll();
   }

@@ -4,11 +4,13 @@ import javax.annotation.Nullable;
 
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.Card;
+import com.amazon.speech.ui.Image;
 import com.amazon.speech.ui.OutputSpeech;
 import com.amazon.speech.ui.PlainTextOutputSpeech;
 import com.amazon.speech.ui.Reprompt;
 import com.amazon.speech.ui.SimpleCard;
 import com.amazon.speech.ui.SsmlOutputSpeech;
+import com.amazon.speech.ui.StandardCard;
 
 /**
  * @author aviolette
@@ -24,10 +26,10 @@ class SpeechletResponseBuilder {
   }
 
   SpeechletResponseBuilder imageCard(String title, @Nullable String largeImage, @Nullable String smallImage) {
-    ImageCard card = new ImageCard();
+    StandardCard card = new StandardCard();
     card.setTitle(title);
     card.setText(scrub(speechText));
-    ImageSet imageSet = new ImageSet();
+    Image imageSet = new Image();
     imageSet.setLargeImageUrl(largeImage);
     imageSet.setSmallImageUrl(smallImage);
     card.setImage(imageSet);

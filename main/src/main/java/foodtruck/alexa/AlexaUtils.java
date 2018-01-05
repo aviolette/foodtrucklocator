@@ -11,6 +11,7 @@ import com.amazon.speech.ui.PlainTextOutputSpeech;
 import com.amazon.speech.ui.Reprompt;
 import com.amazon.speech.ui.SimpleCard;
 import com.amazon.speech.ui.SsmlOutputSpeech;
+import com.amazon.speech.ui.StandardCard;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 
@@ -78,8 +79,8 @@ class AlexaUtils {
           .add("title", simpleCard.getTitle())
           .add("content", simpleCard.getContent())
           .toString();
-    } else if (card instanceof ImageCard) {
-      ImageCard imageCard = (ImageCard) card;
+    } else if (card instanceof StandardCard) {
+      StandardCard imageCard = (StandardCard) card;
       return MoreObjects.toStringHelper(imageCard)
           .add("title", imageCard.getTitle())
           .add("text", imageCard.getText())
