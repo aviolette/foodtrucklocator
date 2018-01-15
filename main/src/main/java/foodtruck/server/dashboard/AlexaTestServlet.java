@@ -17,6 +17,7 @@ import com.amazon.speech.speechlet.IntentRequest;
 import com.amazon.speech.speechlet.Speechlet;
 import com.amazon.speech.speechlet.SpeechletException;
 import com.amazon.speech.speechlet.SpeechletResponse;
+import com.amazon.speech.speechlet.SpeechletV2;
 import com.google.common.collect.Maps;
 import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
@@ -37,11 +38,11 @@ import foodtruck.time.Clock;
 public class AlexaTestServlet extends HttpServlet {
   private static final String JSP_PATH = "/WEB-INF/jsp/dashboard/alexaTest.jsp";
   private final Map<String, IntentProcessor> processors;
-  private final Speechlet speechlet;
+  private final SpeechletV2 speechlet;
   private final Clock clock;
 
   @Inject
-  public AlexaTestServlet(Map<String, IntentProcessor> processors, Speechlet speechlet, Clock clock) {
+  public AlexaTestServlet(Map<String, IntentProcessor> processors, SpeechletV2 speechlet, Clock clock) {
     this.processors = processors;
     this.clock = clock;
     this.speechlet = speechlet;
@@ -66,6 +67,7 @@ public class AlexaTestServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+/*
     final String json = new String(ByteStreams.toByteArray(req.getInputStream()));
     try {
       JSONObject jsonPayload = new JSONObject(json);
@@ -86,6 +88,7 @@ public class AlexaTestServlet extends HttpServlet {
     } catch (JSONException | SpeechletException e) {
       throw new ServletException(e);
     }
+    */
   }
 
   private Intent buildIntent(JSONObject jsonPayload) throws JSONException {
