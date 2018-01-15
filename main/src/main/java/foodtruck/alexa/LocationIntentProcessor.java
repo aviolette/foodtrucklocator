@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.slu.Slot;
+import com.amazon.speech.speechlet.Context;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.google.common.base.MoreObjects;
@@ -76,7 +77,7 @@ class LocationIntentProcessor implements IntentProcessor {
   }
 
   @Override
-  public SpeechletResponse process(Intent intent, Session session) {
+  public SpeechletResponse process(Intent intent, Session session, Context context) {
     Slot locationSlot = intent.getSlot(SLOT_LOCATION);
     String locationName = locationSlot.getValue();
     if (Strings.isNullOrEmpty(locationName)) {

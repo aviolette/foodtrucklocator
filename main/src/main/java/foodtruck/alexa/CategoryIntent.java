@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.amazon.speech.slu.Intent;
+import com.amazon.speech.speechlet.Context;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.google.common.base.Strings;
@@ -41,7 +42,7 @@ class CategoryIntent implements IntentProcessor {
   }
 
   @Override
-  public SpeechletResponse process(Intent intent, Session session) {
+  public SpeechletResponse process(Intent intent, Session session, Context context) {
     String category = intent.getSlot(CATEGORY_NAME)
         .getValue();
     if (Strings.isNullOrEmpty(category)) {

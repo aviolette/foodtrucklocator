@@ -197,7 +197,7 @@ public class TruckLocationIntentProcessorTest extends EasyMockSupport {
     expect(service.findStopsForDay(cornerfarmacy.getId(), date.toLocalDate())).andReturn(
         new TruckSchedule(cornerfarmacy, date.toLocalDate(), stops));
     replayAll();
-    SpeechletResponse response = processor.process(intent, null);
+    SpeechletResponse response = processor.process(intent, null, null);
     assertThat(response.getCard().getTitle()).isEqualTo(CORNERFARMACY_NAME);
     assertThat(((PlainTextOutputSpeech) response.getOutputSpeech()).getText()).isEqualTo(expected);
     verifyAll();

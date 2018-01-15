@@ -2,7 +2,7 @@ package foodtruck.alexa;
 
 import java.util.List;
 
-import com.amazon.speech.speechlet.Speechlet;
+import com.amazon.speech.speechlet.SpeechletV2;
 import com.google.common.base.Splitter;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -30,7 +30,7 @@ public class AlexaModule extends AbstractModule {
 
   @Override
   protected void configure() {
-    bind(Speechlet.class).to(FTFSpeechlet.class);
+    bind(SpeechletV2.class).to(FTFSpeechlet.class);
     MapBinder<String, IntentProcessor> intentProcessorMapBinder = MapBinder.newMapBinder(binder(), String.class,
         IntentProcessor.class);
     intentProcessorMapBinder.addBinding(GET_FOOD_TRUCKS_AT_LOCATION)

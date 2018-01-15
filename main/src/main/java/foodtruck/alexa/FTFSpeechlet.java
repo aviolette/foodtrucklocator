@@ -4,15 +4,14 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.amazon.speech.json.SpeechletRequestEnvelope;
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.IntentRequest;
 import com.amazon.speech.speechlet.LaunchRequest;
-import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SessionEndedRequest;
 import com.amazon.speech.speechlet.SessionStartedRequest;
-import com.amazon.speech.speechlet.Speechlet;
-import com.amazon.speech.speechlet.SpeechletException;
 import com.amazon.speech.speechlet.SpeechletResponse;
+import com.amazon.speech.speechlet.SpeechletV2;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
@@ -28,7 +27,7 @@ import foodtruck.time.Clock;
  * @author aviolette
  * @since 8/25/16
  */
-class FTFSpeechlet implements Speechlet {
+class FTFSpeechlet implements SpeechletV2 {
   private static final Logger log = Logger.getLogger(FTFSpeechlet.class.getName());
 
   private final Map<String, IntentProcessor> processors;
@@ -46,13 +45,15 @@ class FTFSpeechlet implements Speechlet {
   }
 
   @Override
-  public void onSessionStarted(SessionStartedRequest sessionStartedRequest, Session session) throws SpeechletException {
-    log.info("Alexa session started: " + session.getSessionId());
+  public void onSessionStarted(
+      SpeechletRequestEnvelope<SessionStartedRequest> speechletRequestEnvelope) {
+    log.info("Alexa session started: " + speechletRequestEnvelope.getSession().getSessionId());
   }
 
   @Override
-  public SpeechletResponse onLaunch(LaunchRequest launchRequest, Session session) throws SpeechletException {
-    log.log(Level.INFO, "Alexa launched: {0}", session.getSessionId());
+  public SpeechletResponse onLaunch(
+      SpeechletRequestEnvelope<LaunchRequest> speechletRequestEnvelope) {
+    log.log(Level.INFO, "Alexa launched: {0}", speechletRequestEnvelope.getSession().getSessionId());
     publisher.increment("alexa_launch");
     return SpeechletResponseBuilder.builder()
         .speechText(
@@ -64,23 +65,33 @@ class FTFSpeechlet implements Speechlet {
   }
 
   @Override
-  public SpeechletResponse onIntent(IntentRequest intentRequest, Session session) throws SpeechletException {
+  public SpeechletResponse onIntent(
+      SpeechletRequestEnvelope<IntentRequest> speechletRequestEnvelope) {
+    IntentRequest intentRequest = speechletRequestEnvelope.getRequest();
     log.log(Level.INFO, "Received intent {0} ", AlexaUtils.intentToString(intentRequest.getIntent()));
     IntentProcessor processor = processors.get(intentRequest.getIntent().getName());
     if (processor == null) {
       log.log(Level.WARNING, "Invalid intent requested: {0}", intentRequest.getIntent()
           .getName());
-      throw new SpeechletException("Invalid intent: " + intentRequest.getIntent().getName());
+      throw new RuntimeException("Invalid intent: " + intentRequest.getIntent().getName());
     }
     try {
-      SpeechletResponse response = processor.process(intentRequest.getIntent(), session);
+      //SystemState systemState = speechletRequestEnvelope.getContext().getState(SystemInterface.class, SystemInterface.STATE_TYPE);
+      SpeechletResponse response = processor.process(intentRequest.getIntent(),
+          speechletRequestEnvelope.getSession(), speechletRequestEnvelope.getContext());
       record(intentRequest, response);
       log.log(Level.INFO, "Response {0}", AlexaUtils.speechletResponseToString(response));
       return response;
     } catch (Exception e) {
       log.log(Level.SEVERE, e.getMessage(), e);
-      throw new SpeechletException(e);
+      throw new RuntimeException(e);
     }
+  }
+
+  @Override
+  public void onSessionEnded(
+      SpeechletRequestEnvelope<SessionEndedRequest> speechletRequestEnvelope) {
+    log.fine("Alexa session ended: " + speechletRequestEnvelope.getSession().getSessionId());
   }
 
   private void record(IntentRequest intentRequest, SpeechletResponse response) {
@@ -104,10 +115,5 @@ class FTFSpeechlet implements Speechlet {
     alexaExchangeDAO.save(exchange);
     publisher.increment("alexa_intent_" + intentRequest.getIntent()
         .getName());
-  }
-
-  @Override
-  public void onSessionEnded(SessionEndedRequest sessionEndedRequest, Session session) throws SpeechletException {
-    log.fine("Alexa session ended: " + session.getSessionId());
   }
 }

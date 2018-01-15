@@ -3,6 +3,7 @@ package foodtruck.alexa;
 import java.util.Set;
 
 import com.amazon.speech.slu.Intent;
+import com.amazon.speech.speechlet.Context;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.google.common.collect.ImmutableSet;
@@ -18,7 +19,7 @@ class HelpIntentProcessor implements IntentProcessor {
   }
 
   @Override
-  public SpeechletResponse process(Intent intent, Session session) {
+  public SpeechletResponse process(Intent intent, Session session, Context context) {
     return SpeechletResponseBuilder.builder()
         .speechText(
             "Food Truck Finder.  You can ask me what trucks will be at a location or information on a specific truck.")

@@ -2,7 +2,6 @@ package foodtruck.alexa;
 
 import java.util.Optional;
 
-
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.SpeechletResponse;
@@ -115,7 +114,7 @@ public class LocationIntentProcessorTest extends Mockito {
     when(locationDAO.findByIdOpt(50018L)).thenReturn(Optional.empty());
     when(locationDAO.findByIdOpt(1835344L)).thenReturn(Optional.empty());
     
-    SpeechletResponse response = processor.process(intent(CLARK_N_MONROE, null), null);
+    SpeechletResponse response = processor.process(intent(CLARK_N_MONROE, null), null, null);
     assertThat(response.getCard()
         .getTitle()).isEqualTo("Food Trucks at Clark and Monroe Today");
     assertSpeech(response.getOutputSpeech()).isEqualTo(
@@ -137,7 +136,7 @@ public class LocationIntentProcessorTest extends Mockito {
     when(locationDAO.findByIdOpt(50018L)).thenReturn(Optional.empty());
     when(locationDAO.findByIdOpt(1835344L)).thenReturn(Optional.empty());
     
-    SpeechletResponse response = processor.process(intent("Clark and Monroe for", null), null);
+    SpeechletResponse response = processor.process(intent("Clark and Monroe for", null), null, null);
     assertThat(response.getCard()
         .getTitle()).isEqualTo("Food Trucks at Clark and Monroe Today");
     assertSpeech(response.getOutputSpeech()).isEqualTo(
@@ -158,7 +157,7 @@ public class LocationIntentProcessorTest extends Mockito {
     when(locationDAO.findById(50018L)).thenReturn(null);
     when(locationDAO.findById(1835344L)).thenReturn(null);
     
-    SpeechletResponse response = processor.process(intent(CLARK_N_MONROE, null), null);
+    SpeechletResponse response = processor.process(intent(CLARK_N_MONROE, null), null, null);
     assertSpeech(response.getOutputSpeech()).isEqualTo("<speak>What location was that?</speak>");
     
   }
@@ -178,7 +177,8 @@ public class LocationIntentProcessorTest extends Mockito {
     when(locator.locate(CLARK_N_MONROE, GeolocationGranularity.NARROW)).thenReturn(location);
     when(service.findStopsNearALocation(location, date.toLocalDate())).thenReturn(ImmutableList.of(FAT_PICKLE_STOP));
     
-    SpeechletResponse response = processor.process(intent(CLARK_N_MONROE, null), null);
+    SpeechletResponse response = processor.process(intent(CLARK_N_MONROE, null), null,
+        null);
     assertThat(response.getCard()
         .getTitle()).isEqualTo("Food Trucks at Clark and Monroe Today");
     assertThat(((SsmlOutputSpeech) response.getOutputSpeech()).getSsml()).isEqualTo(
@@ -192,7 +192,8 @@ public class LocationIntentProcessorTest extends Mockito {
     when(service.findStopsNearALocation(location, date.toLocalDate())).thenReturn(
         ImmutableList.of(BEAVERS_STOP, FAT_PICKLE_STOP));
     
-    SpeechletResponse response = processor.process(intent(CLARK_N_MONROE, null), null);
+    SpeechletResponse response = processor.process(intent(CLARK_N_MONROE, null), null,
+        null);
     assertThat(response.getCard()
         .getTitle()).isEqualTo("Food Trucks at Clark and Monroe Today");
     assertThat(((SsmlOutputSpeech) response.getOutputSpeech()).getSsml()).isEqualTo(
@@ -207,7 +208,8 @@ public class LocationIntentProcessorTest extends Mockito {
     when(service.findStopsNearALocation(location, date.toLocalDate())).thenReturn(
         ImmutableList.of(CHICAGOS_FINEST_STOP, FAT_PICKLE_STOP));
     
-    SpeechletResponse response = processor.process(intent(CLARK_N_MONROE, null), null);
+    SpeechletResponse response = processor.process(intent(CLARK_N_MONROE, null), null,
+        null);
     assertThat(response.getCard()
         .getTitle()).isEqualTo("Food Trucks at Clark and Monroe Today");
     assertThat(((SsmlOutputSpeech) response.getOutputSpeech()).getSsml()).isEqualTo(
@@ -223,7 +225,8 @@ public class LocationIntentProcessorTest extends Mockito {
     when(service.findStopsNearALocation(location, date.toLocalDate())).thenReturn(
         ImmutableList.of(BEAVERS_STOP, CHICAGOS_FINEST_STOP, FAT_PICKLE_STOP));
     
-    SpeechletResponse response = processor.process(intent(CLARK_N_MONROE, null), null);
+    SpeechletResponse response = processor.process(intent(CLARK_N_MONROE, null), null,
+        null);
     assertThat(response.getCard()
         .getTitle()).isEqualTo("Food Trucks at Clark and Monroe Today");
     assertThat(((SsmlOutputSpeech) response.getOutputSpeech()).getSsml()).isEqualTo(
@@ -236,7 +239,8 @@ public class LocationIntentProcessorTest extends Mockito {
     when(locator.locate(CLARK_N_MONROE, GeolocationGranularity.NARROW)).thenReturn(location);
     when(service.findStopsNearALocation(location, date.toLocalDate())).thenReturn(ImmutableList.of(FAT_PICKLE_STOP));
     
-    SpeechletResponse response = processor.process(intent(CLARK_N_MONROE, TODAY), null);
+    SpeechletResponse response = processor.process(intent(CLARK_N_MONROE, TODAY), null,
+        null);
     assertThat(response.getCard()
         .getTitle()).isEqualTo("Food Trucks at Clark and Monroe Today");
     assertSpeech(response.getOutputSpeech()).isEqualTo(
@@ -250,7 +254,8 @@ public class LocationIntentProcessorTest extends Mockito {
     when(service.findStopsNearALocation(location, date.toLocalDate())).thenReturn(
         ImmutableList.of(BEAVERS_STOP, FAT_PICKLE_STOP));
     
-    SpeechletResponse response = processor.process(intent(CLARK_N_MONROE, TODAY), null);
+    SpeechletResponse response = processor.process(intent(CLARK_N_MONROE, TODAY), null,
+        null);
     assertThat(response.getCard()
         .getTitle()).isEqualTo("Food Trucks at Clark and Monroe Today");
     assertSpeech(response.getOutputSpeech()).isEqualTo(
@@ -264,7 +269,8 @@ public class LocationIntentProcessorTest extends Mockito {
     when(service.findStopsNearALocation(location, date.toLocalDate())).thenReturn(
         ImmutableList.of(BEAVERS_STOP, CHICAGOS_FINEST_STOP, FAT_PICKLE_STOP));
     
-    SpeechletResponse response = processor.process(intent(CLARK_N_MONROE, TODAY), null);
+    SpeechletResponse response = processor.process(intent(CLARK_N_MONROE, TODAY), null,
+        null);
     assertThat(response.getCard()
         .getTitle()).isEqualTo("Food Trucks at Clark and Monroe Today");
     assertSpeech(response.getOutputSpeech()).isEqualTo(
@@ -280,7 +286,8 @@ public class LocationIntentProcessorTest extends Mockito {
     when(locator.locate(CLARK_N_MONROE, GeolocationGranularity.NARROW)).thenReturn(location);
     when(service.findStopsNearALocation(location, localDate)).thenReturn(ImmutableList.of(FAT_PICKLE_STOP));
     
-    SpeechletResponse response = processor.process(intent, null);
+    SpeechletResponse response = processor.process(intent, null,
+        null);
     assertThat(response.getCard()
         .getTitle()).isEqualTo("Food Trucks at Clark and Monroe Tomorrow");
     assertSpeech(response.getOutputSpeech()).isEqualTo(
@@ -296,7 +303,8 @@ public class LocationIntentProcessorTest extends Mockito {
     when(service.findStopsNearALocation(location, date.toLocalDate())).thenReturn(
         ImmutableList.of(BEAVERS_STOP, FAT_PICKLE_STOP));
     
-    SpeechletResponse response = processor.process(intent, null);
+    SpeechletResponse response = processor.process(intent, null,
+        null);
     assertThat(response.getCard()
         .getTitle()).isEqualTo("Food Trucks at Clark and Monroe Tomorrow");
     assertSpeech(response.getOutputSpeech()).isEqualTo(
@@ -312,7 +320,8 @@ public class LocationIntentProcessorTest extends Mockito {
     when(service.findStopsNearALocation(location, date.toLocalDate())).thenReturn(
         ImmutableList.of(BEAVERS_STOP, CHICAGOS_FINEST_STOP, FAT_PICKLE_STOP));
     
-    SpeechletResponse response = processor.process(intent, null);
+    SpeechletResponse response = processor.process(intent, null,
+        null);
     assertThat(response.getCard()
         .getTitle()).isEqualTo("Food Trucks at Clark and Monroe Tomorrow");
     assertSpeech(response.getOutputSpeech()).isEqualTo(
