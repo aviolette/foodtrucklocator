@@ -10,12 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
+import com.amazon.speech.json.SpeechletRequestEnvelope;
 import com.amazon.speech.json.SpeechletResponseEnvelope;
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.IntentRequest;
-import com.amazon.speech.speechlet.Speechlet;
-import com.amazon.speech.speechlet.SpeechletException;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.speechlet.SpeechletV2;
 import com.google.common.collect.Maps;
@@ -67,17 +66,19 @@ public class AlexaTestServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-/*
     final String json = new String(ByteStreams.toByteArray(req.getInputStream()));
     try {
       JSONObject jsonPayload = new JSONObject(json);
       Intent intent = buildIntent(jsonPayload);
-      SpeechletResponse response = speechlet.onIntent(IntentRequest.builder()
+      IntentRequest request = IntentRequest.builder()
           .withIntent(intent)
           .withRequestId("dummy")
           .withTimestamp(clock.now()
               .toDate())
-          .build(), null);
+          .build();
+      SpeechletResponse response = speechlet.onIntent(
+          SpeechletRequestEnvelope.<IntentRequest>builder().withRequest(request)
+              .build());
       SpeechletResponseEnvelope envelope = new SpeechletResponseEnvelope();
       envelope.setResponse(response);
       envelope.setSessionAttributes(Maps.<String, Object>newHashMap());
@@ -85,10 +86,9 @@ public class AlexaTestServlet extends HttpServlet {
       resp.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
       resp.getOutputStream()
           .print(envelope.toJsonString());
-    } catch (JSONException | SpeechletException e) {
+    } catch (JSONException e) {
       throw new ServletException(e);
     }
-    */
   }
 
   private Intent buildIntent(JSONObject jsonPayload) throws JSONException {
