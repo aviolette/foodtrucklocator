@@ -2,6 +2,7 @@ package foodtruck.server.resources;
 
 import java.util.Collection;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -11,9 +12,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 import com.sun.jersey.api.JResponse;
 
@@ -58,13 +57,10 @@ public class LocationResource {
   @Produces("text/plain")
   @RequiresAdmin
   public String findAlexaStops() {
-    return FluentIterable.from(locationDAO.findAlexaStops())
-        .transform(new Function<Location, String>() {
-          public String apply(Location input) {
-            return input.getShortenedName();
-          }
-        })
-        .join(JOINER);
+    return locationDAO.findAlexaStops().stream()
+        .map(input -> input.getShortenedName())
+        .distinct()
+        .collect(Collectors.joining("\n"));
   }
 
   @GET

@@ -12,6 +12,8 @@ import com.amazon.speech.speechlet.SessionEndedRequest;
 import com.amazon.speech.speechlet.SessionStartedRequest;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.speechlet.SpeechletV2;
+import com.amazon.speech.speechlet.interfaces.system.SystemInterface;
+import com.amazon.speech.speechlet.interfaces.system.SystemState;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
@@ -76,7 +78,13 @@ class FTFSpeechlet implements SpeechletV2 {
       throw new RuntimeException("Invalid intent: " + intentRequest.getIntent().getName());
     }
     try {
-      //SystemState systemState = speechletRequestEnvelope.getContext().getState(SystemInterface.class, SystemInterface.STATE_TYPE);
+      SystemState systemState = speechletRequestEnvelope.getContext().getState(SystemInterface.class, SystemInterface.STATE_TYPE);
+      if (systemState != null) {
+        log.log(Level.INFO, "State: {0} {0}",
+            new Object[]{systemState.getApiAccessToken(), systemState.getApiEndpoint()});
+      } else {
+        log.log(Level.INFO, "System state not specified in request");
+      }
       SpeechletResponse response = processor.process(intentRequest.getIntent(),
           speechletRequestEnvelope.getSession(), speechletRequestEnvelope.getContext());
       record(intentRequest, response);
