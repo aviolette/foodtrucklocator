@@ -80,7 +80,7 @@ class FTFSpeechlet implements SpeechletV2 {
     try {
       SystemState systemState = speechletRequestEnvelope.getContext().getState(SystemInterface.class, SystemInterface.STATE_TYPE);
       if (systemState != null) {
-        log.log(Level.INFO, "State: {0} {0}",
+        log.log(Level.INFO, "State: {0} endpoint: {1}",
             new Object[]{systemState.getApiAccessToken(), systemState.getApiEndpoint()});
       } else {
         log.log(Level.INFO, "System state not specified in request");
