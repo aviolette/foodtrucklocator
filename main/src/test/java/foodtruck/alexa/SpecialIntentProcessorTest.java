@@ -58,8 +58,7 @@ public class SpecialIntentProcessorTest extends EasyMockSupport {
   public void noTruck() {
     expect(truckDAO.findByNameOrAlias("Foobar")).andReturn(null);
     replayAll();
-    SpeechletResponse response = processor.process(intent, null,
-        null);
+    SpeechletResponse response = processor.process(intent, null);
     assertSpeech(response.getOutputSpeech()).isEqualTo(TruckLocationIntentProcessor.TRUCK_NOT_FOUND);
     verifyAll();
   }
@@ -74,8 +73,7 @@ public class SpecialIntentProcessorTest extends EasyMockSupport {
             .build()))
         .build();
     replayAll();
-    SpeechletResponse response = processor.process(intent, null,
-        null);
+    SpeechletResponse response = processor.process(intent, null);
     assertSpeech(response.getOutputSpeech()).isEqualTo(TruckLocationIntentProcessor.TRUCK_NOT_FOUND);
     verifyAll();
   }
@@ -85,8 +83,7 @@ public class SpecialIntentProcessorTest extends EasyMockSupport {
     expect(truckDAO.findByNameOrAlias("Foobar")).andReturn(truck);
     expect(dailyDataDAO.findByTruckAndDay("foobar", date)).andReturn(null);
     replayAll();
-    SpeechletResponse response = processor.process(intent, null,
-        null);
+    SpeechletResponse response = processor.process(intent, null);
     assertSpeech(response.getOutputSpeech()).isEqualTo("<speak>There are no specials for Foobar today</speak>");
     verifyAll();
   }
@@ -99,8 +96,7 @@ public class SpecialIntentProcessorTest extends EasyMockSupport {
         .build();
     expect(dailyDataDAO.findByTruckAndDay("foobar", date)).andReturn(dailyData);
     replayAll();
-    SpeechletResponse response = processor.process(intent, null,
-        null);
+    SpeechletResponse response = processor.process(intent, null);
     assertSpeech(response.getOutputSpeech()).isEqualTo(
         "<speak>Foobar's special for today is Mexican Hot Chocolate Cake Donut.</speak>");
     verifyAll();
@@ -114,8 +110,7 @@ public class SpecialIntentProcessorTest extends EasyMockSupport {
         .build();
     expect(dailyDataDAO.findByTruckAndDay("foobar", date)).andReturn(dailyData);
     replayAll();
-    SpeechletResponse response = processor.process(intent, null,
-        null);
+    SpeechletResponse response = processor.process(intent, null);
     assertSpeech(response.getOutputSpeech()).isEqualTo(
         "<speak>Foobar's special for today is Mexican Hot Chocolate Cake Donut but it appears to be sold out.</speak>");
     verifyAll();
@@ -131,8 +126,7 @@ public class SpecialIntentProcessorTest extends EasyMockSupport {
         .build();
     expect(dailyDataDAO.findByTruckAndDay("foobar", date)).andReturn(dailyData);
     replayAll();
-    SpeechletResponse response = processor.process(intent, null,
-        null);
+    SpeechletResponse response = processor.process(intent, null);
     assertSpeech(response.getOutputSpeech()).isAnyOf(
         "<speak>Foobar's specials for today are Cherry Old Fashioned and Mexican Hot Chocolate Cake Donut</speak>",
         "<speak>Foobar's specials for today are Mexican Hot Chocolate Cake Donut and Cherry Old Fashioned</speak>");

@@ -17,6 +17,8 @@ import com.amazon.speech.speechlet.interfaces.system.SystemState;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
 
 import org.joda.time.DateTime;
 
@@ -36,14 +38,16 @@ class FTFSpeechlet implements SpeechletV2 {
   private final Clock clock;
   private final AlexaExchangeDAO alexaExchangeDAO;
   private final CounterPublisher publisher;
+  private final AmazonConnectorFactory connectorFactory;
 
   @Inject
   public FTFSpeechlet(Map<String, IntentProcessor> processors, Clock clock, AlexaExchangeDAO alexaExchangeDAO,
-      CounterPublisher publisher) {
+      CounterPublisher publisher, AmazonConnectorFactory connectorFactory) {
     this.processors = processors;
     this.clock = clock;
     this.alexaExchangeDAO = alexaExchangeDAO;
     this.publisher = publisher;
+    this.connectorFactory = connectorFactory;
   }
 
   @Override
@@ -79,14 +83,17 @@ class FTFSpeechlet implements SpeechletV2 {
     }
     try {
       SystemState systemState = speechletRequestEnvelope.getContext().getState(SystemInterface.class, SystemInterface.STATE_TYPE);
+      AmazonConnector connector = null;
       if (systemState != null) {
         log.log(Level.INFO, "State: {0} endpoint: {1}",
             new Object[]{systemState.getApiAccessToken(), systemState.getApiEndpoint()});
+        WebResource resource = Client.create()
+            .resource(systemState.getApiEndpoint());
+        connector = connectorFactory.create(resource, new DeviceAccess(systemState.getDevice().getDeviceId(), systemState.getApiAccessToken()));
       } else {
         log.log(Level.INFO, "System state not specified in request");
       }
-      SpeechletResponse response = processor.process(intentRequest.getIntent(),
-          speechletRequestEnvelope.getSession(), speechletRequestEnvelope.getContext());
+      SpeechletResponse response = processor.process(intentRequest.getIntent(), connector);
       record(intentRequest, response);
       log.log(Level.INFO, "Response {0}", AlexaUtils.speechletResponseToString(response));
       return response;

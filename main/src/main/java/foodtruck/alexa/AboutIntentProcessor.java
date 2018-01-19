@@ -5,8 +5,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.amazon.speech.slu.Intent;
-import com.amazon.speech.speechlet.Context;
-import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
@@ -51,7 +49,7 @@ class AboutIntentProcessor implements IntentProcessor {
   }
 
   @Override
-  public SpeechletResponse process(Intent intent, Session session, Context context) {
+  public SpeechletResponse process(Intent intent, AmazonConnector connector) {
     String truckValue = intent.getSlot(TRUCK_SLOT)
         .getValue();
     if (Strings.isNullOrEmpty(truckValue)) {

@@ -97,8 +97,7 @@ public class AboutIntentProcessorTest extends EasyMockSupport {
   @Test
   public void processNoTruckSpecified() throws Exception {
     replayAll();
-    SpeechletResponse response = processor.process(intent(null), null,
-        null);
+    SpeechletResponse response = processor.process(intent(null), null);
     assertSpeech(response.getOutputSpeech()).isEqualTo(TruckLocationIntentProcessor.TRUCK_NOT_FOUND);
     assertSpeech(response.getReprompt()
         .getOutputSpeech()).isEqualTo(TruckLocationIntentProcessor.TRUCK_NOT_FOUND_REPROMPT);
@@ -109,8 +108,7 @@ public class AboutIntentProcessorTest extends EasyMockSupport {
   public void processIncorrectTruckSpecified() throws Exception {
     expect(truckDAO.findByNameOrAlias("unknown")).andReturn(null);
     replayAll();
-    SpeechletResponse response = processor.process(intent("unknown"), null,
-        null);
+    SpeechletResponse response = processor.process(intent("unknown"), null);
     assertSpeech(response.getOutputSpeech()).isEqualTo(TruckLocationIntentProcessor.TRUCK_NOT_FOUND);
     assertSpeech(response.getReprompt()
         .getOutputSpeech()).isEqualTo(TruckLocationIntentProcessor.TRUCK_NOT_FOUND_REPROMPT);
@@ -129,8 +127,7 @@ public class AboutIntentProcessorTest extends EasyMockSupport {
     TruckSchedule schedule = new TruckSchedule(truck, date.toLocalDate(), stops);
     expect(service.findStopsForDay(TRUCK_ID, date.toLocalDate())).andReturn(schedule);
     replayAll();
-    SpeechletResponse response = processor.process(intent(TRUCK_NAME), null,
-        null);
+    SpeechletResponse response = processor.process(intent(TRUCK_NAME), null);
     assertSpeech(response.getOutputSpeech()).isEqualTo(
         "<speak>This truck sells tacos.<break time=\"0.3s\"/> Hoos Foos will be at Location A at 11:10 AM.</speak>");
     assertThat(response.getReprompt()).isNull();
@@ -148,8 +145,7 @@ public class AboutIntentProcessorTest extends EasyMockSupport {
     TruckSchedule schedule = new TruckSchedule(truck, date.toLocalDate(), ImmutableList.of(stop1, stop2));
     expect(service.findStopsForDay(TRUCK_ID, date.toLocalDate())).andReturn(schedule);
     replayAll();
-    SpeechletResponse response = processor.process(intent(TRUCK_NAME), null,
-        null);
+    SpeechletResponse response = processor.process(intent(TRUCK_NAME), null);
     assertSpeech(response.getOutputSpeech()).isEqualTo(
         "<speak>This truck sells tacos.<break time=\"0.3s\"/> Hoos Foos is currently at Location A. Hoos Foos will be at Location B at 11:10 AM.</speak>");
     assertThat(response.getReprompt()).isNull();
@@ -168,8 +164,7 @@ public class AboutIntentProcessorTest extends EasyMockSupport {
     TruckSchedule schedule = new TruckSchedule(truck, date.toLocalDate(), ImmutableList.of(stop1));
     expect(service.findStopsForDay(TRUCK_ID, date.toLocalDate())).andReturn(schedule);
     replayAll();
-    SpeechletResponse response = processor.process(intent(TRUCK_NAME), null,
-        null);
+    SpeechletResponse response = processor.process(intent(TRUCK_NAME), null);
     assertSpeech(response.getOutputSpeech()).isEqualTo(
         "<speak>This truck sells tacos.<break time=\"0.3s\"/> Hoos Foos is currently at Location A.</speak>");
     assertThat(response.getReprompt()).isNull();
@@ -187,8 +182,7 @@ public class AboutIntentProcessorTest extends EasyMockSupport {
     TruckSchedule schedule = new TruckSchedule(truck, date.toLocalDate(), ImmutableList.of(stop3));
     expect(service.findStopsForDay(TRUCK_ID, date.toLocalDate())).andReturn(schedule);
     replayAll();
-    SpeechletResponse response = processor.process(intent(TRUCK_NAME), null,
-        null);
+    SpeechletResponse response = processor.process(intent(TRUCK_NAME), null);
     assertSpeech(response.getOutputSpeech()).isEqualTo(
         "<speak>This truck sells tacos.<break time=\"0.3s\"/> Hoos Foos was last seen today at Location C.</speak>");
     assertThat(response.getReprompt()).isNull();
@@ -214,8 +208,7 @@ public class AboutIntentProcessorTest extends EasyMockSupport {
     TruckSchedule schedule = new TruckSchedule(truck, date.toLocalDate(), ImmutableList.<TruckStop>of());
     expect(service.findStopsForDay(TRUCK_ID, date.toLocalDate())).andReturn(schedule);
     replayAll();
-    SpeechletResponse response = processor.process(intent(TRUCK_NAME), null,
-        null);
+    SpeechletResponse response = processor.process(intent(TRUCK_NAME), null);
     assertSpeech(response.getOutputSpeech()).isEqualTo(
         "<speak>This truck sells tacos.<break time=\"0.3s\"/> Hoos Foos was last seen 31 days ago at Location C.</speak>");
     assertThat(response.getReprompt()).isNull();
@@ -239,8 +232,7 @@ public class AboutIntentProcessorTest extends EasyMockSupport {
     TruckSchedule schedule = new TruckSchedule(truck, date.toLocalDate(), ImmutableList.<TruckStop>of());
     expect(service.findStopsForDay(TRUCK_ID, date.toLocalDate())).andReturn(schedule);
     replayAll();
-    SpeechletResponse response = processor.process(intent(TRUCK_NAME), null,
-        null);
+    SpeechletResponse response = processor.process(intent(TRUCK_NAME), null);
     assertSpeech(response.getOutputSpeech()).isEqualTo(
         "<speak>This truck sells tacos.<break time=\"0.3s\"/> Hoos Foos has never been seen on the road.</speak>");
     assertThat(response.getReprompt()).isNull();

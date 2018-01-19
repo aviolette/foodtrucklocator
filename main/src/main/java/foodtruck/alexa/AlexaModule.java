@@ -6,6 +6,7 @@ import com.amazon.speech.speechlet.SpeechletV2;
 import com.google.common.base.Splitter;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.multibindings.MapBinder;
 import com.google.inject.name.Named;
 
@@ -49,6 +50,8 @@ public class AlexaModule extends AbstractModule {
         .to(AboutIntentProcessor.class);
     intentProcessorMapBinder.addBinding(CATEGORY_SEARCH)
         .to(CategoryIntent.class);
+    install(new FactoryModuleBuilder().implement(AmazonConnector.class, AmazonConnectorImpl.class)
+        .build(AmazonConnectorFactory.class));
   }
 
   // TODO: probably should actually be somewhere else (such as the servlet config) but this isn't used
