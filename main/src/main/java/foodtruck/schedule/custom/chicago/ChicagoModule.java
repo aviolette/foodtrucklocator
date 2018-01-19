@@ -32,6 +32,8 @@ public class ChicagoModule extends AbstractModule {
   @Singleton
   public ImmutableList<Spot> provideCommonSpots() {
     return ImmutableList.of(new Spot("600w", "600 West Chicago Avenue, Chicago, IL"),
+        new Spot("aon", "Randolph and Columbus, Chicago, IL"),
+        new Spot("randolph/columbus", "Randolph and Columbus, Chicago, IL"),
         new Spot("wabash/vanburen", "Wabash and Van Buren, Chicago, IL"),
         new Spot("wacker/adams", "Wacker and Adams, Chicago, IL"),
         new Spot("clark/adams", "Clark and Adams, Chicago, IL"),
@@ -43,6 +45,7 @@ public class ChicagoModule extends AbstractModule {
         new Spot("uchicago", "University of Chicago"),
         new Spot("58th/university", "58th and University, Chicago, IL"),
         new Spot("uofc", "University of Chicago"),
+        new Spot("adams/58th", "University of Chicago"),
         new Spot("58th/ellis", "University of Chicago"));
   }
 }
