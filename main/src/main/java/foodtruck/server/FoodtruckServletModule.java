@@ -51,6 +51,7 @@ import foodtruck.server.front.FoodTruckServlet;
 import foodtruck.server.front.IPhoneSupportServlet;
 import foodtruck.server.front.LocationServlet;
 import foodtruck.server.front.PopularServlet;
+import foodtruck.server.front.PrivacyPolicyServlet;
 import foodtruck.server.front.SSLVerificationServlet;
 import foodtruck.server.front.ShuntServlet;
 import foodtruck.server.front.SupportServlet;
@@ -110,10 +111,10 @@ class FoodtruckServletModule extends ServletModule {
     }
     // Filters
     if ("true".equals(System.getProperty("foodtrucklocator.supports.ssl"))) {
-      filterRegex("/admin/.*", "/", "/vendor.*", "/book.*").through(SSLRedirectFilter.class);
+      filterRegex("/admin/.*", "/", "/privacy",  "/vendor.*", "/book.*").through(SSLRedirectFilter.class);
     }
     filterRegex("/", "/popular.*", "/businesses.*", "/booze.*", "/trucks.*", "/about.*", "/locations.*",
-        "/stats/timeline", "/support.*", "/vendinfo.*").through(PublicPageFilter.class);
+        "/stats/timeline", "/privacy", "/support.*", "/vendinfo.*").through(PublicPageFilter.class);
     filterRegex("/vendor.*").through(VendorPageFilter.class);
     filter("/*").through(SiteScraperFilter.class);
     filter("/*").through(CommonConfigFilter.class);
@@ -208,6 +209,7 @@ class FoodtruckServletModule extends ServletModule {
     }
 
     // Front-page endpoints
+    serve("/privacy").with(PrivacyPolicyServlet.class);
     serve("/vendinfo").with(VendorInfoServlet.class);
     serve("/vendinfo/device").with(DeviceInfoServlet.class);
     serve("/weekly-schedule").with(WeeklyScheduleServlet.class);
