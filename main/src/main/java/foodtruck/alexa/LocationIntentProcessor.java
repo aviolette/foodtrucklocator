@@ -7,6 +7,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nullable;
+
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.SpeechletResponse;
@@ -75,13 +77,19 @@ class LocationIntentProcessor implements IntentProcessor {
   }
 
   @Override
-  public SpeechletResponse process(Intent intent, AmazonConnector connector) {
+  public SpeechletResponse process(Intent intent, @Nullable AmazonConnector connector) {
     Slot locationSlot = intent.getSlot(SLOT_LOCATION);
     String locationName = locationSlot.getValue();
     if (Strings.isNullOrEmpty(locationName)) {
       return provideHelp();
     } else if (locationName.endsWith(" for")) {
       locationName = locationName.substring(0, locationName.length() - 4);
+    }
+    if ("me".equals(locationName)) {
+      log.info("ME: " + locationName);
+      if (connector != null) {
+        AddressResponse response = connector.findAddress();
+      }
     }
     Location location = locator.locate(locationName, GeolocationGranularity.NARROW);
     boolean tomorrow = "tomorrow".equals(intent.getSlot(SLOT_WHEN)

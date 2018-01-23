@@ -2,6 +2,8 @@ package foodtruck.alexa;
 
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.SpeechletResponse;
 
@@ -12,5 +14,5 @@ import com.amazon.speech.speechlet.SpeechletResponse;
 public interface IntentProcessor {
   Set<String> getSlotNames();
 
-  SpeechletResponse process(Intent intent, AmazonConnector connector);
+  SpeechletResponse process(Intent intent, @Nullable AmazonConnector connector);
 }
