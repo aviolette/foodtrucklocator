@@ -84,7 +84,7 @@ class FTFSpeechlet implements SpeechletV2 {
     try {
       SystemState systemState = speechletRequestEnvelope.getContext().getState(SystemInterface.class, SystemInterface.STATE_TYPE);
       AmazonConnector connector = null;
-      if (systemState != null) {
+      if (systemState != null && !Strings.isNullOrEmpty(systemState.getApiEndpoint()) && !Strings.isNullOrEmpty(systemState.getApiAccessToken())) {
         log.log(Level.INFO, "State: {0} endpoint: {1}",
             new Object[]{systemState.getApiAccessToken(), systemState.getApiEndpoint()});
         WebResource resource = Client.create()
