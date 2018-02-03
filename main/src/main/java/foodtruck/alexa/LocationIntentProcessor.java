@@ -1,6 +1,7 @@
 package foodtruck.alexa;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.logging.Level;
@@ -86,10 +87,20 @@ class LocationIntentProcessor implements IntentProcessor {
     } else if (locationName.endsWith(" for")) {
       locationName = locationName.substring(0, locationName.length() - 4);
     }
+    Location location = null;
     if ("me".equals(locationName)) {
       if (connector != null) {
         try {
           AddressResponse response = connector.findAddress();
+          Optional<String> loc = response.toLocationName();
+          if (loc.isPresent()) {
+            location = locator.locate(loc.get(), GeolocationGranularity.NARROW);
+          } else {
+            log.log(Level.SEVERE, "unable to decode {0}", response);
+            return SpeechletResponseBuilder.builder()
+                .speechText("I am unable to determine the location of your Alexa device.")
+                .tell();
+          }
         } catch (ServiceException se) {
           log.log(Level.INFO, se.getMessage(), se);
           SpeechletResponseBuilder builder = SpeechletResponseBuilder.builder()
@@ -98,8 +109,9 @@ class LocationIntentProcessor implements IntentProcessor {
           return builder.tell();
         }
       }
+    } else {
+      location = locator.locate(locationName, GeolocationGranularity.NARROW);
     }
-    Location location = locator.locate(locationName, GeolocationGranularity.NARROW);
     boolean tomorrow = "tomorrow".equals(intent.getSlot(SLOT_WHEN)
         .getValue());
     LocalDate currentDay = clock.currentDay();
