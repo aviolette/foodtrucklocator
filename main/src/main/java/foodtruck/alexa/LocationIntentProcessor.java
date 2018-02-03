@@ -91,6 +91,7 @@ class LocationIntentProcessor implements IntentProcessor {
         try {
           AddressResponse response = connector.findAddress();
         } catch (ServiceException se) {
+          log.log(Level.INFO, se.getMessage(), se);
           SpeechletResponseBuilder builder = SpeechletResponseBuilder.builder()
               .permissionsCard("foo bar", ImmutableSet.of("read::alexa:device:all:address"));
           builder.speechText("I need access to your address to be able to do this request.  Use permission card on your alexa console");
