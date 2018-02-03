@@ -36,6 +36,7 @@ import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.schedule.ScheduleCacher;
 import foodtruck.time.Clock;
 import foodtruck.time.TimeOnlyFormatter;
+import foodtruck.util.ServiceException;
 
 import static foodtruck.alexa.AlexaModule.TESTING_MODE;
 import static foodtruck.util.MoreStrings.capitalize;
@@ -86,9 +87,15 @@ class LocationIntentProcessor implements IntentProcessor {
       locationName = locationName.substring(0, locationName.length() - 4);
     }
     if ("me".equals(locationName)) {
-      log.info("ME: " + locationName);
       if (connector != null) {
-        AddressResponse response = connector.findAddress();
+        try {
+          AddressResponse response = connector.findAddress();
+        } catch (ServiceException se) {
+          SpeechletResponseBuilder builder = SpeechletResponseBuilder.builder()
+              .permissionsCard("foo bar", ImmutableSet.of("read::alexa:device:all:address"));
+          builder.speechText("I need access to your address to be able to do this request.  Use permission card on your alexa console");
+          return builder.tell();
+        }
       }
     }
     Location location = locator.locate(locationName, GeolocationGranularity.NARROW);

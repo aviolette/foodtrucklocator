@@ -1,8 +1,11 @@
 package foodtruck.alexa;
 
+import java.util.Set;
+
 import javax.annotation.Nullable;
 
 import com.amazon.speech.speechlet.SpeechletResponse;
+import com.amazon.speech.ui.AskForPermissionsConsentCard;
 import com.amazon.speech.ui.Card;
 import com.amazon.speech.ui.Image;
 import com.amazon.speech.ui.OutputSpeech;
@@ -34,6 +37,14 @@ class SpeechletResponseBuilder {
     imageSet.setSmallImageUrl(smallImage);
     card.setImage(imageSet);
     this.card = card;
+    return this;
+  }
+
+  SpeechletResponseBuilder permissionsCard(String title, Set<String> permissions) {
+    AskForPermissionsConsentCard consentCard = new AskForPermissionsConsentCard();
+    consentCard.setTitle(title);
+    consentCard.setPermissions(permissions);
+    this.card = consentCard;
     return this;
   }
 

@@ -5,13 +5,16 @@ import java.net.URI;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.annotation.Nullable;
 import javax.ws.rs.core.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
+import com.sun.jersey.api.client.ClientHandlerException;
+import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
+
+import foodtruck.util.ServiceException;
 
 /**
  * @author aviolette
@@ -34,19 +37,16 @@ public class AmazonConnectorImpl implements AmazonConnector {
   }
 
   @Override
-  @Nullable
-  public AddressResponse findAddress() {
-    String body = resource.uri(URI.create("/v1/devices/" + deviceAccess.getDeviceId() + "/settings/address/countryAndPostalCode"))
-        .accept(MediaType.APPLICATION_JSON_TYPE)
-        .header("Authorization", "Bearer " + deviceAccess.getAccessToken())
-        .get(String.class);
-
-    log.log(Level.INFO, body);
+  public AddressResponse findAddress() throws ServiceException {
     try {
+      String body = resource.uri(URI.create("/v1/devices/" + deviceAccess.getDeviceId() + "/settings/address/countryAndPostalCode"))
+          .accept(MediaType.APPLICATION_JSON_TYPE)
+          .header("Authorization", "Bearer " + deviceAccess.getAccessToken())
+          .get(String.class);
+      log.log(Level.INFO, body);
       return mapper.readValue(body, AddressResponse.class);
-    } catch (IOException e) {
-      log.log(Level.WARNING, e.getMessage(), e);
+    } catch (IOException|UniformInterfaceException|ClientHandlerException e) {
+      throw new ServiceException(e);
     }
-    return null;
   }
 }

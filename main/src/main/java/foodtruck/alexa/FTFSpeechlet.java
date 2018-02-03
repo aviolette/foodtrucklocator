@@ -26,6 +26,7 @@ import foodtruck.dao.AlexaExchangeDAO;
 import foodtruck.model.AlexaExchange;
 import foodtruck.monitoring.CounterPublisher;
 import foodtruck.time.Clock;
+import foodtruck.util.ServiceException;
 
 /**
  * @author aviolette
@@ -89,7 +90,12 @@ class FTFSpeechlet implements SpeechletV2 {
             new Object[]{systemState.getApiAccessToken(), systemState.getApiEndpoint()});
         WebResource resource = Client.create()
             .resource(systemState.getApiEndpoint());
-        connector = connectorFactory.create(resource, new DeviceAccess(systemState.getDevice().getDeviceId(), systemState.getApiAccessToken()));
+        try {
+          connector = connectorFactory.create(resource, new DeviceAccess(systemState.getDevice()
+              .getDeviceId(), systemState.getApiAccessToken()));
+        } catch (ServiceException se) {
+          log.log(Level.WARNING, se.getMessage(), se);
+        }
       } else {
         log.log(Level.INFO, "System state not specified in request");
       }
