@@ -39,6 +39,7 @@ public class AmazonConnectorImpl implements AmazonConnector {
   @Override
   public AddressResponse findAddress() throws ServiceException {
     try {
+      log.info(deviceAccess.toString());
       String body = resource.uri(URI.create("/v1/devices/" + deviceAccess.getDeviceId() + "/settings/address/countryAndPostalCode"))
           .accept(MediaType.APPLICATION_JSON_TYPE)
           .header("Authorization", "Bearer " + deviceAccess.getAccessToken())
