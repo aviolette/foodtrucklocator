@@ -28,13 +28,17 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.schedule.ScheduleCacher;
-import foodtruck.server.resources.json.DailyScheduleWriter;
 import foodtruck.time.Clock;
 
 import static com.google.common.truth.Truth.assertThat;
 import static foodtruck.alexa.AlexaTestingUtils.assertSpeech;
 import static foodtruck.alexa.LocationIntentProcessor.SLOT_LOCATION;
 import static foodtruck.alexa.LocationIntentProcessor.SLOT_WHEN;
+import static foodtruck.schedule.ModelTestHelper.beaversDonuts;
+import static foodtruck.schedule.ModelTestHelper.breakfastEnd;
+import static foodtruck.schedule.ModelTestHelper.breakfastStart;
+import static foodtruck.schedule.ModelTestHelper.clarkAndMonroe;
+import static foodtruck.schedule.ModelTestHelper.wackerAndAdams;
 
 /**
  * @author aviolette
@@ -46,14 +50,13 @@ public class LocationIntentProcessorTest extends Mockito {
   private static final String CLARK_N_MONROE = "Clark and Monroe";
   private static final String TOMORROW = "tomorrow";
   private static final String TODAY = "today";
-  private static final Truck BEAVERS = Truck.builder()
-      .name("Beavers Donuts")
-      .build();
   private static final TruckStop BEAVERS_STOP = TruckStop.builder()
-      .truck(BEAVERS)
-      .startTime(new DateTime(2016, 9, 1, 7, 0))
-      .endTime(new DateTime(2016, 9, 1, 10, 0))
+      .truck(beaversDonuts())
+      .startTime(breakfastStart())
+      .endTime(breakfastEnd())
+      .location(clarkAndMonroe())
       .build();
+
   private static final Truck THE_FAT_PICKLE = Truck.builder()
       .name("The Fat Pickle")
       .build();
@@ -61,6 +64,7 @@ public class LocationIntentProcessorTest extends Mockito {
       .truck(THE_FAT_PICKLE)
       .startTime(new DateTime(2016, 9, 1, 11, 0))
       .endTime(new DateTime(2016, 9, 1, 13, 0))
+      .location(wackerAndAdams())
       .build();
   private static final Truck CHICAGOS_FINEST = Truck.builder()
       .name("Chicagos Finest")
@@ -69,9 +73,11 @@ public class LocationIntentProcessorTest extends Mockito {
       .truck(CHICAGOS_FINEST)
       .startTime(new DateTime(2016, 9, 1, 11, 0))
       .endTime(new DateTime(2016, 9, 1, 13, 0))
+      .location(wackerAndAdams())
       .build();
   @Mock private GeoLocator locator;
   @Mock private FoodTruckStopService service;
+  private @Mock AmazonConnector amazon;
   private LocationIntentProcessor processor;
   private DateTime date;
   private Location location;
@@ -81,7 +87,6 @@ public class LocationIntentProcessorTest extends Mockito {
   @Before
   public void before() {
     Clock clock = mock(Clock.class);
-    DailyScheduleWriter dailyScheduleWriter = mock(DailyScheduleWriter.class);
     date = new DateTime(2016, 7, 15, 10, 10);
     location = Location.builder()
         .name(CLARK_N_MONROE)
@@ -104,7 +109,7 @@ public class LocationIntentProcessorTest extends Mockito {
    * range.
    */
   @Test
-  public void processWithNoDateNoTrucksNoAlternates() throws Exception {
+  public void processWithNoDateNoTrucksNoAlternates() {
     when(locator.locate(CLARK_N_MONROE, GeolocationGranularity.NARROW)).thenReturn(location);
     when(service.findStopsNearALocation(location, date.toLocalDate())).thenReturn(ImmutableList.of());
     when(cacher.findSchedule()).thenReturn(DAILY_SCHEDULE);
@@ -126,7 +131,7 @@ public class LocationIntentProcessorTest extends Mockito {
    * Special case that happens a lot: Alexa sometimes includes 'for' at end of name.
    */
   @Test
-  public void processStripFor() throws Exception {
+  public void processStripFor() {
     when(locator.locate(CLARK_N_MONROE, GeolocationGranularity.NARROW)).thenReturn(location);
     when(service.findStopsNearALocation(location, date.toLocalDate())).thenReturn(ImmutableList.of());
     when(cacher.findSchedule()).thenReturn(DAILY_SCHEDULE);
@@ -148,7 +153,7 @@ public class LocationIntentProcessorTest extends Mockito {
    * Search location does not resolve.  There are no alternatives.
    */
   @Test
-  public void processWithNoDateNoTruckUnresolved() throws Exception {
+  public void processWithNoDateNoTruckUnresolved() {
     when(locator.locate(CLARK_N_MONROE, GeolocationGranularity.NARROW)).thenReturn(null);
     when(cacher.findSchedule()).thenReturn(DAILY_SCHEDULE);
     dailyScheduleNullLocations();
@@ -173,7 +178,7 @@ public class LocationIntentProcessorTest extends Mockito {
   }
 
   @Test
-  public void procesWithNoDateOneTruck() throws Exception {
+  public void procesWithNoDateOneTruck() {
     when(locator.locate(CLARK_N_MONROE, GeolocationGranularity.NARROW)).thenReturn(location);
     when(service.findStopsNearALocation(location, date.toLocalDate())).thenReturn(ImmutableList.of(FAT_PICKLE_STOP));
     
@@ -186,7 +191,7 @@ public class LocationIntentProcessorTest extends Mockito {
   }
 
   @Test
-  public void processWithNoDateTwoTrucks() throws Exception {
+  public void processWithNoDateTwoTrucks() {
     when(locator.locate(CLARK_N_MONROE, GeolocationGranularity.NARROW)).thenReturn(location);
     when(service.findStopsNearALocation(location, date.toLocalDate())).thenReturn(
         ImmutableList.of(BEAVERS_STOP, FAT_PICKLE_STOP));
@@ -201,7 +206,7 @@ public class LocationIntentProcessorTest extends Mockito {
 
 
   @Test
-  public void processWithNoDateTwoTrucksSameTime() throws Exception {
+  public void processWithNoDateTwoTrucksSameTime() {
     when(locator.locate(CLARK_N_MONROE, GeolocationGranularity.NARROW)).thenReturn(location);
     when(service.findStopsNearALocation(location, date.toLocalDate())).thenReturn(
         ImmutableList.of(CHICAGOS_FINEST_STOP, FAT_PICKLE_STOP));
@@ -216,7 +221,7 @@ public class LocationIntentProcessorTest extends Mockito {
 
 
   @Test
-  public void processWithNoDateThreeTrucks() throws Exception {
+  public void processWithNoDateThreeTrucks() {
     ;
     when(locator.locate(CLARK_N_MONROE, GeolocationGranularity.NARROW)).thenReturn(location);
     when(service.findStopsNearALocation(location, date.toLocalDate())).thenReturn(
@@ -231,7 +236,7 @@ public class LocationIntentProcessorTest extends Mockito {
   }
 
   @Test
-  public void processOneToday() throws Exception {
+  public void processOneToday() {
     when(locator.locate(CLARK_N_MONROE, GeolocationGranularity.NARROW)).thenReturn(location);
     when(service.findStopsNearALocation(location, date.toLocalDate())).thenReturn(ImmutableList.of(FAT_PICKLE_STOP));
     
@@ -244,7 +249,7 @@ public class LocationIntentProcessorTest extends Mockito {
   }
 
   @Test
-  public void processTwoToday() throws Exception {
+  public void processTwoToday() {
     when(locator.locate(CLARK_N_MONROE, GeolocationGranularity.NARROW)).thenReturn(location);
     when(service.findStopsNearALocation(location, date.toLocalDate())).thenReturn(
         ImmutableList.of(BEAVERS_STOP, FAT_PICKLE_STOP));
@@ -258,7 +263,7 @@ public class LocationIntentProcessorTest extends Mockito {
   }
 
   @Test
-  public void processThreeToday() throws Exception {
+  public void processThreeToday() {
     when(locator.locate(CLARK_N_MONROE, GeolocationGranularity.NARROW)).thenReturn(location);
     when(service.findStopsNearALocation(location, date.toLocalDate())).thenReturn(
         ImmutableList.of(BEAVERS_STOP, CHICAGOS_FINEST_STOP, FAT_PICKLE_STOP));
@@ -272,7 +277,7 @@ public class LocationIntentProcessorTest extends Mockito {
   }
 
   @Test
-  public void processOneTomorrow() throws Exception {
+  public void processOneTomorrow() {
     Intent intent = intent(CLARK_N_MONROE, TOMORROW);
     LocalDate localDate = date.toLocalDate()
         .withDayOfMonth(16);
@@ -288,7 +293,7 @@ public class LocationIntentProcessorTest extends Mockito {
   }
 
   @Test
-  public void processTwoTomorrow() throws Exception {
+  public void processTwoTomorrow() {
     Intent intent = intent(CLARK_N_MONROE, TOMORROW);
     date = date.withDayOfMonth(16);
     when(locator.locate(CLARK_N_MONROE, GeolocationGranularity.NARROW)).thenReturn(location);
@@ -304,7 +309,7 @@ public class LocationIntentProcessorTest extends Mockito {
   }
 
   @Test
-  public void processThreeTomorrow() throws Exception {
+  public void processThreeTomorrow() {
     Intent intent = intent(CLARK_N_MONROE, TOMORROW);
     date = date.withDayOfMonth(16);
     when(locator.locate(CLARK_N_MONROE, GeolocationGranularity.NARROW)).thenReturn(location);
@@ -318,6 +323,30 @@ public class LocationIntentProcessorTest extends Mockito {
         "<speak>There are 3 trucks scheduled to be at Clark and Monroe tomorrow: Beavers Donuts,<break time=\"0.3s\"/> Chicagos Finest, and The Fat Pickle. Beavers Donuts from 07:00 AM to 10:00 AM,<break time=\"0.3s\"/> Chicagos Finest from 11:00 AM to 01:00 PM, and The Fat Pickle from 11:00 AM to 01:00 PM</speak>");
     assertThat(((SimpleCard) response.getCard()).getContent()).isEqualTo(
         "There are 3 trucks scheduled to be at Clark and Monroe tomorrow: Beavers Donuts, Chicagos Finest, and The Fat Pickle. Beavers Donuts from 07:00 AM to 10:00 AM, Chicagos Finest from 11:00 AM to 01:00 PM, and The Fat Pickle from 11:00 AM to 01:00 PM");
+
+  }
+
+  @Test
+  public void processNearMe() {
+    Intent intent = intent("me", TODAY);
+    AddressResponse addressResponse = AddressResponse.builder()
+        .addressLine1("123 Main Street")
+        .city("Hoffman Estates")
+        .stateOrRegion("IL")
+        .build();
+    Location location = Location.builder()
+        .name("123 Main Street, Hoffman Estates, IL")
+        .lat(13)
+        .lng(12)
+        .build();
+    when(locator.locate(location.getName(), GeolocationGranularity.NARROW)).thenReturn(location);
+    when(amazon.findAddress()).thenReturn(addressResponse);
+    when(service.findStopsNearALocation(location, date.toLocalDate())).thenReturn(
+        ImmutableList.of(BEAVERS_STOP, CHICAGOS_FINEST_STOP, FAT_PICKLE_STOP));
+    SpeechletResponse response = processor.process(intent, amazon);
+    assertThat(response.getCard().getTitle()).isEqualTo("Food Trucks Near Me");
+    // this is not what I really want, but just an initial test
+    assertSpeech(response.getOutputSpeech()).isEqualTo("<speak>There are 3 trucks at 123 Main Street, Hoffman Estates, IL today: Beavers Donuts,<break time=\"0.3s\"/> Chicagos Finest, and The Fat Pickle. Beavers Donuts from 07:00 AM to 10:00 AM,<break time=\"0.3s\"/> Chicagos Finest from 11:00 AM to 01:00 PM, and The Fat Pickle from 11:00 AM to 01:00 PM</speak>");
 
   }
 

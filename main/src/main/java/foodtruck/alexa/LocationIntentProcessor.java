@@ -88,13 +88,18 @@ class LocationIntentProcessor implements IntentProcessor {
       locationName = locationName.substring(0, locationName.length() - 4);
     }
     Location location = null;
-    if ("me".equals(locationName)) {
+    boolean nearMe = "me".equals(locationName);
+    if (nearMe) {
       if (connector != null) {
         try {
           AddressResponse response = connector.findAddress();
           Optional<String> loc = response.toLocationName();
           if (loc.isPresent()) {
             location = locator.locate(loc.get(), GeolocationGranularity.NARROW);
+            // this ensures that we find nearby locations
+            if (location.getRadius() < 0.1) {
+              location = location.withRadius(0.25);
+            }
           } else {
             log.log(Level.SEVERE, "unable to decode {0}", response);
             return SpeechletResponseBuilder.builder()
@@ -102,6 +107,7 @@ class LocationIntentProcessor implements IntentProcessor {
                 .tell();
           }
         } catch (ServiceException se) {
+          // Send down permission card
           log.log(Level.INFO, se.getMessage(), se);
           SpeechletResponseBuilder builder = SpeechletResponseBuilder.builder()
               .permissionsCard("foo bar", ImmutableSet.of("read::alexa:device:all:address"));
@@ -177,7 +183,7 @@ class LocationIntentProcessor implements IntentProcessor {
                 AlexaUtils.toAlexaList(truckNames, true), schedulePart));
       }
     }
-    String cardTitle = String.format("Food Trucks at %s %s", location.getShortenedName(),
+    String cardTitle = nearMe ? "Food Trucks Near Me" : String.format("Food Trucks at %s %s", location.getShortenedName(),
         capitalize(toDate(requestDate)));
     if (location.getImageUrl() == null) {
       builder.simpleCard(cardTitle);

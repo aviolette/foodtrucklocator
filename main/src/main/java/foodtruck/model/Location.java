@@ -334,6 +334,10 @@ public class Location extends ModelEntity implements Serializable {
     };
   }
 
+  public Location withRadius(double radius) {
+    return Location.builder(this).radius(radius).build();
+  }
+
   public static class Builder {
     private Object key;
     private double lat;

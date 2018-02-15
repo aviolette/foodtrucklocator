@@ -2,6 +2,8 @@ package foodtruck.schedule;
 
 import com.google.common.collect.ImmutableSet;
 
+import org.joda.time.DateTime;
+
 import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.model.TwitterNotificationAccount;
@@ -47,6 +49,14 @@ public class ModelTestHelper {
         .twitterHandle("truck4")
         .categories(ImmutableSet.of("Donuts", "Breakfast"))
         .id("truck4")
+        .build();
+  }
+
+  public static Truck beaversDonuts() {
+    return Truck.builder()
+        .name("Beavers Donuts")
+        .twitterHandle("beaversdonuts")
+        .id("beaversdonuts")
         .build();
   }
 
@@ -110,5 +120,13 @@ public class ModelTestHelper {
         .active(true)
         .twitterHandle("chiftf_aon")
         .build();
+  }
+
+  public static DateTime breakfastStart() {
+    return new DateTime(2016, 9, 1, 7, 0);
+  }
+
+  public static DateTime breakfastEnd() {
+    return new DateTime(2016, 9, 1, 10, 0);
   }
 }

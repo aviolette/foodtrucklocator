@@ -19,7 +19,7 @@ import static com.google.common.truth.Truth.assertThat;
 public class AddressResponseTest {
 
   /**
-   * Not really a unit test...just making sure jackson can load this properly
+   * Just making sure jackson can load this properly
    */
   @Test
   public void fromJson() throws IOException {
