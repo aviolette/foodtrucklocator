@@ -73,6 +73,7 @@ class JavaMailEmailSender implements EmailSender {
       Transport.send(msg);
     } catch (MessagingException | UnsupportedEncodingException e) {
       log.log(Level.WARNING, e.getMessage(), e);
+      log.log(Level.INFO, "Sender: {0}, Receiver {1}", new Object[] {sender, receivers});
       return false;
     }
     return true;
