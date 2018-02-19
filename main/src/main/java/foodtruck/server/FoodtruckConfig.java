@@ -15,6 +15,7 @@ import foodtruck.book.BookingModule;
 import foodtruck.geolocation.GeolocationModule;
 import foodtruck.linxup.LinxupModule;
 import foodtruck.mail.MailModule;
+import foodtruck.net.NetworkModule;
 import foodtruck.notifications.NotificationModule;
 import foodtruck.profile.ProfileModule;
 import foodtruck.schedule.ScheduleModule;
@@ -38,6 +39,7 @@ public class FoodtruckConfig extends GuiceServletContextListener {
   private Module[] modules() {
     ImmutableList.Builder<Module> modules = ImmutableList.<Module>builder().add(new AppengineModule())
         .add(new AlexaModule())
+        .add(new NetworkModule())
         .add(new GeolocationModule())
         .add(new SecurityModule())
         .add(new ScheduleModule())

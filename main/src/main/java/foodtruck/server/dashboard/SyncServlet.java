@@ -29,6 +29,7 @@ import foodtruck.server.resources.json.LocationReader;
 import foodtruck.server.resources.json.TruckReader;
 import foodtruck.time.Clock;
 
+
 /**
  * @author aviolette
  * @since 4/25/14
@@ -42,10 +43,12 @@ public class SyncServlet extends HttpServlet {
   private final Clock clock;
   private final LocationReader locationReader;
   private final LocationDAO locationDAO;
+  private final Client client;
 
   @Inject
-  public SyncServlet(StaticConfig staticConfig, TruckReader truckReader, TruckDAO truckDAO, TruckStopDAO truckStopDAO,
-      Clock clock, LocationReader locationReader, LocationDAO locationDAO) {
+  public SyncServlet(StaticConfig staticConfig, TruckReader truckReader, TruckDAO truckDAO,
+      TruckStopDAO truckStopDAO, Clock clock, LocationReader locationReader,
+      LocationDAO locationDAO, Client client) {
     this.truckReader = truckReader;
     this.truckDAO = truckDAO;
     this.truckStopDAO = truckStopDAO;
@@ -53,6 +56,7 @@ public class SyncServlet extends HttpServlet {
     this.locationReader = locationReader;
     this.locationDAO = locationDAO;
     this.staticConfig = staticConfig;
+    this.client = client;
   }
 
   @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -67,10 +71,9 @@ public class SyncServlet extends HttpServlet {
     boolean syncTrucks = "on".equals(req.getParameter("trucks")),
       syncSchedule = "on".equals(req.getParameter("schedule"));
 
-    Client c = Client.create();
     if (syncTrucks) {
       truckDAO.deleteAll();
-      JSONArray arr = c.resource(staticConfig.getSyncUrl() + "/services/trucks?appKey="+staticConfig.getSyncAppKey())
+      JSONArray arr = client.resource(staticConfig.getSyncUrl() + "/services/trucks?appKey="+staticConfig.getSyncAppKey())
           .accept(MediaType.APPLICATION_JSON_TYPE).get(JSONArray.class);
       for (int i=0; i < arr.length(); i++) {
         try {
@@ -84,7 +87,7 @@ public class SyncServlet extends HttpServlet {
     if (syncSchedule) {
       final DateTime from = clock.now().withHourOfDay(0).withMinuteOfHour(0);
       truckStopDAO.deleteAfter(from);
-      JSONObject dailySchedule = c.resource(staticConfig.getSyncUrl() + "/services/daily_schedule?appKey="+staticConfig.getSyncAppKey())
+      JSONObject dailySchedule = client.resource(staticConfig.getSyncUrl() + "/services/daily_schedule?appKey="+staticConfig.getSyncAppKey())
           .accept(MediaType.APPLICATION_JSON_TYPE).get(JSONObject.class);
 
       try {

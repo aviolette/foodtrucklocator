@@ -127,4 +127,8 @@ public class StaticConfig {
   public boolean getSupportsBooking() {
     return "true".equals(System.getProperty("foodtrucklocator.supports.booking"));
   }
+
+  public String getUserAgent() {
+    return System.getProperty("foodtrucklocator.user.agent", "ChicagoFoodTruckFinder");
+  }
 }

@@ -47,8 +47,7 @@ public class SocialMediaModule extends AbstractModule {
 
   @FacebookEndpoint
   @Provides @Singleton
-  public WebResource provideFacebookResource() {
-    Client c = Client.create();
+  public WebResource provideFacebookResource(Client c) {
     return c.resource("https://graph.facebook.com");
   }
 }

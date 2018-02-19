@@ -36,12 +36,12 @@ public class GeolocationModule extends AbstractModule {
   }
 
   @GoogleEndPoint @Provides @Singleton
-  public WebResource provideWebResource() {
-    return Client.create().resource("https://maps.googleapis.com/maps/api/geocode/json");
+  public WebResource provideWebResource(Client client) {
+    return client.resource("https://maps.googleapis.com/maps/api/geocode/json");
   }
 
   @YQLEndPoint @Provides @Singleton
-  public WebResource provideYQLWebResource() {
-    return Client.create().resource("http://query.yahooapis.com/v1/public/yql");
+  public WebResource provideYQLWebResource(Client client) {
+    return client.resource("http://query.yahooapis.com/v1/public/yql");
   }
 }
