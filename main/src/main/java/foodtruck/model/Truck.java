@@ -78,6 +78,7 @@ public class Truck extends ModelEntity implements Serializable {
   private boolean disableBeaconsUntilLunchtime;
   private boolean notifyWhenLeaving;
   private boolean notifyWhenDeviceIssues;
+  private @Nullable String drupalCalendar;
 
   // For serialization (for storage in memcached)
   private Truck() {
@@ -134,6 +135,7 @@ public class Truck extends ModelEntity implements Serializable {
     this.disableBeaconsUntilLunchtime = builder.disableBeaconsUntilLunchtime;
     this.notifyWhenDeviceIssues = builder.notifyWhenDeviceIssues;
     this.notifyWhenLeaving = builder.notifyWhenLeaving;
+    this.drupalCalendar = builder.drupalCalendar;
   }
 
   public static Builder builder() {
@@ -236,6 +238,11 @@ public class Truck extends ModelEntity implements Serializable {
 
   public String getNameInSSML() {
     return MoreObjects.firstNonNull(phoneticMarkup, name);
+  }
+
+  @Nullable
+  public String getDrupalCalendar() {
+    return drupalCalendar;
   }
 
   public List<String> getBlacklistLocationNames() {
@@ -743,6 +750,7 @@ public class Truck extends ModelEntity implements Serializable {
     private boolean notifyOfLocationChanges;
     private boolean notifyWhenLeaving;
     private boolean notifyWhenDeviceIssues;
+    private @Nullable String drupalCalendar;
 
     public Builder() {
     }
@@ -797,6 +805,12 @@ public class Truck extends ModelEntity implements Serializable {
       this.disableBeaconsUntilLunchtime = truck.disableBeaconsUntilLunchtime;
       this.notifyWhenDeviceIssues = truck.notifyWhenDeviceIssues;
       this.notifyWhenLeaving = truck.notifyWhenLeaving;
+      this.drupalCalendar = truck.drupalCalendar;
+    }
+
+    public Builder drupalCalendar(@Nullable String drupalCalendar) {
+      this.drupalCalendar = drupalCalendar;
+      return this;
     }
 
     public Builder notifyWhenDeviceIssues(boolean notify) {

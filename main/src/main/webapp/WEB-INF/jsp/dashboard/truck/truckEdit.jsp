@@ -84,9 +84,13 @@
   </div>
 
   <div class="form-group">
-    <label for="calendarUrl">Calendar URL</label>
+    <label for="calendarUrl">Google Calendar URL</label>
     <input type="text" class="form-control" id="calendarUrl" name="calendarUrl"
            value="${truck.calendarUrl}"/>
+  </div>
+  <div class="form-group">
+    <label for="drupalCalendar">Drupal Calendar Url</label>
+    <input type="text" class="form-control" id="drupalCalendar" name="drupalCalendar" value="${truck.drupalCalendar}"/>
   </div>
   <div class="form-group">
     <label for="fleetSize">Fleet Size:</label>

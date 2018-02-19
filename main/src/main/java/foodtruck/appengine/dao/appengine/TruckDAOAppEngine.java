@@ -100,7 +100,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
   private static final String NOTIFY_OF_LOCATION_CHANGES = "notify_of_location_changes";
   private static final String NOTIFY_WHEN_LEAVING = "notify_when_leaving";
   private static final String NOTIFY_WHEN_DEVICE_ISSUES = "notify_when_device_issues";
-
+  private static final String DRUPAL_CALENDAR = "drupal_calendar";
   private DateTimeZone zone;
 
   @Inject
@@ -191,6 +191,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
         .facebookAccessTokenExpires(getDateTime(entity, FACEBOOK_ACCESS_TOKEN_EXPIRY, zone))
         .notifyWhenLeaving(getBooleanProperty(entity, NOTIFY_WHEN_LEAVING, false))
         .notifyWhenDeviceIssues(getBooleanProperty(entity, NOTIFY_WHEN_DEVICE_ISSUES, false))
+        .drupalCalendar(getStringProperty(entity, DRUPAL_CALENDAR))
         .build();
   }
 
@@ -359,6 +360,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     entity.setProperty(TRUCK_FACEBOOK_PAGE_ID, truck.getFacebookPageId());
     entity.setProperty(BLACKLIST_LOCATION_NAMES, truck.getBlacklistLocationNames());
     entity.setProperty(PHONETIC_ALIASES, truck.getPhoneticAliases());
+    entity.setProperty(DRUPAL_CALENDAR, truck.getDrupalCalendar());
     entity.setProperty(TWITTER_TOKEN, truck.getTwitterToken());
     entity.setProperty(TWITTER_TOKEN_SECRET, truck.getTwitterTokenSecret());
     entity.setProperty(POST_AT_NEW_LOCATION, truck.isPostAtNewStop());
