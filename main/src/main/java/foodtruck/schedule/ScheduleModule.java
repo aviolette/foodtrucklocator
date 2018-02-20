@@ -13,7 +13,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.inject.multibindings.MapBinder;
+import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Named;
 
 import org.joda.time.LocalTime;
@@ -32,15 +32,12 @@ import foodtruck.time.MilitaryTimeOnlyFormatter;
 public class ScheduleModule extends AbstractModule {
   private static final Logger log = Logger.getLogger(ScheduleModule.class.getName());
 
-  static String GOOGLE_CALENDAR = "google";
-  static String DRUPAL_CALENDAR = "drupal";
-
   @Override
   protected void configure() {
     bind(AddressExtractor.class).to(JavascriptAddressExtractor.class);
-    MapBinder<String, ScheduleStrategy> connectorBinder = MapBinder.newMapBinder(binder(), String.class, ScheduleStrategy.class);
-    connectorBinder.addBinding(GOOGLE_CALENDAR).to(GoogleCalendarV3Consumer.class);
-    connectorBinder.addBinding(DRUPAL_CALENDAR).to(DrupalCalendarConsumer.class);
+    Multibinder<ScheduleStrategy> connectorBinder = Multibinder.newSetBinder(binder(), ScheduleStrategy.class);
+    connectorBinder.addBinding().to(GoogleCalendarV3Consumer.class);
+    connectorBinder.addBinding().to(DrupalCalendarConsumer.class);
     bind(SocialMediaCacher.class).to(SocialMediaCacherImpl.class);
     bind(FoodTruckStopService.class).to(FoodTruckStopServiceImpl.class);
     String city = System.getProperty("foodtrucklocator.city", "Chicago");

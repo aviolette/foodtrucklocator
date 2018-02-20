@@ -35,8 +35,6 @@ import foodtruck.model.TruckStop;
 import foodtruck.model.TruckStopWithCounts;
 import foodtruck.time.Clock;
 
-import static foodtruck.schedule.ScheduleModule.GOOGLE_CALENDAR;
-
 /**
  * @author aviolette@gmail.com
  * @since Jul 12, 2011
@@ -45,14 +43,14 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
   private static final Logger log = Logger.getLogger(FoodTruckStopServiceImpl.class.getName());
   private final TruckStopDAO truckStopDAO;
   private final TruckDAO truckDAO;
-  private final Map<String, ScheduleStrategy> calendars;
+  private final Set<ScheduleStrategy> calendars;
   private final Clock clock;
   private final LocationDAO locationDAO;
   private final MessageDAO messageDAO;
   private final DailyDataDAO dailyDataDAO;
 
   @Inject
-  public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, Map<String, ScheduleStrategy> calendarConnectors, Clock clock,
+  public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, Set<ScheduleStrategy> calendarConnectors, Clock clock,
       TruckDAO truckDAO, LocationDAO locationDAO, MessageDAO messageDAO, DailyDataDAO dailyDataDAO) {
     this.truckStopDAO = truckStopDAO;
     this.calendars = calendarConnectors;
@@ -65,7 +63,7 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
 
   @Override
   public void pullCustomCalendarFor(Interval range, Truck truck) {
-    List<TruckStop> stops = calendars.values().stream()
+    List<TruckStop> stops = calendars.stream()
         .map(scheduleStrategy -> scheduleStrategy.findForTime(range, truck))
         .flatMap(Collection::stream)
         .collect(Collectors.toList());
@@ -109,8 +107,10 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
   @Override
   public void pullCustomCalendars(Interval theDay) {
     try {
-      // only Google for now
-      List<TruckStop> stops = calendars.get(GOOGLE_CALENDAR).findForTime(theDay, null);
+      List<TruckStop> stops = calendars.stream()
+          .map(scheduleStrategy -> scheduleStrategy.findForTime(theDay, null))
+          .flatMap(Collection::stream)
+          .collect(Collectors.toList());
       List<TruckStop> vendorStopsAfter = truckStopDAO.findVendorStopsAfter(theDay.getStart());
       log.log(Level.INFO, "Removing stops: " + vendorStopsAfter.size());
       truckStopDAO.deleteStops(vendorStopsAfter);

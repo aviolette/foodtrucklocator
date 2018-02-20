@@ -322,6 +322,13 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     return trucks.build();
   }
 
+  @Override
+  public Set<Truck> findTruckWithDrupalCalendars() {
+    Query q = new Query(TRUCK_KIND);
+    q.setFilter(new Query.FilterPredicate(DRUPAL_CALENDAR, Query.FilterOperator.NOT_EQUAL, null));
+    return ImmutableSet.copyOf(executeQuery(q));
+  }
+
   protected Entity toEntity(Truck truck, Entity entity) {
     entity.setProperty(TRUCK_CANONICAL_NAME, truck.canonicalName());
     entity.setProperty(TRUCK_DISPLAY_EMAIL, truck.isDisplayEmailPublicly());

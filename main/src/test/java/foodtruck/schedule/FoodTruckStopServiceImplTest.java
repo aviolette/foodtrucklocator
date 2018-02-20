@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -32,7 +32,6 @@ import static foodtruck.schedule.ModelTestHelper.truck2;
 import static foodtruck.schedule.ModelTestHelper.truck3;
 import static foodtruck.schedule.ModelTestHelper.truck4;
 import static foodtruck.schedule.ModelTestHelper.wackerAndAdams;
-import static foodtruck.schedule.ScheduleModule.GOOGLE_CALENDAR;
 import static org.mockito.Mockito.when;
 
 /**
@@ -52,9 +51,10 @@ public class FoodTruckStopServiceImplTest {
   private FoodTruckStopServiceImpl service;
   private final DateTime lunchStart = new DateTime(2017, 11, 6, 11, 0);
   private final DateTime lunchEnd = new DateTime(2017, 11, 6, 14, 0);
+
   @Before
   public void setup() {
-    service = new FoodTruckStopServiceImpl(truckStopDAO, ImmutableMap.of(GOOGLE_CALENDAR, schedule), clock, truckDAO, locationDAO,
+    service = new FoodTruckStopServiceImpl(truckStopDAO, ImmutableSet.of(schedule), clock, truckDAO, locationDAO,
         messageDAO, dailyDataDAO);
   }
 

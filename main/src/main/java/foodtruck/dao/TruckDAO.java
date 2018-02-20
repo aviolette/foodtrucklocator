@@ -38,6 +38,11 @@ public interface TruckDAO extends DAO<String, Truck> {
   Set<Truck> findTrucksWithCalendars();
 
   /**
+   * Finds trucks with an associated drupal calendar
+   */
+  Set<Truck> findTruckWithDrupalCalendars();
+
+  /**
    * Find all the visible trucks, ordered by name
    */
   List<Truck> findVisibleTrucks();
@@ -65,9 +70,7 @@ public interface TruckDAO extends DAO<String, Truck> {
 
   void deleteAll();
 
-  @Nullable
-  Truck findByName(String name);
+  @Nullable Truck findByName(String name);
 
-  @Nullable
-  Truck findByNameOrAlias(String name);
+  @Nullable Truck findByNameOrAlias(String name);
 }

@@ -57,6 +57,11 @@ public class TruckDAOMemcache extends AbstractMemcachedDAO<TruckDAO> implements 
   }
 
   @Override
+  public Set<Truck> findTruckWithDrupalCalendars() {
+    return delegate().findTruckWithDrupalCalendars();
+  }
+
+  @Override
   public List<Truck> findVisibleTrucks() {
     return delegate().findVisibleTrucks();
   }
