@@ -54,10 +54,6 @@ public class DrupalCalendarStopReader {
     for (Element element : items) {
       Elements contents = element.select(".contents");
       String dateData = element.attr("data-date");
-      if (contents.size() == 0) {
-        // no date in entry
-        continue;
-      }
       for (Element calendarEntry : contents) {
         TruckStop.Builder builder = TruckStop.builder()
             .truck(truck);
@@ -87,7 +83,6 @@ public class DrupalCalendarStopReader {
         }
         builder.endTime(endDate).origin(StopOrigin.VENDORCAL);
         truckStopBuilder.add(builder.build());
-
       }
    }
     return truckStopBuilder.build();
