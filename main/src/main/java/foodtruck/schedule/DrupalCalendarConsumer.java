@@ -50,10 +50,10 @@ public class DrupalCalendarConsumer implements ScheduleStrategy {
           .flatMap(Collection::stream)
           .collect(Collectors.toList());
     } else {
-      log.log(Level.INFO, "DRUPAL: {0} on {1}", new Object[]{range, truck});
       if (Strings.isNullOrEmpty(truck.getDrupalCalendar())) {
         return ImmutableList.of();
       }
+      log.log(Level.INFO, "DRUPAL: {0} on {1}", new Object[]{range, truck});
       return reader.read(client.resource(truck.getDrupalCalendar())
           .header(HttpHeaders.USER_AGENT, config.getUserAgent())
           .get(String.class), truck)
