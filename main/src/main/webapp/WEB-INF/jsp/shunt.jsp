@@ -38,9 +38,32 @@
   </div>
   <div class="jumbotron">
     <h1>Shutting Down</h1>
-
+    <p>It was a fun ride keeping this site up for 7 years. I'd like to specifically thank: <a
+        href="http://beaversdonuts.com">Beavers Donuts</a>, <a href="http://chicagolunchbox.com">Chicago
+      Lunchbox</a>, <a href="http://asweetsgirl.com">A Sweets Girl</a>, <a
+        href="http://courageouscakes.com">Cupcakes for Courage</a>,
+      <a href="http://jarabechicago.com">Adelita</a>, <a href="http://theroostcarolinakitchen.com">The
+        Roost</a>, <a href="http://theslideride.com">The Slide Ride</a>, and <a
+          href="http://thecornerfarmacy.com">The Corner Farmacy</a> for supporting me over the
+      years.  Go visit them and eat their food.
+    </p>
   </div>
-
+  <div>
+    <p>When I built this website back in 2011,
+      food trucks were a relatively new phenomenon in Chicago. Trucks were able to park (without too
+      much harassment) in many places throughout the Loop, River North, and West Loop. Over time,
+      the number of places that trucks could go legally dwindled. Now trucks have semi-permanent
+      spots at Wacker/Adams, Clark/Monroe, Michigan/Monroe and University of Chicago. Even there, they get chased
+      away.</p>
+    <p>In the early days, I got to know a lot of the truck owners and made a lot of great friends.
+      It was great being part of the scene and witnessing small businesses thrive against the odds, and
+      making great food along the way.  While food trucks still have great food, the vibe is different in ways
+      I can't quantify.  Most of the newer trucks don't really make their location available in any
+      format that I can grok and display on this website.
+    </p>
+    <p>At the same time, the operational costs of this website have doubled. For that reason, I have decided to shutdown this website.  Shutting this down will also affect the twitter feeds and Chrome extension that rely on this website for data.</p>
+    <p>Thanks for being fans! - Andrew Violette</p>
+  </div>
 </div>
 <script>
   (function (i, s, o, g, r, a, m) {
