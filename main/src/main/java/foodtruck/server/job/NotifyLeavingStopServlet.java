@@ -1,10 +1,10 @@
 package foodtruck.server.job;
 
-import javax.inject.Singleton;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import foodtruck.dao.TrackingDeviceDAO;
 import foodtruck.dao.TruckDAO;
@@ -37,7 +37,7 @@ public class NotifyLeavingStopServlet extends AbstractNotificationServlet {
     Iterable<String> emails =
         truck.isNotifyWhenLeaving() && !Strings.isNullOrEmpty(truck.getEmail()) ? ImmutableList.of(
             truck.getEmail()) : getConfig().getSystemNotificationList();
-    getEmailSender().sendMessage(subject, emails, msgBody, getConfig().getSystemNotificationList(), null);
+    getEmailSender().sendMessage(subject, emails, msgBody, ImmutableList.of(), null);
   }
 
   @Override

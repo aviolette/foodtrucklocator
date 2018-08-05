@@ -47,7 +47,7 @@ public class NotifyNewStopServlet extends AbstractNotificationServlet {
           device.getBatteryCharge() + " V\nLast broadcast: " +
           formatter.print(device.getLastBroadcast()) + "\n\n\n" + urls(String.valueOf(device.getKey()), truck.getId());
       getEmailSender().sendMessage(subject, ImmutableList.of(truck.getEmail()), msgBody,
-          getConfig().getSystemNotificationList(),
+          ImmutableList.of(),
           null);
     }
   }
