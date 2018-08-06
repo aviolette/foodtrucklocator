@@ -35,7 +35,7 @@ public class NotifyLeavingStopServlet extends AbstractNotificationServlet {
         .getShortenedName();
     String msgBody = urls(String.valueOf(device.getKey()), truck.getId());
     Iterable<String> emails =
-        truck.isNotifyWhenLeaving() && !Strings.isNullOrEmpty(truck.getEmail()) ? ImmutableList.of(
+        truck.isNotifyOfLocationChanges() && !Strings.isNullOrEmpty(truck.getEmail()) ? ImmutableList.of(
             truck.getEmail()) : getConfig().getSystemNotificationList();
     getEmailSender().sendMessage(subject, emails, msgBody, ImmutableList.of(), null);
   }
