@@ -149,7 +149,7 @@ public class TrackingDeviceServiceImplTest {
         .fuelLevel(position1.getFuelLevel())
         .batteryCharge(position1.getBatteryCharge())
         .build());
-    verify(locator, times(2)).reverseLookup(preprocessedLocation);
+    verify(locator, times(1)).reverseLookup(preprocessedLocation);
     verify(truckStopDAO).save(TruckStop.builder(stop)
         .endTime(now)
         .appendNote("Ended stop since beacon was disabled")
@@ -242,6 +242,6 @@ public class TrackingDeviceServiceImplTest {
         .label(position1.getVehicleLabel())
         .build();
     verify(trackingDeviceDAO).save(trackingDevice);
-    verify(locator, times(2)).reverseLookup(preprocessedLocation);
+    verify(locator, times(1)).reverseLookup(preprocessedLocation);
   }
 }

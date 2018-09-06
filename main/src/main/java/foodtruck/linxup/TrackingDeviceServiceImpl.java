@@ -370,7 +370,6 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
       TrackingDevice.Builder builder = TrackingDevice.builder(device);
       log.log(Level.INFO, "Synchronizing: {0} {1}", new Object[] {position, device});
       Location location = locationResolver.resolve(position, device, linxupAccount);
-      location = MoreObjects.firstNonNull(locator.reverseLookup(location), location);
       // TODO: it would be nice if the actual device could calculate this, but for now we look to see if it changed.
       boolean parked = position.getSpeedMph() == 0 && (device == null || device.getLastLocation() == null ||
           device.getLastLocation()
@@ -378,6 +377,11 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
               .equals(location.getName()) || device.getLastLocation()
           .within(0.05)
           .milesOf(location));
+      if (parked) {
+        location = MoreObjects.firstNonNull(locator.reverseLookup(location), location);
+      } else {
+        log.log(Level.INFO, "Did not lookup {0} because we are not parked", location);
+      }
       // Trying to tame the blips where the GPS goes all over the place when its still parked.
       if (device != null && device.getLastLocation() != null && location != null && device.getLastLocation()
           .getName()
