@@ -13,7 +13,7 @@
   <link rel="apple-touch-icon" sizes="152x152" href="/img/apple-touch-icon-ipad-retina.png">
   <title>${title}</title>
   <%@ include file="include/bootstrap_css.jsp" %>
-  <link href="/css/foodtruckfinder${suffix}-1.3.css" rel="stylesheet"/>
+  <link href="/css/foodtruckfinder${suffix}-1.3.1.css" rel="stylesheet"/>
   <c:if test="${!empty(additionalCss)}">
     <link href="${additionalCss}" rel="stylesheet"/>
   </c:if>

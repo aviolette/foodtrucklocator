@@ -40,7 +40,7 @@
 
 
 <%@include file="include/core_js.jsp" %>
-<script type="text/javascript" src="script/foodtruckfinder-1.21.js"></script>
+<script type="text/javascript" src="script/foodtruckfinder-1.3.1.js"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     FoodTruckLocator.run("${mode}", { coords : {latitude: ${center.latitude}, longitude: ${center.longitude}}},
