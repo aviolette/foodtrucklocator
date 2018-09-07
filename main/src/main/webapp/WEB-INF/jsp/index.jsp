@@ -1,6 +1,7 @@
 
 <%@ include file="header.jsp" %>
 
+
 <div class="row" id="sidebar">
   <div class="col-md-12" id="listContainer">
     <div id="motd" class="alert alert-warning alert-dismissable hidden">
@@ -15,15 +16,29 @@
     </ul>
     <div class="tab-content">
       <div id="nowTrucks" class="tab-pane active truckDL">
+        <div class="row truck-row">
+          <h2>Foo</h2>
+          <div class="row">
+            <div class="col-xs-6 col-md-3">
+              <a href="/trucks/cornerfarmacy">
+                <div class="thumbnail">
+                  <img src="https://storage.googleapis.com/truckicons/cornerfarmacy_preview.jpg" width="180" height="180" class="img-rounded">
+                  <p class="text-center"><strong>Corner Farmacy<br/>8:00am - 10:00am</strong></p>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+
       </div>
       <div id="laterTrucks" class="tab-pane truckDL">
       </div>
     </div>
   </div>
 </div>
-<c:if test="${not mobile}">
-  <%@include file="include/truck_dialog.jsp" %>
-</c:if>
+
+
+
 <%@include file="include/core_js.jsp" %>
 <script type="text/javascript" src="script/foodtruckfinder-1.21.js"></script>
 <script type="text/javascript">

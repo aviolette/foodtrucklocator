@@ -1,11 +1,18 @@
-#listContainer {
-  overflow-y: auto !important;
+h2 {
+  background-color: #5e5e5e;
+  color: white;
+  margin: 15px 15px 15px 0px;
+  padding: 5px 0 5px 10px;
 }
-.tooltip-inner {
-  text-align: left;
-  padding: 10px;
+
+h2 a, h2 a:hover {
+  color: white;
 }
-.tooltip-inner ul {
-  padding-left:10px;
-  margin:0;
+
+div.truck-row {
+  margin: 15px 0;
+}
+
+.thumbnail {
+  border: none;
 }

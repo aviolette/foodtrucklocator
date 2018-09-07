@@ -50,6 +50,8 @@ public class FoodTruckServlet extends HttpServlet {
     req.setAttribute("requestTimeInMillis", clock.now()
         .getMillis());
     req.setAttribute("tab", "map");
+    req.setAttribute("suffix", "");
+
     req.setAttribute("appKey", staticConfig.getFrontDoorAppKey());
     req.setAttribute("defaultCity", staticConfig.getCityState());
     req.setAttribute("description", "Find food trucks on the streets of " + staticConfig.getCity() +
