@@ -164,7 +164,7 @@ var FoodTruckLocator = function () {
     $.each(stops, function(idx, stop) {
       if (lastLocation !== stop.location.name) {
         lastLocation = stop.location.name;
-        $truckList.append("<h2><a href='/locations/" + stop.location.key + "'>" + formatLocation(lastLocation) + "</a></h2>");
+        $truckList.append("<h2><span class='glyphicon glyphicon-map-marker'></span> <a href='/locations/" + stop.location.key + "'>" + formatLocation(lastLocation) + "</a></h2>");
         if (shouldDisplayDistances() && stop.distance) {
           $truckList.append("<p>(" + stop.distance + " miles from current location)</p>")
         }
