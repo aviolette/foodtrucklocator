@@ -118,16 +118,27 @@ class GoogleCalendarV3Consumer implements ScheduleStrategy {
       return;
     }
     // HACK: toasty cheese adds codes to the end of their locations noting which trucks are going where
+
     if ("mytoastycheese".equals(truck.getId())) {
-      if (titleText.endsWith("- B1")) {
-        truck = truckDAO.findByIdOpt("besttruckinbbq").orElse(truck);
-        titleText = titleText.substring(0, titleText.length() - 4)
-            .trim();
-        log.log(Level.INFO, "Creating event on besttruckinbbq's schedule from toasty cheese' calendar: {0}", titleText);
-      } else if (titleText.endsWith("- T1") || titleText.endsWith("- T2")) {
-        titleText = titleText.substring(0, titleText.length() - 4);
-      } else if (titleText.endsWith(" T1") || titleText.endsWith(" T2")) {
-        titleText = titleText.substring(0, titleText.length() - 3);
+      int dash = titleText.indexOf("-");
+      if (dash == -1) {
+        dash = titleText.indexOf(":");
+      }
+      if (dash > 0) {
+        String truckPortion = titleText.substring(dash);
+        String alternativeTruck = null;
+        if (truckPortion.contains("BBQ")) {
+          alternativeTruck = "besttruckinbbq";
+        } else if (truckPortion.contains("Crave")) {
+          alternativeTruck = "thecravebar";
+        } else if (truckPortion.contains("Taco")) {
+          alternativeTruck = "mytoastytaco";
+        }
+        if (alternativeTruck != null) {
+          truck = truckDAO.findByIdOpt(alternativeTruck).orElse(truck);
+          titleText = titleText.substring(0, dash - 1)
+              .trim();
+        }
       }
     }
     Location location = locationFromWhereField(event, truck);
