@@ -120,12 +120,12 @@ class GoogleCalendarV3Consumer implements ScheduleStrategy {
     // HACK: toasty cheese adds codes to the end of their locations noting which trucks are going where
 
     if ("mytoastycheese".equals(truck.getId())) {
-      int dash = titleText.indexOf("-");
+      int dash = titleText.lastIndexOf("-");
       if (dash == -1) {
-        dash = titleText.indexOf(":");
+        dash = titleText.lastIndexOf(":");
       }
       if (dash > 0) {
-        String truckPortion = titleText.substring(dash);
+        String truckPortion = titleText.substring(dash+1);
         String alternativeTruck = null;
         if (truckPortion.contains("BBQ")) {
           alternativeTruck = "besttruckinbbq";
@@ -136,8 +136,7 @@ class GoogleCalendarV3Consumer implements ScheduleStrategy {
         }
         if (alternativeTruck != null) {
           truck = truckDAO.findByIdOpt(alternativeTruck).orElse(truck);
-          titleText = titleText.substring(0, dash - 1)
-              .trim();
+          titleText = titleText.substring(0, dash).trim();
         }
       }
     }
