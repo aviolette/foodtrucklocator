@@ -70,6 +70,8 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
     if ("mytoastycheese".equals(truck.getId())) {
       // HACK: these two trucks share the same calendar
       truckStopDAO.deleteStops(truckStopDAO.findVendorStopsAfter(range.getStart(), "besttruckinbbq"));
+      truckStopDAO.deleteStops(truckStopDAO.findVendorStopsAfter(range.getStart(), "mytoastytaco"));
+      truckStopDAO.deleteStops(truckStopDAO.findVendorStopsAfter(range.getStart(), "thecravebar"));
     }
     truckStopDAO.deleteStops(truckStopDAO.findVendorStopsAfter(range.getStart(), truck.getId()));
     truckStopDAO.addStops(stops);
