@@ -26,7 +26,7 @@
 
 
 <%@include file="include/core_js.jsp" %>
-<script type="text/javascript" src="script/foodtruckfinder-1.32.js"></script>
+<script type="text/javascript" src="script/foodtruckfinder-1.33.js"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     FoodTruckLocator.run("${mode}", { coords : {latitude: ${center.latitude}, longitude: ${center.longitude}}},

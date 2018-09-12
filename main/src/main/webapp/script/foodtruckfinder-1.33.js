@@ -221,12 +221,6 @@ var FoodTruckLocator = function () {
     });
   }
 
-  function resize() {
-    var $topBar = $("#topBar");
-    $("#sidebar").height($(window).height() - $topBar.height() - 60);
-    $("#listContainer").height($(window).height() - $topBar.height() - 60);
-  }
-
   function displayMessageOfTheDay(model) {
     var id = getCookie("motd");
     if (model["message"] && (id !== model["message"]["id"])) {
@@ -278,10 +272,10 @@ var FoodTruckLocator = function () {
       _defaultCityRegex = new RegExp(", " + defaultCity + "$");
       _defaultCityLength = defaultCity.length;
       _center = center;
-      resize();
       displayMessageOfTheDay(modelPayload);
       _trucks = new Trucks(modelPayload);
       var loading = true;
+      refreshViewData();
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
           loading = false;
