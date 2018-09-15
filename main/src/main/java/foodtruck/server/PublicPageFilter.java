@@ -49,7 +49,7 @@ public class PublicPageFilter implements Filter {
     String title = System.getProperty("foodtrucklocator.title", "Chicago Food Truck Finder");
     req.setAttribute("title", title);
     req.setAttribute("brandTitle", title);
-    req.setAttribute("suffix", "-fluid");
+    req.setAttribute("suffix", "");
     req.setAttribute("googleApiKey", staticConfig.getGoogleJavascriptApiKey());
     req.setAttribute("mapButtons", System.getProperty("foodtrucklocator.map.buttons",
         "[{name:'University of Chicago', " + "latitude: 41.790628999999996, longitude:-87.60130099999999}, {name:'Downtown', latitude: 41.8806818, longitude: -87.6330294}]"));
