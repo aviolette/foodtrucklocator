@@ -13,67 +13,34 @@
   <link rel="apple-touch-icon" sizes="152x152" href="/img/apple-touch-icon-ipad-retina.png">
   <title>${title}</title>
   <%@ include file="include/bootstrap_css.jsp" %>
-  <link href="/css/foodtruckfinder${suffix}-1.3.2.css" rel="stylesheet"/>
+  <link href="/css/foodtruckfinder${suffix}-1.4.css" rel="stylesheet"/>
   <c:if test="${!empty(additionalCss)}">
     <link href="${additionalCss}" rel="stylesheet"/>
   </c:if>
 </head>
 <body>
-<div class="container${suffix} cftf-main-container">
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+  <div class="container" id="foo">
+    <a class="navbar-brand" href="/">${brandTitle}</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-<div id="topBar" class="navbar navbar-fixed-top navbar-inverse" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="/">${brandTitle}</a>
-    </div>
-    <div class="collapse navbar-collapse">
-      <ul class="nav navbar-nav">
-        <li <c:if test="${tab == 'map'}"> class="active"</c:if>><a href="/">Activity</a></li>
-        <li <c:if test="${tab == 'trucks'}"> class="active"</c:if>><a href="/trucks">Trucks</a></li>
-        <c:if test="${showWeekly}">
-          <li class="dropdown<c:if test="${tab == 'location'}"> active</c:if>">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Locations <b class="caret"></b></a>
-            <ul class="dropdown-menu">
-              <li><a href="/weekly-schedule">Popular Spots</a></li>
-              <li><a href="/booze">Boozy Spots</a></li>
-              <li><a href="/businesses">Food Truck Owned Businesses</a></li>
-            </ul>
-          </li>
-        </c:if>
-        <li<c:if test="${tab == 'vendorinfo'}"> class="active"</c:if>><a href="/vendinfo">For Truck Operators</a></li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Info <b class="caret"></b></a>
-          <ul class="dropdown-menu">
-            <li><a href="/about">About</a></li>
-            <li><a href="http://twitter.com/${twitterHandle}">Twitter</a></li>
-            <li><a href="http://facebook.com/${facebookPage}">Facebook</a></li>
-          </ul>
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item<c:if test="${tab == 'map'}"> active</c:if>">
+          <a class="nav-link" href="/">Activity <span class="sr-only">(current)</span></a>
         </li>
-      </ul>
-      <ul class="nav navbar-right navbar-nav">
-        <c:if test="${!empty(user)}">
-          <c:choose>
-            <c:when test="${isAdmin}">
-              <li><a href="/admin" class="btn btn-block"><span class="glyphicon glyphicon-dashboard"></span>
-                Dashboard</a>
-              </li>
-            </c:when>
-            <c:otherwise>
-              <li><a href="/logout" class="btn btn-block"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
-              </li>
-            </c:otherwise>
-          </c:choose>
-        </c:if>
+        <li class="nav-item">
+          <a class="nav-link<c:if test="${tab == 'trucks'}"> active</c:if>" href="/trucks">Trucks</a>
+        </li>
+        <li class="nav-item <c:if test="${tab == 'vendorinfo'}">active</c:if>"><a class="nav-link" href="/vendinfo">For Truck Operators</a></li>
       </ul>
     </div>
   </div>
-</div>
+</nav>
+
+<div class="container${suffix} cftf-main-container">
 
   <noscript>
     <div class="alert alert-error">

@@ -4,21 +4,27 @@
 
 <div class="row" id="sidebar">
   <div class="col-md-12" id="listContainer">
-    <div id="motd" class="alert alert-warning alert-dismissable hidden">
+    <div id="motd" class="alert alert-success alert-dismissable d-none" role="alert">
       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-      <span id="motd-message"></span>
+      <p id="motd-message"></p>
     </div>
     <div class="alert alert-info" id="flashMsg" style="display:none">
     </div>
-    <ul class="nav nav-tabs" id="navTabs">
-      <li class="active"><a href="#nowTrucks" data-toggle="tab">Open Now</a></li>
-      <li><a href="#laterTrucks" data-toggle="tab">Open Later</a></li>
-    </ul>
-    <div class="tab-content">
-      <div id="nowTrucks" class="tab-pane active truckDL">
+    <div id="tab-section">
+      <ul class="nav nav-tabs" id="navTabs" role="tablist">
+        <li class="nav-item"><a id="now-tab" data-toggle="tab" role="tab" class="nav-link active" href="#nowTrucks">Open Now</a></li>
+        <li class="nav-item"><a id="later-tab" data-toggle="tab" role="tab" class="nav-link" href="#laterTrucks">Open Later</a></li>
+      </ul>
+      <div class="tab-content">
+        <div id="nowTrucks" class="tab-pane fade active truckDL show" role="tabpanel">
+        </div>
+        <div id="laterTrucks" class="tab-pane fade truckDL" role="tabpanel">
+        </div>
       </div>
-      <div id="laterTrucks" class="tab-pane truckDL">
-      </div>
+    </div>
+    <div class="jumbotron d-none" id="notrucks">
+      <h1 class="display-4">There are No Trucks On The Road</h1>
+      <p>Check back at a later time.</p>
     </div>
   </div>
 </div>

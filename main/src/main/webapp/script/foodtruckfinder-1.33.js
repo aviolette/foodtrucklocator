@@ -183,12 +183,12 @@ var FoodTruckLocator = function () {
     var nowTrucks = sortByDistanceFromLocation(_trucks.openNow()),
         laterTrucks = sortByDistanceFromLocation(_trucks.openLater());
     if (nowTrucks.length === 0 && laterTrucks.length === 0) {
-      $(".trucksListHeader").css("display", "none");
-      $("#navTabs").css("display", "none");
+      $("#tab-section").addClass("d-none");
       $(".truckDL").empty();
+      $("#notrucks").removeClass("d-none");
     } else {
-      $(".trucksListHeader").css("display", "block");
-      $("#navTabs").css("display", "block");
+      $("#notrucks").addClass("d-none");
+      $("#tab-section").removeClass("d-none");
       var markers = [];
       buildTruckList($("#nowTrucks"), nowTrucks, markers);
       buildTruckList($("#laterTrucks"), laterTrucks, markers);
@@ -226,7 +226,8 @@ var FoodTruckLocator = function () {
     if (model["message"] && (id !== model["message"]["id"])) {
       $("#motd-message").html(model["message"]["message"]);
       var $motd = $("#motd");
-      $motd.removeClass("hidden");
+      $motd.removeClass('d-none');
+      $motd.alert();
       $motd.on('closed.bs.alert', function () {
         setCookie("motd", model["message"]["id"], 30)
       });

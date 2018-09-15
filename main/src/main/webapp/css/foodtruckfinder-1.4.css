@@ -1,0 +1,19 @@
+.jumbotron {
+  text-align: center;
+  background-color: transparent;
+  margin-bottom: 0;
+  margin-top: 30px;
+}
+
+.cftf-main-container {
+  margin-top:60px;
+  background-color:white;
+}
+
+.bd-navbar {
+  background-color: black;
+}
+
+#sidebar {
+  padding-top:20px;
+}
