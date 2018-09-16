@@ -13,7 +13,16 @@
   <link rel="apple-touch-icon" sizes="152x152" href="/img/apple-touch-icon-ipad-retina.png">
   <title>${title}</title>
   <%@ include file="include/bootstrap_css.jsp" %>
-  <link href="/css/foodtruckfinder${suffix}-1.4.css" rel="stylesheet"/>
+  <c:choose>
+    <c:when test="${bootstrap4}">
+      <link href="/css/foodtruckfinder${suffix}-1.4.css" rel="stylesheet"/>
+      <link href="/css/glyphicons.css" rel="stylesheet"/>
+      <link href="/css/glyphicons-social.css" rel="stylesheet"/>
+    </c:when>
+    <c:otherwise>
+      <link href="/css/foodtruckfinder${suffix}-1.3.1.css" rel="stylesheet"/>
+    </c:otherwise>
+  </c:choose>
   <c:if test="${!empty(additionalCss)}">
     <link href="${additionalCss}" rel="stylesheet"/>
   </c:if>
@@ -21,7 +30,7 @@
 <body>
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
   <div class="container" id="foo">
-    <a class="navbar-brand" href="/">${brandTitle}</a>
+    <a class="navbar-brand" href="/"><img src="/img/logo.png" width="30" height="30" alt=""> ${brandTitle}</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -36,6 +45,10 @@
         </li>
         <li class="nav-item <c:if test="${tab == 'vendorinfo'}">active</c:if>"><a class="nav-link" href="/vendinfo">For Truck Operators</a></li>
       </ul>
+
+      <div>
+        <a class="nav-link2" href="https://twitter.com/chifoodtruckz" title="twitter: @chifoodtruckz"><span class="social social-twitter"></span></a>
+      </div>
     </div>
   </div>
 </nav>

@@ -8,12 +8,14 @@
 .cftf-main-container {
   margin-top:60px;
   background-color:white;
+  padding-top:30px;
 }
 
 .bd-navbar {
   background-color: black;
 }
 
-#sidebar {
-  padding-top:20px;
+.nav-link2 {
+  color: white;
+  font-weight: bold;
 }
