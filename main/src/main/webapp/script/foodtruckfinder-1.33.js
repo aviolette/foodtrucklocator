@@ -173,8 +173,8 @@ var FoodTruckLocator = function () {
       }
       // noinspection JSUnresolvedVariable
       $row.append("<div class='col-xs-6 col-md-3'><a href='/trucks/" + stop.truck.id + "'><div class='thumbnail'>" +
-          "<img width='180' height='180' src='" + makeRelative(stop.truck.previewIcon) + "' title='' class='img-rounded'/>" +
-          "<p class='text-center'><strong>" + stop.truck.name + "<br/>" + buildTimeRange(stop.stop, now) +
+          "<img width='180' height='180' src='" + makeRelative(stop.truck.previewIcon) + "' title='' class='img-thumbnail'/>" +
+          "<p><strong>" + stop.truck.name + "<br/>" + buildTimeRange(stop.stop, now) +
           "</strong></p></div></a></div>");
     });
   }
