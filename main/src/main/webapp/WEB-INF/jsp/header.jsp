@@ -38,10 +38,10 @@
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item<c:if test="${tab == 'map'}"> active</c:if>">
-          <a class="nav-link" href="/">Activity <span class="sr-only">(current)</span></a>
+          <a class="nav-link" href="/"><span class="glyphicons glyphicons-electricity"></span>Activity</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link<c:if test="${tab == 'trucks'}"> active</c:if>" href="/trucks">Trucks</a>
+          <a class="nav-link<c:if test="${tab == 'trucks'}"> active</c:if>" href="/trucks"><span class="glyphicons glyphicons-truck"></span>Trucks</a>
         </li>
         <li class="nav-item <c:if test="${tab == 'vendorinfo'}">active</c:if>"><a class="nav-link" href="/vendinfo">For Truck Operators</a></li>
       </ul>
