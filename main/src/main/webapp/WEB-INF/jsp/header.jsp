@@ -43,11 +43,10 @@
         <li class="nav-item">
           <a class="nav-link<c:if test="${tab == 'trucks'}"> active</c:if>" href="/trucks"><span class="glyphicons glyphicons-truck"></span>Trucks</a>
         </li>
-        <li class="nav-item <c:if test="${tab == 'vendorinfo'}">active</c:if>"><a class="nav-link" href="/vendinfo">For Truck Operators</a></li>
       </ul>
-
-      <div>
-        <a class="nav-link2" href="https://twitter.com/chifoodtruckz" title="twitter: @chifoodtruckz"><span class="social social-twitter"></span></a>
+      <div class="navbar-nav flex-row ml-md-auto">
+        <li class="nav-item"><a href="/about" class="nav-link">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="https://twitter.com/chifoodtruckz" title="twitter: @chifoodtruckz"><span class="social social-twitter"></span></a></li>
       </div>
     </div>
   </div>
