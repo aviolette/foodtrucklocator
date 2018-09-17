@@ -65,7 +65,6 @@ public class TruckServlet extends HttpServlet {
     req.setAttribute("stops", schedules);
     req.setAttribute("hasStops", schedules.stream().anyMatch(DailySchedule::isHasStops));
     req.setAttribute("title", truck.getName());
-    req.setAttribute("suffix", "-fluid");
     req.setAttribute("menu", menuDAO.findByTruck(truckId));
     req.setAttribute("dailyData",
         dailyDataDAO.findByTruckAndDay(truck.getId(), clock.currentDay()));

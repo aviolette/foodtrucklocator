@@ -1,24 +1,21 @@
 <%@ include file="header.jsp" %>
 
 <div id="content">
-  <ol class="breadcrumb">
-    <li><a href="/trucks">Trucks</a></li>
-    <li class="active">${truck.name}</li>
-  </ol>
 
-  <div
-      style="height:300px;background-image:url('${truck.biggestBackgroundImageUrl.protocolRelative}');background-size:100% auto"></div>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item" aria-current="page"><a href="/">Home</a></li>
+      <li class="breadcrumb-item" aria-current="page"><a href="/trucks">Trucks</a></li>
+      <li class="breadcrumb-item active" aria-current="page">${truck.name}</li>
+    </ol>
+  </nav>
 
-  <div class="row top-row" style="padding-bottom: 0;">
-    <div class="col-md-6">
-      <img class="img-rounded previewIcon" src="${truck.previewIconUrl.protocolRelative}" width="150" height="150"/>
-    </div>
-  </div>
-  <div class="row second-top-row">
+  <div class="row" style="padding-bottom: 0;">
     <div class="col-md-4">
-      <h1>${truck.name}<c:if test="${isAdmin}">
+      <img class="img-thumbnail previewIcon" src="${truck.previewIconUrl.protocolRelative}" width="150" height="150"/>
+      <div><c:if test="${isAdmin}">
         <a class="btn btn-default" href="/admin/trucks/${truck.id}"><span class='glyphicon glyphicon-pencil'></span></a>
-        </c:if></h1>
+        </c:if></div>
       <c:if test="${truck.popupVendor}"><p><span class="badge badge-info">Popup Vendor</span></p></c:if>
       <p class="lead">${truck.description}</p>
       <div>
@@ -41,12 +38,12 @@
             <li class="lead"><a target="_blank" href="${truck.url}">${truck.url}</a></li>
           </c:if>
           <c:if test="${!empty(truck.publicEmail)}">
-            <li><span class="glyphicon glyphicon-envelope"></span>&nbsp;
+            <li><span class="glyphicons glyphicons-envelope"></span>&nbsp;
               <a target="_blank"
                  href="mailto:${truck.publicEmail}">${truck.publicEmail}</a></li>
           </c:if>
           <c:if test="${!empty(truck.phone)}">
-            <li><span class="glyphicon glyphicon-earphone"></span>&nbsp;
+            <li><span class="glyphicons glyphicons-phone-alt"></span>&nbsp;
                 ${truck.phone}</li>
           </c:if>
         </ul>
@@ -63,10 +60,10 @@
     </div>
     <div class="col-md-8">
       <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#schedule-section" aria-controls="schedule-section" role="tab"
-                                                  data-toggle="tab">Schedule</a></li>
-        <li role="presentation"><a href="#menu-section" aria-controls="menu-section" role="tab"
-                                   data-toggle="tab">Menu</a></li>
+        <li role="presentation" class="nav-item"><a href="#schedule-section" aria-controls="schedule-section" role="tab"
+                                                  data-toggle="tab" class="nav-link active">Schedule</a></li>
+        <li role="presentation" class="nav-item"><a href="#menu-section" aria-controls="menu-section" role="tab"
+                                   data-toggle="tab" class="nav-link">Menu</a></li>
       </ul>
       <div class="tab-content">
         <div class="tab-pane active" role="tabpanel" id="schedule-section">
@@ -147,7 +144,7 @@
             <c:otherwise>
               <div class="row">
                 <div class="col-md-12">
-                  <p class="lead text-center">There is no published menu for this truck</p>
+                  <p class="lead">There is no published menu for this truck</p>
                 </div>
               </div>
             </c:otherwise>
