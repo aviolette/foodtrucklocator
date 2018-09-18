@@ -1,17 +1,13 @@
 <%@ include file="header.jsp" %>
 <%@ include file="include/rickshaw_css.jsp"%>
-<div id="map_canvas" style="width:100%; height:300px;"></div>
 
 <div class="row top-row">
-  <div class="col-md-12">
-    <img <c:if test="${empty(location.imageUrl.protocolRelative)}">style="display:none"</c:if> class="previewIcon" src="${location.imageUrl.protocolRelative}" width="150" height="150"/>
-  </div>
-</div>
-
-<div class="row second-top-row" style="padding-top: 0;">
   <div class="col-md-4">
+
+    <img  class="img-thumbnail previewIcon <c:if test="${empty(location.imageUrl.protocolRelative)}">hidden</c:if>" src="${location.imageUrl.protocolRelative}" width="150" height="150"/>
+
     <h1>${location.shortenedName}<c:if test="${isAdmin}">
-      <a class="btn btn-small btn-default" href="/admin/locations/${location.key}"> <span class="glyphicon glyphicon-pencil"></span> Edit</a>
+      <a class="btn btn-small btn-default" href="/admin/locations/${location.key}"> <span class="glyphicons glyphicons-pencil"></span> Edit</a>
     </c:if></h1>
 
 
@@ -42,6 +38,9 @@
                                                      href="http://twitter.com/${location.twitterHandle}"><img
           alt="@${location.twitterHandle} on twitter" src="//storage.googleapis.com/ftf_static/img/twitter32x32.png"></a></c:if>
     </div>
+
+    <div id="map_canvas" style="margin-top:20px; width: 100%; height:300px;"></div>
+
   </div>
   <div class="col-md-8">
     <c:choose>
