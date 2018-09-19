@@ -30,7 +30,7 @@
 <body>
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
   <div class="container" id="foo">
-    <a class="navbar-brand" href="/"><%-- <img src="/img/logo.png" width="30" height="30" alt=""> --%>FTF</a>
+    <a class="navbar-brand" href="/"><img src="/img/logo.png" width="30" height="30" alt=""> <span class="d-none d-sm-inline d-md-inline d-lg-inline d-xl-inline">${brandTitle}</span></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
