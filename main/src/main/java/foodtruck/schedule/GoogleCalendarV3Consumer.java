@@ -133,6 +133,8 @@ class GoogleCalendarV3Consumer implements ScheduleStrategy {
           alternativeTruck = "thecravebar";
         } else if (truckPortion.contains("Taco")) {
           alternativeTruck = "mytoastytaco";
+        } else if (truckPortion.contains("Toasty Cheese")) {
+          titleText = titleText.substring(0, dash).trim();
         }
         if (alternativeTruck != null) {
           truck = truckDAO.findByIdOpt(alternativeTruck).orElse(truck);
