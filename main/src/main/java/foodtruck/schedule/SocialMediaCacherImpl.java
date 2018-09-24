@@ -206,19 +206,22 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
         log.log(Level.FINE, "There are no social media accounts for {0}", truck.getId());
         continue;
       }
-      Optional<TruckStopMatch> match = findMatch(stories, truck);
-      DateTime terminationTime = findTermination(stories, truck);
-      ignoreTweets(stories);
-      match.ifPresent((m) -> handleStopMatch(truck, m));
-      if (!match.isPresent()) {
-        if (terminationTime != null && truck.getDeriveStopsFromSocialMedia()) {
-          capLastMatchingStop(truck, terminationTime);
-        } else {
-          log.log(Level.FINE, "No matches for {0}", truck.getId());
+      try {
+        Optional<TruckStopMatch> match = findMatch(stories, truck);
+        DateTime terminationTime = findTermination(stories, truck);
+        match.ifPresent((m) -> handleStopMatch(truck, m));
+        if (!match.isPresent()) {
+          if (terminationTime != null && truck.getDeriveStopsFromSocialMedia()) {
+            capLastMatchingStop(truck, terminationTime);
+          } else {
+            log.log(Level.FINE, "No matches for {0}", truck.getId());
+          }
         }
-      }
-      if (!stories.isEmpty()) {
-        updateLocationSpecials(truck, stories);
+        if (!stories.isEmpty()) {
+          updateLocationSpecials(truck, stories);
+        }
+      } finally {
+        ignoreTweets(stories);
       }
     }
   }
