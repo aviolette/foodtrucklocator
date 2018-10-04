@@ -29,6 +29,7 @@ import foodtruck.dao.TrackingDeviceDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.geolocation.GeoLocator;
+import foodtruck.geolocation.OverQueryLimitException;
 import foodtruck.model.LinxupAccount;
 import foodtruck.model.Location;
 import foodtruck.model.Stop;
@@ -378,7 +379,11 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
           .within(0.05)
           .milesOf(location));
       if (parked) {
-        location = MoreObjects.firstNonNull(locator.reverseLookup(location), location);
+        try {
+          location = MoreObjects.firstNonNull(locator.reverseLookup(location), location);
+        } catch (OverQueryLimitException oqe) {
+          log.log(Level.WARNING, "Over query limit", oqe);
+        }
       } else {
         log.log(Level.INFO, "Did not lookup {0} because we are not parked", location);
       }
@@ -390,8 +395,13 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
         location = device.getLastLocation();
       }
       log.log(Level.INFO, "Device State: {0}\n {1}\n {2}\n{3}", new Object[]{position, device, location, parked});
+      try {
+        location = locator.reverseLookup(location);
+      } catch (OverQueryLimitException oqe) {
+        log.log(Level.WARNING, "Over query limit", oqe);
+      }
       builder.deviceNumber(position.getDeviceNumber())
-          .lastLocation(locator.reverseLookup(location))
+          .lastLocation(location)
           .parked(parked)
           .lastActualLocation(position.toLocation())
           .degreesFromNorth(position.getDirection())

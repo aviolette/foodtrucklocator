@@ -99,6 +99,7 @@ class CacheAndForwardLocator implements GeoLocator {
         Location existing = dao.findByAlias(loc.getName());
         log.log(Level.INFO, "Result location: {0}\n\n {1}", new Object[] {loc, existing});
         if (existing == null) {
+          log.info("Saving to DB");
           return dao.saveAndFetch(loc)
               .wasJustResolved();
           // if there was no alias to the looked-up location the names would be same.  Return more precise location in that case

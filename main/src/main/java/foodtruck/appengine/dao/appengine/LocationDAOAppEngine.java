@@ -243,7 +243,7 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
   private String reverseLookupKey(Location location) {
     StringBuilder builder = new StringBuilder();
     Formatter formatter = new Formatter(builder, Locale.US);
-    formatter.format("%10.4f %10.4f", location.getLatitude(), location.getLongitude());
+    formatter.format("%10.3f %10.3f", location.getLatitude(), location.getLongitude());
     String s = builder.toString();
     return s.replaceAll(" ", "");
   }

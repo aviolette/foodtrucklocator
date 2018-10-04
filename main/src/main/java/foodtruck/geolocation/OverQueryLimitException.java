@@ -6,5 +6,5 @@ import foodtruck.util.ServiceException;
  * @author aviolette@gmail.com
  * @since 7/3/12
  */
-class OverQueryLimitException extends ServiceException {
+public class OverQueryLimitException extends ServiceException {
 }
