@@ -17,7 +17,7 @@ public class GeolocationModule extends AbstractModule {
   @Override
   protected void configure() {
     bind(GeoLocator.class).to(CacheAndForwardLocator.class);
-    bind(GeoLocator.class).annotatedWith(SecondaryGeolocator.class).to(OrderedGeolocator.class);
+    bind(GeoLocator.class).annotatedWith(SecondaryGeolocator.class).to(GoogleGeolocator.class);
   }
 
   @Provides @GoogleServerApiKey
@@ -38,10 +38,5 @@ public class GeolocationModule extends AbstractModule {
   @GoogleEndPoint @Provides @Singleton
   public WebResource provideWebResource(Client client) {
     return client.resource("https://maps.googleapis.com/maps/api/geocode/json");
-  }
-
-  @YQLEndPoint @Provides @Singleton
-  public WebResource provideYQLWebResource(Client client) {
-    return client.resource("http://query.yahooapis.com/v1/public/yql");
   }
 }

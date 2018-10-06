@@ -77,6 +77,7 @@ class GoogleGeolocator implements GeoLocator {
 
   private @Nullable Location lookup(String location, GeolocationGranularity granularity)
       throws ServiceException {
+    log.log(Level.INFO, "Address lookup: {0}", location);
     JSONObject obj = googleResource.findLocation(location);
     try {
       log.log(Level.INFO, "Geolocation result for {0}: \n{1}",
