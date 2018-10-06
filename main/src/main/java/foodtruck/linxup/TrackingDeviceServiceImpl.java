@@ -400,6 +400,10 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
       } catch (OverQueryLimitException oqe) {
         log.log(Level.WARNING, "Over query limit", oqe);
       }
+      if (location == null) {
+        location = position.toLocation();
+        log.log(Level.INFO, "Null location, reverting to GPS position");
+      }
       builder.deviceNumber(position.getDeviceNumber())
           .lastLocation(location)
           .parked(parked)
