@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import foodtruck.appengine.cache.MemcacheCacher;
 import foodtruck.model.Location;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -22,10 +23,11 @@ import static com.google.common.truth.Truth.assertThat;
 public class GoogleGeolocatorTest extends Mockito {
   @Mock private GoogleResource resource;
   private GoogleGeolocator geoLocator;
+  @Mock private MemcacheCacher cacher;
 
   @Before
   public void before() {
-    geoLocator = new GoogleGeolocator(resource);
+    geoLocator = new GoogleGeolocator(resource, cacher);
   }
 
   @Test

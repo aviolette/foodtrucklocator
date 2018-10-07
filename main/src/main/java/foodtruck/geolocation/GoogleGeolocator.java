@@ -17,6 +17,7 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import foodtruck.appengine.cache.MemcacheCacher;
 import foodtruck.model.Location;
 import foodtruck.monitoring.Monitored;
 import foodtruck.util.ServiceException;
@@ -28,15 +29,18 @@ import foodtruck.util.ServiceException;
  */
 class GoogleGeolocator implements GeoLocator {
   private static final Logger log = Logger.getLogger(GoogleGeolocator.class.getName());
+  private static final String REVERSE_LOOKUP_BACKOFF = "GoogleGeolocator-QueryLimit-Exceeded";
   private final Pattern latLongExpression;
   private final GoogleResource googleResource;
   private final Set<String> NARROW_SET = ImmutableSet.of("intersection", "street_address", "premise"),
                 BROAD_SET = ImmutableSet.of("intersection", "street_address", "airport", "park", "point_of_interest", "premise");
+  private final MemcacheCacher cacher;
 
   @Inject
-  public GoogleGeolocator(GoogleResource googleResource) {
+  public GoogleGeolocator(GoogleResource googleResource, MemcacheCacher cacher) {
     latLongExpression = Pattern.compile("([\\-|\\d|\\.]+),\\s*([\\-|\\d|\\.]+)[\\s*,\\s*]?");
     this.googleResource = googleResource;
+    this.cacher = cacher;
   }
 
   @Override @Monitored
@@ -53,6 +57,10 @@ class GoogleGeolocator implements GeoLocator {
   public @Nullable Location reverseLookup(Location location) throws ServiceException {
     try {
       log.log(Level.INFO, "Looking up location: {0}", location);
+      if (cacher.get(REVERSE_LOOKUP_BACKOFF) == Boolean.TRUE) {
+        log.log(Level.WARNING, "Query limit exceeded so not performing lookup until cache clear");
+        throw new OverQueryLimitException();
+      }
       JSONObject obj = googleResource.reverseLookup(location);
       log.log(Level.FINE, "Reverse lookup results for {0}: \n{1}",
           new Object[] {location, obj});
@@ -71,6 +79,7 @@ class GoogleGeolocator implements GeoLocator {
 
   private void checkStatus(JSONObject result) throws OverQueryLimitException {
     if ("OVER_QUERY_LIMIT".equals(result.optString("status"))) {
+      cacher.put(REVERSE_LOOKUP_BACKOFF, Boolean.TRUE, 5);
       throw new OverQueryLimitException();
     }
   }

@@ -382,7 +382,7 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
         try {
           location = MoreObjects.firstNonNull(locator.reverseLookup(location), location);
         } catch (OverQueryLimitException oqe) {
-          log.log(Level.WARNING, "Over query limit", oqe);
+          log.log(Level.WARNING, oqe.getMessage());
         }
       } else {
         log.log(Level.INFO, "Did not lookup {0} because we are not parked", location);
@@ -398,7 +398,7 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
       try {
         location = locator.reverseLookup(location);
       } catch (OverQueryLimitException oqe) {
-        log.log(Level.WARNING, "Over query limit", oqe);
+        log.log(Level.WARNING, oqe.getMessage());
       }
       if (location == null) {
         location = position.toLocation();
