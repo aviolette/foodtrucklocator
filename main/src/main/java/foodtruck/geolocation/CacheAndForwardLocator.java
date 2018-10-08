@@ -106,6 +106,7 @@ class CacheAndForwardLocator implements GeoLocator {
             .build();
         Location existing = dao.findByAlias(loc.getName());
         log.log(Level.INFO, "Result location: {0}\n\n {1}", new Object[] {loc, existing});
+        reverseLookupDAO.save(new PartialLocation(loc.getName(), loc.getLatitude(), loc.getLongitude()));
         if (existing == null) {
           log.info("Saving to DB");
           reverseLookupDAO.save(new PartialLocation(loc.getName(), loc.getLatitude(), loc.getLongitude()));
@@ -119,6 +120,7 @@ class CacheAndForwardLocator implements GeoLocator {
           // if there was an alias, the names would be different and we would want to pick the alias
         } else {
           log.log(Level.INFO, "Choosing existing location: {0} {1}", new Object[]{loc, existing});
+          reverseLookupDAO.save(new PartialLocation(existing.getName(), loc.getLatitude(), loc.getLongitude()));
           return existing;
         }
       }
