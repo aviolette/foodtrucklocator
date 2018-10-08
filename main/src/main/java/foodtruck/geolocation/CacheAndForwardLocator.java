@@ -113,6 +113,7 @@ class CacheAndForwardLocator implements GeoLocator {
               .wasJustResolved();
           // if there was no alias to the looked-up location the names would be same.  Return more precise location in that case
         } else if (existing.sameName(loc)) {
+          reverseLookupDAO.save(new PartialLocation(loc.getName(), loc.getLatitude(), loc.getLongitude()));
           log.info("Returning existing");
           return loc;
           // if there was an alias, the names would be different and we would want to pick the alias
