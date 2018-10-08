@@ -33,7 +33,7 @@ public class PartialLocation extends ModelEntity {
   public static String reverseLookupKey(double lat, double lng) {
     StringBuilder builder = new StringBuilder();
     Formatter formatter = new Formatter(builder, Locale.US);
-    formatter.format("%10.4f %10.4f", lat, lng);
+    formatter.format("%10.3f %10.3f", lat, lng);
     String s = builder.toString();
     return s.replaceAll(" ", "");
   }
