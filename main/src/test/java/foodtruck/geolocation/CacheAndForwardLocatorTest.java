@@ -31,7 +31,7 @@ public class CacheAndForwardLocatorTest {
 
   @Before
   public void before() {
-    locator = new CacheAndForwardLocator(dao, secondary, countPublisher);
+    locator = new CacheAndForwardLocator(dao, secondary, countPublisher, null);
     namedLocation = Location.builder().lat(-3).lng(-4).name(LOCATION_NAME).build();
   }
 

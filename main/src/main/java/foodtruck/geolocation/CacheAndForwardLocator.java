@@ -1,5 +1,6 @@
 package foodtruck.geolocation;
 
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -8,7 +9,9 @@ import javax.annotation.Nullable;
 import com.google.inject.Inject;
 
 import foodtruck.dao.LocationDAO;
+import foodtruck.dao.ReverseLookupDAO;
 import foodtruck.model.Location;
+import foodtruck.model.PartialLocation;
 import foodtruck.monitoring.CounterPublisher;
 
 /**
@@ -24,13 +27,15 @@ class CacheAndForwardLocator implements GeoLocator {
   private final LocationDAO dao;
   private final GeoLocator secondaryLocator;
   private final CounterPublisher counterPublisher;
+  private final ReverseLookupDAO reverseLookupDAO;
 
   @Inject
   public CacheAndForwardLocator(LocationDAO dao, @SecondaryGeolocator GeoLocator secondaryLocator,
-      CounterPublisher counterPublisher) {
+      CounterPublisher counterPublisher, ReverseLookupDAO reverseLookupDAO) {
     this.secondaryLocator = secondaryLocator;
     this.dao = dao;
     this.counterPublisher = counterPublisher;
+    this.reverseLookupDAO = reverseLookupDAO;
   }
 
   @Override
@@ -81,17 +86,19 @@ class CacheAndForwardLocator implements GeoLocator {
         return location.withName(loc.getName());
       }
     }
-    Location loc = dao.findByLatLng(location);
-    if (loc != null) {
-      Location aliased = dao.findByAlias(loc.getName());
+
+    Optional<PartialLocation> locationOpt = reverseLookupDAO.findByLatLng(location.getLatitude(), location.getLongitude());
+    if (locationOpt.isPresent()) {
+      String name = locationOpt.get().getName();
+      Location aliased = dao.findByAlias(name);
       if (aliased != null) {
         return aliased;
       }
-      return location.withName(loc.getName());
+      return location.withName(name);
     }
     try {
       log.log(Level.INFO, "Looking up location: {0}", location);
-      loc = secondaryLocator.reverseLookup(location);
+      Location loc = secondaryLocator.reverseLookup(location);
       if (loc != null) {
         loc = Location.builder(loc)
             .valid(true)
@@ -100,6 +107,7 @@ class CacheAndForwardLocator implements GeoLocator {
         log.log(Level.INFO, "Result location: {0}\n\n {1}", new Object[] {loc, existing});
         if (existing == null) {
           log.info("Saving to DB");
+          reverseLookupDAO.save(new PartialLocation(loc.getName(), loc.getLatitude(), loc.getLongitude()));
           return dao.saveAndFetch(loc)
               .wasJustResolved();
           // if there was no alias to the looked-up location the names would be same.  Return more precise location in that case

@@ -17,7 +17,9 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import foodtruck.dao.LocationDAO;
+import foodtruck.dao.ReverseLookupDAO;
 import foodtruck.model.Location;
+import foodtruck.model.PartialLocation;
 import foodtruck.model.StaticConfig;
 import foodtruck.notifications.PublicEventNotificationService;
 import foodtruck.schedule.FoodTruckStopService;
@@ -41,16 +43,19 @@ public class LocationEditServlet extends HttpServlet {
   private final FoodTruckStopService truckStopService;
   private final PublicEventNotificationService notificationService;
   private final StaticConfig config;
+  private final ReverseLookupDAO reverseLookupDAO;
 
   @Inject
   public LocationEditServlet(LocationDAO dao, LocationWriter writer, LocationReader reader,
-      FoodTruckStopService truckStopService, PublicEventNotificationService notificationService, StaticConfig config) {
+      FoodTruckStopService truckStopService, PublicEventNotificationService notificationService, StaticConfig config,
+      ReverseLookupDAO reverseLookupDAO) {
     this.locationDAO = dao;
     this.writer = writer;
     this.reader = reader;
     this.truckStopService = checkNotNull(truckStopService);
     this.notificationService = checkNotNull(notificationService);
     this.config = config;
+    this.reverseLookupDAO = reverseLookupDAO;
   }
 
   @Override
@@ -90,6 +95,8 @@ public class LocationEditServlet extends HttpServlet {
       locationDAO.save(location);
       truckStopService.updateLocationInCurrentSchedule(location);
       notificationService.updateLocationInNotifications(location);
+      reverseLookupDAO.save(new PartialLocation(location.getName(), location.getLatitude(), location.getLongitude()));
+
       resp.setStatus(204);
     } catch (JSONException e) {
       throw new ServletException(e);
