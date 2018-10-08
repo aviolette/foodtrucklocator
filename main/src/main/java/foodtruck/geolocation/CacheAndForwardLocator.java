@@ -90,6 +90,7 @@ class CacheAndForwardLocator implements GeoLocator {
     Optional<PartialLocation> locationOpt = reverseLookupDAO.findByLatLng(location.getLatitude(), location.getLongitude());
     if (locationOpt.isPresent()) {
       String name = locationOpt.get().getName();
+      log.log(Level.INFO, "Found location: " + name);
       Location aliased = dao.findByAlias(name);
       if (aliased != null) {
         return aliased;

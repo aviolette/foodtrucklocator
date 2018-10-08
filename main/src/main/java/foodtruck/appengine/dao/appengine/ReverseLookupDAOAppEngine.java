@@ -1,6 +1,7 @@
 package foodtruck.appengine.dao.appengine;
 
 import java.util.Optional;
+import java.util.logging.Logger;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
@@ -18,6 +19,8 @@ import static foodtruck.appengine.dao.appengine.Attributes.getStringProperty;
  * @since 10/7/18
  */
 public class ReverseLookupDAOAppEngine extends AppEngineDAO<String, PartialLocation> implements ReverseLookupDAO {
+
+  private static final Logger log = Logger.getLogger(ReverseLookupDAOAppEngine.class.getName());
 
   @Inject
   public ReverseLookupDAOAppEngine(Provider<DatastoreService> provider) {
@@ -40,6 +43,8 @@ public class ReverseLookupDAOAppEngine extends AppEngineDAO<String, PartialLocat
 
   @Override
   public Optional<PartialLocation> findByLatLng(double lat, double lng) {
-    return findByIdOpt(PartialLocation.reverseLookupKey(lat, lng));
+    String key = PartialLocation.reverseLookupKey(lat, lng);
+    log.info("Looking up location by key: " + key);
+    return findByIdOpt(key);
   }
 }
