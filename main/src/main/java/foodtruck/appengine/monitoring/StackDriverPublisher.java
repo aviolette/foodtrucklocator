@@ -47,9 +47,9 @@ public class StackDriverPublisher implements CounterPublisher {
   @Override
   public void increment(String propertyName, int amount) {
     log.info("Writing out property: " + propertyName);
-    MetricServiceClient client;
-    try {
-      client = MetricServiceClient.create();
+    ;
+    try (MetricServiceClient client = MetricServiceClient.create()) {
+
 
       TimeInterval interval = TimeInterval.newBuilder()
           .setEndTime(Timestamps.fromMillis(clock.nowInMillis()))
@@ -99,7 +99,6 @@ public class StackDriverPublisher implements CounterPublisher {
       client.createTimeSeries(request);
     } catch (IOException e) {
       log.log(Level.INFO, e.getMessage(), e);
-      return;
     }
   }
 }
