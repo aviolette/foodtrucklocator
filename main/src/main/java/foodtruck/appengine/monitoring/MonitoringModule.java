@@ -21,6 +21,7 @@ public class MonitoringModule extends AbstractModule {
   @Override protected void configure() {
     bind(CounterPublisher.class).to(QueuePublisher.class);
     install(new CommonMonitoringModule());
+    install(new StackDriverModule());
   }
 
   @Provides

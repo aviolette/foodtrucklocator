@@ -13,6 +13,8 @@ import com.google.inject.Singleton;
 import foodtruck.dao.DailyRollupDAO;
 import foodtruck.dao.FifteenMinuteRollupDAO;
 import foodtruck.dao.WeeklyRollupDAO;
+import foodtruck.monitoring.CounterPublisher;
+import foodtruck.monitoring.StackDriver;
 import foodtruck.time.Clock;
 
 /**
@@ -21,18 +23,12 @@ import foodtruck.time.Clock;
  */
 @Singleton
 public class StatUpdateQueueServlet extends HttpServlet {
-  private final DailyRollupDAO dailyRollupDAO;
-  private final FifteenMinuteRollupDAO fifteenMinuteRollupDAO;
-  private final WeeklyRollupDAO weeklyRollupDAO;
-  private final Clock clock;
+
+  private final CounterPublisher publisher;
 
   @Inject
-  public StatUpdateQueueServlet(DailyRollupDAO dailyRollupDAO, FifteenMinuteRollupDAO fifteenMinuteRollupDAO,
-      Clock clock, WeeklyRollupDAO weeklyRollupDAO) {
-    this.dailyRollupDAO = dailyRollupDAO;
-    this.fifteenMinuteRollupDAO = fifteenMinuteRollupDAO;
-    this.clock = clock;
-    this.weeklyRollupDAO = weeklyRollupDAO;
+  public StatUpdateQueueServlet(@StackDriver CounterPublisher publisher) {
+    this.publisher = publisher;
   }
 
   @Override
@@ -43,8 +39,6 @@ public class StatUpdateQueueServlet extends HttpServlet {
       amount = Integer.parseInt(req.getParameter("amount"));
     } catch (NumberFormatException | NullPointerException ignored) {
     }
-    fifteenMinuteRollupDAO.updateCount(clock.now(), param, amount);
-    dailyRollupDAO.updateCount(clock.now(), param, amount);
-    weeklyRollupDAO.updateCount(clock.now(), param, amount);
+    publisher.increment(param, amount);
   }
 }

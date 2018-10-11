@@ -54,12 +54,12 @@ class CacheAndForwardLocator implements GeoLocator {
       log.log(Level.FINE, "Reverse lookup location: {0}", foundLocation);
       return foundLocation;
     }
-    counterPublisher.increment("cacheLookup_total");
+    counterPublisher.increment("geocode_cache_lookup_total");
     Location loc = dao.findByAlias(location);
     if (loc != null) {
       return loc;
     } else {
-      counterPublisher.increment("cacheLookup_failed");
+      counterPublisher.increment("geocode_cache_lookup_failed");
     }
     try {
       loc = secondaryLocator.locate(location, granularity);

@@ -125,6 +125,12 @@
       <version>0.36</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-monitoring</artifactId>
+      <version>1.48.0</version>
+    </dependency>
+
     <!-- https://mvnrepository.com/artifact/com.google.truth.extensions/truth-java8-extension -->
     <dependency>
       <groupId>com.google.truth.extensions</groupId>

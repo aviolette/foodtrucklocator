@@ -82,4 +82,9 @@ class ClockImpl implements Clock {
   @Override public DateTime timeAt(int hour, int minute) {
     return now().withTimeAtStartOfDay().withHourOfDay(hour).withMinuteOfHour(minute);
   }
+
+  @Override
+  public long nowInMillis() {
+    return System.currentTimeMillis();
+  }
 }
