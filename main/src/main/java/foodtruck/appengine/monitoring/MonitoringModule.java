@@ -19,7 +19,7 @@ import foodtruck.monitoring.HourlyScheduleCounter;
 public class MonitoringModule extends AbstractModule {
 
   @Override protected void configure() {
-    bind(CounterPublisher.class).to(QueuePublisher.class);
+    bind(CounterPublisher.class).to(PullQueuePublisher.class);
     install(new CommonMonitoringModule());
     install(new StackDriverModule());
   }

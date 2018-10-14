@@ -4,4 +4,8 @@
     <max-concurrent-requests>1</max-concurrent-requests>
     <rate>1/s</rate>
   </queue>
+  <queue>
+    <name>stats-queue</name>
+    <mode>pull</mode>
+  </queue>
 </queue-entries>
