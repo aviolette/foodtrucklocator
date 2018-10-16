@@ -112,7 +112,11 @@ public class TrackingDevice extends ModelEntity {
     if (index != -1) {
       fuel = fuel.substring(0, index);
     }
-    return Ints.tryParse(fuel);
+    try {
+      return Integer.parseInt(fuel, 10);
+    } catch (Exception e) {
+      return 0;
+    }
   }
 
   public boolean isParked() {
