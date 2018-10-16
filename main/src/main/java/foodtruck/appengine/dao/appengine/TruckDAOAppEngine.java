@@ -101,6 +101,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
   private static final String NOTIFY_WHEN_LEAVING = "notify_when_leaving";
   private static final String NOTIFY_WHEN_DEVICE_ISSUES = "notify_when_device_issues";
   private static final String DRUPAL_CALENDAR = "drupal_calendar";
+  private static final String ICAL_CALENDAR = "ical_calendar";
   private DateTimeZone zone;
 
   @Inject
@@ -192,6 +193,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
         .notifyWhenLeaving(getBooleanProperty(entity, NOTIFY_WHEN_LEAVING, false))
         .notifyWhenDeviceIssues(getBooleanProperty(entity, NOTIFY_WHEN_DEVICE_ISSUES, false))
         .drupalCalendar(getStringProperty(entity, DRUPAL_CALENDAR))
+        .icalCalendar(getStringProperty(entity, ICAL_CALENDAR))
         .build();
   }
 
@@ -329,6 +331,13 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     return ImmutableSet.copyOf(executeQuery(q));
   }
 
+  @Override
+  public Set<Truck> findTruckWithICalCalendars() {
+    Query q = new Query(TRUCK_KIND);
+    q.setFilter(new Query.FilterPredicate(ICAL_CALENDAR, Query.FilterOperator.NOT_EQUAL, null));
+    return ImmutableSet.copyOf(executeQuery(q));
+  }
+
   protected Entity toEntity(Truck truck, Entity entity) {
     entity.setProperty(TRUCK_CANONICAL_NAME, truck.canonicalName());
     entity.setProperty(TRUCK_DISPLAY_EMAIL, truck.isDisplayEmailPublicly());
@@ -368,6 +377,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     entity.setProperty(BLACKLIST_LOCATION_NAMES, truck.getBlacklistLocationNames());
     entity.setProperty(PHONETIC_ALIASES, truck.getPhoneticAliases());
     entity.setProperty(DRUPAL_CALENDAR, truck.getDrupalCalendar());
+    entity.setProperty(ICAL_CALENDAR, truck.getIcalCalendar());
     entity.setProperty(TWITTER_TOKEN, truck.getTwitterToken());
     entity.setProperty(TWITTER_TOKEN_SECRET, truck.getTwitterTokenSecret());
     entity.setProperty(POST_AT_NEW_LOCATION, truck.isPostAtNewStop());

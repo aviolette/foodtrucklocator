@@ -145,8 +145,6 @@ class FoodtruckServletModule extends ServletModule {
     serve("/cron/notify_stop_created").with(NotifyNewStopServlet.class);
     serve("/cron/notify_stop_ended").with(NotifyLeavingStopServlet.class);
 
-
-
     // Dashboard endpoints
     serve("/admin").with(AdminDashboardServlet.class);
     serve("/admin/alexa_test").with(AlexaTestServlet.class);

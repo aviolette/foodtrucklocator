@@ -79,6 +79,7 @@ public class Truck extends ModelEntity implements Serializable {
   private boolean notifyWhenLeaving;
   private boolean notifyWhenDeviceIssues;
   private @Nullable String drupalCalendar;
+  private @Nullable String icalCalendar;
 
   // For serialization (for storage in memcached)
   private Truck() {
@@ -136,6 +137,7 @@ public class Truck extends ModelEntity implements Serializable {
     this.notifyWhenDeviceIssues = builder.notifyWhenDeviceIssues;
     this.notifyWhenLeaving = builder.notifyWhenLeaving;
     this.drupalCalendar = builder.drupalCalendar;
+    this.icalCalendar = builder.icalCalendar;
   }
 
   public static Builder builder() {
@@ -238,6 +240,11 @@ public class Truck extends ModelEntity implements Serializable {
 
   public String getNameInSSML() {
     return MoreObjects.firstNonNull(phoneticMarkup, name);
+  }
+
+  @Nullable
+  public String getIcalCalendar() {
+    return icalCalendar;
   }
 
   @Nullable
@@ -751,6 +758,7 @@ public class Truck extends ModelEntity implements Serializable {
     private boolean notifyWhenLeaving;
     private boolean notifyWhenDeviceIssues;
     private @Nullable String drupalCalendar;
+    private @Nullable String icalCalendar;
 
     public Builder() {
     }
@@ -806,6 +814,12 @@ public class Truck extends ModelEntity implements Serializable {
       this.notifyWhenDeviceIssues = truck.notifyWhenDeviceIssues;
       this.notifyWhenLeaving = truck.notifyWhenLeaving;
       this.drupalCalendar = truck.drupalCalendar;
+      this.icalCalendar = truck.icalCalendar;
+    }
+
+    public Builder icalCalendar(@Nullable String icalCalendar) {
+      this.icalCalendar = icalCalendar;
+      return this;
     }
 
     public Builder drupalCalendar(@Nullable String drupalCalendar) {

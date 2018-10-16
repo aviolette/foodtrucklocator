@@ -51,7 +51,7 @@
 
   (function () {
     TruckScheduleWidget.init("${truck.id}", ${locations},
-        [<c:forEach var="category" varStatus="categoryIndex" items="${truck.categories}">"${category}"<c:if test="${!categoryIndex.last}">, </c:if></c:forEach>], {hasCalendar: ${not empty(truck.calendarUrl) || not empty(truck.drupalCalendar)}});
+        [<c:forEach var="category" varStatus="categoryIndex" items="${truck.categories}">"${category}"<c:if test="${!categoryIndex.last}">, </c:if></c:forEach>], {hasCalendar: ${not empty(truck.calendarUrl) || not empty(truck.drupalCalendar) || not empty(truck.icalCalendar)}});
 
 
     $(".retweet-button").click(function (e) {

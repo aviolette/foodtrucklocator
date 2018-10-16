@@ -93,6 +93,10 @@
     <input type="text" class="form-control" id="drupalCalendar" name="drupalCalendar" value="${truck.drupalCalendar}"/>
   </div>
   <div class="form-group">
+    <label for="iCalCalendar">iCal Calendar Url</label>
+    <input type="text" class="form-control" id="iCalCalendar" name="iCalCalendar" value="${truck.icalCalendar}"/>
+  </div>
+  <div class="form-group">
     <label for="fleetSize">Fleet Size:</label>
     <input type="text" class="form-control" id="fleetSize" name="fleetSize" value="${truck.fleetSize}"/>
   </div>

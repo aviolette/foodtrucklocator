@@ -80,6 +80,7 @@ public class TruckConfigurationServlet extends AbstractTruckServlet {
         .facebookPageId(request.getParameter("facebookPageId"))
         .foursquareUrl(request.getParameter("foursquareUrl"))
         .drupalCalendar(request.getParameter("drupalCalendar"))
+        .icalCalendar(request.getParameter("iCalCalendar"))
         .iconUrl(request.getParameter("iconUrl"))
         .backgroundImage(request.getParameter("backgroundImage"))
         .backgroundImageLarge(request.getParameter("backgroundImageLarge"))

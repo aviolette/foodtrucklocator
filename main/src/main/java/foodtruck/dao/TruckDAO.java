@@ -43,6 +43,11 @@ public interface TruckDAO extends DAO<String, Truck> {
   Set<Truck> findTruckWithDrupalCalendars();
 
   /**
+   * Finds trucks with an associated drupal calendar
+   */
+  Set<Truck> findTruckWithICalCalendars();
+
+  /**
    * Find all the visible trucks, ordered by name
    */
   List<Truck> findVisibleTrucks();
