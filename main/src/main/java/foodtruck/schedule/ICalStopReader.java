@@ -76,7 +76,6 @@ public class ICalStopReader {
           entry.setEndTime(parseTime(rest, zone));
         } else if (tag.equals("LOCATION")) {
           rest = rest.replaceAll("\\\\,", ",");
-          System.out.println("Location: " + rest);
           entry.setLocation(locator.locate(rest, GeolocationGranularity.NARROW));
         }
       }

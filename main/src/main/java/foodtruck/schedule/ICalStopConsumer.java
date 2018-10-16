@@ -45,7 +45,7 @@ public class ICalStopConsumer implements ScheduleStrategy {
   @Override
   public List<TruckStop> findForTime(Interval range, @Nullable Truck truck) {
     if (truck == null) {
-      return truckDAO.findTrucksWithCalendars().stream()
+      return truckDAO.findTruckWithICalCalendars().stream()
           .map(t -> findForTime(range, t))
           .flatMap(Collection::stream)
           .collect(Collectors.toList());
