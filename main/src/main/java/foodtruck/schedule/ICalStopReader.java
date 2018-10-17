@@ -81,10 +81,13 @@ public class ICalStopReader {
           rest = rest.replaceAll("\\\\,", ",");
           rest = rest.replaceAll("&amp\\\\;", "and");
           if (!locationEncountered) {
+            /*
             List<String> addresses = extractor.parse(rest, truck);
             if (!addresses.isEmpty()) {
               entry.setLocation(locator.locate(addresses.get(0), GeolocationGranularity.NARROW));
             }
+            */
+            entry.setLocation(locator.locate(rest, GeolocationGranularity.NARROW));
           }
         } else if (tag.equals("LOCATION")) {
           rest = rest.replaceAll("\\\\,", ",");
