@@ -25,7 +25,7 @@ public class ICalStopReaderTest {
 
   @Before
   public void setup() {
-    this.reader = new ICalStopReader(locator);
+    this.reader = new ICalStopReader(locator, extractor);
   }
 
   @Test

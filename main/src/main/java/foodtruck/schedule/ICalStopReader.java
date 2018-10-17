@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
-import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,10 +30,12 @@ public class ICalStopReader {
   private static final Logger log = Logger.getLogger(ICalStopReader.class.getName());
 
   private final GeoLocator locator;
+  private final AddressExtractor extractor;
 
   @Inject
-  public ICalStopReader(GeoLocator locator) {
+  public ICalStopReader(GeoLocator locator, AddressExtractor addressExtractor) {
     this.locator = locator;
+    this.extractor = addressExtractor;
   }
 
 
@@ -43,6 +44,7 @@ public class ICalStopReader {
     ICalEntry entry = null;
     try (BufferedReader reader = new BufferedReader(new StringReader(document))) {
       String line;
+      boolean locationEncountered = false;
       while ((line = reader.readLine()) != null) {
         if (line.equals("BEGIN:VEVENT")) {
           entry = new ICalEntry();
@@ -52,6 +54,7 @@ public class ICalStopReader {
             stops.add(entry.toTruckStop(truck));
           }
           entry = null;
+          locationEncountered = false;
           continue;
         }
         if (entry == null) {
@@ -74,8 +77,19 @@ public class ICalStopReader {
           entry.setStartTime(parseTime(rest, zone));
         } else if (tag.startsWith("DTEND")) {
           entry.setEndTime(parseTime(rest, zone));
+        } else if (tag.startsWith("SUMMARY")) {
+          rest = rest.replaceAll("\\\\,", ",");
+          rest = rest.replaceAll("&amp\\\\;", "and");
+          if (!locationEncountered) {
+            List<String> addresses = extractor.parse(rest, truck);
+            if (!addresses.isEmpty()) {
+              entry.setLocation(locator.locate(addresses.get(0), GeolocationGranularity.NARROW));
+            }
+          }
         } else if (tag.equals("LOCATION")) {
           rest = rest.replaceAll("\\\\,", ",");
+          rest = rest.replaceAll("&amp\\\\;", "and");
+          locationEncountered = true;
           entry.setLocation(locator.locate(rest, GeolocationGranularity.NARROW));
         }
       }
@@ -86,12 +100,15 @@ public class ICalStopReader {
   }
 
   private DateTime parseTime(String time, DateTimeZone zone) {
+    if (time.endsWith("Z")) {
+      return ISODateTimeFormat.basicDateTimeNoMillis()
+          .parseDateTime(time);
+    }
     // lifted from stack overflow
     int offsetInMillis = zone.getOffset(new DateTime().getMillis());
     String offset = String.format("%02d:%02d", Math.abs(offsetInMillis / 3600000),
         Math.abs((offsetInMillis / 60000) % 60));
     offset = (offsetInMillis >= 0 ? "+" : "-") + offset;
-
     DateTime theTime = ISODateTimeFormat.basicDateTimeNoMillis()
         .withZone(zone)
         .parseDateTime(time + offset);

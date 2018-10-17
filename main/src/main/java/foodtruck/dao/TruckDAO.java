@@ -47,6 +47,8 @@ public interface TruckDAO extends DAO<String, Truck> {
    */
   Set<Truck> findTruckWithICalCalendars();
 
+  Set<Truck> findTruckWithSquarespaceCalendars();
+
   /**
    * Find all the visible trucks, ordered by name
    */

@@ -54,13 +54,17 @@ public class ICalStopConsumer implements ScheduleStrategy {
         return ImmutableList.of();
       }
       log.log(Level.INFO, "ICAL: {0} on {1}", new Object[]{range, truck});
-      return reader.read(client.resource(truck.getIcalCalendar())
-          .header(HttpHeaders.USER_AGENT, config.getUserAgent())
-          .get(String.class), truck)
-          .stream()
-          .filter(stop -> range.contains(stop.getStartTime()) || range.contains(stop.getEndTime()))
-          .collect(Collectors.toList());
-
+      return findForRange(range, truck, truck.getIcalCalendar());
     }
+  }
+
+  public List<TruckStop> findForRange(Interval range, Truck truck, String url) {
+    return reader.read(client.resource(url)
+        .header(HttpHeaders.USER_AGENT, config.getUserAgent())
+        .get(String.class), truck)
+        .stream()
+        .filter(stop -> range.contains(stop.getStartTime()) || range.contains(stop.getEndTime()))
+        .collect(Collectors.toList());
+
   }
 }

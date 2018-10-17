@@ -97,6 +97,10 @@
     <input type="text" class="form-control" id="iCalCalendar" name="iCalCalendar" value="${truck.icalCalendar}"/>
   </div>
   <div class="form-group">
+    <label for="squarespaceCalendar">Squarespace Calendar Url</label>
+    <input type="text" class="form-control" id="squarespaceCalendar" name="squarespaceCalendar" value="${truck.squarespaceCalendar}"/>
+  </div>
+  <div class="form-group">
     <label for="fleetSize">Fleet Size:</label>
     <input type="text" class="form-control" id="fleetSize" name="fleetSize" value="${truck.fleetSize}"/>
   </div>

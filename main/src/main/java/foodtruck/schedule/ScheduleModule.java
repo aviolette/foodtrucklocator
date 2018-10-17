@@ -39,6 +39,7 @@ public class ScheduleModule extends AbstractModule {
     connectorBinder.addBinding().to(GoogleCalendarV3Consumer.class);
     connectorBinder.addBinding().to(DrupalCalendarConsumer.class);
     connectorBinder.addBinding().to(ICalStopConsumer.class);
+    connectorBinder.addBinding().to(SquarespaceCalendarConsumer.class);
     bind(SocialMediaCacher.class).to(SocialMediaCacherImpl.class);
     bind(FoodTruckStopService.class).to(FoodTruckStopServiceImpl.class);
     String city = System.getProperty("foodtrucklocator.city", "Chicago");
