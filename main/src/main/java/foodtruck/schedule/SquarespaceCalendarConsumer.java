@@ -68,6 +68,7 @@ public class SquarespaceCalendarConsumer implements ScheduleStrategy {
           log.log(Level.INFO, "Loading link {0}", link);
           stopBuilder.addAll(consumer.findForRange(range, truck, link));
         }
+        return stopBuilder.build();
       } catch (MalformedURLException e) {
         log.log(Level.SEVERE, e.getMessage(), e);
       }
