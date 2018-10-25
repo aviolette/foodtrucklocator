@@ -7,9 +7,6 @@ import foodtruck.dao.AddressRuleScriptDAO;
 import foodtruck.dao.AlexaExchangeDAO;
 import foodtruck.dao.ApplicationDAO;
 import foodtruck.dao.DailyDataDAO;
-import foodtruck.dao.DailyRollupDAO;
-import foodtruck.dao.DailyTruckStopDAO;
-import foodtruck.dao.FifteenMinuteRollupDAO;
 import foodtruck.dao.LinxupAccountDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.MenuDAO;
@@ -24,9 +21,6 @@ import foodtruck.dao.TruckObserverDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.dao.TwitterNotificationAccountDAO;
 import foodtruck.dao.UserDAO;
-import foodtruck.dao.WeeklyLocationStatsRollupDAO;
-import foodtruck.dao.WeeklyRollupDAO;
-import foodtruck.dao.WeeklyTruckStopDAO;
 import foodtruck.model.Slots;
 import foodtruck.util.Secondary;
 
@@ -42,8 +36,6 @@ public class AppEngineDAOModule extends AbstractModule {
     bind(AlexaExchangeDAO.class).to(AlexaExchangeDAOAppEngine.class);
     bind(ApplicationDAO.class).to(ApplicationDAOAppEngine.class);
     bind(DailyDataDAO.class).to(DailyDataDAOAppEngine.class);
-    bind(DailyRollupDAO.class).to(DailyRollupDAOAppEngine.class);
-    bind(FifteenMinuteRollupDAO.class).to(FifteenMinuteRollupDAOAppEngine.class);
     bind(LinxupAccountDAO.class).to(LinxupDAOAppengine.class);
     bind(LocationDAO.class).to(LocationDAOAppEngine.class);
     bind(MessageDAO.class).to(MessageDAOAppEngine.class);
@@ -56,11 +48,7 @@ public class AppEngineDAOModule extends AbstractModule {
     bind(TruckObserverDAO.class).to(TruckObserverDAOAppEngine.class);
     bind(TruckStopDAO.class).to(TruckStopDAOAppEngine.class);
     bind(TwitterNotificationAccountDAO.class).to(TwitterNotificationAccountDAOAppEngine.class);
-    bind(WeeklyLocationStatsRollupDAO.class).to(WeeklyLocationStatsRollupDAOAppEngine.class);
-    bind(WeeklyRollupDAO.class).to(WeeklyRollupDAOAppEngine.class);
     bind(UserDAO.class).to(UserDAOAppEngine.class);
-    bind(DailyTruckStopDAO.class).to(DailyTruckStopDAOAppEngine.class);
-    bind(WeeklyTruckStopDAO.class).to(WeeklyTruckStopDAOAppEngine.class);
     bind(ReverseLookupDAO.class).to(ReverseLookupDAOAppEngine.class);
   }
 

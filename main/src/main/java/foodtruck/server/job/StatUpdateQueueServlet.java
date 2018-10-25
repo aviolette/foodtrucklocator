@@ -10,12 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import foodtruck.dao.DailyRollupDAO;
-import foodtruck.dao.FifteenMinuteRollupDAO;
-import foodtruck.dao.WeeklyRollupDAO;
 import foodtruck.monitoring.CounterPublisher;
 import foodtruck.monitoring.StackDriver;
-import foodtruck.time.Clock;
 
 /**
  * @author aviolette
