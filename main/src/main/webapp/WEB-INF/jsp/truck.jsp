@@ -14,7 +14,7 @@
     <div class="col-md-4">
       <img class="img-thumbnail previewIcon" src="${truck.previewIconUrl.protocolRelative}" width="150" height="150"/>
       <div><c:if test="${isAdmin}">
-        <a class="btn btn-default" href="/admin/trucks/${truck.id}"><span class='glyphicon glyphicon-pencil'></span></a>
+        <a class="btn btn-default" href="/admin/trucks/${truck.id}"><span class='glyphicons glyphicons-pencil'></span> Edit</a>
         </c:if></div>
       <c:if test="${truck.popupVendor}"><p><span class="badge badge-info">Popup Vendor</span></p></c:if>
       <p class="lead">${truck.description}</p>
