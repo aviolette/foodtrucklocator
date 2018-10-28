@@ -66,6 +66,7 @@ import foodtruck.server.job.NotifyNewStopServlet;
 import foodtruck.server.job.ProfileSyncServlet;
 import foodtruck.server.job.RecacheServlet;
 import foodtruck.server.job.SendLunchNotificationsServlet;
+import foodtruck.server.job.SlackLunchtimeNotifications;
 import foodtruck.server.job.StatPullQueueServlet;
 import foodtruck.server.job.StatUpdateQueueServlet;
 import foodtruck.server.job.TruckMonitorServlet;
@@ -132,6 +133,7 @@ class FoodtruckServletModule extends ServletModule {
     serve("/cron/activate_beacon").with(TruckMonitorServlet.class);
     serve("/cron/check_device_issues").with(CheckDeviceIssuesServlet.class);
     serve("/cron/process_stats").with(StatPullQueueServlet.class);
+    serve("/cron/slack_notifications").with(SlackLunchtimeNotifications.class);
 
     // Queue activated servlets
     serve("/cron/update_count").with(StatUpdateQueueServlet.class);
