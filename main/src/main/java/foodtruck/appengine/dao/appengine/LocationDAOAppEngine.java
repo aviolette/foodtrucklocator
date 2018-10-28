@@ -69,6 +69,7 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
   private static final String REVERSE_LOOKUP_KEY = "reverse_lookup_key";
   private static final String ALEXA_PROVIDED = "alexa_provided";
   private static final String CREATED_BY = "created_by";
+  private static final String BLACKLISTED_FROM_CALENDAR_SEARCH = "blacklisted";
 
   private static final Logger log = Logger.getLogger(LocationDAOAppEngine.class.getName());
   private final Clock clock;
@@ -237,6 +238,7 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
     entity.setProperty(EVENT_URL, location.getEventCalendarUrl());
     entity.setProperty(ALEXA_PROVIDED, location.isAlexaProvided());
     entity.setProperty(CREATED_BY, location.getCreatedBy());
+    entity.setProperty(BLACKLISTED_FROM_CALENDAR_SEARCH, location.isBlacklistedFromCalendarSearch());
     return entity;
   }
 
@@ -278,6 +280,7 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
     builder.imageUrl(getUrlProperty(entity, IMAGE_URL));
     builder.createdBy(getStringProperty(entity, CREATED_BY));
     builder.alexaProvided(getBooleanProperty(entity, ALEXA_PROVIDED, false));
+    builder.blacklistedFromCalendarSearch(getBooleanProperty(entity, BLACKLISTED_FROM_CALENDAR_SEARCH, false));
     boolean isValid = valid == null || valid;
     if (lat == null || lng == null) {
       builder.valid(false);

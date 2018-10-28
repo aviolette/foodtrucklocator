@@ -69,6 +69,7 @@ public class LocationWriter implements JSONWriter<Location>, MessageBodyWriter<L
         .putOpt("imageUrl", location.getImageUrl())
         .putOpt("twitterHandle", location.getTwitterHandle())
         .put("alexaProvided", location.isAlexaProvided())
+        .put("blacklisted", location.isBlacklistedFromCalendarSearch())
         .put("key", location.getKey());
     if (fullOptions) {
       obj.put("alias", location.getAlias());

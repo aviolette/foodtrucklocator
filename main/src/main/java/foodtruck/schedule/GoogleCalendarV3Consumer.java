@@ -157,6 +157,8 @@ class GoogleCalendarV3Consumer implements ScheduleStrategy {
         return;
       }
       builder.add(truckStop);
+    } else if (location != null && location.isBlacklistedFromCalendarSearch()) {
+      log.log(Level.INFO, "Skipping {0} because it is blacklisted.", where);
     } else {
       // TODO: this shouldn't be hard-coded
       if (where != null && !exemptLocations.contains(where)) {

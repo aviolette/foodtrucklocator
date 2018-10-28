@@ -52,6 +52,7 @@ public class Location extends ModelEntity implements Serializable {
   private ImmutableSet<String> managerEmails;
   private boolean alexaProvided;
   private @Nullable String createdBy;
+  private boolean blacklistedFromCalendarSearch;
 
   // For serializable
   public Location() {
@@ -85,6 +86,7 @@ public class Location extends ModelEntity implements Serializable {
     managerEmails = ImmutableSet.copyOf(builder.managerEmails);
     alexaProvided = builder.alexaProvided;
     createdBy = builder.createdBy;
+    blacklistedFromCalendarSearch = builder.blacklistedFromCalendarSearch;
   }
 
   public static Builder builder() {
@@ -320,6 +322,10 @@ public class Location extends ModelEntity implements Serializable {
     };
   }
 
+  public boolean isBlacklistedFromCalendarSearch() {
+    return blacklistedFromCalendarSearch;
+  }
+
   public java.util.function.Predicate<Location> rangedPredicate8(final double distance) {
     return (input) -> input != null && input.within(distance).milesOf(Location.this);
   }
@@ -366,6 +372,7 @@ public class Location extends ModelEntity implements Serializable {
     private Set<String> managerEmails = ImmutableSet.of();
     private boolean alexaProvided;
     private @Nullable String createdBy;
+    public boolean blacklistedFromCalendarSearch;
 
     public Builder(Location location) {
       key = location.getKey();
@@ -398,6 +405,11 @@ public class Location extends ModelEntity implements Serializable {
     }
 
     public Builder() {
+    }
+
+    public Builder blacklistedFromCalendarSearch(boolean blacklisted) {
+      this.blacklistedFromCalendarSearch = blacklisted;
+      return this;
     }
 
     public Builder alexaProvided(boolean alexaProvided) {

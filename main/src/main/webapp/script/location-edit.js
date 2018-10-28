@@ -40,6 +40,7 @@ function locationEdit(loc, vendor, saveCallback, errorCallback) {
     $("#facebookUri").val(loc.facebookUri);
     $("#imageUrl").val(loc.imageUrl);
     $("#alexaProvided").attr("checked", loc.alexaProvided);
+    $("#blacklisted").attr("checked", loc.blacklisted);
     $("#eventUrl").val(loc.eventUrl);
     $("#managerEmails").val(loc.managerEmails);
     $("#email").val(loc.email);
@@ -151,6 +152,7 @@ function locationEdit(loc, vendor, saveCallback, errorCallback) {
     loc.hasBooze = $("#hasBooze").is(":checked");
     loc.closed = $("#closed").is(":checked");
     loc.alexaProvided = $("#alexaProvided").is(":checked");
+    loc.blacklisted = $("#blacklisted").is(":checked");
     loc.designatedStop = $("#designatedStop").is(":checked");
     loc.autocomplete = $("#autocomplete").is(":checked");
     loc.ownedBy = $("#ownedBy").val();

@@ -143,6 +143,7 @@ public class VendorLocationEditServlet extends HttpServlet {
           .autocomplete(true)
           .valid(true)
           .alexaProvided(true)
+          .blacklistedFromCalendarSearch(false)
           .createdBy(principal.getName())
           .description(FormDataMassager.escape(jsonPayload.optString("description")))
           .lat(jsonPayload.getDouble("latitude"))

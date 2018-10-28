@@ -26,6 +26,7 @@ public class LocationReader {
         .lat(obj.getDouble("latitude"))
         .lng(obj.getDouble("longitude"))
         .alexaProvided(obj.optBoolean("alexaProvided"))
+        .blacklistedFromCalendarSearch(obj.optBoolean("blacklisted"))
         .alias(obj.optString("alias"))
         .hasBooze(obj.optBoolean("hasBooze"))
         .eventCalendarUrl(obj.optString("eventUrl"))

@@ -152,6 +152,9 @@
       <div class="checkbox">
         <label><input id="alexaProvided" type="checkbox">&nbsp;Available to Alexa?</label>
       </div>
+      <div class="checkbox">
+        <label><input id="blacklisted" type="checkbox">&nbsp;Blacklisted from Calendar Search?</label>
+      </div>
       <div class="btn-group>">
         <button id="submitButton" class="btn btn-primary btn-lg">Save</button>
       </div>
