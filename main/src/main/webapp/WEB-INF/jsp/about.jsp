@@ -7,7 +7,9 @@
 <div class="row">
   <div class="col-md-12">
 
-    <p class="lead">The ${title} is used to find food trucks in real-time on the streets of ${city}.</p>
+    <p class="lead">The Chicago Food Truck Finder is used to find food trucks in real-time on the streets of Chicago.
+      It started out as a project for <a href="http://www.andrewviolette.net">me</a> in 2011, during the food truck
+      boom in Chicago.  I love food trucks and want them to be found &#x1F600;.</p>
 
     <a name="collect"></a>
     <h2 class="about-page">How do food trucks add their stops to this site?</h2>
