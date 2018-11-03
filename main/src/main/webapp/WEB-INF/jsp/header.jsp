@@ -43,10 +43,19 @@
         <li class="nav-item">
           <a class="nav-link<c:if test="${tab == 'trucks'}"> active</c:if>" href="/trucks"><span class="glyphicons glyphicons-truck"></span>Trucks</a>
         </li>
+        <li class="nav-item d-block d-md-none">
+          <a href="/about" class="nav-link">About</a>
+        </li>
+        <li class="nav-item d-block d-md-none">
+          <a href="/integrations" class="nav-link">Integrations</a>
+        </li>
+        <li class="nav-item d-block d-md-none">
+          <a class="nav-link" href="https://twitter.com/chifoodtruckz" title="twitter: @chifoodtruckz">@chifoodtruckz on twitter</a></li>
       </ul>
       <div class="navbar-nav flex-row ml-md-auto">
-        <li class="nav-item"><a href="/about" class="nav-link">About</a></li>
-        <li class="nav-item"><a class="nav-link" href="https://twitter.com/chifoodtruckz" title="twitter: @chifoodtruckz"><span class="social social-twitter"></span></a></li>
+        <li class="nav-item d-none d-md-block"><a href="/about" class="nav-link">About</a></li>
+        <li class="nav-item d-none d-md-block"><a href="/integrations" class="nav-link">Integrations</a></li>
+        <li class="nav-item d-none d-md-block"><a class="nav-link" href="https://twitter.com/chifoodtruckz" title="twitter: @chifoodtruckz"><span class="social social-twitter"></span></a></li>
       </div>
     </div>
   </div>

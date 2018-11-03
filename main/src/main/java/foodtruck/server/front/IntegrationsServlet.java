@@ -11,15 +11,15 @@ import com.google.inject.Singleton;
 
 /**
  * @author aviolette
- * @since 8/19/14
+ * @since 11/3/18
  */
 @Singleton
-public class AboutServlet extends HttpServlet {
+public class IntegrationsServlet extends HttpServlet {
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    req.setAttribute("tab", "about");
-    req.getRequestDispatcher("/WEB-INF/jsp/about.jsp")
+    req.setAttribute("tab", "integrations");
+    req.getRequestDispatcher("/WEB-INF/jsp/integrations.jsp")
         .forward(req, resp);
   }
 }

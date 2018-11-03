@@ -48,6 +48,7 @@ import foodtruck.server.front.AboutServlet;
 import foodtruck.server.front.BoozeAndTrucksServlet;
 import foodtruck.server.front.FoodTruckServlet;
 import foodtruck.server.front.IPhoneSupportServlet;
+import foodtruck.server.front.IntegrationsServlet;
 import foodtruck.server.front.LocationServlet;
 import foodtruck.server.front.PopularServlet;
 import foodtruck.server.front.PrivacyPolicyServlet;
@@ -111,7 +112,7 @@ class FoodtruckServletModule extends ServletModule {
     if ("true".equals(System.getProperty("foodtrucklocator.supports.ssl"))) {
       filterRegex("/admin/.*", "/", "/privacy",  "/vendor.*", "/book.*").through(SSLRedirectFilter.class);
     }
-    filterRegex("/", "/popular.*", "/businesses.*", "/booze.*", "/trucks.*", "/about.*", "/locations.*",
+    filterRegex("/", "/popular.*", "/businesses.*", "/booze.*", "/trucks.*", "/integrations.*", "/about.*", "/locations.*",
         "/stats/timeline", "/privacy", "/support.*", "/vendinfo.*").through(PublicPageFilter.class);
     filterRegex("/vendor.*").through(VendorPageFilter.class);
     filter("/*").through(SiteScraperFilter.class);
@@ -215,6 +216,7 @@ class FoodtruckServletModule extends ServletModule {
     serve("/trucks", "/trucks/").with(TrucksServlet.class);
     serve("/trucks/*").with(foodtruck.server.front.TruckServlet.class);
     serve("/about").with(AboutServlet.class);
+    serve("/integrations").with(IntegrationsServlet.class);
     serve("/locations*").with(LocationServlet.class);
     serve("/images/*").with(ImageServlet.class);
     serve("/stats/timeline").with(TruckTimelineServlet.class);
