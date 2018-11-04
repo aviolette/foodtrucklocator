@@ -1,6 +1,7 @@
 package foodtruck.server.front;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Random;
 
 import javax.servlet.ServletException;
@@ -12,6 +13,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
+import foodtruck.model.StaticConfig;
 import foodtruck.session.Session;
 
 /**
@@ -22,10 +24,12 @@ import foodtruck.session.Session;
 public class IntegrationsServlet extends HttpServlet {
 
   private final Provider<Session> sessionProvider;
+  private final StaticConfig staticConfig;
 
   @Inject
-  public IntegrationsServlet(Provider<Session> sessionProvider) {
+  public IntegrationsServlet(Provider<Session> sessionProvider, StaticConfig staticConfig) {
     this.sessionProvider = sessionProvider;
+    this.staticConfig = staticConfig;
   }
 
   @Override
@@ -33,6 +37,7 @@ public class IntegrationsServlet extends HttpServlet {
     Session session = sessionProvider.get();
     String code = String.valueOf((new Random()).nextInt());
     session.setProperty("slackCode", code);
+    req.setAttribute("encodedSlackUrl", URLEncoder.encode(staticConfig.getSlackRedirect(), "UTF-8"));
     req.setAttribute("slackCode", code);
     req.setAttribute("tab", "integrations");
     req.getRequestDispatcher("/WEB-INF/jsp/integrations.jsp")

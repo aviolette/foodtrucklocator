@@ -1,6 +1,7 @@
 package foodtruck.server.front;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,6 +24,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 import foodtruck.dao.SlackWebhookDAO;
 import foodtruck.model.SlackWebhook;
+import foodtruck.model.StaticConfig;
 import foodtruck.session.Session;
 
 /**
@@ -37,12 +39,15 @@ public class SlackOAuthServlet extends HttpServlet {
   private final Client client;
   private final SlackWebhookDAO webookDAO;
   private final Provider<Session> sessionProvider;
+  private final StaticConfig staticConfig;
 
   @Inject
-  public SlackOAuthServlet(Client client, SlackWebhookDAO slackWebhookDAO, Provider<Session> sessionProvider) {
+  public SlackOAuthServlet(Client client, SlackWebhookDAO slackWebhookDAO, Provider<Session> sessionProvider,
+      StaticConfig staticConfig) {
     this.client = client;
     this.webookDAO = slackWebhookDAO;
     this.sessionProvider = sessionProvider;
+    this.staticConfig = staticConfig;
   }
 
   @Override
@@ -77,7 +82,8 @@ public class SlackOAuthServlet extends HttpServlet {
       resp.sendError(500, "Server not configured for this request");
       return;
     }
-    String requestString = "client_id=" + clientId + "&client_secret=" + clientSecret + "&code=" + code;
+    String requestString = "client_id=" + clientId + "&client_secret=" + clientSecret + "&code=" + code +
+        "&redirect_uri=" + URLEncoder.encode(staticConfig.getSlackRedirect(), "UTF-8");
     JSONObject response = client.resource("https://slack.com/api/oauth.access")
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED)
         .entity(requestString)

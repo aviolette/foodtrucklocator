@@ -131,4 +131,8 @@ public class StaticConfig {
   public String getUserAgent() {
     return System.getProperty("foodtrucklocator.user.agent", "ChicagoFoodTruckFinder");
   }
+
+  public String getSlackRedirect() {
+    return getBaseUrl() + "/slack/oauth";
+  }
 }
