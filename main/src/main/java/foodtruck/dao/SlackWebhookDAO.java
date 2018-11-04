@@ -1,5 +1,7 @@
 package foodtruck.dao;
 
+import java.util.Optional;
+
 import foodtruck.model.SlackWebhook;
 
 /**
@@ -7,4 +9,6 @@ import foodtruck.model.SlackWebhook;
  * @since 10/28/18
  */
 public interface SlackWebhookDAO extends DAO<Long, SlackWebhook> {
+
+  Optional<SlackWebhook> findByTeamId(String teamId);
 }

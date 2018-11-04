@@ -54,6 +54,7 @@ import foodtruck.server.front.PopularServlet;
 import foodtruck.server.front.PrivacyPolicyServlet;
 import foodtruck.server.front.SSLVerificationServlet;
 import foodtruck.server.front.ShuntServlet;
+import foodtruck.server.front.SlackOAuthServlet;
 import foodtruck.server.front.SupportServlet;
 import foodtruck.server.front.TruckBusinessesServlet;
 import foodtruck.server.front.TruckTimelineServlet;
@@ -113,7 +114,7 @@ class FoodtruckServletModule extends ServletModule {
       filterRegex("/admin/.*", "/", "/privacy",  "/vendor.*", "/book.*").through(SSLRedirectFilter.class);
     }
     filterRegex("/", "/popular.*", "/businesses.*", "/booze.*", "/trucks.*", "/integrations.*", "/about.*", "/locations.*",
-        "/stats/timeline", "/privacy", "/support.*", "/vendinfo.*").through(PublicPageFilter.class);
+        "/stats/timeline", "/privacy", "/support.*", "/vendinfo.*", "/slack.*").through(PublicPageFilter.class);
     filterRegex("/vendor.*").through(VendorPageFilter.class);
     filter("/*").through(SiteScraperFilter.class);
     filter("/*").through(CommonConfigFilter.class);
@@ -222,6 +223,7 @@ class FoodtruckServletModule extends ServletModule {
     serve("/stats/timeline").with(TruckTimelineServlet.class);
     serve("/support").with(SupportServlet.class);
     serve("/support/iphone").with(IPhoneSupportServlet.class);
+    serve("/slack/oauth").with(SlackOAuthServlet.class);
     serve("/.well-known/acme-challenge/*").with(SSLVerificationServlet.class);
     serve("/").with(FoodTruckServlet.class);
 
