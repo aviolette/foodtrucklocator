@@ -54,7 +54,9 @@ public class SlackOAuthServlet extends HttpServlet {
       return;
     }
 
-    String slackCode = (String) sessionProvider.get().getProperty("slackCode");
+    Session session = sessionProvider.get();
+    String slackCode = (String) session
+        .getProperty("slackCode");
     if (Strings.isNullOrEmpty(slackCode)) {
       resp.sendError(500, "No slack code in session");
       return;
@@ -67,20 +69,15 @@ public class SlackOAuthServlet extends HttpServlet {
       }
     }
 
-    // TODO: also verify that state matches what we passed in
-
     // TODO: these should be injected
 
     String clientId = System.getProperty("foodtrucklocator.slack.client_id");
     String clientSecret = System.getProperty("foodtrucklocator.slack.client_secret");
-
     if (Strings.isNullOrEmpty(clientId) || Strings.isNullOrEmpty(clientSecret)) {
       resp.sendError(500, "Server not configured for this request");
       return;
     }
-
     String requestString = "client_id=" + clientId + "&client_secret=" + clientSecret + "&code=" + code;
-
     JSONObject response = client.resource("https://slack.com/api/oauth.access")
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED)
         .entity(requestString)
@@ -92,28 +89,23 @@ public class SlackOAuthServlet extends HttpServlet {
         resp.sendError(401);
         return;
       }
-
       String teamId = response.getString("team_id");
-      SlackWebhook webhook = webookDAO.findByTeamId(teamId).orElse(SlackWebhook.builder()
-          .teamId(teamId)
-          .locationName("Wacker and Adams, Chicago, IL")
-          .build());
-
-      webhook = SlackWebhook.builder(webhook)
+      SlackWebhook webHook = SlackWebhook.builder(webookDAO.findByTeamId(teamId)
+          .orElse(SlackWebhook.builder()
+              .teamId(teamId)
+              .locationName("Wacker and Adams, Chicago, IL")
+              .build()))
           .webhookUrl(response.getJSONObject("incoming_webhook").getString("url"))
           .accessToken(response.getString("access_token"))
           .build();
 
-      webookDAO.save(webhook);
-
+      webookDAO.save(webHook);
+      session.setProperty("slackTeam", webHook.getTeamId());
+      resp.sendRedirect("/slack/select_location");
     } catch (JSONException e) {
+      log.log(Level.INFO, "Response: {0}", response);
       log.log(Level.SEVERE, e.getMessage(), e);
       resp.sendError(500);
     }
-  }
-
-  @Override
-  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    System.out.println("world");
   }
 }

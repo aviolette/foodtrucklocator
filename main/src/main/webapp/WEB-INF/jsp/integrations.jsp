@@ -26,16 +26,12 @@
           It will provide notifications when new trucks enter your area.</p>
       </div>
     </div>
-
-    <a href="https://slack.com/oauth/authorize?client_id=438175788853.466163281394&state=${slackCode}&scope=incoming-webhook,chat:write:bot,links:write,channels:read"><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
-<%--
     <div class="media">
-      <a class="mr-4 app-icon" href="https://slack.com/oauth/authorize?scope=incoming-webhook&client_id=438175788853.466163281394"><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
+      <a href="https://slack.com/oauth/authorize?client_id=438175788853.466163281394&state=${slackCode}&redirect_uri=https%3A%2F%2Fwww.chicagofoodtruckfinder.com%2Fslack%2Foauth&scope=incoming-webhook,chat:write:bot,links:write,channels:read"><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
       <div class="media-body">
         <p>The Slack integration is a webhook that sends notifications about trucks that are in your area.  Click the button on the left to add it to your workspace</p>
       </div>
     </div>
-    --%>
   </div>
 </div>
 

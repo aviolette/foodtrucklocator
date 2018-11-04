@@ -55,6 +55,8 @@ import foodtruck.server.front.PrivacyPolicyServlet;
 import foodtruck.server.front.SSLVerificationServlet;
 import foodtruck.server.front.ShuntServlet;
 import foodtruck.server.front.SlackOAuthServlet;
+import foodtruck.server.front.SlackSelectLocationServlet;
+import foodtruck.server.front.SlackSetupCompleteServlet;
 import foodtruck.server.front.SupportServlet;
 import foodtruck.server.front.TruckBusinessesServlet;
 import foodtruck.server.front.TruckTimelineServlet;
@@ -224,6 +226,8 @@ class FoodtruckServletModule extends ServletModule {
     serve("/support").with(SupportServlet.class);
     serve("/support/iphone").with(IPhoneSupportServlet.class);
     serve("/slack/oauth").with(SlackOAuthServlet.class);
+    serve("/slack/select_location").with(SlackSelectLocationServlet.class);
+    serve("/slack/setup_complete").with(SlackSetupCompleteServlet.class);
     serve("/.well-known/acme-challenge/*").with(SSLVerificationServlet.class);
     serve("/").with(FoodTruckServlet.class);
 

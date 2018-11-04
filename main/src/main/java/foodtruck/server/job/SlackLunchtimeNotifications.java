@@ -59,21 +59,12 @@ public class SlackLunchtimeNotifications extends HttpServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     log.info("Sending out slack notifications");
     List<SlackWebhook> hooks = dao.findAll();
-    if (hooks.isEmpty()) {
-      // TODO: This is temporary for testing only
-      SlackWebhook hook = SlackWebhook.builder()
-          .locationName("Wacker and Adams, Chicago, IL")
-          .webhookUrl("https://hooks.slack.com/services/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")
-          .build();
-      dao.save(hook);
-      hooks = dao.findAll();
-    }
     for (SlackWebhook hook : hooks) {
       log.log(Level.INFO, "Sending slack notification for {0} to {1}",
           new Object[]{hook.getLocationName(), hook.getWebookUrl()});
       WebResource resource = Client.create()
           .resource(hook.getWebookUrl());
-      // TODO: refactor
+      // TODO: make sure that iteration order is by location name, so we can reuse the results when there are more than one per location
       Location location = locationDAO.findByName(hook.getLocationName())
           .orElseThrow(() -> new ServletException("Location not found: " + hook.getLocationName()));
       Set<Truck> trucks = service.findTrucksNearLocation(location, clock.now());
@@ -83,6 +74,7 @@ public class SlackLunchtimeNotifications extends HttpServlet {
             .collect(Collectors.joining(", "));
       try {
         resource.type(MediaType.APPLICATION_JSON_TYPE)
+            .header("Authorization", "Bearer " + hook.getAccessToken())
             .entity(new JSONObject().put("text", message))
             .post();
       } catch (JSONException e) {
