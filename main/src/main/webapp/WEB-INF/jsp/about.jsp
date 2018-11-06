@@ -45,6 +45,11 @@
         <p>Some trucks manually add their stops by using my vendor portal.</p>
       </div>
     </div>
+    <a name="privacy"></a>
+    <h2>What Information Do You Collect From Users?</h2>
+    <p>
+      Please see this <a href="/privacy">privacy policy</a> for how I collect information on this website and apps.
+    </p>
   </div>
 </div>
 
