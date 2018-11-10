@@ -79,6 +79,11 @@ class CacheAndForwardLocator implements GeoLocator {
   }
 
   @Override
+  public Optional<Location> locateOpt(String location) {
+    return Optional.ofNullable(locate(location, GeolocationGranularity.NARROW));
+  }
+
+  @Override
   @Nullable
   public Location reverseLookup(Location location) {
     for (Location loc : dao.findPopularLocations()) {

@@ -59,6 +59,7 @@ public class SquarespaceCalendarConsumer implements ScheduleStrategy {
         return ImmutableList.of();
       }
       try {
+        log.log(Level.INFO, "Loading Squarespace Calendar {0}", truck.getSquarespaceCalendar());
         List<String> icalLinks = new ArrayList<>(extractor.findLinks(client.resource(truck.getSquarespaceCalendar())
             .header(HttpHeaders.USER_AGENT, config.getUserAgent())
             .get(String.class), truck));

@@ -1,5 +1,6 @@
 package foodtruck.geolocation;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,6 +52,11 @@ class GoogleGeolocator implements GeoLocator {
       return loc;
     }
     return lookup(location, granularity);
+  }
+
+  @Override
+  public Optional<Location> locateOpt(String location) {
+    return Optional.ofNullable(locate(location, GeolocationGranularity.NARROW));
   }
 
   @Override @Monitored

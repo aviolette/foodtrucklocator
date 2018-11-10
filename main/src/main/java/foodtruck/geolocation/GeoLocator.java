@@ -1,5 +1,7 @@
 package foodtruck.geolocation;
 
+import java.util.Optional;
+
 import javax.annotation.Nullable;
 
 import foodtruck.model.Location;
@@ -19,6 +21,8 @@ public interface GeoLocator {
    */
   @Nullable Location locate(String location, GeolocationGranularity granularity)
       throws ServiceException;
+
+  Optional<Location> locateOpt(String location);
 
   /**
    * Performs a reverse lookup based on latitude/longitude

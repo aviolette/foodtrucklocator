@@ -1,5 +1,6 @@
 package foodtruck.model;
 
+import java.time.ZonedDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +22,8 @@ import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+
+import foodtruck.time.TimeConversionUtils;
 
 /**
  * Specifies an truck at a location at a date and time.
@@ -422,6 +425,16 @@ public class TruckStop extends ModelEntity {
     public boolean hasCategory(String category) {
       return (truck != null && truck.getCategories()
           .contains(category));
+    }
+
+    public Builder startTime8(ZonedDateTime atTime) {
+      startTime = TimeConversionUtils.toJoda(atTime);
+      return this;
+    }
+
+    public Builder endTime8(ZonedDateTime atTime) {
+      endTime = TimeConversionUtils.toJoda(atTime);
+      return this;
     }
   }
 }
