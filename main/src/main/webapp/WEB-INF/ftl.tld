@@ -53,4 +53,20 @@
       <rtexprvalue>true</rtexprvalue>
     </attribute>
   </tag>
+  <tag>
+    <name>date</name>
+    <tag-class>foodtruck.tld.DateFormatTag</tag-class>
+    <body-content>empty</body-content>
+    <description>Format time for display</description>
+    <attribute>
+      <name>at</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>style</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
 </taglib>

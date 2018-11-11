@@ -40,7 +40,7 @@
               <c:when
                   test="${!empty(truckStops.currentStop)}">
                 <ftl:location admin="true" location="${truckStops.currentStop.location}"/><br/>
-                Departs: <joda:format value="${truckStops.currentStop.endTime}" style="-S"/>
+                Departs: <ftl:date at="${truckStops.currentStop.endTime}" style="-S"/>
               </c:when>
               <c:otherwise>
                 None
@@ -49,11 +49,14 @@
             </td>
             <td>
               <c:choose>
+
               <c:when
                   test="${!empty(truckStops.nextStop)}"><ftl:location location="${truckStops.nextStop.location}"
-                                                                      admin="true"/><br/>Starts: <joda:format
-                  value="${truckStops.nextStop.startTime}"
-                  style="-S"/></c:when><c:otherwise>None</c:otherwise></c:choose>
+                                                                      admin="true"/><br/>Starts: <ftl:date
+                  at="${truckStops.nextStop.startTime}"
+                  style="-S"/> </c:when>
+                <c:otherwise>None</c:otherwise></c:choose>
+
 
           </td>
           </tr>

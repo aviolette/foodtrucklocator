@@ -109,6 +109,7 @@ public class AppengineModule extends AbstractModule {
                 System.getProperty("user.home") + File.separator + ".store" + File.separator + "/google_auth.p12"))
             .build();
       } catch (Exception e) {
+        log.log(Level.SEVERE, e.getMessage(), e);
         throw new RuntimeException(e);
       }
     }
