@@ -114,9 +114,7 @@
             <c:if test="${!hasStops}">
               <div class="row">
                 <div class="col-md-12">
-                  <p class="lead">There are no stops scheduled for this truck.<c:if test="${!empty(truck.stats.lastSeen)}"></p><p class="lead">This truck was last seen at <c:if
-                      test="${!empty(truck.stats.whereLastSeen.name)}">
-                    <ftl:location at="${truck.stats.lastSeen}" location="${truck.stats.whereLastSeen}"/> at </c:if> <joda:format value="${truck.stats.lastSeen}" style="MS"/></c:if></p>
+                  <p class="lead">There are no stops scheduled for this truck.</p>
                 </div>
               </div>
 
