@@ -11,7 +11,6 @@ import com.google.inject.servlet.GuiceServletContextListener;
 import foodtruck.alexa.AlexaModule;
 import foodtruck.appengine.AppengineModule;
 import foodtruck.appengine.monitoring.MonitoringModule;
-import foodtruck.book.BookingModule;
 import foodtruck.geolocation.GeolocationModule;
 import foodtruck.linxup.LinxupModule;
 import foodtruck.mail.MailModule;
@@ -51,9 +50,6 @@ public class FoodtruckConfig extends GuiceServletContextListener {
         .add(new ProfileModule())
         .add(new TimeModule())
         .add(new FoodtruckServletModule());
-    if ("true".equals(System.getProperty("foodtrucklocator.supports.booking"))) {
-      modules.add(new BookingModule());
-    }
     ImmutableList<Module> allModules = modules.build();
     return allModules.toArray(new Module[allModules.size()]);
   }

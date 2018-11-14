@@ -10,11 +10,6 @@ import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 
 import foodtruck.jersey.ScheduleCacherImpl;
 import foodtruck.schedule.ScheduleCacher;
-import foodtruck.server.book.BookingLandingServlet;
-import foodtruck.server.book.CreateAccountServlet;
-import foodtruck.server.book.LoginServlet;
-import foodtruck.server.book.LogoutServlet;
-import foodtruck.server.book.PrepaidServlet;
 import foodtruck.server.dashboard.AddressRuleServlet;
 import foodtruck.server.dashboard.AdminDashboardServlet;
 import foodtruck.server.dashboard.AlexaQueryServlet;
@@ -198,15 +193,6 @@ class FoodtruckServletModule extends ServletModule {
 
     // Alexa integration
     serve("/amazonalexa").with(AlexaServlet.class);
-
-    if ("true".equals(System.getProperty("foodtrucklocator.supports.booking"))) {
-      // Booking endpoints
-      serve("/book").with(BookingLandingServlet.class);
-      serve("/login").with(LoginServlet.class);
-      serve("/logout").with(LogoutServlet.class);
-      serve("/book/prepaid").with(PrepaidServlet.class);
-      serve("/book/create_account").with(CreateAccountServlet.class);
-    }
 
     // Front-page endpoints
     serve("/privacy").with(PrivacyPolicyServlet.class);
