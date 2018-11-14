@@ -41,6 +41,7 @@ public class ScheduleModule extends AbstractModule {
     connectorBinder.addBinding().to(ICalStopConsumer.class);
     connectorBinder.addBinding().to(SquarespaceCalendarConsumer.class);
     connectorBinder.addBinding().to(FatShallotScheduleConsumer.class);
+    connectorBinder.addBinding().to(PizzaBossSuperSpecialConsumer.class);
     bind(SocialMediaCacher.class).to(SocialMediaCacherImpl.class);
     bind(FoodTruckStopService.class).to(FoodTruckStopServiceImpl.class);
     String city = System.getProperty("foodtrucklocator.city", "Chicago");
