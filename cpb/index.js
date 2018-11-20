@@ -1,16 +1,6 @@
 const puppeteer = require('puppeteer');
 let page;
 
-/*
-const Storage = require('@google-cloud/storage');
-
-const storage = Storage({
-  projectId: 'chicagofoodtrucklocator'
-});
-
-const bucket = storage.bucket('chicagopizzaboss');
-*/
-
 async function getBrowserPage() {
   // Launch headless Chrome. Turn off sandbox so Chrome can run under root.
   const browser = await puppeteer.launch({args: ['--no-sandbox']});
@@ -24,7 +14,7 @@ async function getBrowserPage() {
  * @param {!express:Response} res HTTP response context.
  */
 exports.schedule = async (req, res) => {
-  
+
   if (!page) {
     page = await getBrowserPage();
   }
@@ -44,11 +34,5 @@ exports.schedule = async (req, res) => {
       }
       return hrefs;
   });
-  /*
-  bucket.file("calendar2.json").createWriteStream()
-    .on('error', function(err) {})
-    .on('finish', function() {})
-    .end(JSON.stringify(hrefs)); 
-    */
   res.status(200).send(hrefs)
 };
