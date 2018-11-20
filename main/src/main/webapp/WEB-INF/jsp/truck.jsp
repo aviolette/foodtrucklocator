@@ -19,18 +19,11 @@
       <c:if test="${truck.popupVendor}"><p><span class="badge badge-info">Popup Vendor</span></p></c:if>
       <p class="lead">${truck.description}</p>
       <div>
-        <c:if test="${!empty(truck.facebook)}"><a target="_blank" href="http://facebook.com${truck.facebook}"><img
-            alt="Facebook" src="//storage.googleapis.com/ftf_static/img/facebook32x32.png"></a></c:if>
-        <c:if test="${!empty(truck.twitterHandle)}"><a target="_blank"
-                                                       href="http://twitter.com/${truck.twitterHandle}"><img
-            alt="@${truck.twitterHandle} on twitter"
-            src="//storage.googleapis.com/ftf_static/img/twitter32x32.png"></a></c:if>
-        <c:if test="${!empty(truck.foursquareUrl)}"><a target="_blank"
-                                                       href="http://foursquare.com/venue/${truck.foursquareUrl}"><img
-            alt="Check in on foursquare" src="//storage.googleapis.com/ftf_static/img/foursquare32x32.png"></a></c:if>
-        <c:if test="${!empty(truck.instagramId)}"><a target="_blank"
-                                                     href="http://instagram.com/${truck.instagramId}"><img
-            alt="View on instagram" src="//storage.googleapis.com/ftf_static/img/instagram32x32.png"></a></c:if>
+        <c:if test="${!empty(truck.facebook)}"><span class="social social-facebook"></span> <a target="_blank" href="http://facebook.com${truck.facebook}"> facebook</a><br/></c:if>
+        <c:if test="${!empty(truck.twitterHandle)}"><span class="social social-facebook"><a target="_blank"
+                                                       href="http://twitter.com/${truck.twitterHandle}"> @${truck.twitterHandle}</a><br/></c:if>
+        <c:if test="${!empty(truck.instagramId)}"><span class="social social-instagram"><a target="_blank"
+                                                     href="http://instagram.com/${truck.instagramId}">${truck.instagramId}</a></c:if>
       </div>
       <div style="padding-top:20px">
         <ul class="list-unstyled">
