@@ -384,6 +384,15 @@ public class Truck extends ModelEntity implements Serializable {
     return facebook;
   }
 
+  public @Nullable String getFacebookHandle() {
+    if (facebook == null || facebook.lastIndexOf('/') != 0) {
+      return facebook;
+    } else {
+      return "@" + facebook.substring(1);
+    }
+
+  }
+
   public @Nullable String getFacebookPageId() {
     return facebookPageId;
   }

@@ -19,10 +19,10 @@
       <c:if test="${truck.popupVendor}"><p><span class="badge badge-info">Popup Vendor</span></p></c:if>
       <p class="lead">${truck.description}</p>
       <div>
-        <c:if test="${!empty(truck.facebook)}"><span class="social social-facebook"></span> <a target="_blank" href="http://facebook.com${truck.facebook}"> facebook</a><br/></c:if>
-        <c:if test="${!empty(truck.twitterHandle)}"><span class="social social-facebook"><a target="_blank"
-                                                       href="http://twitter.com/${truck.twitterHandle}"> @${truck.twitterHandle}</a><br/></c:if>
-        <c:if test="${!empty(truck.instagramId)}"><span class="social social-instagram"><a target="_blank"
+        <c:if test="${!empty(truck.facebook)}"><span class="social social-facebook"></span> <a target="_blank" href="http://facebook.com${truck.facebook}"> ${truck.facebookHandle}</a><br/></c:if>
+        <c:if test="${!empty(truck.twitterHandle)}"><span class="social social-twitter"></span> <a target="_blank"
+                                                       href="http://twitter.com/${truck.twitterHandle}">@${truck.twitterHandle}</a><br/></c:if>
+        <c:if test="${!empty(truck.instagramId)}"><span class="social social-instagram"></span> <a target="_blank"
                                                      href="http://instagram.com/${truck.instagramId}">${truck.instagramId}</a></c:if>
       </div>
       <div style="padding-top:20px">
