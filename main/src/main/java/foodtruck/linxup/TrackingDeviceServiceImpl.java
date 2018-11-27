@@ -1,6 +1,8 @@
 package foodtruck.linxup;
 
 import java.io.IOException;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -99,9 +101,17 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
           log.log(Level.WARNING, io.getMessage() + " " + count, io);
           continue;
         }
-        log.log(Level.SEVERE, io.getMessage(), io);
+        // Linxup seems to always be off around 4:00AM
+        Level logLevel = duringServiceWindow() ? Level.WARNING : Level.SEVERE;
+        log.log(logLevel, io.getMessage(), io);
       }
     }
+  }
+
+  private boolean duringServiceWindow() {
+    ZonedDateTime now = clock.now8();
+    LocalTime time = now.toLocalTime();
+    return time.isAfter(LocalTime.of(3, 40)) && time.isBefore(LocalTime.of(4, 15));
   }
 
   @Override
