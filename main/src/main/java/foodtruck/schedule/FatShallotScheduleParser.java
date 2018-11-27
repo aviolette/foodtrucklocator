@@ -54,7 +54,13 @@ public class FatShallotScheduleParser {
       for (Element strong : h3.select("strong")) {
         String item = MoreStrings.capitalize(strong.text()
             .toLowerCase())
-            .trim().replaceAll("[^\\x00-\\x7F]", "");
+            .trim()
+            .replaceAll("[^\\x00-\\x7F]", "");
+
+        if (item.endsWith("st") || item.endsWith("rd") || item.endsWith("nd")) {
+          item = item.substring(0, item.length() - 2);
+        }
+
         TemporalAccessor parsedTime = formatter.parse(item);
         date = LocalDate.of(year, parsedTime.get(ChronoField.MONTH_OF_YEAR),
             parsedTime.get(ChronoField.DAY_OF_MONTH));
