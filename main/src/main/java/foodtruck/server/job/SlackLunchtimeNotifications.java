@@ -79,7 +79,6 @@ public class SlackLunchtimeNotifications extends HttpServlet {
             .post();
       } catch (JSONException e) {
         log.log(Level.SEVERE, e.getMessage(), e);
-        throw new ServletException(e);
       }
     }
   }
