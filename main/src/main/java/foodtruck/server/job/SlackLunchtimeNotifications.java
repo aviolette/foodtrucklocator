@@ -59,14 +59,16 @@ public class SlackLunchtimeNotifications extends HttpServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     log.info("Sending out slack notifications");
     List<SlackWebhook> hooks = dao.findAll();
+    Location location = null;
     for (SlackWebhook hook : hooks) {
       log.log(Level.INFO, "Sending slack notification for {0} to {1}",
           new Object[]{hook.getLocationName(), hook.getWebookUrl()});
       WebResource resource = Client.create()
           .resource(hook.getWebookUrl());
-      // TODO: make sure that iteration order is by location name, so we can reuse the results when there are more than one per location
-      Location location = locationDAO.findByName(hook.getLocationName())
-          .orElseThrow(() -> new ServletException("Location not found: " + hook.getLocationName()));
+      if (location == null || !hook.getLocationName().equals(location.getName())) {
+        location = locationDAO.findByName(hook.getLocationName())
+            .orElseThrow(() -> new ServletException("Location not found: " + hook.getLocationName()));
+      }
       Set<Truck> trucks = service.findTrucksNearLocation(location, clock.now());
       String message = trucks.isEmpty() ? "There are no trucks at " + location.getShortenedName() + " for lunch today."  :
           "These trucks are at " + location.getShortenedName() + " today for lunch: " + trucks.stream()
