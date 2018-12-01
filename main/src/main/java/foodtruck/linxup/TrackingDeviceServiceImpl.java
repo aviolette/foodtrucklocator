@@ -111,6 +111,7 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
   private boolean duringServiceWindow() {
     ZonedDateTime now = clock.now8();
     LocalTime time = now.toLocalTime();
+    log.log(Level.INFO, "Local time: {0}", time);
     return time.isAfter(LocalTime.of(3, 40)) && time.isBefore(LocalTime.of(4, 15));
   }
 
