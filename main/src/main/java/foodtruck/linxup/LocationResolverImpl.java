@@ -25,14 +25,17 @@ class LocationResolverImpl implements LocationResolver {
   private final Clock clock;
   private final LinxupConnector connector;
   private final SystemNotificationService systemNotificationService;
+  private final ServiceWindowDetector serviceWindow;
 
   @Inject
   public LocationResolverImpl(Clock clock, LinxupConnector connector,
-      SystemNotificationService systemNotificationService, Cacher cacher) {
+      SystemNotificationService systemNotificationService, Cacher cacher,
+      ServiceWindowDetectorImpl serviceWindow) {
     this.cache = cacher;
     this.clock = clock;
     this.connector = connector;
     this.systemNotificationService = systemNotificationService;
+    this.serviceWindow = serviceWindow;
   }
 
   @Override
@@ -93,7 +96,7 @@ class LocationResolverImpl implements LocationResolver {
         log.log(Level.INFO, "Anomaly not detected\n\n {0}\n\n {1}\n\n", new Object[]{stop, currentLocation});
       }
     } catch (Exception e) {
-      log.log(Level.SEVERE, e.getMessage(), e);
+      log.log(serviceWindow.during() ? Level.WARNING : Level.SEVERE, e.getMessage(), e);
     }
     return false;
   }

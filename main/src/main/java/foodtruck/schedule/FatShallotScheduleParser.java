@@ -57,7 +57,7 @@ public class FatShallotScheduleParser {
             .trim()
             .replaceAll("[^\\x00-\\x7F]", "");
 
-        if (item.endsWith("st") || item.endsWith("rd") || item.endsWith("nd")) {
+        if (item.endsWith("st") || item.endsWith("rd") || item.endsWith("nd") || item.endsWith("th")) {
           item = item.substring(0, item.length() - 2);
         }
 

@@ -62,6 +62,7 @@ public class TrackingDeviceServiceImplTest {
   @Mock private TrackingDeviceServiceImpl service;
   @Mock private LocationResolver locationResolver;
   @Mock private CounterImpl errorCounter;
+  @Mock private ServiceWindowDetector serviceWindowDetector;
   private LinxupAccount account;
   private DateTime now = new DateTime(2016, 11, 22, 9, 0, 0);
   private Position position1;
@@ -108,9 +109,10 @@ public class TrackingDeviceServiceImplTest {
         .lastBroadcast(position1.getDate())
         .label(position1.getVehicleLabel())
         .build();
+    when(serviceWindowDetector.during()).thenReturn(false);
     service = new TrackingDeviceServiceImpl(truckStopDAO, connector, trackingDeviceDAO, locator, clock, truckDAO,
         formatter, securityChecker, linxupAccountDAO, queueProvider, Providers.of(truckStopCache),
-        blacklistLocationMatcher, locationResolver, errorCounter);
+        blacklistLocationMatcher, locationResolver, errorCounter, serviceWindowDetector);
   }
 
   // handle merging a tracking device that is not enabled.  It should cancel existing stops created by that device

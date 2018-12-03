@@ -1,8 +1,6 @@
 package foodtruck.linxup;
 
 import java.io.IOException;
-import java.time.LocalTime;
-import java.time.ZonedDateTime;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -65,6 +63,7 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
   private final BlacklistedLocationMatcher blacklistedLocationMatcher;
   private final LocationResolver locationResolver;
   private final Counter counter;
+  private final ServiceWindowDetector serviceWindow;
 
   @Inject
   public TrackingDeviceServiceImpl(TruckStopDAO truckStopDAO, LinxupConnector connector,
@@ -72,7 +71,7 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
       @FriendlyDateTimeFormat DateTimeFormatter formatter, SecurityChecker securityChecker,
       LinxupAccountDAO linxupAccountDAO, Provider<Queue> queueProvider, Provider<TruckStopCache> truckStopCacheProvider,
       BlacklistedLocationMatcher blacklistedLocationMatcher, LocationResolver locationResolver,
-      @ErrorCounter Counter errorCounter) {
+      @ErrorCounter Counter errorCounter, ServiceWindowDetector serviceWindow) {
     this.connector = connector;
     this.truckStopDAO = truckStopDAO;
     this.trackingDeviceDAO = trackingDeviceDAO;
@@ -87,6 +86,7 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
     this.blacklistedLocationMatcher = blacklistedLocationMatcher;
     this.locationResolver = locationResolver;
     this.counter = errorCounter;
+    this.serviceWindow = serviceWindow;
   }
 
   @Override
@@ -102,17 +102,10 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
           continue;
         }
         // Linxup seems to always be off around 4:00AM
-        Level logLevel = duringServiceWindow() ? Level.WARNING : Level.SEVERE;
+        Level logLevel = serviceWindow.during() ? Level.WARNING : Level.SEVERE;
         log.log(logLevel, io.getMessage(), io);
       }
     }
-  }
-
-  private boolean duringServiceWindow() {
-    ZonedDateTime now = clock.now8();
-    LocalTime time = now.toLocalTime();
-    log.log(Level.INFO, "Local time: {0}", time);
-    return time.isAfter(LocalTime.of(3, 40)) && time.isBefore(LocalTime.of(4, 15));
   }
 
   @Override
