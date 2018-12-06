@@ -79,6 +79,13 @@ public class SlackLunchtimeNotifications extends HttpServlet {
             .header("Authorization", "Bearer " + hook.getAccessToken())
             .entity(new JSONObject().put("text", message))
             .post();
+      } catch (com.sun.jersey.api.client.UniformInterfaceException uie) {
+        if (uie.getResponse().getStatus() == 404) {
+          log.log(Level.WARNING, "Removing webhook that returned 404: {0}", hook.getWebookUrl());
+          dao.delete((Long) hook.getKey());
+        } else {
+          log.log(Level.SEVERE, uie.getMessage(), uie);
+        }
       } catch (JSONException e) {
         log.log(Level.SEVERE, e.getMessage(), e);
       }
