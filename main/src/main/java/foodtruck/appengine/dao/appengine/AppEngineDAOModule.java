@@ -16,6 +16,7 @@ import foodtruck.dao.RetweetsDAO;
 import foodtruck.dao.ReverseLookupDAO;
 import foodtruck.dao.SlackWebhookDAO;
 import foodtruck.dao.StoryDAO;
+import foodtruck.dao.TempTruckStopDAO;
 import foodtruck.dao.TrackingDeviceDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckObserverDAO;
@@ -52,6 +53,7 @@ public class AppEngineDAOModule extends AbstractModule {
     bind(UserDAO.class).to(UserDAOAppEngine.class);
     bind(ReverseLookupDAO.class).to(ReverseLookupDAOAppEngine.class);
     bind(SlackWebhookDAO.class).to(SlackWebhookDAOAppEngine.class);
+    bind(TempTruckStopDAO.class).to(TempTruckStopDAOAppEngine.class);
   }
 
   @DailyRollup

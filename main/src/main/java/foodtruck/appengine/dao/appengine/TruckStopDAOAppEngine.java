@@ -240,7 +240,7 @@ class TruckStopDAOAppEngine extends AppEngineDAO<Long, TruckStop> implements Tru
         .collect(Collectors.toList());
   }
 
-  private List<Query.Filter> trucksOverRange(@Nullable String truckId, Interval range) {
+  static List<Query.Filter> trucksOverRange(@Nullable String truckId, Interval range) {
     List<Query.Filter> filters = Lists.newLinkedList();
     filters.add(new Query.FilterPredicate(START_TIME_FIELD, GREATER_THAN_OR_EQUAL, range.getStart()
         .toDate()));

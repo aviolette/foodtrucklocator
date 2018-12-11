@@ -27,6 +27,8 @@ import foodtruck.server.dashboard.MessageListServlet;
 import foodtruck.server.dashboard.NotificationServlet;
 import foodtruck.server.dashboard.NotificationSetupServlet;
 import foodtruck.server.dashboard.ObserverServlet;
+import foodtruck.server.dashboard.RebuildTempTableServlet;
+import foodtruck.server.dashboard.RecacheAdminServlet;
 import foodtruck.server.dashboard.SyncServlet;
 import foodtruck.server.dashboard.TestNotificationServlet;
 import foodtruck.server.dashboard.TruckListServlet;
@@ -58,12 +60,14 @@ import foodtruck.server.front.TruckTimelineServlet;
 import foodtruck.server.front.TrucksServlet;
 import foodtruck.server.front.WeeklyScheduleServlet;
 import foodtruck.server.job.CheckDeviceIssuesServlet;
+import foodtruck.server.job.ClearTempTruckStopServlet;
 import foodtruck.server.job.ErrorCountServlet;
 import foodtruck.server.job.InvalidateScheduleCache;
 import foodtruck.server.job.NotifyLeavingStopServlet;
 import foodtruck.server.job.NotifyNewStopServlet;
 import foodtruck.server.job.ProfileSyncServlet;
 import foodtruck.server.job.RecacheServlet;
+import foodtruck.server.job.SeedImperialOakCalendarServlet;
 import foodtruck.server.job.SendLunchNotificationsServlet;
 import foodtruck.server.job.SlackLunchtimeNotifications;
 import foodtruck.server.job.StatPullQueueServlet;
@@ -134,6 +138,10 @@ class FoodtruckServletModule extends ServletModule {
     serve("/cron/process_stats").with(StatPullQueueServlet.class);
     serve("/cron/slack_notifications").with(SlackLunchtimeNotifications.class);
 
+    // Custom calendars
+    serve("/cron/clear_temp_stops").with(ClearTempTruckStopServlet.class);
+    serve("/cron/populate_imperial_oaks_stops").with(SeedImperialOakCalendarServlet.class);
+
     // Queue activated servlets
     serve("/cron/update_count").with(StatUpdateQueueServlet.class);
     serve("/cron/notify_stop_created").with(NotifyNewStopServlet.class);
@@ -172,7 +180,8 @@ class FoodtruckServletModule extends ServletModule {
     serve("/admin/profileSync").with(ProfileSyncServlet.class);
     serve("/admin/invalidateCache").with(InvalidateScheduleCache.class);
     serve("/admin/versioninfo").with(VersionInfo.class);
-
+    serve("/admin/recache").with(RecacheAdminServlet.class);
+    serve("/admin/rebuild_temp").with(RebuildTempTableServlet.class);
     // Vendor dashboard endpoints
     serve("/vendor").with(VendorServlet.class);
     serveRegex("/vendor/locations/[\\d]*/edit").with(VendorLocationEditServlet.class);
