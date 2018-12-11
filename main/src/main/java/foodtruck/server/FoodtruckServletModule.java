@@ -60,7 +60,7 @@ import foodtruck.server.front.TruckTimelineServlet;
 import foodtruck.server.front.TrucksServlet;
 import foodtruck.server.front.WeeklyScheduleServlet;
 import foodtruck.server.job.CheckDeviceIssuesServlet;
-import foodtruck.server.job.ClearTempTruckStopServlet;
+import foodtruck.server.job.RebuildTempScheduleServlet;
 import foodtruck.server.job.ErrorCountServlet;
 import foodtruck.server.job.InvalidateScheduleCache;
 import foodtruck.server.job.NotifyLeavingStopServlet;
@@ -137,15 +137,13 @@ class FoodtruckServletModule extends ServletModule {
     serve("/cron/check_device_issues").with(CheckDeviceIssuesServlet.class);
     serve("/cron/process_stats").with(StatPullQueueServlet.class);
     serve("/cron/slack_notifications").with(SlackLunchtimeNotifications.class);
-
-    // Custom calendars
-    serve("/cron/clear_temp_stops").with(ClearTempTruckStopServlet.class);
-    serve("/cron/populate_imperial_oaks_stops").with(SeedImperialOakCalendarServlet.class);
+    serve("/cron/rebuild_temp_stops").with(RebuildTempScheduleServlet.class);
 
     // Queue activated servlets
     serve("/cron/update_count").with(StatUpdateQueueServlet.class);
     serve("/cron/notify_stop_created").with(NotifyNewStopServlet.class);
     serve("/cron/notify_stop_ended").with(NotifyLeavingStopServlet.class);
+    serve("/cron/populate_imperial_oaks_stops").with(SeedImperialOakCalendarServlet.class);
 
     // Dashboard endpoints
     serve("/admin").with(AdminDashboardServlet.class);
@@ -182,6 +180,7 @@ class FoodtruckServletModule extends ServletModule {
     serve("/admin/versioninfo").with(VersionInfo.class);
     serve("/admin/recache").with(RecacheAdminServlet.class);
     serve("/admin/rebuild_temp").with(RebuildTempTableServlet.class);
+
     // Vendor dashboard endpoints
     serve("/vendor").with(VendorServlet.class);
     serveRegex("/vendor/locations/[\\d]*/edit").with(VendorLocationEditServlet.class);

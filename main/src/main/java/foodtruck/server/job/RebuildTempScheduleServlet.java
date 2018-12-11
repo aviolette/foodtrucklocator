@@ -10,24 +10,24 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import foodtruck.dao.TempTruckStopDAO;
+import foodtruck.schedule.TempScheduleService;
 
 /**
  * @author aviolette
  * @since 2018-12-11
  */
 @Singleton
-public class ClearTempTruckStopServlet extends HttpServlet {
+public class RebuildTempScheduleServlet extends HttpServlet {
 
-  private final TempTruckStopDAO dao;
+  private final TempScheduleService service;
 
   @Inject
-  public ClearTempTruckStopServlet(TempTruckStopDAO dao) {
-    this.dao = dao;
+  public RebuildTempScheduleServlet(TempScheduleService service) {
+    this.service = service;
   }
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    dao.deleteAll();
+    service.rebuild();
   }
 }

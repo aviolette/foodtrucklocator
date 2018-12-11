@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import foodtruck.dao.TempTruckStopDAO;
+import foodtruck.schedule.TempScheduleService;
 
 /**
  * @author aviolette
@@ -20,11 +20,11 @@ import foodtruck.dao.TempTruckStopDAO;
 @Singleton
 public class RebuildTempTableServlet extends HttpServlet {
 
-  private final TempTruckStopDAO dao;
+  private final TempScheduleService service;
 
   @Inject
-  public RebuildTempTableServlet(TempTruckStopDAO dao) {
-    this.dao = dao;
+  public RebuildTempTableServlet(TempScheduleService service) {
+    this.service = service;
   }
 
   @Override
@@ -34,7 +34,7 @@ public class RebuildTempTableServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    dao.deleteAll();
-    resp.sendRedirect("/cron/populate_imperial_oaks_stops?redirect=/admin/rebuild_temp");
+    service.rebuild();
+    resp.sendRedirect("/admin/rebuild_temp");
   }
 }

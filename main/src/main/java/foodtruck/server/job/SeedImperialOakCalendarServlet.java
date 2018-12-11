@@ -1,6 +1,8 @@
 package foodtruck.server.job;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -26,6 +28,8 @@ import foodtruck.schedule.SimpleCalReader;
 @Singleton
 public class SeedImperialOakCalendarServlet extends HttpServlet {
 
+  private static final Logger log = Logger.getLogger(SeedImperialOakCalendarServlet.class.getName());
+
   private final TempTruckStopDAO tempDAO;
   private final Client client;
   private final SimpleCalReader reader;
@@ -39,6 +43,13 @@ public class SeedImperialOakCalendarServlet extends HttpServlet {
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    log.info("WHY IS IT GOING TO GET");
+  }
+
+  @Override
+  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    log.log(Level.INFO, "Updating Imperial Oaks calendar data");
+
     JSONArray arr = client.resource("https://us-central1-chicagofoodtrucklocator.cloudfunctions.net/imperial-oak")
         .get(JSONArray.class);
 
@@ -52,5 +63,7 @@ public class SeedImperialOakCalendarServlet extends HttpServlet {
     if (!Strings.isNullOrEmpty(req.getParameter("redirect"))) {
       resp.sendRedirect(req.getParameter("redirect"));
     }
+    log.log(Level.INFO, "Imperial Oaks data completed");
+    doGet(req, resp);
   }
 }
