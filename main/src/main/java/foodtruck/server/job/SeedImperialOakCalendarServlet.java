@@ -42,11 +42,6 @@ public class SeedImperialOakCalendarServlet extends HttpServlet {
   }
 
   @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    log.info("WHY IS IT GOING TO GET");
-  }
-
-  @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     log.log(Level.INFO, "Updating Imperial Oaks calendar data");
 
@@ -64,6 +59,5 @@ public class SeedImperialOakCalendarServlet extends HttpServlet {
       resp.sendRedirect(req.getParameter("redirect"));
     }
     log.log(Level.INFO, "Imperial Oaks data completed");
-    doGet(req, resp);
   }
 }
