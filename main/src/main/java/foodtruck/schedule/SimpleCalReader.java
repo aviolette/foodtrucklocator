@@ -77,7 +77,7 @@ public class SimpleCalReader {
     } else if (title.contains("pizza boss")) {
       return "chipizzaboss";
     } else if (title.contains("smokin bbq")) {
-      return "smokinbbqkitchen";
+      return "smokinbbqkitchn";
     } else if (title.contains("comodita")) {
       return "ballsoflove";
     } else if (title.contains("twisted classics")) {
