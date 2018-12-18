@@ -24,7 +24,8 @@ public class TempScheduleService {
 
   public void rebuild() {
     dao.deleteAll();
-    TaskOptions param = TaskOptions.Builder.withUrl("/cron/populate_imperial_oaks_stops");
-    queueProvider.get().add(param);
+    Queue queue = queueProvider.get();
+    queue.add(TaskOptions.Builder.withUrl("/cron/populate_imperial_oaks_stops"));
+    queue.add(TaskOptions.Builder.withUrl("/cron/populate_coastline_cove"));
   }
 }
