@@ -86,6 +86,8 @@ public class SimpleCalReader {
       return "babyqs123";
     } else if (title.contains("cheesie")) {
       return "cheesies_truck";
+    } else if (title.contains("ofrenda")) {
+      return "ofrendatruck";
     } else {
       log.log(Level.SEVERE, "Unrecognized truck pattern: {0}", title);
     }
