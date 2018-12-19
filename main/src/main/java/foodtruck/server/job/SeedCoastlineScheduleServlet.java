@@ -1,6 +1,7 @@
 package foodtruck.server.job;
 
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -53,13 +54,16 @@ public class SeedCoastlineScheduleServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+    log.info("Loading coastline cove's calendar");
     String document = client.resource("https://cateredbycoastline.com")
         .header(HttpHeaders.USER_AGENT, userAgent)
         .get(String.class);
+    int stops = 0;
     for (TempTruckStop stop : reader.findStops(document)) {
       dao.save(stop);
+      stops++;
     }
+    log.log(Level.INFO, "Loaded {0} stops", stops);
     resp.setStatus(200);
   }
 }
