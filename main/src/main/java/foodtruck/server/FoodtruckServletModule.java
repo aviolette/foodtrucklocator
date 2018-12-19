@@ -69,6 +69,7 @@ import foodtruck.server.job.RebuildTempScheduleServlet;
 import foodtruck.server.job.RecacheServlet;
 import foodtruck.server.job.SeedCoastlineScheduleServlet;
 import foodtruck.server.job.SeedImperialOakCalendarServlet;
+import foodtruck.server.job.SeedSkeletonKeyServlet;
 import foodtruck.server.job.SendLunchNotificationsServlet;
 import foodtruck.server.job.SlackLunchtimeNotifications;
 import foodtruck.server.job.StatPullQueueServlet;
@@ -146,6 +147,7 @@ class FoodtruckServletModule extends ServletModule {
     serve("/cron/notify_stop_ended").with(NotifyLeavingStopServlet.class);
     serve("/cron/populate_imperial_oaks_stops").with(SeedImperialOakCalendarServlet.class);
     serve("/cron/populate_coastline_cove").with(SeedCoastlineScheduleServlet.class);
+    serve("/cron/populate_skeleton_key").with(SeedSkeletonKeyServlet.class);
 
     // Dashboard endpoints
     serve("/admin").with(AdminDashboardServlet.class);

@@ -61,11 +61,8 @@ public class SimpleCalReader {
   }
 
   @Nullable
-  private String inferTruckId(String title) {
+  static String inferTruckId(String title) {
     title = title.toLowerCase();
-    if (title.contains("trivia") || title.contains("beer & yoga")) {
-      return null;
-    }
     if (title.contains("bop bar")) {
       return "bopbartruck";
     } else if (title.contains("roaming hog")) {
@@ -88,6 +85,16 @@ public class SimpleCalReader {
       return "cheesies_truck";
     } else if (title.contains("ofrenda")) {
       return "ofrendatruck";
+    } else if (title.contains("bull & balance")) {
+      return "bullandbalance";
+    } else if (title.contains("jd ") || title.contains("wally") ||
+        title.contains("yarn night") || title.contains("matt alfano") ||
+        title.contains("sip on") || title.contains("pop-up") ||
+        title.contains("dj ") || title.contains("concert") ||
+        title.contains("music") || title.contains("santa") ||
+        title.contains("welcoming") ||
+        title.contains("trivia") || title.contains("beer & yoga")) {
+      return null;
     } else {
       log.log(Level.SEVERE, "Unrecognized truck pattern: {0}", title);
     }

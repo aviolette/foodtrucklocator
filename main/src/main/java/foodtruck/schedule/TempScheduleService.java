@@ -1,11 +1,12 @@
 package foodtruck.schedule;
 
 import com.google.appengine.api.taskqueue.Queue;
-import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
 import foodtruck.dao.TempTruckStopDAO;
+
+import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 
 /**
  * @author aviolette
@@ -25,7 +26,8 @@ public class TempScheduleService {
   public void rebuild() {
     dao.deleteAll();
     Queue queue = queueProvider.get();
-    queue.add(TaskOptions.Builder.withUrl("/cron/populate_imperial_oaks_stops"));
-    queue.add(TaskOptions.Builder.withUrl("/cron/populate_coastline_cove"));
+    queue.add(withUrl("/cron/populate_imperial_oaks_stops"));
+    queue.add(withUrl("/cron/populate_coastline_cove"));
+    queue.add(withUrl("/cron/populate_skeleton_key"));
   }
 }
