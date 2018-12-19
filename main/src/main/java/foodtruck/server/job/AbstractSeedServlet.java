@@ -45,7 +45,7 @@ public abstract class AbstractSeedServlet extends HttpServlet {
   }
 
   @Override
-  protected final void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+  protected final void doPost(HttpServletRequest req, HttpServletResponse resp) {
     String document = client.resource(endpoint)
         .header(HttpHeaders.USER_AGENT, userAgent)
         .get(String.class);

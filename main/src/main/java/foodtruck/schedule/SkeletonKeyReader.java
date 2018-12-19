@@ -35,6 +35,7 @@ public class SkeletonKeyReader implements StopReader {
 
   @Override
   public List<TempTruckStop> findStops(String document) {
+    log.info("Reading skeleton key's calendar");
     Document parsedDoc = Jsoup.parse(document);
     ImmutableList.Builder<TempTruckStop> stops = ImmutableList.builder();
     for (Element script : parsedDoc.select("script")) {

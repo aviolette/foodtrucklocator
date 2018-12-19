@@ -23,7 +23,7 @@ import foodtruck.model.Truck;
  * @author aviolette
  * @since 2018-12-18
  */
-public class CoastlineCalendarReader {
+public class CoastlineCalendarReader implements StopReader {
 
   private static final Logger log = Logger.getLogger(CoastlineCalendarReader.class.getName());
   private static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yy");
@@ -39,7 +39,9 @@ public class CoastlineCalendarReader {
     this.zone = zone;
   }
 
+  @Override
   public List<TempTruckStop> findStops(String document) {
+    log.info("Loading coastline's calendar");
     int index = document.indexOf("calendar.apps.dev");
     if (index == -1) {
       log.log(Level.SEVERE, "Calendar section is not found");
