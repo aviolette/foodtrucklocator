@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.HttpHeaders;
 
+import com.google.appengine.api.utils.SystemProperty;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.sun.jersey.api.client.Client;
@@ -39,6 +40,15 @@ public class SeedCoastlineScheduleServlet extends HttpServlet {
     this.userAgent = userAgent;
     this.dao = dao;
     this.reader = reader;
+  }
+
+  @Override
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    if (SystemProperty.environment.value() != SystemProperty.Environment.Value.Production) {
+      doPost(req, resp);
+    } else {
+      super.doGet(req, resp);
+    }
   }
 
   @Override

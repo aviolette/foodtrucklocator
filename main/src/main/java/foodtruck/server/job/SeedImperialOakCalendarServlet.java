@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.utils.SystemProperty;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -39,6 +40,15 @@ public class SeedImperialOakCalendarServlet extends HttpServlet {
     this.tempDAO = tempDAO;
     this.client = client;
     this.reader = reader;
+  }
+
+  @Override
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    if (SystemProperty.environment.value() != SystemProperty.Environment.Value.Production) {
+      doPost(req, resp);
+    } else {
+      super.doGet(req, resp);
+    }
   }
 
   @Override
