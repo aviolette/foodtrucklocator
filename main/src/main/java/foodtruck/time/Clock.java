@@ -1,5 +1,6 @@
 package foodtruck.time;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import org.joda.time.DateTime;
@@ -34,11 +35,6 @@ public interface Clock {
   DayOfWeek dayOfWeek();
 
   /**
-   * Returns the first day of this week.
-   */
-  LocalDate firstDayOfWeek();
-
-  /**
    * Returns the first day of the week that the specified time falls within.
    * @param dt a time within a week.
    * @return the first day of the week.
@@ -50,6 +46,8 @@ public interface Clock {
    * @return the time zone
    */
   DateTimeZone zone();
+
+  ZoneId zone8();
 
   /**
    * Returns the current time/date formatted as a string

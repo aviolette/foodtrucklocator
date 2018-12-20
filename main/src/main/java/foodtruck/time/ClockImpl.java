@@ -60,10 +60,6 @@ class ClockImpl implements Clock {
     return DayOfWeek.sunday;
   }
 
-  @Override public LocalDate firstDayOfWeek() {
-    return firstDayOfWeekFrom(now());
-  }
-
   public LocalDate firstDayOfWeekFrom(DateTime dt) {
     if (dt.getDayOfWeek() == DateTimeConstants.SUNDAY) {
       return dt.toLocalDate();
@@ -73,6 +69,11 @@ class ClockImpl implements Clock {
 
   @Override public DateTimeZone zone() {
     return zone;
+  }
+
+  @Override
+  public ZoneId zone8() {
+    return zoneId;
   }
 
   @Override public String nowFormattedAsTime() {

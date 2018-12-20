@@ -15,6 +15,7 @@ import foodtruck.dao.TruckDAO;
 import foodtruck.model.StopOrigin;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
+import foodtruck.time.Clock;
 
 import static foodtruck.time.TimeConversionUtils.toJoda;
 
@@ -27,18 +28,23 @@ public class TempTruckStopScheduleStrategy implements ScheduleStrategy {
   private final TempTruckStopDAO tempTruckStopDAO;
   private final LocationDAO locationDAO;
   private final TruckDAO truckDAO;
+  private final Clock clock;
 
   @Inject
-  public TempTruckStopScheduleStrategy(TempTruckStopDAO tempTruckStopDAO, LocationDAO locationDAO, TruckDAO truckDAO) {
+  public TempTruckStopScheduleStrategy(TempTruckStopDAO tempTruckStopDAO, LocationDAO locationDAO, TruckDAO truckDAO,
+      Clock clock) {
     this.tempTruckStopDAO = tempTruckStopDAO;
     this.locationDAO = locationDAO;
     this.truckDAO = truckDAO;
+    this.clock = clock;
   }
 
   @Override
   public List<TruckStop> findForTime(Interval range, @Nullable Truck searchTruck) {
+    String now = clock.nowFormattedAsTime();
     List<TruckStop> stops = tempTruckStopDAO.findDuring(range, searchTruck)
         .stream()
+        .distinct()
         .map(temp -> TruckStop.builder()
             .endTime(toJoda(temp.getEndTime()))
             .startTime(toJoda(temp.getStartTime()))
@@ -46,7 +52,7 @@ public class TempTruckStopScheduleStrategy implements ScheduleStrategy {
                 .orElseThrow(() -> new RuntimeException("Location not found: " + temp.getLocationName())))
             .truck(truckDAO.findByIdOpt(temp.getTruckId())
                 .orElseThrow(() -> new RuntimeException("Truck not found: " + temp.getTruckId())))
-            .appendNote("From calendar: " + temp.getCalendarName())
+            .appendNote("From calendar: " + temp.getCalendarName() + " @ " + now)
             .origin(StopOrigin.VENDORCAL)
             .build())
         .collect(Collectors.toList());
