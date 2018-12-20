@@ -70,10 +70,10 @@ public class SkeletonKeyReader implements StopReader {
 
   private ZonedDateTime parseTime(String time) {
 
-    String items[] = time.split("\\-");
+    String[] items = time.split("-");
     int year = Integer.parseInt(items[0]);
     int month = Integer.parseInt(items[1]);
-    String dayParts[] = items[2].split("T");
+    String[] dayParts = items[2].split("T");
     int day = Integer.parseInt(dayParts[0]);
     int hour = Integer.parseInt(items[3]);
     int minute = Integer.parseInt(items[4]);
