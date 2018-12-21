@@ -15,7 +15,7 @@
   <%@ include file="include/bootstrap_css.jsp" %>
   <c:choose>
     <c:when test="${bootstrap4}">
-      <link href="/css/foodtruckfinder${suffix}-1.4.css" rel="stylesheet"/>
+      <link href="/css/foodtruckfinder${suffix}-1.5.css" rel="stylesheet"/>
       <link href="/css/glyphicons.css" rel="stylesheet"/>
       <link href="/css/glyphicons-social.css" rel="stylesheet"/>
     </c:when>
