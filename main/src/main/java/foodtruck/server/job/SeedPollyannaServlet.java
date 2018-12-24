@@ -13,10 +13,10 @@ import foodtruck.schedule.PollyannaReader;
  * @since 2018-12-23
  */
 @Singleton
-public class PollyannaSeedServlet extends AbstractSeedServlet {
+public class SeedPollyannaServlet extends AbstractSeedServlet {
 
   @Inject
-  public PollyannaSeedServlet(TempTruckStopDAO tempDAO, Client client, PollyannaReader reader,
+  public SeedPollyannaServlet(TempTruckStopDAO tempDAO, Client client, PollyannaReader reader,
       @UserAgent String userAgent) {
     super(tempDAO, client, reader,
         "https://inffuse.eventscalendar.co/js/v0.1/calendar/data?shop=pollyannabrewing.myshopify.com&inffuse-project=1&_referrer=",

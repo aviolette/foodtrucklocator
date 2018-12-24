@@ -40,7 +40,6 @@ public class ScheduleModule extends AbstractModule {
     connectorBinder.addBinding().to(DrupalCalendarConsumer.class);
     connectorBinder.addBinding().to(ICalStopConsumer.class);
     connectorBinder.addBinding().to(SquarespaceCalendarConsumer.class);
-    connectorBinder.addBinding().to(FatShallotScheduleConsumer.class);
     connectorBinder.addBinding().to(PizzaBossSuperSpecialConsumer.class);
     connectorBinder.addBinding().to(TempTruckStopScheduleStrategy.class);
     bind(SocialMediaCacher.class).to(SocialMediaCacherImpl.class);

@@ -426,11 +426,11 @@ public class Truck extends ModelEntity implements Serializable {
   public boolean equals(Object o) {
     if (o == this) {
       return true;
-    } else if (o == null || !(o instanceof Truck)) {
+    } else if (!(o instanceof Truck)) {
       return false;
     }
     Truck truck = (Truck) o;
-    return id.equals(truck.id) && name.equals(truck.name) && iconUrl.equals(truck.iconUrl) &&
+    return id.equals(truck.id) && name.equals(truck.name) && Objects.equal(iconUrl, truck.iconUrl) &&
         Objects.equal(twitterHandle, truck.twitterHandle) && Objects.equal(url, truck.url)
         && inactive == truck.inactive;
   }
