@@ -26,6 +26,7 @@ import foodtruck.model.Truck;
 public class CoastlineCalendarReader implements StopReader {
 
   private static final Logger log = Logger.getLogger(CoastlineCalendarReader.class.getName());
+  private static final String CALENDAR_NAME = "coastlinecove";
   private static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yy");
   private static DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
   private final AddressExtractor extractor;
@@ -72,7 +73,7 @@ public class CoastlineCalendarReader implements StopReader {
                         .atZone(zone))
                     .endTime(date.atTime(LocalTime.from(timeFormatter.parse(end)))
                         .atZone(zone))
-                    .calendarName("coastlinecove")
+                    .calendarName(getCalendar())
                     .locationName(location)
                     .build()));
       }
@@ -81,6 +82,11 @@ public class CoastlineCalendarReader implements StopReader {
       log.log(Level.SEVERE, e.getMessage(), e);
       throw new RuntimeException(e);
     }
+  }
+
+  @Override
+  public String getCalendar() {
+    return CALENDAR_NAME;
   }
 
   private String massage(String time) {

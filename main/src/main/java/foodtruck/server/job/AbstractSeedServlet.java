@@ -1,6 +1,9 @@
 package foodtruck.server.job;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -12,6 +15,7 @@ import com.google.appengine.api.utils.SystemProperty;
 import com.sun.jersey.api.client.Client;
 
 import foodtruck.dao.TempTruckStopDAO;
+import foodtruck.model.TempTruckStop;
 import foodtruck.schedule.StopReader;
 
 /**
@@ -19,6 +23,8 @@ import foodtruck.schedule.StopReader;
  * @since 2018-12-18
  */
 public abstract class AbstractSeedServlet extends HttpServlet {
+
+  private static final Logger log = Logger.getLogger(AbstractSeedServlet.class.getName());
 
   private final TempTruckStopDAO tempDAO;
   private final Client client;
@@ -49,7 +55,9 @@ public abstract class AbstractSeedServlet extends HttpServlet {
     String document = client.resource(endpoint)
         .header(HttpHeaders.USER_AGENT, userAgent)
         .get(String.class);
-    reader.findStops(document).forEach(tempDAO::save);
+    List<TempTruckStop> stops = reader.findStops(document);
+    log.log(Level.INFO, "Retrieved {0} stops for calendar: {1}", new Object[] {stops.size(), reader.getCalendar()});
+    stops.forEach(tempDAO::save);
     resp.setStatus(200);
   }
 }

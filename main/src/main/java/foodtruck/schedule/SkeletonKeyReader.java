@@ -26,6 +26,7 @@ import static foodtruck.schedule.SimpleCalReader.inferTruckId;
 public class SkeletonKeyReader implements StopReader {
 
   private static final Logger log = Logger.getLogger(SkeletonKeyReader.class.getName());
+  public static final String CALENDAR_NAME = "skeletonkey";
   private final ZoneId zoneId;
 
   @Inject
@@ -57,7 +58,7 @@ public class SkeletonKeyReader implements StopReader {
               .startTime(parseTime(obj.getString("startDate")))
               .endTime(parseTime(obj.getString("endDate")))
               .locationName("Skeleton Key Brewery")
-              .calendarName("skeletonkey")
+              .calendarName(CALENDAR_NAME)
               .build());
         } catch (JSONException e) {
           log.log(Level.WARNING, e.getMessage(), e);
@@ -66,6 +67,11 @@ public class SkeletonKeyReader implements StopReader {
     }
 
     return stops.build();
+  }
+
+  @Override
+  public String getCalendar() {
+    return CALENDAR_NAME;
   }
 
   private ZonedDateTime parseTime(String time) {

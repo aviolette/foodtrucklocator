@@ -11,4 +11,6 @@ import foodtruck.model.TempTruckStop;
 public interface StopReader {
 
   List<TempTruckStop> findStops(String document);
+
+  String getCalendar();
 }

@@ -29,5 +29,6 @@ public class TempScheduleService {
     queue.add(withUrl("/cron/populate_imperial_oaks_stops"));
     queue.add(withUrl("/cron/populate_coastline_cove"));
     queue.add(withUrl("/cron/populate_skeleton_key"));
+    queue.add(withUrl("/cron/populate_pollyanna_schedule"));
   }
 }

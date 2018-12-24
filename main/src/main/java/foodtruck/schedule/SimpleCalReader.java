@@ -65,15 +65,21 @@ public class SimpleCalReader {
     title = title.toLowerCase();
     if (title.contains("bop bar")) {
       return "bopbartruck";
+    } else if (title.contains("puff truck")) {
+      return "pufftruckpizza";
     } else if (title.contains("roaming hog")) {
       return "roaminghog";
     } else if (title.contains("toastycheese")) {
       return "mytoastycheese";
     } else if (title.contains("lucy")) {
       return "sohotruck";
+    } else if (title.contains("pierogi jo")) {
+      return "pierogijos";
+    } else if (title.contains("doctor dogs")) {
+      return "doctordogs";
     } else if (title.contains("pizza boss")) {
       return "chipizzaboss";
-    } else if (title.contains("smokin bbq")) {
+    } else if (title.contains("smokin bbq") || title.contains("smokin' bbq")) {
       return "smokinbbqkitchn";
     } else if (title.contains("comodita")) {
       return "ballsoflove";
@@ -81,19 +87,24 @@ public class SimpleCalReader {
       return "twisted_classic";
     } else if (title.contains("babyq")) {
       return "babyqs123";
+    } else if (title.contains("chicago culinary kitchen")) {
+      return "chicagock";
     } else if (title.contains("cheesie")) {
       return "cheesies_truck";
     } else if (title.contains("ofrenda")) {
       return "ofrendatruck";
-    } else if (title.contains("bull & balance")) {
+    } else if (title.contains("bull & balance") || title.contains("bull and balance")) {
       return "bullandbalance";
     } else if (title.contains("jd ") || title.contains("wally") ||
         title.contains("yarn night") || title.contains("matt alfano") ||
         title.contains("sip on") || title.contains("pop-up") ||
         title.contains("dj ") || title.contains("concert") ||
+        title.contains("sausage making") || title.contains("open from") ||
         title.contains("music") || title.contains("santa") ||
-        title.contains("welcoming") ||
-        title.contains("trivia") || title.contains("beer & yoga")) {
+        title.contains("welcoming") || title.contains("live") ||
+        title.contains("closed") || title.contains("tour") ||
+        title.contains("yoga") || title.contains("rock out") ||
+        title.contains("trivia") || title.contains("beer & yoga") || !title.contains("truck")) {
       return null;
     } else {
       log.log(Level.SEVERE, "Unrecognized truck pattern: {0}", title);
