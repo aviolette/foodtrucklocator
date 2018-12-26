@@ -37,7 +37,6 @@ public class ScheduleModule extends AbstractModule {
     bind(AddressExtractor.class).to(JavascriptAddressExtractor.class);
     Multibinder<ScheduleStrategy> connectorBinder = Multibinder.newSetBinder(binder(), ScheduleStrategy.class);
     connectorBinder.addBinding().to(GoogleCalendarV3Consumer.class);
-    connectorBinder.addBinding().to(DrupalCalendarConsumer.class);
     connectorBinder.addBinding().to(TempTruckStopScheduleStrategy.class);
     bind(SocialMediaCacher.class).to(SocialMediaCacherImpl.class);
     bind(FoodTruckStopService.class).to(FoodTruckStopServiceImpl.class);
