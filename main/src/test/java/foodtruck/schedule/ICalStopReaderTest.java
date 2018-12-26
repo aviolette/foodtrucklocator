@@ -1,6 +1,7 @@
 package foodtruck.schedule;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -9,8 +10,12 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import foodtruck.geolocation.GeoLocator;
+import foodtruck.model.TempTruckStop;
 import foodtruck.model.Truck;
-import foodtruck.model.TruckStop;
+
+import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
 /**
  * @author aviolette
@@ -98,8 +103,9 @@ public class ICalStopReaderTest {
         "END:VEVENT\n" + "END:VCALENDAR";
     Truck truck = Truck.builder().id("smokingbbqkitchen").name("BBQ Truck").build();
 
-    List<TruckStop> stops = reader.read(input, truck);
-
+    when(locator.locateOpt(any())).thenReturn(Optional.of(ModelTestHelper.clarkAndMonroe()));
+    List<TempTruckStop> stops = reader.findStops(input, truck.getId());
+    assertThat(stops).hasSize(10);
 
 
   }

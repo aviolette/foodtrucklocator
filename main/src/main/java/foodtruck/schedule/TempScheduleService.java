@@ -1,10 +1,15 @@
 package foodtruck.schedule;
 
+import java.util.Collection;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
 import foodtruck.dao.TempTruckStopDAO;
+import foodtruck.dao.TruckDAO;
 
 import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 
@@ -16,11 +21,13 @@ public class TempScheduleService {
 
   private final TempTruckStopDAO dao;
   private final Provider<Queue> queueProvider;
+  private final TruckDAO truckDAO;
 
   @Inject
-  public TempScheduleService(TempTruckStopDAO dao, Provider<Queue> queueProvider) {
+  public TempScheduleService(TempTruckStopDAO dao, Provider<Queue> queueProvider, TruckDAO truckDAO) {
     this.dao = dao;
     this.queueProvider = queueProvider;
+    this.truckDAO = truckDAO;
   }
 
   public void rebuild() {
@@ -31,5 +38,9 @@ public class TempScheduleService {
     queue.add(withUrl("/cron/populate_skeleton_key"));
     queue.add(withUrl("/cron/populate_pollyanna_schedule"));
     queue.add(withUrl("/cron/populate_fat_shallot"));
+    truckDAO.findTruckWithICalCalendars().forEach(truck ->
+        queue.add(withUrl("/cron/populate_ical_stops")
+            .param("calendar", Objects.requireNonNull(truck.getIcalCalendar()))
+            .param("truck", truck.getId())));
   }
 }

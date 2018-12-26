@@ -22,7 +22,7 @@ import foodtruck.schedule.StopReader;
  * @author aviolette
  * @since 2018-12-18
  */
-public abstract class AbstractSeedServlet extends HttpServlet {
+public abstract class AbstractSeedServlet extends AbstractJobServlet {
 
   private static final Logger log = Logger.getLogger(AbstractSeedServlet.class.getName());
 
@@ -39,15 +39,6 @@ public abstract class AbstractSeedServlet extends HttpServlet {
     this.reader = reader;
     this.endpoint = endpoint;
     this.userAgent = userAgent;
-  }
-
-  @Override
-  protected final void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    if (SystemProperty.environment.value() != SystemProperty.Environment.Value.Production) {
-      doPost(req, resp);
-    } else {
-      super.doGet(req, resp);
-    }
   }
 
   @Override

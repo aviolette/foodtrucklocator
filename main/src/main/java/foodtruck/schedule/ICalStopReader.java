@@ -3,6 +3,11 @@ package foodtruck.schedule;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,16 +15,8 @@ import java.util.logging.Logger;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.ISODateTimeFormat;
-
 import foodtruck.geolocation.GeoLocator;
-import foodtruck.geolocation.GeolocationGranularity;
-import foodtruck.model.Location;
-import foodtruck.model.StopOrigin;
-import foodtruck.model.Truck;
-import foodtruck.model.TruckStop;
+import foodtruck.model.TempTruckStop;
 
 /**
  * @author aviolette
@@ -38,26 +35,25 @@ public class ICalStopReader {
     this.extractor = addressExtractor;
   }
 
-
-  List<TruckStop> read(String document, Truck truck) {
-    ImmutableList.Builder<TruckStop> stops = ImmutableList.builder();
-    ICalEntry entry = null;
+  public List<TempTruckStop> findStops(String document, String truck) {
+    ImmutableList.Builder<TempTruckStop> stops = ImmutableList.builder();
+    TempTruckStop.Builder builder = null;
     try (BufferedReader reader = new BufferedReader(new StringReader(document))) {
       String line;
       boolean locationEncountered = false;
       while ((line = reader.readLine()) != null) {
         if (line.equals("BEGIN:VEVENT")) {
-          entry = new ICalEntry();
+          builder = TempTruckStop.builder().truckId(truck).calendarName("ical");
           continue;
         } else if (line.equals("END:VEVENT")) {
-          if (entry.isComplete()) {
-            stops.add(entry.toTruckStop(truck));
+          if (builder.isComplete()) {
+            stops.add(builder.build());
           }
-          entry = null;
+          builder = null;
           locationEncountered = false;
           continue;
         }
-        if (entry == null) {
+        if (builder == null) {
           continue;
         }
         int colon = line.indexOf(':');
@@ -66,34 +62,28 @@ public class ICalStopReader {
         }
         String tag = line.substring(0, colon);
         String rest = line.length() > colon ? line.substring(colon+1) : "";
-        DateTimeZone zone = DateTimeZone.forID("America/Chicago");
+        ZoneId zone = ZoneId.of("America/Chicago");
         if (tag.startsWith("DTSTART") || tag.startsWith("DTEND")) {
           int semi = line.indexOf("=");
           if (semi != -1) {
-            zone = DateTimeZone.forID(tag.substring(semi+1));
+            zone = ZoneId.of(tag.substring(semi+1));
           }
         }
         if (tag.startsWith("DTSTART")) {
-          entry.setStartTime(parseTime(rest, zone));
+          builder.startTime(parseTime(rest, zone));
         } else if (tag.startsWith("DTEND")) {
-          entry.setEndTime(parseTime(rest, zone));
+          builder.endTime(parseTime(rest, zone));
         } else if (tag.startsWith("SUMMARY")) {
           rest = rest.replaceAll("\\\\,", ",");
           rest = rest.replaceAll("&amp\\\\;", "and");
           if (!locationEncountered) {
-            /*
-            List<String> addresses = extractor.parse(rest, truck);
-            if (!addresses.isEmpty()) {
-              entry.setLocation(locator.locate(addresses.get(0), GeolocationGranularity.NARROW));
-            }
-            */
-            entry.setLocation(locator.locate(rest, GeolocationGranularity.NARROW));
+            appendLocation(builder, rest);
           }
         } else if (tag.equals("LOCATION")) {
           rest = rest.replaceAll("\\\\,", ",");
           rest = rest.replaceAll("&amp\\\\;", "and");
           locationEncountered = true;
-          entry.setLocation(locator.locate(rest, GeolocationGranularity.NARROW));
+          appendLocation(builder, rest);
         }
       }
     } catch (IOException e) {
@@ -102,65 +92,27 @@ public class ICalStopReader {
     return stops.build();
   }
 
-  private DateTime parseTime(String time, DateTimeZone zone) {
+  private ZonedDateTime parseTime(String time, ZoneId zone) {
+    int index = time.indexOf('T');
+    if (index > 0) {
+      String date = time.substring(0, index);
+      date = date.substring(0, 4) + "-" + date.substring(4, 6) + "-" + date.substring(6, 8);
+      String sub = time.substring(index+1);
+      time = date + "T" + sub.substring(0, 2) + ":" + sub.substring(2, 4) + ":" + sub.substring(4, 6);
+      if (sub.length() > 6) {
+        time = sub.substring(6);
+      }
+    }
     if (time.endsWith("Z")) {
-      return ISODateTimeFormat.basicDateTimeNoMillis()
-          .parseDateTime(time);
+      return ZonedDateTime.ofInstant(Instant.from(DateTimeFormatter.ISO_INSTANT.parse(time)), zone);
     }
     // lifted from stack overflow
-    int offsetInMillis = zone.getOffset(new DateTime().getMillis());
-    String offset = String.format("%02d:%02d", Math.abs(offsetInMillis / 3600000),
-        Math.abs((offsetInMillis / 60000) % 60));
-    offset = (offsetInMillis >= 0 ? "+" : "-") + offset;
-    DateTime theTime = ISODateTimeFormat.basicDateTimeNoMillis()
-        .withZone(zone)
-        .parseDateTime(time + offset);
-    return theTime;
-  }
-
-  private static class ICalEntry {
-
-    private DateTime startTime, endTime;
-    private Location location;
-
-    public boolean isComplete() {
-      return startTime != null && endTime != null && location != null;
-    }
-
-    public DateTime getStartTime() {
-      return startTime;
-    }
-
-    public void setStartTime(DateTime startTime) {
-      this.startTime = startTime;
-    }
-
-    public DateTime getEndTime() {
-      return endTime;
-    }
-
-    public void setEndTime(DateTime endTime) {
-      this.endTime = endTime;
-    }
-
-    public Location getLocation() {
-      return location;
-    }
-
-    public void setLocation(Location location) {
-      this.location = location;
-    }
-
-    public TruckStop toTruckStop(Truck truck) {
-      return TruckStop.builder()
-          .startTime(startTime)
-          .endTime(endTime)
-          .location(location)
-          .truck(truck)
-          .origin(StopOrigin.VENDORCAL)
-          .build();
-    }
+    ZoneOffset offset = zone.getRules().getOffset(Instant.now());
+    return ZonedDateTime.from(DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse(time + offset.toString()));
   }
 
 
+  private void appendLocation(TempTruckStop.Builder builder, String rest) {
+    locator.locateOpt(rest).ifPresent(loc -> builder.locationName(loc.getName()));
+  }
 }

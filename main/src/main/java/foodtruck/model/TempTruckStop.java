@@ -116,5 +116,9 @@ public class TempTruckStop extends ModelEntity {
     public TempTruckStop build() {
       return new TempTruckStop(this);
     }
+
+    public boolean isComplete() {
+      return startTime != null && endTime != null && truckId != null && locationName != null && calendarName != null;
+    }
   }
 }
