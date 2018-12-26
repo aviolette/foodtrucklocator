@@ -45,10 +45,11 @@ public class SeedICalCalendarServlet extends AbstractJobServlet {
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     String calendar = req.getParameter("calendar");
+    String truck = req.getParameter("truck");
+    log.log(Level.INFO, "Searching calendar {0} for truck {1}", new Object[] {calendar, truck});
     String document = client.resource(calendar)
         .header(HttpHeaders.USER_AGENT, userAgent)
         .get(String.class);
-    String truck = req.getParameter("truck");
     List<TempTruckStop> stops = stopReader.findStops(document, truck);
     log.log(Level.INFO, "Retrieved {0} stops for truck {2} with calendar: {1}", new Object[] {stops.size(), calendar, truck});
     stops.forEach(tempDAO::save);
