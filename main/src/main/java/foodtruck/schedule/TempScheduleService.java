@@ -44,14 +44,9 @@ public class TempScheduleService {
     queue.add(withUrl("/cron/populate_pollyanna_schedule"));
     queue.add(withUrl("/cron/populate_fat_shallot"));
     truckDAO.findTruckWithICalCalendars()
-        .forEach(truck -> {
-          if (Strings.isNullOrEmpty(truck.getIcalCalendar())) {
-            log.log(Level.SEVERE, "Say what? " + truck.getId());
-            return;
-          }
-          queue.add(
-              withUrl("/cron/populate_ical_stops").param("calendar", Objects.requireNonNull(truck.getIcalCalendar()))
-                  .param("truck", truck.getId()));
-        });
+        .forEach(truck -> queue.add(
+            withUrl("/cron/populate_ical_stops")
+                .param("calendar", Objects.requireNonNull(truck.getIcalCalendar()))
+                .param("truck", truck.getId())));
   }
 }
