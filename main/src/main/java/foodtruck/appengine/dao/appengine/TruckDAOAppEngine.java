@@ -386,7 +386,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     entity.setProperty(BLACKLIST_LOCATION_NAMES, truck.getBlacklistLocationNames());
     entity.setProperty(PHONETIC_ALIASES, truck.getPhoneticAliases());
     entity.setProperty(DRUPAL_CALENDAR, truck.getDrupalCalendar());
-    entity.setProperty(ICAL_CALENDAR, truck.getIcalCalendar());
+    entity.setProperty(ICAL_CALENDAR, Strings.emptyToNull(truck.getIcalCalendar()));
     entity.setProperty(SQUARESPACE_CALENDAR, truck.getSquarespaceCalendar());
     entity.setProperty(TWITTER_TOKEN, truck.getTwitterToken());
     entity.setProperty(TWITTER_TOKEN_SECRET, truck.getTwitterTokenSecret());
