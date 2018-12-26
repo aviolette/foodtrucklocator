@@ -48,5 +48,8 @@ public class TempScheduleService {
             withUrl("/cron/populate_ical_stops")
                 .param("calendar", Objects.requireNonNull(truck.getIcalCalendar()))
                 .param("truck", truck.getId())));
+    truckDAO.findTrucksWithCalendars().forEach(truck -> queue.add(withUrl("/cron/populate_google_calendar_schedule")
+        .param("calendar", Objects.requireNonNull(truck.getCalendarUrl()))
+        .param("truck", truck.getId())));
   }
 }

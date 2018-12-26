@@ -65,6 +65,7 @@ import foodtruck.server.job.InvalidateScheduleCache;
 import foodtruck.server.job.NotifyLeavingStopServlet;
 import foodtruck.server.job.NotifyNewStopServlet;
 import foodtruck.server.job.SeedFatShallotSchedule;
+import foodtruck.server.job.SeedGoogleCalendarSchedule;
 import foodtruck.server.job.SeedICalCalendarServlet;
 import foodtruck.server.job.SeedPollyannaServlet;
 import foodtruck.server.job.ProfileSyncServlet;
@@ -155,6 +156,8 @@ class FoodtruckServletModule extends ServletModule {
     serve("/cron/populate_pollyanna_schedule").with(SeedPollyannaServlet.class);
     serve("/cron/populate_fat_shallot").with(SeedFatShallotSchedule.class);
     serve("/cron/populate_ical_stops").with(SeedICalCalendarServlet.class);
+    serve("/cron/populate_google_calendar_schedule").with(SeedGoogleCalendarSchedule.class);
+
     // Dashboard endpoints
     serve("/admin").with(AdminDashboardServlet.class);
     serve("/admin/alexa_test").with(AlexaTestServlet.class);
@@ -171,6 +174,7 @@ class FoodtruckServletModule extends ServletModule {
     serveRegex("/admin/trucks/[\\S]*/linxup_config").with(LinxupConfigServlet.class);
     serveRegex("/admin/trucks/[\\S]*/danger").with(DangerZoneServlet.class);
     serve("/admin/trucks/*").with(TruckServlet.class);
+//    serve("/admin/trucks/courageouscakes").with(TruckServlet.class);
     serve("/admin/images").with(ImageUploadServlet.class);
     serve("/admin/trucks").with(TruckListServlet.class);
     serve("/admin/locations/*").with(LocationEditServlet.class);
