@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.HttpHeaders;
 
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.sun.jersey.api.client.Client;
@@ -46,6 +47,14 @@ public class SeedICalCalendarServlet extends AbstractJobServlet {
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     String calendar = req.getParameter("calendar");
     String truck = req.getParameter("truck");
+    if (Strings.isNullOrEmpty(calendar)) {
+      log.severe("Calendar is empty");
+      return;
+    }
+    if (Strings.isNullOrEmpty(truck)) {
+      log.severe("Truck is empty");
+      return;
+    }
     log.log(Level.INFO, "Searching calendar {0} for truck {1}", new Object[] {calendar, truck});
     String document = client.resource(calendar)
         .header(HttpHeaders.USER_AGENT, userAgent)

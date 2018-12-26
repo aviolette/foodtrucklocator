@@ -2,9 +2,12 @@ package foodtruck.schedule;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import com.google.appengine.api.taskqueue.Queue;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
@@ -18,6 +21,8 @@ import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
  * @since 2018-12-11
  */
 public class TempScheduleService {
+
+  private static final Logger log = Logger.getLogger(TempScheduleService.class.getName());
 
   private final TempTruckStopDAO dao;
   private final Provider<Queue> queueProvider;
@@ -38,9 +43,15 @@ public class TempScheduleService {
     queue.add(withUrl("/cron/populate_skeleton_key"));
     queue.add(withUrl("/cron/populate_pollyanna_schedule"));
     queue.add(withUrl("/cron/populate_fat_shallot"));
-    truckDAO.findTruckWithICalCalendars().forEach(truck ->
-        queue.add(withUrl("/cron/populate_ical_stops")
-            .param("calendar", Objects.requireNonNull(truck.getIcalCalendar()))
-            .param("truck", truck.getId())));
+    truckDAO.findTruckWithICalCalendars()
+        .forEach(truck -> {
+          if (Strings.isNullOrEmpty(truck.getIcalCalendar())) {
+            log.log(Level.SEVERE, "Say what? " + truck.getId());
+            return;
+          }
+          queue.add(
+              withUrl("/cron/populate_ical_stops").param("calendar", Objects.requireNonNull(truck.getIcalCalendar()))
+                  .param("truck", truck.getId()));
+        });
   }
 }
