@@ -6,8 +6,11 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Nullable;
+
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Events;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -46,13 +49,13 @@ public class SeedGoogleCalendarSchedule extends AbstractCalendarServlet {
   }
 
   @Override
-  protected List<TempTruckStop> doSearch(String calendar, String truckId) {
+  protected List<TempTruckStop> doSearch(String calendar, String truckId, @Nullable String defaultLocation) {
 
-    Truck truck = truckDAO.findByIdOpt(truckId).orElseThrow(() -> new RuntimeException("Truck not found: " + truckId));
+    Truck truck = Strings.isNullOrEmpty(truckId) ? null : truckDAO.findByIdOpt(truckId).orElseThrow(() -> new RuntimeException("Truck not found: " + truckId));
     ImmutableList.Builder<TempTruckStop> builder = ImmutableList.builder();
     try {
       String pageToken = null;
-      int timezoneAdjustment = truck.getTimezoneAdjustment();
+      int timezoneAdjustment = truck == null ? 0 : truck.getTimezoneAdjustment();
       Interval range = new Interval(clock.now(), clock.now().plusDays(30));
       do {
         Calendar.Events.List query = calendarClient.events()
@@ -63,7 +66,7 @@ public class SeedGoogleCalendarSchedule extends AbstractCalendarServlet {
             .setPageToken(pageToken);
         Events events = query.execute();
         events.getItems().stream()
-            .map(event -> reader.buildTruckStop(truck, timezoneAdjustment, event))
+            .map(event -> reader.buildTruckStop(truck, timezoneAdjustment, event, defaultLocation))
             .filter(Objects::nonNull)
             .forEach(builder::add);
         pageToken = events.getNextPageToken();

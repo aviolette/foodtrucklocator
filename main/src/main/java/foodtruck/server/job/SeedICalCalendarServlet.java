@@ -33,7 +33,7 @@ public class SeedICalCalendarServlet extends AbstractCalendarServlet {
   }
 
   @Override
-  protected List<TempTruckStop> doSearch(String calendar, String truck) {
+  protected List<TempTruckStop> doSearch(String calendar, String truck, String defaultLocation) {
     String document = client.resource(calendar)
         .header(HttpHeaders.USER_AGENT, userAgent)
         .get(String.class);

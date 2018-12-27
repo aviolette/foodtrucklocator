@@ -48,5 +48,8 @@ public class TempScheduleService {
         .param("calendar", Objects.requireNonNull(truck.getCalendarUrl()))
         .param("truck", truck.getId())));
     queue.add(withUrl("/cron/populate_plank_road_schedule"));
+    queue.add(withUrl("/cron/populate_google_calendar_schedule")
+        .param("calendar", "oswegobrewing.com_rg6gupgfqs5d3h97ur31ed88i0@group.calendar.google.com")
+        .param("defaultLocation", "Oswego Brewing Co."));
   }
 }

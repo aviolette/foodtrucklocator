@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import javax.annotation.Nullable;
 
 import com.google.api.services.calendar.model.Event;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
@@ -21,6 +22,8 @@ import foodtruck.model.Location;
 import foodtruck.model.TempTruckStop;
 import foodtruck.model.Truck;
 import foodtruck.time.Clock;
+
+import static foodtruck.schedule.SimpleCalReader.inferTruckId;
 
 /**
  * @author aviolette
@@ -46,11 +49,20 @@ public class GoogleCalendarReader {
   }
 
   @Nullable
-  public TempTruckStop buildTruckStop(Truck truck, int timezoneAdjustment, Event event) {
+  public TempTruckStop buildTruckStop(@Nullable Truck truck, int timezoneAdjustment, Event event, String defaultLocation) {
     String titleText = event.getSummary();
     if (hasInvalidTitle(titleText)) {
       log.log(Level.INFO, "Skipping {0} for {1}", new Object[]{titleText, truck.getId()});
       return null;
+    }
+
+    if (truck == null) {
+      String truckId = inferTruckId(titleText);
+      if (truckId == null) {
+        log.log(Level.INFO, "Could not infer truck ID from " + titleText);
+        return null;
+      }
+      truck = truckDAO.findByIdOpt(truckId).orElseThrow(() -> new RuntimeException("Truck not found: " + truckId));
     }
     // HACK: toasty cheese adds codes to the end of their locations noting which trucks are going where
 
@@ -80,6 +92,9 @@ public class GoogleCalendarReader {
         }
       }
     }
+    if (defaultLocation != null) {
+      return buildTruckStopFromLocation(defaultLocation, truck, event, timezoneAdjustment);
+    }
     Location location = locationFromWhereField(event, truck);
     String where = (location == null) ? null : location.getName();
     if (location == null || !location.isResolved()) {
@@ -90,7 +105,7 @@ public class GoogleCalendarReader {
       }
     }
     if (location != null && location.isResolved() && !event.isEndTimeUnspecified()) {
-      return buildTruckStopFromLocation(location, truck, event, timezoneAdjustment);
+      return buildTruckStopFromLocation(location.getName(), truck, event, timezoneAdjustment);
     } else if (location != null && location.isBlacklistedFromCalendarSearch()) {
       log.log(Level.INFO, "Skipping {0} because it is blacklisted.", where);
     } else {
@@ -139,7 +154,7 @@ public class GoogleCalendarReader {
   }
 
   @Nullable
-  private TempTruckStop buildTruckStopFromLocation(Location location, Truck truck, Event event,
+  private TempTruckStop buildTruckStopFromLocation(String location, Truck truck, Event event,
       int timezoneAdjustment) {
     ZonedDateTime startTime, endTime;
     if (event.getStart()
@@ -167,10 +182,10 @@ public class GoogleCalendarReader {
     }
     return TempTruckStop.builder()
         .truckId(truck.getId())
-        .locationName(location.getName())
+        .locationName(location)
         .startTime(startTime)
         .endTime(endTime)
-        .calendarName("Google: " + truck.getCalendarUrl())
+        .calendarName("Google: " + MoreObjects.firstNonNull(truck.getCalendarUrl(), location))
         .build();
   }
 

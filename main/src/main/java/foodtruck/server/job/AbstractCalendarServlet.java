@@ -36,16 +36,12 @@ public abstract class AbstractCalendarServlet extends AbstractJobServlet {
       log.severe("Calendar is empty: " + truck);
       return;
     }
-    if (Strings.isNullOrEmpty(truck)) {
-      log.severe("Truck is empty");
-      return;
-    }
     log.log(Level.INFO, "Searching calendar {0} for truck {1}", new Object[] {calendar, truck});
-    List<TempTruckStop> stops = doSearch(calendar, truck);
+    List<TempTruckStop> stops = doSearch(calendar, truck, req.getParameter("defaultLocation"));
     stops.forEach(tempDAO::save);
     log.log(Level.INFO, "Retrieved {0} stops for truck {2} with calendar: {1}", new Object[] {stops.size(), calendar, truck});
     resp.setStatus(200);
   }
 
-  protected abstract List<TempTruckStop> doSearch(String calendar, String truck);
+  protected abstract List<TempTruckStop> doSearch(String calendar, String truck, String defaultLocation);
 }
