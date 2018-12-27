@@ -33,7 +33,7 @@ public abstract class AbstractCalendarServlet extends AbstractJobServlet {
     String calendar = req.getParameter("calendar");
     String truck = req.getParameter("truck");
     if (Strings.isNullOrEmpty(calendar)) {
-      log.severe("Calendar is empty");
+      log.severe("Calendar is empty: " + truck);
       return;
     }
     if (Strings.isNullOrEmpty(truck)) {

@@ -40,7 +40,7 @@ public class RecacheAdminServlet extends HttpServlet {
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     LocalDate when = clock.currentDay();
-    Interval interval = clock.currentDay().toInterval(clock.zone()).withEnd(when.plusDays(7).toDateTimeAtStartOfDay(clock.zone()));
+    Interval interval = clock.currentDay().toInterval(clock.zone()).withEnd(when.plusDays(365).toDateTimeAtStartOfDay(clock.zone()));
     service.pullCustomCalendars(interval);
     resp.sendRedirect("/admin/recache");
   }
