@@ -357,8 +357,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     entity.setProperty(TRUCK_PREVIEW_ICON, truck.getPreviewIcon());
     entity.setProperty(TRUCK_ICON_URL, truck.getIconUrl());
     entity.setProperty(TRUCK_BEACONNAISE_EMAILS, truck.getBeaconnaiseEmails());
-    entity.setProperty(TRUCK_CALENDAR_URL,
-        Strings.isNullOrEmpty(truck.getCalendarUrl()) ? null : truck.getCalendarUrl());
+    entity.setProperty(TRUCK_CALENDAR_URL, Strings.emptyToNull(truck.getCalendarUrl()));
     entity.setProperty(TRUCK_DESCRIPTION_FIELD, new Text(Strings.nullToEmpty(truck.getDescription())));
     entity.setProperty(TRUCK_FOURSQUARE_URL_FIELD, truck.getFoursquareUrl());
     entity.setProperty(TRUCK_TWITTALYZER_FIELD, truck.isUsingTwittalyzer());
