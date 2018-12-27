@@ -19,6 +19,6 @@ public class SeedCoastlineScheduleServlet extends AbstractSeedServlet {
   @Inject
   public SeedCoastlineScheduleServlet(Client client, @UserAgent String userAgent, CoastlineCalendarReader reader,
       TempTruckStopDAO dao) {
-    super(dao, client, reader, "https://cateredbycoastline.com", userAgent);
+    super(dao, client, reader, "https://cateredbycoastline.com", userAgent, true);
   }
 }

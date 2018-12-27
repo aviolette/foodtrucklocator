@@ -18,6 +18,6 @@ public class SeedSkeletonKeyServlet extends AbstractSeedServlet {
   @Inject
   public SeedSkeletonKeyServlet(TempTruckStopDAO tempDAO, Client client, @UserAgent String userAgent,
       SkeletonKeyReader reader) {
-    super(tempDAO, client, reader, "https://www.skeletonkeybrewery.com/event-directory/", userAgent);
+    super(tempDAO, client, reader, "https://www.skeletonkeybrewery.com/event-directory/", userAgent, false);
   }
 }

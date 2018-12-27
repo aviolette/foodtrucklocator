@@ -20,6 +20,6 @@ public class SeedPollyannaServlet extends AbstractSeedServlet {
       @UserAgent String userAgent) {
     super(tempDAO, client, reader,
         "https://inffuse.eventscalendar.co/js/v0.1/calendar/data?shop=pollyannabrewing.myshopify.com&inffuse-project=1&_referrer=",
-        userAgent);
+        userAgent, false);
   }
 }

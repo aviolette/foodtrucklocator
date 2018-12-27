@@ -5,13 +5,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.HttpHeaders;
 
-import com.google.appengine.api.utils.SystemProperty;
+import com.google.common.base.Strings;
 import com.sun.jersey.api.client.Client;
 
 import foodtruck.dao.TempTruckStopDAO;
@@ -31,24 +29,42 @@ public abstract class AbstractSeedServlet extends AbstractJobServlet {
   private final StopReader reader;
   private final String endpoint;
   private final String userAgent;
+  private final boolean retryOnceBeforeError;
 
+  @SuppressWarnings("WeakerAccess")
   protected AbstractSeedServlet(TempTruckStopDAO tempDAO, Client client, StopReader reader, String endpoint,
-      String userAgent) {
+      String userAgent, boolean retryOnceBeforeError) {
     this.tempDAO = tempDAO;
     this.client = client;
     this.reader = reader;
     this.endpoint = endpoint;
     this.userAgent = userAgent;
+    this.retryOnceBeforeError = retryOnceBeforeError;
   }
 
   @Override
-  protected final void doPost(HttpServletRequest req, HttpServletResponse resp) {
-    String document = client.resource(endpoint)
-        .header(HttpHeaders.USER_AGENT, userAgent)
-        .get(String.class);
-    List<TempTruckStop> stops = reader.findStops(document);
-    log.log(Level.INFO, "Retrieved {0} stops for calendar: {1}", new Object[] {stops.size(), reader.getCalendar()});
-    stops.forEach(tempDAO::save);
-    resp.setStatus(200);
+  protected final void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    try {
+      String document = client.resource(endpoint)
+          .header(HttpHeaders.USER_AGENT, userAgent)
+          .get(String.class);
+      List<TempTruckStop> stops = reader.findStops(document);
+      log.log(Level.INFO, "Retrieved {0} stops for calendar: {1}", new Object[]{stops.size(), reader.getCalendar()});
+      stops.forEach(tempDAO::save);
+      resp.setStatus(200);
+    } catch (RuntimeException e) {
+      // I mainly added this because coastline cove seems to need to be primed before it can be retrieved
+      String retryCountHeader = req.getHeader("X-AppEngine-TaskRetryCount");
+      int retryCount;
+      if (!Strings.isNullOrEmpty(retryCountHeader)) {
+        retryCount = Integer.parseInt(retryCountHeader);
+      } else {
+        retryCount = 1;
+      }
+      if (!retryOnceBeforeError || retryCount > 0) {
+        log.log(Level.SEVERE, e.getMessage(), e);
+      }
+      resp.setStatus(500);
+    }
   }
 }

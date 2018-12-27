@@ -18,6 +18,6 @@ public class SeedFatShallotSchedule extends AbstractSeedServlet {
   @Inject
   public SeedFatShallotSchedule(TempTruckStopDAO tempDAO, Client client, FatShallotScheduleReader reader,
       @UserAgent String userAgent) {
-    super(tempDAO, client, reader, "http://thefatshallot.com/schedule/", userAgent);
+    super(tempDAO, client, reader, "http://thefatshallot.com/schedule/", userAgent, false);
   }
 }
