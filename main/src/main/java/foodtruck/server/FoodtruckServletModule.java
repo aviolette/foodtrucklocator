@@ -64,15 +64,16 @@ import foodtruck.server.job.ErrorCountServlet;
 import foodtruck.server.job.InvalidateScheduleCache;
 import foodtruck.server.job.NotifyLeavingStopServlet;
 import foodtruck.server.job.NotifyNewStopServlet;
-import foodtruck.server.job.SeedFatShallotSchedule;
-import foodtruck.server.job.SeedGoogleCalendarSchedule;
-import foodtruck.server.job.SeedICalCalendarServlet;
-import foodtruck.server.job.SeedPollyannaServlet;
 import foodtruck.server.job.ProfileSyncServlet;
 import foodtruck.server.job.RebuildTempScheduleServlet;
 import foodtruck.server.job.RecacheServlet;
 import foodtruck.server.job.SeedCoastlineScheduleServlet;
+import foodtruck.server.job.SeedFatShallotSchedule;
+import foodtruck.server.job.SeedGoogleCalendarSchedule;
+import foodtruck.server.job.SeedICalCalendarServlet;
 import foodtruck.server.job.SeedImperialOakCalendarServlet;
+import foodtruck.server.job.SeedPlankRoadTapRoomServlet;
+import foodtruck.server.job.SeedPollyannaServlet;
 import foodtruck.server.job.SeedSkeletonKeyServlet;
 import foodtruck.server.job.SendLunchNotificationsServlet;
 import foodtruck.server.job.SlackLunchtimeNotifications;
@@ -157,6 +158,7 @@ class FoodtruckServletModule extends ServletModule {
     serve("/cron/populate_fat_shallot").with(SeedFatShallotSchedule.class);
     serve("/cron/populate_ical_stops").with(SeedICalCalendarServlet.class);
     serve("/cron/populate_google_calendar_schedule").with(SeedGoogleCalendarSchedule.class);
+    serve("/cron/populate_plank_road_schedule").with(SeedPlankRoadTapRoomServlet.class);
 
     // Dashboard endpoints
     serve("/admin").with(AdminDashboardServlet.class);

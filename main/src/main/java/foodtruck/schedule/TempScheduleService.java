@@ -1,13 +1,9 @@
 package foodtruck.schedule;
 
-import java.util.Collection;
 import java.util.Objects;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import com.google.appengine.api.taskqueue.Queue;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
@@ -51,5 +47,6 @@ public class TempScheduleService {
     truckDAO.findTrucksWithCalendars().forEach(truck -> queue.add(withUrl("/cron/populate_google_calendar_schedule")
         .param("calendar", Objects.requireNonNull(truck.getCalendarUrl()))
         .param("truck", truck.getId())));
+    queue.add(withUrl("/cron/populate_plank_road_schedule"));
   }
 }
