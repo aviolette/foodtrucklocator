@@ -1,0 +1,541 @@
+[
+  {
+    "@context": "http://schema.org",
+    "@type": "Event",
+    "name": "Trivia Night",
+    "description": "&lt;p&gt;Join us every Tuesday night at 7:00pm as your host, Jason takes you through 2 full hours of General Knowledge Trivia, including awesome bonus rounds and everyone\\'s favorite - the music round! Alter Brewing Company will be supplying liquid wisdom to help you out, cleverly disguised as their delicious craft brews, and prizes for the [&hellip;]&lt;/p&gt;\\n",
+    "image": "https://www.alterbrewing.com/wp-content/uploads/2018/03/3739_image_29513308_854380311421276_8900735722007798654_n.jpg",
+    "url": "https://www.alterbrewing.com/events/trivia-night-23/",
+    "startDate": "2018-11-27T19:00:00-06:00",
+    "endDate": "2018-11-27T21:00:00-06:00",
+    "location": {
+      "@type": "Place",
+      "name": "Alter Brewing Company",
+      "description": "",
+      "url": false,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "2300 Wisconsin Ave. #213",
+        "addressLocality": "Downers Grove",
+        "postalCode": "60515",
+        "addressCountry": "United States"
+      },
+      "telephone": "630.541.9558",
+      "sameAs": "www.alterbrewing.com"
+    },
+    "organizer": {
+      "@type": "Person",
+      "name": "Baig of Tricks Entertainment",
+      "description": "",
+      "url": false,
+      "telephone": "",
+      "email": "",
+      "sameAs": "https://www.facebook.com/BaigofTricks/"
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Event",
+    "name": "Wednesday Growler and Crowler Special",
+    "description": "&lt;p&gt;Wednesday is a great day to stop in to Alter and pick up some to-go beer. We have $14 growler fills and $8 crowlers of just about everything on tap.* (P.S. you can get crowlers 3 for $30 any day of the week!) We do fill other breweries\\' growlers, as well as specialty growlers (i.e. [&hellip;]&lt;/p&gt;\\n",
+    "image": "https://www.alterbrewing.com/wp-content/uploads/2018/08/GrowlerPic_Web.jpg",
+    "url": "https://www.alterbrewing.com/events/wednesday-growler-and-crowler-special-14/",
+    "startDate": "2018-11-28T00:00:00-06:00",
+    "endDate": "2018-11-28T23:59:59-06:00",
+    "location": {
+      "@type": "Place",
+      "name": "Alter Brewing Company",
+      "description": "",
+      "url": false,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "2300 Wisconsin Ave. #213",
+        "addressLocality": "Downers Grove",
+        "postalCode": "60515",
+        "addressCountry": "United States"
+      },
+      "telephone": "630.541.9558",
+      "sameAs": "www.alterbrewing.com"
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Event",
+    "name": "Bull and Balance BBQ",
+    "description": "&lt;p&gt;Dinner is served! Come on out on November 30th for some delicious Bull &amp; Balance BBQ in the taproom. The guys will be here from 5:30-8:30pm.&lt;/p&gt;\\n",
+    "image": "https://www.alterbrewing.com/wp-content/uploads/2018/03/Bull_and_Balance_FBEvent.jpg",
+    "url": "https://www.alterbrewing.com/events/bull-and-balance-bbq-4/",
+    "startDate": "2018-11-30T17:30:00-06:00",
+    "endDate": "2018-11-30T20:30:00-06:00",
+    "location": {
+      "@type": "Place",
+      "name": "Alter Brewing Company",
+      "description": "",
+      "url": false,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "2300 Wisconsin Ave. #213",
+        "addressLocality": "Downers Grove",
+        "postalCode": "60515",
+        "addressCountry": "United States"
+      },
+      "telephone": "630.541.9558",
+      "sameAs": "www.alterbrewing.com"
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Event",
+    "name": "Trivia Night",
+    "description": "&lt;p&gt;Join us every Tuesday night at 7:00pm as your host, Jason takes you through 2 full hours of General Knowledge Trivia, including awesome bonus rounds and everyone\\'s favorite - the music round! Alter Brewing Company will be supplying liquid wisdom to help you out, cleverly disguised as their delicious craft brews, and prizes for the [&hellip;]&lt;/p&gt;\\n",
+    "image": "https://www.alterbrewing.com/wp-content/uploads/2018/03/3739_image_29513308_854380311421276_8900735722007798654_n.jpg",
+    "url": "https://www.alterbrewing.com/events/trivia-night-24/",
+    "startDate": "2018-12-04T19:00:00-06:00",
+    "endDate": "2018-12-04T21:00:00-06:00",
+    "location": {
+      "@type": "Place",
+      "name": "Alter Brewing Company",
+      "description": "",
+      "url": false,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "2300 Wisconsin Ave. #213",
+        "addressLocality": "Downers Grove",
+        "postalCode": "60515",
+        "addressCountry": "United States"
+      },
+      "telephone": "630.541.9558",
+      "sameAs": "www.alterbrewing.com"
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Event",
+    "name": "Wednesday Growler and Crowler Special",
+    "description": "&lt;p&gt;Wednesday is a great day to stop in to Alter and pick up some to-go beer. We have $14 growler fills and $8 crowlers of just about everything on tap.* (P.S. you can get crowlers 3 for $30 any day of the week!) We do fill other breweries\\' growlers, as well as specialty growlers (i.e. [&hellip;]&lt;/p&gt;\\n",
+    "image": "https://www.alterbrewing.com/wp-content/uploads/2018/08/GrowlerPic_Web.jpg",
+    "url": "https://www.alterbrewing.com/events/wednesday-growler-and-crowler-special-18/",
+    "startDate": "2018-12-05T00:00:00-06:00",
+    "endDate": "2018-12-05T23:59:59-06:00",
+    "location": {
+      "@type": "Place",
+      "name": "Alter Brewing Company",
+      "description": "",
+      "url": false,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "2300 Wisconsin Ave. #213",
+        "addressLocality": "Downers Grove",
+        "postalCode": "60515",
+        "addressCountry": "United States"
+      },
+      "telephone": "630.541.9558",
+      "sameAs": "www.alterbrewing.com"
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Event",
+    "name": "Trivia Night",
+    "description": "&lt;p&gt;Join us every Tuesday night at 7:00pm as your host, Jason takes you through 2 full hours of General Knowledge Trivia, including awesome bonus rounds and everyone\\'s favorite - the music round! Alter Brewing Company will be supplying liquid wisdom to help you out, cleverly disguised as their delicious craft brews, and prizes for the [&hellip;]&lt;/p&gt;\\n",
+    "image": "https://www.alterbrewing.com/wp-content/uploads/2018/03/3739_image_29513308_854380311421276_8900735722007798654_n.jpg",
+    "url": "https://www.alterbrewing.com/events/trivia-night-25/",
+    "startDate": "2018-12-11T19:00:00-06:00",
+    "endDate": "2018-12-11T21:00:00-06:00",
+    "location": {
+      "@type": "Place",
+      "name": "Alter Brewing Company",
+      "description": "",
+      "url": false,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "2300 Wisconsin Ave. #213",
+        "addressLocality": "Downers Grove",
+        "postalCode": "60515",
+        "addressCountry": "United States"
+      },
+      "telephone": "630.541.9558",
+      "sameAs": "www.alterbrewing.com"
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Event",
+    "name": "Wednesday Growler and Crowler Special",
+    "description": "&lt;p&gt;Wednesday is a great day to stop in to Alter and pick up some to-go beer. We have $14 growler fills and $8 crowlers of just about everything on tap.* (P.S. you can get crowlers 3 for $30 any day of the week!) We do fill other breweries\\' growlers, as well as specialty growlers (i.e. [&hellip;]&lt;/p&gt;\\n",
+    "image": "https://www.alterbrewing.com/wp-content/uploads/2018/08/GrowlerPic_Web.jpg",
+    "url": "https://www.alterbrewing.com/events/wednesday-growler-and-crowler-special-19/",
+    "startDate": "2018-12-12T00:00:00-06:00",
+    "endDate": "2018-12-12T23:59:59-06:00",
+    "location": {
+      "@type": "Place",
+      "name": "Alter Brewing Company",
+      "description": "",
+      "url": false,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "2300 Wisconsin Ave. #213",
+        "addressLocality": "Downers Grove",
+        "postalCode": "60515",
+        "addressCountry": "United States"
+      },
+      "telephone": "630.541.9558",
+      "sameAs": "www.alterbrewing.com"
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Event",
+    "name": "Alter&#8217;s 3rd Anniversary",
+    "description": "&lt;p&gt;Alter is turning 3 years old this month and we\\'d like to celebrate with you! Join us December 13th-15th for some new beer, good food, and barrel aged delights. Dec. 13th - Release of our new triple IPA, Denim Viper ---------------- Dec. 14th - Bottle release of Bourbon Barrel-Aged Smash Tun and Bourbon Barrel-Aged Double [&hellip;]&lt;/p&gt;\\n",
+    "image": "https://www.alterbrewing.com/wp-content/uploads/2018/12/3rd_Anniversary_Logo_web.jpg",
+    "url": "https://www.alterbrewing.com/events/alters-3rd-anniversary/",
+    "startDate": "2018-12-13T00:00:00-06:00",
+    "endDate": "2018-12-15T23:59:59-06:00",
+    "location": {
+      "@type": "Place",
+      "name": "Alter Brewing Company",
+      "description": "",
+      "url": false,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "2300 Wisconsin Ave. #213",
+        "addressLocality": "Downers Grove",
+        "postalCode": "60515",
+        "addressCountry": "United States"
+      },
+      "telephone": "630.541.9558",
+      "sameAs": "www.alterbrewing.com"
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Event",
+    "name": "Bull and Balance BBQ",
+    "description": "&lt;p&gt;Dinner is served! Come on out on December 14th for some delicious Bull &amp; Balance BBQ in the taproom. The guys will be here from 5:30-8:30pm.&lt;/p&gt;\\n",
+    "image": "https://www.alterbrewing.com/wp-content/uploads/2018/03/Bull_and_Balance_FBEvent.jpg",
+    "url": "https://www.alterbrewing.com/events/bull-and-balance-bbq-5/",
+    "startDate": "2018-12-14T17:30:00-06:00",
+    "endDate": "2018-12-14T20:30:00-06:00",
+    "location": {
+      "@type": "Place",
+      "name": "Alter Brewing Company",
+      "description": "",
+      "url": false,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "2300 Wisconsin Ave. #213",
+        "addressLocality": "Downers Grove",
+        "postalCode": "60515",
+        "addressCountry": "United States"
+      },
+      "telephone": "630.541.9558",
+      "sameAs": "www.alterbrewing.com"
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Event",
+    "name": "Brews and Yoga",
+    "description": "&lt;p&gt;Brews and Yoga is back on December 15th with another invigorating 1 hour session in our barrel room. Then, cap off all of that stretching and relaxation alongside your classmates with a brew of your choice. Tickets are $15 and go fast, so be sure to sign up today! Please bring your own yoga mat [&hellip;]&lt;/p&gt;\\n",
+    "image": "https://www.alterbrewing.com/wp-content/uploads/2018/02/3622_image_27173294_10159954463780261_7800402250231004730_o.jpg",
+    "url": "https://www.alterbrewing.com/events/brews-and-yoga-5/",
+    "startDate": "2018-12-15T11:00:00-06:00",
+    "endDate": "2018-12-15T12:00:00-06:00",
+    "location": {
+      "@type": "Place",
+      "name": "Alter Brewing Company",
+      "description": "",
+      "url": false,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "2300 Wisconsin Ave. #213",
+        "addressLocality": "Downers Grove",
+        "postalCode": "60515",
+        "addressCountry": "United States"
+      },
+      "telephone": "630.541.9558",
+      "sameAs": "www.alterbrewing.com"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "15",
+      "url": "https://www.alterbrewing.com/events/brews-and-yoga-5/"
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Event",
+    "name": "Trivia Night",
+    "description": "&lt;p&gt;Join us every Tuesday night at 7:00pm as your host, Jason takes you through 2 full hours of General Knowledge Trivia, including awesome bonus rounds and everyone\\'s favorite - the music round! Alter Brewing Company will be supplying liquid wisdom to help you out, cleverly disguised as their delicious craft brews, and prizes for the [&hellip;]&lt;/p&gt;\\n",
+    "image": "https://www.alterbrewing.com/wp-content/uploads/2018/03/3739_image_29513308_854380311421276_8900735722007798654_n.jpg",
+    "url": "https://www.alterbrewing.com/events/trivia-night-26/",
+    "startDate": "2018-12-18T19:00:00-06:00",
+    "endDate": "2018-12-18T21:00:00-06:00",
+    "location": {
+      "@type": "Place",
+      "name": "Alter Brewing Company",
+      "description": "",
+      "url": false,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "2300 Wisconsin Ave. #213",
+        "addressLocality": "Downers Grove",
+        "postalCode": "60515",
+        "addressCountry": "United States"
+      },
+      "telephone": "630.541.9558",
+      "sameAs": "www.alterbrewing.com"
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Event",
+    "name": "Wednesday Growler and Crowler Special",
+    "description": "&lt;p&gt;Wednesday is a great day to stop in to Alter and pick up some to-go beer. We have $14 growler fills and $8 crowlers of just about everything on tap.* (P.S. you can get crowlers 3 for $30 any day of the week!) We do fill other breweries\\' growlers, as well as specialty growlers (i.e. [&hellip;]&lt;/p&gt;\\n",
+    "image": "https://www.alterbrewing.com/wp-content/uploads/2018/08/GrowlerPic_Web.jpg",
+    "url": "https://www.alterbrewing.com/events/wednesday-growler-and-crowler-special-20/",
+    "startDate": "2018-12-19T00:00:00-06:00",
+    "endDate": "2018-12-19T23:59:59-06:00",
+    "location": {
+      "@type": "Place",
+      "name": "Alter Brewing Company",
+      "description": "",
+      "url": false,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "2300 Wisconsin Ave. #213",
+        "addressLocality": "Downers Grove",
+        "postalCode": "60515",
+        "addressCountry": "United States"
+      },
+      "telephone": "630.541.9558",
+      "sameAs": "www.alterbrewing.com"
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Event",
+    "name": "Resilience Night at Alter Brewing",
+    "description": "&lt;p&gt;Resilience Night is this Thursday, and we are thrilled to be joining so many great breweries in tapping this beer for a cause. For those who don\\'t know, Sierra Nevada has freely given their recipe, marketing materials, and more to over 1500 breweries. These breweries have pledged to brew this beer and donate 100% of &#091;...&#093;&lt;/p&gt;",
+    "image": "https://www.alterbrewing.com/wp-content/uploads/2018/12/FB_Banner_Resilience.jpg",
+    "url": "https://www.alterbrewing.com/events/resilience-night-at-alter-brewing/",
+    "startDate": "2018-12-20T15:00:00-06:00",
+    "endDate": "2018-12-20T22:00:00-06:00",
+    "location": {
+      "@type": "Place",
+      "name": "Alter Brewing Company",
+      "description": "",
+      "url": false,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "2300 Wisconsin Ave. #213",
+        "addressLocality": "Downers Grove",
+        "postalCode": "60515",
+        "addressCountry": "United States"
+      },
+      "telephone": "630.541.9558",
+      "sameAs": "www.alterbrewing.com"
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Event",
+    "name": "Pierogi Jo&#8217;s",
+    "description": "&lt;p&gt;Pierogi Jo\\'s is coming back on December 22nd with some of their delicious handmade pierogis. Can they top their tasty Korean BBQ pierogi? You\\'ll need to stop by for a beer to find out. Food will be served 3-7pm or until they run out!&lt;/p&gt;\\n",
+    "image": "https://www.alterbrewing.com/wp-content/uploads/2018/07/PierogiJo_FBEvent.jpg",
+    "url": "https://www.alterbrewing.com/events/pierogi-jos-4/",
+    "startDate": "2018-12-22T15:00:00-06:00",
+    "endDate": "2018-12-22T19:00:00-06:00",
+    "location": {
+      "@type": "Place",
+      "name": "Alter Brewing Company",
+      "description": "",
+      "url": false,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "2300 Wisconsin Ave. #213",
+        "addressLocality": "Downers Grove",
+        "postalCode": "60515",
+        "addressCountry": "United States"
+      },
+      "telephone": "630.541.9558",
+      "sameAs": "www.alterbrewing.com"
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Event",
+    "name": "Christmas Eve Growler and Crowler Special",
+    "description": "&lt;p&gt;We will have shortened holiday hours today for Christmas Eve. The taproom will be open from 12-5pm, but we have $14 growler fills and $8 crowlers of just about everything on tap.* (P.S. you can get crowlers 3 for $30 any day of the week!) We do fill other breweries\\' growlers, as well as specialty [&hellip;]&lt;/p&gt;\\n",
+    "image": "https://www.alterbrewing.com/wp-content/uploads/2018/08/GrowlerPic_Web.jpg",
+    "url": "https://www.alterbrewing.com/events/christmas-eve-growler-and-crowler-special/",
+    "startDate": "2018-12-24T00:00:00-06:00",
+    "endDate": "2018-12-24T23:59:59-06:00",
+    "location": {
+      "@type": "Place",
+      "name": "Alter Brewing Company",
+      "description": "",
+      "url": false,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "2300 Wisconsin Ave. #213",
+        "addressLocality": "Downers Grove",
+        "postalCode": "60515",
+        "addressCountry": "United States"
+      },
+      "telephone": "630.541.9558",
+      "sameAs": "www.alterbrewing.com"
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Event",
+    "name": "Christmas Day &#8211; Closed",
+    "description": "&lt;p&gt;We will be closed today for Christmas. We wish you a wonderful day full of family, friends, food, and beer! Normal hours will resume on 12/26 at 3pm.&lt;/p&gt;\\n",
+    "image": "https://www.alterbrewing.com/wp-content/uploads/2017/12/Merry-Christmas.jpg",
+    "url": "https://www.alterbrewing.com/events/christmas-day-closed/",
+    "startDate": "2018-12-25T00:00:00-06:00",
+    "endDate": "2018-12-25T23:59:59-06:00",
+    "location": {
+      "@type": "Place",
+      "name": "Alter Brewing Company",
+      "description": "",
+      "url": false,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "2300 Wisconsin Ave. #213",
+        "addressLocality": "Downers Grove",
+        "postalCode": "60515",
+        "addressCountry": "United States"
+      },
+      "telephone": "630.541.9558",
+      "sameAs": "www.alterbrewing.com"
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Event",
+    "name": "Trivia Night",
+    "description": "&lt;p&gt;Join us every Tuesday night at 7:00pm as your host, Jason takes you through 2 full hours of General Knowledge Trivia, including awesome bonus rounds and everyone\\'s favorite - the music round! Alter Brewing Company will be supplying liquid wisdom to help you out, cleverly disguised as their delicious craft brews, and prizes for the [&hellip;]&lt;/p&gt;\\n",
+    "image": "https://www.alterbrewing.com/wp-content/uploads/2018/03/3739_image_29513308_854380311421276_8900735722007798654_n.jpg",
+    "url": "https://www.alterbrewing.com/events/trivia-night-27/",
+    "startDate": "2018-12-25T19:00:00-06:00",
+    "endDate": "2018-12-25T21:00:00-06:00",
+    "location": {
+      "@type": "Place",
+      "name": "Alter Brewing Company",
+      "description": "",
+      "url": false,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "2300 Wisconsin Ave. #213",
+        "addressLocality": "Downers Grove",
+        "postalCode": "60515",
+        "addressCountry": "United States"
+      },
+      "telephone": "630.541.9558",
+      "sameAs": "www.alterbrewing.com"
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Event",
+    "name": "Wednesday Growler and Crowler Special",
+    "description": "&lt;p&gt;Wednesday is a great day to stop in to Alter and pick up some to-go beer. We have $14 growler fills and $8 crowlers of just about everything on tap.* (P.S. you can get crowlers 3 for $30 any day of the week!) We do fill other breweries\\' growlers, as well as specialty growlers (i.e. [&hellip;]&lt;/p&gt;\\n",
+    "image": "https://www.alterbrewing.com/wp-content/uploads/2018/08/GrowlerPic_Web.jpg",
+    "url": "https://www.alterbrewing.com/events/wednesday-growler-and-crowler-special-21/",
+    "startDate": "2018-12-26T00:00:00-06:00",
+    "endDate": "2018-12-26T23:59:59-06:00",
+    "location": {
+      "@type": "Place",
+      "name": "Alter Brewing Company",
+      "description": "",
+      "url": false,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "2300 Wisconsin Ave. #213",
+        "addressLocality": "Downers Grove",
+        "postalCode": "60515",
+        "addressCountry": "United States"
+      },
+      "telephone": "630.541.9558",
+      "sameAs": "www.alterbrewing.com"
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Event",
+    "name": "Butcher Baker Pop-Up",
+    "description": "&lt;p&gt;Please join us for a fun night of food as we welcome ButcherBaker to the taproom for the first time! They\\'ll be here at 4:30pm dishing out their elevated gastropub cuisine. Butcher Baker is a popup restaurant specializing in from-scratch cuisine and naturally leavened sourdough bread and pastry featuring local grain and produce.&lt;/p&gt;\\n",
+    "image": "https://www.alterbrewing.com/wp-content/uploads/2018/12/Butcher_Baker_FBEvent.jpg",
+    "url": "https://www.alterbrewing.com/events/butcher-baker-pop-up/",
+    "startDate": "2018-12-28T16:30:00-06:00",
+    "endDate": "2018-12-28T20:30:00-06:00",
+    "location": {
+      "@type": "Place",
+      "name": "Alter Brewing Company",
+      "description": "",
+      "url": false,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "2300 Wisconsin Ave. #213",
+        "addressLocality": "Downers Grove",
+        "postalCode": "60515",
+        "addressCountry": "United States"
+      },
+      "telephone": "630.541.9558",
+      "sameAs": "www.alterbrewing.com"
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Event",
+    "name": "Beer and Cupcakes Flights",
+    "description": "&lt;p&gt;Get yourself some beer in a glass AND in some cupcakes on December 29th. Hey, Sweet Cheeks! Cupcakes &amp; Bakery is making a special lineup of their delicious cupcakes made with Alter beer! Get yourself a flight of 4 beers and 4 mini-cupcakes for $16 (while supplies last).&lt;/p&gt;\\n",
+    "image": "https://www.alterbrewing.com/wp-content/uploads/2018/12/SweetCheeks.jpg",
+    "url": "https://www.alterbrewing.com/events/beer-and-cupcakes-flights/",
+    "startDate": "2018-12-29T14:30:00-06:00",
+    "endDate": "2018-12-29T19:30:00-06:00",
+    "location": {
+      "@type": "Place",
+      "name": "Alter Brewing Company",
+      "description": "",
+      "url": false,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "2300 Wisconsin Ave. #213",
+        "addressLocality": "Downers Grove",
+        "postalCode": "60515",
+        "addressCountry": "United States"
+      },
+      "telephone": "630.541.9558",
+      "sameAs": "www.alterbrewing.com"
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Event",
+    "name": "NYE Growler and Crowler Special",
+    "description": "&lt;p&gt;We will have shortened holiday hours today for New Year\\'s Eve. The taproom will be open from 12-5pm, but we have $14 growler fills and $8 crowlers of just about everything on tap.* (P.S. you can get crowlers 3 for $30 any day of the week!) We do fill other breweries\\' growlers, as well as [&hellip;]&lt;/p&gt;\\n",
+    "image": "https://www.alterbrewing.com/wp-content/uploads/2018/08/GrowlerPic_Web.jpg",
+    "url": "https://www.alterbrewing.com/events/nye-growler-and-crowler-special/",
+    "startDate": "2018-12-31T00:00:00-06:00",
+    "endDate": "2018-12-31T23:59:59-06:00",
+    "location": {
+      "@type": "Place",
+      "name": "Alter Brewing Company",
+      "description": "",
+      "url": false,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "2300 Wisconsin Ave. #213",
+        "addressLocality": "Downers Grove",
+        "postalCode": "60515",
+        "addressCountry": "United States"
+      },
+      "telephone": "630.541.9558",
+      "sameAs": "www.alterbrewing.com"
+    }
+  }
+]

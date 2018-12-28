@@ -67,6 +67,7 @@ import foodtruck.server.job.NotifyNewStopServlet;
 import foodtruck.server.job.ProfileSyncServlet;
 import foodtruck.server.job.RebuildTempScheduleServlet;
 import foodtruck.server.job.RecacheServlet;
+import foodtruck.server.job.SeedAlterBrewingServlet;
 import foodtruck.server.job.SeedCoastlineScheduleServlet;
 import foodtruck.server.job.SeedFatShallotSchedule;
 import foodtruck.server.job.SeedGoogleCalendarSchedule;
@@ -159,6 +160,7 @@ class FoodtruckServletModule extends ServletModule {
     serve("/cron/populate_ical_stops").with(SeedICalCalendarServlet.class);
     serve("/cron/populate_google_calendar_schedule").with(SeedGoogleCalendarSchedule.class);
     serve("/cron/populate_plank_road_schedule").with(SeedPlankRoadTapRoomServlet.class);
+    serve("/cron/populate_alter_brewing_schedule").with(SeedAlterBrewingServlet.class);
 
     // Dashboard endpoints
     serve("/admin").with(AdminDashboardServlet.class);
