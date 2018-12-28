@@ -168,6 +168,11 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
         .execute();
   }
 
+  @Override
+  public Optional<Location> findByAliasOpt(String locationName) {
+    return Optional.ofNullable(findByAlias(locationName));
+  }
+
   @Nullable
   @Override
   public Location findByAlias(String name) {

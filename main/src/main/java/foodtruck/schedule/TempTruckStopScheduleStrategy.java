@@ -48,7 +48,7 @@ public class TempTruckStopScheduleStrategy implements ScheduleStrategy {
         .map(temp -> TruckStop.builder()
             .endTime(toJoda(temp.getEndTime()))
             .startTime(toJoda(temp.getStartTime()))
-            .location(locationDAO.findByName(temp.getLocationName())
+            .location(locationDAO.findByAliasOpt(temp.getLocationName())
                 .orElseThrow(() -> new RuntimeException("Location not found: " + temp.getLocationName())))
             .truck(truckDAO.findByIdOpt(temp.getTruckId())
                 .orElseThrow(() -> new RuntimeException("Truck not found: " + temp.getTruckId())))

@@ -66,8 +66,8 @@ public class TempTruckStopScheduleStrategyTest extends Mockito {
     Interval interval = new Interval(1545151584000L, 1546015584000L);
 
     when(tempDAO.findDuring(interval, null)).thenReturn(ImmutableList.of(stop1, stop2, stop3, stop4));
-    when(locationDAO.findByName(wackerAndAdams().getName())).thenReturn(Optional.of(wackerAndAdams()));
-    when(locationDAO.findByName(clarkAndMonroe().getName())).thenReturn(Optional.of(clarkAndMonroe()));
+    when(locationDAO.findByAliasOpt(wackerAndAdams().getName())).thenReturn(Optional.of(wackerAndAdams()));
+    when(locationDAO.findByAliasOpt(clarkAndMonroe().getName())).thenReturn(Optional.of(clarkAndMonroe()));
     when(truckDAO.findByIdOpt(truck1().getId())).thenReturn(Optional.of(truck1()));
     when(truckDAO.findByIdOpt(truck2().getId())).thenReturn(Optional.of(truck2()));
     when(truckDAO.findByIdOpt(truck3().getId())).thenReturn(Optional.of(truck3()));

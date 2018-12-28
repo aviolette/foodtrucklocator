@@ -72,7 +72,10 @@ public interface LocationDAO extends DAO<Long, Location> {
 
   Iterable<Location> findBoozyLocations();
 
+  @Deprecated // use findByAliasOpt
   Location findByAlias(String location);
 
   List<Location> findAlexaStops();
+
+  Optional<Location> findByAliasOpt(String locationName);
 }
