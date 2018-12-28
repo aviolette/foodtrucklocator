@@ -63,7 +63,7 @@ public class RecacheServlet extends HttpServlet {
     final String date = req.getParameter("date");
 
     LocalDate when = parseDate(date);
-    final Interval instant = when.toInterval(zone).withEnd(when.plusDays(7).toDateTimeAtStartOfDay(zone));
+    final Interval instant = when.toInterval(zone).withEnd(when.plusDays(365).toDateTimeAtStartOfDay(zone));
     if (!Strings.isNullOrEmpty(truck)) {
       log.info("Recaching truck: " + truck);
       service.pullCustomCalendarFor(instant, truckDAO.findById(truck));
