@@ -26,7 +26,7 @@
   <h2 class="date-header"><joda:format pattern="EEEE, MMMM dd" value="${dayGroup.day}"/></h2>
 <c:forEach items="${dayGroup.groups}" var="group" varStatus="status">
   <c:if test="${(status.index mod 2) == 0}">
-    <div class="row" style="margin-top:40px">
+    <div class="row" style="margin-top:20px; margin-bottom: 20px;">
   </c:if>
   <div class="col-md-6">
     <div class="panel panel-default">
