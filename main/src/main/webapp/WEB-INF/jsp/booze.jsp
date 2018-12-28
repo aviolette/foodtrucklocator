@@ -22,14 +22,14 @@
   </div>
 </div>
 
-<c:forEach items="${allGroups}" var="group" varStatus="status">
+<c:forEach items="${allGroups}" var="dayGroup" varStatus="dayGroupStatus">
+  <h2 class="date-header"><joda:format pattern="EEEE, MMMM dd" value="${dayGroup.day}"/></h2>
+<c:forEach items="${dayGroup.groups}" var="group" varStatus="status">
   <c:if test="${(status.index mod 2) == 0}">
-    <div class="row">
+    <div class="row" style="margin-top:40px">
   </c:if>
   <div class="col-md-6">
     <div class="panel panel-default">
-      <div class="panel-heading"><c:if test="${empty(boozyDate)}"><a href="/booze?date=<joda:format value="${group.day}" pattern="yyyyMMdd"/>"></c:if><joda:format pattern="EEE MMM dd" value="${group.day}"/><c:if test="${empty(boozyDate)}"></a></c:if>
-      </div>
       <div class="panel-body">
         <div class="row">
           <div class="col-md-4">
@@ -42,9 +42,6 @@
                 <p>${group.location.description}</p>
               </c:if>
               <div class="media">
-                <a class="pull-left" href="/trucks/${stop.truck.id}">
-                  <img class="media-object" src="${stop.truck.iconUrl}" alt="${stop.truck.name} icon"/>
-                </a>
                 <div class="media-body">
                   <a href="/trucks/${stop.truck.id}" class="truckLink">
                     <h4 class="media-heading">${stop.truck.name}</h4>
@@ -61,6 +58,7 @@
   <c:if test="${(status.index % 2) == 1 or status.last}">
     </div>
   </c:if>
+</c:forEach>
 </c:forEach>
 
 

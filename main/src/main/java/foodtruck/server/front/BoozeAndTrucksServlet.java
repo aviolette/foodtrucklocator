@@ -81,7 +81,8 @@ public class BoozeAndTrucksServlet extends HttpServlet {
       } catch (IllegalArgumentException ignored) {
       }
     }
-    ImmutableList.Builder<TruckStopGroup> builder = ImmutableList.builder();
+    ImmutableList.Builder<DayGroup> builder = ImmutableList.builder();
+    DayGroup group = null;
     for (TruckStop stop : stopService.findUpcomingBoozyStops(date, daysOut)) {
       if (currentDay != null && !stop.getStartTime()
           .toLocalDate()
@@ -100,8 +101,14 @@ public class BoozeAndTrucksServlet extends HttpServlet {
         }
         tsg = new TruckStopGroup(location, currentDay);
         tsgs.put(stop.getLocation().getName(), tsg);
-        builder.add(tsg);
+        if (group == null || !group.getDay().equals(currentDay)) {
+          group = new DayGroup(stop.getStartTime()
+              .toLocalDate());
+          builder.add(group);
+        }
+        group.addTruckStopGroup(tsg);
       }
+
       tsg.addStop(stop);
     }
     if (!tsgs.isEmpty()) {
@@ -119,6 +126,28 @@ public class BoozeAndTrucksServlet extends HttpServlet {
     }
     req.setAttribute("description", "Lists upcoming events that combine food trucks and booze.");
     req.getRequestDispatcher(JSP).forward(req, resp);
+  }
+
+  public static class DayGroup {
+    private LocalDate day;
+    List<TruckStopGroup> groups = Lists.newLinkedList();
+
+    public DayGroup(LocalDate date) {
+      this.day = date;
+      this.groups = groups;
+    }
+
+    public void addTruckStopGroup(TruckStopGroup group) {
+      groups.add(group);
+    }
+
+    public LocalDate getDay() {
+      return day;
+    }
+
+    public List<TruckStopGroup> getGroups() {
+      return groups;
+    }
   }
 
   @SuppressWarnings("WeakerAccess")
