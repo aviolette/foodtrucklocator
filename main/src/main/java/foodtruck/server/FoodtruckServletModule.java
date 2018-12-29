@@ -82,6 +82,7 @@ import foodtruck.server.job.SlackLunchtimeNotifications;
 import foodtruck.server.job.StatPullQueueServlet;
 import foodtruck.server.job.StatUpdateQueueServlet;
 import foodtruck.server.job.TruckMonitorServlet;
+import foodtruck.server.job.MonthlyTruckStatsServlet;
 import foodtruck.server.job.TweetCacheUpdateServlet;
 import foodtruck.server.job.TwitterCachePurgeServlet;
 import foodtruck.server.resources.DailySpecialResourceFactory;
@@ -152,6 +153,8 @@ class FoodtruckServletModule extends ServletModule {
     serve("/cron/update_count").with(StatUpdateQueueServlet.class);
     serve("/cron/notify_stop_created").with(NotifyNewStopServlet.class);
     serve("/cron/notify_stop_ended").with(NotifyLeavingStopServlet.class);
+    serve("/cron/monthly_stop_stats_generate").with(MonthlyTruckStatsServlet.class);
+
     // These are invoked in TempScheduleService.rebuild()
     serve("/cron/populate_imperial_oaks_stops").with(SeedImperialOakCalendarServlet.class);
     serve("/cron/populate_coastline_cove").with(SeedCoastlineScheduleServlet.class);
