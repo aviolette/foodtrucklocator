@@ -7,6 +7,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 
 import foodtruck.model.TruckStop;
 import foodtruck.time.FriendlyDateOnlyFormat;
@@ -34,6 +35,17 @@ public class TruckStopWriter implements JSONWriter<TruckStop> {
 
   @Override
   public JSONObject forExport(TruckStop stop) {
+    try {
+      DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTime();
+      return commonAttributes(stop)
+          .put("startTime", dateTimeFormatter.print(stop.getStartTime()))
+          .put("endTime", dateTimeFormatter.print(stop.getEndTime()));
+    } catch (JSONException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private JSONObject commonAttributes(TruckStop stop) {
     Period p = new Period(stop.getStartTime(), stop.getEndTime());
     try {
       return new JSONObject()
@@ -45,11 +57,7 @@ public class TruckStopWriter implements JSONWriter<TruckStop> {
           .put("origin", stop.getOrigin())
           .put("locked", stop.isLocked())
           .put("fromBeacon", stop.isFromBeacon())
-          .put("deviceId", stop.getCreatedWithDeviceId())
-          .put("startMillis", stop.getStartTime()
-              .getMillis())
-          .put("endMillis", stop.getEndTime()
-              .getMillis());
+          .put("deviceId", stop.getCreatedWithDeviceId());
     } catch (JSONException e) {
       throw new RuntimeException(e);
     }
@@ -57,7 +65,11 @@ public class TruckStopWriter implements JSONWriter<TruckStop> {
 
   @Override
   public JSONObject asJSON(TruckStop stop) throws JSONException {
-    return forExport(stop)
+    return commonAttributes(stop)
+        .put("startMillis", stop.getStartTime()
+            .getMillis())
+        .put("endMillis", stop.getEndTime()
+            .getMillis())
         .put("notes", new JSONArray(stop.getNotes()))
         .put("startDate", dateFormatter.print(stop.getStartTime()))
         .put("startTime", formatter.print(stop.getStartTime()))
