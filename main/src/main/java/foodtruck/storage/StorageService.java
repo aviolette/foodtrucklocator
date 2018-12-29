@@ -18,5 +18,8 @@ public interface StorageService {
    */
   String copyUrl(String fromUrl, String toBucket, String destinationFileName) throws IOException;
 
-  String syncStream(InputStream stream, String toBucket, String destinationFileName) throws Exception;
+  String writeImage(InputStream stream, String toBucket, String destinationFileName) throws IOException;
+
+  String writeBuffer(byte[] buffer, String toBucket, String destinationFileName, String mimeType) throws IOException;
+
 }

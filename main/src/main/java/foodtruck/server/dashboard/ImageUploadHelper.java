@@ -61,7 +61,7 @@ public class ImageUploadHelper {
             new Object[]{item.getName(), item.getFieldName(), contentType});
         try (InputStream stream = item.openStream()) {
           response.getWriter()
-              .print(storageService.syncStream(stream, bucket, filenameBase + "." + extension));
+              .print(storageService.writeImage(stream, bucket, filenameBase + "." + extension));
         }
       }
     } catch (Exception e) {

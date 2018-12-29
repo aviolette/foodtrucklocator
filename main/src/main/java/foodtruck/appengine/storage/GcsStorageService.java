@@ -1,5 +1,7 @@
 package foodtruck.appengine.storage;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -36,19 +38,29 @@ public class GcsStorageService implements StorageService {
   public String copyUrl(String fromUrl, String bucket, String fileName) throws IOException {
     URL iconUrl = new URL(fromUrl);
     try (InputStream in = iconUrl.openStream()) {
-      return syncStream(in, bucket, fileName);
+      return writeImage(in, bucket, fileName);
     }
   }
 
   @Override
-  public String syncStream(InputStream inputStream, String bucket, String fileName) throws IOException {
+  public String writeImage(InputStream inputStream, String bucket, String fileName) throws IOException {
+    return writeStream(inputStream, bucket, fileName, fileName.matches("png") ? "image/png" : "image/jpeg");
+  }
+
+  @Override
+  public String writeBuffer(byte[] buffer, String bucket, String fileName,
+      String mimeType) throws IOException {
+    return writeStream(new ByteArrayInputStream(buffer), bucket, fileName, mimeType);
+  }
+
+  private String writeStream(InputStream stream, String bucket, String fileName, String mimeType) throws IOException {
     GcsFilename gcsFilename = new GcsFilename(bucket, fileName);
     GcsOutputChannel channel = cloudStorage.createOrReplace(gcsFilename,
         new GcsFileOptions.Builder().cacheControl("public, max-age=2591000")
-            .mimeType(fileName.matches("png") ? "image/png" : "image/jpeg")
+            .mimeType(mimeType)
             .build());
     try (OutputStream out = Channels.newOutputStream(channel)) {
-      long copied = ByteStreams.copy(inputStream, out);
+      long copied = ByteStreams.copy(stream, out);
       log.log(Level.INFO, "Uploaded {0} bytes to {1}/{2}", new Object[] {copied, bucket, fileName});
     }
     return "http://storage.googleapis.com/" + bucket + "/" + fileName;

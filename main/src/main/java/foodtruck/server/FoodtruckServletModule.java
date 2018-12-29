@@ -19,6 +19,7 @@ import foodtruck.server.dashboard.ApplicationServlet;
 import foodtruck.server.dashboard.BeaconServlet;
 import foodtruck.server.dashboard.BeaconsServlet;
 import foodtruck.server.dashboard.CompoundEventServlet;
+import foodtruck.server.dashboard.DataExportServlet;
 import foodtruck.server.dashboard.ImageUploadServlet;
 import foodtruck.server.dashboard.LocationEditServlet;
 import foodtruck.server.dashboard.LocationListServlet;
@@ -167,6 +168,7 @@ class FoodtruckServletModule extends ServletModule {
     serve("/admin/alexa_test").with(AlexaTestServlet.class);
     serve("/admin/alexa_query").with(AlexaQueryServlet.class);
     serve("/admin/addresses").with(AddressRuleServlet.class);
+    serve("/admin/dataexport").with(DataExportServlet.class);
     serveRegex("/admin/beacons/[\\w]+").with(BeaconServlet.class);
     serve("/admin/beacons").with(BeaconsServlet.class);
     serveRegex("/admin/trucks/[\\S]*/stops/[\\w]*").with(TruckStopServlet.class);
