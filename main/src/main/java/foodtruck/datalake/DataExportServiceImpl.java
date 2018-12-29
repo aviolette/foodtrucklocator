@@ -1,6 +1,7 @@
 package foodtruck.datalake;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -68,7 +69,7 @@ public class DataExportServiceImpl implements DataExportService {
         MediaType.APPLICATION_JSON);
   }
 
-  private static <T> byte[] toJsonLine(JSONWriter<T> writer, Stream<T> items) {
-    return items.map(writer::asString).collect(Collectors.joining("\n")).getBytes();
+  private static <T> byte[] toJsonLine(JSONWriter<T> writer, Stream<T> items) throws UnsupportedEncodingException {
+    return items.map(writer::asString).collect(Collectors.joining("\n")).getBytes("UTF-8");
   }
 }
