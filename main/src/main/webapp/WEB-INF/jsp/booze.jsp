@@ -12,8 +12,8 @@
   <div class="col-md-12">
 <c:choose>
   <c:when test="${empty(boozyDate)}">
-    <h1>Boozy Stops</h1>
-    <p class="lead">These are the upcoming food truck events that blend booze and food trucks.</p>
+    <h1>Event Schedule</h1>
+    <p class="lead">These are upcoming food truck events at Chicago-land breweries and tap-rooms.</p>
   </c:when>
   <c:otherwise>
     <h1>Boozy Stops for <joda:format pattern="EEE MMM dd" value="${boozyDate}"/></h1>
