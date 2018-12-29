@@ -16,17 +16,17 @@ public interface JSONWriter<T> {
 
   JSONObject asJSON(T t) throws JSONException;
 
-  default String asString(T t) {
-    return tryAsJson(t).toString();
+  default String forExportAsString(T t) {
+    return forExport(t).toString();
   }
 
-  default JSONObject tryAsJson(T t) {
+  default JSONObject forExport(T t) {
     try {
       return asJSON(t);
     } catch (JSONException e) {
       log.log(Level.WARNING, e.getMessage(), e);
       throw new RuntimeException(e);
     }
-  };
+  }
 }
 

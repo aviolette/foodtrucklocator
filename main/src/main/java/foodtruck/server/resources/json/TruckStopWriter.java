@@ -33,27 +33,38 @@ public class TruckStopWriter implements JSONWriter<TruckStop> {
   }
 
   @Override
-  public JSONObject asJSON(TruckStop stop) throws JSONException {
+  public JSONObject forExport(TruckStop stop) {
     Period p = new Period(stop.getStartTime(), stop.getEndTime());
-    return new JSONObject().put("location", locationWriter.asJSON(stop.getLocation()))
-        .put("id", stop.getKey())
-        .put("truckId", stop.getTruck()
-            .getId())
-        .put("duration", period(p))
-        .put("origin", stop.getOrigin())
-        .put("locked", stop.isLocked())
-        .put("fromBeacon", stop.isFromBeacon())
+    try {
+      return new JSONObject()
+          .put("location", locationWriter.asJSON(stop.getLocation()))
+          .put("id", stop.getKey())
+          .put("truckId", stop.getTruck()
+              .getId())
+          .put("duration", period(p))
+          .put("origin", stop.getOrigin())
+          .put("locked", stop.isLocked())
+          .put("fromBeacon", stop.isFromBeacon())
+          .put("deviceId", stop.getCreatedWithDeviceId())
+          .put("startMillis", stop.getStartTime()
+              .getMillis())
+          .put("endMillis", stop.getEndTime()
+              .getMillis());
+    } catch (JSONException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public JSONObject asJSON(TruckStop stop) throws JSONException {
+    return forExport(stop)
         .put("notes", new JSONArray(stop.getNotes()))
-        .put("deviceId", stop.getCreatedWithDeviceId())
         .put("startDate", dateFormatter.print(stop.getStartTime()))
         .put("startTime", formatter.print(stop.getStartTime()))
-        .put("startMillis", stop.getStartTime()
-            .getMillis())
         .put("startTimeH", htmlDateFormatter.print(stop.getStartTime()))
-        .put("endMillis", stop.getEndTime()
-            .getMillis())
         .put("endTimeH", htmlDateFormatter.print(stop.getEndTime()))
         .put("endTime", formatter.print(stop.getEndTime()));
+
   }
 
   private String period(Period p) {

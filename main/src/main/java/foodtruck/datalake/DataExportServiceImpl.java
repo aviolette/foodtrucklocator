@@ -10,7 +10,6 @@ import javax.ws.rs.core.MediaType;
 
 import com.google.inject.Inject;
 
-import org.joda.time.Chronology;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
@@ -70,6 +69,6 @@ public class DataExportServiceImpl implements DataExportService {
   }
 
   private static <T> byte[] toJsonLine(JSONWriter<T> writer, Stream<T> items) throws UnsupportedEncodingException {
-    return items.map(writer::asString).collect(Collectors.joining("\n")).getBytes("UTF-8");
+    return items.map(writer::forExportAsString).collect(Collectors.joining("\n")).getBytes("UTF-8");
   }
 }
