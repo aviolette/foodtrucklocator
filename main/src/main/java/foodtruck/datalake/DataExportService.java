@@ -8,6 +8,7 @@ import java.io.IOException;
  */
 public interface DataExportService {
 
-  void exportTrucks(String bucket) throws IOException;
+  void exportTrucks() throws IOException;
 
+  void exportStopsForMonth(int year, int month) throws IOException;
 }

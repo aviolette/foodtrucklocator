@@ -10,11 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import org.joda.time.Interval;
-import org.joda.time.LocalDate;
-
 import foodtruck.datalake.DataExportService;
-import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.time.Clock;
 
 /**
@@ -40,7 +36,9 @@ public class DataExportServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    service.exportTrucks("cftf_datalake");
+    service.exportTrucks();
+    service.exportStopsForMonth(2018, 1);
+    service.exportStopsForMonth(2017, 1);
     resp.sendRedirect("/admin/dataexport");
   }
 }
