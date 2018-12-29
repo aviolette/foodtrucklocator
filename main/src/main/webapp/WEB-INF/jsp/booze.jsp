@@ -26,10 +26,10 @@
   <h2 class="date-header"><joda:format pattern="EEEE, MMMM dd" value="${dayGroup.day}"/></h2>
 <c:forEach items="${dayGroup.groups}" var="group" varStatus="status">
   <c:if test="${(status.index mod 2) == 0}">
-    <div class="row" style="margin-top:20px; margin-bottom: 20px;">
+    <div class="row">
   </c:if>
   <div class="col-md-6">
-    <div class="panel panel-default">
+    <div class="panel panel-default" style="margin-top:20px; margin-bottom: 20px">
       <div class="panel-body">
         <div class="row">
           <div class="col-md-4">
@@ -42,9 +42,9 @@
                 <p>${group.location.description}</p>
               </c:if>
               <div class="media">
-                <div class="media-body">
+                <div class="media-body" style="padding: 10px">
                   <a href="/trucks/${stop.truck.id}" class="truckLink">
-                    <h4 class="media-heading">${stop.truck.name}</h4>
+                    <h5 class="media-heading">${stop.truck.name}</h5>
                     <joda:format value="${stop.startTime}" style="-S"/> - <joda:format value="${stop.endTime}" style="-S"/>
                   </a>
                 </div>
