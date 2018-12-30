@@ -3,6 +3,10 @@
     <name>default</name>
     <max-concurrent-requests>1</max-concurrent-requests>
     <rate>1/s</rate>
+    <retry-parameters>
+      <task-retry-limit>7</task-retry-limit>
+      <task-age-limit>1d</task-age-limit>
+    </retry-parameters>
   </queue>
   <queue>
     <name>stats-queue</name>
