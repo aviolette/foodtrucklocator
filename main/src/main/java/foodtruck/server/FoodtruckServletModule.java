@@ -78,6 +78,7 @@ import foodtruck.server.job.SeedPlankRoadTapRoomServlet;
 import foodtruck.server.job.SeedPollyannaServlet;
 import foodtruck.server.job.SeedScorchedEarthServlet;
 import foodtruck.server.job.SeedSkeletonKeyServlet;
+import foodtruck.server.job.SeedWerkforceServlet;
 import foodtruck.server.job.SendLunchNotificationsServlet;
 import foodtruck.server.job.SlackLunchtimeNotifications;
 import foodtruck.server.job.StatPullQueueServlet;
@@ -167,6 +168,7 @@ class FoodtruckServletModule extends ServletModule {
     serve("/cron/populate_plank_road_schedule").with(SeedPlankRoadTapRoomServlet.class);
     serve("/cron/populate_alter_brewing_schedule").with(SeedAlterBrewingServlet.class);
     serve("/cron/populate_scorched_earth_schedule").with(SeedScorchedEarthServlet.class);
+    serve("/cron/populate_werkforce_schedule").with(SeedWerkforceServlet.class);
 
     // Dashboard endpoints
     serve("/admin").with(AdminDashboardServlet.class);

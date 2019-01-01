@@ -73,8 +73,10 @@ public class SimpleCalReader {
       return "grumpygaucho";
     } else if (title.contains("puff truck")) {
       return "pufftruckpizza";
-    } else if (title.contains("roaming hog")) {
+    } else if (title.contains("roaming hog") || title.contains("roaminghog")) {
       return "roaminghog";
+    } else if (title.contains("blee")) {
+      return "bleesmokin";
     } else if (title.contains("umbrella azul")) {
       return "umbrellazul";
     } else if (title.contains("ugly truckin")) {
@@ -83,8 +85,10 @@ public class SimpleCalReader {
       return "mytoastycheese";
     } else if (title.contains("lucy")) {
       return "sohotruck";
-    } else if (title.contains("pierogi jo")) {
+    } else if (title.contains("pierogi jo") || title.contains("pierogijos")) {
       return "pierogijos";
+    } else if (title.contains("allfiredup")) {
+      return "chgoallfrup";
     } else if (title.contains("fat tomato")) {
       return "fattomatoinc";
     } else if (title.contains("duke’s") || title.contains("duke's")) {
@@ -95,7 +99,7 @@ public class SimpleCalReader {
       return "perknpickle";
     } else if (title.contains("olive branch")) {
       return "olivebranchft";
-    } else if (title.contains("pizza boss")) {
+    } else if (title.contains("pizza boss") || title.contains("pizzaboss")) {
       return "chipizzaboss";
     } else if (title.contains("smokin bbq") || title.contains("smokin' bbq")) {
       return "smokinbbqkitchn";
