@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.inject.Inject;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -23,6 +24,7 @@ public class ScorchedEarthReader implements StopReader {
 
   private final Clock clock;
 
+  @Inject
   public ScorchedEarthReader(Clock clock) {
     this.clock = clock;
   }
