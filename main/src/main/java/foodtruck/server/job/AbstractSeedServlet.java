@@ -64,6 +64,12 @@ public abstract class AbstractSeedServlet extends AbstractJobServlet {
       if (!retryOnceBeforeError || retryCount > 0) {
         log.log(Level.SEVERE, e.getMessage(), e);
       }
+
+      if (retryOnceBeforeError && retryCount > 2) {
+        log.log(Level.SEVERE, "Abandoning endpoint call: " + endpoint);
+        resp.setStatus(200);
+        return;
+      }
       resp.setStatus(500);
     }
   }
