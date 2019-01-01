@@ -81,7 +81,9 @@ public class PollyannaReader implements StopReader {
           }
         }
 
-        ZonedDateTime startTime = ZonedDateTime.of(eventDate, LocalTime.of(event.getInt("startHour"), event.getInt("startMinutes")), clock.zone8());
+        ZonedDateTime startTime = ZonedDateTime.of(eventDate,
+            LocalTime.of(event.getInt("startHour"),
+                event.getInt("startMinutes")), clock.zone8());
 
         stops.add(TempTruckStop.builder()
             .truckId(truckId)

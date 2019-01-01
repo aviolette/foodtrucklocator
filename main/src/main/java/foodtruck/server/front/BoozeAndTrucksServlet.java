@@ -115,7 +115,7 @@ public class BoozeAndTrucksServlet extends HttpServlet {
       schedules.add(new ScheduleForDay(currentDay, ImmutableList.copyOf(tsgs.values())));
     }
     req.setAttribute("allGroups", builder.build());
-    req.setAttribute("tab", "location");
+    req.setAttribute("tab", "events");
     req.setAttribute("daySchedules", schedules.build());
 
     if (daysOut == 1) {

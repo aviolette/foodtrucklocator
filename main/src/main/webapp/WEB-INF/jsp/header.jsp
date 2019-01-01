@@ -43,6 +43,9 @@
         <li class="nav-item">
           <a class="nav-link<c:if test="${tab == 'trucks'}"> active</c:if>" href="/trucks"><span class="glyphicons glyphicons-truck"></span>Trucks</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link<c:if test="${tab == 'events'}"> active</c:if>" href="/events"><span class="glyphicons glyphicons-calendar"></span>Events</a>
+        </li>
         <li class="nav-item d-block d-md-none">
           <a href="/about" class="nav-link">About</a>
         </li>
