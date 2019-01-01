@@ -85,8 +85,16 @@ public class SimpleCalReader {
       return "sohotruck";
     } else if (title.contains("pierogi jo")) {
       return "pierogijos";
+    } else if (title.contains("fat tomato")) {
+      return "fattomatoinc";
+    } else if (title.contains("duke’s") || title.contains("duke's")) {
+      return "dukesbluesnbbq";
     } else if (title.contains("doctor dogs")) {
       return "doctordogs";
+    } else if (title.contains("perk n'") || title.contains("perk n’")) {
+      return "perknpickle";
+    } else if (title.contains("olive branch")) {
+      return "olivebranchft";
     } else if (title.contains("pizza boss")) {
       return "chipizzaboss";
     } else if (title.contains("smokin bbq") || title.contains("smokin' bbq")) {
