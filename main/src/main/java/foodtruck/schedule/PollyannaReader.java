@@ -21,7 +21,6 @@ import foodtruck.model.TempTruckStop;
 import foodtruck.time.Clock;
 
 import static foodtruck.schedule.SimpleCalReader.inferTruckId;
-import static javafx.scene.input.KeyCode.Z;
 
 /**
  * @author aviolette

@@ -3,6 +3,7 @@ package foodtruck.schedule;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -10,14 +11,12 @@ import com.google.common.io.ByteStreams;
 
 import foodtruck.model.TempTruckStop;
 
-import static com.google.common.truth.Truth.assertThat;
-
 /**
  * @author aviolette
  * @since 2018-12-30
  */
 class AbstractReaderTest<T extends StopReader> {
-
+  protected final static ZoneId CHICAGO = ZoneId.of("America/Chicago");
   private final Supplier<T> supplier;
 
   AbstractReaderTest(Supplier<T> readerSupplier) {
