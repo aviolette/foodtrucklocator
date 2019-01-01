@@ -55,13 +55,12 @@ public class TempTruckStop extends ModelEntity {
     if (o == null || getClass() != o.getClass()) return false;
     TempTruckStop that = (TempTruckStop) o;
     return Objects.equal(truckId, that.truckId) && Objects.equal(startTime, that.startTime) &&
-        Objects.equal(locationName, that.locationName) &&
-        Objects.equal(calendarName, that.calendarName);
+        Objects.equal(locationName, that.locationName);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(truckId, startTime, locationName, calendarName);
+    return Objects.hashCode(truckId, startTime, locationName);
   }
 
   @Override
