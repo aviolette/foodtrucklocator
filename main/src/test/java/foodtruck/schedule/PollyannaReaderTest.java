@@ -3,8 +3,10 @@ package foodtruck.schedule;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.function.Supplier;
 
 import com.google.common.io.ByteStreams;
 
@@ -21,32 +23,22 @@ import static com.google.common.truth.Truth.assertThat;
  * @author aviolette
  * @since 2018-12-23
  */
-public class PollyannaReaderTest {
+public class PollyannaReaderTest extends AbstractReaderTest<PollyannaReader> {
 
-  private PollyannaReader reader;
-  private Clock clock;
-
-  @Before
-  public void setup() {
-    clock = FakeClock.fixed(1545324551000L);
-    this.reader = new PollyannaReader(clock);
+  public PollyannaReaderTest() {
+    super(() -> new PollyannaReader(FakeClock.fixed(1545324551000L)));
   }
-
   @Test
   public void findStops() throws IOException {
-    InputStream str = ClassLoader.getSystemClassLoader()
-        .getResourceAsStream("pollyanna.json");
-    String doc = new String(ByteStreams.toByteArray(str), StandardCharsets.UTF_8);
-
-    List<TempTruckStop> stops = reader.findStops(doc);
+    List<TempTruckStop> stops = execFindStop("pollyanna.json");
 
     assertThat(stops).hasSize(19);
     assertThat(stops).contains(TempTruckStop.builder()
         .truckId("smokinbbqkitchn")
         .calendarName("pollyanna")
         .locationName("Pollyanna Brewing - Roselle")
-        .startTime(ZonedDateTime.of(2018,12,21,11,30, 0, 0, clock.zone8()))
-        .endTime(ZonedDateTime.of(2018, 12,21, 14, 30, 0, 0, clock.zone8()))
+        .startTime(ZonedDateTime.of(2018,12, 21, 17,30, 0, 0, ZoneId.of("America/Chicago")))
+        .endTime(ZonedDateTime.of(2018, 12, 21, 20, 30, 0, 0, ZoneId.of("America/Chicago")))
         .build());
   }
 }

@@ -1,6 +1,10 @@
 package foodtruck.schedule;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.logging.Level;
@@ -17,6 +21,7 @@ import foodtruck.model.TempTruckStop;
 import foodtruck.time.Clock;
 
 import static foodtruck.schedule.SimpleCalReader.inferTruckId;
+import static javafx.scene.input.KeyCode.Z;
 
 /**
  * @author aviolette
@@ -47,9 +52,10 @@ public class PollyannaReader implements StopReader {
         JSONObject event = events.getJSONObject(i);
 
         Instant endTimeAtStartOfDay = Instant.ofEpochMilli(event.getLong("end"));
-        ZonedDateTime endTime = ZonedDateTime.ofInstant(endTimeAtStartOfDay, clock.zone8())
-            .plusHours(event.getLong("endHour"))
-            .plusMinutes(event.getLong("endMinutes"));
+        OffsetDateTime dateInUTC = OffsetDateTime.ofInstant(endTimeAtStartOfDay, ZoneOffset.UTC);
+        LocalDate eventDate = dateInUTC.toLocalDate();
+        ZonedDateTime endTime = ZonedDateTime.of(eventDate,
+            LocalTime.of(event.getInt("endHour"), event.getInt("endMinutes")), clock.zone8());
         if (now.isAfter(endTime)) {
           continue;
         }
@@ -76,9 +82,7 @@ public class PollyannaReader implements StopReader {
           }
         }
 
-        ZonedDateTime startTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(event.getLong("start")), clock.zone8())
-            .plusHours(event.getLong("startHour"))
-            .plusMinutes(event.getLong("startMinutes"));
+        ZonedDateTime startTime = ZonedDateTime.of(eventDate, LocalTime.of(event.getInt("startHour"), event.getInt("startMinutes")), clock.zone8());
 
         stops.add(TempTruckStop.builder()
             .truckId(truckId)
