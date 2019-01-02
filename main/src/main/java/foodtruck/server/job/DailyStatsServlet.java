@@ -38,7 +38,7 @@ public class DailyStatsServlet extends HttpServlet {
   private final Clock clock;
 
   @Inject
-  public DailyStatsServlet(Clock clock, TruckStopDAO stopDAO, @Secondary TruckDAO truckDAO) {
+  public DailyStatsServlet(Clock clock, TruckStopDAO stopDAO, TruckDAO truckDAO) {
     this.stopDAO = stopDAO;
     this.truckDAO = truckDAO;
     this.clock = clock;
