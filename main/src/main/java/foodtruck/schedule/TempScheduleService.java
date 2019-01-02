@@ -55,5 +55,8 @@ public class TempScheduleService {
     queue.add(withUrl("/cron/populate_google_calendar_schedule")
         .param("calendar", "oswegobrewing.com_rg6gupgfqs5d3h97ur31ed88i0@group.calendar.google.com")
         .param("defaultLocation", "Oswego Brewing Co."));
+    queue.add(withUrl("/cron/populate_google_calendar_schedule")
+        .param("calendar", "archerliquors@mac.com")
+        .param("defaultLocation", "Archer Liquors"));
   }
 }
