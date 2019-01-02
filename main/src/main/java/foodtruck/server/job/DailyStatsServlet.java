@@ -1,6 +1,8 @@
 package foodtruck.server.job;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -19,6 +21,7 @@ import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.Truck;
 import foodtruck.time.Clock;
+import foodtruck.util.Secondary;
 
 /**
  * @author aviolette
@@ -28,12 +31,14 @@ import foodtruck.time.Clock;
 @Singleton
 public class DailyStatsServlet extends HttpServlet {
 
+  private static final Logger log = Logger.getLogger(DailyStatsServlet.class.getName());
+
   private final TruckDAO truckDAO;
   private final TruckStopDAO stopDAO;
   private final Clock clock;
 
   @Inject
-  public DailyStatsServlet(Clock clock, TruckStopDAO stopDAO, TruckDAO truckDAO) {
+  public DailyStatsServlet(Clock clock, TruckStopDAO stopDAO, @Secondary TruckDAO truckDAO) {
     this.stopDAO = stopDAO;
     this.truckDAO = truckDAO;
     this.clock = clock;
@@ -46,11 +51,12 @@ public class DailyStatsServlet extends HttpServlet {
     if (!Strings.isNullOrEmpty(start)) {
       startDate = ISODateTimeFormat.basicDate().parseLocalDate(start);
     }
-
+    log.info("Starting update of daily stats from: " + startDate);
     stopDAO.findOverRange(null, new Interval(startDate.toDateTimeAtStartOfDay(clock.zone()), clock.currentDay()
         .toDateTimeAtStartOfDay(clock.zone())))
         .forEach(stop -> truckDAO.findByIdOpt(stop.getTruck().getId())
             .ifPresent(truck -> {
+              log.log(Level.INFO, "Processing stop: {0}", stop);
               Truck.Stats stats = truck.getStats();
               Truck.Stats.Builder statsBuilder = new Truck.Stats.Builder(stats);
               if (stats.getFirstSeen() == null) {
