@@ -11,6 +11,7 @@ import java.util.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.ByteStreams;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -23,6 +24,7 @@ import foodtruck.model.TruckStop;
 import foodtruck.time.Clock;
 
 import static com.google.common.truth.Truth.assertThat;
+import static foodtruck.schedule.AbstractReaderTest.CHICAGO;
 import static foodtruck.schedule.ModelTestHelper.wackerAndAdams;
 import static org.mockito.Mockito.when;
 
@@ -36,42 +38,49 @@ public class FatShallotScheduleReaderTest {
   @Mock private AddressExtractor extractor;
   @Mock private Clock clock;
   @Mock private GeoLocator geolocator;
+  private FatShallotScheduleReader parser;
+  private static final Truck thefatshallot = Truck.builder()
+      .id("thefatshallot")
+      .name("The Fat Shallot")
+      .build();
+
+  @Before
+  public void setup() {
+    parser = new FatShallotScheduleReader(clock, extractor, geolocator, CHICAGO);
+
+  }
 
   @Test
   public void findStops() throws IOException {
     InputStream str = ClassLoader.getSystemClassLoader()
         .getResourceAsStream("fatshallot.html");
     String doc = new String(ByteStreams.toByteArray(str), StandardCharsets.UTF_8);
-    ZoneId zoneId = ZoneId.of("America/Chicago");
-    when(clock.now8()).thenReturn(ZonedDateTime.of(2018, 11, 6, 11, 1,2, 3, zoneId));
-    FatShallotScheduleReader parser = new FatShallotScheduleReader(clock, extractor, geolocator,
-        zoneId);
-    Truck thefatshallot = Truck.builder()
-        .id("thefatshallot")
-        .name("The Fat Shallot")
-        .build();
+    when(clock.now8()).thenReturn(ZonedDateTime.of(2018, 11, 6, 11, 1,2, 3, CHICAGO));
     when(extractor.parse("Wacker & Adams 11-2pm", thefatshallot)).thenReturn(ImmutableList.of("Wacker and Adams, Chicago, IL"));
     when(extractor.parse("Wacker & Adams 11-3pm", thefatshallot)).thenReturn(ImmutableList.of("Wacker and Adams, Chicago, IL"));
     when(geolocator.locateOpt("Wacker and Adams, Chicago, IL")).thenReturn(Optional.of(wackerAndAdams()));
     List<TempTruckStop> items = parser.findStops(doc);
     assertThat(items).contains(TempTruckStop.builder()
-        .startTime(ZonedDateTime.of(2018, 11, 6, 11, 0, 0, 0, zoneId))
-        .endTime(ZonedDateTime.of(2018, 11, 6, 15, 0, 0, 0, zoneId))
+        .startTime(ZonedDateTime.of(2018, 11, 6, 11, 0, 0, 0, CHICAGO))
+        .endTime(ZonedDateTime.of(2018, 11, 6, 15, 0, 0, 0, CHICAGO))
         .locationName(wackerAndAdams().getName())
         .truckId("thefatshallot")
         .calendarName(parser.getCalendar())
         .build());
-/*
-    TruckStop.Builder builder = TruckStop.builder()
-        .truck(thefatshallot);
+  }
 
-    assertThat(items).containsExactly(builder.startTime8(ZonedDateTime.of(2018, 11, 6, 11, 0, 0, 0, zoneId))
-        .endTime8(ZonedDateTime.of(2018, 11, 6, 15, 0, 0, 0, zoneId))
-        .location(wackerAndAdams())
-        .build(), builder.startTime8(ZonedDateTime.of(2018, 11, 7, 11, 0, 0, 0, zoneId))
-        .endTime8(ZonedDateTime.of(2018, 11, 7, 14, 0, 0, 0, zoneId))
-        .location(wackerAndAdams())
-        .build());
-        */
+  @Test
+  public void findStops2() throws IOException {
+    InputStream str = ClassLoader.getSystemClassLoader()
+        .getResourceAsStream("fatshallot2.html");
+    String doc = new String(ByteStreams.toByteArray(str), StandardCharsets.UTF_8);
+    when(clock.now8()).thenReturn(ZonedDateTime.of(2019, 1, 3, 11, 1,2, 3, CHICAGO));
+    when(extractor.parse("Wacker & Adams 11-2pm", thefatshallot)).thenReturn(ImmutableList.of("Wacker and Adams, Chicago, IL"));
+    when(extractor.parse("Wacker & Adams 11-3pm", thefatshallot)).thenReturn(ImmutableList.of("Wacker and Adams, Chicago, IL"));
+    when(geolocator.locateOpt("Wacker and Adams, Chicago, IL")).thenReturn(Optional.of(wackerAndAdams()));
+
+    List<TempTruckStop> stops = parser.findStops(doc);
+    assertThat(stops).hasSize(2);
+
   }
 }

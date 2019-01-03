@@ -50,6 +50,7 @@ public class FatShallotScheduleReader implements StopReader {
   public List<TempTruckStop> findStops(String document) {
     int year = clock.now8()
         .getYear();
+    int currentMonth = clock.now8().getMonthValue();
     Document parsedDoc = Jsoup.parse(document);
     ImmutableList.Builder<TempTruckStop> stops = ImmutableList.builder();
     for (Element h3 : parsedDoc.select("h3")) {
@@ -60,12 +61,18 @@ public class FatShallotScheduleReader implements StopReader {
             .trim()
             .replaceAll("[^\\x00-\\x7F]", "");
 
+        item = item.trim();
         if (item.endsWith("st") || item.endsWith("rd") || item.endsWith("nd") || item.endsWith("th")) {
           item = item.substring(0, item.length() - 2);
         }
-
         TemporalAccessor parsedTime = FORMATTER.parse(item);
-        date = LocalDate.of(year, parsedTime.get(ChronoField.MONTH_OF_YEAR), parsedTime.get(ChronoField.DAY_OF_MONTH));
+        int month = parsedTime.get(ChronoField.MONTH_OF_YEAR);
+        if (currentMonth == 1 && month == 12) {
+          date = null;
+          break;
+        } else {
+          date = LocalDate.of(year, month, parsedTime.get(ChronoField.DAY_OF_MONTH));
+        }
       }
       if (date != null) {
         parseStopsOnDate(h3, date, stops);
