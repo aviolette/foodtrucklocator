@@ -23,7 +23,6 @@ import foodtruck.dao.TruckObserverDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.dao.TwitterNotificationAccountDAO;
 import foodtruck.dao.UserDAO;
-import foodtruck.model.Slots;
 import foodtruck.util.Secondary;
 
 /**
@@ -54,23 +53,5 @@ public class AppEngineDAOModule extends AbstractModule {
     bind(ReverseLookupDAO.class).to(ReverseLookupDAOAppEngine.class);
     bind(SlackWebhookDAO.class).to(SlackWebhookDAOAppEngine.class);
     bind(TempTruckStopDAO.class).to(TempTruckStopDAOAppEngine.class);
-  }
-
-  @DailyRollup
-  @Provides
-  public Slots provideDailyRollup() {
-    return new Slots(1000 * 60 * 60 * 24);
-  }
-
-  @FifteenMinuteRollup
-  @Provides
-  public Slots provideFifteenMinuteRollup() {
-    return new Slots(1000 * 60 * 15);
-  }
-
-  @WeeklyRollup
-  @Provides
-  public Slots provideWeeklyRollup() {
-    return new Slots(1000 * 60 * 60 * 24 * 7);
   }
 }
