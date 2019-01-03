@@ -1,7 +1,5 @@
 package foodtruck.appengine.dao.appengine;
 
-import java.util.Collection;
-
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.inject.Inject;
@@ -9,8 +7,6 @@ import com.google.inject.Provider;
 
 import foodtruck.dao.ApplicationDAO;
 import foodtruck.model.Application;
-
-import static com.google.appengine.api.datastore.Query.FilterOperator.EQUAL;
 
 /**
  * @author aviolette
@@ -50,11 +46,5 @@ class ApplicationDAOAppEngine extends AppEngineDAO<String, Application> implemen
         .appKey(entity.getKey()
             .getName())
         .build();
-  }
-
-  @Override
-  public Collection<Application> findActive() {
-    return aq().filter(predicate(PROP_ENABLED, EQUAL, true))
-        .execute();
   }
 }

@@ -3,16 +3,15 @@ package foodtruck.appengine.monitoring;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import foodtruck.monitoring.CounterPublisher;
-import foodtruck.monitoring.StatUpdate;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
-import com.google.appengine.api.taskqueue.TaskHandle;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.inject.Inject;
+
+import foodtruck.monitoring.CounterPublisher;
+import foodtruck.monitoring.StatUpdate;
 
 /**
  * @author aviolette
