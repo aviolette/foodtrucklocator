@@ -81,7 +81,7 @@ public class SimpleCalReader {
       return "umbrellazul";
     } else if (title.contains("ugly truckin")) {
       return "uglytruckin";
-    } else if (title.contains("toastycheese")) {
+    } else if (title.contains("toastycheese") || title.contains("toasty cheese")) {
       return "mytoastycheese";
     } else if (title.contains("lucy")) {
       return "sohotruck";
