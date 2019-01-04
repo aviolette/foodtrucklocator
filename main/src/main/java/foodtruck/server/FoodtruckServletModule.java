@@ -74,6 +74,7 @@ import foodtruck.server.job.SeedCoastlineScheduleServlet;
 import foodtruck.server.job.SeedFatShallotSchedule;
 import foodtruck.server.job.SeedGoogleCalendarSchedule;
 import foodtruck.server.job.SeedICalCalendarServlet;
+import foodtruck.server.job.SeedICalLocationServlet;
 import foodtruck.server.job.SeedImperialOakCalendarServlet;
 import foodtruck.server.job.SeedPlankRoadTapRoomServlet;
 import foodtruck.server.job.SeedPollyannaServlet;
@@ -171,6 +172,7 @@ class FoodtruckServletModule extends ServletModule {
     serve("/cron/populate_alter_brewing_schedule").with(SeedAlterBrewingServlet.class);
     serve("/cron/populate_scorched_earth_schedule").with(SeedScorchedEarthServlet.class);
     serve("/cron/populate_werkforce_schedule").with(SeedWerkforceServlet.class);
+    serve("/cron/populate_ical_location_stops").with(SeedICalLocationServlet.class);
 
     // Dashboard endpoints
     serve("/admin").with(AdminDashboardServlet.class);

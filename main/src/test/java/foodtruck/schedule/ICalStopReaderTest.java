@@ -14,6 +14,7 @@ import foodtruck.model.TempTruckStop;
 import foodtruck.model.Truck;
 
 import static com.google.common.truth.Truth.assertThat;
+import static foodtruck.schedule.AbstractReaderTest.CHICAGO;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
@@ -24,13 +25,12 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ICalStopReaderTest {
 
-  private @Mock AddressExtractor extractor;
   private @Mock GeoLocator locator;
   private ICalStopReader reader;
 
   @Before
   public void setup() {
-    this.reader = new ICalStopReader(locator, extractor);
+    this.reader = new ICalStopReader(new ICalReader(CHICAGO, locator));
   }
 
   @Test
@@ -106,7 +106,5 @@ public class ICalStopReaderTest {
     when(locator.locateOpt(any())).thenReturn(Optional.of(ModelTestHelper.clarkAndMonroe()));
     List<TempTruckStop> stops = reader.findStops(input, truck.getId());
     assertThat(stops).hasSize(10);
-
-
   }
 }

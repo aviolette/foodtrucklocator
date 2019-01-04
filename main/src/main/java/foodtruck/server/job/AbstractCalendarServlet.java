@@ -29,7 +29,7 @@ public abstract class AbstractCalendarServlet extends AbstractJobServlet {
   }
 
   @Override
-  protected final void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+  protected final void doPost(HttpServletRequest req, HttpServletResponse resp) {
     String calendar = req.getParameter("calendar");
     String truck = req.getParameter("truck");
     if (Strings.isNullOrEmpty(calendar)) {

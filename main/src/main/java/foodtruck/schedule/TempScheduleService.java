@@ -58,5 +58,8 @@ public class TempScheduleService {
     queue.add(withUrl("/cron/populate_google_calendar_schedule")
         .param("calendar", "archerliquors@mac.com")
         .param("defaultLocation", "Archer Liquors"));
+    queue.add(withUrl("/cron/populate_ical_location_stops")
+        .param("calendar", "http://www.churchstreetbrew.com/home/events/?ical=1&tribe_display=list")
+        .param("defaultLocation", "Church Street Brewing Co"));
   }
 }
