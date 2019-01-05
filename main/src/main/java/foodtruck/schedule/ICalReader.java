@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 
@@ -120,8 +122,11 @@ public class ICalReader {
   public static class ICalEvent {
     private ZonedDateTime start;
     private ZonedDateTime end;
+    @Nullable
     private String summary;
+    @Nullable
     private String description;
+    @Nullable
     private Location location;
 
     public ZonedDateTime getStart() {

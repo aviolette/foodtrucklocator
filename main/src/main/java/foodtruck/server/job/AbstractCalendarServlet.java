@@ -1,11 +1,9 @@
 package foodtruck.server.job;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -24,7 +22,7 @@ public abstract class AbstractCalendarServlet extends AbstractJobServlet {
 
   private final TempTruckStopDAO tempDAO;
 
-  protected AbstractCalendarServlet(TempTruckStopDAO dao) {
+  AbstractCalendarServlet(TempTruckStopDAO dao) {
     this.tempDAO = dao;
   }
 

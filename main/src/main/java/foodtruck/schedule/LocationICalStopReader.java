@@ -28,9 +28,9 @@ public class LocationICalStopReader {
   public List<TempTruckStop> findStops(String document, String defaultLocation, String calendarName) {
     return reader.parse(document).stream()
         .map(event -> {
-          String truckId = inferTruckId(event.getSummary());
+          String truckId = inferTruckId(Strings.nullToEmpty(event.getSummary()));
           if (Strings.isNullOrEmpty(truckId)) {
-            truckId = inferTruckId(event.getDescription());
+            truckId = inferTruckId(Strings.nullToEmpty(event.getDescription()));
             if (Strings.isNullOrEmpty(truckId)) {
               return null;
             }
