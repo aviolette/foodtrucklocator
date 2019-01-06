@@ -49,7 +49,7 @@ public abstract class AbstractSeedServlet extends AbstractJobServlet {
           .header(HttpHeaders.USER_AGENT, userAgent)
           .get(String.class);
       List<TempTruckStop> stops = reader.findStops(document);
-      log.log(Level.INFO, "Retrieved {0} stops for calendar: {1}", new Object[]{stops.size(), reader.getCalendar()});
+      log.log(Level.INFO, "Retrieved {0} stops for calendar: {1}", new Object[]{stops.size(), getCalendar()});
       stops.forEach(tempDAO::save);
       resp.setStatus(200);
     } catch (RuntimeException e) {
@@ -72,5 +72,9 @@ public abstract class AbstractSeedServlet extends AbstractJobServlet {
       }
       resp.setStatus(500);
     }
+  }
+
+  protected String getCalendar() {
+    return reader.getCalendar();
   }
 }

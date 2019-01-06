@@ -10,19 +10,19 @@ import foodtruck.schedule.SquareSpaceEventReader;
 
 /**
  * @author aviolette
- * @since 2018-12-27
+ * @since 2019-01-06
  */
 @Singleton
-public class SeedPlankRoadTapRoomServlet extends AbstractSeedServlet {
+public class SeedTemperanceServlet extends AbstractSeedServlet {
 
   @Inject
-  public SeedPlankRoadTapRoomServlet(TempTruckStopDAO tempDAO, Client client,
-      SquareSpaceEventReader reader, @UserAgent String userAgent) {
-    super(tempDAO, client, reader, "http://www.plankroadtaproom.com/events/", userAgent, false);
+  public SeedTemperanceServlet(TempTruckStopDAO tempDAO, Client client, SquareSpaceEventReader reader,
+      @UserAgent String userAgent) {
+    super(tempDAO, client, reader, "https://temperancebeer.com/events/", userAgent, false);
   }
 
   @Override
   protected String getCalendar() {
-    return "plankroadtaproom";
+    return "temperance";
   }
 }

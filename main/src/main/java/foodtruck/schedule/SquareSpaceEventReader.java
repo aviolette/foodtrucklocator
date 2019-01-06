@@ -25,12 +25,12 @@ import static foodtruck.schedule.SimpleCalReader.inferTruckId;
  * @author aviolette
  * @since 2018-12-27
  */
-public class PlankRoadTapRoomReader implements StopReader {
+public class SquareSpaceEventReader implements StopReader {
 
   private final ZoneId zoneId;
 
   @Inject
-  public PlankRoadTapRoomReader(ZoneId zoneId) {
+  public SquareSpaceEventReader(ZoneId zoneId) {
     this.zoneId = zoneId;
   }
 
@@ -38,13 +38,19 @@ public class PlankRoadTapRoomReader implements StopReader {
   public List<TempTruckStop> findStops(String document) {
     Document parsedDoc = Jsoup.parse(document);
     ImmutableList.Builder<TempTruckStop> stops = ImmutableList.builder();
+    String siteName = parsedDoc.select("meta[property=\"og:site_name\"]").attr("content");
     for (Element parent : parsedDoc.select("div.eventlist-column-info")) {
       TempTruckStop.Builder builder = TempTruckStop.builder()
-          .locationName("Plank Road Tap Room")
-          .calendarName(getCalendar());
+          .locationName(siteName)
+          .calendarName(getCalendar() + ": " + siteName);
       String truckId = inferTruckId(parent.select("a.eventlist-title-link").text());
       if (Strings.isNullOrEmpty(truckId)) {
-        continue;
+        String text = parent.select("div.eventlist-description")
+            .text();
+        truckId = inferTruckId(text);
+        if (Strings.isNullOrEmpty(truckId)) {
+          continue;
+        }
       }
       builder.truckId(truckId);
       for (Element tfhr : parent.select("span.event-time-24hr")) {
@@ -72,6 +78,6 @@ public class PlankRoadTapRoomReader implements StopReader {
 
   @Override
   public String getCalendar() {
-    return "plankroadtaproom";
+    return "squarespace";
   }
 }

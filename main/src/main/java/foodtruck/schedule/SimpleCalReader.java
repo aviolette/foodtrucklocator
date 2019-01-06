@@ -62,7 +62,7 @@ public class SimpleCalReader {
 
   @Nullable
   static String inferTruckId(String title) {
-    title = title.toLowerCase();
+    title = title.toLowerCase().replace('’', '\'');
     if (title.contains("bop bar")) {
       return "bopbartruck";
     } else if (title.contains("aztec dave")) {
@@ -109,8 +109,12 @@ public class SimpleCalReader {
       return "twisted_classic";
     } else if (title.contains("babyq")) {
       return "babyqs123";
+    } else if (title.contains("three legged") || title.contains("threelegged")) {
+      return "threeleggedtaco";
     } else if (title.contains("chicago culinary kitchen")) {
       return "chicagock";
+    } else if (title.contains("cocinita")) {
+      return "cocinitachicago";
     } else if (title.contains("cheesie")) {
       return "cheesies_truck";
     } else if (title.contains("ofrenda")) {
@@ -123,6 +127,7 @@ public class SimpleCalReader {
         title.contains("dj ") || title.contains("concert") ||
         title.contains("sausage making") || title.contains("open from") ||
         title.contains("music") || title.contains("santa") ||
+        title.contains("have a food truck") ||
         title.contains("welcoming") || title.contains("live") ||
         title.contains("closed") || title.contains("tour") ||
         title.contains("yoga") || title.contains("rock out") ||
