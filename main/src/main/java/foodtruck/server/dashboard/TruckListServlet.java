@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -42,6 +43,7 @@ public class TruckListServlet extends HttpServlet {
     if (tab.equals("inactiveTrucks")) {
       req.setAttribute("inactiveTrucks", truckDAO.findInactiveTrucks());
     }
-    req.getRequestDispatcher("/WEB-INF/jsp/dashboard/truckList.jsp").forward(req, resp);
+    req.setAttribute("extraScripts", ImmutableList.of("/script/dashboard-trucks.js"));
+    req.getRequestDispatcher("/WEB-INF/jsp/dashboard/trucks.jsp").forward(req, resp);
   }
 }
