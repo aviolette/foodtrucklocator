@@ -27,7 +27,7 @@ public class CoastlineCalendarReader implements StopReader {
 
   private static final Logger log = Logger.getLogger(CoastlineCalendarReader.class.getName());
   private static final String CALENDAR_NAME = "coastlinecove";
-  private static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yy");
+  private static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("M/d/yy");
   private static DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
   private final AddressExtractor extractor;
   private final TruckDAO truckDAO;
