@@ -10,7 +10,7 @@
       <div class="flextable-item">
         <div class="radio-inline custom-control custom-radio">
           <label><input type="radio" id="with-stops" name="stops" checked="checked">
-            <span class="custom-control-indicator"></span>With Stops</label>
+            <span class="custom-control-indicator"></span>Stops</label>
         </div>
         <div class="radio-inline custom-control custom-radio">
           <label><input type="radio" id="without-stops" name="stops">
