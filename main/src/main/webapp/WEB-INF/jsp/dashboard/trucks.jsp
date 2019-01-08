@@ -34,7 +34,7 @@
         <tbody>
         <c:forEach var="truckStops" varStatus="truckStopsStatus" items="${trucks}">
 
-          <tr class="d-none <c:choose><c:when test="${truckStops.active}">active-stop</c:when><c:when test="${!truckStops.active}">inactive-stops</c:when><c:otherwise>inactive-truck</c:otherwise></c:choose>">
+          <tr class="d-none <c:choose><c:when test="${truckStops.active}">active-stop</c:when><c:when test="${!truckStops.active and !truckStops.truck.inactive}">inactive-stops</c:when><c:otherwise>inactive-truck</c:otherwise></c:choose>">
             <td class="img-col"><a class="truckLink" href="/admin/trucks/${truckStops.truck.id}"><img alt="truck icon"
                                                                                                       class="media-object img-responsive img-rounded"
                                                                                                       src="${truckStops.truck.iconUrlObj.protocolRelative}"/></a>
@@ -65,11 +65,8 @@
           </tr>
         </c:forEach>
         </tbody>
-
       </table>
     </div>
-
-
   </div>
 </div>
 
