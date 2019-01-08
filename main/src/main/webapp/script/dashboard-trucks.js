@@ -1,25 +1,25 @@
 function setupTruckListToggles() {
   function withStops() {
-    $(".inactive-stops").addClass("hidden");
-    $(".inactive-truck").addClass("hidden");
-    $(".active-stop").removeClass("hidden");
+    $(".inactive-stops").addClass("d-none");
+    $(".inactive-truck").addClass("d-none");
+    $(".active-stop").removeClass("d-none");
   }
 
   function withoutStops() {
-    $(".inactive-stops").removeClass("hidden");
-    $(".inactive-truck").addClass("hidden");
-    $(".active-stop").addClass("hidden");
+    $(".inactive-stops").removeClass("d-none");
+    $(".inactive-truck").addClass("d-none");
+    $(".active-stop").addClass("d-none");
   }
 
   function inactiveTrucks() {
-    $(".inactive-stops").addClass("hidden");
-    $(".inactive-truck").removeClass("hidden");
-    $(".active-stop").addClass("hidden");
+    $(".inactive-stops").addClass("d-none");
+    $(".inactive-truck").removeClass("d-none");
+    $(".active-stop").addClass("d-none");
   }
 
-  $("#with-stops").click(withStops);
-  $("#without-stops").click(withoutStops);
-  $("#inactive-stops").click(inactiveTrucks);
+  $("#with-stops").parent().click(withStops);
+  $("#without-stops").parent().click(withoutStops);
+  $("#inactive-stops").parent().click(inactiveTrucks);
 
   withStops();
 }

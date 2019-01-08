@@ -11,7 +11,7 @@
 
   <!-- Include the CSS -->
   <link href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic" rel="stylesheet">
-  <link href="/theme-dashboard/toolkit-inverse.min.css" rel="stylesheet">
+  <link href="/css/toolkit-inverse.min.css" rel="stylesheet">
   <link href="/css/glyphicons.css" rel="stylesheet"/>
 
 </head>
@@ -22,23 +22,29 @@
       <img src="/img/logo.png" width="60" height="60" alt="FTF Logo"/>
     </a>
     <div class="iconav-slider">
-      <ul class="nav nav-pills iconav-slider">
-        <li>
-          <a href="/admin/trucks" title="" data-toggle="tooltip" data-placement="right" data-container="body" data-original-title="Trucks">
+      <ul class="nav nav-pills iconav-nav flex-md-column">
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/trucks" title="" data-toggle="tooltip" data-placement="right" data-container="body" data-original-title="Trucks">
             <span class="glyphicons glyphicons-truck"></span>
-            <small class="iconav-nav-label visible-xs-block">Truck</small>
+            <small class="iconav-nav-label d-md-none">Truck</small>
           </a>
         </li>
-        <li>
-          <a href="/admin/locations" title="" data-toggle="tooltip" data-placement="right" data-container="body" data-original-title="Location">
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/locations" title="" data-toggle="tooltip" data-placement="right" data-container="body" data-original-title="Location">
             <span class="glyphicons glyphicons-map-marker"></span>
-            <small class="iconav-nav-label visible-xs-block">Locations</small>
+            <small class="iconav-nav-label d-md-none">Locations</small>
           </a>
         </li>
-        <li>
-          <a href="/admin/messages" title="" data-toggle="tooltip" data-placement="right" data-container="body" data-original-title="Location">
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/messages" title="" data-toggle="tooltip" data-placement="right" data-container="body" data-original-title="Location">
             <span class="glyphicons glyphicons-pencil"></span>
-            <small class="iconav-nav-label visible-xs-block">Messages</small>
+            <small class="iconav-nav-label d-md-none">Messages</small>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/alexa_query" title="" data-toggle="tooltip" data-placement="right" data-container="body" data-original-title="Alexa">
+            <span class="glyphicons glyphicons-microphone"></span>
+            <small class="iconav-nav-label d-md-none">Messages</small>
           </a>
         </li>
       </ul>
