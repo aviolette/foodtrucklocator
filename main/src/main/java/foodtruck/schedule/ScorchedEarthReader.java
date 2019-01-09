@@ -62,7 +62,7 @@ public class ScorchedEarthReader implements StopReader {
         }
       }
 
-      ZonedDateTime startTime = ZonedDateTime.of(zdt.getYear(), zdt.getDayOfMonth(), day, hours, minutes, 0, 0, clock.zone8());
+      ZonedDateTime startTime = ZonedDateTime.of(zdt.getYear(), zdt.getMonthValue(), day, hours, minutes, 0, 0, clock.zone8());
       int length = 2;
       if (hours < 16) {
         length = 4;
