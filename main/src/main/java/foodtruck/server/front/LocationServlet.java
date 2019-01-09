@@ -108,7 +108,7 @@ public class LocationServlet extends HttpServlet {
       showStops = false;
       LocalDate startDate = clock.currentDay();
       List<DailySchedule> truckStops = truckStopService.findStopsNearLocationOverRange(location,
-          new Interval(startDate.toDateTimeAtStartOfDay(), startDate.plusDays(8)
+          new Interval(startDate.toDateTimeAtStartOfDay(), startDate.plusDays(15)
               .toDateTimeAtStartOfDay()));
       req.setAttribute("weeklyStops", truckStops);
     }
