@@ -12,6 +12,7 @@ import com.google.inject.Inject;
 
 import foodtruck.monitoring.CounterPublisher;
 import foodtruck.monitoring.StatUpdate;
+import foodtruck.time.Clock;
 
 /**
  * @author aviolette
@@ -22,10 +23,12 @@ public class PullQueuePublisher implements CounterPublisher {
   private static final Logger log = Logger.getLogger(PullQueuePublisher.class.getName());
 
   private final ObjectMapper mapper;
+  private final Clock clock;
 
   @Inject
-  public PullQueuePublisher(ObjectMapper mapper) {
+  public PullQueuePublisher(ObjectMapper mapper, Clock clock) {
     this.mapper = mapper;
+    this.clock = clock;
   }
 
   @Override
@@ -35,9 +38,14 @@ public class PullQueuePublisher implements CounterPublisher {
 
   @Override
   public void increment(String name, int amount) {
+    increment(name, amount, clock.nowInMillis());
+  }
+
+  @Override
+  public void increment(String name, int amount, long timestampInMillis) {
     Queue q = QueueFactory.getQueue("stats-queue");
     try {
-      String obj = mapper.writeValueAsString(new StatUpdate(name, amount));
+      String obj = mapper.writeValueAsString(new StatUpdate(name, amount, timestampInMillis));
       log.log(Level.FINE, "Writing stat to queue {0}", obj);
       q.add(TaskOptions.Builder.withMethod(TaskOptions.Method.PULL).payload(obj));
     } catch (JsonProcessingException e) {

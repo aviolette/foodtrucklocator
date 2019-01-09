@@ -5,6 +5,7 @@ package foodtruck.monitoring;
  * @since 11/30/16
  */
 public interface CounterPublisher {
+
   /**
    * Increment a counter by one
    * @param name the name of the counter
@@ -13,8 +14,11 @@ public interface CounterPublisher {
 
   /**
    * Increment a count by the specified amount
-   * @param name the name
+   * @param name   the name
    * @param amount a positive integer
    */
   void increment(String name, int amount);
+
+  void increment(String name, int amount, long timestampInMillis);
+
 }

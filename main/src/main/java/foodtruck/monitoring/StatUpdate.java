@@ -14,11 +14,17 @@ public class StatUpdate {
 
   private final String name;
   private final int amount;
+  private final long timestamp;
 
   @JsonCreator
-  public StatUpdate(@JsonProperty("name") String name, @JsonProperty("amount") int amount) {
+  public StatUpdate(@JsonProperty("name") String name, @JsonProperty("amount") int amount, @JsonProperty("timestamp") long timestamp) {
     this.name = name;
     this.amount = amount;
+    this.timestamp = timestamp;
+  }
+
+  public long getTimestamp() {
+    return timestamp;
   }
 
   public String getName() {
@@ -31,7 +37,7 @@ public class StatUpdate {
 
   @Override
   public String toString() {
-    return "StatUpdate{" + "name='" + name + '\'' + ", amount=" + amount + '}';
+    return "StatUpdate{" + "name='" + name + '\'' + ", amount=" + amount + ", timestamp=" + timestamp + '}';
   }
 
   @Override

@@ -85,7 +85,6 @@ import foodtruck.server.job.SeedWerkforceServlet;
 import foodtruck.server.job.SendLunchNotificationsServlet;
 import foodtruck.server.job.SlackLunchtimeNotifications;
 import foodtruck.server.job.StatPullQueueServlet;
-import foodtruck.server.job.StatUpdateQueueServlet;
 import foodtruck.server.job.TruckMonitorServlet;
 import foodtruck.server.job.MonthlyTruckStatsServlet;
 import foodtruck.server.job.TweetCacheUpdateServlet;
@@ -156,7 +155,6 @@ class FoodtruckServletModule extends ServletModule {
     serve("/cron/daily_stats_update").with(DailyStatsServlet.class);
 
     // Queue activated servlets
-    serve("/cron/update_count").with(StatUpdateQueueServlet.class);
     serve("/cron/notify_stop_created").with(NotifyNewStopServlet.class);
     serve("/cron/notify_stop_ended").with(NotifyLeavingStopServlet.class);
     serve("/cron/monthly_stop_stats_generate").with(MonthlyTruckStatsServlet.class);

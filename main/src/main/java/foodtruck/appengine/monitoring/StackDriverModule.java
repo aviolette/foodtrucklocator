@@ -1,10 +1,6 @@
 package foodtruck.appengine.monitoring;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
-
-import foodtruck.monitoring.CounterPublisher;
-import foodtruck.monitoring.StackDriver;
 
 /**
  * @author aviolette
@@ -16,9 +12,4 @@ public class StackDriverModule extends AbstractModule {
   protected void configure() {
   }
 
-
-  @Provides @StackDriver
-  public CounterPublisher providesCounterPublisher(StackDriverPublisher publisher) {
-    return publisher;
-  }
 }

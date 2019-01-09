@@ -32,8 +32,7 @@ import com.google.monitoring.v3.TimeSeries;
 import com.google.monitoring.v3.TypedValue;
 import com.google.protobuf.util.Timestamps;
 
-import foodtruck.monitoring.CounterPublisher;
-import foodtruck.monitoring.StackDriver;
+import foodtruck.model.Environment;
 import foodtruck.monitoring.StatUpdate;
 import foodtruck.time.Clock;
 
@@ -50,7 +49,7 @@ public class StatPullQueueServlet extends HttpServlet {
   private final Clock clock;
 
   @Inject
-  public StatPullQueueServlet(ObjectMapper mapper, Clock clock) {
+  public StatPullQueueServlet(ObjectMapper mapper, Clock clock, Environment environment) {
     this.mapper = mapper;
     this.clock = clock;
   }
@@ -65,9 +64,11 @@ public class StatPullQueueServlet extends HttpServlet {
     }
 
     Map<String, Integer> counts = new HashMap<>();
+    long timeStamp = 0;
     for (TaskHandle task : tasks) {
       try {
         StatUpdate update = mapper.readValue(task.getPayload(), StatUpdate.class);
+        timeStamp = update.getTimestamp();
         counts.merge(update.getName(), update.getAmount(), Integer::sum);
       } catch (Exception ex) {
         log.log(Level.INFO, "Problem serializing {0}", task.getPayload());
@@ -76,9 +77,13 @@ public class StatPullQueueServlet extends HttpServlet {
       q.deleteTask(task);
     }
 
+    // handle transition period
+    if (timeStamp == 0) {
+      timeStamp = clock.nowInMillis();
+    }
     try (MetricServiceClient client = MetricServiceClient.create()) {
       TimeInterval interval = TimeInterval.newBuilder()
-          .setEndTime(Timestamps.fromMillis(clock.nowInMillis()))
+          .setEndTime(Timestamps.fromMillis(timeStamp))
           .build();
 
       for (Map.Entry<String, Integer> count : counts.entrySet()) {

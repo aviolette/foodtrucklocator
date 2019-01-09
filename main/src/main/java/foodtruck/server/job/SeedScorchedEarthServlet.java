@@ -19,7 +19,6 @@ import foodtruck.annotations.UserAgent;
 import foodtruck.dao.TempTruckStopDAO;
 import foodtruck.model.TempTruckStop;
 import foodtruck.schedule.ScorchedEarthReader;
-import foodtruck.schedule.StopReader;
 import foodtruck.time.Clock;
 
 /**

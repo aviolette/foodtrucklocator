@@ -39,6 +39,7 @@ import foodtruck.appengine.dao.appengine.AppEngineDAOModule;
 import foodtruck.appengine.dao.memcached.MemcachedModule;
 import foodtruck.appengine.storage.GcsStorageService;
 import foodtruck.caching.Cacher;
+import foodtruck.model.Environment;
 import foodtruck.storage.StorageService;
 import foodtruck.user.LoggedInUser;
 
@@ -121,6 +122,11 @@ public class AppengineModule extends AbstractModule {
   @Singleton
   public JsonFactory providesJsonFactory() {
     return new JacksonFactory();
+  }
+
+  @Provides
+  public Environment providesEnvironment() {
+    return SystemProperty.environment.value() == SystemProperty.Environment.Value.Development ? Environment.Development : Environment.Production;
   }
 
   @Singleton
