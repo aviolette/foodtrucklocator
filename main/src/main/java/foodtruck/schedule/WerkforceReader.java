@@ -98,7 +98,7 @@ public class WerkforceReader implements StopReader {
       }
       LocalDate date = LocalDate.of(year, month, Integer.parseInt(m.group(2)));
       int startHour = date.getDayOfWeek() == DayOfWeek.SUNDAY ? 12 : 17;
-      return Optional.of(ZonedDateTime.of(date, LocalTime.of(startHour, startHour+4), clock.zone8()));
+      return Optional.of(ZonedDateTime.of(date, LocalTime.of(startHour, 0), clock.zone8()));
     }
     return Optional.empty();
   }
