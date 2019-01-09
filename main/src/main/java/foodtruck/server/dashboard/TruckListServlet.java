@@ -1,6 +1,7 @@
 package foodtruck.server.dashboard;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,6 +14,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import foodtruck.dao.TruckDAO;
+import foodtruck.model.TruckStatus;
 import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.time.Clock;
 
@@ -39,7 +41,16 @@ public class TruckListServlet extends HttpServlet {
     req.setAttribute("nav", "trucks");
     String tab = MoreObjects.firstNonNull(req.getParameter("tab"), "home");
     req.setAttribute("tab", tab);
-    req.setAttribute("trucks", stopService.findCurrentAndPreviousStop(clock.currentDay()));
+    List<TruckStatus> currentAndPreviousStop = stopService.findCurrentAndPreviousStop(clock.currentDay());
+    int activeStops = currentAndPreviousStop.stream()
+        .mapToInt(TruckStatus::getTotalStops)
+        .sum();
+    int totalTrucks = currentAndPreviousStop.stream()
+        .mapToInt(status -> status.isActive() ? 1 : 0)
+        .sum();
+    req.setAttribute("totalTrucks", totalTrucks);
+    req.setAttribute("activeStops", activeStops);
+    req.setAttribute("trucks", currentAndPreviousStop);
     if (tab.equals("inactiveTrucks")) {
       req.setAttribute("inactiveTrucks", truckDAO.findInactiveTrucks());
     }

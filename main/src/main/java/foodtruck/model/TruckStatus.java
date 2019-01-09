@@ -20,17 +20,23 @@ public class TruckStatus {
   private final TruckStop currentStop;
   private final Truck truck;
   private final boolean active;
+  private final int totalStops;
 
-  public TruckStatus(Truck truck, boolean isActive, @Nullable TruckStop current,
-      @Nullable TruckStop nextStop) {
+  public TruckStatus(Truck truck, boolean isActive, @Nullable TruckStop current, @Nullable TruckStop nextStop,
+      int totalStops) {
     this.active = isActive;
     this.truck = truck;
     this.currentStop = current;
     this.nextStop = nextStop;
+    this.totalStops = totalStops;
   }
 
   public boolean isActive() {
     return active;
+  }
+
+  public int getTotalStops() {
+    return totalStops;
   }
 
   public TruckStop getNextStop() {

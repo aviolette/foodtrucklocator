@@ -1,11 +1,31 @@
 <%@include file="dashboardHeader1.jsp" %>
 <div class="row">
-  <div class="col-sm-12">
+  <div class="col-md-12">
     <h2 class="dashhead-title">Trucks</h2>
     <div>
       <button class="btn btn-outline-primary" id="new-truck">New Truck</button>
     </div>
-    <hr/>
+  </div>
+</div>
+<div class="hr-divider my-4">
+  <h3 class="hr-divider-content hr-divider-heading">Quick Stats</h3>
+</div>
+<div class="row statcards mt-3 mb-3 text-xs-center text-md-left">
+
+  <div class="statcard col-6 col-md-4 mb-4">
+    <h3 class="statcard-number text-success">${activeStops}</h3>
+    <span class="statcard-desc">Stops</span>
+  </div>
+
+  <div class="statcard col-6 col-md-4 mb-4">
+    <h3 class="statcard-number text-success">${totalTrucks}</h3>
+    <span class="statcard-desc">Trucks on the Road</span>
+  </div>
+
+</div>
+
+<div class="row">
+  <div class="col-md-12">
     <div class="flextable table-actions">
       <div class="flextable-item">
         <div class="btn-group btn-group-toggle" data-toggle="buttons">

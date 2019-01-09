@@ -313,10 +313,12 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
       boolean activeToday = false;
       TruckStop currentStop = null;
       TruckStop nextStop = null;
+      int totalStops = 0;
       for (final TruckStop truckStop : stops) {
         if (truckStop.getTruck()
             .getId()
             .equals(truck.getId())) {
+          totalStops++;
           activeToday = true;
           if (truckStop.activeDuring(now)) {
             currentStop = truckStop;
@@ -327,7 +329,7 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
           }
         }
       }
-      truckInfo.add(new TruckStatus(truck, activeToday, currentStop, nextStop));
+      truckInfo.add(new TruckStatus(truck, activeToday, currentStop, nextStop, totalStops));
     }
     return TruckStatus.BY_NAME.immutableSortedCopy(truckInfo.build());
   }
