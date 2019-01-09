@@ -56,8 +56,7 @@ public class DailyStatsServlet extends HttpServlet {
     LocalDate startDate = now.minusDays(1);
     if (!Strings.isNullOrEmpty(start)) {
       startDate = ISODateTimeFormat.basicDate().parseLocalDate(start);
-      // TODO: change this to run when day of month == 1
-    } else if (now.getDayOfMonth() < 10) {
+    } else if (now.getDayOfMonth() == 1) {
       log.log(Level.INFO, "Queueing month stats generation");
       LocalDate monthStats = now.minusMonths(1);
       Queue queue = queueProvider.get();
