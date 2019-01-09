@@ -87,7 +87,7 @@ public class SimpleCalReader {
       return "sohotruck";
     } else if (title.contains("pierogi jo") || title.contains("pierogijos")) {
       return "pierogijos";
-    } else if (title.contains("allfiredup")) {
+    } else if (title.contains("allfiredup") || title.contains("all fired up")) {
       return "chgoallfrup";
     } else if (title.contains("fat tomato")) {
       return "fattomatoinc";
@@ -97,6 +97,8 @@ public class SimpleCalReader {
       return "doctordogs";
     } else if (title.contains("perk n'") || title.contains("perk n’")) {
       return "perknpickle";
+    } else if (title.contains("smokin' z") || title.contains("smokin z")) {
+      return "smokinzbbq";
     } else if (title.contains("olive branch")) {
       return "olivebranchft";
     } else if (title.contains("pizza boss") || title.contains("pizzaboss")) {
