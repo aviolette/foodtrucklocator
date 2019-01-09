@@ -2,13 +2,10 @@
 <div class="row">
   <div class="col-sm-12">
     <h2 class="dashhead-title">Trucks</h2>
-
     <div>
       <button class="btn btn-outline-primary" id="new-truck">New Truck</button>
     </div>
-
     <hr/>
-
     <div class="flextable table-actions">
       <div class="flextable-item">
         <div class="btn-group btn-group-toggle" data-toggle="buttons">

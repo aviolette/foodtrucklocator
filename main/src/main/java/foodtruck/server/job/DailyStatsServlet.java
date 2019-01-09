@@ -9,8 +9,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.taskqueue.Queue;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import org.joda.time.Interval;
@@ -21,6 +23,8 @@ import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.Truck;
 import foodtruck.time.Clock;
+
+import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 
 /**
  * @author aviolette
@@ -35,20 +39,31 @@ public class DailyStatsServlet extends HttpServlet {
   private final TruckDAO truckDAO;
   private final TruckStopDAO stopDAO;
   private final Clock clock;
+  private final Provider<Queue> queueProvider;
 
   @Inject
-  public DailyStatsServlet(Clock clock, TruckStopDAO stopDAO, TruckDAO truckDAO) {
+  public DailyStatsServlet(Clock clock, TruckStopDAO stopDAO, TruckDAO truckDAO, Provider<Queue> queueProvider) {
     this.stopDAO = stopDAO;
     this.truckDAO = truckDAO;
     this.clock = clock;
+    this.queueProvider = queueProvider;
   }
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     String start = req.getParameter("start");
-    LocalDate startDate = clock.currentDay().minusDays(1);
+    LocalDate now = clock.currentDay();
+    LocalDate startDate = now.minusDays(1);
     if (!Strings.isNullOrEmpty(start)) {
       startDate = ISODateTimeFormat.basicDate().parseLocalDate(start);
+      // TODO: change this to run when day of month == 1
+    } else if (now.getDayOfMonth() < 10) {
+      log.log(Level.INFO, "Queueing month stats generation");
+      LocalDate monthStats = now.minusMonths(1);
+      Queue queue = queueProvider.get();
+      queue.add(withUrl("/cron/monthly_stop_stats_generate")
+          .param("month", String.valueOf(monthStats.getMonthOfYear()))
+          .param("year", String.valueOf(monthStats.getYear())));
     }
     log.info("Starting update of daily stats from: " + startDate);
     stopDAO.findOverRange(null, new Interval(startDate.toDateTimeAtStartOfDay(clock.zone()), clock.currentDay()
