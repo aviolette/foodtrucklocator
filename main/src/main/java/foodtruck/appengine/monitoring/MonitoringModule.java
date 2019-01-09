@@ -11,6 +11,7 @@ import foodtruck.monitoring.Counter;
 import foodtruck.monitoring.CounterPublisher;
 import foodtruck.monitoring.DailyScheduleCounter;
 import foodtruck.monitoring.HourlyScheduleCounter;
+import foodtruck.metrics.StackdriverModule;
 
 /**
  * @author aviolette@gmail.com
@@ -21,7 +22,7 @@ public class MonitoringModule extends AbstractModule {
   @Override protected void configure() {
     bind(CounterPublisher.class).to(PullQueuePublisher.class);
     install(new CommonMonitoringModule());
-    install(new StackDriverModule());
+    install(new StackdriverModule());
   }
 
   @Provides
