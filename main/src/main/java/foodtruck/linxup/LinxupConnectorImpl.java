@@ -12,6 +12,7 @@ import com.sun.jersey.api.client.WebResource;
 import org.joda.time.DateTime;
 
 import foodtruck.model.LinxupAccount;
+import foodtruck.monitoring.Monitored;
 import foodtruck.util.ServiceException;
 
 /**
@@ -29,6 +30,7 @@ class LinxupConnectorImpl implements LinxupConnector {
   }
 
   @Override
+  @Monitored
   public List<Position> findPositions(LinxupAccount account) throws IOException, ServiceException {
     LinxupMapResponse response;
     try {
@@ -47,6 +49,7 @@ class LinxupConnectorImpl implements LinxupConnector {
   }
 
   @Override
+  @Monitored
   public LinxupMapHistoryResponse tripList(LinxupAccount account, DateTime start, DateTime end, String deviceId) {
     return tripResource.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
         .header(HttpHeaders.ACCEPT_ENCODING, "gzip,deflate")
