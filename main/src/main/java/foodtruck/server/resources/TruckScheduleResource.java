@@ -11,6 +11,7 @@ import com.google.inject.Inject;
 import com.sun.jersey.api.JResponse;
 
 import foodtruck.model.TruckSchedule;
+import foodtruck.monitoring.Monitored;
 import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.server.security.SecurityChecker;
 import foodtruck.time.Clock;
@@ -37,6 +38,7 @@ public class TruckScheduleResource {
 
   @GET
   @Path("{truckId}")
+  @Monitored
   public JResponse<TruckSchedule> findSchedule(@PathParam("truckId") String truckId) {
     securityChecker.requiresLoggedInAs(truckId);
     try {

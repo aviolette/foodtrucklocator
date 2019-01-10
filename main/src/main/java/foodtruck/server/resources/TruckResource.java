@@ -28,6 +28,7 @@ import foodtruck.dao.TrackingDeviceDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
+import foodtruck.monitoring.Monitored;
 import foodtruck.profile.ProfileSyncService;
 import foodtruck.server.security.SecurityChecker;
 import foodtruck.time.Clock;
@@ -64,6 +65,7 @@ public class TruckResource {
   }
 
   @GET
+  @Monitored
   @Produces({"application/json", "text/csv", "text/plain"})
   public JResponse<List<Truck>> getTrucks(@PathParam("view") String view,
       @QueryParam("active") final String active, @QueryParam("tag") final String filteredBy) {
@@ -88,6 +90,7 @@ public class TruckResource {
   }
 
   @GET
+  @Monitored
   @Produces("application/json")
   @Path("{truckId}")
   public JResponse<Truck> getTruck(@PathParam("truckId") String truckId) {
@@ -96,28 +99,8 @@ public class TruckResource {
         .build();
   }
 
-  @POST
-  @Path("{truckId}/mute")
-  @RequiresAdmin
-  public void muteTruck(@PathParam("truckId") String truckId, @QueryParam("until") String until) {
-    DateTime muteUntil = Strings.isNullOrEmpty(until) ? clock.currentDay()
-        .toDateTimeAtStartOfDay(zone)
-        .plusDays(1) : formatter.parseDateTime(until);
-    truckDAO.findByIdOpt(truckId).ifPresent(truck -> truckDAO.save(Truck.builder(truck)
-        .muteUntil(muteUntil)
-        .build()));
-  }
-
-  @POST
-  @Path("{truckId}/unmute")
-  @RequiresAdmin
-  public void unmuteTruck(@PathParam("truckId") String truckId) {
-    truckDAO.findByIdOpt(truckId).ifPresent(truck -> truckDAO.save(Truck.builder(truck)
-        .muteUntil(null)
-        .build()));
-  }
-
   @DELETE
+  @Monitored
   @Path("{truckId}")
   @RequiresAdmin
   public void delete(@PathParam("truckId") String truckId) {
@@ -125,6 +108,7 @@ public class TruckResource {
   }
 
   @Path("{truckId}/specials")
+  @Monitored
   public DailySpecialResource getDailySpecialResource(@PathParam("truckId") String truckId) {
     return dailySpecialResourceFactory.create(truckDAO.findByIdOpt(truckId)
         .orElseThrow(() -> new WebApplicationException(404)));
@@ -132,6 +116,7 @@ public class TruckResource {
 
   @GET
   @Path("{truckId}/beacons")
+  @Monitored
   public List<TrackingDevice> findBeacons(@PathParam("truckId") String truckId) {
     securityChecker.requiresLoggedInAs(truckId);
     return trackingDeviceDAO.findByTruckId(truckId);

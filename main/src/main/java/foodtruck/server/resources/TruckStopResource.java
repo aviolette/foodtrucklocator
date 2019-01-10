@@ -37,6 +37,7 @@ import foodtruck.annotations.RequiresAppKeyWithCountRestriction;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.TruckStop;
 import foodtruck.model.TruckStopWithCounts;
+import foodtruck.monitoring.Monitored;
 import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.server.security.SecurityChecker;
 import foodtruck.session.Session;
@@ -73,6 +74,7 @@ public class TruckStopResource {
 
   @DELETE
   @Path("{stopId: \\d+}")
+  @Monitored
   public void delete(@PathParam("stopId") final long stopId) throws ServletException, IOException {
     if (!checker.isAdmin()) {
       Optional<TruckStop> stop = truckStopDAO.findByIdOpt(stopId);
@@ -85,6 +87,7 @@ public class TruckStopResource {
   }
 
   @PUT
+  @Monitored
   public void save(TruckStop truckStop) throws ServletException, IOException {
     checker.requiresLoggedInAs(truckStop.getTruck()
         .getId());
@@ -103,6 +106,7 @@ public class TruckStopResource {
 
   // TODO: should require login
   @GET
+  @Monitored
   public List<TruckStopWithCounts> getStops(@QueryParam("truck") String truckId,
       @Context DateTime startTime, @QueryParam("includeCounts") boolean includeCounts,
       @AppKey @QueryParam("appKey") final String appKey) {
@@ -122,6 +126,7 @@ public class TruckStopResource {
 
   @GET
   @Path("{truckId}")
+  @Monitored
   @RequiresAppKeyWithCountRestriction
   public List<TruckStopWithCounts> getStop(@PathParam("truckId") String truckId,
       @AppKey @QueryParam("appKey") String appKey, @Context DateTime startTime,

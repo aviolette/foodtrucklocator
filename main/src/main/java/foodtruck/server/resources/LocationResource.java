@@ -55,6 +55,7 @@ public class LocationResource {
   @GET
   @Path("alexa")
   @Produces("text/plain")
+  @Monitored
   @RequiresAdmin
   public String findAlexaStops() {
     return locationDAO.findAlexaStops().stream()
@@ -65,6 +66,7 @@ public class LocationResource {
 
   @GET
   @Path("designated")
+  @Monitored
   @RequiresAppKeyWithCountRestriction
   public Collection<Location> findStops(@AppKey @QueryParam("appKey") String appKey) {
     return locationDAO.findDesignatedStops();
