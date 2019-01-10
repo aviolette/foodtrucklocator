@@ -91,8 +91,8 @@ public class DailyStatsServlet extends HttpServlet {
         .map(stop -> stop.getTruck().getId())
         .distinct()
         .count();
-    publisher.increment("daily_stops", stops.size(), startDate.toDateTimeAtStartOfDay(clock.zone()).getMillis());
-    publisher.increment("unique_trucks", (int)uniqueTrucks, startDate.toDateTimeAtStartOfDay(clock.zone()).getMillis());
+    publisher.increment("daily_stops", stops.size(), now.toDateTimeAtStartOfDay(clock.zone()).getMillis());
+    publisher.increment("unique_trucks", (int)uniqueTrucks, now.toDateTimeAtStartOfDay(clock.zone()).getMillis());
     log.log(Level.INFO, "Updated stats for {0} stops", stops.size());
   }
 }
