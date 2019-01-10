@@ -11,8 +11,8 @@
 
   <!-- Include the CSS -->
   <link href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic" rel="stylesheet">
-  <link href="/css/toolkit-inverse.min.css" rel="stylesheet">
   <link href="/css/glyphicons.css" rel="stylesheet"/>
+  <link href="/css/toolkit-inverse.min.css" rel="stylesheet">
 
 </head>
 <body>
@@ -24,13 +24,13 @@
     <div class="iconav-slider">
       <ul class="nav nav-pills iconav-nav flex-md-column">
         <li class="nav-item">
-          <a class="nav-link" href="/admin/trucks" title="" data-toggle="tooltip" data-placement="right" data-container="body" data-original-title="Trucks">
+          <a class="nav-link<c:if test="${nav == 'trucks'}"> active</c:if>" href="/admin/trucks" title="" data-toggle="tooltip" data-placement="right" data-container="body" data-original-title="Trucks">
             <span class="glyphicons glyphicons-truck"></span>
             <small class="iconav-nav-label d-md-none">Truck</small>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/admin/locations" title="" data-toggle="tooltip" data-placement="right" data-container="body" data-original-title="Location">
+          <a class="nav-link<c:if test="${nav == 'locations'}"> active</c:if>" href="/admin/locations" title="" data-toggle="tooltip" data-placement="right" data-container="body" data-original-title="Location">
             <span class="glyphicons glyphicons-map-marker"></span>
             <small class="iconav-nav-label d-md-none">Locations</small>
           </a>
