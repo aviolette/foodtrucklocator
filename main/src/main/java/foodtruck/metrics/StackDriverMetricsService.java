@@ -40,7 +40,7 @@ public class StackDriverMetricsService implements MetricsService {
   @Override
   public void updateStats(long timestamp, Map<String, Integer> counts) {
 
-    if (environment == Environment.Development) {
+    if (false && environment == Environment.Development) {
       log.log(Level.INFO, "updating status: {0} {1}", new Object[] {timestamp, counts});
       return;
     }
@@ -67,8 +67,16 @@ public class StackDriverMetricsService implements MetricsService {
         ProjectName name = ProjectName.of(SystemProperty.applicationId.get());
 
         Map<String, String> metricLabels = new HashMap<>();
+        String propertyName = count.getKey();
+        if (propertyName.endsWith("total")) {
+          metricLabels.put("COUNT_TYPE", "TOTAL");
+          propertyName = propertyName.substring(0, propertyName.length() - 5);
+        } else if (propertyName.endsWith("_failed")) {
+          propertyName = propertyName.substring(0, propertyName.length() - 7);
+          metricLabels.put("COUNT_TYPE", "FAILED");
+        }
         Metric metric = Metric.newBuilder()
-            .setType("custom.googleapis.com/" + count.getKey())
+            .setType("custom.googleapis.com/" + propertyName)
             .putAllLabels(metricLabels)
             .build();
 
@@ -92,7 +100,7 @@ public class StackDriverMetricsService implements MetricsService {
             .setName(name.toString())
             .addAllTimeSeries(timeSeriesList)
             .build();
-        log.log(Level.INFO, "Sending {0} to stackdriver {1}", new Object[] {count.getKey(), count.getValue()});
+        log.log(Level.INFO, "Sending {0} to stackdriver {1}", new Object[] {propertyName, count.getValue()});
         client.createTimeSeries(request);
       }
     } catch (IOException e) {
