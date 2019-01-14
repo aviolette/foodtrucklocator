@@ -22,6 +22,7 @@ import foodtruck.model.Story;
 import foodtruck.model.StoryType;
 import foodtruck.model.Truck;
 import foodtruck.model.TwitterNotificationAccount;
+import foodtruck.monitoring.Monitored;
 import foodtruck.util.ServiceException;
 import twitter4j.GeoLocation;
 import twitter4j.Paging;
@@ -53,7 +54,7 @@ public class TwitterConnector implements SocialMediaConnector {
     this.tweetDAO = tweetDAO;
   }
 
-  @Override
+  @Override @Monitored
   public List<Story> recentStories() {
     ImmutableList.Builder<Story> stories = ImmutableList.builder();
     Twitter twitter = twitterFactory.create();
@@ -102,13 +103,13 @@ public class TwitterConnector implements SocialMediaConnector {
     }
   }
 
-  @Override
+  @Override @Monitored
   public void sendStatusFor(String message, Truck truck, MessageSplitter splitter) {
     twitterAccessToken(truck).ifPresent(
         token -> splitAndSend(message, splitter, twitterFactory.createDetached(token)));
   }
 
-  @Override
+  @Override @Monitored
   public void sendStatusFor(String message, TwitterNotificationAccount account,
       MessageSplitter splitter) {
     log.log(Level.INFO, "Initial status: {0}", new Object[]{message});
@@ -168,6 +169,7 @@ public class TwitterConnector implements SocialMediaConnector {
         .build());
   }
 
+  @Monitored
   public void retweet(long storyId, TwitterNotificationAccount account) {
     Twitter twitter = twitterFactory.createDetached(twitterCredentials(account));
     try {
