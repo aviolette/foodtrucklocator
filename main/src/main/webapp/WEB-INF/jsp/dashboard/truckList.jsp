@@ -34,7 +34,7 @@
         <c:if test="${truckStops.active}">
 
           <tr class="rowItem">
-            <td class="img-col"><a class="truckLink" href="/admin/trucks/${truckStops.truck.id}"><img alt="truck icon" class="media-object img-responsive img-rounded" src="${truckStops.truck.iconUrlObj.protocolRelative}" /></a></td>
+            <td class="img-col"><a class="truckLink" href="/admin/trucks/${truckStops.truck.id}"><img alt="truck icon" width="48" height="48" class="media-object img-responsive img-rounded" src="${truckStops.truck.previewIcon.protocolRelative}" /></a></td>
             <td><a class="truckLink pull-left" href="/admin/trucks/${truckStops.truck.id}">${truckStops.truck.name}</a></td>
             <td><c:choose>
               <c:when

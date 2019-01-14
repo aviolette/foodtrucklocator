@@ -303,7 +303,7 @@ public class Truck extends ModelEntity implements Serializable {
     return previewIcon;
   }
 
-  public @Nullable Url getPreviewIconUrl() {
+  public Url getPreviewIconUrl() {
     if (Strings.isNullOrEmpty(previewIcon)) {
       return new Url("https://storage.googleapis.com/truckpreviews/truck_holder.svg");
     }
