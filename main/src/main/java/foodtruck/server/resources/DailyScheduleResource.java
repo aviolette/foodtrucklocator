@@ -11,6 +11,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
 import com.google.api.client.util.Strings;
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 
 import org.codehaus.jettison.json.JSONException;
@@ -18,6 +19,7 @@ import org.joda.time.DateTime;
 
 import foodtruck.annotations.AppKey;
 import foodtruck.annotations.RequiresAppKeyWithCountRestriction;
+import foodtruck.monitoring.CounterPublisher;
 import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.schedule.ScheduleCacher;
 import foodtruck.server.resources.json.DailyScheduleWriter;
@@ -35,14 +37,16 @@ public class DailyScheduleResource {
   private final Clock clock;
   private final ScheduleCacher scheduleCacher;
   private final DailyScheduleWriter dailyScheduleWriter;
+  private final CounterPublisher publisher;
 
   @Inject
   public DailyScheduleResource(FoodTruckStopService foodTruckService, Clock clock, ScheduleCacher scheduleCacher,
-      DailyScheduleWriter writer) {
+      DailyScheduleWriter writer, CounterPublisher publisher) {
     this.truckService = foodTruckService;
     this.clock = clock;
     this.scheduleCacher = scheduleCacher;
     this.dailyScheduleWriter = writer;
+    this.publisher = publisher;
   }
 
   @GET
@@ -50,6 +54,7 @@ public class DailyScheduleResource {
   @RequiresAppKeyWithCountRestriction
   public String findForDay(@AppKey @QueryParam("appKey") final String appKey, @QueryParam("from") final long from,
       @QueryParam("for") String aDate) {
+    publisher.increment("daily_schedule_request", 1, clock.nowInMillis(), ImmutableMap.of("APP_KEY", appKey));
     if (!Strings.isNullOrEmpty(aDate)) {
       // TODO: should definitely validate that aDate is tomorrow before saving it in cache
       log.info("Pulling schedule for day: " + aDate);
