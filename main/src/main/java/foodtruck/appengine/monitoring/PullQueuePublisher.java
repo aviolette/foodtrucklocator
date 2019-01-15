@@ -1,5 +1,6 @@
 package foodtruck.appengine.monitoring;
 
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -8,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 
 import foodtruck.monitoring.CounterPublisher;
@@ -38,14 +40,14 @@ public class PullQueuePublisher implements CounterPublisher {
 
   @Override
   public void increment(String name, int amount) {
-    increment(name, amount, clock.nowInMillis());
+    increment(name, amount, clock.nowInMillis(), ImmutableMap.of());
   }
 
   @Override
-  public void increment(String name, int amount, long timestampInMillis) {
+  public void increment(String name, int amount, long timestampInMillis, Map<String, String> labels) {
     Queue q = QueueFactory.getQueue("stats-queue");
     try {
-      String obj = mapper.writeValueAsString(new StatUpdate(name, amount, timestampInMillis));
+      String obj = mapper.writeValueAsString(new StatUpdate(name, amount, timestampInMillis, labels));
       log.log(Level.FINE, "Writing stat to queue {0}", obj);
       q.add(TaskOptions.Builder.withMethod(TaskOptions.Method.PULL).payload(obj));
     } catch (JsonProcessingException e) {

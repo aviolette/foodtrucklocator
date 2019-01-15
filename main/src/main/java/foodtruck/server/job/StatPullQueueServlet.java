@@ -53,13 +53,11 @@ public class StatPullQueueServlet extends HttpServlet {
       return;
     }
 
-    Map<String, Integer> counts = new HashMap<>();
-    long timeStamp = 0;
+    Map<StatUpdate, Integer> counts = new HashMap<>();
     for (TaskHandle task : tasks) {
       try {
         StatUpdate update = mapper.readValue(task.getPayload(), StatUpdate.class);
-        timeStamp = update.getTimestamp();
-        counts.merge(update.getName(), update.getAmount(), Integer::sum);
+        counts.merge(update, update.getAmount(), Integer::sum);
       } catch (Exception ex) {
         log.log(Level.INFO, "Problem serializing {0}", task.getPayload());
         log.log(Level.SEVERE, ex.getMessage(), ex);
@@ -67,11 +65,6 @@ public class StatPullQueueServlet extends HttpServlet {
       q.deleteTask(task);
     }
 
-    // handle transition period
-    if (timeStamp == 0) {
-      timeStamp = clock.nowInMillis();
-    }
-
-    service.updateStats(timeStamp, counts);
+    service.updateStats(counts);
   }
 }

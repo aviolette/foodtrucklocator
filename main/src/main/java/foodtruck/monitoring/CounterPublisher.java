@@ -1,5 +1,7 @@
 package foodtruck.monitoring;
 
+import java.util.Map;
+
 /**
  * @author aviolette
  * @since 11/30/16
@@ -19,6 +21,6 @@ public interface CounterPublisher {
    */
   void increment(String name, int amount);
 
-  void increment(String name, int amount, long timestampInMillis);
+  void increment(String name, int amount, long timestampInMillis, Map<String, String> labels);
 
 }

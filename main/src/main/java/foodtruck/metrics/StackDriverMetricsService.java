@@ -22,6 +22,7 @@ import com.google.monitoring.v3.TypedValue;
 import com.google.protobuf.util.Timestamps;
 
 import foodtruck.model.Environment;
+import foodtruck.monitoring.StatUpdate;
 
 /**
  * @author aviolette
@@ -38,19 +39,20 @@ public class StackDriverMetricsService implements MetricsService {
   }
 
   @Override
-  public void updateStats(long timestamp, Map<String, Integer> counts) {
+  public void updateStats(Map<StatUpdate, Integer> counts) {
 
-    if (false && environment == Environment.Development) {
-      log.log(Level.INFO, "updating status: {0} {1}", new Object[] {timestamp, counts});
+    if (environment == Environment.Development) {
+      log.log(Level.INFO, "updating status: {0}", counts);
       return;
     }
 
     try (MetricServiceClient client = MetricServiceClient.create()) {
-      TimeInterval interval = TimeInterval.newBuilder()
-          .setEndTime(Timestamps.fromMillis(timestamp))
-          .build();
 
-      for (Map.Entry<String, Integer> count : counts.entrySet()) {
+      for (Map.Entry<StatUpdate, Integer> count : counts.entrySet()) {
+
+        TimeInterval interval = TimeInterval.newBuilder()
+            .setEndTime(Timestamps.fromMillis(count.getKey().getTimestamp()))
+            .build();
 
         TypedValue value = TypedValue.newBuilder()
             .setInt64Value(count.getValue())
@@ -67,13 +69,10 @@ public class StackDriverMetricsService implements MetricsService {
         ProjectName name = ProjectName.of(SystemProperty.applicationId.get());
 
         Map<String, String> metricLabels = new HashMap<>();
-        String propertyName = count.getKey();
-        if (propertyName.endsWith("total")) {
-          metricLabels.put("COUNT_TYPE", "TOTAL");
-          propertyName = propertyName.substring(0, propertyName.length() - 5);
-        } else if (propertyName.endsWith("_failed")) {
-          propertyName = propertyName.substring(0, propertyName.length() - 7);
-          metricLabels.put("COUNT_TYPE", "FAILED");
+        String propertyName = count.getKey().getName();
+        if (count.getKey().getLabels() != null) {
+          // TODO: this should only happen during transition
+          metricLabels = count.getKey().getLabels();
         }
         Metric metric = Metric.newBuilder()
             .setType("custom.googleapis.com/" + propertyName)
@@ -106,6 +105,5 @@ public class StackDriverMetricsService implements MetricsService {
     } catch (IOException e) {
       log.log(Level.INFO, e.getMessage(), e);
     }
-
   }
 }

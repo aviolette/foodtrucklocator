@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.taskqueue.Queue;
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -91,8 +92,10 @@ public class DailyStatsServlet extends HttpServlet {
         .map(stop -> stop.getTruck().getId())
         .distinct()
         .count();
-    publisher.increment("daily_stops", stops.size(), now.toDateTimeAtStartOfDay(clock.zone()).getMillis());
-    publisher.increment("unique_trucks", (int)uniqueTrucks, now.toDateTimeAtStartOfDay(clock.zone()).getMillis());
+    publisher.increment("daily_stops", stops.size(), now.toDateTimeAtStartOfDay(clock.zone()).getMillis(),
+        ImmutableMap.of());
+    publisher.increment("unique_trucks", (int)uniqueTrucks, now.toDateTimeAtStartOfDay(clock.zone()).getMillis(),
+        ImmutableMap.of());
     log.log(Level.INFO, "Updated stats for {0} stops", stops.size());
   }
 }
