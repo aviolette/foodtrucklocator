@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +29,7 @@ public class CoastlineCalendarReader implements StopReader {
   private static final Logger log = Logger.getLogger(CoastlineCalendarReader.class.getName());
   private static final String CALENDAR_NAME = "coastlinecove";
   private static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("M/d/yy");
+  private static DateTimeFormatter dateFormatter2 = DateTimeFormatter.ofPattern("M/d/yyyy");
   private static DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
   private final AddressExtractor extractor;
   private final TruckDAO truckDAO;
@@ -64,7 +66,8 @@ public class CoastlineCalendarReader implements StopReader {
         JSONObject event = events.getJSONObject(i);
         String start = massage(event.getString("start").replaceAll("\\.", "").toUpperCase());
         String end = event.getString("end").replaceAll("\\.", "").toUpperCase();
-        LocalDate date = LocalDate.from(dateFormatter.parse(event.getString("date")));
+
+        LocalDate date = parseDate(event.getString("date"));
         extractor.parse(event.getString("location"), truck)
             .forEach(location -> stops.add(
                 TempTruckStop.builder()
@@ -82,6 +85,15 @@ public class CoastlineCalendarReader implements StopReader {
       log.log(Level.SEVERE, e.getMessage(), e);
       throw new RuntimeException(e);
     }
+  }
+
+  private LocalDate parseDate(String date) {
+    try {
+      return LocalDate.from(dateFormatter.parse(date));
+    } catch (DateTimeParseException dtpe) {
+      return LocalDate.from(dateFormatter2.parse(date));
+    }
+
   }
 
   @Override
