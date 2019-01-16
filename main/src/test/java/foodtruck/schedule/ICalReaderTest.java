@@ -37,7 +37,7 @@ public class ICalReaderTest extends Mockito {
     when(geoLocator.locateOpt("Chicago Lunch")).thenReturn(Optional.empty());
     Location loc = Location.builder().name("100 South Wacker Drive, Chicago, IL, 60606, United States").build();
     when(geoLocator.locateOpt("100 South Wacker Drive, Chicago, IL, 60606, United States")).thenReturn(Optional.of(loc));
-    List<ICalReader.ICalEvent> events = reader.parse(doc);
+    List<ICalReader.ICalEvent> events = reader.parse(doc, true);
     assertThat(events).containsExactly(new ICalReader.ICalEvent(ZonedDateTime.of(2019, 1, 17, 16, 30, 0, 0, ZoneOffset.UTC), ZonedDateTime.of(2019, 1, 17, 20, 0, 0, 0,
         ZoneOffset.UTC), "Chicago Lunch", null, loc));
   }

@@ -67,16 +67,22 @@ public class SimpleCalReader {
       return "bopbartruck";
     } else if (title.contains("aztec dave")) {
       return "aztecdaves";
+    } else if (title.contains("donermen")) {
+      return "dmentruck";
     } else if (title.contains("chuck's wood")) {
       return "chuckswoodfired";
     } else if (title.contains("grumpy gaucho")) {
       return "grumpygaucho";
+    } else if (title.contains("whadda jerk")) {
+      return "whaddajerk";
     } else if (title.contains("puff truck")) {
       return "pufftruckpizza";
     } else if (title.contains("roaming hog") || title.contains("roaminghog")) {
       return "roaminghog";
     } else if (title.contains("blee")) {
       return "bleesmokin";
+    } else if (title.contains("corner farmacy")) {
+      return "cornerfarmacy";
     } else if (title.contains("umbrella azul")) {
       return "umbrellazul";
     } else if (title.contains("ugly truckin")) {

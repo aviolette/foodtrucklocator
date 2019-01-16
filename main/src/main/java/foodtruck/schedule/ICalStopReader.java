@@ -1,12 +1,9 @@
 package foodtruck.schedule;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 
 import foodtruck.model.TempTruckStop;
@@ -26,7 +23,7 @@ public class ICalStopReader {
   }
 
   public List<TempTruckStop> findStops(String document, String truck) {
-    return reader.parse(document).stream()
+    return reader.parse(document, true).stream()
         .map(event -> TempTruckStop.builder()
             .truckId(truck)
             .calendarName("ical: " + truck)

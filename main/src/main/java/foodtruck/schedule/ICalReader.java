@@ -36,7 +36,7 @@ public class ICalReader {
     this.locator = locator;
   }
 
-  public List<ICalEvent> parse(String document) {
+  public List<ICalEvent> parse(String document, boolean extractSummaryLocation) {
     ImmutableList.Builder<ICalEvent> events = ImmutableList.builder();
     try (BufferedReader reader = new BufferedReader(new StringReader(document))) {
       String line;
@@ -78,7 +78,7 @@ public class ICalReader {
         } else if (tag.startsWith("SUMMARY")) {
           rest = rest.replaceAll("\\\\,", ",");
           rest = rest.replaceAll("&amp\\\\;", "and");
-          if (!locationEncountered) {
+          if (extractSummaryLocation && !locationEncountered) {
             appendLocation(event, rest);
           }
           event.setSummary(rest);
