@@ -18,8 +18,6 @@ import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
  */
 public class TempScheduleService {
 
-  private static final Logger log = Logger.getLogger(TempScheduleService.class.getName());
-
   private final TempTruckStopDAO dao;
   private final Provider<Queue> queueProvider;
   private final TruckDAO truckDAO;
@@ -43,6 +41,7 @@ public class TempScheduleService {
     queue.add(withUrl("/cron/populate_scorched_earth_schedule"));
     queue.add(withUrl("/cron/populate_werkforce_schedule"));
     queue.add(withUrl("/cron/populate_temperance_stops"));
+    queue.add(withUrl("/cron/populate_pizza_boss"));
 
     truckDAO.findTruckWithICalCalendars()
         .forEach(truck -> queue.add(

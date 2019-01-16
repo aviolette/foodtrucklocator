@@ -1,7 +1,6 @@
 package foodtruck.schedule;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.StringReader;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -14,6 +13,7 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 
@@ -81,6 +81,7 @@ public class ICalReader {
           if (!locationEncountered) {
             appendLocation(event, rest);
           }
+          event.setSummary(rest);
         } else if (tag.equals("LOCATION")) {
           rest = rest.replaceAll("\\\\,", ",");
           rest = rest.replaceAll("&amp\\\\;", "and");
@@ -88,7 +89,8 @@ public class ICalReader {
           appendLocation(event, rest);
         }
       }
-    } catch (IOException e) {
+    } catch (Exception e) {
+      log.log(Level.INFO, document);
       log.log(Level.SEVERE, e.getMessage(), e);
       throw new RuntimeException(e);
     }
@@ -96,24 +98,21 @@ public class ICalReader {
   }
 
   private void appendLocation(ICalEvent event, String rest) {
-    locator.locateOpt(rest).ifPresent(loc -> event.setLocation(loc));
+    locator.locateOpt(rest).ifPresent(event::setLocation);
   }
 
-  private ZonedDateTime parseTime(String time, ZoneId zone) {
+  private ZonedDateTime parseTime(String origTime, ZoneId zone) {
+    String time = origTime;
     int index = time.indexOf('T');
     if (index > 0) {
       String date = time.substring(0, index);
       date = date.substring(0, 4) + "-" + date.substring(4, 6) + "-" + date.substring(6, 8);
       String sub = time.substring(index+1);
       time = date + "T" + sub.substring(0, 2) + ":" + sub.substring(2, 4) + ":" + sub.substring(4, 6);
-      if (sub.length() > 6) {
-        time = sub.substring(6);
-      }
     }
-    if (time.endsWith("Z")) {
-      return ZonedDateTime.ofInstant(Instant.from(DateTimeFormatter.ISO_INSTANT.parse(time)), zone);
+    if (origTime.endsWith("Z")) {
+      return ZonedDateTime.ofInstant(Instant.from(DateTimeFormatter.ISO_INSTANT.parse(time + "Z")), ZoneOffset.UTC);
     }
-    // lifted from stack overflow
     ZoneOffset offset = zone.getRules().getOffset(Instant.now());
     return ZonedDateTime.from(DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse(time + offset.toString()));
   }
@@ -128,6 +127,16 @@ public class ICalReader {
     private String description;
     @Nullable
     private Location location;
+
+    public ICalEvent() {}
+
+    public ICalEvent(ZonedDateTime start, ZonedDateTime end, String summary, String description, Location location) {
+      this.start = start;
+      this.end = end;
+      this.summary = summary;
+      this.description = description;
+      this.location = location;
+    }
 
     public ZonedDateTime getStart() {
       return start;
@@ -167,6 +176,27 @@ public class ICalReader {
 
     public void setLocation(Location location) {
       this.location = location;
+    }
+
+    @Override
+    public String toString() {
+      return "ICalEvent{" + "start=" + start + ", end=" + end + ", summary='" + summary + '\'' + ", description='" +
+          description + '\'' + ", location=" + location + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+      ICalEvent iCalEvent = (ICalEvent) o;
+      return Objects.equal(start, iCalEvent.start) && Objects.equal(end, iCalEvent.end) &&
+          Objects.equal(summary, iCalEvent.summary) && Objects.equal(description, iCalEvent.description) &&
+          Objects.equal(location, iCalEvent.location);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hashCode(start, end, summary, description, location);
     }
   }
 }
