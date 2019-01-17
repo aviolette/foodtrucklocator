@@ -55,7 +55,7 @@ public class FoodTruckStopServiceImplTest {
   @Before
   public void setup() {
     service = new FoodTruckStopServiceImpl(truckStopDAO, ImmutableSet.of(schedule), clock, truckDAO, locationDAO,
-        messageDAO, dailyDataDAO);
+        messageDAO, dailyDataDAO, null);
   }
 
   @Test

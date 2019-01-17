@@ -24,10 +24,12 @@ import org.joda.time.LocalDate;
 import foodtruck.dao.DailyDataDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.MessageDAO;
+import foodtruck.dao.TrackingDeviceDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.DailySchedule;
 import foodtruck.model.Location;
+import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckSchedule;
 import foodtruck.model.TruckStatus;
@@ -48,10 +50,12 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
   private final LocationDAO locationDAO;
   private final MessageDAO messageDAO;
   private final DailyDataDAO dailyDataDAO;
+  private final TrackingDeviceDAO trackingDeviceDAO;
 
   @Inject
   public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, Set<ScheduleStrategy> calendarConnectors, Clock clock,
-      TruckDAO truckDAO, LocationDAO locationDAO, MessageDAO messageDAO, DailyDataDAO dailyDataDAO) {
+      TruckDAO truckDAO, LocationDAO locationDAO, MessageDAO messageDAO, DailyDataDAO dailyDataDAO,
+      TrackingDeviceDAO trackingDeviceDAO) {
     this.truckStopDAO = truckStopDAO;
     this.calendars = calendarConnectors;
     this.clock = clock;
@@ -59,6 +63,7 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
     this.locationDAO = locationDAO;
     this.messageDAO = messageDAO;
     this.dailyDataDAO = dailyDataDAO;
+    this.trackingDeviceDAO = trackingDeviceDAO;
   }
 
   @Override
@@ -102,6 +107,18 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
           .manuallyUpdated(clock.now())
           .appendNote("Changed manually by " + modifier + " at " + clock.nowFormattedAsTime())
           .build();
+      if (stop.getCreatedWithDeviceId() != null && stop.getCreatedWithDeviceId() > 0) {
+        // If we manually update a stop, make sure its tracking device data doesn't pull it back.
+        // I'm not sure this is the best solution, but until I understand the tracking device code I wrote
+        // 2 years ago, this is a stop-gap.
+        trackingDeviceDAO.findByIdOpt(stop.getCreatedWithDeviceId()).ifPresent(device -> {
+          TrackingDevice.Builder builder = TrackingDevice.builder(device)
+              .lastActualLocation(stop.getLocation())
+              .lastLocation(stop.getLocation())
+              .lastModified(clock.now());
+          trackingDeviceDAO.save(builder.build());
+        });
+      }
     }
     truckStopDAO.save(truckStop);
   }
