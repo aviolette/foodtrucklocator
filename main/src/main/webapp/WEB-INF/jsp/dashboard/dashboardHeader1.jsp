@@ -10,7 +10,7 @@
   <title>Chicago Food Truck Finder Admin Console</title>
 
   <!-- Include the CSS -->
-  <link href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic" rel="stylesheet">
+  <link href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic" rel="stylesheet">
   <link href="/css/glyphicons.css" rel="stylesheet"/>
   <link href="/css/toolkit-inverse.min.css" rel="stylesheet">
 
