@@ -198,8 +198,8 @@ class FoodtruckServletModule extends ServletModule {
 //    serve("/admin/trucks/courageouscakes").with(TruckServlet.class);
     serve("/admin/images").with(ImageUploadServlet.class);
     serve("/admin/trucks").with(TruckListServlet.class);
-//    serve("/admin/locations/*").with(LocationEditServlet.class);
-    serve("/admin/locations/4533286441320448").with(LocationEditServlet.class);
+    serve("/admin/locations/*").with(LocationEditServlet.class);
+//    serve("/admin/locations/4533286441320448").with(LocationEditServlet.class);
     serve("/admin/locations", "/admin/locations;*").with(LocationListServlet.class);
     serve("/admin/messages/*").with(MessageEditServlet.class);
     serve("/admin/messages").with(MessageListServlet.class);
