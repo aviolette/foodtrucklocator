@@ -1,5 +1,6 @@
 package foodtruck.server;
 
+import com.google.appengine.api.utils.SystemProperty;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Provides;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
@@ -198,8 +199,12 @@ class FoodtruckServletModule extends ServletModule {
 //    serve("/admin/trucks/courageouscakes").with(TruckServlet.class);
     serve("/admin/images").with(ImageUploadServlet.class);
     serve("/admin/trucks").with(TruckListServlet.class);
-    serve("/admin/locations/*").with(LocationEditServlet.class);
-//    serve("/admin/locations/4533286441320448").with(LocationEditServlet.class);
+    if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development ) {
+      serve("/admin/locations/4533286441320448").with(LocationEditServlet.class);
+    } else {
+      serve("/admin/locations/*").with(LocationEditServlet.class);
+    }
+
     serve("/admin/locations", "/admin/locations;*").with(LocationListServlet.class);
     serve("/admin/messages/*").with(MessageEditServlet.class);
     serve("/admin/messages").with(MessageListServlet.class);
