@@ -1,9 +1,4 @@
 <%@include file="dashboardHeader1.jsp" %>
-<style>
-  .form-inline {
-    margin-bottom: 15px;
-  }
-</style>
 <c:if test="${!empty(locationId)}">
   <div class="row">
     <div class="col-md-12">
@@ -26,7 +21,7 @@
   </div>
   <div class="col-md-4">
     <div>
-      <a id="locationSearchButton" href="#" class="btn btn-default"><span class="glyphicon glyphicon-search"></span>
+      <a id="locationSearchButton" href="#" class="btn btn-outline-secondary"><span class="glyphicon glyphicon-search"></span>
         Search for a location</a>
     </div>
     <ul id="searchLocations">
@@ -35,11 +30,11 @@
       <h4>Current Aliases</h4>
       <ul>
         <c:forEach var="alias" items="${aliases}" varStatus="aliasStatus">
-          <li <c:if test="${aliasStatus.count > 10}">class="extraalias d-none"</c:if>><a
+          <li <c:if test="${aliasStatus.count > 6}">class="extraalias d-none"</c:if>><a
               href="/admin/locations/${alias.key}">${alias.name}</a></li>
         </c:forEach>
       </ul>
-      <c:if test="${aliasCount > 10}">
+      <c:if test="${aliasCount > 6}">
         <a href="#" id="readmore">Read More...</a>
       </c:if>
     </div>
