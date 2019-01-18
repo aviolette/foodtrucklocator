@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -78,6 +79,10 @@ public class LocationEditServlet extends HttpServlet {
     req.setAttribute("aliasCount", aliases.size());
     req.setAttribute("locations", locationDAO.findLocationNamesAsJson());
     req.setAttribute("nav", "locations");
+    req.setAttribute("extraScripts", ImmutableList.of("/script/lib/typeahead.bundle.js",
+        "/script/typeahead-addon.js",
+        "/script/dashboard-location-edit.js",
+        "//maps.googleapis.com/maps/api/js?key=" + config.getGoogleJavascriptApiKey()));
     req.getRequestDispatcher(jsp).forward(req, resp);
   }
 

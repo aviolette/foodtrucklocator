@@ -1,4 +1,4 @@
-<%@include file="dashboardHeaderBS3.jsp" %>
+<%@include file="dashboardHeader1.jsp" %>
 <style>
   .form-inline {
     margin-bottom: 15px;
@@ -7,14 +7,13 @@
 <c:if test="${!empty(locationId)}">
   <div class="row">
     <div class="col-md-12">
-      <div class="btn-toolbar">
-        <div class="btn-group">
-          <a href="/admin/event_at/${locationId}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>
-            New Event</a>
-        </div>
-        <div class="btn-group">
-          <a id="locationViewButton" href="/locations/${locationId}" class="btn btn-default">View</a>
-        </div>
+      <h2 class="dashhead-title">Location</h2>
+      <div class="btn-group">
+        <a href="/admin/event_at/${locationId}" class="btn btn-outline-primary"><span class="glyphicon glyphicon-plus"></span>
+          New Event</a>
+      </div>
+      <div class="btn-group">
+        <a id="locationViewButton" href="/locations/${locationId}" class="btn btn-outline-secondary">View</a>
       </div>
     </div>
   </div>
@@ -162,24 +161,7 @@
   </div>
 </div>
 
+<script type="application/json" id="locations">${locations}</script>
+<script type="application/json" id="location">${location}</script>
 
-<script type="text/javascript"
-        src="//maps.googleapis.com/maps/api/js?key=${googleApiKey}">
-</script>
-<script type="text/javascript" src="/script/typeahead-addon.js"></script>
-<script type="text/javascript" src="/script/location-edit.js"></script>
-<script type="text/javascript">
-  $(document).ready(function() {
-
-    locationMatching(${locations}, "alias");
-
-    locationEdit(${location});
-
-    $("#readmore").click(function() {
-      $("#readmore").addClass("hidden");
-      $(".extraalias").removeClass("hidden");
-    });
-  });
-</script>
-
-<%@include file="dashboardFooterBS3.jsp" %>
+<%@include file="dashboardFooter1.jsp" %>
