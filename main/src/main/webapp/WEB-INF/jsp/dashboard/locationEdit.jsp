@@ -33,7 +33,7 @@
       <h4>Current Aliases</h4>
       <ul>
         <c:forEach var="alias" items="${aliases}" varStatus="aliasStatus">
-          <li <c:if test="${aliasStatus.count > 10}">class="extraalias hidden"</c:if>><a href="/admin/locations/${alias.key}">${alias.name}</a></li>
+          <li <c:if test="${aliasStatus.count > 10}">class="extraalias d-none"</c:if>><a href="/admin/locations/${alias.key}">${alias.name}</a></li>
         </c:forEach>
       </ul>
       <c:if test="${aliasCount > 10}">

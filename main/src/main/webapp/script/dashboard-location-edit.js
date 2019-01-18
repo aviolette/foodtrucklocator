@@ -206,8 +206,8 @@
     locationEdit(JSON.parse($("#location").text()));
 
     $("#readmore").click(function () {
-      $("#readmore").addClass("hidden");
-      $(".extraalias").removeClass("hidden");
+      $("#readmore").addClass("d-none");
+      $(".extraalias").removeClass("d-none");
     });
   });
 
