@@ -4,7 +4,7 @@
     <div class="col-md-12">
       <h2 class="dashhead-title">Location</h2>
       <div class="btn-group">
-        <a href="/admin/event_at/${locationId}" class="btn btn-outline-primary"><span
+        <a href="/admin/event_at/${locationId}" class="btn btn-outline-secondary"><span
             class="glyphicon glyphicon-plus"></span>
           New Event</a>
       </div>
@@ -104,7 +104,7 @@
           <label for="twitterHandle">Twitter Handle</label>
           <div class="input-group">
             <div class="input-group-prepend">
-              <div class="input-group-text">@</div>
+              <button class="btn btn-default disabled"><span class="icon icon-email"></span></button>
             </div>
             <input id="twitterHandle" class="form-control" type="text"/>
             <div class="input-group-append">
@@ -126,9 +126,9 @@
           <label for="url">URL</label>
           <div class="input-group">
             <input id="url" class="form-control" type="url"/>
-            <span class="input-group-btn">
-            <button id="viewUrl" class="btn btn-default"><span class="glyphicon glyphicon-new-window"></span></button>
-          </span>
+            <div  class="input-group-append">
+            <button id="viewUrl" class="btn btn-default"><span class="icon icon-forward"></span></button>
+          </div>
           </div>
         </div>
         <div class="form-group">
