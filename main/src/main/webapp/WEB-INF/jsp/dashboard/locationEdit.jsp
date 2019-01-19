@@ -16,10 +16,10 @@
 </c:if>
 
 <div class="row" style="padding-top: 20px">
-  <div class="col-md-5">
+  <div class="col-md-6">
     <div id="map_canvas" style="width:100%; height:300px; padding-bottom:20px;"></div>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-3">
     <div>
       <a id="locationSearchButton" href="#" class="btn btn-outline-secondary"><span
           class="glyphicon glyphicon-search"></span>
