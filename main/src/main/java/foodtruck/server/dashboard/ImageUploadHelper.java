@@ -82,4 +82,11 @@ public class ImageUploadHelper {
         return null;
     }
   }
+
+  public void uploadLocationImage(HttpServletRequest request, HttpServletResponse response, String location) throws ServletException {
+    String bucket = "cftf_locationicons";
+    String filenameBase = location + "-" + clock.now()
+        .getMillis();
+    uploadImage(request, response, bucket, filenameBase);
+  }
 }

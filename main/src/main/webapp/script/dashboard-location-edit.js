@@ -162,7 +162,7 @@
       loc.email = $("#email").val();
       loc.phone = $("#phone").val();
       loc.facebookUri = $("#facebookUri").val();
-      loc.imageUrl = $("#imageUrl").val();
+      loc.imageUrl = $("#imagePreview").attr("src");
       loc.eventUrl = $("#eventUrl").val();
       loc.managerEmails = $("#managerEmails").val();
       e.preventDefault();
@@ -203,15 +203,39 @@
   $(document).ready(function () {
     locationMatching(JSON.parse($("#locations").text()), "alias");
 
-    locationEdit(JSON.parse($("#location").text()));
+    var loc = JSON.parse($("#location").text());
+    locationEdit(loc);
 
     $("#readmore").click(function () {
       $("#readmore").addClass("d-none");
       $(".extraalias").removeClass("d-none");
     });
+
+    $("#remove-image-button").click(function () {
+      var $imageUrl = $("#imagePreview");
+      $imageUrl.attr("src", "");
+      $imageUrl.addClass("d-none");
+      $("#remove-image-button-section").addClass("d-none");
+      $("#upload").removeClass("d-none");
+    });
+
+    Dropzone.options.upload = {
+      headers: {"X-Dropzone-Location": String(loc.key)},
+      maxFiles: 1,
+      dictDefaultMessage: "Click or drop images here to upload",
+      acceptedFiles: "image/*",
+      complete: function (foo) {
+        this.removeAllFiles();
+      },
+      success: function (foo, response) {
+        var $imageUrl = $("#imagePreview");
+        $imageUrl.attr("src", response);
+        $imageUrl.removeClass("d-none");
+        $("#remove-image-button-section").removeClass("d-none");
+        $("#upload").addClass("d-none");
+      }
+    };
   });
-
-
 })();
 
 

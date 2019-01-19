@@ -16,12 +16,13 @@
 </c:if>
 
 <div class="row" style="padding-top: 20px">
-  <div class="col-md-8">
+  <div class="col-md-5">
     <div id="map_canvas" style="width:100%; height:300px; padding-bottom:20px;"></div>
   </div>
   <div class="col-md-4">
     <div>
-      <a id="locationSearchButton" href="#" class="btn btn-outline-secondary"><span class="glyphicon glyphicon-search"></span>
+      <a id="locationSearchButton" href="#" class="btn btn-outline-secondary"><span
+          class="glyphicon glyphicon-search"></span>
         Search for a location</a>
     </div>
     <ul id="searchLocations">
@@ -39,6 +40,17 @@
       </c:if>
     </div>
   </div>
+  <div class="col-md-3">
+
+    <img
+        <c:if test="${empty(imageUrl)}">class="d-none"</c:if> src="${imageUrl}" id="imagePreview" width="180"/>
+    <div class="<c:if test="${empty(imageUrl)}">d-none</c:if> mb-2 mt-2" id="remove-image-button-section">
+      <button id="remove-image-button" class="btn-outline-danger btn">Remove</button>
+    </div>
+    <form action="/admin/images" class="<c:if test="${!empty(imageUrl)}">d-none</c:if> dropzone" id="upload">
+    </form>
+  </div>
+
 </div>
 
 <div class="row">
@@ -126,9 +138,9 @@
           <label for="url">URL</label>
           <div class="input-group">
             <input id="url" class="form-control" type="url"/>
-            <div  class="input-group-append">
-            <button id="viewUrl" class="btn btn-default"><span class="icon icon-forward"></span></button>
-          </div>
+            <div class="input-group-append">
+              <button id="viewUrl" class="btn btn-default"><span class="icon icon-forward"></span></button>
+            </div>
           </div>
         </div>
         <div class="form-group">

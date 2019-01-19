@@ -13,6 +13,7 @@
   <link href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic" rel="stylesheet">
   <link href="/css/glyphicons.css" rel="stylesheet"/>
   <link href="/css/toolkit-inverse.min.css" rel="stylesheet">
+  <link href="/css/dropzone.css" rel="stylesheet"/>
 
 </head>
 <body>

@@ -74,6 +74,7 @@ public class LocationEditServlet extends HttpServlet {
       throw new ServletException(e);
     }
     req.setAttribute("locationId", location.getKey());
+    req.setAttribute("imageUrl", location.getImageUrl());
     List<Location> aliases = locationDAO.findAliasesFor(location.getName());
     req.setAttribute("aliases", aliases);
     req.setAttribute("aliasCount", aliases.size());
@@ -81,6 +82,7 @@ public class LocationEditServlet extends HttpServlet {
     req.setAttribute("nav", "locations");
     req.setAttribute("extraScripts", ImmutableList.of("/script/lib/typeahead.bundle.js",
         "/script/typeahead-addon.js",
+        "/script/lib/dropzone.js",
         "/script/dashboard-location-edit.js",
         "//maps.googleapis.com/maps/api/js?key=" + config.getGoogleJavascriptApiKey()));
     req.getRequestDispatcher(jsp).forward(req, resp);
