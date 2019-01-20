@@ -40,7 +40,6 @@
       $("#url").val(loc.url);
       $("#ownedBy").val(loc.ownedBy);
       $("#facebookUri").val(loc.facebookUri);
-      $("#imageUrl").val(loc.imageUrl);
       $("#alexaProvided").attr("checked", loc.alexaProvided);
       $("#blacklisted").attr("checked", loc.blacklisted);
       $("#eventUrl").val(loc.eventUrl);

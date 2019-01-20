@@ -66,10 +66,6 @@
            aria-selected="false">Contact</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" id="image-tab" data-toggle="tab" href="#image" role="tab" aria-controls="image"
-           aria-selected="false">Image</a>
-      </li>
-      <li class="nav-item">
         <a class="nav-link" id="attributes-tab" data-toggle="tab" href="#attributes" role="tab"
            aria-controls="attributes" aria-selected="false">Attributes</a>
       </li>
@@ -162,12 +158,6 @@
 
       </div>
 
-      <div class="tab-pane fade" id="image" role="tabpanel" aria-labelledby="image-tab">
-        <div class="form-group">
-          <label for="imageUrl">Image Url</label>
-          <input id="imageUrl" class="form-control" type="url"/>
-        </div>
-      </div>
       <div class="tab-pane fade" id="attributes" role="tabpanel" aria-labelledby="attributes-tab">
         <div class="form-group">
           <label for="alias">Alias for</label>
