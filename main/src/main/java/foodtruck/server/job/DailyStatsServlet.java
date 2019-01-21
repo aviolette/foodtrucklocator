@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -19,8 +20,10 @@ import com.google.inject.Singleton;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
+import foodtruck.dao.SlackWebhookDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
+import foodtruck.model.SlackWebhook;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.monitoring.CounterPublisher;
@@ -43,15 +46,17 @@ public class DailyStatsServlet extends HttpServlet {
   private final Clock clock;
   private final Provider<Queue> queueProvider;
   private final CounterPublisher publisher;
+  private final SlackWebhookDAO slackDAO;
 
   @Inject
   public DailyStatsServlet(Clock clock, TruckStopDAO stopDAO, TruckDAO truckDAO, Provider<Queue> queueProvider,
-      CounterPublisher publisher) {
+      CounterPublisher publisher, SlackWebhookDAO slackWebhookDAO) {
     this.stopDAO = stopDAO;
     this.truckDAO = truckDAO;
     this.clock = clock;
     this.queueProvider = queueProvider;
     this.publisher = publisher;
+    this.slackDAO = slackWebhookDAO;
   }
 
   @Override
@@ -92,10 +97,16 @@ public class DailyStatsServlet extends HttpServlet {
         .map(stop -> stop.getTruck().getId())
         .distinct()
         .count();
-    publisher.increment("daily_stops", stops.size(), now.toDateTimeAtStartOfDay(clock.zone()).getMillis(),
+    long timeAtStartOfDay = now.toDateTimeAtStartOfDay(clock.zone()).getMillis();
+    publisher.increment("daily_stops", stops.size(), timeAtStartOfDay,
         ImmutableMap.of());
-    publisher.increment("unique_trucks", (int)uniqueTrucks, now.toDateTimeAtStartOfDay(clock.zone()).getMillis(),
+    publisher.increment("unique_trucks", (int)uniqueTrucks, timeAtStartOfDay,
         ImmutableMap.of());
+    slackDAO.findAll().stream()
+        .collect(Collectors.groupingBy(SlackWebhook::getLocationName, Collectors.counting()))
+        .forEach((location, count) -> publisher.increment("slack_subscribers", (int)(long)count, timeAtStartOfDay,
+            ImmutableMap.of("LOCATION", location)));
+
     log.log(Level.INFO, "Updated stats for {0} stops", stops.size());
   }
 }
