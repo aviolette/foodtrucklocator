@@ -20,7 +20,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.model.TempTruckStop;
 import foodtruck.model.Truck;
-import foodtruck.model.TruckStop;
 import foodtruck.time.Clock;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -81,6 +80,23 @@ public class FatShallotScheduleReaderTest {
 
     List<TempTruckStop> stops = parser.findStops(doc);
     assertThat(stops).hasSize(2);
+
+  }
+
+  @Test
+  public void findStops3() throws IOException {
+    InputStream str = ClassLoader.getSystemClassLoader()
+        .getResourceAsStream("fatshallot3.html");
+    String doc = new String(ByteStreams.toByteArray(str), StandardCharsets.UTF_8);
+    when(clock.now8()).thenReturn(ZonedDateTime.of(2019, 1, 3, 11, 1,2, 3, CHICAGO));
+    when(extractor.parse("Wacker & Adams 11-1:30pm", thefatshallot)).thenReturn(ImmutableList.of("Wacker and Adams, Chicago, IL"));
+    when(extractor.parse("Wacker & Adams 11-1:30pm", thefatshallot)).thenReturn(ImmutableList.of("Wacker and Adams, Chicago, IL"));
+    when(extractor.parse("58th & Ellis 11-1:30pm", thefatshallot)).thenReturn(ImmutableList.of("Wacker and Adams, Chicago, IL"));
+    when(extractor.parse("600 W. Chicago 11-1:30pm", thefatshallot)).thenReturn(ImmutableList.of("Wacker and Adams, Chicago, IL"));
+    when(geolocator.locateOpt("Wacker and Adams, Chicago, IL")).thenReturn(Optional.of(wackerAndAdams()));
+
+    List<TempTruckStop> stops = parser.findStops(doc);
+    assertThat(stops).hasSize(7);
 
   }
 }

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 
@@ -55,12 +56,14 @@ public class FatShallotScheduleReader implements StopReader {
     ImmutableList.Builder<TempTruckStop> stops = ImmutableList.builder();
     for (Element h3 : parsedDoc.select("h3")) {
       LocalDate date = null;
+      String item = "";
       for (Element strong : h3.select("strong")) {
-        String item = MoreStrings.capitalize(strong.text()
+        item += MoreStrings.capitalize(strong.text()
             .toLowerCase())
             .trim()
-            .replaceAll("[^\\x00-\\x7F]", "");
-
+            .replaceAll("[^\\x00-\\x7F]", "") + " ";
+      }
+      if (!Strings.isNullOrEmpty(item)) {
         item = item.trim();
         if (item.endsWith("st") || item.endsWith("rd") || item.endsWith("nd") || item.endsWith("th")) {
           item = item.substring(0, item.length() - 2);
@@ -69,7 +72,6 @@ public class FatShallotScheduleReader implements StopReader {
         int month = parsedTime.get(ChronoField.MONTH_OF_YEAR);
         if (currentMonth == 1 && month == 12) {
           date = null;
-          break;
         } else {
           date = LocalDate.of(year, month, parsedTime.get(ChronoField.DAY_OF_MONTH));
         }
