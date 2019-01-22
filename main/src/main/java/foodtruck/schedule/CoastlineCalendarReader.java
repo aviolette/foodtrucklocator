@@ -65,10 +65,10 @@ public class CoastlineCalendarReader implements StopReader {
       for (int i = 0; i < events.length(); i++ ) {
         JSONObject event = events.getJSONObject(i);
         String start = massage(event.getString("start").replaceAll("\\.", "").toUpperCase());
-        String end = event.getString("end").replaceAll("\\.", "").toUpperCase();
+        String end = massage(event.getString("end").replaceAll("\\.", "").toUpperCase());
 
         LocalDate date = parseDate(event.getString("date"));
-        extractor.parse(event.getString("location"), truck)
+        extractor.parse(event.getString("location").trim(), truck)
             .forEach(location -> stops.add(
                 TempTruckStop.builder()
                     .truckId(truck.getId())
@@ -102,6 +102,13 @@ public class CoastlineCalendarReader implements StopReader {
   }
 
   private String massage(String time) {
+    if (time.endsWith(" AM") || time.endsWith(" PM")) {
+      if (time.contains(":")) {
+        return time;
+      }
+      int index = time.indexOf(" ");
+      return time.substring(0, index) + ":00" + time.substring(index);
+    }
     if (time.length() < 5) {
       return time + " PM";
     } else if (time.length() == 5 && time.substring(0, 1).equals("1")) {

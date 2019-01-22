@@ -46,9 +46,9 @@ public class CoastlineCalendarReaderTest extends Mockito {
   @Test
   public void findStops() throws IOException {
     when(truckDAO.findByIdOpt("coastlinecove")).thenReturn(Optional.of(COASTLINE_TRUCK));
-    when(extractor.parse("Wacker & Monroe ", COASTLINE_TRUCK)).thenReturn(ImmutableList.of("Wacker and Monroe, Chicago, IL"));
+    when(extractor.parse("Wacker & Monroe", COASTLINE_TRUCK)).thenReturn(ImmutableList.of("Wacker and Monroe, Chicago, IL"));
     when(extractor.parse("Randolph & Columbus", COASTLINE_TRUCK)).thenReturn(ImmutableList.of("Randolph and Columbus, Chicago, IL"));
-    when(extractor.parse("Michigan & Monroe ", COASTLINE_TRUCK)).thenReturn(ImmutableList.of("Michigan and Monroe, Chicago, IL"));
+    when(extractor.parse("Michigan & Monroe", COASTLINE_TRUCK)).thenReturn(ImmutableList.of("Michigan and Monroe, Chicago, IL"));
     InputStream str = ClassLoader.getSystemClassLoader()
         .getResourceAsStream("coastline.html");
     String doc = new String(ByteStreams.toByteArray(str), StandardCharsets.UTF_8);
@@ -66,8 +66,8 @@ public class CoastlineCalendarReaderTest extends Mockito {
   @Test
   public void findStops2() throws IOException {
     when(truckDAO.findByIdOpt("coastlinecove")).thenReturn(Optional.of(COASTLINE_TRUCK));
-    when(extractor.parse("Wacker & Monroe ", COASTLINE_TRUCK)).thenReturn(ImmutableList.of("Wacker and Monroe, Chicago, IL"));
-    when(extractor.parse("Michigan & Monroe ", COASTLINE_TRUCK)).thenReturn(ImmutableList.of("Michigan and Monroe, Chicago, IL"));
+    when(extractor.parse("Wacker & Monroe", COASTLINE_TRUCK)).thenReturn(ImmutableList.of("Wacker and Monroe, Chicago, IL"));
+    when(extractor.parse("Michigan & Monroe", COASTLINE_TRUCK)).thenReturn(ImmutableList.of("Michigan and Monroe, Chicago, IL"));
     InputStream str = ClassLoader.getSystemClassLoader()
         .getResourceAsStream("coastline2.html");
     String doc = new String(ByteStreams.toByteArray(str), StandardCharsets.UTF_8);
@@ -85,7 +85,7 @@ public class CoastlineCalendarReaderTest extends Mockito {
   @Test
   public void findStops3() throws IOException {
     when(truckDAO.findByIdOpt("coastlinecove")).thenReturn(Optional.of(COASTLINE_TRUCK));
-    when(extractor.parse("Wacker & Adams  ", COASTLINE_TRUCK)).thenReturn(ImmutableList.of("Wacker and Monroe, Chicago, IL"));
+    when(extractor.parse("Wacker & Adams", COASTLINE_TRUCK)).thenReturn(ImmutableList.of("Wacker and Monroe, Chicago, IL"));
     when(extractor.parse("Michigan & Monroe ", COASTLINE_TRUCK)).thenReturn(ImmutableList.of("Michigan and Monroe, Chicago, IL"));
     InputStream str = ClassLoader.getSystemClassLoader()
         .getResourceAsStream("coastline3.html");
@@ -98,6 +98,25 @@ public class CoastlineCalendarReaderTest extends Mockito {
         .truckId("coastlinecove")
         .startTime(ZonedDateTime.of(2019, 1, 14, 11, 0, 0, 0, ZONE))
         .endTime(ZonedDateTime.of(2019, 1, 14, 14, 0, 0, 0, ZONE))
+        .build());
+  }
+
+  @Test
+  public void findStops4() throws IOException {
+    when(truckDAO.findByIdOpt("coastlinecove")).thenReturn(Optional.of(COASTLINE_TRUCK));
+    when(extractor.parse("Clark & Monroe", COASTLINE_TRUCK)).thenReturn(ImmutableList.of("Clark and Monroe, Chicago, IL"));
+    when(extractor.parse("State & Lake", COASTLINE_TRUCK)).thenReturn(ImmutableList.of("State and Lake, Chicago, IL"));
+    InputStream str = ClassLoader.getSystemClassLoader()
+        .getResourceAsStream("coastline4.html");
+    String doc = new String(ByteStreams.toByteArray(str), StandardCharsets.UTF_8);
+    List<TempTruckStop> stops = reader.findStops(doc);
+    assertThat(stops).hasSize(3);
+    assertThat(stops).contains(TempTruckStop.builder()
+        .locationName("Clark and Monroe, Chicago, IL")
+        .calendarName("coastlinecove")
+        .truckId("coastlinecove")
+        .startTime(ZonedDateTime.of(2019, 1, 21, 11, 0, 0, 0, ZONE))
+        .endTime(ZonedDateTime.of(2019, 1, 21, 13, 30, 0, 0, ZONE))
         .build());
   }
 }
