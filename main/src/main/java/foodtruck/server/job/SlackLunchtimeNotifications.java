@@ -70,6 +70,9 @@ public class SlackLunchtimeNotifications extends HttpServlet {
             .orElseThrow(() -> new ServletException("Location not found: " + hook.getLocationName()));
       }
       Set<Truck> trucks = service.findTrucksNearLocation(location, clock.now());
+      if (clock.dayOfWeek().isWeekend() && trucks.isEmpty()) {
+        continue;
+      }
       String message = trucks.isEmpty() ? "There are no trucks at " + location.getShortenedName() + " for lunch today."  :
           "These trucks are at " + location.getShortenedName() + " today for lunch: " + trucks.stream()
             .map(truck -> "<" + config.getBaseUrl() + "/trucks/" + truck.getId() + "|" + truck.getName() + ">")
