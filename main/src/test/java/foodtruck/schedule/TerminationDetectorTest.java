@@ -84,13 +84,6 @@ public class TerminationDetectorTest {
         detector.detect(tweetBuilder.text("Sold out! thanks 600 w. Chicago").build()));
   }
 
-
-  @Test
-  public void testThanx() {
-    assertEquals(tweetTime,
-        detector.detect(tweetBuilder.text("Thanx u of c love ya").build()));
-  }
-
   @Test
   public void testTilNextWeek() {
     assertEquals(tweetTime, detector.detect(tweetBuilder.text("Til next Week Oz Park! Great seeing y'all").build()));
@@ -159,17 +152,6 @@ public class TerminationDetectorTest {
     assertTweet(null, "Today's menu: bacon Gouda burger, asiago pork, short rib, buff chix, red pepper falafel, and the new thanksgiving! http://t.co/BruxysPOhU");
   }
 
-  @Test
-  public void testThankYou() {
-    assertEquals(tweetTime, detector.detect(tweetBuilder.text(
-        "Thank you U of Chicago for braving the weather today and South Loop for closing out our day!  Enjoy the rest of your night!")
-        .build()));
-    assertEquals(tweetTime, detector.detect(tweetBuilder.text(
-        "fidotogo: Thank you so much everyone in Andersonville! Goodnight Stockton, Prince, Toby, Shaggy, Anthony  and all the rest of our wonderful pups!...")
-        .build()));
-    assertTweet(tweetTime, "MamaGreenGoodie: Thanks for a great day everyone!! See you tomorrow.");
-  }
-
   private void assertTweet(DateTime time, String tweetText) {
     assertEquals(time, detector.detect(tweetBuilder.text(tweetText).build()));
   }
@@ -177,11 +159,6 @@ public class TerminationDetectorTest {
   @Test
   public void onTheMove() {
     assertTweet(tweetTime, "The BAO-Mobile is on the move. Heading to Merchandise Mart #fb #BunsOnTheRun");
-  }
-
-  @Test
-  public void test2() {
-    assertEquals(tweetTime, detector.detect(tweetBuilder.text("Thanks so very much AON&Streeterville!!").build()));
   }
 
   @Test

@@ -45,12 +45,7 @@ class TerminationDetector {
       return null;
     }
 
-    // TODO: this is crappy...fix
-    if (tweetText.contains("thanksgiving")) {
-      return null;
-    }
-
-    if (tweetText.contains("thanks") && tweetText.contains("cash")) {
+    if (tweetText.contains("cash")) {
       return null;
     }
 
@@ -64,7 +59,6 @@ class TerminationDetector {
         || tweetText.contains("buzzing")
         || tweetText.contains("thx")
         || tweetText.contains("muchas gracias")
-        || tweetText.contains("thanx")
         || tweetText.contains("adios ")
         || tweetText.startsWith("adios")
         || tweetText.contains("that's a wrap")
@@ -73,8 +67,7 @@ class TerminationDetector {
         || tweetText.contains("see ya later")
         || tweetText.contains("till next time") || tweetText.contains("til next time")
         || tweetText.contains("heading back to our") || tweetText.contains("is on the move")
-        || tweetText.contains("are on the move")
-        || tweetText.contains("thanks") || tweetText.contains("thank you")) {
+        || tweetText.contains("are on the move")) {
       return tweet.getTime();
     }
     return null;
