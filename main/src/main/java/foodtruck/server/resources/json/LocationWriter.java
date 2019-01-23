@@ -51,6 +51,7 @@ public class LocationWriter implements JSONWriter<Location>, MessageBodyWriter<L
             .build();
       }
     }
+
     JSONObject obj = new JSONObject().put("latitude", location.getLatitude())
         .put("longitude", location.getLongitude())
         .put("url", location.getUrl())
@@ -70,6 +71,8 @@ public class LocationWriter implements JSONWriter<Location>, MessageBodyWriter<L
         .putOpt("twitterHandle", location.getTwitterHandle())
         .put("alexaProvided", location.isAlexaProvided())
         .put("blacklisted", location.isBlacklistedFromCalendarSearch())
+        .putOpt("city", location.getCity())
+        .putOpt("neighborhood", location.getNeighborhood())
         .put("key", location.getKey());
     if (fullOptions) {
       obj.put("alias", location.getAlias());

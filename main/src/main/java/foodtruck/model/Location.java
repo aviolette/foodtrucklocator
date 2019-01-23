@@ -53,6 +53,8 @@ public class Location extends ModelEntity implements Serializable {
   private boolean alexaProvided;
   private @Nullable String createdBy;
   private boolean blacklistedFromCalendarSearch;
+  private @Nullable String city;
+  private @Nullable String neighborhood;
 
   // For serializable
   public Location() {
@@ -87,6 +89,13 @@ public class Location extends ModelEntity implements Serializable {
     alexaProvided = builder.alexaProvided;
     createdBy = builder.createdBy;
     blacklistedFromCalendarSearch = builder.blacklistedFromCalendarSearch;
+    city = builder.city;
+    neighborhood = builder.neighborhood;
+  }
+
+  @Nullable
+  public String getNeighborhood() {
+    return neighborhood;
   }
 
   public static Builder builder() {
@@ -236,6 +245,7 @@ public class Location extends ModelEntity implements Serializable {
         .add("Owned by", ownedBy)
         .add("Created by ", createdBy)
         .add("Alias for", alias)
+        .add("City", city)
         .toString();
   }
 
@@ -344,7 +354,12 @@ public class Location extends ModelEntity implements Serializable {
     return Location.builder(this).radius(radius).build();
   }
 
+  public String getCity() {
+    return city;
+  }
+
   public static class Builder {
+
     private Object key;
     private double lat;
     private double lng;
@@ -372,7 +387,9 @@ public class Location extends ModelEntity implements Serializable {
     private Set<String> managerEmails = ImmutableSet.of();
     private boolean alexaProvided;
     private @Nullable String createdBy;
-    public boolean blacklistedFromCalendarSearch;
+    private boolean blacklistedFromCalendarSearch;
+    private String city;
+    private String neighborhood;
 
     public Builder(Location location) {
       key = location.getKey();
@@ -402,9 +419,22 @@ public class Location extends ModelEntity implements Serializable {
       managerEmails = location.managerEmails;
       alexaProvided = location.alexaProvided;
       createdBy = location.createdBy;
+      blacklistedFromCalendarSearch = location.blacklistedFromCalendarSearch;
+      city = location.city;
+      neighborhood = location.neighborhood;
     }
 
     public Builder() {
+    }
+
+    public Builder city(String city) {
+      this.city = city;
+      return this;
+    }
+
+    public Builder neighborhood(String neighborhood) {
+      this.neighborhood = neighborhood;
+      return this;
     }
 
     public Builder blacklistedFromCalendarSearch(boolean blacklisted) {

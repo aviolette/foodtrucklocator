@@ -107,11 +107,28 @@ class GoogleGeolocator implements GeoLocator {
           log.log(Level.INFO, "Result was too granular");
           return null;
         }
+        String city = null, neighborhood = null;
+
+        final JSONArray addressComponents = firstResult.getJSONArray("address_components");
+        if (addressComponents != null) {
+          for (int i=0; i < addressComponents.length(); i++) {
+            JSONObject component = addressComponents.getJSONObject(i);
+            JSONArray addressTypes = component.getJSONArray("types");
+            if (arrayContains(addressTypes, ImmutableSet.of("locality"))) {
+              city = component.getString("long_name");
+            } else if (arrayContains(addressTypes, ImmutableSet.of("neighborhood"))) {
+              neighborhood = component.getString("long_name");
+            }
+          }
+        }
+
         final JSONObject geometry = firstResult.getJSONObject("geometry");
         JSONObject loc = geometry.getJSONObject("location");
         return Location.builder()
             .lat(loc.getDouble("lat"))
             .lng(loc.getDouble("lng"))
+            .city(city)
+            .neighborhood(neighborhood)
             .name(location)
             .build();
       }

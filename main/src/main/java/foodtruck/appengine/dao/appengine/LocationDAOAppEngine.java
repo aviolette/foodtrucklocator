@@ -70,7 +70,8 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
   private static final String ALEXA_PROVIDED = "alexa_provided";
   private static final String CREATED_BY = "created_by";
   private static final String BLACKLISTED_FROM_CALENDAR_SEARCH = "blacklisted";
-
+  private static final String CITY = "city";
+  private static final String NEIGHBORHOOD ="neighborhood";
   private static final Logger log = Logger.getLogger(LocationDAOAppEngine.class.getName());
   private final Clock clock;
 
@@ -244,6 +245,8 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
     entity.setProperty(ALEXA_PROVIDED, location.isAlexaProvided());
     entity.setProperty(CREATED_BY, location.getCreatedBy());
     entity.setProperty(BLACKLISTED_FROM_CALENDAR_SEARCH, location.isBlacklistedFromCalendarSearch());
+    entity.setProperty(CITY, Strings.emptyToNull(location.getCity()));
+    entity.setProperty(NEIGHBORHOOD, Strings.emptyToNull(location.getNeighborhood()));
     return entity;
   }
 
@@ -286,6 +289,8 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
     builder.createdBy(getStringProperty(entity, CREATED_BY));
     builder.alexaProvided(getBooleanProperty(entity, ALEXA_PROVIDED, false));
     builder.blacklistedFromCalendarSearch(getBooleanProperty(entity, BLACKLISTED_FROM_CALENDAR_SEARCH, false));
+    builder.city(getStringProperty(entity, CITY));
+    builder.neighborhood(getStringProperty(entity, NEIGHBORHOOD));
     boolean isValid = valid == null || valid;
     if (lat == null || lng == null) {
       builder.valid(false);

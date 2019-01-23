@@ -46,6 +46,10 @@
       $("#managerEmails").val(loc.managerEmails);
       $("#email").val(loc.email);
       $("#phone").val(loc.phone);
+      $("#city").val(loc.city);
+      $("#neighborhood").val(loc.neighborhood);
+
+
     }
 
     loadLocation(loc);
@@ -164,6 +168,9 @@
       loc.imageUrl = $("#imagePreview").attr("src");
       loc.eventUrl = $("#eventUrl").val();
       loc.managerEmails = $("#managerEmails").val();
+      loc.city = $("#city").val();
+      loc.neighborhood = $("#neighborhood").val();
+
       e.preventDefault();
       $submitButton.addClass("disabled");
       var endpoint = "/admin/locations/" + loc.key;

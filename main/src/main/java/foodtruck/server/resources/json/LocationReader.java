@@ -31,6 +31,8 @@ public class LocationReader {
         .hasBooze(obj.optBoolean("hasBooze"))
         .eventCalendarUrl(obj.optString("eventUrl"))
         .closed(obj.optBoolean("closed"))
+        .neighborhood(obj.optString("neighborhood"))
+        .city(obj.optString("city"))
         .twitterHandle(obj.optString("twitterHandle"))
         .popular(obj.optBoolean("popular", false))
         .designatedStop(obj.optBoolean("designatedStop", false))

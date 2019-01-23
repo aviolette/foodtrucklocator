@@ -204,7 +204,6 @@ class FoodtruckServletModule extends ServletModule {
     } else {
       serve("/admin/locations/*").with(LocationEditServlet.class);
     }
-
     serve("/admin/locations", "/admin/locations;*").with(LocationListServlet.class);
     serve("/admin/messages/*").with(MessageEditServlet.class);
     serve("/admin/messages").with(MessageListServlet.class);
@@ -255,7 +254,12 @@ class FoodtruckServletModule extends ServletModule {
     serve("/trucks/*").with(foodtruck.server.front.TruckServlet.class);
     serve("/about").with(AboutServlet.class);
     serve("/integrations").with(IntegrationsServlet.class);
-    serve("/locations*").with(LocationServlet.class);
+    if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development ) {
+      serve("/locations/4612451278520320").with(LocationServlet.class);
+    }
+    else {
+      serve("/locations*").with(LocationServlet.class);
+    }
     serve("/images/*").with(ImageServlet.class);
     serve("/stats/timeline").with(TruckTimelineServlet.class);
     serve("/support").with(SupportServlet.class);

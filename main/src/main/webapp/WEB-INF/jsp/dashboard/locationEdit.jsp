@@ -100,7 +100,16 @@
             <input id="radiateTo" class="form-control" type="text"/>
           </div>
         </div>
-
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="city">City</label>
+            <input id="city" class="form-control" placeholder="" type="text"/>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="neighborhood">Neighborhood</label>
+            <input id="neighborhood" class="form-control" placeholder="" type="text"/>
+          </div>
+        </div>
         <div class="form-group">
           <label for="description">Description</label>
           <textarea class="form-control" id="description" rows="5" cols="80"></textarea>
