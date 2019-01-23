@@ -255,7 +255,7 @@ class FoodtruckServletModule extends ServletModule {
     serve("/about").with(AboutServlet.class);
     serve("/integrations").with(IntegrationsServlet.class);
     if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development ) {
-      serve("/locations/4612451278520320").with(LocationServlet.class);
+      serve("/locations", "/locations/4612451278520320").with(LocationServlet.class);
     }
     else {
       serve("/locations*").with(LocationServlet.class);

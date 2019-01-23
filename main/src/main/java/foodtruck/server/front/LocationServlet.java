@@ -80,7 +80,8 @@ public class LocationServlet extends HttpServlet {
         if (!Strings.isNullOrEmpty(date)) {
           dateString = "?date=" + date;
         }
-        resp.sendRedirect("/locations/" + location.getKey() + dateString);
+        String admin = "true".equals(req.getParameter("admin")) ? "/admin" : "";
+        resp.sendRedirect(admin + "/locations/" + location.getKey() + dateString);
         return;
       }
     }

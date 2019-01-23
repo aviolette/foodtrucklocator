@@ -74,6 +74,28 @@ public class DailyStatsServlet extends HttpServlet {
     List<TruckStop> stops = stopDAO.findOverRange(null, new Interval(startDate.toDateTimeAtStartOfDay(clock.zone()),
         clock.currentDay()
             .toDateTimeAtStartOfDay(clock.zone())));
+    recordTruckStats(stops);
+    long uniqueTrucks = stops.stream()
+        .map(stop -> stop.getTruck().getId())
+        .distinct()
+        .count();
+    long timeAtStartOfDay = now.toDateTimeAtStartOfDay(clock.zone()).getMillis();
+    publisher.increment("daily_stops", stops.size(), timeAtStartOfDay,
+        ImmutableMap.of());
+    publisher.increment("unique_trucks", (int)uniqueTrucks, timeAtStartOfDay,
+        ImmutableMap.of());
+    stops.stream()
+        .collect(Collectors.groupingBy(TruckStop::locality, Collectors.counting()))
+        .forEach((locality, count) -> publisher.increment("stops_by_location", (int) (long) count, timeAtStartOfDay,
+            ImmutableMap.of("LOCALITY", locality.toString())));
+    slackDAO.findAll().stream()
+        .collect(Collectors.groupingBy(SlackWebhook::getLocationName, Collectors.counting()))
+        .forEach((location, count) -> publisher.increment("slack_subscribers", (int)(long)count, timeAtStartOfDay,
+            ImmutableMap.of("LOCATION", location)));
+    log.log(Level.INFO, "Updated stats for {0} stops", stops.size());
+  }
+
+  private void recordTruckStats(List<TruckStop> stops) {
     stops.forEach(stop -> truckDAO.findByIdOpt(stop.getTruck().getId())
         .ifPresent(truck -> {
           log.log(Level.INFO, "Processing stop: {0}", stop);
@@ -93,20 +115,5 @@ public class DailyStatsServlet extends HttpServlet {
               .stats(statsBuilder.build())
               .build());
         }));
-    long uniqueTrucks = stops.stream()
-        .map(stop -> stop.getTruck().getId())
-        .distinct()
-        .count();
-    long timeAtStartOfDay = now.toDateTimeAtStartOfDay(clock.zone()).getMillis();
-    publisher.increment("daily_stops", stops.size(), timeAtStartOfDay,
-        ImmutableMap.of());
-    publisher.increment("unique_trucks", (int)uniqueTrucks, timeAtStartOfDay,
-        ImmutableMap.of());
-    slackDAO.findAll().stream()
-        .collect(Collectors.groupingBy(SlackWebhook::getLocationName, Collectors.counting()))
-        .forEach((location, count) -> publisher.increment("slack_subscribers", (int)(long)count, timeAtStartOfDay,
-            ImmutableMap.of("LOCATION", location)));
-
-    log.log(Level.INFO, "Updated stats for {0} stops", stops.size());
   }
 }
