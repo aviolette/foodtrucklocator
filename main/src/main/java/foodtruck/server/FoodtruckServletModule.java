@@ -49,7 +49,6 @@ import foodtruck.server.front.FoodTruckServlet;
 import foodtruck.server.front.IPhoneSupportServlet;
 import foodtruck.server.front.IntegrationsServlet;
 import foodtruck.server.front.LocationServlet;
-import foodtruck.server.front.PopularServlet;
 import foodtruck.server.front.PrivacyPolicyServlet;
 import foodtruck.server.front.SSLVerificationServlet;
 import foodtruck.server.front.ShuntServlet;
@@ -246,8 +245,6 @@ class FoodtruckServletModule extends ServletModule {
     serve("/privacy").with(PrivacyPolicyServlet.class);
     serve("/vendinfo").with(VendorInfoServlet.class);
     serve("/vendinfo/device").with(DeviceInfoServlet.class);
-    serve("/weekly-schedule").with(WeeklyScheduleServlet.class);
-    serve("/popular").with(PopularServlet.class);
     serve("/businesses").with(TruckBusinessesServlet.class);
     serve("/events").with(BoozeAndTrucksServlet.class);
     serve("/trucks", "/trucks/").with(TrucksServlet.class);
