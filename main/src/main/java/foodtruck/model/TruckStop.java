@@ -242,17 +242,6 @@ public class TruckStop extends ModelEntity {
     return getOrigin() == StopOrigin.VENDORCAL;
   }
 
-  public TruckStopLocality locality() {
-    String city = location.getCity();
-    if (city == null) {
-      return TruckStopLocality.UNKNOWN;
-    } else if ("Chicago".equals(city)) {
-      return TruckStopLocality.CITY;
-    } else {
-      return TruckStopLocality.SUBURB;
-    }
-  }
-
   public TruckStopWithCounts overlapWithCounts(List<TruckStop> stops) {
     Set<String> trucks = ImmutableSet.of();
     try {

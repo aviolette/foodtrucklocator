@@ -2,6 +2,7 @@ package foodtruck.server.job;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -20,9 +21,11 @@ import com.google.inject.Singleton;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
+import foodtruck.dao.LocationLoadingCache;
 import foodtruck.dao.SlackWebhookDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
+import foodtruck.model.Location;
 import foodtruck.model.SlackWebhook;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
@@ -47,16 +50,18 @@ public class DailyStatsServlet extends HttpServlet {
   private final Provider<Queue> queueProvider;
   private final CounterPublisher publisher;
   private final SlackWebhookDAO slackDAO;
+  private final LocationLoadingCache locations;
 
   @Inject
   public DailyStatsServlet(Clock clock, TruckStopDAO stopDAO, TruckDAO truckDAO, Provider<Queue> queueProvider,
-      CounterPublisher publisher, SlackWebhookDAO slackWebhookDAO) {
+      CounterPublisher publisher, SlackWebhookDAO slackWebhookDAO, LocationLoadingCache locations) {
     this.stopDAO = stopDAO;
     this.truckDAO = truckDAO;
     this.clock = clock;
     this.queueProvider = queueProvider;
     this.publisher = publisher;
     this.slackDAO = slackWebhookDAO;
+    this.locations = locations;
   }
 
   @Override
@@ -84,15 +89,28 @@ public class DailyStatsServlet extends HttpServlet {
         ImmutableMap.of());
     publisher.increment("unique_trucks", (int)uniqueTrucks, timeAtStartOfDay,
         ImmutableMap.of());
-    stops.stream()
-        .collect(Collectors.groupingBy(TruckStop::locality, Collectors.counting()))
-        .forEach((locality, count) -> publisher.increment("stops_by_location", (int) (long) count, timeAtStartOfDay,
-            ImmutableMap.of("LOCALITY", locality.toString())));
     slackDAO.findAll().stream()
         .collect(Collectors.groupingBy(SlackWebhook::getLocationName, Collectors.counting()))
         .forEach((location, count) -> publisher.increment("slack_subscribers", (int)(long)count, timeAtStartOfDay,
             ImmutableMap.of("LOCATION", location)));
+    stops.stream()
+        .map(stop -> locations.findLocation(stop.getLocation().getName()).orElse(null))
+        .filter(Objects::nonNull)
+        .collect(Collectors.groupingBy(this::locality, Collectors.counting()))
+        .forEach((locality, count) -> publisher.increment("stops_by_location", (int) (long) count, timeAtStartOfDay,
+            ImmutableMap.of("LOCALITY", locality.toString())));
     log.log(Level.INFO, "Updated stats for {0} stops", stops.size());
+  }
+
+  private String locality(Location location) {
+    String city = location.getCity();
+    if (city == null) {
+      return "UNKNOWN";
+    } else if ("Chicago".equals(city)) {
+      return "CITY";
+    } else {
+      return "SUBURBS";
+    }
   }
 
   private void recordTruckStats(List<TruckStop> stops) {
