@@ -249,7 +249,7 @@ class LocationIntentProcessor implements IntentProcessor {
       }
       return locations.stream()
           .filter(filterPredicate)
-          .map(Location.TO_SPOKEN_NAME)
+          .map(Location::getShortenedName)
           .limit(3)
           .collect(Collectors.toList());
     } catch (Exception e) {

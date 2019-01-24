@@ -22,8 +22,6 @@ import com.javadocmd.simplelatlng.util.LengthUnit;
  * @since Jul 12, 2011
  */
 public class Location extends ModelEntity implements Serializable {
-  public static final Function<Location, String> TO_NAME = Location::getName;
-  public static final Function<Location, String> TO_SPOKEN_NAME = Location::getShortenedName;
   private static final String UNKNOWN = "UNKNOWN";
 
   private static final long serialVersionUID = 1L;

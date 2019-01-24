@@ -134,7 +134,7 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
   @Override
   public String findLocationNamesAsJson() {
     return new JSONArray(findAutocompleteLocations().stream()
-        .map(Location.TO_NAME)
+        .map(Location::getName)
         .collect(Collectors.toList())).toString();
   }
 
