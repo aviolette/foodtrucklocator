@@ -1,7 +1,10 @@
 <%@ include file="../header.jsp" %>
-
-<p class="lead">
-  If you have any questions about this website or applications please send me an email at aviolette at gmail.com.
-</p>
+<div class="jumbotron">
+  <div class="container">
+    <p class="lead">
+      If you have any questions about this website or applications please send me an email at aviolette+foodtrucks@gmail.com.
+    </p>
+  </div>
+</div>
 
 <%@ include file="../footer.jsp" %>
