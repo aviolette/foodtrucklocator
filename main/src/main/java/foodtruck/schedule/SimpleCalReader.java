@@ -65,6 +65,8 @@ public class SimpleCalReader {
     title = title.toLowerCase().replace('’', '\'');
     if (title.contains("bop bar")) {
       return "bopbartruck";
+    } else if (title.contains("arnold's tacos")) {
+      return "arnoldstacos";
     } else if (title.contains("aztec dave")) {
       return "aztecdaves";
     } else if (title.contains("donermen")) {
