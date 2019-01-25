@@ -134,4 +134,9 @@ class CacheAndForwardLocator implements GeoLocator {
     }
     return null;
   }
+
+  @Override
+  public Optional<Location> broadSearch(String name) {
+    return Optional.ofNullable(locate(name, GeolocationGranularity.BROAD));
+  }
 }

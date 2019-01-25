@@ -31,4 +31,6 @@ public interface GeoLocator {
    *         performed
    */
   @Nullable Location reverseLookup(Location location) throws ServiceException;
+
+  Optional<Location> broadSearch(String name);
 }

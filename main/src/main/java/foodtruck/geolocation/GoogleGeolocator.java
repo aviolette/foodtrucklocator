@@ -87,6 +87,11 @@ class GoogleGeolocator implements GeoLocator {
     return null;
   }
 
+  @Override
+  public Optional<Location> broadSearch(String name) {
+    return Optional.ofNullable(locate(name, GeolocationGranularity.BROAD));
+  }
+
   private void localityInformation(Location.Builder locationBuilder, JSONObject result) throws JSONException {
     final JSONArray addressComponents = result.getJSONArray("address_components");
     if (addressComponents != null) {

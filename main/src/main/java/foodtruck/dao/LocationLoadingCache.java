@@ -33,4 +33,8 @@ public class LocationLoadingCache {
   public Optional<Location> findLocation(String name) {
     return cache.getUnchecked(name);
   }
+
+  public void invalidate(Location location) {
+    cache.refresh(location.getName());
+  }
 }

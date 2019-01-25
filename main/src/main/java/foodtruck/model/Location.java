@@ -244,6 +244,7 @@ public class Location extends ModelEntity implements Serializable {
         .add("Created by ", createdBy)
         .add("Alias for", alias)
         .add("City", city)
+        .add("Neighborhood", neighborhood)
         .toString();
   }
 
