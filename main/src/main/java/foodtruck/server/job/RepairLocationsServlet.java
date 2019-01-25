@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -30,7 +31,7 @@ import foodtruck.time.Clock;
  * @since 2019-01-24
  */
 @Singleton
-public class RepairLocationsServlet extends AbstractJobServlet {
+public class RepairLocationsServlet extends HttpServlet {
 
   private static final Logger log = Logger.getLogger(RepairLocationsServlet.class.getName());
 
@@ -51,7 +52,7 @@ public class RepairLocationsServlet extends AbstractJobServlet {
   }
 
   @Override
-  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     LocalDate now = clock.currentDay();
     LocalDate startDate = now.minusDays(2);
     List<TruckStop> stops = stopDAO.findOverRange(null, new Interval(startDate.toDateTimeAtStartOfDay(clock.zone()),
