@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 
 import com.google.inject.Inject;
 
+import foodtruck.annotations.Google;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.ReverseLookupDAO;
 import foodtruck.model.Location;
@@ -30,7 +31,7 @@ class CacheAndForwardLocator implements GeoLocator {
   private final ReverseLookupDAO reverseLookupDAO;
 
   @Inject
-  public CacheAndForwardLocator(LocationDAO dao, @SecondaryGeolocator GeoLocator secondaryLocator,
+  public CacheAndForwardLocator(LocationDAO dao, @Google GeoLocator secondaryLocator,
       CounterPublisher counterPublisher, ReverseLookupDAO reverseLookupDAO) {
     this.secondaryLocator = secondaryLocator;
     this.dao = dao;

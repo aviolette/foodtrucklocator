@@ -98,7 +98,7 @@ public class DailyStatsServlet extends HttpServlet {
         .filter(Objects::nonNull)
         .collect(Collectors.groupingBy(this::locality, Collectors.counting()))
         .forEach((locality, count) -> publisher.increment("stops_by_location", (int) (long) count, timeAtStartOfDay,
-            ImmutableMap.of("LOCALITY", locality.toString())));
+            ImmutableMap.of("LOCALITY", locality)));
     log.log(Level.INFO, "Updated stats for {0} stops", stops.size());
   }
 

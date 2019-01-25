@@ -9,6 +9,8 @@ import com.google.inject.name.Named;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 
+import foodtruck.annotations.Google;
+
 /**
  * @author aviolette@gmail.com
  * @since Jul 20, 2011
@@ -17,7 +19,7 @@ public class GeolocationModule extends AbstractModule {
   @Override
   protected void configure() {
     bind(GeoLocator.class).to(CacheAndForwardLocator.class);
-    bind(GeoLocator.class).annotatedWith(SecondaryGeolocator.class).to(GoogleGeolocator.class);
+    bind(GeoLocator.class).annotatedWith(Google.class).to(GoogleGeolocator.class);
   }
 
   @Provides @GoogleServerApiKey

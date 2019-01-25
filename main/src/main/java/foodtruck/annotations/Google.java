@@ -1,4 +1,4 @@
-package foodtruck.geolocation;
+package foodtruck.annotations;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -15,5 +15,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @since 9/8/11
  */
 @BindingAnnotation @Target({FIELD, PARAMETER, METHOD}) @Retention(RUNTIME)
-@interface SecondaryGeolocator {
+public @interface Google {
 }
