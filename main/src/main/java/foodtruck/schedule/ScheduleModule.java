@@ -22,7 +22,6 @@ import org.joda.time.format.DateTimeFormatter;
 import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
 import foodtruck.schedule.custom.chicago.ChicagoModule;
-import foodtruck.schedule.custom.nyc.NewYorkModule;
 import foodtruck.time.MilitaryTimeOnlyFormatter;
 
 /**
@@ -39,12 +38,7 @@ public class ScheduleModule extends AbstractModule {
     connectorBinder.addBinding().to(TempTruckStopScheduleStrategy.class);
     bind(SocialMediaCacher.class).to(SocialMediaCacherImpl.class);
     bind(FoodTruckStopService.class).to(FoodTruckStopServiceImpl.class);
-    String city = System.getProperty("foodtrucklocator.city", "Chicago");
-    if ("New York".equals(city)) {
-      install(new NewYorkModule());
-    } else {
-      install(new ChicagoModule());
-    }
+    install(new ChicagoModule());
   }
 
   @Provides
