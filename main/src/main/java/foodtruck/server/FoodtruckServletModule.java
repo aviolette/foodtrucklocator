@@ -59,7 +59,6 @@ import foodtruck.server.front.SupportServlet;
 import foodtruck.server.front.TruckBusinessesServlet;
 import foodtruck.server.front.TruckTimelineServlet;
 import foodtruck.server.front.TrucksServlet;
-import foodtruck.server.front.WeeklyScheduleServlet;
 import foodtruck.server.job.CheckDeviceIssuesServlet;
 import foodtruck.server.job.DailyStatsServlet;
 import foodtruck.server.job.ErrorCountServlet;
@@ -199,7 +198,7 @@ class FoodtruckServletModule extends ServletModule {
     serve("/admin/images").with(ImageUploadServlet.class);
     serve("/admin/trucks").with(TruckListServlet.class);
     if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development ) {
-      serve("/admin/locations/4533286441320448").with(LocationEditServlet.class);
+      serve("/admin/locations/4533286441320448", "/admin/locations/6411252301561856").with(LocationEditServlet.class);
     } else {
       serve("/admin/locations/*").with(LocationEditServlet.class);
     }
