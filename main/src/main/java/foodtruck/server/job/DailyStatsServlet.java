@@ -68,33 +68,33 @@ public class DailyStatsServlet extends HttpServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     LocalDate now = clock.currentDay();
     LocalDate startDate = now.minusDays(1);
-    if (now.getDayOfMonth() == 1) {
-      log.log(Level.INFO, "Queueing month stats generation");
-      LocalDate monthStats = now.minusMonths(1);
-      Queue queue = queueProvider.get();
-      queue.add(withUrl("/cron/monthly_stop_stats_generate").param("month", String.valueOf(monthStats.getMonthOfYear()))
-          .param("year", String.valueOf(monthStats.getYear())));
-    }
+    log.log(Level.INFO, "Queueing month stats generation");
+    Queue queue = queueProvider.get();
+    queue.add(withUrl("/cron/monthly_stop_stats_generate").param("month", String.valueOf(startDate.getMonthOfYear()))
+        .param("year", String.valueOf(startDate.getYear())));
     log.info("Starting update of daily stats from: " + startDate);
     List<TruckStop> stops = stopDAO.findOverRange(null, new Interval(startDate.toDateTimeAtStartOfDay(clock.zone()),
         clock.currentDay()
             .toDateTimeAtStartOfDay(clock.zone())));
     recordTruckStats(stops);
     long uniqueTrucks = stops.stream()
-        .map(stop -> stop.getTruck().getId())
+        .map(stop -> stop.getTruck()
+            .getId())
         .distinct()
         .count();
-    long timeAtStartOfDay = now.toDateTimeAtStartOfDay(clock.zone()).getMillis();
-    publisher.increment("daily_stops", stops.size(), timeAtStartOfDay,
-        ImmutableMap.of());
-    publisher.increment("unique_trucks", (int)uniqueTrucks, timeAtStartOfDay,
-        ImmutableMap.of());
-    slackDAO.findAll().stream()
+    long timeAtStartOfDay = now.toDateTimeAtStartOfDay(clock.zone())
+        .getMillis();
+    publisher.increment("daily_stops", stops.size(), timeAtStartOfDay, ImmutableMap.of());
+    publisher.increment("unique_trucks", (int) uniqueTrucks, timeAtStartOfDay, ImmutableMap.of());
+    slackDAO.findAll()
+        .stream()
         .collect(Collectors.groupingBy(SlackWebhook::getLocationName, Collectors.counting()))
-        .forEach((location, count) -> publisher.increment("slack_subscribers", (int)(long)count, timeAtStartOfDay,
+        .forEach((location, count) -> publisher.increment("slack_subscribers", (int) (long) count, timeAtStartOfDay,
             ImmutableMap.of("LOCATION", location)));
     stops.stream()
-        .map(stop -> locations.findLocation(stop.getLocation().getName()).orElse(null))
+        .map(stop -> locations.findLocation(stop.getLocation()
+            .getName())
+            .orElse(null))
         .filter(Objects::nonNull)
         .collect(Collectors.groupingBy(this::locality, Collectors.counting()))
         .forEach((locality, count) -> publisher.increment("stops_by_location", (int) (long) count, timeAtStartOfDay,
@@ -114,7 +114,8 @@ public class DailyStatsServlet extends HttpServlet {
   }
 
   private void recordTruckStats(List<TruckStop> stops) {
-    stops.forEach(stop -> truckDAO.findByIdOpt(stop.getTruck().getId())
+    stops.forEach(stop -> truckDAO.findByIdOpt(stop.getTruck()
+        .getId())
         .ifPresent(truck -> {
           log.log(Level.INFO, "Processing stop: {0}", stop);
           Truck.Stats stats = truck.getStats();
