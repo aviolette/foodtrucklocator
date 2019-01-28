@@ -52,3 +52,20 @@
     </div>
   </nav>
   <div class="container">
+    <c:if test="${!empty(breadcrumbs)}">
+    <div class="page-header mt-5">
+      <ul class="breadcrumb">
+        <c:forEach items="${breadcrumbs}" var="breadcrumb" varStatus="breadcrumbStatus">
+          <c:choose>
+            <c:when test="${breadcrumbStatus.last}">
+              <li class="active">${breadcrumb.name}</li>
+            </c:when>
+            <c:otherwise>
+              <li><a href="${breadcrumb.url}">${breadcrumb.name}</a> <span
+                  class="divider">&nbsp;/&nbsp;</span></li>
+            </c:otherwise>
+          </c:choose>
+        </c:forEach>
+      </ul>
+    </div>
+    </c:if>

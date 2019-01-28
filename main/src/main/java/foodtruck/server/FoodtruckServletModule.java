@@ -195,8 +195,11 @@ class FoodtruckServletModule extends ServletModule {
     serveRegex("/admin/trucks/[\\S]*/offtheroad").with(OffTheRoadServlet.class);
     serveRegex("/admin/trucks/[\\S]*/linxup_config").with(LinxupConfigServlet.class);
     serveRegex("/admin/trucks/[\\S]*/danger").with(DangerZoneServlet.class);
-    serve("/admin/trucks/*").with(TruckServlet.class);
-//    serve("/admin/trucks/courageouscakes").with(TruckServlet.class);
+    if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development ) {
+      serve("/admin/trucks/courageouscakes", "/admin/trucks/beaversdonuts").with(TruckServlet.class);
+    } else {
+      serve("/admin/trucks/*").with(TruckServlet.class);
+    }
     serve("/admin/images").with(ImageUploadServlet.class);
     serve("/admin/trucks").with(TruckListServlet.class);
     if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development ) {
