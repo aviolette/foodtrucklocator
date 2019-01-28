@@ -51,7 +51,6 @@ public class DataExportServiceImpl implements DataExportService {
   public void exportTrucks() throws IOException {
     storageService.writeBuffer(toJsonLine(writer, truckDAO.findAll().stream()),
         "chiftf_datalake", "trucks.json", MediaType.APPLICATION_JSON);
-
   }
 
   @Override
