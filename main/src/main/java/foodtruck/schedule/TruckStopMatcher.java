@@ -23,6 +23,7 @@ import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import foodtruck.annotations.MapCenter;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.time.DayOfWeek;
@@ -64,7 +65,7 @@ public class TruckStopMatcher {
 
   @Inject
   public TruckStopMatcher(AddressExtractor extractor, GeoLocator geoLocator, DateTimeZone defaultZone, Clock clock,
-      SystemNotificationService notifier, @Named("center") Location center, @DefaultStartTime LocalTime startTime,
+      SystemNotificationService notifier, @MapCenter Location center, @DefaultStartTime LocalTime startTime,
       Map<String, SpecialMatcher> specialMatchers) {
     this.addressExtractor = extractor;
     this.geoLocator = geoLocator;

@@ -11,6 +11,8 @@ import com.google.common.net.HttpHeaders;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import foodtruck.annotations.MapCenter;
+import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
 import foodtruck.schedule.ScheduleCacher;
 import foodtruck.time.Clock;
@@ -25,12 +27,15 @@ public class FoodTruckServlet extends HttpServlet {
   private final Clock clock;
   private final ScheduleCacher scheduleCacher;
   private final StaticConfig staticConfig;
+  private final Location mapCenter;
 
   @Inject
-  public FoodTruckServlet(Clock clock, ScheduleCacher scheduleCacher, StaticConfig staticConfig) {
+  public FoodTruckServlet(Clock clock, ScheduleCacher scheduleCacher, StaticConfig staticConfig,
+      @MapCenter Location location) {
     this.clock = clock;
     this.scheduleCacher = scheduleCacher;
     this.staticConfig = staticConfig;
+    this.mapCenter = location;
   }
 
   @Override
@@ -43,12 +48,11 @@ public class FoodTruckServlet extends HttpServlet {
       return;
     }
     req.setAttribute("additionalCss", "/css/front-page-1.3.1.css");
-    req.setAttribute("center", staticConfig.getCenter());
+    req.setAttribute("center", mapCenter);
     final String mode = req.getParameter("mode");
     req.setAttribute("mobile", "mobile".equals(mode));
     req.setAttribute("mode", mode);
-    req.setAttribute("requestTimeInMillis", clock.now()
-        .getMillis());
+    req.setAttribute("requestTimeInMillis", clock.now().getMillis());
     req.setAttribute("tab", "map");
     req.setAttribute("suffix", "");
 

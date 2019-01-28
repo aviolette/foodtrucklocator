@@ -1,5 +1,6 @@
 package foodtruck.schedule;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -9,6 +10,7 @@ import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.services.calendar.Calendar;
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -19,6 +21,7 @@ import com.google.inject.name.Named;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormatter;
 
+import foodtruck.annotations.MapCenter;
 import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
 import foodtruck.schedule.custom.chicago.ChicagoModule;
@@ -46,10 +49,22 @@ public class ScheduleModule extends AbstractModule {
     return new ScriptEngineManager();
   }
 
-  @Provides
-  @Named("center")
+  @Provides @MapCenter
   public Location providesMapCenter(StaticConfig config) {
-    return config.getCenter();
+    Location.Builder builder = Location.builder().name("Unnamed")
+        .lat(41.880187)
+        .lng(-87.63083499999999);
+    try {
+      Iterable<String> items = Splitter.on(";")
+          .trimResults()
+          .split(System.getProperty("foodtrucklocator.center", "Clark and Monroe, Chicago, IL; 41.880187; -87.63083499999999"));
+      Iterator<String> it = items.iterator();
+      builder.name(it.next());
+      builder.lat(Double.parseDouble(it.next()));
+      builder.lng(Double.parseDouble(it.next()));
+    } catch (Exception ignored) {
+    }
+    return builder.build();
   }
 
   @Provides

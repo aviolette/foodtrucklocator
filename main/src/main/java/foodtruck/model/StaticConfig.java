@@ -62,23 +62,6 @@ public class StaticConfig {
     return System.getProperty("foodtrucklocator.sync.app.key", null);
   }
 
-  public Location getCenter() {
-    Location.Builder builder = Location.builder().name("Unnamed")
-        .lat(41.880187)
-        .lng(-87.63083499999999);
-    try {
-      Iterable<String> items = Splitter.on(";")
-          .trimResults()
-          .split(System.getProperty("foodtrucklocator.center", "Clark and Monroe, Chicago, IL; 41.880187; -87.63083499999999"));
-      Iterator<String> it = items.iterator();
-      builder.name(it.next());
-      builder.lat(Double.parseDouble(it.next()));
-      builder.lng(Double.parseDouble(it.next()));
-    } catch (Exception ignored) {
-    }
-    return builder.build();
-  }
-
   public String getFrontDoorAppKey() {
     return System.getProperty("foodtrucklocator.frontdoor.app.key", "");
   }
