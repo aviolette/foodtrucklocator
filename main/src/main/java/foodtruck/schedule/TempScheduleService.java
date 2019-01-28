@@ -43,7 +43,8 @@ public class TempScheduleService {
     queue.add(withUrl("/cron/populate_temperance_stops"));
     queue.add(withUrl("/cron/populate_pizza_boss"));
     queue.add(withUrl("/cron/populate_royal_palms"));
-
+    queue.add(withUrl("/cron/populate_big_wangs"));
+    
     truckDAO.findTruckWithICalCalendars()
         .forEach(truck -> queue.add(
             withUrl("/cron/populate_ical_stops")
@@ -52,6 +53,7 @@ public class TempScheduleService {
     truckDAO.findTrucksWithCalendars().forEach(truck -> queue.add(withUrl("/cron/populate_google_calendar_schedule")
         .param("calendar", Objects.requireNonNull(truck.getCalendarUrl()))
         .param("truck", truck.getId())));
+
     queue.add(withUrl("/cron/populate_plank_road_schedule"));
     queue.add(withUrl("/cron/populate_google_calendar_schedule")
         .param("calendar", "oswegobrewing.com_rg6gupgfqs5d3h97ur31ed88i0@group.calendar.google.com")

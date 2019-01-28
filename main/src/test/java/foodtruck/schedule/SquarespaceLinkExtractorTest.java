@@ -34,10 +34,7 @@ public class SquarespaceLinkExtractorTest {
         .getResourceAsStream("bigwangs.html");
     String doc = new String(ByteStreams.toByteArray(str), StandardCharsets.UTF_8);
 
-    Truck truck = Truck.builder(truck1())
-        .squarespaceCalendar("https://www.bigwangsfoodtruck.com/events")
-        .build();
-    List<String> links = extractor.findLinks(doc, truck);
+    List<String> links = extractor.findLinks(doc, "https://www.bigwangsfoodtruck.com/events");
     assertThat(links).hasSize(21);
     assertThat(links).contains(
         "https://www.bigwangsfoodtruck.com/events/2018/8/1/u-of-c-hyde-park-57th-s-ellis-lunch-service-jtexp?format=ical");

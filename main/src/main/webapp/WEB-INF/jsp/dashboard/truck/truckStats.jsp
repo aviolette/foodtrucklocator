@@ -10,7 +10,6 @@
   <li class="nav-item"><a class="nav-link" href="/admin/trucks/${truck.id}/beacons">Beacons</a></li>
   <li class="nav-item"><a class="nav-link" href="/admin/trucks/${truck.id}/danger">Danger Zone</a></li>
 
-
 </ul>
 
 
@@ -39,19 +38,5 @@
   </div>
 
 </div>
-
-<button id="updateStats" class="btn btn-warning">Update Stats</button>
-
-<script type="text/javascript">
-  $("#updateStats").click(function (e) {
-    e.preventDefault();
-    $.ajax({
-      url: '/cron/updateTruckStats?truckId=${truck.id}&force=true',
-      complete: function () {
-        location.reload();
-      }
-    });
-  });
-</script>
 
 <%@include file="../dashboardFooter1.jsp" %>

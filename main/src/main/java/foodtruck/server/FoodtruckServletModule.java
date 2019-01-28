@@ -70,6 +70,7 @@ import foodtruck.server.job.RebuildTempScheduleServlet;
 import foodtruck.server.job.RecacheServlet;
 import foodtruck.server.job.RepairLocationsServlet;
 import foodtruck.server.job.SeedAlterBrewingServlet;
+import foodtruck.server.job.SeedBigWangsServlet;
 import foodtruck.server.job.SeedCoastlineScheduleServlet;
 import foodtruck.server.job.SeedFatShallotSchedule;
 import foodtruck.server.job.SeedGoogleCalendarSchedule;
@@ -178,6 +179,7 @@ class FoodtruckServletModule extends ServletModule {
     serve("/cron/populate_temperance_stops").with(SeedTemperanceServlet.class);
     serve("/cron/populate_pizza_boss").with(SeedPizzaBossCalendarServlet.class);
     serve("/cron/populate_royal_palms").with(SeedRoyalPalmsScheduleServlet.class);
+    serve("/cron/populate_big_wangs").with(SeedBigWangsServlet.class);
 
     // Dashboard endpoints
     serve("/admin").with(AdminDashboardServlet.class);

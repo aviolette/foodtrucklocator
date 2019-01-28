@@ -12,7 +12,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import foodtruck.model.Truck;
 import foodtruck.util.Urls;
 
 /**
@@ -21,9 +20,9 @@ import foodtruck.util.Urls;
  */
 public class SquarespaceLinkExtractor {
 
-  public List<String> findLinks(String document, Truck truck) throws MalformedURLException {
+  public List<String> findLinks(String document, String baseUrl) throws MalformedURLException {
 
-    URL url = new URL(Objects.requireNonNull(truck.getSquarespaceCalendar()));
+    URL url = new URL(Objects.requireNonNull(baseUrl));
     String path = url.getPath() + "/";
     String basePath = Urls.baseUrl(url);
     Document doc = Jsoup.parse(document);
