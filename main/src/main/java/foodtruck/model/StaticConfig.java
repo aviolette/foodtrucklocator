@@ -10,10 +10,6 @@ import com.google.common.base.Splitter;
  */
 public class StaticConfig {
 
-  public boolean isRecachingEnabled() {
-    return "true".equals(System.getProperty("foodtrucklocator.recache.enabled", "true"));
-  }
-
   public String getSignalId() {
     return System.getProperty("foodtrucklocator.signal.id");
   }
@@ -50,10 +46,6 @@ public class StaticConfig {
     return System.getProperty("foodtrucklocator.twitter.list.owner");
   }
 
-  public boolean getShowTruckGraphs() {
-    return "true".equals(System.getProperty("foodtrucklocator.show.truck.graphs", "true"));
-  }
-
   public boolean isScheduleCachingOn() {
     return "true".equals(System.getProperty("foodtrucklocator.schedule.caching", "true"));
   }
@@ -62,24 +54,12 @@ public class StaticConfig {
     return "true".equals(System.getProperty("foodtrucklocator.auto.off.road", "true"));
   }
 
-  public boolean isGoogleGeolocationEnabled() {
-    return "true".equals(System.getProperty("foodtrucklocator.google.geolocation", "true"));
-  }
-
-  public boolean isYahooGeolocationEnabled() {
-    return "true".equals(System.getProperty("foodtrucklocator.yahoo.geolocation", "true"));
-  }
-
   public String getSyncUrl() {
     return System.getProperty("foodtrucklocator.sync.url", null);
   }
 
   public String getSyncAppKey() {
     return System.getProperty("foodtrucklocator.sync.app.key", null);
-  }
-
-  public String getYahooAppId() {
-    return System.getProperty("foodtrucklocator.yahoo.key");
   }
 
   public Location getCenter() {
@@ -101,10 +81,6 @@ public class StaticConfig {
 
   public String getFrontDoorAppKey() {
     return System.getProperty("foodtrucklocator.frontdoor.app.key", "");
-  }
-
-  public boolean showLocationGraphs() {
-    return "true".equals(System.getProperty("foodtrucklocator.show.location.graphs", "true"));
   }
 
   public Iterable<String> getSystemNotificationList() {
