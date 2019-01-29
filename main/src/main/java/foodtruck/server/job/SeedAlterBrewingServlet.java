@@ -2,10 +2,9 @@ package foodtruck.server.job;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.sun.jersey.api.client.Client;
 
-import foodtruck.annotations.UserAgent;
 import foodtruck.dao.TempTruckStopDAO;
+import foodtruck.net.UrlResource;
 import foodtruck.schedule.AlterBrewingReader;
 
 /**
@@ -16,8 +15,7 @@ import foodtruck.schedule.AlterBrewingReader;
 public class SeedAlterBrewingServlet extends AbstractSeedServlet {
 
   @Inject
-  public SeedAlterBrewingServlet(TempTruckStopDAO tempDAO, Client client, AlterBrewingReader reader,
-      @UserAgent String userAgent) {
-    super(tempDAO, client, reader, "https://www.alterbrewing.com/events/", userAgent, false);
+  public SeedAlterBrewingServlet(TempTruckStopDAO tempDAO, AlterBrewingReader reader, UrlResource urls) {
+    super(tempDAO, reader, "https://www.alterbrewing.com/events/", false, urls);
   }
 }

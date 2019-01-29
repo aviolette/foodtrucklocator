@@ -2,10 +2,9 @@ package foodtruck.server.job;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.sun.jersey.api.client.Client;
 
-import foodtruck.annotations.UserAgent;
 import foodtruck.dao.TempTruckStopDAO;
+import foodtruck.net.UrlResource;
 import foodtruck.schedule.SquareSpaceEventReader;
 
 /**
@@ -16,9 +15,8 @@ import foodtruck.schedule.SquareSpaceEventReader;
 public class SeedPlankRoadTapRoomServlet extends AbstractSeedServlet {
 
   @Inject
-  public SeedPlankRoadTapRoomServlet(TempTruckStopDAO tempDAO, Client client,
-      SquareSpaceEventReader reader, @UserAgent String userAgent) {
-    super(tempDAO, client, reader, "http://www.plankroadtaproom.com/events/", userAgent, false);
+  public SeedPlankRoadTapRoomServlet(TempTruckStopDAO tempDAO, SquareSpaceEventReader reader, UrlResource urls) {
+    super(tempDAO, reader, "http://www.plankroadtaproom.com/events/", false, urls);
   }
 
   @Override

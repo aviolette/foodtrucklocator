@@ -2,10 +2,9 @@ package foodtruck.server.job;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.sun.jersey.api.client.Client;
 
-import foodtruck.annotations.UserAgent;
 import foodtruck.dao.TempTruckStopDAO;
+import foodtruck.net.UrlResource;
 import foodtruck.schedule.SkeletonKeyReader;
 
 /**
@@ -16,8 +15,7 @@ import foodtruck.schedule.SkeletonKeyReader;
 public class SeedSkeletonKeyServlet extends AbstractSeedServlet {
 
   @Inject
-  public SeedSkeletonKeyServlet(TempTruckStopDAO tempDAO, Client client, @UserAgent String userAgent,
-      SkeletonKeyReader reader) {
-    super(tempDAO, client, reader, "https://www.skeletonkeybrewery.com/event-directory/", userAgent, false);
+  public SeedSkeletonKeyServlet(TempTruckStopDAO tempDAO, SkeletonKeyReader reader, UrlResource urls) {
+    super(tempDAO, reader, "https://www.skeletonkeybrewery.com/event-directory/", false, urls);
   }
 }

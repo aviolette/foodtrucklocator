@@ -2,10 +2,9 @@ package foodtruck.server.job;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.sun.jersey.api.client.Client;
 
-import foodtruck.annotations.UserAgent;
 import foodtruck.dao.TempTruckStopDAO;
+import foodtruck.net.UrlResource;
 import foodtruck.schedule.CoastlineCalendarReader;
 
 /**
@@ -17,8 +16,7 @@ import foodtruck.schedule.CoastlineCalendarReader;
 public class SeedCoastlineScheduleServlet extends AbstractSeedServlet {
 
   @Inject
-  public SeedCoastlineScheduleServlet(Client client, @UserAgent String userAgent, CoastlineCalendarReader reader,
-      TempTruckStopDAO dao) {
-    super(dao, client, reader, "https://cateredbycoastline.com", userAgent, true);
+  public SeedCoastlineScheduleServlet(CoastlineCalendarReader reader, TempTruckStopDAO dao, UrlResource urls) {
+    super(dao, reader, "https://cateredbycoastline.com", true, urls);
   }
 }

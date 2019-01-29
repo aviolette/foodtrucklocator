@@ -2,10 +2,9 @@ package foodtruck.server.job;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.sun.jersey.api.client.Client;
 
-import foodtruck.annotations.UserAgent;
 import foodtruck.dao.TempTruckStopDAO;
+import foodtruck.net.UrlResource;
 import foodtruck.schedule.WerkforceReader;
 
 /**
@@ -16,8 +15,7 @@ import foodtruck.schedule.WerkforceReader;
 public class SeedWerkforceServlet extends AbstractSeedServlet {
 
   @Inject
-  public SeedWerkforceServlet(TempTruckStopDAO tempDAO, Client client, WerkforceReader reader,
-      @UserAgent String userAgent) {
-    super(tempDAO, client, reader, "http://www.werkforcebrewing.com/events/", userAgent, false);
+  public SeedWerkforceServlet(TempTruckStopDAO tempDAO, WerkforceReader reader, UrlResource urls) {
+    super(tempDAO, reader, "http://www.werkforcebrewing.com/events/", false, urls);
   }
 }

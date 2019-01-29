@@ -2,10 +2,9 @@ package foodtruck.server.job;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.sun.jersey.api.client.Client;
 
-import foodtruck.annotations.UserAgent;
 import foodtruck.dao.TempTruckStopDAO;
+import foodtruck.net.UrlResource;
 import foodtruck.schedule.FatShallotScheduleReader;
 
 /**
@@ -16,8 +15,7 @@ import foodtruck.schedule.FatShallotScheduleReader;
 public class SeedFatShallotSchedule extends AbstractSeedServlet {
 
   @Inject
-  public SeedFatShallotSchedule(TempTruckStopDAO tempDAO, Client client, FatShallotScheduleReader reader,
-      @UserAgent String userAgent) {
-    super(tempDAO, client, reader, "http://thefatshallot.com/schedule/", userAgent, false);
+  public SeedFatShallotSchedule(TempTruckStopDAO tempDAO, FatShallotScheduleReader reader, UrlResource urls) {
+    super(tempDAO, reader, "http://thefatshallot.com/schedule/", false, urls);
   }
 }
