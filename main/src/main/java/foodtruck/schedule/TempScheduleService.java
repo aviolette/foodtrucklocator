@@ -1,7 +1,6 @@
 package foodtruck.schedule;
 
 import java.util.Objects;
-import java.util.logging.Logger;
 
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.inject.Inject;
@@ -44,7 +43,7 @@ public class TempScheduleService {
     queue.add(withUrl("/cron/populate_pizza_boss"));
     queue.add(withUrl("/cron/populate_royal_palms"));
     queue.add(withUrl("/cron/populate_big_wangs"));
-    
+
     truckDAO.findTruckWithICalCalendars()
         .forEach(truck -> queue.add(
             withUrl("/cron/populate_ical_stops")
