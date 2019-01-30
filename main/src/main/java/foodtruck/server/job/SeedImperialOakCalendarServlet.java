@@ -13,13 +13,13 @@ import com.google.appengine.api.utils.SystemProperty;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.sun.jersey.api.client.Client;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 
 import foodtruck.dao.TempTruckStopDAO;
 import foodtruck.model.TempTruckStop;
+import foodtruck.net.UrlResource;
 import foodtruck.schedule.SimpleCalReader;
 
 /**
@@ -32,14 +32,14 @@ public class SeedImperialOakCalendarServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(SeedImperialOakCalendarServlet.class.getName());
 
   private final TempTruckStopDAO tempDAO;
-  private final Client client;
   private final SimpleCalReader reader;
+  private final UrlResource urls;
 
   @Inject
-  public SeedImperialOakCalendarServlet(TempTruckStopDAO tempDAO, Client client, SimpleCalReader reader) {
+  public SeedImperialOakCalendarServlet(TempTruckStopDAO tempDAO, SimpleCalReader reader, UrlResource urls) {
     this.tempDAO = tempDAO;
-    this.client = client;
     this.reader = reader;
+    this.urls = urls;
   }
 
   @Override
@@ -54,10 +54,7 @@ public class SeedImperialOakCalendarServlet extends HttpServlet {
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     log.log(Level.INFO, "Updating Imperial Oaks calendar data");
-
-    JSONArray arr = client.resource("https://us-central1-chicagofoodtrucklocator.cloudfunctions.net/imperial-oak")
-        .get(JSONArray.class);
-
+    JSONArray arr = urls.getAsArray("https://us-central1-chicagofoodtrucklocator.cloudfunctions.net/imperial-oak");
     try {
       for (TempTruckStop stop : reader.read(arr, "imperialoak" , "Imperial Oak Brewery")) {
         tempDAO.save(stop);

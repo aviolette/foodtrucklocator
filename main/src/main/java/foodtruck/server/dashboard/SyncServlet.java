@@ -7,11 +7,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.MediaType;
 
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
-import com.sun.jersey.api.client.Client;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -25,10 +23,10 @@ import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
+import foodtruck.net.UrlResource;
 import foodtruck.server.resources.json.LocationReader;
 import foodtruck.server.resources.json.TruckReader;
 import foodtruck.time.Clock;
-
 
 /**
  * @author aviolette
@@ -36,6 +34,7 @@ import foodtruck.time.Clock;
  */
 @Singleton
 public class SyncServlet extends HttpServlet {
+
   private final StaticConfig staticConfig;
   private final TruckReader truckReader;
   private final TruckDAO truckDAO;
@@ -43,12 +42,11 @@ public class SyncServlet extends HttpServlet {
   private final Clock clock;
   private final LocationReader locationReader;
   private final LocationDAO locationDAO;
-  private final Client client;
+  private final UrlResource urls;
 
   @Inject
-  public SyncServlet(StaticConfig staticConfig, TruckReader truckReader, TruckDAO truckDAO,
-      TruckStopDAO truckStopDAO, Clock clock, LocationReader locationReader,
-      LocationDAO locationDAO, Client client) {
+  public SyncServlet(StaticConfig staticConfig, TruckReader truckReader, TruckDAO truckDAO, TruckStopDAO truckStopDAO,
+      Clock clock, LocationReader locationReader, LocationDAO locationDAO, UrlResource urls) {
     this.truckReader = truckReader;
     this.truckDAO = truckDAO;
     this.truckStopDAO = truckStopDAO;
@@ -56,44 +54,49 @@ public class SyncServlet extends HttpServlet {
     this.locationReader = locationReader;
     this.locationDAO = locationDAO;
     this.staticConfig = staticConfig;
-    this.client = client;
+    this.urls = urls;
   }
 
-  @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+  @Override
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     req.setAttribute("nav", "sync");
     req.setAttribute("syncEnabled", !Strings.isNullOrEmpty(staticConfig.getSyncUrl()));
-    req.getRequestDispatcher("/WEB-INF/jsp/dashboard/sync.jsp").forward(req, resp);
+    req.getRequestDispatcher("/WEB-INF/jsp/dashboard/sync.jsp")
+        .forward(req, resp);
   }
 
-  @Override protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
-    boolean syncTrucks = "on".equals(req.getParameter("trucks")),
-      syncSchedule = "on".equals(req.getParameter("schedule"));
+  @Override
+  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    boolean syncTrucks = "on".equals(req.getParameter("trucks")), syncSchedule = "on".equals(
+        req.getParameter("schedule"));
 
     if (syncTrucks) {
       truckDAO.deleteAll();
-      JSONArray arr = client.resource(staticConfig.getSyncUrl() + "/services/trucks?appKey="+staticConfig.getSyncAppKey())
-          .accept(MediaType.APPLICATION_JSON_TYPE).get(JSONArray.class);
-      for (int i=0; i < arr.length(); i++) {
+      JSONArray arr = urls.getAsArray(
+          staticConfig.getSyncUrl() + "/services/trucks?appKey=" + staticConfig.getSyncAppKey());
+      for (int i = 0; i < arr.length(); i++) {
         try {
           Truck truck = truckReader.asJSON(arr.getJSONObject(i));
-          truckDAO.save(Truck.builder(truck).useTwittalyzer(true).build());
+          truckDAO.save(Truck.builder(truck)
+              .useTwittalyzer(true)
+              .build());
         } catch (JSONException e) {
           throw new ServletException(e);
         }
       }
     }
     if (syncSchedule) {
-      final DateTime from = clock.now().withHourOfDay(0).withMinuteOfHour(0);
+      final DateTime from = clock.now()
+          .withHourOfDay(0)
+          .withMinuteOfHour(0);
       truckStopDAO.deleteAfter(from);
-      JSONObject dailySchedule = client.resource(staticConfig.getSyncUrl() + "/services/daily_schedule?appKey="+staticConfig.getSyncAppKey())
-          .accept(MediaType.APPLICATION_JSON_TYPE).get(JSONObject.class);
+      JSONObject dailySchedule = urls.getAsJson(
+          staticConfig.getSyncUrl() + "/services/daily_schedule?appKey=" + staticConfig.getSyncAppKey());
 
       try {
         JSONArray locations = dailySchedule.getJSONArray("locations");
         Location loc[] = new Location[locations.length()];
-        for (int i=0; i < locations.length(); i++) {
+        for (int i = 0; i < locations.length(); i++) {
           Location location = locationReader.toLocation(locations.getJSONObject(i));
           locationDAO.findByName(location.getName())
               .ifPresent(existing -> locationDAO.delete((Long) location.getKey()));
@@ -101,14 +104,17 @@ public class SyncServlet extends HttpServlet {
           loc[i] = location;
         }
         JSONArray schedules = dailySchedule.getJSONArray("stops");
-        for (int i=0; i < schedules.length(); i++) {
+        for (int i = 0; i < schedules.length(); i++) {
           JSONObject stopJSON = schedules.getJSONObject(i);
           Location location = loc[stopJSON.getInt("location") - 1];
           String truckId = stopJSON.getString("truckId");
           TruckStop stop = TruckStop.builder()
               .endTime(new DateTime(stopJSON.getLong("endMillis")))
               .startTime(new DateTime(stopJSON.getLong("startMillis")))
-              .truck(truckDAO.findByIdOpt(truckId).orElse(Truck.builder().id(truckId).build()))
+              .truck(truckDAO.findByIdOpt(truckId)
+                  .orElse(Truck.builder()
+                      .id(truckId)
+                      .build()))
               .location(location)
               .build();
           truckStopDAO.save(stop);

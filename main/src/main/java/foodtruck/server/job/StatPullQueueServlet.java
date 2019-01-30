@@ -22,7 +22,6 @@ import com.google.inject.Singleton;
 
 import foodtruck.monitoring.StatUpdate;
 import foodtruck.metrics.MetricsService;
-import foodtruck.time.Clock;
 
 /**
  * @author aviolette
@@ -34,14 +33,12 @@ public class StatPullQueueServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(StatPullQueueServlet.class.getName());
 
   private final ObjectMapper mapper;
-  private final Clock clock;
   private final MetricsService service;
 
   @Inject
-  public StatPullQueueServlet(ObjectMapper mapper, Clock clock, MetricsService service) {
+  public StatPullQueueServlet(ObjectMapper mapper, MetricsService service) {
     this.mapper = mapper;
     this.service = service;
-    this.clock = clock;
   }
 
   @Override
@@ -64,7 +61,6 @@ public class StatPullQueueServlet extends HttpServlet {
       }
       q.deleteTask(task);
     }
-
     service.updateStats(counts);
   }
 }
