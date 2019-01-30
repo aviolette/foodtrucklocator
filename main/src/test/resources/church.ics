@@ -1,0 +1,67 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Chicago&#039;s Best Craft Beer - ECPv4.6.22//NONSGML v1.0//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Chicago&#039;s Best Craft Beer
+X-ORIGINAL-URL:http://www.churchstreetbrew.com/home
+X-WR-CALDESC:Events for Chicago&#039;s Best Craft Beer
+BEGIN:VEVENT
+DTSTART;VALUE=DATE:20190130
+DTEND;VALUE=DATE:20190131
+DTSTAMP:20190130T123847
+CREATED:20190130T023755Z
+LAST-MODIFIED:20190130T023755Z
+UID:3646-1548806400-1548892799@www.churchstreetbrew.com
+SUMMARY:Brrrr! Too Cold.  Tap Room closed today.
+DESCRIPTION:
+URL:http://www.churchstreetbrew.com/home/event/brrrr-too-cold-tap-room-closed-today/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=America/Chicago:20190131T170000
+DTEND;TZID=America/Chicago:20190131T220000
+DTSTAMP:20190130T123847
+CREATED:20190124T233634Z
+LAST-MODIFIED:20190124T233634Z
+UID:3624-1548954000-1548972000@www.churchstreetbrew.com
+SUMMARY:Sorry!  Only TO GO beer from Tap Room
+DESCRIPTION:As a private party has reserved the Tap Room. \n
+URL:http://www.churchstreetbrew.com/home/event/sorry-only-to-go-beer-from-tap-room/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=America/Chicago:20190201T180000
+DTEND;TZID=America/Chicago:20190201T210000
+DTSTAMP:20190130T123847
+CREATED:20190130T023346Z
+LAST-MODIFIED:20190130T023450Z
+UID:3643-1549044000-1549054800@www.churchstreetbrew.com
+SUMMARY:Music of Luke Schmitt
+DESCRIPTION:6-9pm in the Tap Room \n
+URL:http://www.churchstreetbrew.com/home/event/music-of-luke-schmitt/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=America/Chicago:20190204T170000
+DTEND;TZID=America/Chicago:20190304T220000
+DTSTAMP:20190130T123847
+CREATED:20180826T185605Z
+LAST-MODIFIED:20190130T023709Z
+UID:2794-1549299600-1551736800@www.churchstreetbrew.com
+SUMMARY:Half Priced Pint Monday
+DESCRIPTION:Become a Growler Club Member and enjoy discounted Growlers as
+well! \n  \n
+URL:http://www.churchstreetbrew.com/home/event/half-priced-pint-monday-2/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=America/Chicago:20190208T193000
+DTEND;TZID=America/Chicago:20190208T213000
+DTSTAMP:20190130T123847
+CREATED:20181127T191521Z
+LAST-MODIFIED:20181127T192743Z
+UID:3366-1549654200-1549661400@www.churchstreetbrew.com
+SUMMARY:Wrestling in the Tap Room
+DESCRIPTION:If you missed the first one\, you don’t want to miss this one.
+\nDoors Open: 7:45pm\nBell Time: 8:30pm \nBrought to you by Freelance
+Underground. \nTwitter. \n
+URL:http://www.churchstreetbrew.com/home/event/wrestling-in-the-tap-room-2/
+END:VEVENT
+END:VCALENDAR

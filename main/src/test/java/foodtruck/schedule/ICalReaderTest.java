@@ -1,9 +1,14 @@
 package foodtruck.schedule;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
+
+import com.google.common.io.ByteStreams;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,5 +45,16 @@ public class ICalReaderTest extends Mockito {
     List<ICalReader.ICalEvent> events = reader.parse(doc, true);
     assertThat(events).containsExactly(new ICalReader.ICalEvent(ZonedDateTime.of(2019, 1, 17, 16, 30, 0, 0, ZoneOffset.UTC), ZonedDateTime.of(2019, 1, 17, 20, 0, 0, 0,
         ZoneOffset.UTC), "Chicago Lunch", null, loc));
+  }
+
+  @Test
+  public void parse2() throws IOException {
+    InputStream str = ClassLoader.getSystemClassLoader()
+        .getResourceAsStream("church.ics");
+    String doc = new String(ByteStreams.toByteArray(str), StandardCharsets.UTF_8);
+    when(geoLocator.locateOpt(any())).thenReturn(Optional.empty());
+    ICalReader reader = new ICalReader(CHICAGO, geoLocator);
+    reader.parse(doc, true);
+
   }
 }

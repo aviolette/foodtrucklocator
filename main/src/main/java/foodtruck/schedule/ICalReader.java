@@ -3,6 +3,8 @@ package foodtruck.schedule;
 import java.io.BufferedReader;
 import java.io.StringReader;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -67,7 +69,12 @@ public class ICalReader {
         if (tag.startsWith("DTSTART") || tag.startsWith("DTEND")) {
           int semi = line.indexOf("=");
           if (semi != -1) {
-            zone = ZoneId.of(tag.substring(semi+1));
+            String timezone = tag.substring(semi + 1);
+            if (timezone.equals("DATE")) {
+              zone = null;
+            } else {
+              zone = ZoneId.of(timezone);
+            }
           }
         }
 
@@ -102,6 +109,11 @@ public class ICalReader {
   }
 
   private ZonedDateTime parseTime(String origTime, ZoneId zone) {
+    if (zone == null) {
+      // this is an all-day event
+      LocalDate ld = LocalDate.from(DateTimeFormatter.BASIC_ISO_DATE.parse(origTime));
+      return ZonedDateTime.of(ld, LocalTime.MIDNIGHT, defaultZone);
+    }
     String time = origTime;
     int index = time.indexOf('T');
     if (index > 0) {
