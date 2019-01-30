@@ -54,7 +54,9 @@ public class ICalReaderTest extends Mockito {
     String doc = new String(ByteStreams.toByteArray(str), StandardCharsets.UTF_8);
     when(geoLocator.locateOpt(any())).thenReturn(Optional.empty());
     ICalReader reader = new ICalReader(CHICAGO, geoLocator);
-    reader.parse(doc, true);
-
+    List<ICalReader.ICalEvent> events = reader.parse(doc, true);
+    assertThat(events).hasSize(5);
+    assertThat(events).contains(new ICalReader.ICalEvent(ZonedDateTime.of(2019, 1, 30, 0, 0, 0, 0, CHICAGO),
+        ZonedDateTime.of(2019, 1, 31, 0, 0, 0, 0, CHICAGO), "Brrrr! Too Cold.  Tap Room closed today.", null, null));
   }
 }
