@@ -25,4 +25,10 @@ public class WerkforceReaderTest extends AbstractReaderTest<WerkforceReader> {
     List<TempTruckStop> stops = execFindStop("werkforce.html");
     assertThat(stops).hasSize(12);
   }
+
+  @Test
+  public void findStops2() throws IOException {
+    List<TempTruckStop> stops = execFindStop("werkforce2.html");
+    assertThat(stops).hasSize(11);
+  }
 }
