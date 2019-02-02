@@ -64,7 +64,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
   private static final String TRUCK_STATS_LAST_SEEN_WHEN = "last_seen_when";
   private static final String TRUCK_STATS_LAST_SEEN_WHERE = "last_seen_where";
   private static final String TRUCK_STATS_LAST_UPDATED = "last_updated";
-  private static final String TRUCK_STATS_TOTAL_STOPS = "total_stops";
+  private static final String TRUCK_STATS_TOTAL_STOPS = "all_stops";
   private static final String TRUCK_STATS_STOPS_THIS_YEAR = "stops_this_year";
   private static final String TRUCK_STATS_LAST_SEEN_WHERE_LAT = "last_seen_lat";
   private static final String TRUCK_STATS_LAST_SEEN_WHERE_LNG = "last_seen_lng";
