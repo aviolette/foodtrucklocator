@@ -38,6 +38,10 @@ public class TruckBeaconServlet extends AbstractTruckServlet {
   protected void doGetProtected(HttpServletRequest request, HttpServletResponse response,
       Truck truck) throws ServletException, IOException {
     helper.seedRequest(request, truck);
+    if (request.getAttribute("linxupAccount") == null) {
+      response.sendRedirect("/admin/trucks/"+ truck.getId() + "/linxup_config");
+      return;
+    }
     request.setAttribute("extraScripts", ImmutableList.of("//maps.googleapis.com/maps/api/js?key=" + javascriptApiKey,
         "/script/vendordash.js",
         "/script/lib/spin.min.js",
