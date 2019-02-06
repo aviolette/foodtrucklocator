@@ -19,9 +19,14 @@
           var $tr = $("<tr></tr>");
           $tr.append("<td><a href='/admin/beacons/" + item.id + "'>" + item.label + "</a></td>");
           $tr.append("<td class='large-screen-only'>" + item.deviceNumber + "</td>");
+          var locationBody = "";
           if (item.lastLocation) {
-            $tr.append("<td><a href=\"/admin/locations/" + item.lastLocation.key + "\">" + item.lastLocation.shortenedName + "</a> at " + item.lastBroadcast + "</td>");
+            locationBody = "<a href=\"/admin/locations/" + item.lastLocation.key + "\">" + item.lastLocation.shortenedName + "</a> at " + item.lastBroadcast;
           }
+          if (item.hasWarning) {
+            locationBody += "<div class='alert alert-danger mt-2'><span class='icon icon-warning'></span> " + item.warning +"</div>";
+          }
+          $tr.append("<td>" + locationBody + "</td>");
           $tr.append("<td class='large-screen-only'>" + item.lastModified + "</td>");
           $tr.append("<td>" + (item.parked ? "PARKED" : "MOVING") + "</td>");
 

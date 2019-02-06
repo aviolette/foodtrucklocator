@@ -36,6 +36,7 @@ public class TrackingDevice extends ModelEntity {
   private @Nullable String batteryCharge;
   private int degreesFromNorth;
   private @Nullable Location lastActualLocation;
+  private int lastSpeedInMPH;
 
   private TrackingDevice(Builder builder) {
     super(builder.key);
@@ -53,6 +54,7 @@ public class TrackingDevice extends ModelEntity {
     this.batteryCharge = builder.batteryCharge;
     this.degreesFromNorth = builder.degreesFromNorth;
     this.lastActualLocation = builder.lastActualLocation;
+    this.lastSpeedInMPH = builder.lastSpeedInMPH;
   }
 
   public static Builder builder() {
@@ -117,6 +119,10 @@ public class TrackingDevice extends ModelEntity {
     } catch (Exception e) {
       return 0;
     }
+  }
+
+  public int getLastSpeedInMPH() {
+    return lastSpeedInMPH;
   }
 
   public boolean isParked() {
@@ -241,6 +247,7 @@ public class TrackingDevice extends ModelEntity {
     private @Nullable String batteryCharge;
     private int degreesFromNorth;
     private @Nullable Location lastActualLocation;
+    private int lastSpeedInMPH = -1;
 
     public Builder() {
     }
@@ -258,6 +265,12 @@ public class TrackingDevice extends ModelEntity {
       this.atBlacklistedLocation = device.atBlacklistedLocation;
       this.degreesFromNorth = device.degreesFromNorth;
       this.lastActualLocation = device.lastActualLocation;
+      this.lastSpeedInMPH = device.lastSpeedInMPH;
+    }
+
+    public Builder lastSpeedInMPH(int speed) {
+      this.lastSpeedInMPH = speed;
+      return this;
     }
 
     public Builder degreesFromNorth(int degreesFromNorth) {

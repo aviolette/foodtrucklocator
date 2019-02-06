@@ -22,7 +22,11 @@ import com.google.inject.Provider;
 import com.javadocmd.simplelatlng.LatLng;
 
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
 
 import foodtruck.dao.LinxupAccountDAO;
 import foodtruck.dao.TrackingDeviceDAO;
@@ -369,6 +373,7 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
       deviceMap.put(device.getDeviceNumber(), device);
     }
     ImmutableList.Builder<TrackingDevice> devices = ImmutableList.builder();
+    DateTime now = clock.now();
     //noinspection NullableProblems
     for (Position position : positions) {
       TrackingDevice device = deviceMap.get(position.getDeviceNumber());
@@ -418,6 +423,7 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
           .truckOwnerId(linxupAccount.getTruckId())
           .atBlacklistedLocation(blacklistedLocationMatcher.isBlacklisted(device))
           .lastBroadcast(position.getDate())
+          .lastSpeedInMPH(position.getSpeedMph())
           .label(position.getVehicleLabel());
       TrackingDevice theDevice = builder.build();
       trackingDeviceDAO.save(theDevice);

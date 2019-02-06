@@ -71,6 +71,7 @@ public class BeaconWriter implements MessageBodyWriter<TrackingDevice>, JSONWrit
         .put("parked", trackingDevice.isParked())
         .put("blacklisted", trackingDevice.isAtBlacklistedLocation())
         .put("id", trackingDevice.getKey())
+        .put("lastSpeedInMPH", trackingDevice.getLastSpeedInMPH())
         .put("lastModified", formatter.print(trackingDevice.getLastModified()))
         .put("lastBroadcast", formatter.print(trackingDevice.getLastBroadcast()));
   }
