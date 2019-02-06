@@ -12,6 +12,7 @@
       display: block;
     }
   }
+
 </style>
 
 <div class="btn-toolbar">

@@ -25,14 +25,9 @@
           $tr.append("<td class='large-screen-only'>" + item.lastModified + "</td>");
           $tr.append("<td>" + (item.parked ? "PARKED" : "MOVING") + "</td>");
 
-          var $button = $("<button class='beacon-button btn' id='beacon-button-" + item.id + "'>" + (item.enabled ? "Disable" : "Enable") + "</button>");
-          if (item.enabled) {
-            $button.addClass("btn-danger");
-          } else {
-            $button.addClass("btn-success");
-          }
+          var $cb = $("<label class='switch'><input type='checkbox' class='beacon-button' id='beacon-button-" + item.id + "' " + (item.enabled ? "checked='checked'" : "") + "><span class='slider'></span></label>");
           var $td = $("<td></td>");
-          $td.append($button);
+          $td.append($cb);
           $tr.append($td)
           $("#beacons").append($tr);
         });
@@ -49,7 +44,7 @@
         $(".beacon-button").click(function (e) {
           var $self = $(e.target);
           var item = $self.attr("id").substr(14);
-          var action = $self.text().toLowerCase();
+          var action = $self.prop("checked") ? "enable" : "disable";
           $.ajax({
             url: "/services/beacons/" + item + "/" + action,
             type: 'POST',
