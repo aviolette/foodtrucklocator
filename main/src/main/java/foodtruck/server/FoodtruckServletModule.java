@@ -9,6 +9,7 @@ import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 
+import foodtruck.annotations.GoogleJavascriptApiKey;
 import foodtruck.jersey.ScheduleCacherImpl;
 import foodtruck.schedule.ScheduleCacher;
 import foodtruck.server.dashboard.AddressRuleServlet;
@@ -288,6 +289,12 @@ class FoodtruckServletModule extends ServletModule {
   @Named("foodtrucklocator.signal.id")
   public String provideFoodTruckLocatorSignalId() {
     return System.getProperty("foodtrucklocator.signal.id");
+  }
+
+  @Provides
+  @GoogleJavascriptApiKey
+  public String provideJavascriptApiKey() {
+    return System.getProperty("foodtrucklocator.google.javascript.api.key", "");
   }
 
   // TODO: once we're off jersey-json move this into core-services

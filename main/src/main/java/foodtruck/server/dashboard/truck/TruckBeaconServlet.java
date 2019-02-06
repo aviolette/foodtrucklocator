@@ -10,6 +10,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import foodtruck.annotations.GoogleJavascriptApiKey;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
 import foodtruck.server.vendor.BeaconServletHelper;
@@ -23,17 +24,24 @@ import foodtruck.util.Link;
 public class TruckBeaconServlet extends AbstractTruckServlet {
   private static final String JSP = "/WEB-INF/jsp/dashboard/truck/beacons.jsp";
   private final BeaconServletHelper helper;
+  private final String javascriptApiKey;
 
   @Inject
-  public TruckBeaconServlet(TruckDAO truckDAO, BeaconServletHelper helper) {
+  public TruckBeaconServlet(TruckDAO truckDAO, BeaconServletHelper helper,
+      @GoogleJavascriptApiKey String javascriptApiKey) {
     super(truckDAO);
     this.helper = helper;
+    this.javascriptApiKey = javascriptApiKey;
   }
 
   @Override
   protected void doGetProtected(HttpServletRequest request, HttpServletResponse response,
       Truck truck) throws ServletException, IOException {
     helper.seedRequest(request, truck);
+    request.setAttribute("extraScripts", ImmutableList.of("//maps.googleapis.com/maps/api/js?key=" + javascriptApiKey,
+        "/script/vendordash.js",
+        "/script/lib/spin.min.js",
+        "/script/dashboard-truck-beacons.js"));
     forward(request, response);
   }
 
