@@ -16,6 +16,6 @@ public class SeedWerkforceServlet extends AbstractSeedServlet {
 
   @Inject
   public SeedWerkforceServlet(TempTruckStopDAO tempDAO, WerkforceReader reader, UrlResource urls) {
-    super(tempDAO, reader, "http://www.werkforcebrewing.com/events/", false, urls);
+    super(tempDAO, reader, "https://www.werkforcebrewing.com/events/", false, urls);
   }
 }
