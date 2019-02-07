@@ -429,7 +429,7 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
       trackingDeviceDAO.save(theDevice);
       int warningCount = theDevice.isHasWarning() ? 1 : 0;
       publisher.increment("device_warnings", warningCount, clock.nowInMillis(),
-          ImmutableMap.of("device", theDevice.getLabel()));
+          ImmutableMap.of("device", theDevice.getLabel(), "truck", linxupAccount.getTruckId()));
       devices.add(theDevice);
     }
     return devices.build();
