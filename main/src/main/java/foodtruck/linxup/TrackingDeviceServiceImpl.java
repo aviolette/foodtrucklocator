@@ -16,17 +16,14 @@ import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.javadocmd.simplelatlng.LatLng;
 
 import org.joda.time.DateTime;
-import org.joda.time.Duration;
-import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.PeriodFormatter;
-import org.joda.time.format.PeriodFormatterBuilder;
 
 import foodtruck.dao.LinxupAccountDAO;
 import foodtruck.dao.TrackingDeviceDAO;
@@ -42,6 +39,7 @@ import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.monitoring.Counter;
+import foodtruck.monitoring.CounterPublisher;
 import foodtruck.server.security.SecurityChecker;
 import foodtruck.time.Clock;
 import foodtruck.time.FriendlyDateTimeFormat;
@@ -68,6 +66,7 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
   private final LocationResolver locationResolver;
   private final Counter counter;
   private final ServiceWindowDetector serviceWindow;
+  private final CounterPublisher publisher;
 
   @Inject
   public TrackingDeviceServiceImpl(TruckStopDAO truckStopDAO, LinxupConnector connector,
@@ -75,7 +74,7 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
       @FriendlyDateTimeFormat DateTimeFormatter formatter, SecurityChecker securityChecker,
       LinxupAccountDAO linxupAccountDAO, Provider<Queue> queueProvider, Provider<TruckStopCache> truckStopCacheProvider,
       BlacklistedLocationMatcher blacklistedLocationMatcher, LocationResolver locationResolver,
-      @ErrorCounter Counter errorCounter, ServiceWindowDetector serviceWindow) {
+      @ErrorCounter Counter errorCounter, ServiceWindowDetector serviceWindow, CounterPublisher publisher) {
     this.connector = connector;
     this.truckStopDAO = truckStopDAO;
     this.trackingDeviceDAO = trackingDeviceDAO;
@@ -91,6 +90,7 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
     this.locationResolver = locationResolver;
     this.counter = errorCounter;
     this.serviceWindow = serviceWindow;
+    this.publisher = publisher;
   }
 
   @Override
@@ -427,6 +427,9 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
           .label(position.getVehicleLabel());
       TrackingDevice theDevice = builder.build();
       trackingDeviceDAO.save(theDevice);
+      int warningCount = theDevice.isHasWarning() ? 1 : 0;
+      publisher.increment("device_warnings", warningCount, clock.nowInMillis(),
+          ImmutableMap.of("device", theDevice.getLabel()));
       devices.add(theDevice);
     }
     return devices.build();
