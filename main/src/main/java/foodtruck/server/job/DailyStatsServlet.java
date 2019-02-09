@@ -119,6 +119,10 @@ public class DailyStatsServlet extends HttpServlet {
         .ifPresent(truck -> {
           log.log(Level.INFO, "Processing stop: {0}", stop);
           Truck.Stats stats = truck.getStats();
+          if (stats == null) {
+            stats = new Truck.Stats.Builder()
+                .build();
+          }
           Truck.Stats.Builder statsBuilder = new Truck.Stats.Builder(stats);
           if (stats.getFirstSeen() == null) {
             statsBuilder.firstSeen(stop.getStartTime());
