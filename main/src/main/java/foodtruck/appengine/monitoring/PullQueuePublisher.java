@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
+import com.google.appengine.api.taskqueue.TransientFailureException;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 
@@ -50,7 +51,7 @@ public class PullQueuePublisher implements CounterPublisher {
       String obj = mapper.writeValueAsString(new StatUpdate(name, amount, timestampInMillis, labels));
       log.log(Level.FINE, "Writing stat to queue {0}", obj);
       q.add(TaskOptions.Builder.withMethod(TaskOptions.Method.PULL).payload(obj));
-    } catch (JsonProcessingException e) {
+    } catch (JsonProcessingException | TransientFailureException e) {
       log.log(Level.WARNING, e.getMessage(), e);
     }
   }
