@@ -19,6 +19,7 @@ import foodtruck.dao.TempTruckStopDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.TempTruckStop;
 import foodtruck.model.TruckStop;
+import foodtruck.monitoring.CounterPublisher;
 import foodtruck.time.Clock;
 import foodtruck.util.FakeClock;
 
@@ -40,12 +41,13 @@ public class TempTruckStopScheduleStrategyTest extends Mockito {
   @Mock private TempTruckStopDAO tempDAO;
   @Mock private LocationDAO locationDAO;
   @Mock private TruckDAO truckDAO;
+  @Mock private CounterPublisher publisher;
   private Clock clock;
 
   @Before
   public void before() {
     clock = FakeClock.fixed(1545320974000L);
-    strategy = new TempTruckStopScheduleStrategy(tempDAO, locationDAO, truckDAO, clock);
+    strategy = new TempTruckStopScheduleStrategy(tempDAO, locationDAO, truckDAO, clock, publisher);
   }
 
 
