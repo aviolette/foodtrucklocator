@@ -1,6 +1,36 @@
 var TruckMap = function() {
   var MILES_TO_METERS = 1609.34;
   var map, markers = [], bounds, openInfoWindow;
+
+  function buildBeaconWindow(marker, map, beacon) {
+    var $content = $("<div>"), $topDiv = $("<div>");
+    var $header = $("<div><h2>" + beacon.label + "</h2></div>");
+    var $body = $("<div>");
+    $body.append($("<table style='width:100%'>" +
+        "<tbody><tr>" +
+          "<td><span class='glyphicons glyphicons-gas-station'></span>&nbsp;" + beacon.fuelLevel + "</td>" +
+          "<td><span class='glyphicons glyphicons-battery-75'></span>&nbsp;" + beacon.battery +"V</td>" +
+          "<td><span class='glyphicons glyphicons-dashboard'></span>&nbsp" + beacon.lastSpeedInMPH +" MPH</td>" +
+        "</tr></tbody></table>"));
+    $body.append($("<p class='mt-4'><span class='glyphicons glyphicons-map-marker'></span>&nbsp;" +
+        "<a target='_blank' href='/locations/" + beacon.lastLocation.key + "'>" + beacon.lastLocation.name + "</a></p>"));
+    $body.append($("<p class='mt-2 mb-2'>Last broadcast: " + beacon.lastBroadcast + " </p>"));
+    $topDiv.append($header);
+    $topDiv.append($body);
+    $content.append($topDiv);
+    var infowindow = new google.maps.InfoWindow({
+      content: $content.html()
+    });
+    google.maps.event.addListener(marker, 'click', function () {
+      if (openInfoWindow) {
+        openInfoWindow.close();
+      }
+      openInfoWindow = infowindow;
+      infowindow.open(map, marker);
+    });
+
+  }
+
   function buildInfoWindow(marker, map, stop) {
     var $content = $("<div>"),
         $masterDiv = $("<div>");
@@ -53,6 +83,44 @@ var TruckMap = function() {
         center: markerLat,
         map: map
       });
+    },
+    addAnnotatedBeacon: function(beacon) {
+      if (typeof google == "undefined") {
+        return;
+      }
+      var latLng = new google.maps.LatLng(beacon.lastLocation.latitude, beacon.lastLocation.longitude);
+      var marker, parked = beacon.parked, blacklisted = beacon.blacklisted, enabled = beacon.enabled;
+      if (parked && enabled && !blacklisted) {
+        marker = new google.maps.Marker({
+          draggable: false,
+          position: latLng,
+          icon: "//maps.google.com/mapfiles/marker_green.png",
+          map: map
+        });
+      } else if(parked) {
+        marker = new google.maps.Marker({
+          draggable: false,
+          position: latLng,
+          icon: "//maps.google.com/mapfiles/marker_grey.png",
+          map: map
+        });
+      } else {
+        marker = new google.maps.Marker({
+          position: latLng,
+          icon: {
+            path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+            rotation: beacon.direction,
+            strokeColor: "red",
+            scale: 3
+          },
+          draggable: false,
+          map: map
+        });
+      }
+      markers.push(marker);
+      buildBeaconWindow(marker, map, beacon);
+      bounds.extend(marker.getPosition());
+      map.fitBounds(bounds);
     },
     addBeacon: function (lat, lng, enabled, parked, blacklisted, direction) {
       if (typeof google == "undefined") {

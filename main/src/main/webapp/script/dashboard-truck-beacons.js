@@ -13,8 +13,7 @@
       success: function (beacons) {
         $("#beacons").empty();
         $.each(beacons, function (i, item) {
-          TruckMap.addBeacon(item.lastLocation.latitude, item.lastLocation.longitude,
-              item.enabled, item.parked, item.blacklisted, item.direction);
+          TruckMap.addAnnotatedBeacon(item);
 
           var $tr = $("<tr></tr>");
           $tr.append("<td><a href='/admin/beacons/" + item.id + "'>" + item.label + "</a></td>");
@@ -35,16 +34,6 @@
           $td.append($cb);
           $tr.append($td)
           $("#beacons").append($tr);
-        });
-        $.ajax({
-          url: '/services/v2/stops?truck=' + beaconData.truckId,
-          type: 'GET',
-          dataType: 'json',
-          success: function (schedule) {
-            $.each(schedule, function (i, stop) {
-              TruckMap.addStop(stop);
-            });
-          }
         });
         $(".beacon-button").click(function (e) {
           var $self = $(e.target);

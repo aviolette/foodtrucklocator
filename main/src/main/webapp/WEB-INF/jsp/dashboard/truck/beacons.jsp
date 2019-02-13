@@ -13,6 +13,15 @@
     }
   }
 
+  .gm-style-iw h2, .gm-style-iw td {
+    color: black;
+  }
+
+  .gm-style-iw .glyphicons, .gm-style-iw td, .gm-style-iw p {
+    font-size:20px;
+    color: black;
+  }
+
 </style>
 
 <div class="btn-toolbar">
