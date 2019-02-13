@@ -4,7 +4,7 @@ var TruckMap = function() {
 
   function buildBeaconWindow(marker, map, beacon) {
     var $content = $("<div>"), $topDiv = $("<div>");
-    var $header = $("<div><h2>" + beacon.label + "</h2></div>");
+    var $header = $("<div><h4>" + beacon.label + "</h4></div>");
     var $body = $("<div>");
     $body.append($("<table style='width:100%'>" +
         "<tbody><tr>" +
@@ -12,9 +12,9 @@ var TruckMap = function() {
           "<td><span class='glyphicons glyphicons-battery-75'></span>&nbsp;" + beacon.battery +"V</td>" +
           "<td><span class='glyphicons glyphicons-dashboard'></span>&nbsp" + beacon.lastSpeedInMPH +" MPH</td>" +
         "</tr></tbody></table>"));
-    $body.append($("<p class='mt-4'><span class='glyphicons glyphicons-map-marker'></span>&nbsp;" +
+    $body.append($("<p class='mt-0'><span class='glyphicons glyphicons-map-marker'></span>&nbsp;" +
         "<a target='_blank' href='/locations/" + beacon.lastLocation.key + "'>" + beacon.lastLocation.name + "</a></p>"));
-    $body.append($("<p class='mt-2 mb-2'>Last broadcast: " + beacon.lastBroadcast + " </p>"));
+    $body.append($("<p class='mt-0 mb-0'>Last broadcast " + beacon.sinceLastUpdate + " ago at " + beacon.lastBroadcast + " </p>"));
     $topDiv.append($header);
     $topDiv.append($body);
     $content.append($topDiv);

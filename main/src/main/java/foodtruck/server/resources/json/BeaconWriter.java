@@ -15,11 +15,14 @@ import com.google.inject.Inject;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.joda.time.DateTime;
+import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.model.TrackingDevice;
 import foodtruck.server.resources.BadRequestException;
 import foodtruck.time.FriendlyDateTimeFormat;
+import foodtruck.time.TimeUtils;
 
 /**
  * @author aviolette
@@ -74,6 +77,7 @@ public class BeaconWriter implements MessageBodyWriter<TrackingDevice>, JSONWrit
         .put("battery", trackingDevice.getBatteryCharge())
         .put("fuelLevel", trackingDevice.getFuelLevel())
         .put("lastSpeedInMPH", trackingDevice.getLastSpeedInMPH())
+        .put("sinceLastUpdate", TimeUtils.period(new Period(trackingDevice.getLastBroadcast(), new DateTime())))
         .put("lastModified", formatter.print(trackingDevice.getLastModified()))
         .put("lastBroadcast", formatter.print(trackingDevice.getLastBroadcast()));
   }

@@ -13,6 +13,7 @@ import foodtruck.model.TruckStop;
 import foodtruck.time.FriendlyDateOnlyFormat;
 import foodtruck.time.HtmlDateFormatter;
 import foodtruck.time.TimeOnlyFormatter;
+import foodtruck.time.TimeUtils;
 
 /**
  * @author aviolette
@@ -53,7 +54,7 @@ public class TruckStopWriter implements JSONWriter<TruckStop> {
           .put("id", stop.getKey())
           .put("truckId", stop.getTruck()
               .getId())
-          .put("duration", period(p))
+          .put("duration", TimeUtils.period(p))
           .put("origin", stop.getOrigin())
           .put("locked", stop.isLocked())
           .put("fromBeacon", stop.isFromBeacon())
@@ -77,13 +78,5 @@ public class TruckStopWriter implements JSONWriter<TruckStop> {
         .put("endTimeH", htmlDateFormatter.print(stop.getEndTime()))
         .put("endTime", formatter.print(stop.getEndTime()));
 
-  }
-
-  private String period(Period p) {
-    String period = p.getHours() + ":" + (p.getMinutes() < 10 ? "0" + p.getMinutes() : p.getMinutes());
-    if (p.getDays() > 0) {
-      return p.getDays() + " days " + period;
-    }
-    return period;
   }
 }
