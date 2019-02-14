@@ -56,7 +56,7 @@ public class SeedScorchedEarthServlet extends AbstractJobServlet {
       String document = client.resource(url)
           .header(HttpHeaders.USER_AGENT, userAgent)
           .get(String.class);
-      List<TempTruckStop> stops = reader.findStops(document);
+      List<TempTruckStop> stops = reader.findStops(document, time);
       total += stops.size();
       stops.forEach(tempDAO::save);
       time = time.plusMonths(1);

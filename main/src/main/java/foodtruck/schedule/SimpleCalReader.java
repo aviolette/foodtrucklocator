@@ -69,6 +69,8 @@ public class SimpleCalReader {
       return "arnoldstacos";
     } else if (title.contains("aztec dave")) {
       return "aztecdaves";
+    } else if (title.contains("my funnel truck")) {
+      return "myfunneltruck";
     } else if (title.contains("donermen")) {
       return "dmentruck";
     } else if (title.contains("chuck's wood")) {

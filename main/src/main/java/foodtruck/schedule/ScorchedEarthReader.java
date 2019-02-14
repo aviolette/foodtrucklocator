@@ -5,14 +5,12 @@ import java.util.List;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import com.google.inject.Inject;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import foodtruck.model.TempTruckStop;
-import foodtruck.time.Clock;
 
 import static foodtruck.schedule.SimpleCalReader.inferTruckId;
 
@@ -20,20 +18,11 @@ import static foodtruck.schedule.SimpleCalReader.inferTruckId;
  * @author aviolette
  * @since 2018-12-28
  */
-public class ScorchedEarthReader implements StopReader {
+public class ScorchedEarthReader {
 
-  private final Clock clock;
-
-  @Inject
-  public ScorchedEarthReader(Clock clock) {
-    this.clock = clock;
-  }
-
-  @Override
-  public List<TempTruckStop> findStops(String document) {
+  public List<TempTruckStop> findStops(String document, ZonedDateTime zdt) {
     Document parsedDoc = Jsoup.parse(document);
     ImmutableList.Builder<TempTruckStop> stops = ImmutableList.builder();
-    ZonedDateTime zdt = clock.now8();
     for (Element link : parsedDoc.select("a")) {
       if (!link.attr("href").startsWith("/event")) {
         continue;
@@ -62,7 +51,7 @@ public class ScorchedEarthReader implements StopReader {
         }
       }
 
-      ZonedDateTime startTime = ZonedDateTime.of(zdt.getYear(), zdt.getMonthValue(), day, hours, minutes, 0, 0, clock.zone8());
+      ZonedDateTime startTime = ZonedDateTime.of(zdt.getYear(), zdt.getMonthValue(), day, hours, minutes, 0, 0, zdt.getZone());
       int length = 2;
       if (hours < 16) {
         length = 4;
@@ -79,7 +68,6 @@ public class ScorchedEarthReader implements StopReader {
     return stops.build();
   }
 
-  @Override
   public String getCalendar() {
     return "scorchedearth";
   }
