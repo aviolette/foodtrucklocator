@@ -2,13 +2,25 @@ var TruckMap = function() {
   var MILES_TO_METERS = 1609.34;
   var map, markers = [], bounds, openInfoWindow;
 
+  function nearest(direction) {
+    var pos = 45 * parseInt(direction / 45);
+    var upper = pos + 45;
+    if (upper - direction < direction - pos) {
+      if (upper === 360) {
+        return 0;
+      }
+      return upper;
+    }
+    return pos;
+  }
+
   function buildBeaconWindow(marker, map, beacon) {
     var $content = $("<div>"), $topDiv = $("<div>");
     var $header = $("<div><h4>" + beacon.label + "</h4></div>");
     var $body = $("<div>");
     $body.append($("<table style='width:100%'>" +
         "<tbody><tr>" +
-          "<td><span class='glyphicons glyphicons-gas-station'></span>&nbsp;" + beacon.fuelLevel + "</td>" +
+          "<td class='align-bottom'><span class='glyphicons glyphicons-gas-station'></span>&nbsp;" + beacon.fuelLevel + "</td>" +
           "<td><span class='glyphicons glyphicons-battery-75'></span>&nbsp;" + beacon.battery +"V</td>" +
           "<td><span class='glyphicons glyphicons-dashboard'></span>&nbsp" + beacon.lastSpeedInMPH +" MPH</td>" +
         "</tr></tbody></table>"));
@@ -91,10 +103,14 @@ var TruckMap = function() {
       var latLng = new google.maps.LatLng(beacon.lastLocation.latitude, beacon.lastLocation.longitude);
       var marker, parked = beacon.parked, blacklisted = beacon.blacklisted, enabled = beacon.enabled;
       if (parked && enabled && !blacklisted) {
+        var icon = "//maps.google.com/mapfiles/marker_green.png";
+        if (beacon.truckOwnerId === "beaversdonuts") {
+          icon = "https://storage.googleapis.com/truckicons/" + beacon.truckOwnerId + "-" + nearest(beacon.direction) + ".png";
+        }
         marker = new google.maps.Marker({
           draggable: false,
           position: latLng,
-          icon: "//maps.google.com/mapfiles/marker_green.png",
+          icon: icon,
           map: map
         });
       } else if(parked) {
@@ -105,14 +121,18 @@ var TruckMap = function() {
           map: map
         });
       } else {
+        var icon = {
+          path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+          rotation: beacon.direction,
+          strokeColor: "red",
+          scale: 3
+        };
+        if (beacon.truckOwnerId === "beaversdonuts") {
+          icon = "https://storage.googleapis.com/truckicons/map_markers/" + beacon.truckOwnerId + "-" + nearest(beacon.direction) + ".png";
+        }
         marker = new google.maps.Marker({
           position: latLng,
-          icon: {
-            path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-            rotation: beacon.direction,
-            strokeColor: "red",
-            scale: 3
-          },
+          icon: icon,
           draggable: false,
           map: map
         });
