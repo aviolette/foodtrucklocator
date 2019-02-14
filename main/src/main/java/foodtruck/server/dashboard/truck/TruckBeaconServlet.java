@@ -43,7 +43,7 @@ public class TruckBeaconServlet extends AbstractTruckServlet {
       return;
     }
     request.setAttribute("extraScripts", ImmutableList.of("//maps.googleapis.com/maps/api/js?key=" + javascriptApiKey,
-        "/script/vendordash.js",
+        "/script/vendordash2.js",
         "/script/lib/spin.min.js",
         "/script/dashboard-truck-beacons.js"));
     forward(request, response);
