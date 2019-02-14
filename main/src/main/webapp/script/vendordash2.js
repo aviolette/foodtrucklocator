@@ -102,10 +102,13 @@ var TruckMap = function() {
       }
       var latLng = new google.maps.LatLng(beacon.lastLocation.latitude, beacon.lastLocation.longitude);
       var marker, parked = beacon.parked, blacklisted = beacon.blacklisted, enabled = beacon.enabled;
+      var icon = "//maps.google.com/mapfiles/marker_green.png";
+      if (beacon.truckOwnerId === "beaversdonuts") {
+        icon = "https://storage.googleapis.com/truckicons/map_markers/" + beacon.truckOwnerId + "-" + nearest(beacon.direction) + ".png";
+      }
       if (parked && enabled && !blacklisted) {
-        var icon = "//maps.google.com/mapfiles/marker_green.png";
-        if (beacon.truckOwnerId === "beaversdonuts") {
-          icon = "https://storage.googleapis.com/truckicons/map_markers/" + beacon.truckOwnerId + "-" + nearest(beacon.direction) + ".png";
+        if (beacon.truckOwnerId !== "beaversdonuts") {
+          icon = "//maps.google.com/mapfiles/marker_green.png"
         }
         marker = new google.maps.Marker({
           draggable: false,
@@ -114,21 +117,23 @@ var TruckMap = function() {
           map: map
         });
       } else if(parked) {
+        if (beacon.truckOwnerId !== "beaversdonuts") {
+          icon = "//maps.google.com/mapfiles/marker_grey.png";
+        }
         marker = new google.maps.Marker({
           draggable: false,
           position: latLng,
-          icon: "//maps.google.com/mapfiles/marker_grey.png",
+          icon: icon,
           map: map
         });
       } else {
-        var icon = {
-          path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-          rotation: beacon.direction,
-          strokeColor: "red",
-          scale: 3
-        };
-        if (beacon.truckOwnerId === "beaversdonuts") {
-          icon = "https://storage.googleapis.com/truckicons/map_markers/" + beacon.truckOwnerId + "-" + nearest(beacon.direction) + ".png";
+        if (beacon.truckOwnerId !== "beaversdonuts") {
+          icon = {
+            path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+            rotation: beacon.direction,
+            strokeColor: "red",
+            scale: 3
+          };
         }
         marker = new google.maps.Marker({
           position: latLng,
