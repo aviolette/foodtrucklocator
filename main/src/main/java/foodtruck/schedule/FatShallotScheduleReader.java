@@ -3,6 +3,7 @@ package foodtruck.schedule;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.util.List;
@@ -68,12 +69,16 @@ public class FatShallotScheduleReader implements StopReader {
         if (item.endsWith("st") || item.endsWith("rd") || item.endsWith("nd") || item.endsWith("th")) {
           item = item.substring(0, item.length() - 2);
         }
-        TemporalAccessor parsedTime = FORMATTER.parse(item);
-        int month = parsedTime.get(ChronoField.MONTH_OF_YEAR);
-        if (currentMonth == 1 && month == 12) {
-          date = null;
-        } else {
-          date = LocalDate.of(year, month, parsedTime.get(ChronoField.DAY_OF_MONTH));
+        try {
+          TemporalAccessor parsedTime = FORMATTER.parse(item);
+          int month = parsedTime.get(ChronoField.MONTH_OF_YEAR);
+          if (currentMonth == 1 && month == 12) {
+            date = null;
+          } else {
+            date = LocalDate.of(year, month, parsedTime.get(ChronoField.DAY_OF_MONTH));
+          }
+        } catch (DateTimeParseException ignored) {
+          continue;
         }
       }
       if (date != null) {
