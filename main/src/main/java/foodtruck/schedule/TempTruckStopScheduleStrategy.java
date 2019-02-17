@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 
@@ -30,6 +31,11 @@ import static foodtruck.time.TimeConversionUtils.toJoda;
  */
 public class TempTruckStopScheduleStrategy implements ScheduleStrategy {
 
+  private static final ImmutableList<String> CALENDARS = ImmutableList.of("pollyanna", "werkforce", "scorchedearth",
+      "Google: Hickory Creek Brewing Company", "Royal Palms", "Alter Brewing", "squarespace: Plank Road Tap Room",
+      "squarespace: Plank Road Tap Room", "Google: Oswego Brewing Co.",
+      "Google: p8uim1tjcpuejjcnmchidh5p1hghvbmc@import.calendar.google.com", "ical: bigwangschicago",
+      "ical: bigwangschicago", "imperialoak", "skeletonkey", "thefatshallot", "squarespace: Temperance Beer Co.");
   private final TempTruckStopDAO tempTruckStopDAO;
   private final LocationDAO locationDAO;
   private final TruckDAO truckDAO;
@@ -55,6 +61,7 @@ public class TempTruckStopScheduleStrategy implements ScheduleStrategy {
         .collect(Collectors.toList());
 
     Map<String, Integer> counts = new HashMap<>();
+    CALENDARS.forEach(cal -> counts.put(cal, 0));
     for (TempTruckStop tempTruckStop : tempTruckStops) {
       counts.merge(tempTruckStop.getCalendarName(), 1, Integer::sum);
     }
