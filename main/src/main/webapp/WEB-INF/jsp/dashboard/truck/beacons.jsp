@@ -1,18 +1,6 @@
 <%@include file="../dashboardHeader1.jsp" %>
 
 <style type="text/css">
-  @media (max-width: 990px) {
-    .location-related {
-      display: none;
-    }
-  }
-
-  @media (min-width: 990px) {
-    .location-related {
-      display: block;
-    }
-  }
-
   .gm-style-iw h4, .gm-style-iw td {
     color: black;
   }
@@ -32,7 +20,7 @@
 
 <div class="row mt-4">
   <div class="col-md-12">
-    <div id="map_canvas" style="width:100%; height:400px; padding-bottom:20px;" class="location-related"></div>
+    <div id="map_canvas" style="width:100%; height:400px; padding-bottom:20px;"></div>
   </div>
 </div>
 
