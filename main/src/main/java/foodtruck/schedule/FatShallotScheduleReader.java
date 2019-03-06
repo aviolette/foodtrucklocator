@@ -98,9 +98,10 @@ public class FatShallotScheduleReader implements StopReader {
       String tweet = e.text()
           .replaceAll("&amp;", "&");
       e = e.nextElementSibling();
-      if (tweet.contains("Revival") || tweet.toLowerCase()
-          .contains("lincoln park restaurant") || tweet.toLowerCase()
-          .contains("fooda")) {
+      if (tweet.contains("Revival") ||
+          tweet.toLowerCase().contains("lincoln park restaurant") ||
+          tweet.toLowerCase().contains("fooda") ||
+          tweet.toLowerCase().contains("lincoln park shop")) {
         continue;
       }
       List<String> parse = extractor.parse(tweet, Truck.builder()
