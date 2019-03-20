@@ -52,7 +52,8 @@ public class GoogleCalendarReader {
   public TempTruckStop buildTruckStop(@Nullable Truck truck, int timezoneAdjustment, Event event, String defaultLocation) {
     String titleText = event.getSummary();
     if (hasInvalidTitle(titleText)) {
-      log.log(Level.INFO, "Skipping {0} for {1}", new Object[]{titleText, truck.getId()});
+      String truckID = truck == null ? "" : truck.getId();
+      log.log(Level.INFO, "Skipping {0} for {1}", new Object[]{titleText, truckID});
       return null;
     }
 
