@@ -75,7 +75,7 @@ public class PollyannaReader implements StopReader {
 
         String truckId = inferTruckId(event.getString("title"));
         if (truckId == null) {
-          truckId = inferTruckId(event.getString("description"));
+          truckId = inferTruckId(event.optString("description", ""));
           if (truckId == null) {
             continue;
           }
@@ -96,7 +96,8 @@ public class PollyannaReader implements StopReader {
       }
       return stops.build();
     } catch (JSONException e) {
-      throw new RuntimeException(e);
+      log.log(Level.SEVERE, e.getMessage(), e);
+      return ImmutableList.of();
     }
   }
 
