@@ -111,6 +111,10 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
         log.log(logLevel, io.getMessage(), io);
       } catch (ServiceException se) {
         log.log(Level.WARNING, "Account {0}, {1}", new Object[] {account.getTruckId(), se.getMessage()});
+        if (se.getMessage().contains("Account suspended")) {
+          publisher.increment("account_suspended", 1, clock.nowInMillis(), ImmutableMap.of("truck_id",
+              account.getTruckId()));
+        }
       }
     }
   }
