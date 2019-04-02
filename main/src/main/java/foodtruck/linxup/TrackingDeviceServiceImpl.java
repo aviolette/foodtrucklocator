@@ -43,6 +43,7 @@ import foodtruck.monitoring.CounterPublisher;
 import foodtruck.server.security.SecurityChecker;
 import foodtruck.time.Clock;
 import foodtruck.time.FriendlyDateTimeFormat;
+import foodtruck.util.ServiceException;
 
 /**
  * @author aviolette
@@ -98,7 +99,7 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
     for (LinxupAccount account : linxupAccountDAO.findActive()) {
       try {
         synchronizeFor(account);
-      } catch (IOException io) {
+      } catch (IOException | ServiceException io) {
         long count = counter.getCount(account.getTruckId());
         if (count < 2) {
           counter.increment(account.getTruckId());
