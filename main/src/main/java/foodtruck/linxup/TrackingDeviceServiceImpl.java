@@ -99,7 +99,7 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
     for (LinxupAccount account : linxupAccountDAO.findActive()) {
       try {
         synchronizeFor(account);
-      } catch (IOException | ServiceException io) {
+      } catch (IOException io) {
         long count = counter.getCount(account.getTruckId());
         if (count < 2) {
           counter.increment(account.getTruckId());
@@ -109,6 +109,8 @@ class TrackingDeviceServiceImpl implements TrackingDeviceService {
         // Linxup seems to always be off around 4:00AM
         Level logLevel = serviceWindow.during() ? Level.WARNING : Level.SEVERE;
         log.log(logLevel, io.getMessage(), io);
+      } catch (ServiceException se) {
+        log.log(Level.WARNING, "Account {0}, {1}", new Object[] {account.getTruckId(), se.getMessage()});
       }
     }
   }
