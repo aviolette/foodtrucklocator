@@ -6,6 +6,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -170,7 +171,7 @@ public class BeaverMatcherTest extends Mockito {
 
   }
 
-  @Test
+  @Test @Ignore
   public void test3() {
     Story story = Story.builder()
         .text("Hot.Fresh.Made To Order\n" +

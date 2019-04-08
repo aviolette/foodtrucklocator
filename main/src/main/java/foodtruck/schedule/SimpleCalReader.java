@@ -67,7 +67,7 @@ public class SimpleCalReader {
       return "bopbartruck";
     } else if (title.contains("arnold's tacos") || title.contains("arnoldstaco")) {
       return "arnoldstacos";
-    } else if (title.contains("aztec dave")) {
+    } else if (title.contains("aztec dave") || title.contains("mexican azteca")) {
       return "aztecdaves";
     } else if (title.contains("my funnel truck")) {
       return "myfunneltruck";
@@ -111,7 +111,7 @@ public class SimpleCalReader {
       return "thelittlereddonuttruck";
     } else if (title.contains("duke’s") || title.contains("duke's")) {
       return "dukesbluesnbbq";
-    } else if (title.contains("doctor dogs")) {
+    } else if (title.contains("doctor dogs") || title.contains("dr. dogs")) {
       return "doctordogs";
     } else if (title.contains("perk n'") || title.contains("perk n’")) {
       return "perknpickle";
@@ -131,6 +131,8 @@ public class SimpleCalReader {
       return "tamalespaceship";
     } else if (title.contains("happy lobster")) {
       return "thehappylobster";
+    } else if (title.contains("yum dum")) {
+      return "yumdumtruck";
     } else if (title.contains("babyq")) {
       return "babyqs123";
     } else if (title.contains("three legged") || title.contains("threelegged")) {
