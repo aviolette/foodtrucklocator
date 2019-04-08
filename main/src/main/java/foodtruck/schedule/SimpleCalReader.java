@@ -115,7 +115,7 @@ public class SimpleCalReader {
       return "dukesbluesnbbq";
     } else if (title.contains("doctor dogs") || title.contains("dr. dogs")) {
       return "doctordogs";
-    } else if (title.contains("perk n'") || title.contains("perk n’")) {
+    } else if (title.contains("perk n'") || title.contains("perk n’") || title.contains("perk n pickle")) {
       return "perknpickle";
     } else if (title.contains("smokin' z") || title.contains("smokin z")) {
       return "smokinzbbq";
