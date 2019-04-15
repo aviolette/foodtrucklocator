@@ -56,4 +56,9 @@ public class SimpleCalReaderTest extends Mockito {
         .build());
     assertThat(items).hasSize(12);
   }
+
+  @Test
+  public void perkNPickle() {
+    assertThat(SimpleCalReader.inferTruckId("food truck: perk n pickle")).isEqualTo("perknpickle");
+  }
 }
