@@ -109,6 +109,8 @@ public class SimpleCalReader {
       return "chgoallfrup";
     } else if (title.contains("fat tomato")) {
       return "fattomatoinc";
+    } else if (title.contains("five squared")) {
+      return "fivesquaredfoodtruck";
     } else if (title.contains("little red donut")) {
       return "thelittlereddonuttruck";
     } else if (title.contains("duke’s") || title.contains("duke's")) {
