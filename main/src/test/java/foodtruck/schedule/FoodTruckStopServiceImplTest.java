@@ -48,6 +48,7 @@ public class FoodTruckStopServiceImplTest {
   private @Mock LocationDAO locationDAO;
   private @Mock MessageDAO messageDAO;
   private @Mock DailyDataDAO dailyDataDAO;
+  private @Mock ScheduleCacher cacher;
   private FoodTruckStopServiceImpl service;
   private final DateTime lunchStart = new DateTime(2017, 11, 6, 11, 0);
   private final DateTime lunchEnd = new DateTime(2017, 11, 6, 14, 0);
@@ -55,7 +56,7 @@ public class FoodTruckStopServiceImplTest {
   @Before
   public void setup() {
     service = new FoodTruckStopServiceImpl(truckStopDAO, ImmutableSet.of(schedule), clock, truckDAO, locationDAO,
-        messageDAO, dailyDataDAO, null);
+        messageDAO, dailyDataDAO, null, cacher);
   }
 
   @Test
