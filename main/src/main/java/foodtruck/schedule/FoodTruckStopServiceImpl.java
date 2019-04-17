@@ -51,11 +51,12 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
   private final MessageDAO messageDAO;
   private final DailyDataDAO dailyDataDAO;
   private final TrackingDeviceDAO trackingDeviceDAO;
+  private final ScheduleCacher cacher;
 
   @Inject
   public FoodTruckStopServiceImpl(TruckStopDAO truckStopDAO, Set<ScheduleStrategy> calendarConnectors, Clock clock,
       TruckDAO truckDAO, LocationDAO locationDAO, MessageDAO messageDAO, DailyDataDAO dailyDataDAO,
-      TrackingDeviceDAO trackingDeviceDAO) {
+      TrackingDeviceDAO trackingDeviceDAO, ScheduleCacher cacher) {
     this.truckStopDAO = truckStopDAO;
     this.calendars = calendarConnectors;
     this.clock = clock;
@@ -64,6 +65,7 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
     this.messageDAO = messageDAO;
     this.dailyDataDAO = dailyDataDAO;
     this.trackingDeviceDAO = trackingDeviceDAO;
+    this.cacher = cacher;
   }
 
   @Override
@@ -121,6 +123,7 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
       }
     }
     truckStopDAO.save(truckStop);
+    cacher.invalidate();
   }
 
   @Override
