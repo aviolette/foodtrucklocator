@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 
@@ -59,8 +60,8 @@ public class PollyannaReader implements StopReader {
           continue;
         }
 
-        String location = event.getString("location");
-        if (!location.startsWith("Pollyanna Brewing")) {
+        String location = event.optString("location");
+        if (Strings.isNullOrEmpty(location) || !location.startsWith("Pollyanna Brewing")) {
           continue;
         } else if (location.contains("Roselle")) {
           location = "Pollyanna Brewing - Roselle";
