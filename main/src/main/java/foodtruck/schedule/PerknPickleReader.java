@@ -15,7 +15,7 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import foodtruck.geolocation.GeoLocator;
+import foodtruck.dao.LocationDAO;
 import foodtruck.model.TempTruckStop;
 import foodtruck.util.MoreStrings;
 
@@ -23,12 +23,12 @@ public class PerknPickleReader implements StopReader {
 
   private static final Logger log = Logger.getLogger(PerknPickleReader.class.getName());
   private final ZoneId zone;
-  private final GeoLocator geoLocator;
+  private final LocationDAO locationDAO;
 
   @Inject
-  public PerknPickleReader(ZoneId zone, GeoLocator geoLocator) {
+  public PerknPickleReader(ZoneId zone, LocationDAO locationDAO) {
     this.zone = zone;
-    this.geoLocator = geoLocator;
+    this.locationDAO = locationDAO;
   }
 
   @Override
@@ -44,7 +44,7 @@ public class PerknPickleReader implements StopReader {
         OffsetDateTime end = OffsetDateTime.from(DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse(event.getString("end")));
         ZonedDateTime endTime = ZonedDateTime.ofInstant(end.toInstant(), zone);
         String locationName = MoreStrings.firstNonEmpty(event.optString("location"), event.getString("title"));
-        geoLocator.locateOpt(locationName).ifPresent(location -> {
+        locationDAO.findByAliasOpt(locationName).ifPresent(location -> {
           if (location.isResolved()) {
             builder.add(TempTruckStop.builder()
                 .truckId("perknpickle")
