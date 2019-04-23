@@ -45,13 +45,16 @@ public class PerknPickleReader implements StopReader {
         ZonedDateTime endTime = ZonedDateTime.ofInstant(end.toInstant(), zone);
         String locationName = MoreStrings.firstNonEmpty(event.optString("location"), event.getString("title"));
         geoLocator.locateOpt(locationName).ifPresent(location -> {
-          builder.add(TempTruckStop.builder()
-              .truckId("perknpickle")
-              .locationName(location.getName())
-              .calendarName(getCalendar())
-              .startTime(startTime)
-              .endTime(endTime)
-              .build());
+          if (location.isResolved()) {
+            builder.add(TempTruckStop.builder()
+                .truckId("perknpickle")
+                .locationName(location.getName())
+                .calendarName(getCalendar())
+                .startTime(startTime)
+                .endTime(endTime)
+                .build());
+
+          }
         });
       }
     } catch (JSONException e) {
