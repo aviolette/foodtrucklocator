@@ -15,6 +15,7 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import foodtruck.geolocation.GeoLocator;
 import foodtruck.model.TempTruckStop;
 import foodtruck.util.MoreStrings;
 
@@ -22,10 +23,12 @@ public class PerknPickleReader implements StopReader {
 
   private static final Logger log = Logger.getLogger(PerknPickleReader.class.getName());
   private final ZoneId zone;
+  private final GeoLocator geoLocator;
 
   @Inject
-  public PerknPickleReader(ZoneId zone) {
+  public PerknPickleReader(ZoneId zone, GeoLocator geoLocator) {
     this.zone = zone;
+    this.geoLocator = geoLocator;
   }
 
   @Override
@@ -40,14 +43,16 @@ public class PerknPickleReader implements StopReader {
         ZonedDateTime startTime = ZonedDateTime.ofInstant(start.toInstant(), zone);
         OffsetDateTime end = OffsetDateTime.from(DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse(event.getString("end")));
         ZonedDateTime endTime = ZonedDateTime.ofInstant(end.toInstant(), zone);
-
-        builder.add(TempTruckStop.builder()
-            .truckId("perknpickle")
-            .locationName(MoreStrings.firstNonEmpty(event.optString("location"), event.getString("title")))
-            .calendarName(getCalendar())
-            .startTime(startTime)
-            .endTime(endTime)
-            .build());
+        String locationName = MoreStrings.firstNonEmpty(event.optString("location"), event.getString("title"));
+        geoLocator.locateOpt(locationName).ifPresent(location -> {
+          builder.add(TempTruckStop.builder()
+              .truckId("perknpickle")
+              .locationName(location.getName())
+              .calendarName(getCalendar())
+              .startTime(startTime)
+              .endTime(endTime)
+              .build());
+        });
       }
     } catch (JSONException e) {
       log.log(Level.INFO, e.getMessage(), e);
