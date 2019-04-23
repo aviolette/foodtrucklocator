@@ -64,6 +64,7 @@ import foodtruck.server.job.CheckDeviceIssuesServlet;
 import foodtruck.server.job.DailyStatsServlet;
 import foodtruck.server.job.ErrorCountServlet;
 import foodtruck.server.job.InvalidateScheduleCache;
+import foodtruck.server.job.MonthlyTruckStatsServlet;
 import foodtruck.server.job.NotifyLeavingStopServlet;
 import foodtruck.server.job.NotifyNewStopServlet;
 import foodtruck.server.job.ProfileSyncServlet;
@@ -78,6 +79,7 @@ import foodtruck.server.job.SeedGoogleCalendarSchedule;
 import foodtruck.server.job.SeedICalCalendarServlet;
 import foodtruck.server.job.SeedICalLocationServlet;
 import foodtruck.server.job.SeedImperialOakCalendarServlet;
+import foodtruck.server.job.SeedPerknPickleCalendar;
 import foodtruck.server.job.SeedPizzaBossCalendarServlet;
 import foodtruck.server.job.SeedPlankRoadTapRoomServlet;
 import foodtruck.server.job.SeedPollyannaServlet;
@@ -90,7 +92,6 @@ import foodtruck.server.job.SendLunchNotificationsServlet;
 import foodtruck.server.job.SlackLunchtimeNotifications;
 import foodtruck.server.job.StatPullQueueServlet;
 import foodtruck.server.job.TruckMonitorServlet;
-import foodtruck.server.job.MonthlyTruckStatsServlet;
 import foodtruck.server.job.TweetCacheUpdateServlet;
 import foodtruck.server.job.TwitterCachePurgeServlet;
 import foodtruck.server.resources.DailySpecialResourceFactory;
@@ -181,6 +182,7 @@ class FoodtruckServletModule extends ServletModule {
     serve("/cron/populate_pizza_boss").with(SeedPizzaBossCalendarServlet.class);
     serve("/cron/populate_royal_palms").with(SeedRoyalPalmsScheduleServlet.class);
     serve("/cron/populate_big_wangs").with(SeedBigWangsServlet.class);
+    serve("/cron/populate_perk_n_pickle").with(SeedPerknPickleCalendar.class);
 
     // Dashboard endpoints
     serve("/admin").with(AdminDashboardServlet.class);

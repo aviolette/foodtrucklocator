@@ -1,5 +1,6 @@
 package foodtruck.server.job;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.channels.Channels;
@@ -75,7 +76,7 @@ public class SeedRoyalPalmsScheduleServlet extends AbstractJobServlet {
       }
       stops.forEach(tempDAO::save);
       resp.setStatus(200);
-    } catch (JSONException e) {
+    } catch (JSONException| FileNotFoundException e) {
       log.log(Level.SEVERE, e.getMessage(), e);
     }
   }
