@@ -147,6 +147,8 @@ public class SimpleCalReader {
       return "cocinitachicago";
     } else if (title.contains("cheesie")) {
       return "cheesies_truck";
+    } else if (title.contains("gnarly knots")) {
+      return "gnarlyknots";
     } else if (title.contains("ofrenda")) {
       return "ofrendatruck";
     } else if (title.contains("bull & balance") || title.contains("bull and balance")) {
