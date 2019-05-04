@@ -145,6 +145,8 @@ public class SimpleCalReader {
       return "chicagock";
     } else if (title.contains("cocinita")) {
       return "cocinitachicago";
+    } else if (title.contains("bricks on wheels")) {
+      return "brickspizza";
     } else if (title.contains("cheesie")) {
       return "cheesies_truck";
     } else if (title.contains("gnarly knots")) {
