@@ -21,11 +21,11 @@ public class ChicagoModule extends AbstractModule {
     binder.addBinding("patronachicago").to(LaJefaMatcher.class);
     binder.addBinding("theroostkitchen").to(RoostMatcher.class);
     binder.addBinding("bobchafoodtruck").to(BobChaMatcher.class);
-    binder.addBinding("pierogiwagon").to(PierogiWagonMatcher.class);
     binder.addBinding("amanecertacos").to(AmanecerTacosMatcher.class);
     binder.addBinding("thecajuncon").to(CajunConMatcher.class);
     binder.addBinding("thefatshallot").to(FatShallotMatcher.class);
     binder.addBinding("aztecdaves").to(AztecDavesMatcher.class);
+    binder.addBinding("thehappylobster").to(HappyLobsterMatcher.class);
   }
 
   @Provides
