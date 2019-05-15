@@ -28,10 +28,10 @@ public enum DayOfWeek {
 
   public static @Nullable DayOfWeek fromConstant(int dayOfWeek) {
     DayOfWeek[] values = values();
-    if (dayOfWeek >= values.length) {
+    if (dayOfWeek >= values.length+1) {
       return null;
     }
-    return values[dayOfWeek];
+    return values[dayOfWeek-1];
   }
 
   public boolean isWeekend() {
