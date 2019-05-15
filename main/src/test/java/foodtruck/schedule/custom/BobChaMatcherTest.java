@@ -69,7 +69,7 @@ public class BobChaMatcherTest extends Mockito {
 
   @Test
   public void testHandleWeekend() {
-    tweetTime = new DateTime(2016, 1, 8, 7, 30, 0, 0, DateTimeZone.UTC);
+    tweetTime = new DateTime(2016, 1, 9, 7, 30, 0, 0, DateTimeZone.UTC);
     Story story = Story.builder()
         .text("We will be open for business at U of C, and Clark & Monroe till 1:30pm!!")
         .time(tweetTime.withTime(11, 0, 0, 0))
