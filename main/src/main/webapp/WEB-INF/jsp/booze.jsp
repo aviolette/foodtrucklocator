@@ -32,17 +32,18 @@
     <div class="panel panel-default" style="margin-top:20px; margin-bottom: 20px">
       <div class="panel-body">
         <div class="row">
-          <div class="col-md-4">
+          <div class="col-lg-4 col-sm-5">
             <img src="${group.location.imageUrl.protocolRelative}" height="150" width="150"/>
           </div>
-          <div class="col-md-8">
+          <div class="col-lg-8 col-sm-7">
             <c:forEach items="${group.stops}" var="stop" varStatus="stopStatus">
               <c:if test="${stopStatus.index == 0}">
                 <h3><ftl:location location="${group.location}" at="${stop.startTime}"/></h3>
                 <p>${group.location.description}</p>
               </c:if>
               <div class="media">
-                <div class="media-body" style="padding: 10px">
+                <img class="mr-3" width="40" height="40" src="${stop.truck.previewIconUrl.protocolRelative}" alt="truck image">
+                <div class="media-body">
                   <a href="/trucks/${stop.truck.id}" class="truckLink">
                     <h5 class="media-heading">${stop.truck.name}</h5>
                     <joda:format value="${stop.startTime}" style="-S"/> - <joda:format value="${stop.endTime}" style="-S"/>
