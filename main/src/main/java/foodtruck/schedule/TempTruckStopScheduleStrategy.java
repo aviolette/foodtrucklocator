@@ -1,6 +1,8 @@
 package foodtruck.schedule;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -22,6 +24,7 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.monitoring.CounterPublisher;
 import foodtruck.time.Clock;
+import foodtruck.time.TimeUtils;
 
 import static foodtruck.time.TimeConversionUtils.toJoda;
 
@@ -55,22 +58,44 @@ public class TempTruckStopScheduleStrategy implements ScheduleStrategy {
   @Override
   public List<TruckStop> findForTime(Interval range, @Nullable Truck searchTruck) {
     String now = clock.nowFormattedAsTime();
-    List<TempTruckStop> tempTruckStops = tempTruckStopDAO.findDuring(range, searchTruck)
+    Collection<TempTruckStop> tempTruckStops = tempTruckStopDAO.findDuring(range, searchTruck)
         .stream()
         .distinct()
+        .sorted((ts1, ts2) -> {
+          if (ts1.getTruckId().equals(ts2.getTruckId())) {
+            if (ts2.getLocationName().equals(ts1.getStartTime())) {
+              if (ts1.getStartTime().equals(ts2.getStartTime())) {
+                return ts1.getEndTime().compareTo(ts2.getEndTime());
+              }
+              return ts1.getStartTime().compareTo(ts2.getStartTime());
+            } else {
+              return ts1.getLocationName().compareTo(ts2.getLocationName());
+            }
+          } else {
+            return ts1.getTruckId().compareTo(ts2.getTruckId());
+          }
+        })
         .collect(Collectors.toList());
 
-    Map<String, Integer> counts = new HashMap<>();
-    CALENDARS.forEach(cal -> counts.put(cal, 0));
-    for (TempTruckStop tempTruckStop : tempTruckStops) {
-      counts.merge(tempTruckStop.getCalendarName(), 1, Integer::sum);
+    List<TempTruckStop> items = new LinkedList<>();
+    TempTruckStop last = null;
+    for (TempTruckStop stop : tempTruckStops) {
+      if (last == null || !stop.getTruckId()
+            .equals(last.getTruckId()) || !stop.getLocationName()
+            .equals(last.getLocationName()) ||
+            !TimeUtils.overlapsOrContains(stop.getStartTime(), stop.getEndTime(), last.getStartTime(),
+                last.getEndTime())) {
+          items.add(stop);
+
+      }
+      last = stop;
     }
-    long nowMillis = clock.nowInMillis();
-    for (Map.Entry<String, Integer> entry : counts.entrySet()) {
-      publisher.increment("calendar_contribution", entry.getValue(), nowMillis, ImmutableMap.of("calendar", entry.getKey()));
-    }
+    tempTruckStops = items;
+    publishCountStatistics(tempTruckStops);
+
     List<TruckStop> stops =
         tempTruckStops.stream()
+        .filter(temp -> locationDAO.findByAliasOpt(temp.getLocationName()).isPresent())
         .map(temp -> TruckStop.builder()
             .endTime(toJoda(temp.getEndTime()))
             .startTime(toJoda(temp.getStartTime()))
@@ -83,5 +108,17 @@ public class TempTruckStopScheduleStrategy implements ScheduleStrategy {
             .build())
         .collect(Collectors.toList());
     return stops;
+  }
+
+  private void publishCountStatistics(Collection<TempTruckStop> tempTruckStops) {
+    Map<String, Integer> counts = new HashMap<>();
+    CALENDARS.forEach(cal -> counts.put(cal, 0));
+    for (TempTruckStop tempTruckStop : tempTruckStops) {
+      counts.merge(tempTruckStop.getCalendarName(), 1, Integer::sum);
+    }
+    long nowMillis = clock.nowInMillis();
+    for (Map.Entry<String, Integer> entry : counts.entrySet()) {
+      publisher.increment("calendar_contribution", entry.getValue(), nowMillis, ImmutableMap.of("calendar", entry.getKey()));
+    }
   }
 }

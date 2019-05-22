@@ -201,14 +201,16 @@ class FoodtruckServletModule extends ServletModule {
     serveRegex("/admin/trucks/[\\S]*/linxup_config").with(LinxupConfigServlet.class);
     serveRegex("/admin/trucks/[\\S]*/danger").with(DangerZoneServlet.class);
     if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development ) {
-      serve("/admin/trucks/courageouscakes", "/admin/trucks/beaversdonuts", "/admin/trucks/5411empanadas").with(TruckServlet.class);
+      serve("/admin/trucks/courageouscakes", "/admin/trucks/beaversdonuts", "/admin/trucks/5411empanadas", "/admin/trucks/perknpickle").with(TruckServlet.class);
     } else {
       serve("/admin/trucks/*").with(TruckServlet.class);
     }
     serve("/admin/images").with(ImageUploadServlet.class);
     serve("/admin/trucks").with(TruckListServlet.class);
     if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development ) {
-      serve("/admin/locations/4533286441320448", "/admin/locations/6411252301561856", "/admin/locations/5348024557502464").with(LocationEditServlet.class);
+      serve("/admin/locations/4533286441320448", "/admin/locations/6411252301561856",
+          "/admin/locations/5348024557502464", "/admin/locations/5965950092312576",
+          "/admin/locations/5403000138891264", "/admin/locations/5288650929602560").with(LocationEditServlet.class);
     } else {
       serve("/admin/locations/*").with(LocationEditServlet.class);
     }
