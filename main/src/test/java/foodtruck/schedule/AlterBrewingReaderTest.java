@@ -1,15 +1,9 @@
 package foodtruck.schedule;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.function.Supplier;
 
-import com.google.common.io.ByteStreams;
-
-import org.junit.Before;
 import org.junit.Test;
 
 import foodtruck.model.TempTruckStop;
@@ -30,6 +24,11 @@ public class AlterBrewingReaderTest extends AbstractReaderTest<AlterBrewingReade
   public void findStops() throws IOException {
     List<TempTruckStop> stops = execFindStop("alter.html");
     assertThat(stops).hasSize(3);
+  }
 
+  @Test
+  public void findStops2() throws IOException {
+    List<TempTruckStop> stops = execFindStop("alter2.html");
+    assertThat(stops).hasSize(5);
   }
 }

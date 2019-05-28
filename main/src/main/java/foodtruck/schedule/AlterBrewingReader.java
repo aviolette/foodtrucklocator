@@ -65,10 +65,13 @@ public class AlterBrewingReader implements StopReader {
                 .truckId(truckId)
                 .build());
           }
+          break;
         } catch (JSONException e) {
-          log.log(Level.SEVERE, e.getMessage(), e);
+          if (!e.getMessage().startsWith("A JSONArray text must start with '['")) {
+            log.log(Level.SEVERE, e.getMessage(), e);
+            break;
+          }
         }
-        break;
       }
     }
     return stops.build();
