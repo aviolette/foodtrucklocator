@@ -151,6 +151,8 @@ public class SimpleCalReader {
       return "cheesies_truck";
     } else if (title.contains("gnarly knots")) {
       return "gnarlyknots";
+    } else if (title.contains("rogue food truck")) {
+      return "roguefoodtruck";
     } else if (title.contains("ofrenda")) {
       return "ofrendatruck";
     } else if (title.contains("bull & balance") || title.contains("bull and balance")) {
