@@ -137,6 +137,8 @@ public class SimpleCalReader {
       return "thehappylobster";
     } else if (title.contains("yum dum")) {
       return "yumdumtruck";
+    } else if (title.contains("your sister's tomato") || title.contains("your sisters tomato")) {
+      return "yoursisterstomato";
     } else if (title.contains("babyq")) {
       return "babyqs123";
     } else if (title.contains("three legged") || title.contains("threelegged")) {
