@@ -76,12 +76,8 @@ public class TruckServlet extends HttpServlet {
   }
 
   private List<DailySchedule> getSchedules(Truck truck, LocalDate firstDay) {
-    List<DailySchedule> schedule = stops.findSchedules(truck.getId(),
+    return stops.findSchedules(truck.getId(),
         new Interval(firstDay.toDateTimeAtStartOfDay(zone), firstDay.toDateTimeAtStartOfDay(zone)
             .plusDays(60)));
-    if (schedule.size() > 10) {
-      return schedule.subList(0, 10);
-    }
-    return schedule;
   }
 }
