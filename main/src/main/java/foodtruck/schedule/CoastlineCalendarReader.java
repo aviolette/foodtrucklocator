@@ -3,18 +3,19 @@ package foodtruck.schedule;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
-import java.util.logging.Level;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.TempTruckStop;
@@ -45,46 +46,84 @@ public class CoastlineCalendarReader implements StopReader {
   @Override
   public List<TempTruckStop> findStops(String document) {
     log.info("Loading coastline's calendar");
-    int index = document.indexOf("calendar.apps.dev");
-    if (index == -1) {
-      log.log(Level.SEVERE, "Calendar section is not found");
-      return ImmutableList.of();
-    }
-    index = document.indexOf("var props = ", index);
-    if (index == -1) {
-      log.log(Level.SEVERE, "Props not found in coastline document");
-      return ImmutableList.of();
-    }
+    Document parsedDoc = Jsoup.parse(document);
+    TempTruckStop.Builder builder = null;
+    ImmutableList.Builder stops = ImmutableList.builder();
+    int current = -1;
+    LocalDate date = null;
+    LocalTime startTime = null;
+    LocalTime endTime = null;
+    String location = null;
     Truck truck = truckDAO.findByIdOpt("coastlinecove")
         .orElseThrow(() -> new RuntimeException("Coastline Cove truck not found"));
-    String json = document.substring(index + 11, document.indexOf(';', index + 11));
-    try {
-      JSONObject obj = new JSONObject(json);
-      JSONArray events = obj.getJSONArray("manualEvents");
-      ImmutableList.Builder<TempTruckStop> stops = ImmutableList.builder();
-      for (int i = 0; i < events.length(); i++ ) {
-        JSONObject event = events.getJSONObject(i);
-        String start = massage(event.getString("start").replaceAll("\\.", "").toUpperCase());
-        String end = massage(event.getString("end").replaceAll("\\.", "").toUpperCase());
-
-        LocalDate date = parseDate(event.getString("date"));
-        extractor.parse(event.getString("location").trim(), truck)
-            .forEach(location -> stops.add(
-                TempTruckStop.builder()
-                    .truckId(truck.getId())
-                    .startTime(date.atTime(LocalTime.from(timeFormatter.parse(start)))
-                        .atZone(zone))
-                    .endTime(date.atTime(LocalTime.from(timeFormatter.parse(end)))
-                        .atZone(zone))
-                    .calendarName(getCalendar())
-                    .locationName(location)
-                    .build()));
+    for (Element item : parsedDoc.select(".x-d-route")) {
+      String route = item.attr("data-route");
+      if (!route.startsWith("events/")) {
+        continue;
       }
-      return stops.build();
-    } catch (JSONException e) {
-      log.log(Level.SEVERE, e.getMessage(), e);
-      throw new RuntimeException(e);
+      String routes[] = route.split("/");
+      int index = Integer.parseInt(routes[1]);
+      if (index != current) {
+        if (builder != null) {
+          buildAndAddStop(builder, stops, date, startTime, endTime, location);
+        }
+        date = null;
+        startTime = null;
+        endTime = null;
+        current = index;
+        location = null;
+        builder = TempTruckStop.builder()
+            .calendarName(CALENDAR_NAME)
+            .truckId(truck.getId());
+      }
+      String key = routes[2];
+      switch (key) {
+        case "date":
+          date = parseDate(item.text());
+          break;
+        case "start":
+          startTime = parseTime(item.text());
+          break;
+        case "end":
+          endTime = parseTime(item.text());
+          break;
+        case "location": {
+            Optional<String> loc = extractor.parse(item.text(), truck)
+                .stream()
+                .findFirst();
+            location = loc.orElse(null);
+          }
+          break;
+        case "title":
+          if (location == null) {
+            Optional<String> loc = extractor.parse(item.text(), truck)
+                .stream()
+                .findFirst();
+            location = loc.orElse(null);
+          }
+          break;
+      }
     }
+    if (builder != null) {
+      buildAndAddStop(builder, stops, date, startTime, endTime, location);
+    }
+    return stops.build();
+  }
+
+  private void buildAndAddStop(TempTruckStop.Builder builder, ImmutableList.Builder<TempTruckStop> stops, LocalDate date,
+      LocalTime startTime, LocalTime endTime, String location) {
+    builder.locationName(location);
+    if (date != null && startTime != null && endTime != null) {
+      builder.startTime(ZonedDateTime.of(date, startTime, zone));
+      builder.endTime(ZonedDateTime.of(date, endTime, zone));
+    }
+    if (builder.isComplete()) {
+      stops.add(builder.build());
+    }
+  }
+
+  private LocalTime parseTime(String text) {
+    return LocalTime.from(timeFormatter.parse(massage(text)));
   }
 
   private LocalDate parseDate(String date) {
@@ -93,7 +132,6 @@ public class CoastlineCalendarReader implements StopReader {
     } catch (DateTimeParseException dtpe) {
       return LocalDate.from(dateFormatter2.parse(date));
     }
-
   }
 
   @Override
@@ -102,6 +140,8 @@ public class CoastlineCalendarReader implements StopReader {
   }
 
   private String massage(String time) {
+    time = time.replaceAll("\\.", "");
+    time = time.toUpperCase();
     if (time.endsWith(" AM") || time.endsWith(" PM")) {
       if (time.contains(":")) {
         return time;
@@ -111,7 +151,8 @@ public class CoastlineCalendarReader implements StopReader {
     }
     if (time.length() < 5) {
       return time + " PM";
-    } else if (time.length() == 5 && time.substring(0, 1).equals("1")) {
+    } else if (time.length() == 5 && time.substring(0, 1)
+        .equals("1")) {
       return time + " AM";
     }
     return time;
