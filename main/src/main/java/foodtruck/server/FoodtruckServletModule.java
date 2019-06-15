@@ -88,6 +88,7 @@ import foodtruck.server.job.SeedScorchedEarthServlet;
 import foodtruck.server.job.SeedSkeletonKeyServlet;
 import foodtruck.server.job.SeedTemperanceServlet;
 import foodtruck.server.job.SeedWerkforceServlet;
+import foodtruck.server.job.SeedYourSistersScheduleServlet;
 import foodtruck.server.job.SendLunchNotificationsServlet;
 import foodtruck.server.job.SlackLunchtimeNotifications;
 import foodtruck.server.job.StatPullQueueServlet;
@@ -183,6 +184,7 @@ class FoodtruckServletModule extends ServletModule {
     serve("/cron/populate_royal_palms").with(SeedRoyalPalmsScheduleServlet.class);
     serve("/cron/populate_big_wangs").with(SeedBigWangsServlet.class);
     serve("/cron/populate_perk_n_pickle").with(SeedPerknPickleCalendar.class);
+    serve("/cron/populate_your_sisters").with(SeedYourSistersScheduleServlet.class);
 
     // Dashboard endpoints
     serve("/admin").with(AdminDashboardServlet.class);
@@ -201,7 +203,7 @@ class FoodtruckServletModule extends ServletModule {
     serveRegex("/admin/trucks/[\\S]*/linxup_config").with(LinxupConfigServlet.class);
     serveRegex("/admin/trucks/[\\S]*/danger").with(DangerZoneServlet.class);
     if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development ) {
-      serve("/admin/trucks/courageouscakes", "/admin/trucks/beaversdonuts", "/admin/trucks/5411empanadas", "/admin/trucks/perknpickle").with(TruckServlet.class);
+      serve("/admin/trucks/courageouscakes", "/admin/trucks/yoursisterstomato", "/admin/trucks/beaversdonuts", "/admin/trucks/5411empanadas", "/admin/trucks/perknpickle").with(TruckServlet.class);
     } else {
       serve("/admin/trucks/*").with(TruckServlet.class);
     }

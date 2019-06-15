@@ -36,7 +36,7 @@ public class TempTruckStopScheduleStrategy implements ScheduleStrategy {
 
   private static final ImmutableList<String> CALENDARS = ImmutableList.of("pollyanna", "werkforce", "scorchedearth",
       "Google: Hickory Creek Brewing Company", "Royal Palms", "Alter Brewing", "squarespace: Plank Road Tap Room",
-      "squarespace: Plank Road Tap Room", "Google: Oswego Brewing Co.",
+      "squarespace: Plank Road Tap Room", "Google: Oswego Brewing Co.", "yoursisterstomato",
       "Google: p8uim1tjcpuejjcnmchidh5p1hghvbmc@import.calendar.google.com", "ical: bigwangschicago",
       "ical: bigwangschicago", "imperialoak", "skeletonkey", "thefatshallot", "squarespace: Temperance Beer Co.");
   private final TempTruckStopDAO tempTruckStopDAO;
