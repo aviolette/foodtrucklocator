@@ -20,7 +20,7 @@
       <p class="lead">${truck.description}</p>
       <div class="mb-4 mt-3" style="font-size:1.3em">
         <c:forEach items="${truck.publicCategories}" var="category">
-          <span class="badge badge-primary">${category}</span>&nbsp;
+          <a href="/trucks?tag=${category}"><span class="badge badge-primary">${category}</span></a>&nbsp;
         </c:forEach>
       </div>
       <div>

@@ -8,6 +8,7 @@
 <script type="text/javascript">
   (function() {
     var truckData = [], $truckList = $("#truckList");
+    var filteredBy = "${filteredBy}";
 
     function makeRelative(url) {
       return /^http:/.exec(url) ? url.substr(5) : url;
@@ -16,6 +17,9 @@
     function refreshTruckList(dataSet) {
       $truckList.empty();
       $.each(dataSet, function(i, datum) {
+        if (filteredBy && !datum["categories"].includes(filteredBy)) {
+          return;
+        }
         var icon = makeRelative(datum["previewIcon"]);
         var $section = $("<div class='col-xs-3 col-md-3'></div>");
         var thumbnailId ="thumbnail-" + i;
