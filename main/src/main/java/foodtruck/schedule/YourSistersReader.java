@@ -3,6 +3,8 @@ package foodtruck.schedule;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,6 +20,8 @@ import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
 import foodtruck.dao.TruckDAO;
+import foodtruck.geolocation.GeoLocator;
+import foodtruck.model.Location;
 import foodtruck.model.TempTruckStop;
 import foodtruck.model.Truck;
 import foodtruck.time.Clock;
@@ -31,20 +35,23 @@ public class YourSistersReader implements StopReader {
   private final TruckDAO truckDAO;
   private final ZoneId zone;
   private final Clock clock;
+  private final GeoLocator geoLocator;
 
   @Inject
-  public YourSistersReader(AddressExtractor extractor, TruckDAO truckDAO, ZoneId zone, Clock clock) {
+  public YourSistersReader(AddressExtractor extractor, TruckDAO truckDAO, ZoneId zone, Clock clock,
+      GeoLocator locationDAO) {
     this.extractor = extractor;
     this.truckDAO = truckDAO;
     this.zone = zone;
     this.clock = clock;
+    this.geoLocator = locationDAO;
   }
 
   @Override
   public List<TempTruckStop> findStops(String document) {
     log.info("Loading your sister's tomato's calendar");
     Document parsedDoc = Jsoup.parse(document);
-    ImmutableList.Builder stops = ImmutableList.builder();
+    ImmutableList.Builder<TempTruckStop> stops = ImmutableList.builder();
     Truck truck = truckDAO.findByIdOpt("yoursisterstomato")
         .orElseThrow(() -> new RuntimeException("Your sister's tomato food truck not found"));
     for (Element item : parsedDoc.select("table")) {
@@ -63,12 +70,20 @@ public class YourSistersReader implements StopReader {
           parseRange(spanElement.text(), stopBuilder, date);
           TextNode textNode = (TextNode) nodes.get(3);
           String address = textNode.text();
-          extractor.parse(address, truck).stream().findFirst().ifPresent(location -> {
-            stopBuilder.locationName(location);
+          Optional<Location> locationOpt = geoLocator.locateOpt(address);
+          if (locationOpt.isPresent()) {
+            stopBuilder.locationName(locationOpt.get().getName());
             stops.add(stopBuilder.build());
-          });
-        } catch (NumberFormatException nfe) {
-          continue;
+          } else {
+            log.log(Level.WARNING, "Location could not be found {0}", address);
+            extractor.parse(address, truck).stream().findFirst().ifPresent(location -> {
+              geoLocator.locateOpt(location).ifPresent(loc -> {
+                stopBuilder.locationName(location);
+                stops.add(stopBuilder.build());
+              });
+            });
+          }
+        } catch (NumberFormatException ignored) {
         }
       }
     }
