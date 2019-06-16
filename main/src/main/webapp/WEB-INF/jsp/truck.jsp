@@ -18,6 +18,11 @@
         </c:if></div>
       <c:if test="${truck.popupVendor}"><p><span class="badge badge-info">Popup Vendor</span></p></c:if>
       <p class="lead">${truck.description}</p>
+      <div class="mb-4 mt-3" style="font-size:1.3em">
+        <c:forEach items="${truck.publicCategories}" var="category">
+          <span class="badge badge-primary">${category}</span>&nbsp;
+        </c:forEach>
+      </div>
       <div>
         <c:if test="${!empty(truck.facebook)}"><span class="social social-facebook"></span> <a target="_blank" href="http://facebook.com${truck.facebook}"> ${truck.facebookHandle}</a><br/></c:if>
         <c:if test="${!empty(truck.twitterHandle)}"><span class="social social-twitter"></span> <a target="_blank"

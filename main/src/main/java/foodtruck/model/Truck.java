@@ -526,6 +526,10 @@ public class Truck extends ModelEntity implements Serializable {
     return lastScanned;
   }
 
+  public Set<String> getPublicCategories() {
+    return publicCategories();
+  }
+
   public Set<String> publicCategories() {
     return categories.stream()
         .filter(input -> !(input.equals("Lunch") || input.equals("HasStore") ||
