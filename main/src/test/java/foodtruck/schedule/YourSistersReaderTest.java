@@ -52,6 +52,9 @@ public class YourSistersReaderTest extends Mockito {
     when(geoLocator.locateOpt(any())).thenReturn(Optional.empty());
     when(geoLocator.locateOpt("2500 N. Woodland Park, Buffalo Grove, IL")).thenReturn(Optional.of(Location.builder()
         .name("2500 N. Woodland Park, Buffalo Grove, IL")
+        .valid(true)
+        .lat(40)
+        .lng(-80)
         .wasJustResolved(true)
         .build()));
     when(extractor.parse(" Woodland Park 2500 N. Buffalo Grove Rd, Buffalo Grove", TRUCK)).thenReturn(

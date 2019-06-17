@@ -78,7 +78,10 @@ public class YourSistersReader implements StopReader {
             log.log(Level.WARNING, "Location could not be found {0}", address);
             extractor.parse(address, truck).stream().findFirst().ifPresent(location -> {
               geoLocator.locateOpt(location).ifPresent(loc -> {
-                stopBuilder.locationName(location);
+                if (!loc.isResolved()) {
+                  return;
+                }
+                stopBuilder.locationName(loc.getName());
                 stops.add(stopBuilder.build());
               });
             });
