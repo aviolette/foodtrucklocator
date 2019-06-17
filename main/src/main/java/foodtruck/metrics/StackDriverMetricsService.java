@@ -99,8 +99,12 @@ public class StackDriverMetricsService implements MetricsService {
             .setName(name.toString())
             .addAllTimeSeries(timeSeriesList)
             .build();
-        log.log(Level.INFO, "Sending {0} to stackdriver {1}", new Object[] {propertyName, count.getValue()});
-        client.createTimeSeries(request);
+        try {
+          log.log(Level.INFO, "Sending {0} to stackdriver {1}", new Object[]{propertyName, count.getValue()});
+          client.createTimeSeries(request);
+        } catch (io.grpc.StatusRuntimeException e) {
+          log.log(Level.WARNING, e.getMessage(), e);
+        }
       }
     } catch (IOException e) {
       log.log(Level.INFO, e.getMessage(), e);
