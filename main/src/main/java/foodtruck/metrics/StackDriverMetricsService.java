@@ -102,7 +102,7 @@ public class StackDriverMetricsService implements MetricsService {
         try {
           log.log(Level.INFO, "Sending {0} to stackdriver {1}", new Object[]{propertyName, count.getValue()});
           client.createTimeSeries(request);
-        } catch (io.grpc.StatusRuntimeException e) {
+        } catch (io.grpc.StatusRuntimeException | IllegalArgumentException e) {
           log.log(Level.WARNING, e.getMessage(), e);
         }
       }
