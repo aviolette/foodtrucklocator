@@ -17,11 +17,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskHandle;
+import com.google.appengine.api.taskqueue.TransientFailureException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import foodtruck.monitoring.StatUpdate;
 import foodtruck.metrics.MetricsService;
+import foodtruck.monitoring.StatUpdate;
 
 /**
  * @author aviolette
@@ -59,7 +60,10 @@ public class StatPullQueueServlet extends HttpServlet {
         log.log(Level.INFO, "Problem serializing {0}", task.getPayload());
         log.log(Level.SEVERE, ex.getMessage(), ex);
       }
-      q.deleteTask(task);
+      try {
+        q.deleteTask(task);
+      } catch (TransientFailureException ignored) {
+      }
     }
     service.updateStats(counts);
   }

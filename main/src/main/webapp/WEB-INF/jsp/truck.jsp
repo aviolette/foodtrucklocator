@@ -23,12 +23,12 @@
           <a href="/trucks?tag=${category}"><span class="badge badge-primary">${category}</span></a>&nbsp;
         </c:forEach>
       </div>
-      <div>
-        <c:if test="${!empty(truck.facebook)}"><span class="social social-facebook"></span> <a target="_blank" href="http://facebook.com${truck.facebook}"> ${truck.facebookHandle}</a><br/></c:if>
-        <c:if test="${!empty(truck.twitterHandle)}"><span class="social social-twitter"></span> <a target="_blank"
-                                                       href="http://twitter.com/${truck.twitterHandle}">@${truck.twitterHandle}</a><br/></c:if>
-        <c:if test="${!empty(truck.instagramId)}"><span class="social social-instagram"></span> <a target="_blank"
-                                                     href="http://instagram.com/${truck.instagramId}">${truck.instagramId}</a></c:if>
+      <div style="font-size:2em;" class="social-icons">
+        <c:if test="${!empty(truck.facebook)}"><a target="_blank" href="http://facebook.com${truck.facebook}"><span class="social social-facebook"></span></a>&nbsp;</c:if>
+        <c:if test="${!empty(truck.twitterHandle)}"><a target="_blank"
+                                                       href="http://twitter.com/${truck.twitterHandle}"><span class="social social-twitter"></span></a>&nbsp;</c:if>
+        <c:if test="${!empty(truck.instagramId)}"><a target="_blank"
+                                                     href="http://instagram.com/${truck.instagramId}"><span class="social social-instagram"></span></a>&nbsp;</c:if>
       </div>
       <div style="padding-top:20px">
         <ul class="list-unstyled">

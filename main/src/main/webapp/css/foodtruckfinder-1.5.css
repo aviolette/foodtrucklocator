@@ -25,3 +25,7 @@ h2.date-header {
   color: white;
   padding: 5px 0 5px 10px;
 }
+
+.social-icons a {
+  color: black!important;
+}
