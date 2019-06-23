@@ -1,16 +1,6 @@
 <%@include file="../dashboardHeader1.jsp" %>
 
-
-<ul class="nav nav-bordered mt-4 mt-md-2 mb-0 clearfix" role="tablist">
-  <li class="nav-item" role="presentation">
-    <a class="nav-link"  href="/admin/trucks/${truck.id}">Overview</a>
-  </li>
-  <li class="nav-item"><a class="nav-link" href="/admin/trucks/${truck.id}/configuration">Configuration</a></li>
-  <li class="nav-item"><a class="nav-link active show" href="/admin/trucks/${truck.id}/stats">Stats</a></li>
-  <li class="nav-item"><a class="nav-link" href="/admin/trucks/${truck.id}/beacons">Beacons</a></li>
-  <li class="nav-item"><a class="nav-link" href="/admin/trucks/${truck.id}/danger">Danger Zone</a></li>
-
-</ul>
+<%@include file="truckNav.jsp" %>
 
 
 <div class="row statcards mt-3 mb-3 text-xs-center text-md-left">

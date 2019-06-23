@@ -1,4 +1,7 @@
-<%@ include file="truckHeader.jsp" %>
+<%@include file="../dashboardHeader1.jsp" %>
+
+<%@include file="truckNav.jsp" %>
+
 
 <form action="" method="POST" id="theForm">
   <div class="form-group">
@@ -187,10 +190,4 @@
   </div>
 </div>
 
-<script>
-  $("#submitButton").click(function(e) {
-    $("#theForm").submit();
-  });
-</script>
-
-<%@ include file="truckFooter.jsp" %>
+<%@include file="../dashboardFooter1.jsp" %>

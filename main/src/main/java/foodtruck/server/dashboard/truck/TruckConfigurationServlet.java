@@ -39,6 +39,8 @@ public class TruckConfigurationServlet extends AbstractTruckServlet {
   protected void doGetProtected(HttpServletRequest request, HttpServletResponse response,
       Truck truck) throws ServletException, IOException {
     request.setAttribute("headerName", "Edit");
+    request.setAttribute("headerSelection", "config");
+    request.setAttribute("extraScripts", ImmutableList.of("/script/dashboard-truck-config.js", "/script/flash.js"));
     forward(request, response);
   }
 
