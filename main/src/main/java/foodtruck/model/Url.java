@@ -25,6 +25,15 @@ public class Url {
     return url;
   }
 
+  public String getForDisplay() {
+    if (url.startsWith("http://")) {
+      return url.substring(7);
+    } else if (url.startsWith("https://")) {
+      return url.substring(8);
+    }
+    return url;
+  }
+
   @Override
   public int hashCode() {
     return url.hashCode();

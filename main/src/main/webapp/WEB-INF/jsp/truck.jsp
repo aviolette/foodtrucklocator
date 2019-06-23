@@ -12,7 +12,7 @@
 
   <div class="row" style="padding-bottom: 0;">
     <div class="col-md-4">
-      <img class="img-thumbnail previewIcon" src="${truck.previewIconUrl.protocolRelative}" width="150" height="150"/>
+      <img class="img-thumbnail previewIcon" src="${truck.previewIconUrl.protocolRelative}" width="300" height="300"/>
       <div><c:if test="${isAdmin}">
         <a class="btn btn-default" href="/admin/trucks/${truck.id}"><span class='glyphicons glyphicons-pencil'></span> Edit</a>
         </c:if></div>
@@ -23,17 +23,17 @@
           <a href="/trucks?tag=${category}"><span class="badge badge-primary">${category}</span></a>&nbsp;
         </c:forEach>
       </div>
-      <div style="font-size:2em;" class="social-icons">
+      <div class="social-icons">
         <c:if test="${!empty(truck.facebook)}"><a target="_blank" href="http://facebook.com${truck.facebook}"><span class="social social-facebook"></span></a>&nbsp;</c:if>
         <c:if test="${!empty(truck.twitterHandle)}"><a target="_blank"
                                                        href="http://twitter.com/${truck.twitterHandle}"><span class="social social-twitter"></span></a>&nbsp;</c:if>
         <c:if test="${!empty(truck.instagramId)}"><a target="_blank"
                                                      href="http://instagram.com/${truck.instagramId}"><span class="social social-instagram"></span></a>&nbsp;</c:if>
       </div>
-      <div style="padding-top:20px">
+      <div class="m-t contact-section">
         <ul class="list-unstyled">
           <c:if test="${!empty(truck.url)}">
-            <li class="lead"><a target="_blank" href="${truck.url}">${truck.url}</a></li>
+            <li class="lead"><a target="_blank" href="${truck.url}">${truck.urlObj.forDisplay}</a></li>
           </c:if>
           <c:if test="${!empty(truck.publicEmail)}">
             <li><span class="glyphicons glyphicons-envelope"></span>&nbsp;

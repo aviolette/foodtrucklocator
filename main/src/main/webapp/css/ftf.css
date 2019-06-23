@@ -27,5 +27,9 @@ h2.date-header {
 }
 
 .social-icons a {
-  color: #444!important;
+  font-size:2em;
+}
+
+div.contact-section {
+  word-wrap: break-word;
 }

@@ -361,6 +361,10 @@ public class Truck extends ModelEntity implements Serializable {
     return url;
   }
 
+  public @Nullable Url getUrlObj() {
+    return new Url(url);
+  }
+
   public String getIconUrl() {
     return iconUrl;
   }
