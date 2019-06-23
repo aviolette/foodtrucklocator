@@ -12,7 +12,7 @@
 
   <div class="row" style="padding-bottom: 0;">
     <div class="col-md-4">
-      <img class="img-thumbnail previewIcon" src="${truck.previewIconUrl.protocolRelative}" width="300" height="300"/>
+      <img class="rounded previewIcon" src="${truck.previewIconUrl.protocolRelative}" width="300" height="300"/>
       <div><c:if test="${isAdmin}">
         <a class="btn btn-default" href="/admin/trucks/${truck.id}"><span class='glyphicons glyphicons-pencil'></span> Edit</a>
         </c:if></div>
@@ -33,15 +33,15 @@
       <div class="m-t contact-section">
         <ul class="list-unstyled">
           <c:if test="${!empty(truck.url)}">
-            <li class="lead"><a target="_blank" href="${truck.url}">${truck.urlObj.forDisplay}</a></li>
+            <li class="mb-2"><a target="_blank" href="${truck.url}">${truck.urlObj.forDisplay}</a></li>
           </c:if>
           <c:if test="${!empty(truck.publicEmail)}">
-            <li><span class="glyphicons glyphicons-envelope"></span>&nbsp;
+            <li class="mb-2"><span class="glyphicons glyphicons-envelope"></span>&nbsp;
               <a target="_blank"
                  href="mailto:${truck.publicEmail}">${truck.publicEmail}</a></li>
           </c:if>
           <c:if test="${!empty(truck.phone)}">
-            <li><span class="glyphicons glyphicons-phone-alt"></span>&nbsp;
+            <li class="mb-2"><span class="glyphicons glyphicons-phone-alt"></span>&nbsp;
                 ${truck.phone}</li>
           </c:if>
         </ul>
