@@ -12,7 +12,7 @@
 
   <div class="row" style="padding-bottom: 0;">
     <div class="col-md-4">
-      <img class="rounded previewIcon" src="${truck.previewIconUrl.protocolRelative}" width="300" height="300"/>
+      <img class="rounded previewIcon" src="${truck.previewIconUrl.protocolRelative}" width="100%" />
       <div><c:if test="${isAdmin}">
         <a class="btn btn-default" href="/admin/trucks/${truck.id}"><span class='glyphicons glyphicons-pencil'></span> Edit</a>
         </c:if></div>
