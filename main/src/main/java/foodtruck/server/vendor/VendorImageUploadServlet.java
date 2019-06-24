@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.inject.Inject;
 
 import foodtruck.model.Truck;
-import foodtruck.server.dashboard.ImageUploadHelper;
+import foodtruck.server.dashboard.ServletImageUploader;
 
 /**
  * @author aviolette
@@ -20,10 +20,10 @@ import foodtruck.server.dashboard.ImageUploadHelper;
 @Singleton
 public class VendorImageUploadServlet extends HttpServlet {
 
-  private final ImageUploadHelper helper;
+  private final ServletImageUploader helper;
 
   @Inject
-  public VendorImageUploadServlet(ImageUploadHelper helper) {
+  public VendorImageUploadServlet(ServletImageUploader helper) {
     this.helper = helper;
   }
 

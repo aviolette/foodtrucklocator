@@ -226,7 +226,7 @@
     });
 
     Dropzone.options.upload = {
-      headers: {"X-Dropzone-Location": String(loc.key)},
+      headers: {"X-Dropzone-Type": "location", "X-Dropzone-Key": String(loc.key)},
       maxFiles: 1,
       dictDefaultMessage: "Click or drop images here to upload",
       acceptedFiles: "image/*",

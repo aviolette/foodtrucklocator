@@ -210,9 +210,7 @@ class FoodtruckServletModule extends ServletModule {
     serve("/admin/images").with(ImageUploadServlet.class);
     serve("/admin/trucks").with(TruckListServlet.class);
     if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development ) {
-      serve("/admin/locations/4533286441320448", "/admin/locations/6411252301561856",
-          "/admin/locations/5348024557502464", "/admin/locations/5965950092312576",
-          "/admin/locations/5403000138891264", "/admin/locations/5288650929602560").with(LocationEditServlet.class);
+      serve("/admin/locations/6427744975978496", "/admin/locations/5288650929602560").with(LocationEditServlet.class);
     } else {
       serve("/admin/locations/*").with(LocationEditServlet.class);
     }

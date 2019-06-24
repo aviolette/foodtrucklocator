@@ -59,7 +59,7 @@
 <script type="text/javascript">
   <c:if test="${enableImages}">
   Dropzone.options.upload = {
-    headers: {"X-Dropzone-Truck": "${truck.id}"},
+    headers: {"X-Dropzone-Key": "${truck.id}", "X-Dropzone-Type": "stop"},
     maxFiles: 1,
     dictDefaultMessage: "Click or drop images here to upload",
     acceptedFiles: "image/*",

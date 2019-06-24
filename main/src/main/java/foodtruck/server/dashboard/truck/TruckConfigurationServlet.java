@@ -25,6 +25,7 @@ import foodtruck.util.Link;
  */
 @Singleton
 public class TruckConfigurationServlet extends AbstractTruckServlet {
+
   private static final Splitter BLACK_LIST_SPLITTER = Splitter.on(";")
       .omitEmptyStrings()
       .trimResults();
@@ -40,7 +41,8 @@ public class TruckConfigurationServlet extends AbstractTruckServlet {
       Truck truck) throws ServletException, IOException {
     request.setAttribute("headerName", "Edit");
     request.setAttribute("headerSelection", "config");
-    request.setAttribute("extraScripts", ImmutableList.of("/script/dashboard-truck-config.js", "/script/flash.js"));
+    request.setAttribute("extraScripts",
+        ImmutableList.of("/script/dashboard-truck-config.js", "/script/flash.js", "/script/lib/dropzone.js"));
     forward(request, response);
   }
 

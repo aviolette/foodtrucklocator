@@ -22,14 +22,14 @@ import foodtruck.time.Clock;
  * @author aviolette
  * @since 2/15/17
  */
-public class ImageUploadHelper {
+public class ServletImageUploader {
 
-  private static final Logger log = Logger.getLogger(ImageUploadHelper.class.getName());
+  private static final Logger log = Logger.getLogger(ServletImageUploader.class.getName());
   private final StorageService storageService;
   private final Clock clock;
 
   @Inject
-  public ImageUploadHelper(StorageService storageService, Clock clock) {
+  public ServletImageUploader(StorageService storageService, Clock clock) {
     this.storageService = storageService;
     this.clock = clock;
   }
@@ -42,7 +42,7 @@ public class ImageUploadHelper {
     uploadImage(request, response, bucket, filenameBase);
   }
 
-  private void uploadImage(HttpServletRequest request, HttpServletResponse response, String bucket,
+  void uploadImage(HttpServletRequest request, HttpServletResponse response, String bucket,
       String filenameBase) throws ServletException {
     log.log(Level.INFO, "URI: {2} Bucket: {0} truck: {1}", new Object[]{bucket, filenameBase, request.getRequestURI()});
     try {
@@ -70,9 +70,8 @@ public class ImageUploadHelper {
     }
   }
 
-  private
   @Nullable
-  String extensionFromContentType(String contentType) {
+  private String extensionFromContentType(String contentType) {
     switch (contentType) {
       case "image/png":
         return "png";
@@ -81,12 +80,5 @@ public class ImageUploadHelper {
       default:
         return null;
     }
-  }
-
-  public void uploadLocationImage(HttpServletRequest request, HttpServletResponse response, String location) throws ServletException {
-    String bucket = "cftf_locationicons";
-    String filenameBase = location + "-" + clock.now()
-        .getMillis();
-    uploadImage(request, response, bucket, filenameBase);
   }
 }
