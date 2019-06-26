@@ -1,17 +1,14 @@
 <%@include file="../dashboardHeader1.jsp" %>
 
 <%@include file="truckNav.jsp" %>
-<script type="application/json" id="truck">{"id":"${truck.id}"}</script>
+<script type="application/json" id="upload_data">
+  {"artifactType": "truck", "key":"${truck.id}", "initialImage" : "${truck.previewIcon}"}
+</script>
 
 <div class="row">
   <div class="col-md-4">
-    <img
-        <c:if test="${empty(truck.previewIcon)}">class="d-none"</c:if> src="${truck.previewIcon}" id="imagePreview" width="100%"/>
-    <div class="<c:if test="${empty(truck.previewIcon)}">d-none</c:if> mb-2 mt-2" id="remove-image-button-section">
-      <button id="remove-image-button" class="btn-outline-danger btn">Remove</button>
-    </div>
-    <form action="/admin/images" class="<c:if test="${!empty(truck.previewIcon)}">d-none</c:if> dropzone" id="upload">
-    </form>
+
+    <div id="upload_section"></div>
 
   </div>
   <div class="col-md-8">
@@ -111,7 +108,6 @@
         </div>
 
 
-
         <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
           <div class="form-group">
             <label for="twitterHandle">Twitter Handle:</label>
@@ -160,15 +156,18 @@
           </div>
           <div class="form-group">
             <label for="drupalCalendar">Drupal Calendar Url</label>
-            <input type="text" class="form-control" id="drupalCalendar" name="drupalCalendar" value="${truck.drupalCalendar}"/>
+            <input type="text" class="form-control" id="drupalCalendar" name="drupalCalendar"
+                   value="${truck.drupalCalendar}"/>
           </div>
           <div class="form-group">
             <label for="iCalCalendar">iCal Calendar Url</label>
-            <input type="text" class="form-control" id="iCalCalendar" name="iCalCalendar" value="${truck.icalCalendar}"/>
+            <input type="text" class="form-control" id="iCalCalendar" name="iCalCalendar"
+                   value="${truck.icalCalendar}"/>
           </div>
           <div class="form-group">
             <label for="squarespaceCalendar">Squarespace Calendar Url</label>
-            <input type="text" class="form-control" id="squarespaceCalendar" name="squarespaceCalendar" value="${truck.squarespaceCalendar}"/>
+            <input type="text" class="form-control" id="squarespaceCalendar" name="squarespaceCalendar"
+                   value="${truck.squarespaceCalendar}"/>
           </div>
           <div class="form-group">
             <label for="timezoneAdjustment">Timezone adjustment</label>
@@ -180,7 +179,8 @@
         <div class="tab-pane fade" id="attributes" role="tabpanel" aria-labelledby="attributes-tab">
           <div class="checkbox">
             <label><input type="checkbox" name="options"
-                          value="twittalyzer" ${truck.usingTwittalyzer ? "checked='checked'" : ""}/> Use twittalyzer</label>
+                          value="twittalyzer" ${truck.usingTwittalyzer ? "checked='checked'" : ""}/> Use
+              twittalyzer</label>
           </div>
           <div class="checkbox">
             <label><input type="checkbox" name="options"
@@ -208,7 +208,6 @@
           </div>
         </div>
       </div>
-
 
 
     </form>

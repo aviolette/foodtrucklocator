@@ -42,7 +42,8 @@ public class TruckConfigurationServlet extends AbstractTruckServlet {
     request.setAttribute("headerName", "Edit");
     request.setAttribute("headerSelection", "config");
     request.setAttribute("extraScripts",
-        ImmutableList.of("/script/dashboard-truck-config.js", "/script/flash.js", "/script/lib/dropzone.js"));
+        ImmutableList.of("/script/upload.js", "/script/dashboard-truck-config.js", "/script/flash.js",
+            "/script/lib/dropzone.js"));
     forward(request, response);
   }
 
