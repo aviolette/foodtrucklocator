@@ -75,7 +75,7 @@
         </c:if>
         <div class="row">
         <c:forEach items="${stops}" var="stop" varStatus="stopStatus">
-          <div class="col-xs-6 col-md-3">
+          <div class="col-xs-6 col-sm-6 col-md-6 col-lg-4 col-xl-3">
             <a href="/trucks/${stop.truck.id}">
               <div class="thumbnail"><img width="180" height="180" src="${stop.truck.previewIconUrl.protocolRelative}"
                                           alt="" class="img-rounded"
@@ -85,9 +85,6 @@
                   <joda:format pattern="hh:mm a" value="${stop.endTime}"/></strong></p></div>
             </a>
           </div>
-          <c:if test="${stopStatus.index % 4 == 3}">
-            </div><div class="row">
-          </c:if>
 
         </c:forEach>
         </div>
