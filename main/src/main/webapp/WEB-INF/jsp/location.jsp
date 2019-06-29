@@ -14,35 +14,37 @@
       </c:if></h1>
 
     <img class="img-thumbnail previewIcon <c:if test="${empty(location.imageUrl.protocolRelative)}">hidden</c:if>"
-         src="${location.imageUrl.protocolRelative}" width="150" height="150"/>
+         src="${location.imageUrl.protocolRelative}" width="100%" />
 
 
     <c:if test="${!empty(location.description)}">
       <p class="lead">${location.description}</p>
     </c:if>
 
-    <ul class="list-unstyled">
-      <c:if test="${!empty(location.facebookUri)}">
-        <li><span class="social social-facebook"></span> <a target="_blank"
-                                                            href="http://facebook.com${location.facebookUri}"> ${location.facebookUri}</a>
-        </li>
-      </c:if>
-      <c:if test="${!empty(location.twitterHandle)}">
-        <li><span class="social social-twitter"></span> <a target="_blank"
-                                                           href="http://twitter.com/${location.twitterHandle}">@${location.twitterHandle}</a>
-        </li>
-      </c:if>
-      <c:if test="${!empty(location.email)}">
-        <li><span class="glyphicons glyphicons-envelope" style="margin-left:-8px"></span><a target="_blank"
-             href="mailto:${location.email}">${location.email}</a></li>
-      </c:if>
-      <c:if test="${!empty(location.phoneNumber)}">
-        <li><span class="glyphicons glyphicons-phone-alt" style="margin-left:-8px"></span>${location.phoneNumber}</li>
-      </c:if>
-      <c:if test="${!empty(location.url)}">
-        <li class="lead"><a href='${location.url}'>${location.url}</a></li>
-      </c:if>
-    </ul>
+    <div class="social-icons m-t">
+      <c:if test="${!empty(location.facebookUri)}"><a target="_blank" href="http://facebook.com${location.facebookUri}"><span class="social social-facebook"></span></a>&nbsp;</c:if>
+      <c:if test="${!empty(location.twitterHandle)}"><a target="_blank"
+                                                        href="http://twitter.com/${location.twitterHandle}"><span class="social social-twitter"></span></a>&nbsp;</c:if>
+    </div>
+
+    <div class="m-t contact-section">
+      <ul class="list-unstyled">
+        <c:if test="${!empty(location.url)}">
+          <li class="mb-2"><a href='${location.url}'>${location.url}</a></li>
+        </c:if>
+        <c:if test="${!empty(location.email)}">
+          <li class="mb-2"><span class="glyphicons glyphicons-envelope"></span>&nbsp;
+            <a target="_blank"
+               href="mailto:${location.email}">${location.email}</a></li>
+        </c:if>
+        <c:if test="${!empty(location.phoneNumber)}">
+          <li class="mb-2"><span class="glyphicons glyphicons-phone-alt"></span>&nbsp;
+              ${location.phoneNumber}</li>
+        </c:if>
+
+      </ul>
+    </div>
+
 
   </div>
   <div class="col-md-8" style="padding-left:30px">
