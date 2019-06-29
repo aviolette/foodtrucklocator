@@ -12,5 +12,5 @@ public interface AddressExtractor {
   /**
    * Returns the list of addresses that were matched in the tweet.
    */
-  List<String> parse(String tweet, Truck truck);
+  List<String> parse(String text, Truck truck);
 }

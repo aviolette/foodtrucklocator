@@ -8,7 +8,6 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.io.ByteStreams;
 
 import org.junit.Before;
@@ -19,7 +18,6 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import foodtruck.dao.TruckDAO;
-import foodtruck.geolocation.GeoLocator;
 import foodtruck.model.Location;
 import foodtruck.model.TempTruckStop;
 import foodtruck.model.Truck;
@@ -38,27 +36,24 @@ public class YourSistersReaderTest extends Mockito {
   private YourSistersReader reader;
 
   @Mock private TruckDAO truckDAO;
-  @Mock private AddressExtractor extractor;
-  @Mock private GeoLocator geoLocator;
+  @Mock private CalendarAddressExtractor extractor;
 
   @Before
   public void before() {
-    this.reader = new YourSistersReader(extractor, truckDAO, ZONE, FakeClock.fixed(1560515802000L), geoLocator);
+    this.reader = new YourSistersReader(extractor, truckDAO, ZONE, FakeClock.fixed(1560515802000L));
   }
 
   @Test
   public void findStops() throws IOException {
     when(truckDAO.findByIdOpt("yoursisterstomato")).thenReturn(Optional.of(TRUCK));
-    when(geoLocator.locateOpt(any())).thenReturn(Optional.empty());
-    when(geoLocator.locateOpt("2500 N. Woodland Park, Buffalo Grove, IL")).thenReturn(Optional.of(Location.builder()
+    when(extractor.parse(anyString(), any())).thenReturn(Optional.empty());
+    when(extractor.parse(" Woodland Park 2500 N. Buffalo Grove Rd, Buffalo Grove", TRUCK)).thenReturn(Optional.of(Location.builder()
         .name("2500 N. Woodland Park, Buffalo Grove, IL")
         .valid(true)
         .lat(40)
         .lng(-80)
         .wasJustResolved(true)
         .build()));
-    when(extractor.parse(" Woodland Park 2500 N. Buffalo Grove Rd, Buffalo Grove", TRUCK)).thenReturn(
-        ImmutableList.of("2500 N. Woodland Park, Buffalo Grove, IL"));
     InputStream str = ClassLoader.getSystemClassLoader()
         .getResourceAsStream("yoursisters.html");
     String doc = new String(ByteStreams.toByteArray(str), StandardCharsets.UTF_8);

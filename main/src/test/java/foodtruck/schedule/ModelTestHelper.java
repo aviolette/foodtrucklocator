@@ -63,6 +63,7 @@ public class ModelTestHelper {
   public static Location clarkAndMonroe() {
     return Location.builder()
         .name("Clark and Monroe, Chicago, IL")
+        .valid(true)
         .lat(41.880306)
         .key("1234")
         .lng(-87.630845)
@@ -73,6 +74,7 @@ public class ModelTestHelper {
   public static Location wackerAndAdams() {
     return Location.builder()
         .name("Wacker and Adams, Chicago, IL")
+        .valid(true)
         .radius(0.1)
         .key(456)
         .lat(41.879385)
@@ -83,10 +85,19 @@ public class ModelTestHelper {
   public static Location aon() {
     return Location.builder()
         .name("AON")
+        .valid(true)
         .radius(0.1)
         .lat(41.884851999999995)
         .lng(-87.620764)
         .build();
+  }
+
+  public static Location unresolvedLocation() {
+    return Location.builder()
+        .lat(0)
+        .lng(0)
+        .build();
+
   }
 
   public static TwitterNotificationAccount clarkAndMonroeTwitterAccount() {

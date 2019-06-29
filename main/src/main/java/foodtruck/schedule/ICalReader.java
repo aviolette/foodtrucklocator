@@ -105,7 +105,11 @@ public class ICalReader {
   }
 
   private void appendLocation(ICalEvent event, String rest) {
-    locator.locateOpt(rest).ifPresent(event::setLocation);
+    locator.locateOpt(rest).ifPresent(loc -> {
+      if (loc.isResolved()) {
+        event.setLocation(loc);
+      }
+    });
   }
 
   private ZonedDateTime parseTime(String origTime, ZoneId zone) {

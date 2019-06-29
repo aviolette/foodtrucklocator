@@ -24,6 +24,7 @@ public class ICalStopReader {
 
   public List<TempTruckStop> findStops(String document, String truck) {
     return reader.parse(document, true).stream()
+        .filter(event -> event.getLocation() != null)
         .map(event -> TempTruckStop.builder()
             .truckId(truck)
             .calendarName("ical: " + truck)

@@ -21,6 +21,7 @@ import foodtruck.model.Location;
 
 import static com.google.common.truth.Truth.assertThat;
 import static foodtruck.schedule.AbstractReaderTest.CHICAGO;
+import static foodtruck.schedule.ModelTestHelper.wackerAndAdams;
 
 /**
  * @author aviolette
@@ -40,7 +41,7 @@ public class ICalReaderTest extends Mockito {
         "GEO:40.720756;-74.000761\n" + "LOCATION:100 South Wacker Drive\\, Chicago\\, IL\\, 60606\\, United States\n" +
         "END:VEVENT\n" + "END:VCALENDAR";
     when(geoLocator.locateOpt("Chicago Lunch")).thenReturn(Optional.empty());
-    Location loc = Location.builder().name("100 South Wacker Drive, Chicago, IL, 60606, United States").build();
+    Location loc = wackerAndAdams();
     when(geoLocator.locateOpt("100 South Wacker Drive, Chicago, IL, 60606, United States")).thenReturn(Optional.of(loc));
     List<ICalReader.ICalEvent> events = reader.parse(doc, true);
     assertThat(events).containsExactly(new ICalReader.ICalEvent(ZonedDateTime.of(2019, 1, 17, 16, 30, 0, 0, ZoneOffset.UTC), ZonedDateTime.of(2019, 1, 17, 20, 0, 0, 0,

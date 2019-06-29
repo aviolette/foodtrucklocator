@@ -3,8 +3,6 @@ package foodtruck.schedule;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.Optional;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,8 +18,6 @@ import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
 import foodtruck.dao.TruckDAO;
-import foodtruck.geolocation.GeoLocator;
-import foodtruck.model.Location;
 import foodtruck.model.TempTruckStop;
 import foodtruck.model.Truck;
 import foodtruck.time.Clock;
@@ -31,20 +27,17 @@ public class YourSistersReader implements StopReader {
   private static final Logger log = Logger.getLogger(YourSistersReader.class.getName());
   private final static Pattern RANGE = Pattern.compile("(\\d+):(\\d+)\\s*-\\s*(\\d+):(\\d+)");
 
-  private final AddressExtractor extractor;
+  private final CalendarAddressExtractor extractor;
   private final TruckDAO truckDAO;
   private final ZoneId zone;
   private final Clock clock;
-  private final GeoLocator geoLocator;
 
   @Inject
-  public YourSistersReader(AddressExtractor extractor, TruckDAO truckDAO, ZoneId zone, Clock clock,
-      GeoLocator locationDAO) {
+  public YourSistersReader(CalendarAddressExtractor extractor, TruckDAO truckDAO, ZoneId zone, Clock clock) {
     this.extractor = extractor;
     this.truckDAO = truckDAO;
     this.zone = zone;
     this.clock = clock;
-    this.geoLocator = locationDAO;
   }
 
   @Override
@@ -70,22 +63,11 @@ public class YourSistersReader implements StopReader {
           parseRange(spanElement.text(), stopBuilder, date);
           TextNode textNode = (TextNode) nodes.get(3);
           String address = textNode.text();
-          Optional<Location> locationOpt = geoLocator.locateOpt(address);
-          if (locationOpt.isPresent()) {
-            stopBuilder.locationName(locationOpt.get().getName());
+
+          extractor.parse(address, truck).ifPresent(location -> {
+            stopBuilder.locationName(location.getName());
             stops.add(stopBuilder.build());
-          } else {
-            log.log(Level.WARNING, "Location could not be found {0}", address);
-            extractor.parse(address, truck).stream().findFirst().ifPresent(location -> {
-              geoLocator.locateOpt(location).ifPresent(loc -> {
-                if (!loc.isResolved()) {
-                  return;
-                }
-                stopBuilder.locationName(loc.getName());
-                stops.add(stopBuilder.build());
-              });
-            });
-          }
+          });
         } catch (NumberFormatException ignored) {
         }
       }
