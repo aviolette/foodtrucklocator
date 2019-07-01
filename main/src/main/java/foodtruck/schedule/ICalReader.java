@@ -10,6 +10,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -105,7 +106,12 @@ public class ICalReader {
   }
 
   private void appendLocation(ICalEvent event, String rest) {
-    locator.locateOpt(rest).ifPresent(loc -> {
+
+    Optional<Location> location = locator.locateOpt(rest);
+    if (!location.isPresent()) {
+      log.log(Level.WARNING, "Couldn't resolve location >{0}<", rest);
+    }
+    location.ifPresent(loc -> {
       if (loc.isResolved()) {
         event.setLocation(loc);
       }

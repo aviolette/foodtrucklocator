@@ -203,14 +203,14 @@ class FoodtruckServletModule extends ServletModule {
     serveRegex("/admin/trucks/[\\S]*/linxup_config").with(LinxupConfigServlet.class);
     serveRegex("/admin/trucks/[\\S]*/danger").with(DangerZoneServlet.class);
     if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development ) {
-      serve("/admin/trucks/courageouscakes", "/admin/trucks/yoursisterstomato", "/admin/trucks/beaversdonuts", "/admin/trucks/5411empanadas", "/admin/trucks/perknpickle").with(TruckServlet.class);
+      serve("/admin/trucks/courageouscakes", "/admin/trucks/yoursisterstomato", "/admin/trucks/mytoastycheese", "/admin/trucks/beaversdonuts", "/admin/trucks/5411empanadas", "/admin/trucks/perknpickle").with(TruckServlet.class);
     } else {
       serve("/admin/trucks/*").with(TruckServlet.class);
     }
     serve("/admin/images").with(ImageUploadServlet.class);
     serve("/admin/trucks").with(TruckListServlet.class);
     if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development ) {
-      serve("/admin/locations/6427744975978496", "/admin/locations/5288650929602560").with(LocationEditServlet.class);
+      serve("/admin/locations/6228733371351040","/admin/locations/6427744975978496", "/admin/locations/5288650929602560").with(LocationEditServlet.class);
     } else {
       serve("/admin/locations/*").with(LocationEditServlet.class);
     }
@@ -260,14 +260,14 @@ class FoodtruckServletModule extends ServletModule {
     serve("/events").with(BoozeAndTrucksServlet.class);
     serve("/trucks", "/trucks/").with(TrucksServlet.class);
     if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development ) {
-      serve("/trucks/beaversdonuts").with(foodtruck.server.front.TruckServlet.class);
+      serve("/trucks/beaversdonuts", "/trucks/courageouscakes", "/trucks/asweetsgirl").with(foodtruck.server.front.TruckServlet.class);
     } else {
       serve("/trucks/*").with(foodtruck.server.front.TruckServlet.class);
     }
     serve("/about").with(AboutServlet.class);
     serve("/integrations").with(IntegrationsServlet.class);
     if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development ) {
-      serve("/locations", "/locations/4612451278520320").with(LocationServlet.class);
+      serve("/locations", "/locations/6427744975978496").with(LocationServlet.class);
     }
     else {
       serve("/locations*").with(LocationServlet.class);
