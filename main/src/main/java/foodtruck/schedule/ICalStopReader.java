@@ -49,7 +49,7 @@ public class ICalStopReader {
       case "The Crave Bar":
         return "thecravebar";
       case "Toasty Taco":
-        return "toastytaco";
+        return "mytoastytaco";
       case "Toasty Cheese":
         return "mytoastycheese";
       default:

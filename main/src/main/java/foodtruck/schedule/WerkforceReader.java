@@ -120,6 +120,7 @@ public class WerkforceReader implements StopReader {
       case "JUN":
         return JUNE;
       case "JUL":
+      case "JULY":
         return JULY;
       case "AUG":
         return AUGUST;
