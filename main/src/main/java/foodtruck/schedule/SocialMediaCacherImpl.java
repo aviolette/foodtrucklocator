@@ -221,6 +221,7 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
           updateLocationSpecials(truck, stories);
         }
       } finally {
+
         ignoreTweets(stories);
       }
     }
@@ -413,7 +414,11 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
       Story summary = new Story.Builder(tweet).ignoreInTwittalyzer(true).build();
       l.add(summary);
     }
-    storyDAO.save(l);
+    try {
+      storyDAO.save(l);
+    } catch (Exception e) {
+      log.log(Level.SEVERE, e.getMessage(), e);
+    }
   }
 
   private void notifyIfOffTheRoad(List<Story> tweets, Truck truck) {
