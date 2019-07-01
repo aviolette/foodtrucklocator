@@ -1,9 +1,11 @@
 package foodtruck.schedule;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 
 import foodtruck.model.TempTruckStop;
@@ -23,15 +25,46 @@ public class ICalStopReader {
   }
 
   public List<TempTruckStop> findStops(String document, String truck) {
-    return reader.parse(document, true).stream()
+    List<ICalReader.ICalEvent> events= reader.parse(document, true).stream()
         .filter(event -> event.getLocation() != null)
-        .map(event -> TempTruckStop.builder()
-            .truckId(truck)
+        .collect(Collectors.toList());
+
+    ImmutableList.Builder<TempTruckStop> builder = ImmutableList.builder();
+    events.forEach(event-> {
+      deriveTruckIds(truck, event).forEach(truckId -> {
+        builder.add(TempTruckStop.builder()
+            .truckId(truckId)
             .calendarName("ical: " + truck)
             .startTime(event.getStart())
             .endTime(event.getEnd())
             .locationName(event.getLocation().getName())
-            .build())
-        .collect(Collectors.toList());
+            .build());
+      });
+    });
+    return builder.build();
+  }
+
+  private static String categoryToTruckId(String category) {
+    switch (category) {
+      case "The Crave Bar":
+        return "thecravebar";
+      case "Toasty Taco":
+        return "toastytaco";
+      case "Toasty Cheese":
+        return "mytoastycheese";
+      default:
+        // Probably Best Truckin' BBQ, but just return toasty cheese for now until we know true category
+        log.log(Level.WARNING, "Unknown truck {0}", category);
+        return "mytoastycheese";
+    }
+  }
+
+  private List<String> deriveTruckIds(String truck, ICalReader.ICalEvent event) {
+    if ("mytoastycheese".equals(truck) && !event.getCategories().isEmpty()) {
+        return event.getCategories().stream()
+            .map(ICalStopReader::categoryToTruckId)
+            .collect(Collectors.toList());
+    }
+    return ImmutableList.of(truck);
   }
 }

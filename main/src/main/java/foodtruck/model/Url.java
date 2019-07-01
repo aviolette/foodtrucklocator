@@ -26,6 +26,14 @@ public class Url {
   }
 
   public String getForDisplay() {
+    String displayUrl = removeProtocol();
+    if (displayUrl.endsWith("/")) {
+      return displayUrl.substring(0, displayUrl.length()-2);
+    }
+    return displayUrl;
+  }
+
+  private String removeProtocol() {
     if (url.startsWith("http://")) {
       return url.substring(7);
     } else if (url.startsWith("https://")) {

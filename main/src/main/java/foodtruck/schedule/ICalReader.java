@@ -10,13 +10,14 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Objects;
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 
@@ -32,6 +33,7 @@ public class ICalReader {
   private static final Logger log = Logger.getLogger(ICalReader.class.getName());
   private final ZoneId defaultZone;
   private final GeoLocator locator;
+  private static final Splitter SPLITTER = Splitter.on(",").omitEmptyStrings().trimResults();
 
   @Inject
   public ICalReader(ZoneId defaultZone, GeoLocator locator) {
@@ -43,21 +45,22 @@ public class ICalReader {
     ImmutableList.Builder<ICalEvent> events = ImmutableList.builder();
     try (BufferedReader reader = new BufferedReader(new StringReader(document))) {
       String line;
-      ICalEvent event = null;
+
       boolean locationEncountered = false;
+      ICalEvent.Builder builder = null;
       while ((line = reader.readLine()) != null) {
         if (line.equals("BEGIN:VEVENT")) {
-          event = new ICalEvent();
+          builder = new ICalEvent.Builder();
         } else if (line.equals("END:VEVENT")) {
-          if (event != null) {
+          if (builder != null) {
             try {
-              events.add(event);
+              events.add(builder.build());
             } catch (Exception e) {
               log.log(Level.SEVERE, e.getMessage(), e);
             }
           }
           locationEncountered = false;
-          event = null;
+          builder = null;
         }
 
         int colon = line.indexOf(':');
@@ -79,22 +82,28 @@ public class ICalReader {
           }
         }
 
+        if (builder == null) {
+          continue;
+        }
+
         if (tag.startsWith("DTSTART")) {
-          event.setStart(parseTime(rest, zone));
+          builder.start(parseTime(rest, zone));
         } else if (tag.startsWith("DTEND")) {
-          event.setEnd(parseTime(rest, zone));
+          builder.end(parseTime(rest, zone));
+        } else if (tag.startsWith("CATEGORIES")) {
+          builder.categories(SPLITTER.splitToList(rest));
         } else if (tag.startsWith("SUMMARY")) {
           rest = rest.replaceAll("\\\\,", ",");
           rest = rest.replaceAll("&amp\\\\;", "and");
           if (extractSummaryLocation && !locationEncountered) {
-            appendLocation(event, rest);
+            appendLocation(builder, rest);
           }
-          event.setSummary(rest);
+          builder.summary(rest);
         } else if (tag.equals("LOCATION")) {
           rest = rest.replaceAll("\\\\,", ",");
           rest = rest.replaceAll("&amp\\\\;", "and");
           locationEncountered = true;
-          appendLocation(event, rest);
+          appendLocation(builder, rest);
         }
       }
     } catch (Exception e) {
@@ -105,15 +114,17 @@ public class ICalReader {
     return events.build();
   }
 
-  private void appendLocation(ICalEvent event, String rest) {
+  private void appendLocation(ICalEvent.Builder builder, String rest) {
 
     Optional<Location> location = locator.locateOpt(rest);
     if (!location.isPresent()) {
-      log.log(Level.WARNING, "Couldn't resolve location >{0}<", rest);
+      log.log(Level.WARNING, "Couldn't find location: " + rest);
     }
     location.ifPresent(loc -> {
       if (loc.isResolved()) {
-        event.setLocation(loc);
+        builder.location(loc);
+      } else {
+        log.log(Level.WARNING, "Couldn't resolve location: " + rest);
       }
     });
   }
@@ -150,60 +161,49 @@ public class ICalReader {
     @Nullable
     private Location location;
 
-    public ICalEvent() {}
+    private List<String> categories;
+    @Nullable
+    private String image;
 
-    public ICalEvent(ZonedDateTime start, ZonedDateTime end, String summary, String description, Location location) {
-      this.start = start;
-      this.end = end;
-      this.summary = summary;
-      this.description = description;
-      this.location = location;
+    private ICalEvent(Builder builder) {
+      this.start = builder.start;
+      this.end = builder.end;
+      this.summary = builder.summary;
+      this.description = builder.description;
+      this.location = builder.location;
+      this.categories = builder.categories;
+      this.image = builder.image;
+    }
+
+    public static Builder builder() {
+      return new Builder();
     }
 
     public ZonedDateTime getStart() {
       return start;
     }
 
-    public void setStart(ZonedDateTime start) {
-      this.start = start;
-    }
-
     public ZonedDateTime getEnd() {
       return end;
-    }
-
-    public void setEnd(ZonedDateTime end) {
-      this.end = end;
     }
 
     public String getSummary() {
       return summary;
     }
 
-    public void setSummary(String summary) {
-      this.summary = summary;
-    }
-
     public String getDescription() {
       return description;
-    }
-
-    public void setDescription(String description) {
-      this.description = description;
     }
 
     public Location getLocation() {
       return location;
     }
 
-    public void setLocation(Location location) {
-      this.location = location;
-    }
-
     @Override
     public String toString() {
       return "ICalEvent{" + "start=" + start + ", end=" + end + ", summary='" + summary + '\'' + ", description='" +
-          description + '\'' + ", location=" + location + '}';
+          description + '\'' + ", location=" + location + ", categories=" + categories + ", image='" + image + '\'' +
+          '}';
     }
 
     @Override
@@ -211,14 +211,75 @@ public class ICalReader {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
       ICalEvent iCalEvent = (ICalEvent) o;
-      return Objects.equal(start, iCalEvent.start) && Objects.equal(end, iCalEvent.end) &&
-          Objects.equal(summary, iCalEvent.summary) && Objects.equal(description, iCalEvent.description) &&
-          Objects.equal(location, iCalEvent.location);
+      return start.equals(iCalEvent.start) && end.equals(iCalEvent.end) && Objects.equals(summary, iCalEvent.summary) &&
+          Objects.equals(description, iCalEvent.description) && Objects.equals(location, iCalEvent.location) &&
+          categories.equals(iCalEvent.categories) && Objects.equals(image, iCalEvent.image);
     }
 
     @Override
     public int hashCode() {
-      return Objects.hashCode(start, end, summary, description, location);
+      return Objects.hash(start, end, summary, description, location, categories, image);
+    }
+
+    public List<String> getCategories() {
+      return categories;
+    }
+
+    public static class Builder {
+      private ZonedDateTime start;
+      private ZonedDateTime end;
+      @Nullable
+      private String summary;
+      @Nullable
+      private String description;
+      @Nullable
+      private Location location;
+
+      private List<String> categories = ImmutableList.of();
+      @Nullable
+      private String image;
+
+      public Builder() {}
+
+      public Builder start(ZonedDateTime start) {
+        this.start = start;
+        return this;
+      }
+
+      public Builder end(ZonedDateTime end) {
+        this.end = end;
+        return this;
+      }
+
+      public Builder summary(String summary) {
+        this.summary = summary;
+        return this;
+      }
+
+      public Builder description(String description) {
+        this.description = description;
+        return this;
+      }
+
+      public Builder location(Location location) {
+        this.location = location;
+        return this;
+      }
+
+      public Builder categories(List<String> categories) {
+        this.categories = categories;
+        return this;
+      }
+
+      public Builder image(String image) {
+        this.image = image;
+        return this;
+      }
+
+      public ICalEvent build() {
+        return new ICalEvent(this);
+      }
+
     }
   }
 }

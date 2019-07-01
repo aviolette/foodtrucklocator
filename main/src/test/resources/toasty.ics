@@ -1,0 +1,318 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Toasty Cheese Restaurant Group - ECPv4.9.3.2//NONSGML v1.0//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Toasty Cheese Restaurant Group
+X-ORIGINAL-URL:https://toastycheese.com
+X-WR-CALDESC:Events for Toasty Cheese Restaurant Group
+BEGIN:VEVENT
+DTSTART;TZID=America/Chicago:20190702T113000
+DTEND;TZID=America/Chicago:20190702T133000
+DTSTAMP:20190701T092357
+CREATED:20190625T170047Z
+LAST-MODIFIED:20190625T170047Z
+UID:11231-1562067000-1562074200@toastycheese.com
+SUMMARY:Private Event
+DESCRIPTION:Book Toasty Taco to serve at a Tenant Appreciation Event! \n
+URL:https://toastycheese.com/event/private-event-124/
+CATEGORIES:Toasty Taco
+ATTACH;FMTTYPE=image/jpeg:https://toastycheese.com/wp-content/uploads/2019/05/18813432_693927810795906_628304702600406535_n.jpg
+ORGANIZER;CN="Gina":MAILTO:ginapydo@toastycheese.com
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=America/Chicago:20190703T070000
+DTEND;TZID=America/Chicago:20190703T110000
+DTSTAMP:20190701T092357
+CREATED:20190625T170347Z
+LAST-MODIFIED:20190625T170347Z
+UID:11233-1562137200-1562151600@toastycheese.com
+SUMMARY:Wilmette Yankee Doodle Dash 5K Post Party
+DESCRIPTION:Who doesn’t need ice cream and a grilled cheese after running a 5K? It’s time to treat yourself for all your hard work! \n
+URL:https://toastycheese.com/event/wilmette-yankee-doodle-dash-5k-post-party/
+LOCATION:Gillson Park\, 3555 Lake Avenue\, Wilmette\, 60091
+CATEGORIES:The Crave Bar,Toasty Cheese
+ATTACH;FMTTYPE=image/jpeg:https://toastycheese.com/wp-content/uploads/2019/06/Wilmette5k.jpg
+ORGANIZER;CN="Gina":MAILTO:ginapydo@toastycheese.com
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=America/Chicago:20190703T110000
+DTEND;TZID=America/Chicago:20190703T140000
+DTSTAMP:20190701T092357
+CREATED:20190625T170610Z
+LAST-MODIFIED:20190625T170610Z
+UID:11236-1562151600-1562162400@toastycheese.com
+SUMMARY:SEBA Park
+DESCRIPTION:It’s the calm before the storm! Enjoy a nice day in the park with some Toasty Cheese before the 4th of July festivities tomorrow! \n
+URL:https://toastycheese.com/event/seba-park-2/
+LOCATION:SEBA Park\, 151 S. Water St.\, South Elgin\, 60177\, United States
+CATEGORIES:Toasty Cheese
+ATTACH;FMTTYPE=image/jpeg:https://toastycheese.com/wp-content/uploads/2019/05/13062992_1292307020797509_1614054998811820704_o-1.jpg
+ORGANIZER;CN="Gina":MAILTO:ginapydo@toastycheese.com
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=America/Chicago:20190703T110000
+DTEND;TZID=America/Chicago:20190703T150000
+DTSTAMP:20190701T092357
+CREATED:20190625T172655Z
+LAST-MODIFIED:20190625T172655Z
+UID:11255-1562151600-1562166000@toastycheese.com
+SUMMARY:Hinsdale 4th of July Fest
+DESCRIPTION:Come one\, come all Hinsdale! Celebrate this great country with a melty grilled cheese from your favorite grilled cheese food truck! \n
+URL:https://toastycheese.com/event/hinsdale-4th-of-july-fest/
+LOCATION:Burlington Park\, 30 E. Chicago Avenue\, Hinsdale
+CATEGORIES:Toasty Cheese
+ATTACH;FMTTYPE=image/jpeg:https://toastycheese.com/wp-content/uploads/2019/06/hinsdale4th.jpg
+ORGANIZER;CN="Gina":MAILTO:ginapydo@toastycheese.com
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=America/Chicago:20190703T153000
+DTEND;TZID=America/Chicago:20190703T213000
+DTSTAMP:20190701T092357
+CREATED:20190625T171105Z
+LAST-MODIFIED:20190625T171105Z
+UID:11238-1562167800-1562189400@toastycheese.com
+SUMMARY:Deerfield Family Days
+DESCRIPTION:Celebrate Independence Day for TWO days if you’re patriotic enough! Treat yourself to a gourmet Crave Bar or a chef-inspired grilled cheese a la Toasty Cheese! \n
+URL:https://toastycheese.com/event/deerfield-family-days/
+LOCATION:Brickyards Park\, 375 Elm St.\, Deerfield\, IL\, 60015\, United States
+CATEGORIES:The Crave Bar,Toasty Cheese
+ATTACH;FMTTYPE=image/jpeg:https://toastycheese.com/wp-content/uploads/2019/06/deerfieldfamilydays.jpg
+ORGANIZER;CN="Gina":MAILTO:ginapydo@toastycheese.com
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=America/Chicago:20190703T160000
+DTEND;TZID=America/Chicago:20190703T230000
+DTSTAMP:20190701T092357
+CREATED:20190625T171348Z
+LAST-MODIFIED:20190625T171348Z
+UID:11242-1562169600-1562194800@toastycheese.com
+SUMMARY:Wilmette Independence Day Celebration
+DESCRIPTION:You had these delicious Crave Bars last year\, we’re back again! Nothing says Independence Day quite like a delicious ice cream bar and fireworks! \n
+URL:https://toastycheese.com/event/wilmette-independence-day-celebration/
+LOCATION:Gillson Park\, 3555 Lake Avenue\, Wilmette\, 60091
+CATEGORIES:The Crave Bar
+ATTACH;FMTTYPE=image/jpeg:https://toastycheese.com/wp-content/uploads/2019/06/wilmette-independence-day.jpg
+ORGANIZER;CN="Gina":MAILTO:ginapydo@toastycheese.com
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=America/Chicago:20190703T170000
+DTEND;TZID=America/Chicago:20190703T220000
+DTSTAMP:20190701T092357
+CREATED:20190625T171637Z
+LAST-MODIFIED:20190625T171637Z
+UID:11245-1562173200-1562191200@toastycheese.com
+SUMMARY:Hawthorn Woods Fireworks
+DESCRIPTION:Why celebrate Independence Day once when you can do it twice?! Come on out to Hawthorn Woods for a grilled cheese like you’ve never had before! \n
+URL:https://toastycheese.com/event/hawthorn-woods-fireworks/
+LOCATION:Hawthorn Woods\, 35 Old McHenry Rd.\, Hawthorn Woods\, IL\, 60047\, United States
+CATEGORIES:Toasty Cheese
+ATTACH;FMTTYPE=image/jpeg:https://toastycheese.com/wp-content/uploads/2019/06/hawthornwoodsfirewods.jpg
+ORGANIZER;CN="Gina":MAILTO:ginapydo@toastycheese.com
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=America/Chicago:20190703T180000
+DTEND;TZID=America/Chicago:20190703T220000
+DTSTAMP:20190701T092357
+CREATED:20190625T171928Z
+LAST-MODIFIED:20190625T171928Z
+UID:11249-1562176800-1562191200@toastycheese.com
+SUMMARY:Roselle 4th of July Celebration
+DESCRIPTION:We’re serving up some delicious tacos and brand new nachos at the Lake Park West Campus today\, stop by and grab a bite! \n
+URL:https://toastycheese.com/event/roselle-4th-of-july-celebration/
+LOCATION:Lake Park West\, 500 W. Bryn Mawr Ave.\, Roselle\, IL\, 60172\, United States
+CATEGORIES:Toasty Taco
+ATTACH;FMTTYPE=image/png:https://toastycheese.com/wp-content/uploads/2019/06/roselle.png
+ORGANIZER;CN="Gina":MAILTO:ginapydo@toastycheese.com
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=America/Chicago:20190704T080000
+DTEND;TZID=America/Chicago:20190704T170000
+DTSTAMP:20190701T092357
+CREATED:20190625T172215Z
+LAST-MODIFIED:20190625T172215Z
+UID:11253-1562227200-1562259600@toastycheese.com
+SUMMARY:Deerfield Family Days
+DESCRIPTION:We’re back today for some more delicious celebrating! Toasty Cheese will be serving their classic menu off a different truck today\, or grab some gourmet ice cream from The Crave Bar! \n
+URL:https://toastycheese.com/event/deerfield-family-days-2/
+LOCATION:Brickyards Park\, 375 Elm St.\, Deerfield\, IL\, 60015\, United States
+CATEGORIES:The Crave Bar,Toasty Cheese
+ATTACH;FMTTYPE=image/jpeg:https://toastycheese.com/wp-content/uploads/2019/06/deerfieldfamilydays.jpg
+ORGANIZER;CN="Gina":MAILTO:ginapydo@toastycheese.com
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=America/Chicago:20190704T150000
+DTEND;TZID=America/Chicago:20190704T220000
+DTSTAMP:20190701T092357
+CREATED:20190625T172924Z
+LAST-MODIFIED:20190625T172924Z
+UID:11258-1562252400-1562277600@toastycheese.com
+SUMMARY:Itasca Independence Day
+DESCRIPTION:Hamilton Lakes is once again putting on their firework show and festival\, come grab some grub and celebrate being free (from work)! \n
+URL:https://toastycheese.com/event/itasca-independence-day/
+LOCATION:Hamilton Lakes\, Itasca
+CATEGORIES:Toasty Cheese
+ATTACH;FMTTYPE=image/png:https://toastycheese.com/wp-content/uploads/2019/06/itasca.png
+ORGANIZER;CN="Gina":MAILTO:ginapydo@toastycheese.com
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=America/Chicago:20190704T180000
+DTEND;TZID=America/Chicago:20190704T210000
+DTSTAMP:20190701T092357
+CREATED:20190625T173415Z
+LAST-MODIFIED:20190625T173415Z
+UID:11261-1562263200-1562274000@toastycheese.com
+SUMMARY:Carol Stream 4th of July Celebration
+DESCRIPTION:Break out the sparklers & patriotic sunglasses\, it’s time for fireworks everybody! \n
+URL:https://toastycheese.com/event/carol-stream-4th-of-july-celebration/
+LOCATION:Downtown Carol Stream\, 960 N. Gary Ave.\, Carol Stream\, IL\, 60188\, United States
+CATEGORIES:Toasty Cheese
+ATTACH;FMTTYPE=image/jpeg:https://toastycheese.com/wp-content/uploads/2019/06/carolstream4th.jpg
+ORGANIZER;CN="Gina":MAILTO:ginapydo@toastycheese.com
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=America/Chicago:20190704T183000
+DTEND;TZID=America/Chicago:20190704T213000
+DTSTAMP:20190701T092357
+CREATED:20190625T173741Z
+LAST-MODIFIED:20190625T173741Z
+UID:11265-1562265000-1562275800@toastycheese.com
+SUMMARY:Mokena 4th of July
+DESCRIPTION:Ice Cream and Fireworks\, would you have it any other way? \n
+URL:https://toastycheese.com/event/mokena-4th-of-july/
+LOCATION:Main Park\, 10925 W. LaPorte Rd.\, Mokena\, IL\, 60448\, United States
+CATEGORIES:The Crave Bar
+ATTACH;FMTTYPE=image/png:https://toastycheese.com/wp-content/uploads/2019/06/mokena4th.png
+ORGANIZER;CN="Gina":MAILTO:ginapydo@toastycheese.com
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=America/Chicago:20190704T210000
+DTEND;TZID=America/Chicago:20190704T233000
+DTSTAMP:20190701T092357
+CREATED:20190625T174454Z
+LAST-MODIFIED:20190625T174454Z
+UID:11269-1562274000-1562283000@toastycheese.com
+SUMMARY:Private Event
+DESCRIPTION:Book Toasty Taco for any celebration! \n
+URL:https://toastycheese.com/event/private-event-125/
+CATEGORIES:Toasty Taco
+ATTACH;FMTTYPE=image/jpeg:https://toastycheese.com/wp-content/uploads/2019/06/IMG_9931.jpg
+ORGANIZER;CN="Gina":MAILTO:ginapydo@toastycheese.com
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=America/Chicago:20190705T100000
+DTEND;TZID=America/Chicago:20190705T160000
+DTSTAMP:20190701T092357
+CREATED:20190625T174717Z
+LAST-MODIFIED:20190625T174717Z
+UID:11271-1562320800-1562342400@toastycheese.com
+SUMMARY:Northbrook Sidewalk Sale
+DESCRIPTION:Have a nice calming day after the festivities this week & stop by the Northbrook Sidewalk Sale to shop and grab a bite to eat! \n
+URL:https://toastycheese.com/event/northbrook-sidewalk-sale-3/
+LOCATION:Northbrook Sidewalk Sale\, Church St & Cherry Lane\, Northbrook\, IL\, United States
+CATEGORIES:Toasty Cheese
+ATTACH;FMTTYPE=image/jpeg:https://toastycheese.com/wp-content/uploads/2019/06/northbrrok-sidewalk.jpg
+ORGANIZER;CN="Gina":MAILTO:ginapydo@toastycheese.com
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=America/Chicago:20190705T170000
+DTEND;TZID=America/Chicago:20190705T200000
+DTSTAMP:20190701T092357
+CREATED:20190625T174948Z
+LAST-MODIFIED:20190625T174948Z
+UID:11274-1562346000-1562356800@toastycheese.com
+SUMMARY:Wolfden Brewing
+DESCRIPTION:Who needs a beer after this crazy week? I know I do! \n
+URL:https://toastycheese.com/event/wolfden-brewing-2/
+LOCATION:Wolfden Brewing\, 112 W. Lake St.\, Bloomingdale\, IL\, 60108\, United States
+CATEGORIES:Toasty Cheese
+ATTACH;FMTTYPE=image/jpeg:https://toastycheese.com/wp-content/uploads/2019/04/wolfden.jpg
+ORGANIZER;CN="Gina":MAILTO:ginapydo@toastycheese.com
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=America/Chicago:20190706T100000
+DTEND;TZID=America/Chicago:20190706T230000
+DTSTAMP:20190701T092357
+CREATED:20190625T182036Z
+LAST-MODIFIED:20190625T182036Z
+UID:11276-1562407200-1562454000@toastycheese.com
+SUMMARY:Wonder Lake Patriotic Celebration
+DESCRIPTION:Come try some delicious food and wrap up this week of celebrating America! \n
+URL:https://toastycheese.com/event/wonder-lake-patriotic-celebration/
+LOCATION:Wonder Lake Country Store\, 6014 N. Mill Dr.\, Wonder Lake\, IL\, 60097\, United States
+CATEGORIES:The Crave Bar,Toasty Cheese
+ATTACH;FMTTYPE=image/png:https://toastycheese.com/wp-content/uploads/2019/06/wonderlake.png
+ORGANIZER;CN="Gina":MAILTO:ginapydo@toastycheese.com
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=America/Chicago:20190706T123000
+DTEND;TZID=America/Chicago:20190706T153000
+DTSTAMP:20190701T092357
+CREATED:20190625T182117Z
+LAST-MODIFIED:20190625T182117Z
+UID:11280-1562416200-1562427000@toastycheese.com
+SUMMARY:Private Event
+DESCRIPTION:Book Toasty Cheese for your next birthday! \n
+URL:https://toastycheese.com/event/private-event-126/
+CATEGORIES:Toasty Cheese
+ATTACH;FMTTYPE=image/jpeg:https://toastycheese.com/wp-content/uploads/2019/05/14237543_1404801372881406_3146202084328078527_n.jpg
+ORGANIZER;CN="Gina":MAILTO:ginapydo@toastycheese.com
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=America/Chicago:20190706T140000
+DTEND;TZID=America/Chicago:20190706T170000
+DTSTAMP:20190701T092357
+CREATED:20190625T182200Z
+LAST-MODIFIED:20190625T182200Z
+UID:11282-1562421600-1562432400@toastycheese.com
+SUMMARY:Private Event
+DESCRIPTION:Birthdays are better with Toasty Taco! \n
+URL:https://toastycheese.com/event/private-event-127/
+CATEGORIES:Toasty Taco
+ATTACH;FMTTYPE=image/jpeg:https://toastycheese.com/wp-content/uploads/2019/03/DSC_0884-2.jpg
+ORGANIZER;CN="Gina":MAILTO:ginapydo@toastycheese.com
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=America/Chicago:20190706T190000
+DTEND;TZID=America/Chicago:20190706T220000
+DTSTAMP:20190701T092357
+CREATED:20190625T182347Z
+LAST-MODIFIED:20190625T182347Z
+UID:11284-1562439600-1562450400@toastycheese.com
+SUMMARY:Private Event
+DESCRIPTION:Book Toasty Cheese for your next birthday\, it’s the best gift you could get yourself! \n
+URL:https://toastycheese.com/event/private-event-128/
+CATEGORIES:Toasty Cheese
+ATTACH;FMTTYPE=image/jpeg:https://toastycheese.com/wp-content/uploads/2019/06/Toasty-Cheese-Sept-59.jpg
+ORGANIZER;CN="Gina":MAILTO:ginapydo@toastycheese.com
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=America/Chicago:20190707T120000
+DTEND;TZID=America/Chicago:20190707T170000
+DTSTAMP:20190701T092357
+CREATED:20190625T182815Z
+LAST-MODIFIED:20190625T182815Z
+UID:11286-1562500800-1562518800@toastycheese.com
+SUMMARY:Willow Lane Acres & Vineyard Expo
+DESCRIPTION:We’re sampling some deliciousness at this brand new venue! Come see what your wedding could look and taste like at this beautiful Hoffman Estates/Elgin location! \n
+URL:https://toastycheese.com/event/willow-lane-acres-vineyard-expo/
+LOCATION:Willow Lane Acres & Vineyard\, 30W711 Shoe Factory Rd.\, Elgin\, IL\, 60120\, United States
+CATEGORIES:Toasty Cheese
+ATTACH;FMTTYPE=image/jpeg:https://toastycheese.com/wp-content/uploads/2019/06/willowlaneacrevineyard.jpg
+ORGANIZER;CN="Gina":MAILTO:ginapydo@toastycheese.com
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=America/Chicago:20190707T180000
+DTEND;TZID=America/Chicago:20190707T210000
+DTSTAMP:20190701T092357
+CREATED:20190625T182922Z
+LAST-MODIFIED:20190625T182922Z
+UID:11290-1562522400-1562533200@toastycheese.com
+SUMMARY:Private Wedding
+DESCRIPTION:Book Toasty Cheese to serve at your wedding\, kick the boring banquet meal to the curb! \n
+URL:https://toastycheese.com/event/private-wedding-3/
+CATEGORIES:Toasty Cheese
+ATTACH;FMTTYPE=image/jpeg:https://toastycheese.com/wp-content/uploads/2019/06/2Y7A0088.jpg
+ORGANIZER;CN="Gina":MAILTO:ginapydo@toastycheese.com
+END:VEVENT
+END:VCALENDAR
