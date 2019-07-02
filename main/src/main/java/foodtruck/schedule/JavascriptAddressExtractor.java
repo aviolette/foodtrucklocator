@@ -34,6 +34,7 @@ public class JavascriptAddressExtractor implements AddressExtractor {
   @Override public List<String> parse(String tweet, Truck truck) {
     String script = dao.find().getScript();
     try {
+      log.log(Level.INFO, "Matching text {}", tweet);
       return executeScript(tweet, truck, script);
     } catch (ScriptException ex) {
       log.log(Level.SEVERE, ex.getMessage(), ex);
