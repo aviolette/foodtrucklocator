@@ -28,7 +28,7 @@ public class Url {
   public String getForDisplay() {
     String displayUrl = removeProtocol();
     if (displayUrl.endsWith("/")) {
-      return displayUrl.substring(0, displayUrl.length()-2);
+      return displayUrl.substring(0, displayUrl.length()-1);
     }
     return displayUrl;
   }
