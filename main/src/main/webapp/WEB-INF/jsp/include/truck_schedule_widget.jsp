@@ -6,8 +6,8 @@
 </div>
 
 <div class="btn-group" style="margin-bottom:20px">
-  <button class="btn" id="scheduleListButton"><span class="glyphicon glyphicon-list"></span></button>
-  <button class="btn btn-default" id="scheduleCalendarButton"><span class="glyphicon glyphicon-calendar"></span>
+  <button class="btn btn-outline-primary" id="scheduleListButton"><span class="glyphicon glyphicon-list icon icon-list"></span></button>
+  <button class="btn btn-outline-secondary" id="scheduleCalendarButton"><span class="glyphicon glyphicon-calendar icon icon-calendar"></span>
   </button>
 
 </div>
@@ -28,7 +28,7 @@
   </tbody>
 </table>
 
-<table id="calendarTable" class="table table-bordered hidden">
+<table id="calendarTable" class="table table-bordered hidden d-none">
   <thead>
   <tr>
     <td id="month-header" colspan="7" class="lead text-center" style="font-weight:bold">Month</td>
@@ -50,14 +50,14 @@
 
 <div class="btn-toolbar">
   <div class="btn-group">
-    <button class="btn btn-default" id="addButton"><span class="glyphicon glyphicon-plus"></span>&nbsp;New Event
+    <button class="btn btn-outline-primary" id="addButton"><span class="glyphicon glyphicon-plus icon icon-plus"></span>&nbsp;New Event
     </button>
   </div>
-  <div class="btn-group">
+  <div class="btn-group d-none">
     <button class="btn btn-default" id="offRoadButton"><span class="glyphicon glyphicon-road"></span> Off the Road
     </button>
   </div>
-  <div class="btn-group">
+  <div class="btn-group d-none">
     <button class="btn btn-default" id="recacheButton"><span class="glyphicon glyphicon-refresh"></span>&nbsp;Reload
       from calendar
     </button>
@@ -70,7 +70,7 @@
         <h3>Edit Stop</h3>
       </div>
       <div class="modal-body">
-        <div id="truck-schedule-alert" class="alert alert-danger hidden" role="alert">
+        <div id="truck-schedule-alert" class="alert alert-danger hidden d-none" role="alert">
           <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
           <span class="sr-only">Error:</span><span id="truck-schedule-error"></span>
         </div>

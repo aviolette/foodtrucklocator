@@ -203,7 +203,7 @@ class FoodtruckServletModule extends ServletModule {
     serveRegex("/admin/trucks/[\\S]*/linxup_config").with(LinxupConfigServlet.class);
     serveRegex("/admin/trucks/[\\S]*/danger").with(DangerZoneServlet.class);
     if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development ) {
-      serve("/admin/trucks/courageouscakes", "/admin/trucks/yoursisterstomato", "/admin/trucks/mytoastycheese", "/admin/trucks/beaversdonuts", "/admin/trucks/5411empanadas", "/admin/trucks/perknpickle").with(TruckServlet.class);
+      serve("/admin/trucks/courageouscakes", "/admin/trucks/thefatshallot", "/admin/trucks/yoursisterstomato", "/admin/trucks/mytoastycheese", "/admin/trucks/beaversdonuts", "/admin/trucks/5411empanadas", "/admin/trucks/perknpickle").with(TruckServlet.class);
     } else {
       serve("/admin/trucks/*").with(TruckServlet.class);
     }
@@ -260,7 +260,7 @@ class FoodtruckServletModule extends ServletModule {
     serve("/events").with(BoozeAndTrucksServlet.class);
     serve("/trucks", "/trucks/").with(TrucksServlet.class);
     if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development ) {
-      serve("/trucks/beaversdonuts", "/trucks/courageouscakes", "/trucks/asweetsgirl").with(foodtruck.server.front.TruckServlet.class);
+      serve("/trucks/beaversdonuts", "/trucks/courageouscakes",  "/trucks/thefatshallot", "/trucks/asweetsgirl").with(foodtruck.server.front.TruckServlet.class);
     } else {
       serve("/trucks/*").with(foodtruck.server.front.TruckServlet.class);
     }

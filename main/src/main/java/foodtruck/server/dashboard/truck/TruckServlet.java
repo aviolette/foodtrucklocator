@@ -12,7 +12,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import foodtruck.dao.DailyDataDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.StoryDAO;
 import foodtruck.dao.TruckDAO;
@@ -31,16 +30,13 @@ public class TruckServlet extends AbstractTruckServlet {
   private final Clock clock;
   private final LocationDAO locationDAO;
   private final StoryDAO tweetDAO;
-  private final DailyDataDAO dailyDataDAO;
 
   @Inject
-  public TruckServlet(StoryDAO storyDAO, Clock clock, TruckDAO truckDAO,
-      LocationDAO locationDAO, DailyDataDAO dailyDataDAO) {
+  public TruckServlet(StoryDAO storyDAO, Clock clock, TruckDAO truckDAO, LocationDAO locationDAO) {
     super(truckDAO);
     this.tweetDAO = storyDAO;
     this.locationDAO = locationDAO;
     this.clock = clock;
-    this.dailyDataDAO = dailyDataDAO;
   }
 
   @Override
@@ -57,12 +53,16 @@ public class TruckServlet extends AbstractTruckServlet {
         .toDateTimeAtStartOfDay(clock.zone()), truck.getTwitterHandle(), true);
     request.setAttribute("tweets", stories);
     final String name = truck.getName();
-    request.setAttribute("specials", dailyDataDAO.findByTruckAndDay(truck.getId(), clock.currentDay()));
     request.setAttribute("headerName", name);
     request.setAttribute("truckId", truck.getId());
     request.setAttribute("truck", truck);
     request.setAttribute("suffix", "-fluid");
     request.setAttribute("locations", locationDAO.findLocationNamesAsJson());
+    request.setAttribute("headerSelection", "main");
+
+    request.setAttribute("extraScripts",
+        ImmutableList.of("/script/lib/spin.min.js","/script/lib/typeahead.bundle.js", "/script/truck_edit_widgetv3.js", "/script/dashboard-truck-main.js"));
+
     forward(request, response);
   }
 
