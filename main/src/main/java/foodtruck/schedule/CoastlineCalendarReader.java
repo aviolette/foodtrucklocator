@@ -18,6 +18,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import foodtruck.dao.TruckDAO;
+import foodtruck.model.Location;
 import foodtruck.model.TempTruckStop;
 import foodtruck.model.Truck;
 
@@ -32,12 +33,12 @@ public class CoastlineCalendarReader implements StopReader {
   private static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("M/d/yy");
   private static DateTimeFormatter dateFormatter2 = DateTimeFormatter.ofPattern("M/d/yyyy");
   private static DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
-  private final AddressExtractor extractor;
+  private final CalendarAddressExtractor extractor;
   private final TruckDAO truckDAO;
   private final ZoneId zone;
 
   @Inject
-  public CoastlineCalendarReader(AddressExtractor extractor, TruckDAO truckDAO, ZoneId zone) {
+  public CoastlineCalendarReader(CalendarAddressExtractor extractor, TruckDAO truckDAO, ZoneId zone) {
     this.extractor = extractor;
     this.truckDAO = truckDAO;
     this.zone = zone;
@@ -48,7 +49,7 @@ public class CoastlineCalendarReader implements StopReader {
     log.info("Loading coastline's calendar");
     Document parsedDoc = Jsoup.parse(document);
     TempTruckStop.Builder builder = null;
-    ImmutableList.Builder stops = ImmutableList.builder();
+    ImmutableList.Builder<TempTruckStop> stops = ImmutableList.builder();
     int current = -1;
     LocalDate date = null;
     LocalTime startTime = null;
@@ -61,7 +62,7 @@ public class CoastlineCalendarReader implements StopReader {
       if (!route.startsWith("events/")) {
         continue;
       }
-      String routes[] = route.split("/");
+      String[] routes = route.split("/");
       int index = Integer.parseInt(routes[1]);
       if (index != current) {
         if (builder != null) {
@@ -88,18 +89,14 @@ public class CoastlineCalendarReader implements StopReader {
           endTime = parseTime(item.text());
           break;
         case "location": {
-            Optional<String> loc = extractor.parse(item.text(), truck)
-                .stream()
-                .findFirst();
-            location = loc.orElse(null);
+            Optional<Location> loc = extractor.parse(item.text(), truck);
+            location = loc.map(Location::getName).orElse(null);
           }
           break;
         case "title":
           if (location == null) {
-            Optional<String> loc = extractor.parse(item.text(), truck)
-                .stream()
-                .findFirst();
-            location = loc.orElse(null);
+            Optional<Location> loc = extractor.parse(item.text(), truck);
+            location = loc.map(Location::getName).orElse(null);
           }
           break;
       }

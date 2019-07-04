@@ -3,6 +3,7 @@ package foodtruck.schedule;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -11,13 +12,10 @@ import javax.annotation.Nullable;
 import com.google.api.services.calendar.model.Event;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
-import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 import foodtruck.dao.TruckDAO;
-import foodtruck.geolocation.GeoLocator;
-import foodtruck.geolocation.GeolocationGranularity;
 import foodtruck.model.Location;
 import foodtruck.model.TempTruckStop;
 import foodtruck.model.Truck;
@@ -33,19 +31,17 @@ public class GoogleCalendarReader {
 
   private static final Logger log = Logger.getLogger(GoogleCalendarReader.class.getName());
   private final TruckDAO truckDAO;
-  private final AddressExtractor addressExtractor;
   private final List<String> exemptions;
-  private final GeoLocator geoLocator;
   private final Clock clock;
+  private final CalendarAddressExtractor addressExtractor;
 
   @Inject
-  public GoogleCalendarReader(TruckDAO truckDAO, AddressExtractor addressExtractor, GeoLocator geoLocator, Clock clock,
-      @Named("exemptLocations") List<String> exemptLocationNames) {
+  public GoogleCalendarReader(TruckDAO truckDAO, Clock clock,
+      @Named("exemptLocations") List<String> exemptLocationNames, CalendarAddressExtractor addressExtractor) {
     this.truckDAO = truckDAO;
-    this.addressExtractor = addressExtractor;
-    this.geoLocator = geoLocator;
     this.exemptions = exemptLocationNames;
     this.clock = clock;
+    this.addressExtractor = addressExtractor;
   }
 
   @Nullable
@@ -65,34 +61,7 @@ public class GoogleCalendarReader {
       }
       truck = truckDAO.findByIdOpt(truckId).orElseThrow(() -> new RuntimeException("Truck not found: " + truckId));
     }
-    // HACK: toasty cheese adds codes to the end of their locations noting which trucks are going where
 
-    if ("mytoastycheese".equals(truck.getId())) {
-      int dash = titleText.lastIndexOf("-");
-      if (dash == -1) {
-        dash = titleText.lastIndexOf(":");
-      }
-      if (dash > 0) {
-        String truckPortion = titleText.substring(dash + 1);
-        String alternativeTruck = null;
-        if (truckPortion.contains("BBQ")) {
-          alternativeTruck = "besttruckinbbq";
-        } else if (truckPortion.contains("Crave")) {
-          alternativeTruck = "thecravebar";
-        } else if (truckPortion.contains("Taco")) {
-          alternativeTruck = "mytoastytaco";
-        } else if (truckPortion.contains("Toasty Cheese")) {
-          titleText = titleText.substring(0, dash)
-              .trim();
-        }
-        if (alternativeTruck != null) {
-          truck = truckDAO.findByIdOpt(alternativeTruck)
-              .orElse(truck);
-          titleText = titleText.substring(0, dash)
-              .trim();
-        }
-      }
-    }
     if (defaultLocation != null) {
       return buildTruckStopFromLocation(defaultLocation, truck, event, timezoneAdjustment);
     }
@@ -102,7 +71,7 @@ public class GoogleCalendarReader {
       // Sometimes the location is in the title - try that too
       if (!Strings.isNullOrEmpty(titleText)) {
         where = titleText;
-        location = locationFromTitleText(titleText, truck);
+        location = addressExtractor.parse(titleText, truck).orElse(null);
       }
     }
     if (location != null && location.isResolved() && !event.isEndTimeUnspecified()) {
@@ -120,21 +89,6 @@ public class GoogleCalendarReader {
   }
 
   @Nullable
-  private Location locationFromTitleText(String titleText, Truck truck) {
-    log.info("Trying title text: " + titleText);
-    final List<String> parsed = addressExtractor.parse(titleText, truck);
-    String locString = Iterables.getFirst(parsed, null);
-    if (locString == null) {
-      log.info("Failed to parse titletext for address, trying whole thing: " + titleText);
-      locString = titleText;
-    }
-    if (locString != null) {
-      return geoLocator.locate(locString, GeolocationGranularity.NARROW);
-    }
-    return null;
-  }
-
-  @Nullable
   private Location locationFromWhereField(Event event, Truck truck) {
     String where = event.getLocation();
     if (!Strings.isNullOrEmpty(where)) {
@@ -147,9 +101,11 @@ public class GoogleCalendarReader {
       // HACK Alert, the address extractor doesn't handle non-Chicago addresses well, so
       // if it is a fully qualified address written by me, it will probably end in City, IL
       if (!where.endsWith(", IL")) {
-        where = coalesce(Iterables.getFirst(addressExtractor.parse(where, truck), null), where);
+        Optional<Location> parsedLocation = addressExtractor.parse(where, truck);
+        if (parsedLocation.isPresent()) {
+          return parsedLocation.get();
+        }
       }
-      return geoLocator.locate(where, GeolocationGranularity.NARROW);
     }
     return null;
   }
@@ -162,7 +118,7 @@ public class GoogleCalendarReader {
         .getDateTime() == null) {
       if (truck.getCategories()
           .contains("AssumeNoTimeEqualsLunch")) {
-        String dcs[] = event.getStart()
+        String[] dcs = event.getStart()
             .getDate()
             .toStringRfc3339()
             .split("-");
@@ -188,11 +144,6 @@ public class GoogleCalendarReader {
         .endTime(endTime)
         .calendarName("Google: " + MoreObjects.firstNonNull(truck.getCalendarUrl(), location))
         .build();
-  }
-
-  // TODO: make this generic and pull it out
-  private String coalesce(String st1, String st2) {
-    return (Strings.isNullOrEmpty(st1)) ? st2 : st1;
   }
 
   private boolean hasInvalidTitle(String titleText) {
