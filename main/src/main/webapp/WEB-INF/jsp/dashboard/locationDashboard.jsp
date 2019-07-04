@@ -1,5 +1,13 @@
 <%@include file="dashboardHeader1.jsp" %>
 
+<style type="text/css">
+  .tt-dataset-locations {
+    background-color: white;
+  }
+  .tt-input {
+    background-color: white !important;
+  }
+</style>
 <div class="row">
   <div class="col-md-12">
     <form method="GET" action="">

@@ -80,7 +80,7 @@ public class LocationEditServlet extends HttpServlet {
     req.setAttribute("aliasCount", aliases.size());
     req.setAttribute("locations", locationDAO.findLocationNamesAsJson());
     req.setAttribute("nav", "locations");
-    req.setAttribute("extraScripts", ImmutableList.of("/script/lib/typeahead.bundle.js",
+    req.setAttribute("extraScripts", ImmutableList.of("/script/lib/typeahead11.js",
         "/script/typeahead-addon.js",
         "/script/lib/dropzone.js",
         "/script/dashboard-location-edit.js",

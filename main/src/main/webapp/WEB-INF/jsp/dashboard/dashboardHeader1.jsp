@@ -15,6 +15,7 @@
   <link href="/css/toolkit-inverse.min.css" rel="stylesheet">
   <link href="/css/dropzone.css" rel="stylesheet"/>
   <link href="/css/dashboard4.css" rel="stylesheet"/>
+  <link href="/css/typeaheadjs.css" rel="stylesheet"/>
 </head>
 <body>
 <div class="with-iconav">
