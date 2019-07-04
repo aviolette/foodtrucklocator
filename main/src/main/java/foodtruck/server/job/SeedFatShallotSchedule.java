@@ -2,6 +2,7 @@ package foodtruck.server.job;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.util.Providers;
 
 import foodtruck.dao.TempTruckStopDAO;
 import foodtruck.net.UrlResource;
@@ -16,6 +17,6 @@ public class SeedFatShallotSchedule extends AbstractSeedServlet {
 
   @Inject
   public SeedFatShallotSchedule(TempTruckStopDAO tempDAO, FatShallotScheduleReader reader, UrlResource urls) {
-    super(tempDAO, reader, "http://thefatshallot.com/schedule/", false, urls);
+    super(tempDAO, reader, false, urls, Providers.of("http://thefatshallot.com/schedule/"));
   }
 }

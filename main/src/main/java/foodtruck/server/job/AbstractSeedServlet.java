@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.base.Strings;
+import com.google.inject.Provider;
 
 import foodtruck.dao.TempTruckStopDAO;
 import foodtruck.model.TempTruckStop;
@@ -24,22 +25,22 @@ public abstract class AbstractSeedServlet extends AbstractJobServlet {
 
   private final TempTruckStopDAO tempDAO;
   private final StopReader reader;
-  private final String endpoint;
   private final boolean retryOnceBeforeError;
   private final UrlResource urls;
+  private final Provider<String> endpointProvider;
 
   @SuppressWarnings("WeakerAccess")
-  protected AbstractSeedServlet(TempTruckStopDAO tempDAO, StopReader reader, String endpoint,
-      boolean retryOnceBeforeError, UrlResource urls) {
+  protected AbstractSeedServlet(TempTruckStopDAO tempDAO, StopReader reader, boolean retryOnceBeforeError, UrlResource urls, Provider<String> endpointProvider) {
     this.tempDAO = tempDAO;
     this.reader = reader;
-    this.endpoint = endpoint;
     this.retryOnceBeforeError = retryOnceBeforeError;
     this.urls = urls;
+    this.endpointProvider = endpointProvider;
   }
 
   @Override
   protected final void doPost(HttpServletRequest req, HttpServletResponse resp) {
+    String endpoint = endpointProvider.get();
     try {
       String document = urls.getAsString(endpoint);
       List<TempTruckStop> stops = reader.findStops(document);

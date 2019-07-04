@@ -1,5 +1,7 @@
 package foodtruck.server;
 
+import java.time.format.DateTimeFormatter;
+
 import com.google.appengine.api.utils.SystemProperty;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Provides;
@@ -87,6 +89,7 @@ import foodtruck.server.job.SeedRoyalPalmsScheduleServlet;
 import foodtruck.server.job.SeedScorchedEarthServlet;
 import foodtruck.server.job.SeedSkeletonKeyServlet;
 import foodtruck.server.job.SeedTemperanceServlet;
+import foodtruck.server.job.SeedThreeLeggedTacoScheduleServlet;
 import foodtruck.server.job.SeedWerkforceServlet;
 import foodtruck.server.job.SeedYourSistersScheduleServlet;
 import foodtruck.server.job.SendLunchNotificationsServlet;
@@ -115,6 +118,7 @@ import foodtruck.server.vendor.VendorSettingsServlet;
 import foodtruck.server.vendor.VendorSocialMediaSettingsServlet;
 import foodtruck.server.vendor.VendorTwitterRedirectServlet;
 import foodtruck.server.vendor.VendorUnlinkAccountServlet;
+import foodtruck.time.Clock;
 
 /**
  * Wires all the endpoints for the application.
@@ -185,6 +189,7 @@ class FoodtruckServletModule extends ServletModule {
     serve("/cron/populate_big_wangs").with(SeedBigWangsServlet.class);
     serve("/cron/populate_perk_n_pickle").with(SeedPerknPickleCalendar.class);
     serve("/cron/populate_your_sisters").with(SeedYourSistersScheduleServlet.class);
+    serve("/cron/populate_three_legged_taco").with(SeedThreeLeggedTacoScheduleServlet.class);
 
     // Dashboard endpoints
     serve("/admin").with(AdminDashboardServlet.class);
@@ -203,14 +208,14 @@ class FoodtruckServletModule extends ServletModule {
     serveRegex("/admin/trucks/[\\S]*/linxup_config").with(LinxupConfigServlet.class);
     serveRegex("/admin/trucks/[\\S]*/danger").with(DangerZoneServlet.class);
     if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development ) {
-      serve("/admin/trucks/courageouscakes", "/admin/trucks/thefatshallot", "/admin/trucks/yoursisterstomato", "/admin/trucks/mytoastycheese", "/admin/trucks/beaversdonuts", "/admin/trucks/5411empanadas", "/admin/trucks/perknpickle").with(TruckServlet.class);
+      serve("/admin/trucks/threeleggedtaco","/admin/trucks/courageouscakes", "/admin/trucks/thefatshallot", "/admin/trucks/yoursisterstomato", "/admin/trucks/mytoastycheese", "/admin/trucks/beaversdonuts", "/admin/trucks/5411empanadas", "/admin/trucks/perknpickle").with(TruckServlet.class);
     } else {
       serve("/admin/trucks/*").with(TruckServlet.class);
     }
     serve("/admin/images").with(ImageUploadServlet.class);
     serve("/admin/trucks").with(TruckListServlet.class);
     if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development ) {
-      serve("/admin/locations/6228733371351040","/admin/locations/6427744975978496", "/admin/locations/5288650929602560").with(LocationEditServlet.class);
+      serve("/admin/locations/6228733371351040","/admin/locations/5335929929596928","/admin/locations/6427744975978496", "/admin/locations/5288650929602560").with(LocationEditServlet.class);
     } else {
       serve("/admin/locations/*").with(LocationEditServlet.class);
     }
@@ -310,5 +315,13 @@ class FoodtruckServletModule extends ServletModule {
   @Provides
   public ScheduleCacher providesCacher(ScheduleCacherImpl impl) {
     return impl;
+  }
+
+  @Provides
+  @Named("threeleggedtaco.url")
+  public String provideThreeLeggedUrl(Clock clock) {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-YYYY");
+    String when = formatter.format(clock.now8());
+    return "https://www.threeleggedtacos.com/api/open/GetItemsByMonth?month=" + when + "&collectionId=5cd612e3eef1a1ec6cb5b8eb&crumb=BQBiYl38JNiFZjg1YTc4ODFlNjJiY2EwMzM4YmVmMGE1NDRjYWU4";
   }
 }

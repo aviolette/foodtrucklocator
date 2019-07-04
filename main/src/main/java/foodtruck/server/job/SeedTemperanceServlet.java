@@ -2,6 +2,7 @@ package foodtruck.server.job;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.util.Providers;
 
 import foodtruck.dao.TempTruckStopDAO;
 import foodtruck.net.UrlResource;
@@ -16,7 +17,7 @@ public class SeedTemperanceServlet extends AbstractSeedServlet {
 
   @Inject
   public SeedTemperanceServlet(TempTruckStopDAO tempDAO, SquareSpaceEventReader reader, UrlResource urls) {
-    super(tempDAO, reader, "https://temperancebeer.com/events/", false, urls);
+    super(tempDAO, reader, false, urls, Providers.of("https://temperancebeer.com/events/"));
   }
 
   @Override

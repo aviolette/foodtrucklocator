@@ -1,5 +1,7 @@
 package foodtruck.schedule;
 
+import java.time.ZoneId;
+
 import com.google.common.collect.ImmutableSet;
 
 import org.joda.time.DateTime;
@@ -13,6 +15,8 @@ import foodtruck.model.TwitterNotificationAccount;
  * @since 11/6/17
  */
 public class ModelTestHelper {
+
+  public static final ZoneId ZONE = ZoneId.of("America/Chicago");
 
   public static Truck truck1() {
     return Truck.builder()

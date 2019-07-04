@@ -2,6 +2,7 @@ package foodtruck.server.job;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.util.Providers;
 
 import foodtruck.dao.TempTruckStopDAO;
 import foodtruck.net.UrlResource;
@@ -17,6 +18,6 @@ public class SeedCoastlineScheduleServlet extends AbstractSeedServlet {
 
   @Inject
   public SeedCoastlineScheduleServlet(CoastlineCalendarReader reader, TempTruckStopDAO dao, UrlResource urls) {
-    super(dao, reader, "https://cateredbycoastline.com", true, urls);
+    super(dao, reader, true, urls, Providers.of("https://cateredbycoastline.com"));
   }
 }

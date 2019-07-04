@@ -17,7 +17,9 @@ import foodtruck.model.TempTruckStop;
  */
 class AbstractReaderTest<T extends StopReader> {
   protected final static ZoneId CHICAGO = ZoneId.of("America/Chicago");
-  private final Supplier<T> supplier;
+  protected  Supplier<T> supplier;
+
+  AbstractReaderTest() {}
 
   AbstractReaderTest(Supplier<T> readerSupplier) {
     this.supplier = readerSupplier;

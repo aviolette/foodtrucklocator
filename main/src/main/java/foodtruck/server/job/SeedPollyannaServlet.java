@@ -2,6 +2,7 @@ package foodtruck.server.job;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.util.Providers;
 
 import foodtruck.dao.TempTruckStopDAO;
 import foodtruck.net.UrlResource;
@@ -16,8 +17,6 @@ public class SeedPollyannaServlet extends AbstractSeedServlet {
 
   @Inject
   public SeedPollyannaServlet(TempTruckStopDAO tempDAO, PollyannaReader reader, UrlResource urls) {
-    super(tempDAO, reader,
-        "https://inffuse.eventscalendar.co/js/v0.1/calendar/data?shop=pollyannabrewing.myshopify.com&inffuse-project=1&_referrer=",
-        false, urls);
+    super(tempDAO, reader, false, urls, Providers.of("https://inffuse.eventscalendar.co/js/v0.1/calendar/data?shop=pollyannabrewing.myshopify.com&inffuse-project=1&_referrer="));
   }
 }
