@@ -77,6 +77,7 @@ public class ICalReader {
             if (timezone.equals("DATE")) {
               zone = null;
             } else {
+              timezone = timezone.replaceAll("\"", "");
               zone = ZoneId.of(timezone);
             }
           }

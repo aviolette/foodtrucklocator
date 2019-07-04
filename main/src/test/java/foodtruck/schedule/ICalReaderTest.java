@@ -76,11 +76,29 @@ public class ICalReaderTest extends Mockito {
         .getResourceAsStream("toasty.ics");
     String doc = new String(ByteStreams.toByteArray(str), StandardCharsets.UTF_8);
     when(geoLocator.locateOpt(any())).thenReturn(Optional.empty());
-    Location loc = wackerAndAdams();
     when(geoLocator.locateOpt("Brickyards Park, 375 Elm St., Deerfield, IL, 60015, United States")).thenReturn(Optional.of(wackerAndAdams()));
     ICalReader reader = new ICalReader(CHICAGO, geoLocator);
     List<ICalReader.ICalEvent> events = reader.parse(doc, true);
     assertThat(events).hasSize(21);
+    assertThat(events).contains(ICalReader.ICalEvent
+        .builder()
+        .start(ZonedDateTime.of(2019, 7, 4, 8, 0, 0, 0, ZoneOffset.ofHours(-5)))
+        .end(ZonedDateTime.of(2019, 7, 4, 17, 0, 0, 0, ZoneOffset.ofHours(-5)))
+        .summary("Deerfield Family Days")
+        .location(wackerAndAdams())
+        .categories(ImmutableList.of("The Crave Bar","Toasty Cheese"))
+        .build());
+  }
+  @Test
+  public void toasty2() throws IOException {
+    InputStream str = ClassLoader.getSystemClassLoader()
+        .getResourceAsStream("toasty2.ics");
+    String doc = new String(ByteStreams.toByteArray(str), StandardCharsets.UTF_8);
+    when(geoLocator.locateOpt(any())).thenReturn(Optional.empty());
+    when(geoLocator.locateOpt("Brickyards Park, 375 Elm St., Deerfield, IL, 60015, United States")).thenReturn(Optional.of(wackerAndAdams()));
+    ICalReader reader = new ICalReader(CHICAGO, geoLocator);
+    List<ICalReader.ICalEvent> events = reader.parse(doc, true);
+    assertThat(events).hasSize(13);
     assertThat(events).contains(ICalReader.ICalEvent
         .builder()
         .start(ZonedDateTime.of(2019, 7, 4, 8, 0, 0, 0, ZoneOffset.ofHours(-5)))
