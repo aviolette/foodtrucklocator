@@ -209,6 +209,11 @@ public class Location extends ModelEntity implements Serializable {
     return url;
   }
 
+  @Nullable
+  public Url getUrlObj() {
+    return url == null ? null : new Url(url);
+  }
+
   /**
    * Return the truck that owns this location (i.e. a restaurant)
    * @return the truck that owns this location or null if it's not owned

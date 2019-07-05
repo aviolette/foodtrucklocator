@@ -13,7 +13,7 @@
           class="glyphicons glyphicons-pencil"></span> Edit</a>
       </c:if></h1>
 
-    <img class="img-thumbnail previewIcon <c:if test="${empty(location.imageUrl.protocolRelative)}">hidden</c:if>"
+    <img class="rounded previewIcon <c:if test="${empty(location.imageUrl.protocolRelative)}">hidden</c:if>"
          src="${location.imageUrl.protocolRelative}" width="100%" />
 
 
@@ -30,7 +30,7 @@
     <div class="m-t contact-section">
       <ul class="list-unstyled">
         <c:if test="${!empty(location.url)}">
-          <li class="mb-2"><a href='${location.url}'>${location.url}</a></li>
+          <li class="mb-2"><a href='${location.url}'>${location.urlObj.forDisplay}</a></li>
         </c:if>
         <c:if test="${!empty(location.email)}">
           <li class="mb-2"><span class="glyphicons glyphicons-envelope"></span>&nbsp;
