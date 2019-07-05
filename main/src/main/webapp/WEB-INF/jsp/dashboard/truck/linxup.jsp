@@ -1,7 +1,8 @@
-<%@ include file="truckHeader.jsp" %>
+<%@include file="../dashboardHeader1.jsp" %>
+<%@include file="truckNav.jsp" %>
 
-<p class="lead">Enter your username and password for <strong>your Linxup account</strong>. The username is typically an
-  email address.</p>
+<p class="lead">To link Chicago Food Truck Finder with Linxup, enter your username and password for <strong>your Linxup
+  account</strong>. It is recommended that you use a separate readonly account for this purpose.</p>
 
 <form role="form" class="form" method="post" action="">
   <div class="form-group" id="usernameGroup">
@@ -18,9 +19,8 @@
     </div>
   </c:if>
   <div class="btn-group">
-    <input type="submit" class="btn btn-primary" value="Save"/>
+    <input type="submit" class="btn btn-outline-primary" value="Save"/>
   </div>
 </form>
 
-<%@ include file="../../include/core_js.jsp" %>
-<%@ include file="truckFooter.jsp" %>
+<%@include file="../dashboardFooter1.jsp" %>

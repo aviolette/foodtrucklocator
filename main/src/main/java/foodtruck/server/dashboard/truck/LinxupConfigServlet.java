@@ -44,6 +44,8 @@ public class LinxupConfigServlet extends AbstractTruckServlet {
     if (account != null) {
       username = account.getUsername();
     }
+    request.setAttribute("headerSelection", "beacon");
+
     request.setAttribute("username", username);
     forward(request, response);
   }

@@ -12,6 +12,8 @@
 
 </style>
 
+<%@include file="truckNav.jsp" %>
+
 <div class="btn-toolbar">
   <div class="btn-group">
     <a class="btn btn-outline-primary" href="/admin/trucks/${truck.id}/linxup_config"><span class="icon icon-cog"></span> Settings</a>
