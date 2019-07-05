@@ -101,6 +101,8 @@ public class SimpleCalReader {
       return "uglytruckin";
     } else if (title.contains("toastycheese") || title.contains("toasty cheese")) {
       return "mytoastycheese";
+    } else if (title.contains("golden eagle hotdogs") || title.contains("golden eagle hot dogs")) {
+      return "michaelbatt3";
     } else if (title.contains("lucy")) {
       return "sohotruck";
     } else if (title.contains("pierogi jo") || title.contains("pierogijos")) {
