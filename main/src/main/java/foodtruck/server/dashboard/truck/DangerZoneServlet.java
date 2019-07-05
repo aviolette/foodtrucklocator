@@ -1,6 +1,11 @@
 package foodtruck.server.dashboard.truck;
 
+import java.io.IOException;
+
 import javax.inject.Singleton;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
@@ -19,6 +24,13 @@ public class DangerZoneServlet extends AbstractTruckServlet {
   @Inject
   public DangerZoneServlet(TruckDAO truckDAO) {
     super(truckDAO);
+  }
+
+  @Override
+  protected void doGetProtected(HttpServletRequest request, HttpServletResponse response,
+      Truck truck) throws ServletException, IOException {
+    request.setAttribute("headerSelection", "danger");
+    super.doGetProtected(request, response, truck);
   }
 
   @Override

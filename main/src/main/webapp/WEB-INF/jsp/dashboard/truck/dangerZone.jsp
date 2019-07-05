@@ -1,10 +1,15 @@
-<%@ include file="truckHeader.jsp" %>
+<%@include file="../dashboardHeader1.jsp" %>
+<%@include file="truckNav.jsp" %>
 
-<h2>DANGER ZONE!</h2>
-<p>
-  This button deletes the truck. There is no going back.
-</p>
-<button id="deleteTruck" class="btn btn-danger btn-lg">DELETE THIS TRUCK</button>
+<div class="jumbotron">
+  <h2>DANGER ZONE!</h2>
+  <p class="lead mb-2">
+    This button deletes the truck. There is no going back.
+  </p>
+  <p class="lead">
+    <button id="deleteTruck" class="btn btn-outline-danger btn-lg">DELETE THIS TRUCK</button>
+  </p>
+</div>
 
 <script type="text/javascript">
   $("#deleteTruck").click(function () {
@@ -20,4 +25,4 @@
   });
 </script>
 
-<%@ include file="truckFooter.jsp" %>
+<%@include file="../dashboardFooter1.jsp" %>
