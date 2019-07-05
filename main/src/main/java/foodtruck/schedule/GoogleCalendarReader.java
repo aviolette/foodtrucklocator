@@ -56,7 +56,6 @@ public class GoogleCalendarReader {
     if (truck == null) {
       String truckId = inferTruckId(titleText);
       if (truckId == null) {
-        log.log(Level.INFO, "Could not infer truck ID from " + titleText);
         return null;
       }
       truck = truckDAO.findByIdOpt(truckId).orElseThrow(() -> new RuntimeException("Truck not found: " + truckId));
