@@ -38,6 +38,10 @@ public class CalendarAddressExtractor  {
     Optional<Location> locationOpt = geoLocator.locateOpt(text);
     if (locationOpt.isPresent()) {
       Location loc = locationOpt.get();
+      if (loc.isBlacklistedFromCalendarSearch()) {
+        log.info("Address is blacklisted");
+        return Optional.empty();
+      }
       if (loc.isResolved()) {
         log.info("Entire address matches a current geolocation");
         return Optional.of(loc);

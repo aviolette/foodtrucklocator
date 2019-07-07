@@ -97,13 +97,9 @@ public class GoogleCalendarReader {
       } else if (where.lastIndexOf(", IL ") != -1) {
         where = where.substring(0, where.lastIndexOf(", IL ")) + ", IL";
       }
-      // HACK Alert, the address extractor doesn't handle non-Chicago addresses well, so
-      // if it is a fully qualified address written by me, it will probably end in City, IL
-      if (!where.endsWith(", IL")) {
-        Optional<Location> parsedLocation = addressExtractor.parse(where, truck);
-        if (parsedLocation.isPresent()) {
-          return parsedLocation.get();
-        }
+      Optional<Location> parsedLocation = addressExtractor.parse(where, truck);
+      if (parsedLocation.isPresent()) {
+        return parsedLocation.get();
       }
     }
     return null;
