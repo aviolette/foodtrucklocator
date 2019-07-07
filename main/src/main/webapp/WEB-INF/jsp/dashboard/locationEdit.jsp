@@ -1,11 +1,14 @@
 <%@include file="dashboardHeader1.jsp" %>
+
+
+
 <c:if test="${!empty(locationId)}">
   <div class="row">
     <div class="col-md-12">
       <h2 class="dashhead-title">Location</h2>
       <div class="btn-group">
         <a href="/admin/event_at/${locationId}" class="btn btn-outline-secondary"><span
-            class="glyphicon glyphicon-plus"></span>
+            class="icon icon-plus"></span>
           New Event</a>
       </div>
       <div class="btn-group">
@@ -15,51 +18,22 @@
   </div>
 </c:if>
 
-<div class="row" style="padding-top: 20px">
-  <div class="col-md-6">
-    <div id="map_canvas" style="width:100%; height:300px; padding-bottom:20px;"></div>
-  </div>
-  <div class="col-md-3">
-    <div>
-      <a id="locationSearchButton" href="#" class="btn btn-outline-secondary"><span
-          class="glyphicon glyphicon-search"></span>
-        Search for a location</a>
-    </div>
-    <ul id="searchLocations">
-    </ul>
-    <div>
-      <h4>Current Aliases</h4>
-      <ul>
-        <c:forEach var="alias" items="${aliases}" varStatus="aliasStatus">
-          <li <c:if test="${aliasStatus.count > 6}">class="extraalias d-none"</c:if>><a
-              href="/admin/locations/${alias.key}">${alias.name}</a></li>
-        </c:forEach>
-      </ul>
-      <c:if test="${aliasCount > 6}">
-        <a href="#" id="readmore">Read More...</a>
-      </c:if>
-    </div>
-  </div>
-  <div class="col-md-3">
-
-    <img
-        <c:if test="${empty(imageUrl)}">class="d-none"</c:if> src="${imageUrl}" id="imagePreview" width="180"/>
-    <div class="<c:if test="${empty(imageUrl)}">d-none</c:if> mb-2 mt-2" id="remove-image-button-section">
-      <button id="remove-image-button" class="btn-outline-danger btn">Remove</button>
-    </div>
-    <form action="/admin/images" class="<c:if test="${!empty(imageUrl)}">d-none</c:if> dropzone" id="upload">
-    </form>
-  </div>
-
-</div>
 
 <div class="row">
   <div class="col-md-12">
 
-    <ul class="nav nav-pills mb-3 mt-3">
+    <ul class="nav nav-bordered mt-4 mt-md-2 mb-3 clearfix">
       <li class="nav-item">
-        <a class="nav-link active" id="basic-tab" data-toggle="tab" href="#basic" role="tab" aria-controls="basic"
+        <a class="nav-link active" id="map-section-tab" data-toggle="tab" href="#map-section" role="tab" aria-controls="map-section"
+           aria-selected="true">Map</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="basic-tab" data-toggle="tab" href="#basic" role="tab" aria-controls="basic"
            aria-selected="true">Basic</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="image-tab" data-toggle="tab" href="#image" role="tab" aria-controls="image"
+           aria-selected="false">Image</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
@@ -72,7 +46,37 @@
     </ul>
 
     <div class="tab-content" id="control-tabs">
-      <div class="tab-pane fade show active" id="basic" role="tabpanel" aria-labelledby="basic-tab">
+      <div class="tab-pane fade show active" id="map-section" role="tabpanel" aria-labelledby="map-section-tab">
+        <div class="row">
+          <div class="col-md-9">
+            <div id="map_canvas" style="width:100%; height:400px; padding-bottom:20px;"></div>
+          </div>
+          <div class="col-md-3">
+            <div>
+              <a id="locationSearchButton" href="#" class="btn btn-outline-secondary"><span
+                  class="icon icon-magnifying-glass"></span>
+                Search for a location</a>
+            </div>
+            <ul id="searchLocations">
+            </ul>
+            <div>
+              <h4>Current Aliases</h4>
+              <ul>
+                <c:forEach var="alias" items="${aliases}" varStatus="aliasStatus">
+                  <li <c:if test="${aliasStatus.count > 6}">class="extraalias d-none"</c:if>><a
+                      href="/admin/locations/${alias.key}">${alias.name}</a></li>
+                </c:forEach>
+              </ul>
+              <c:if test="${aliasCount > 6}">
+                <a href="#" id="readmore">Read More...</a>
+              </c:if>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      <div class="tab-pane fade show " id="basic" role="tabpanel" aria-labelledby="basic-tab">
 
         <div class="form-group">
           <label for="name">Name</label>
@@ -116,6 +120,16 @@
         </div>
       </div>
 
+      <div class="tab-pane fade" id="image" role="tabpanel" aria-labelledby="image-tab">
+        <img
+            <c:if test="${empty(imageUrl)}">class="d-none"</c:if> src="${imageUrl}" id="imagePreview" width="300"/>
+        <div class="<c:if test="${empty(imageUrl)}">d-none</c:if> mb-2 mt-2" id="remove-image-button-section">
+          <button id="remove-image-button" class="btn-outline-danger btn">Remove</button>
+        </div>
+        <form action="/admin/images" class="<c:if test="${!empty(imageUrl)}">d-none</c:if> dropzone" id="upload">
+        </form>
+
+      </div>
       <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
         <div class="form-group">
           <label for="twitterHandle">Twitter Handle</label>
@@ -202,7 +216,7 @@
 
 
     <div>
-      <div class="btn-group>">
+      <div class="btn-group mt-5">
         <button id="submitButton" class="btn btn-outline-primary btn-lg">Save</button>
       </div>
     </div>
