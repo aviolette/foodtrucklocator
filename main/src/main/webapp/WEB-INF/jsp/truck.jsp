@@ -11,7 +11,7 @@
   </nav>
 
   <div class="row" style="padding-bottom: 0;">
-    <div class="col-md-4">
+    <div class="col-md-5">
       <img class="rounded previewIcon" src="${truck.previewIconUrl.protocolRelative}" width="100%" />
       <div><c:if test="${isAdmin}">
         <a class="btn btn-default" href="/admin/trucks/${truck.id}"><span class='glyphicons glyphicons-pencil'></span> Edit</a>
@@ -56,7 +56,7 @@
         </ul>
       </c:if>
     </div>
-    <div class="col-md-8">
+    <div class="col-md-7">
       <ul class="nav nav-tabs" role="tablist">
         <li role="presentation" class="nav-item"><a href="#schedule-section" aria-controls="schedule-section" role="tab"
                                                   data-toggle="tab" class="nav-link active">Schedule</a></li>
