@@ -5,7 +5,7 @@
 
 
 <div class="row top-row">
-  <div class="col-md-4">
+  <div class="col-md-5">
 
 
     <h1>${location.shortenedName}<c:if test="${isAdmin}">
@@ -47,7 +47,7 @@
 
 
   </div>
-  <div class="col-md-8" style="padding-left:30px">
+  <div class="col-md-7" style="padding-left:30px">
     <c:choose>
       <c:when test="${!empty(weeklyStops)}">
         <c:forEach items="${weeklyStops}" var="day" varStatus="dayStatus">
