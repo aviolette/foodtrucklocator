@@ -74,6 +74,7 @@ public class LocationEditServlet extends HttpServlet {
       throw new ServletException(e);
     }
     req.setAttribute("locationId", location.getKey());
+    req.setAttribute("locationName", location.getName());
     req.setAttribute("imageUrl", location.getImageUrl());
     List<Location> aliases = locationDAO.findAliasesFor(location.getName());
     req.setAttribute("aliases", aliases);

@@ -5,7 +5,7 @@
 <c:if test="${!empty(locationId)}">
   <div class="row">
     <div class="col-md-12">
-      <h2 class="dashhead-title">Location</h2>
+      <h2 class="dashhead-title">${locationName}</h2>
       <div class="btn-group">
         <a href="/admin/event_at/${locationId}" class="btn btn-outline-secondary"><span
             class="icon icon-plus"></span>
