@@ -77,7 +77,7 @@
         </c:if>
         <div class="row">
         <c:forEach items="${stops}" var="stop" varStatus="stopStatus">
-          <div class="col-xs-6 col-sm-6 col-md-6 col-lg-4 col-xl-3">
+          <div class="col-xs-6 col-sm-6 col-md-6">
             <a href="/trucks/${stop.truck.id}">
               <div class="thumbnail"><img width="180" height="180" src="${stop.truck.previewIconUrl.protocolRelative}"
                                           alt="" class="img-rounded"
