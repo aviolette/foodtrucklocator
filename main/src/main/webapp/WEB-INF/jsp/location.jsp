@@ -82,7 +82,7 @@
               <div class="thumbnail"><img width="180" height="180" src="${stop.truck.previewIconUrl.protocolRelative}"
                                           alt="" class="img-rounded"
                                           title="<joda:format pattern="hh:mm a" value="${stop.startTime}"/> - <joda:format pattern="hh:mm a" value="${stop.endTime}"/> ${stop.truck.name}"/>
-                <p class="text-center"><strong>${stop.truck.name}<br/><joda:format pattern="hh:mm a"
+                <p><strong>${stop.truck.name}<br/><joda:format pattern="hh:mm a"
                                                                                    value="${stop.startTime}"/> -
                   <joda:format pattern="hh:mm a" value="${stop.endTime}"/></strong></p></div>
             </a>
