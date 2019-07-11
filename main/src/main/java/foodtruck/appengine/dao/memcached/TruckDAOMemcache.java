@@ -76,11 +76,6 @@ public class TruckDAOMemcache extends AbstractMemcachedDAO<TruckDAO> implements 
   }
 
   @Override
-  public List<Truck> findFacebookTrucks() {
-    return delegate().findFacebookTrucks();
-  }
-
-  @Override
   public Truck findFirst() {
     return delegateIf(FIND_FIRST, TruckDAO::findFirst);
   }

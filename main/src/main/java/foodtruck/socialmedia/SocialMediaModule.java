@@ -26,11 +26,6 @@ public class SocialMediaModule extends AbstractModule {
   protected void configure() {
     Multibinder<SocialMediaConnector> connectorBinder = Multibinder.newSetBinder(binder(), SocialMediaConnector.class);
     connectorBinder.addBinding().to(TwitterConnector.class);
-    if (System.getProperty("foodtrucklocator.fb.access.token", null) != null) {
-      connectorBinder.addBinding().to(FacebookConnector.class);
-    } else {
-      log.info("Facebook connector is disabled since no access token is specified");
-    }
   }
 
   @Provides @Singleton

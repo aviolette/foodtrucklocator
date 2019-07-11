@@ -235,12 +235,6 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
         .addSort(TRUCK_CANONICAL_NAME));
   }
 
-  @Override
-  public List<Truck> findFacebookTrucks() {
-    return executeQuery(new Query(TRUCK_KIND).setFilter(new Query.FilterPredicate(SCAN_FACEBOOK, EQUAL, true))
-        .addSort(TRUCK_CANONICAL_NAME));
-  }
-
   @Nullable
   @Override
   public Truck findFirst() {
