@@ -44,9 +44,12 @@
               <c:forEach items="${stop.trucks}" var="truck">
                 <div class="col-md-6">
 
+                  <a href="/trucks/${truck.id}">
+
                   <div class="thumbnail mt-2"><img width="100"  src="${truck.previewIconUrl.protocolRelative}"
-                                              alt="" class="img-rounded"/>
+                                              alt="${truck.name}" class="img-rounded"/>
                   </div>
+                  </a>
                 </div>
               </c:forEach>
               </div>
