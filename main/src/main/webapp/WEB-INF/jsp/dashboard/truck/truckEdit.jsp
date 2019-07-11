@@ -184,10 +184,6 @@
           </div>
           <div class="checkbox">
             <label><input type="checkbox" name="options"
-                          value="facebooker" ${truck.scanFacebook ? "checked='checked'" : ""}/> Use facebooker</label>
-          </div>
-          <div class="checkbox">
-            <label><input type="checkbox" name="options"
                           value="displayEmailPublicly" ${truck.displayEmailPublicly ? "checked='checked'" : ""}/>
               Display email publicly</label>
           </div>
