@@ -19,7 +19,7 @@
 </div>
 
 <c:forEach items="${allGroups}" var="dayGroup" varStatus="dayGroupStatus">
-  <h2 class="date-header"><joda:format pattern="EEEE, MMMM dd" value="${dayGroup.day}"/></h2>
+  <h2 class="date-header mt-3"><joda:format pattern="EEEE, MMMM dd" value="${dayGroup.day}"/></h2>
 <c:forEach items="${dayGroup.groups}" var="group" varStatus="status">
   <c:if test="${(status.index mod 2) == 0}">
     <div class="row">
