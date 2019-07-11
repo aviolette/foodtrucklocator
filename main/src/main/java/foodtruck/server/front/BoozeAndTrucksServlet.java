@@ -1,6 +1,7 @@
 package foodtruck.server.front;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,11 +22,15 @@ import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
 import org.joda.time.LocalDate;
+import org.joda.time.ReadableInstant;
 import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.dao.LocationDAO;
 import foodtruck.model.Location;
+import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.server.CodedServletException;
@@ -150,11 +155,36 @@ public class BoozeAndTrucksServlet extends HttpServlet {
     }
   }
 
+  public static class TruckTime {
+    private Interval interval;
+    private List<Truck> trucks = Lists.newLinkedList();
+
+    public TruckTime(Interval interval) {
+      this.interval = interval;
+    }
+
+    public void addTruck(Truck truck) {
+      trucks.add(truck);
+    }
+
+    public List<Truck> getTrucks() {
+      return trucks;
+    }
+
+    public DateTime getStartTime() {
+      return interval.getStart();
+    }
+
+    public DateTime getEndTime() {
+      return interval.getEnd();
+    }
+  }
+
   @SuppressWarnings("WeakerAccess")
   public static class TruckStopGroup {
     private Location location;
     private LocalDate day;
-    private List<TruckStop> stops = Lists.newLinkedList();
+    private Map<Interval, TruckTime> stops = Maps.newHashMap();
 
     public TruckStopGroup(Location location, LocalDate day) {
       this.location = location;
@@ -169,12 +199,20 @@ public class BoozeAndTrucksServlet extends HttpServlet {
       return location;
     }
 
-    public List<TruckStop> getStops() {
-      return stops;
+    public Collection<TruckTime> getStops() {
+      return stops.values();
     }
 
     public void addStop(TruckStop stop) {
-      this.stops.add(stop);
+      Interval interval = stop.getInterval();
+      TruckTime truckTime;
+      if (!stops.containsKey(interval)) {
+        truckTime = new TruckTime(interval);
+        stops.put(interval, truckTime);
+      } else {
+        truckTime = stops.get(interval);
+      }
+      truckTime.addTruck(stop.getTruck());
     }
   }
 

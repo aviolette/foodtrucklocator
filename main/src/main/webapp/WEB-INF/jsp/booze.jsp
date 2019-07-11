@@ -1,9 +1,5 @@
 <%@ include file="header.jsp" %>
 <style>
-  .panel-heading {
-    font-size: 150%;
-    font-weight: bold;
-  }
   h3 {
     margin-top: 0;
   }
@@ -29,9 +25,9 @@
     <div class="row">
   </c:if>
   <div class="col-md-6">
-    <div class="panel panel-default" style="margin-top:20px; margin-bottom: 20px">
+    <div class="panel panel-default">
       <div class="panel-body">
-        <div class="row">
+        <div class="row mt-3">
           <div class="col-lg-4 col-sm-5">
             <img src="${group.location.imageUrl.protocolRelative}"  width="100%"/>
           </div>
@@ -41,15 +37,20 @@
                 <h3><ftl:location location="${group.location}" at="${stop.startTime}"/></h3>
                 <p>${group.location.description}</p>
               </c:if>
-              <div class="media">
-                <img class="mr-3" width="40" height="40" src="${stop.truck.previewIconUrl.protocolRelative}" alt="truck image">
-                <div class="media-body">
-                  <a href="/trucks/${stop.truck.id}" class="truckLink">
-                    <h5 class="media-heading">${stop.truck.name}</h5>
-                    <joda:format value="${stop.startTime}" style="-S"/> - <joda:format value="${stop.endTime}" style="-S"/>
-                  </a>
+
+              <h4><joda:format value="${stop.startTime}" style="-S"/> - <joda:format value="${stop.endTime}" style="-S"/></h4>
+              <div class="row">
+
+              <c:forEach items="${stop.trucks}" var="truck">
+                <div class="col-md-6">
+
+                  <div class="thumbnail mt-2"><img width="100"  src="${truck.previewIconUrl.protocolRelative}"
+                                              alt="" class="img-rounded"/>
+                  </div>
                 </div>
+              </c:forEach>
               </div>
+
             </c:forEach>
           </div>
         </div>
