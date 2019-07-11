@@ -33,7 +33,7 @@
       <div class="panel-body">
         <div class="row">
           <div class="col-lg-4 col-sm-5">
-            <img src="${group.location.imageUrl.protocolRelative}" height="150" width="150"/>
+            <img src="${group.location.imageUrl.protocolRelative}"  width="100%"/>
           </div>
           <div class="col-lg-8 col-sm-7">
             <c:forEach items="${group.stops}" var="stop" varStatus="stopStatus">
