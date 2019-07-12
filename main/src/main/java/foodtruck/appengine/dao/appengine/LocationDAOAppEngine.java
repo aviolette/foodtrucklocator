@@ -108,15 +108,6 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
     return Optional.empty();
   }
 
-  @Nullable
-  @Override
-  public Location findByLatLng(Location location) {
-    String lookupKey = reverseLookupKey(location);
-    log.log(Level.INFO, "Reverse lookup key: " + lookupKey);
-    return aq().filter(predicate(REVERSE_LOOKUP_KEY, EQUAL, lookupKey))
-        .findFirst();
-  }
-
   @Override
   public List<Location> findPopularLocations() {
     return aq().filter(predicate(POPULAR_FIELD, EQUAL, true))

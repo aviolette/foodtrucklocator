@@ -1,7 +1,5 @@
 package foodtruck.dao;
 
-import java.util.Collection;
-
 import foodtruck.model.Application;
 
 /**

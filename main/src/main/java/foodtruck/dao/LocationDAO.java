@@ -30,11 +30,6 @@ public interface LocationDAO extends DAO<Long, Location> {
   Optional<Location> findByName(String name);
 
   /**
-   * Finds a location keyed by the specified latitude and longitude in the database.
-   */
-  @Nullable Location findByLatLng(Location location);
-
-  /**
    * Saves a location to the datastore.  Location object with new key is returned if
    * this is a new object.
    *

@@ -25,6 +25,7 @@ import static com.google.appengine.api.datastore.Query.SortDirection.ASCENDING;
  * @since 2/6/14
  */
 class MessageDAOAppEngine extends AppEngineDAO<Long, Message> implements MessageDAO {
+
   private static final String MESSAGE_KIND = "message";
   private final DateTimeZone zone;
 
@@ -54,14 +55,11 @@ class MessageDAOAppEngine extends AppEngineDAO<Long, Message> implements Message
         Attributes.getDateTime(entity, "endTime", zone));
   }
 
-
   @Override
-  public
   @Nullable
-  Message findByDay(LocalDate day) {
-    DateTime instant = day.toDateTimeAtStartOfDay(zone),
-        tomorrowExclusive = instant.plusDays(1)
-            .minusMillis(1);
+  public Message findByDay(LocalDate day) {
+    DateTime instant = day.toDateTimeAtStartOfDay(zone), tomorrowExclusive = instant.plusDays(1)
+        .minusMillis(1);
     // TODO: this code is wildly inefficient
     for (Message m : aq().filter(predicate("endTime", GREATER_THAN_OR_EQUAL, instant.toDate()))
         .sort("endTime", ASCENDING)

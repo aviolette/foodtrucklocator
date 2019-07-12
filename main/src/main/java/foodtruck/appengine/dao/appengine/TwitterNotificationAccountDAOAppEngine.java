@@ -80,9 +80,8 @@ class TwitterNotificationAccountDAOAppEngine extends AppEngineDAO<Long, TwitterN
   }
 
   @Override
-  public
   @Nullable
-  TwitterNotificationAccount findByLocationName(String name) {
+  public TwitterNotificationAccount findByLocationName(String name) {
     return findSingleItemByAttribute(PROP_LOCATION_NAME, name);
   }
 
