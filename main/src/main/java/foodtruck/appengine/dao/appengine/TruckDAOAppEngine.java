@@ -47,7 +47,6 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
   private static final String TRUCK_URL = "url";
   private static final String TRUCK_ICON_URL = "iconUrl";
   private static final String TRUCK_DESCRIPTION_FIELD = "descriptionText";
-  private static final String TRUCK_FOURSQUARE_URL_FIELD = "foursquareUrl";
   private static final String TRUCK_TWITTALYZER_FIELD = "useTwittalyzer";
   private static final String TRUCK_DEFAULT_CITY_FIELD = "defaultCity";
   private static final String TRUCK_FACEBOOK_FIELD = "facebookUrl";
@@ -154,7 +153,6 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
         .instagramId(getStringProperty(entity, TRUCK_INSTAGRAM))
         .facebook((String) entity.getProperty(TRUCK_FACEBOOK_FIELD))
         .notifyOfLocationChanges(getBooleanProperty(entity, NOTIFY_OF_LOCATION_CHANGES, false))
-        .foursquareUrl((String) entity.getProperty(TRUCK_FOURSQUARE_URL_FIELD))
         .iconUrl((String) entity.getProperty(TRUCK_ICON_URL))
         .menuUrl(getStringProperty(entity, MENU_URL))
         .fleetSize(getIntProperty(entity, FLEET_SIZE, 1))
@@ -345,7 +343,6 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     entity.setProperty(TRUCK_BEACONNAISE_EMAILS, truck.getBeaconnaiseEmails());
     entity.setProperty(TRUCK_CALENDAR_URL, Strings.emptyToNull(truck.getCalendarUrl()));
     entity.setProperty(TRUCK_DESCRIPTION_FIELD, new Text(Strings.nullToEmpty(truck.getDescription())));
-    entity.setProperty(TRUCK_FOURSQUARE_URL_FIELD, truck.getFoursquareUrl());
     entity.setProperty(TRUCK_TWITTALYZER_FIELD, truck.isUsingTwittalyzer());
     entity.setProperty(TRUCK_DEFAULT_CITY_FIELD, truck.getDefaultCity());
     entity.setProperty(TRUCK_FACEBOOK_FIELD, truck.getFacebook());

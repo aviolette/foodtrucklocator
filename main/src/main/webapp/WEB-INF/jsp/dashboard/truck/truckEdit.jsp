@@ -126,8 +126,6 @@
           </div>
           <input type="hidden" class="form-control" id="yelp" name="yelp"
                  value="${truck.yelpSlug}"/>
-          <input type="hidden" class="form-control" id="foursquareUrl" name="foursquareUrl"
-                 value="${truck.foursquareUrl}"/>
           <input type="hidden" class="form-control" id="facebookPageId" name="facebookPageId"
                  value="${truck.facebookPageId}"/>
           <input type="hidden" class="form-control" id="fleetSize" name="fleetSize" value="${truck.fleetSize}"/>

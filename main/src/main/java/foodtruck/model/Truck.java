@@ -37,7 +37,6 @@ public class Truck extends ModelEntity implements Serializable {
   private String iconUrl;
   private ImmutableSet<String> categories;
   private String description;
-  private String foursquareUrl;
   private boolean twittalyzer;
   private String defaultCity;
   private String facebook;
@@ -92,7 +91,6 @@ public class Truck extends ModelEntity implements Serializable {
     this.iconUrl = builder.iconUrl;
     this.categories = ImmutableSet.copyOf(builder.categories);
     this.description = builder.description;
-    this.foursquareUrl = builder.foursquareUrl;
     this.twittalyzer = builder.twittalyzer;
     this.defaultCity = builder.defaultCity;
     this.facebook = builder.facebook;
@@ -273,11 +271,6 @@ public class Truck extends ModelEntity implements Serializable {
     return hidden;
   }
 
-  @Nullable
-  public String getFoursquareUrl() {
-    return foursquareUrl;
-  }
-
   public String getDefaultCity() {
     return defaultCity;
   }
@@ -442,7 +435,6 @@ public class Truck extends ModelEntity implements Serializable {
         .add("phone", phone)
         .add("iconUrl", iconUrl)
         .add("twitterHandle", twitterHandle)
-        .add("foursquareUrl", foursquareUrl)
         .add("uses twittalyzer", twittalyzer)
         .add("facebook URI", facebook)
         .add("Yelp Slug", yelpSlug)
@@ -740,7 +732,6 @@ public class Truck extends ModelEntity implements Serializable {
     private @Nullable String url;
     private String iconUrl = "https://storage.googleapis.com/truckpreviews/truck_holder.svg";
     private @Nullable String twitter;
-    private String foursquareUrl;
     private boolean twittalyzer;
     private String defaultCity = "Chicago, IL";
     private String facebook;
@@ -793,7 +784,6 @@ public class Truck extends ModelEntity implements Serializable {
       this.twitter = truck.twitterHandle;
       this.categories = truck.categories;
       this.description = truck.description;
-      this.foursquareUrl = truck.foursquareUrl;
       this.twittalyzer = truck.twittalyzer;
       this.defaultCity = truck.defaultCity;
       this.facebook = truck.facebook;
@@ -962,11 +952,6 @@ public class Truck extends ModelEntity implements Serializable {
 
     public Builder twitterHandle(@Nullable String twitter) {
       this.twitter = twitter;
-      return this;
-    }
-
-    public Builder foursquareUrl(@Nullable String foursquare) {
-      this.foursquareUrl = foursquare;
       return this;
     }
 

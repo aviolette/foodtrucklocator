@@ -53,7 +53,6 @@ public class TruckReader implements MessageBodyReader<Truck> {
         .description(json.optString("description"))
         .facebook(json.optString("facebook"))
         .facebookPageId(json.optString("facebookPageId"))
-        .foursquareUrl(json.optString("foursquare"))
         .iconUrl(json.optString("iconUrl"))
         .previewIcon(json.optString("previewIcon"))
         .yelpSlug(json.optString("yelp"))

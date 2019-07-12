@@ -30,7 +30,7 @@ import foodtruck.server.resources.json.JSONSerializer;
 @Produces("text/csv")
 public class TruckCSVCollectionWriter implements MessageBodyWriter<Iterable<Truck>> {
 
-  private static final String[] HEADER = new String[]{"NAME", "TWITTER HANDLE", "FACEBOOK URI", "FOURSQUARE ID", "WEBSITE URL", "PHONE", "EMAIL"};
+  private static final String[] HEADER = new String[]{"NAME", "TWITTER HANDLE", "FACEBOOK URI",  "WEBSITE URL", "PHONE", "EMAIL"};
 
   @Override
   public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
@@ -65,24 +65,14 @@ public class TruckCSVCollectionWriter implements MessageBodyWriter<Iterable<Truc
     entries.add(truck.getName());
     entries.add(truck.getTwitterHandle());
     entries.add(completeFacebook(truck.getFacebook()));
-    entries.add(completeFoursquare(truck.getFoursquareUrl()));
     entries.add(truck.getUrl());
     entries.add(truck.getPhone());
     entries.add(truck.getPublicEmail());
     return entries.toArray(new String[entries.size()]);
   }
 
-  private String completeFoursquare(String foursquareUrl) {
-    foursquareUrl = Strings.emptyToNull(foursquareUrl);
-    if (foursquareUrl == null) {
-      return null;
-    }
-    return "http://www.foursquare.com/v/" + foursquareUrl;
-  }
-
-  private
   @Nullable
-  String completeFacebook(String facebook) {
+  private String completeFacebook(String facebook) {
     String uri = Strings.emptyToNull(facebook);
     if (uri == null) {
       return null;

@@ -7,7 +7,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import javax.annotation.Nullable;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -15,7 +14,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
@@ -83,23 +81,4 @@ public class TruckStopCSVCollectionWriter implements MessageBodyWriter<Iterable<
         .getLongitude()));
     return entries.toArray(new String[entries.size()]);
   }
-
-  private String completeFoursquare(String foursquareUrl) {
-    foursquareUrl = Strings.emptyToNull(foursquareUrl);
-    if (foursquareUrl == null) {
-      return null;
-    }
-    return "http://www.foursquare.com/v/" + foursquareUrl;
-  }
-
-  private
-  @Nullable
-  String completeFacebook(String facebook) {
-    String uri = Strings.emptyToNull(facebook);
-    if (uri == null) {
-      return null;
-    }
-    return "http://www.facebook.com" + facebook;
-  }
-
 }
