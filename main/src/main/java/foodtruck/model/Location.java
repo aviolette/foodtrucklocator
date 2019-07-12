@@ -3,7 +3,6 @@ package foodtruck.model;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Set;
-import java.util.function.Function;
 
 import javax.annotation.Nullable;
 

@@ -80,8 +80,6 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
   private static final String TRUCK_INSTAGRAM = "instagram";
   private static final String TRUCK_FULL_SIZE = "fullsize_image";
   private static final String TIMEZONE_OFFSET = "timezone_offset";
-  private static final String SCAN_FACEBOOK = "scan_facebook";
-  private static final String LAST_SCANNED = "last_scanned_facebook";
   private static final String FLEET_SIZE = "fleet_size";
   private static final String BACKGROUND_IMAGE = "background_image";
   private static final String BACKGROUND_IMAGE_LARGE = "background_image_large";
@@ -95,8 +93,6 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
   private static final String POST_WEEKLY_SCHEDULE = "post_weekly_schedule";
   private static final String POST_DAILY_SCHEDULE = "post_daily_schedule";
   private static final String NEVER_LINK_TWITTER = "never_link_twitter";
-  private static final String FACEBOOK_ACCESS_TOKEN = "facebook_access_token";
-  private static final String FACEBOOK_ACCESS_TOKEN_EXPIRY = "facebook_access_token_expiry";
   private static final String NOTIFY_OF_LOCATION_CHANGES = "notify_of_location_changes";
   private static final String NOTIFY_WHEN_LEAVING = "notify_when_leaving";
   private static final String NOTIFY_WHEN_DEVICE_ISSUES = "notify_when_device_issues";
@@ -157,9 +153,7 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
         .hidden(getBooleanProperty(entity, TRUCK_HIDDEN, false))
         .instagramId(getStringProperty(entity, TRUCK_INSTAGRAM))
         .facebook((String) entity.getProperty(TRUCK_FACEBOOK_FIELD))
-        .scanFacebook(getBooleanProperty(entity, SCAN_FACEBOOK, false))
         .notifyOfLocationChanges(getBooleanProperty(entity, NOTIFY_OF_LOCATION_CHANGES, false))
-        .lastScanned(getStringProperty(entity, LAST_SCANNED))
         .foursquareUrl((String) entity.getProperty(TRUCK_FOURSQUARE_URL_FIELD))
         .iconUrl((String) entity.getProperty(TRUCK_ICON_URL))
         .menuUrl(getStringProperty(entity, MENU_URL))
@@ -189,8 +183,6 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
         .twitterToken(getStringProperty(entity, TWITTER_TOKEN))
         .twitterTokenSecret(getStringProperty(entity, TWITTER_TOKEN_SECRET))
         .neverLinkTwitter(getBooleanProperty(entity, NEVER_LINK_TWITTER, false))
-        .facebookAccessToken(getStringProperty(entity, FACEBOOK_ACCESS_TOKEN, null))
-        .facebookAccessTokenExpires(getDateTime(entity, FACEBOOK_ACCESS_TOKEN_EXPIRY, zone))
         .notifyWhenLeaving(getBooleanProperty(entity, NOTIFY_WHEN_LEAVING, false))
         .notifyWhenDeviceIssues(getBooleanProperty(entity, NOTIFY_WHEN_DEVICE_ISSUES, false))
         .drupalCalendar(getStringProperty(entity, DRUPAL_CALENDAR))
@@ -373,8 +365,6 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     entity.setProperty(TRUCK_HIDDEN, truck.isHidden());
     entity.setProperty(TRUCK_INSTAGRAM, truck.getInstagramId());
     entity.setProperty(TRUCK_FULL_SIZE, truck.getFullsizeImage());
-    entity.setProperty(SCAN_FACEBOOK, truck.getScanFacebook());
-    entity.setProperty(LAST_SCANNED, truck.getLastScanned());
     entity.setProperty(TRUCK_FACEBOOK_PAGE_ID, truck.getFacebookPageId());
     entity.setProperty(BLACKLIST_LOCATION_NAMES, truck.getBlacklistLocationNames());
     entity.setProperty(PHONETIC_ALIASES, truck.getPhoneticAliases());
@@ -386,8 +376,6 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
     entity.setProperty(POST_AT_NEW_LOCATION, truck.isPostAtNewStop());
     entity.setProperty(POST_WEEKLY_SCHEDULE, truck.isPostWeeklySchedule());
     entity.setProperty(POST_DAILY_SCHEDULE, truck.isPostDailySchedule());
-    setDateProperty(FACEBOOK_ACCESS_TOKEN_EXPIRY, entity, truck.getFacebookAccessTokenExpires());
-    entity.setProperty(FACEBOOK_ACCESS_TOKEN, truck.getFacebookAccessToken());
     Attributes.setDateProperty(TRUCK_MUTE_UNTIL, entity, truck.getMuteUntil());
     entity.setProperty(NEVER_LINK_TWITTER, truck.isNeverLinkTwitter());
     entity.setProperty(NOTIFY_WHEN_LEAVING, truck.isNotifyWhenLeaving());

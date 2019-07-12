@@ -1,6 +1,5 @@
 package foodtruck.json.jettison;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -56,8 +55,8 @@ public class TruckWriter implements JSONWriter<Truck>, MessageBodyWriter<Truck> 
     obj.put("calendarUrl", truck.getCalendarUrl());
     obj.put("muteUntil", truck.getMuteUntil());
     obj.put("fullsizeImage", truck.getFullsizeImage());
-    obj.put("scanFacebook", truck.getScanFacebook());
-    obj.put("lastScanned", truck.getLastScanned());
+    obj.put("scanFacebook", false);
+    obj.put("lastScanned", "");
     obj.put("fleetSize", truck.getFleetSize());
     obj.put("backgroundImage", truck.getBackgroundImage());
     obj.put("backgroundImageLarge", truck.getBackgroundImageLarge());
@@ -93,7 +92,7 @@ public class TruckWriter implements JSONWriter<Truck>, MessageBodyWriter<Truck> 
   @Override
   public void writeTo(Truck truck, Class<?> type, Type genericType, Annotation[] annotations,
       MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
-      throws IOException, WebApplicationException {
+      throws WebApplicationException {
     try {
       JSONSerializer.writeJSON(asJSON(truck), entityStream);
     } catch (JSONException e) {

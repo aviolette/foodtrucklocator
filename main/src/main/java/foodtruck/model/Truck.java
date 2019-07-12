@@ -28,6 +28,7 @@ import static com.google.common.base.Preconditions.checkState;
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class Truck extends ModelEntity implements Serializable {
+
   private static final Joiner BLACKLIST_JOINER = Joiner.on("; ");
   private String id;
   private String name;
@@ -57,8 +58,6 @@ public class Truck extends ModelEntity implements Serializable {
   private String instagramId;
   private @Nullable String fullsizeImage;
   private int timezoneAdjustment;
-  private boolean scanFacebook;
-  private String lastScanned;
   private int fleetSize;
   private String backgroundImage;
   private String backgroundImageLarge;
@@ -72,8 +71,6 @@ public class Truck extends ModelEntity implements Serializable {
   private boolean postDailySchedule;
   private boolean postWeeklySchedule;
   private boolean postAtNewStop;
-  private @Nullable String facebookAccessToken;
-  private @Nullable DateTime facebookAccessTokenExpires;
   private boolean notifyOfLocationChanges;
   private boolean disableBeaconsUntilLunchtime;
   private boolean notifyWhenLeaving;
@@ -116,8 +113,6 @@ public class Truck extends ModelEntity implements Serializable {
     this.instagramId = builder.instagramId;
     this.fullsizeImage = builder.fullsizeImage;
     this.timezoneAdjustment = builder.timezoneAdjustment;
-    this.scanFacebook = builder.scanFacebook;
-    this.lastScanned = builder.lastScanned;
     this.fleetSize = builder.fleetSize;
     this.backgroundImage = builder.backgroundImage;
     this.backgroundImageLarge = builder.backgroundImageLarge;
@@ -131,8 +126,6 @@ public class Truck extends ModelEntity implements Serializable {
     this.postDailySchedule = builder.postDailySchedule;
     this.postWeeklySchedule = builder.postWeeklySchedule;
     this.postAtNewStop = builder.postAtNewStop;
-    this.facebookAccessToken = builder.facebookAccessToken;
-    this.facebookAccessTokenExpires = builder.facebookAccessTokenExpires;
     this.notifyOfLocationChanges = builder.notifyOfLocationChanges;
     this.disableBeaconsUntilLunchtime = builder.disableBeaconsUntilLunchtime;
     this.notifyWhenDeviceIssues = builder.notifyWhenDeviceIssues;
@@ -175,16 +168,6 @@ public class Truck extends ModelEntity implements Serializable {
   }
 
   @Nullable
-  public String getFacebookAccessToken() {
-    return facebookAccessToken;
-  }
-
-  @Nullable
-  public DateTime getFacebookAccessTokenExpires() {
-    return facebookAccessTokenExpires;
-  }
-
-  @Nullable
   public String getTwitterToken() {
     return twitterToken;
   }
@@ -216,10 +199,6 @@ public class Truck extends ModelEntity implements Serializable {
 
   public boolean getHasSocialMediaCredentials() {
     return getHasTwitterCredentials();
-  }
-
-  public boolean getHasFacebookCredentials() {
-    return !Strings.isNullOrEmpty(facebookAccessToken);
   }
 
   public boolean getHasTwitterCredentials() {
@@ -267,15 +246,18 @@ public class Truck extends ModelEntity implements Serializable {
     return BLACKLIST_JOINER.join(blacklistLocationNames);
   }
 
-  public @Nullable String getMenuUrl() {
+  @Nullable
+  public String getMenuUrl() {
     return menuUrl;
   }
 
-  public @Nullable String getFullsizeImage() {
+  @Nullable
+  public String getFullsizeImage() {
     return fullsizeImage;
   }
 
-  public @Nullable String getInstagramId() {
+  @Nullable
+  public String getInstagramId() {
     return instagramId;
   }
 
@@ -291,7 +273,8 @@ public class Truck extends ModelEntity implements Serializable {
     return hidden;
   }
 
-  public @Nullable String getFoursquareUrl() {
+  @Nullable
+  public String getFoursquareUrl() {
     return foursquareUrl;
   }
 
@@ -299,7 +282,8 @@ public class Truck extends ModelEntity implements Serializable {
     return defaultCity;
   }
 
-  public @Nullable String getPreviewIcon() {
+  @Nullable
+  public String getPreviewIcon() {
     return previewIcon;
   }
 
@@ -322,13 +306,15 @@ public class Truck extends ModelEntity implements Serializable {
     return categories.contains("Popup");
   }
 
-  public @Nullable String getCalendarUrl() {
+  @Nullable
+  public String getCalendarUrl() {
     return calendarUrl;
   }
 
   @SuppressWarnings("UnusedDeclaration")
   public String getCategoryList() {
-    return Joiner.on(", ").join(categories);
+    return Joiner.on(", ")
+        .join(categories);
   }
 
   public String getPhoneticAliasesList() {
@@ -346,10 +332,12 @@ public class Truck extends ModelEntity implements Serializable {
 
   @SuppressWarnings("UnusedDeclaration")
   public String getBeaconnaiseList() {
-    return Joiner.on(", ").join(beaconnaiseEmails);
+    return Joiner.on(", ")
+        .join(beaconnaiseEmails);
   }
 
-  public @Nullable String getDescription() {
+  public @Nullable
+  String getDescription() {
     return description;
   }
 
@@ -361,7 +349,8 @@ public class Truck extends ModelEntity implements Serializable {
     return url;
   }
 
-  public @Nullable Url getUrlObj() {
+  @Nullable
+  public Url getUrlObj() {
     return new Url(url);
   }
 
@@ -384,20 +373,22 @@ public class Truck extends ModelEntity implements Serializable {
     return twittalyzer;
   }
 
-  public @Nullable String getFacebook() {
+  @Nullable
+  public String getFacebook() {
     return facebook;
   }
 
-  public @Nullable String getFacebookHandle() {
+  @Nullable
+  public String getFacebookHandle() {
     if (facebook == null || facebook.lastIndexOf('/') != 0) {
       return facebook;
     } else {
       return "@" + facebook.substring(1);
     }
-
   }
 
-  public @Nullable String getFacebookPageId() {
+  @Nullable
+  public String getFacebookPageId() {
     return facebookPageId;
   }
 
@@ -405,15 +396,18 @@ public class Truck extends ModelEntity implements Serializable {
     return inactive;
   }
 
-  public @Nullable String getPublicEmail() {
+  @Nullable
+  public String getPublicEmail() {
     return displayEmailPublicly ? getEmail() : null;
   }
 
-  public @Nullable String getEmail() {
+  @Nullable
+  public String getEmail() {
     return email;
   }
 
-  public @Nullable String getPhone() {
+  @Nullable
+  public String getPhone() {
     return phone;
   }
 
@@ -435,8 +429,8 @@ public class Truck extends ModelEntity implements Serializable {
     }
     Truck truck = (Truck) o;
     return id.equals(truck.id) && name.equals(truck.name) && Objects.equal(iconUrl, truck.iconUrl) &&
-        Objects.equal(twitterHandle, truck.twitterHandle) && Objects.equal(url, truck.url)
-        && inactive == truck.inactive;
+        Objects.equal(twitterHandle, truck.twitterHandle) && Objects.equal(url, truck.url) &&
+        inactive == truck.inactive;
   }
 
   @Override
@@ -455,33 +449,38 @@ public class Truck extends ModelEntity implements Serializable {
         .add("inactive", inactive)
         .add("instagramId", instagramId)
         .add("muteUntil", muteUntil)
-        .add("scanFacebook", scanFacebook)
         .toString();
   }
 
-  public @Nullable String getMatchOnlyIfString() {
+  @Nullable
+  public String getMatchOnlyIfString() {
     return matchOnlyIf == null ? null : matchOnlyIf.toString();
   }
 
-  public @Nullable Pattern getMatchOnlyIf() {
+  @Nullable
+  public Pattern getMatchOnlyIf() {
     return matchOnlyIf;
   }
 
-  public @Nullable String getDonotMatchIfString() {
+  @Nullable
+  public String getDonotMatchIfString() {
     return donotMatchIf == null ? null : donotMatchIf.toString();
   }
 
-  public @Nullable Pattern getDonotMatchIf() {
+  public @Nullable
+  Pattern getDonotMatchIf() {
     return donotMatchIf;
   }
 
-  @Override public void validate() throws IllegalStateException {
+  @Override
+  public void validate() throws IllegalStateException {
     super.validate();
     checkState(!Strings.isNullOrEmpty(id), "ID cannot be unspecified");
     checkState(!Strings.isNullOrEmpty(name), "Name must be specified");
   }
 
-  public @Nullable DateTime getMuteUntil() {
+  @Nullable
+  public DateTime getMuteUntil() {
     return muteUntil;
   }
 
@@ -490,7 +489,8 @@ public class Truck extends ModelEntity implements Serializable {
     return muteUntil != null && muteUntil.isAfter(new DateTime());
   }
 
-  public @Nullable Stats getStats() {
+  @Nullable
+  public Stats getStats() {
     return stats;
   }
 
@@ -515,19 +515,11 @@ public class Truck extends ModelEntity implements Serializable {
   public boolean isSavory() {
     if (categories.contains("Sandwiches") || categories.contains("Lunch")) {
       return true;
-    } else if (categories.contains("Dogs") || categories.contains("Cupcakes") ||
-        categories.contains("Dessert") || categories.contains("Donuts")) {
+    } else if (categories.contains("Dogs") || categories.contains("Cupcakes") || categories.contains("Dessert") ||
+        categories.contains("Donuts")) {
       return false;
     }
     return true;
-  }
-
-  public boolean getScanFacebook() {
-    return scanFacebook;
-  }
-
-  public String getLastScanned() {
-    return lastScanned;
   }
 
   public Set<String> getPublicCategories() {
@@ -536,9 +528,8 @@ public class Truck extends ModelEntity implements Serializable {
 
   public Set<String> publicCategories() {
     return categories.stream()
-        .filter(input -> !(input.equals("Lunch") || input.equals("HasStore") ||
-            input.equals("1HRStops") || input.equals("MorningSquatter") ||
-            input.equals("AssumeNoTimeEqualsLunch") || input.equals("Chicago") ||
+        .filter(input -> !(input.equals("Lunch") || input.equals("HasStore") || input.equals("1HRStops") ||
+            input.equals("MorningSquatter") || input.equals("AssumeNoTimeEqualsLunch") || input.equals("Chicago") ||
             input.equals("Burbs")))
         .collect(Collectors.toSet());
   }
@@ -551,14 +542,16 @@ public class Truck extends ModelEntity implements Serializable {
     return backgroundImage;
   }
 
-  public @Nullable Url getBackgroundImageUrl() {
+  @Nullable
+  public Url getBackgroundImageUrl() {
     if (Strings.isNullOrEmpty(backgroundImage)) {
       return null;
     }
     return new Url(backgroundImage);
   }
 
-  public @Nullable Url getBiggestBackgroundImageUrl() {
+  @Nullable
+  public Url getBiggestBackgroundImageUrl() {
     if (Strings.isNullOrEmpty(backgroundImageLarge)) {
       return getBackgroundImageUrl();
     }
@@ -569,7 +562,8 @@ public class Truck extends ModelEntity implements Serializable {
     return backgroundImageLarge;
   }
 
-  public @Nullable Url getLargeBackgroundImageUrl() {
+  @Nullable
+  public Url getLargeBackgroundImageUrl() {
     if (Strings.isNullOrEmpty(backgroundImageLarge)) {
       return null;
     }
@@ -581,7 +575,7 @@ public class Truck extends ModelEntity implements Serializable {
   }
 
   public boolean getDeriveStopsFromSocialMedia() {
-    return isUsingTwittalyzer() || getScanFacebook();
+    return isUsingTwittalyzer();
   }
 
   public String nameForTwitterDisplay() {
@@ -592,6 +586,7 @@ public class Truck extends ModelEntity implements Serializable {
   }
 
   public static class HasCategoryPredicate implements Predicate<Truck> {
+
     private String category;
 
     public HasCategoryPredicate(String category) {
@@ -604,6 +599,7 @@ public class Truck extends ModelEntity implements Serializable {
   }
 
   public static class Stats implements Serializable {
+
     private DateTime lastUpdated;
     private DateTime lastSeen;
     private DateTime firstSeen;
@@ -644,7 +640,6 @@ public class Truck extends ModelEntity implements Serializable {
       return stopsThisYear;
     }
 
-
     public DateTime getLastUpdated() {
       return lastUpdated;
     }
@@ -653,11 +648,13 @@ public class Truck extends ModelEntity implements Serializable {
       return totalStops;
     }
 
-    public @Nullable DateTime getLastSeen() {
+    @Nullable
+    public DateTime getLastSeen() {
       return lastSeen;
     }
 
-    public @Nullable Location getWhereLastSeen() {
+    @Nullable
+    public Location getWhereLastSeen() {
       return whereLastSeen;
     }
 
@@ -672,7 +669,8 @@ public class Truck extends ModelEntity implements Serializable {
       private @Nullable DateTime firstSeen;
       private Location whereFirstSeen;
 
-      public Builder() {}
+      public Builder() {
+      }
 
       public Builder(Stats stats) {
         this.lastUpdated = stats.getLastUpdated();
@@ -732,6 +730,7 @@ public class Truck extends ModelEntity implements Serializable {
   }
 
   public static class Builder {
+
     public Set<String> categories = ImmutableSet.of();
     public String description;
     public Set<String> beaconnaiseEmails = ImmutableSet.of();
@@ -776,8 +775,6 @@ public class Truck extends ModelEntity implements Serializable {
     private boolean postDailySchedule;
     private boolean postWeeklySchedule;
     private boolean postAtNewStop;
-    private @Nullable String facebookAccessToken;
-    private @Nullable DateTime facebookAccessTokenExpires;
     private boolean notifyOfLocationChanges;
     private boolean notifyWhenLeaving;
     private boolean notifyWhenDeviceIssues;
@@ -817,8 +814,6 @@ public class Truck extends ModelEntity implements Serializable {
       this.instagramId = truck.instagramId;
       this.fullsizeImage = truck.fullsizeImage;
       this.timezoneAdjustment = truck.timezoneAdjustment;
-      this.scanFacebook = truck.scanFacebook;
-      this.lastScanned = truck.lastScanned;
       this.fleetSize = truck.fleetSize;
       this.backgroundImage = truck.backgroundImage;
       this.backgroundImageLarge = truck.backgroundImageLarge;
@@ -832,8 +827,6 @@ public class Truck extends ModelEntity implements Serializable {
       this.postDailySchedule = truck.postDailySchedule;
       this.postWeeklySchedule = truck.postWeeklySchedule;
       this.postAtNewStop = truck.postAtNewStop;
-      this.facebookAccessToken = truck.facebookAccessToken;
-      this.facebookAccessTokenExpires = truck.facebookAccessTokenExpires;
       this.notifyOfLocationChanges = truck.notifyOfLocationChanges;
       this.disableBeaconsUntilLunchtime = truck.disableBeaconsUntilLunchtime;
       this.notifyWhenDeviceIssues = truck.notifyWhenDeviceIssues;
@@ -1077,7 +1070,8 @@ public class Truck extends ModelEntity implements Serializable {
       } else {
         this.phone = phone.replaceAll("\\(|\\)|\\-|\\+|\\.| ", "");
         if (this.phone.length() == 10) {
-          this.phone = this.phone.substring(0, 3) + "-" + this.phone.substring(3, 6) + "-" + this.phone.substring(6, 10);
+          this.phone =
+              this.phone.substring(0, 3) + "-" + this.phone.substring(3, 6) + "-" + this.phone.substring(6, 10);
         }
       }
       return this;
@@ -1110,16 +1104,6 @@ public class Truck extends ModelEntity implements Serializable {
 
     public Builder postAtNewStop(boolean postAtNewStop) {
       this.postAtNewStop = postAtNewStop;
-      return this;
-    }
-
-    public Builder facebookAccessToken(String facebookAccessToken) {
-      this.facebookAccessToken = facebookAccessToken;
-      return this;
-    }
-
-    public Builder facebookAccessTokenExpires(DateTime expires) {
-      this.facebookAccessTokenExpires = expires;
       return this;
     }
 

@@ -61,7 +61,6 @@ public class TruckReader implements MessageBodyReader<Truck> {
         .fleetSize(json.optInt("fleetSize"))
         .backgroundImage(json.optString("backgroundImage"))
         .backgroundImageLarge(json.optString("backgroundImageLarge"))
-        .scanFacebook(json.optBoolean("scanFacebook"))
         .fullsizeImage(json.optString("fullsizeImage"))
         .timezoneOffset(json.optInt("timezoneAdjustment"))
         .useTwittalyzer(json.optBoolean("twittalyzer"))
