@@ -57,17 +57,8 @@ public class TruckDAOMemcache extends AbstractMemcachedDAO<TruckDAO> implements 
   }
 
   @Override
-  public Set<Truck> findTruckWithDrupalCalendars() {
-    return delegate().findTruckWithDrupalCalendars();
-  }
-
-  @Override
   public Set<Truck> findTruckWithICalCalendars() {
     return delegate().findTruckWithICalCalendars();
-  }
-
-  public Set<Truck> findTruckWithSquarespaceCalendars() {
-    return delegate().findTruckWithSquarespaceCalendars();
   }
 
   @Override
@@ -88,11 +79,6 @@ public class TruckDAOMemcache extends AbstractMemcachedDAO<TruckDAO> implements 
   @Override
   public Set<Truck> findByBeaconnaiseEmail(String email) {
     return delegate().findByBeaconnaiseEmail(email);
-  }
-
-  @Override
-  public Iterable<Truck> findTrucksWithEmail() {
-    return delegate().findTrucksWithEmail();
   }
 
   @Override

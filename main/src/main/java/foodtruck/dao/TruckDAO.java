@@ -40,14 +40,7 @@ public interface TruckDAO extends DAO<String, Truck> {
   /**
    * Finds trucks with an associated drupal calendar
    */
-  Set<Truck> findTruckWithDrupalCalendars();
-
-  /**
-   * Finds trucks with an associated drupal calendar
-   */
   Set<Truck> findTruckWithICalCalendars();
-
-  Set<Truck> findTruckWithSquarespaceCalendars();
 
   /**
    * Find all the visible trucks, ordered by name
@@ -67,8 +60,6 @@ public interface TruckDAO extends DAO<String, Truck> {
   List<Truck> findByCategory(String tag);
 
   Set<Truck> findByBeaconnaiseEmail(String email);
-
-  Iterable<Truck> findTrucksWithEmail();
 
   void deleteAll();
 

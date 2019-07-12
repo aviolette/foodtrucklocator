@@ -258,15 +258,6 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
   }
 
   @Override
-  public Iterable<Truck> findTrucksWithEmail() {
-    Query q = new Query(TRUCK_KIND);
-    q.setFilter(
-        Query.CompositeFilterOperator.and(new Query.FilterPredicate(TRUCK_EMAIL, Query.FilterOperator.NOT_EQUAL, null),
-            new Query.FilterPredicate(TRUCK_ALLOW_SYSTEM_NOTIFICATIONS, EQUAL, true)));
-    return executeQuery(q);
-  }
-
-  @Override
   public void deleteAll() {
     DatastoreService dataStore = provider.get();
     Query q = new Query(getKind());
@@ -311,23 +302,9 @@ class TruckDAOAppEngine extends AppEngineDAO<String, Truck> implements TruckDAO 
   }
 
   @Override
-  public Set<Truck> findTruckWithDrupalCalendars() {
-    Query q = new Query(TRUCK_KIND);
-    q.setFilter(new Query.FilterPredicate(DRUPAL_CALENDAR, Query.FilterOperator.NOT_EQUAL, null));
-    return ImmutableSet.copyOf(executeQuery(q));
-  }
-
-  @Override
   public Set<Truck> findTruckWithICalCalendars() {
     Query q = new Query(TRUCK_KIND);
     q.setFilter(new Query.FilterPredicate(ICAL_CALENDAR, Query.FilterOperator.NOT_EQUAL, null));
-    return ImmutableSet.copyOf(executeQuery(q));
-  }
-
-  @Override
-  public Set<Truck> findTruckWithSquarespaceCalendars() {
-    Query q = new Query(TRUCK_KIND);
-    q.setFilter(new Query.FilterPredicate(SQUARESPACE_CALENDAR, Query.FilterOperator.NOT_EQUAL, null));
     return ImmutableSet.copyOf(executeQuery(q));
   }
 
