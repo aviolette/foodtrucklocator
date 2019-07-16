@@ -58,7 +58,7 @@ public class CalendarAddressExtractor  {
       }
       Location loc = locationOpt.get();
       if (loc.isResolved()) {
-        log.info("Address could not be resolved");
+        log.log(Level.INFO, "Address is resolved: {0}", loc.getName());
         return Optional.of(loc);
       }
     }
