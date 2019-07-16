@@ -46,6 +46,7 @@ public class TempScheduleService {
     queue.add(withUrl("/cron/populate_perk_n_pickle"));
     queue.add(withUrl("/cron/populate_your_sisters"));
     queue.add(withUrl("/cron/populate_three_legged_taco"));
+    queue.add(withUrl("/cron/populate_fat_tomato"));
 
     truckDAO.findTruckWithICalCalendars()
         .forEach(truck -> queue.add(
