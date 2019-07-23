@@ -1,0 +1,20 @@
+# Food Truck Finder API
+---
+swagger: "2.0"
+info:
+  title: "Food Truck API"
+  description: "Get information about the trucks and events in The Chicago Food Truck Finder"
+  version: "1.0.0"
+host: "chicagofoodtrucklocator.appspot.com"
+schemes:
+  - "https"
+paths:
+  "/services/trucks":
+    get:
+      description: "Get "
+      operationId: trucks
+      responses:
+        200:
+          description: "Success."
+          schema:
+            type: string
