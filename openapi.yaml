@@ -16,7 +16,7 @@ securityDefinitions:
     name: "key"
     in: "query"
 paths:
-  "/services/trucks":
+  "/services/v3/trucks":
     get:
       parameters:
         - name: active
@@ -25,6 +25,8 @@ paths:
           description: If false - return just inactive, if true return just active, if 'all' then return all trucks
           type : string
       description: "Gets all the trucks"
+      produces:
+        - application/json
       operationId: trucks
       responses:
         200:
