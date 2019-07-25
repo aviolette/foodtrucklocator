@@ -480,11 +480,14 @@ public class Truck extends ModelEntity implements Serializable {
     checkState(!Strings.isNullOrEmpty(name), "Name must be specified");
   }
 
+  @Deprecated
+  @JsonIgnore
   @Nullable
   public DateTime getMuteUntil() {
     return muteUntil;
   }
 
+  @Deprecated
   @SuppressWarnings("UnusedDeclaration")
   public boolean isMuted() {
     return muteUntil != null && muteUntil.isAfter(new DateTime());
@@ -925,6 +928,7 @@ public class Truck extends ModelEntity implements Serializable {
       return this;
     }
 
+    @Deprecated
     public Builder muteUntil(@Nullable DateTime muteUntil) {
       this.muteUntil = muteUntil;
       return this;
