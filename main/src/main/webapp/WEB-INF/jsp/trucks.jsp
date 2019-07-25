@@ -38,7 +38,7 @@
 
     function loadTruckList() {
       $.ajax({
-        url: '/services/v3/trucks',
+        url: '/services/trucks',
         success: function(data) {
           truckData = data;
           refreshTruckList(truckData);
