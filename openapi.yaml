@@ -41,14 +41,17 @@ paths:
           required: true
           description: The truck ID
           type : string
-      description: "Get "
+      description: "Get a truck"
+      produces:
+        - application/json
       operationId: trucks-beacons
       responses:
         200:
           description: "Success."
           schema:
             $ref: "#/definitions/Truck"
-
+        404:
+          description: "If the truck is not found"
 definitions:
   Truck:
     type: object
@@ -90,11 +93,27 @@ definitions:
         type: string
       menuUrl:
         type: string
-      firstSeen:
+      fleetSize:
         type: integer
-        format: int64
-      lastSeen:
-        type: integer
-        format: int64
-      whereLastSeen:
-        type: string
+      blacklistLocationNames:
+        type: array
+        items:
+          type: string        
+      phoneticAliases:
+        type: array
+        items:
+          type: string        
+      neverLinkTwitter:
+        type: boolean
+      postDailySchedule:
+        type: boolean
+      postWeeklySchedule:
+        type: boolean
+      postAtNewStop:
+        type: boolean
+      disableBeaconsUntilLunchtime:
+        type: boolean
+      notifyWhenLeaving:
+        type: boolean
+      notifyWhenDeviceIssues:
+        type: boolean

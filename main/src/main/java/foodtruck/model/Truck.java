@@ -250,6 +250,8 @@ public class Truck extends ModelEntity implements Serializable {
     return menuUrl;
   }
 
+  @Deprecated
+  @JsonIgnore
   @Nullable
   public String getFullsizeImage() {
     return fullsizeImage;
@@ -512,6 +514,8 @@ public class Truck extends ModelEntity implements Serializable {
     return true;
   }
 
+  @Deprecated
+  @JsonIgnore
   public int getTimezoneAdjustment() {
     return timezoneAdjustment;
   }
@@ -542,10 +546,14 @@ public class Truck extends ModelEntity implements Serializable {
     return fleetSize;
   }
 
+  @Deprecated
+  @JsonIgnore
   public String getBackgroundImage() {
     return backgroundImage;
   }
 
+  @Deprecated
+  @JsonIgnore
   @Nullable
   public Url getBackgroundImageUrl() {
     if (Strings.isNullOrEmpty(backgroundImage)) {
@@ -554,6 +562,8 @@ public class Truck extends ModelEntity implements Serializable {
     return new Url(backgroundImage);
   }
 
+  @Deprecated
+  @JsonIgnore
   @Nullable
   public Url getBiggestBackgroundImageUrl() {
     if (Strings.isNullOrEmpty(backgroundImageLarge)) {
@@ -562,6 +572,8 @@ public class Truck extends ModelEntity implements Serializable {
     return new Url(backgroundImageLarge);
   }
 
+  @Deprecated
+  @JsonIgnore
   public String getBackgroundImageLarge() {
     return backgroundImageLarge;
   }
@@ -883,6 +895,7 @@ public class Truck extends ModelEntity implements Serializable {
       return this;
     }
 
+    @Deprecated
     public Builder fullsizeImage(@Nullable String fullsizeImage) {
       this.fullsizeImage = fullsizeImage;
       return this;
