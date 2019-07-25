@@ -166,11 +166,13 @@ public class Truck extends ModelEntity implements Serializable {
     return notifyOfLocationChanges;
   }
 
+  @JsonIgnore
   @Nullable
   public String getTwitterToken() {
     return twitterToken;
   }
 
+  @JsonIgnore
   @Nullable
   public String getTwitterTokenSecret() {
     return twitterTokenSecret;
