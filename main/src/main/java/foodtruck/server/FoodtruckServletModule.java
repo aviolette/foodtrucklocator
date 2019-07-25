@@ -302,12 +302,6 @@ class FoodtruckServletModule extends ServletModule {
   }
 
   @Provides
-  @Named("foodtrucklocator.signal.id")
-  public String provideFoodTruckLocatorSignalId() {
-    return System.getProperty("foodtrucklocator.signal.id");
-  }
-
-  @Provides
   @GoogleJavascriptApiKey
   public String provideJavascriptApiKey() {
     return System.getProperty("foodtrucklocator.google.javascript.api.key", "");
