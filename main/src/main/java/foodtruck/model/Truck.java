@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
@@ -291,6 +292,8 @@ public class Truck extends ModelEntity implements Serializable {
     return name;
   }
 
+  @Deprecated
+  @JsonIgnore
   public String getYelpSlug() {
     return yelpSlug;
   }
@@ -342,15 +345,19 @@ public class Truck extends ModelEntity implements Serializable {
     return url;
   }
 
+  @JsonIgnore
   @Nullable
   public Url getUrlObj() {
     return new Url(url);
   }
 
+  @JsonIgnore
+  @Deprecated
   public String getIconUrl() {
     return iconUrl;
   }
 
+  @JsonIgnore
   public Url getIconUrlObj() {
     if (Strings.isNullOrEmpty(iconUrl)) {
       return null;
@@ -380,6 +387,8 @@ public class Truck extends ModelEntity implements Serializable {
     }
   }
 
+  @Deprecated
+  @JsonIgnore
   @Nullable
   public String getFacebookPageId() {
     return facebookPageId;
@@ -994,6 +1003,7 @@ public class Truck extends ModelEntity implements Serializable {
       return this;
     }
 
+    @Deprecated
     public Builder yelpSlug(@Nullable String yelpSlug) {
       this.yelpSlug = yelpSlug;
       return this;

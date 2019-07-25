@@ -11,10 +11,82 @@ schemes:
 paths:
   "/services/trucks":
     get:
-      description: "Get "
+      parameters:
+        - name: active
+          in: query
+          required: false
+          description: If false - return just inactive, if true return just active, if 'all' then return all trucks
+          type : string
+      description: "Gets all the trucks"
       operationId: trucks
       responses:
         200:
           description: "Success."
           schema:
+            type: array
+            items:
+              $ref: "#/definitions/Truck"
+  "/services/trucks/{truckId}/beacons":
+    get:
+      parameters:
+        - name: truckId
+          in: path
+          required: true
+          description: The truck ID
+          type : string
+      description: "Get "
+      operationId: trucks-beacons
+      responses:
+        200:
+          description: "Success."
+          schema:
             type: string
+
+definitions:
+  Truck:
+    type: object
+    properties:
+      id:
+        type: string
+      iconUrl:
+        type: string
+      twitterHandle:
+        type: string
+      instagram:
+        type: string
+      facebook:
+        type: string
+      facebookPageId:
+        type: string
+      savory:
+        type: boolean
+      name:
+        type: string
+      yelp:
+        type: string
+      categories:
+        type: array
+        items:
+          type: string        
+      phone:
+        type: string
+      description:
+        type: string
+      url:
+        type: string
+      email:
+        type: string
+      previewIcon:
+        type: string
+      inactive:
+        type: boolean
+      menuUrl:
+        type: string
+      firstSeen:
+        type: integer
+        format: int64
+      lastSeen:
+        type: integer
+        format: int64
+      whereLastSeen:
+        type: string

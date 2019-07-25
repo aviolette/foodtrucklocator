@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -11,11 +12,13 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import foodtruck.annotations.UseJackson;
 import foodtruck.model.Truck;
 import foodtruck.server.resources.BadRequestException;
 
@@ -26,10 +29,12 @@ import foodtruck.server.resources.BadRequestException;
 @Provider
 public class TruckWriter implements JSONWriter<Truck>, MessageBodyWriter<Truck> {
   private final AbbreviatedTruckWriter truckWriter;
+  private final ObjectMapper objectMapper;
 
   @Inject
-  public TruckWriter(AbbreviatedTruckWriter truckWriter) {
+  public TruckWriter(AbbreviatedTruckWriter truckWriter, ObjectMapper mapper) {
     this.truckWriter = truckWriter;
+    this.objectMapper = mapper;
   }
 
   @Override
@@ -70,10 +75,14 @@ public class TruckWriter implements JSONWriter<Truck>, MessageBodyWriter<Truck> 
   public void writeTo(Truck truck, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
       MultivaluedMap<String, Object> httpHeaders,
       OutputStream entityStream) throws IOException, WebApplicationException {
-    try {
-      JSONSerializer.writeJSON(asJSON(truck), entityStream);
-    } catch (JSONException e) {
-      throw new BadRequestException(e, MediaType.APPLICATION_JSON_TYPE);
+    if (Arrays.stream(annotations).anyMatch(annotation -> annotation.annotationType() == UseJackson.class)) {
+      objectMapper.writeValue(entityStream, truck);
+    } else {
+      try {
+        JSONSerializer.writeJSON(asJSON(truck), entityStream);
+      } catch (JSONException e) {
+        throw new BadRequestException(e, MediaType.APPLICATION_JSON_TYPE);
+      }
     }
   }
 }
