@@ -8,6 +8,13 @@ info:
 host: "chicagofoodtrucklocator.appspot.com"
 schemes:
   - "https"
+security: []
+securityDefinitions:
+  # This section configures basic authentication with an API key.
+  api_key:
+    type: "apiKey"
+    name: "key"
+    in: "query"
 paths:
   "/services/trucks":
     get:
@@ -26,7 +33,7 @@ paths:
             type: array
             items:
               $ref: "#/definitions/Truck"
-  "/services/trucks/{truckId}/beacons":
+  "/services/v3/trucks/{truckId}":
     get:
       parameters:
         - name: truckId
@@ -40,7 +47,7 @@ paths:
         200:
           description: "Success."
           schema:
-            type: string
+            $ref: "#/definitions/Truck"
 
 definitions:
   Truck:
@@ -48,38 +55,39 @@ definitions:
     properties:
       id:
         type: string
-      iconUrl:
-        type: string
-      twitterHandle:
-        type: string
-      instagram:
-        type: string
-      facebook:
-        type: string
-      facebookPageId:
-        type: string
-      savory:
-        type: boolean
       name:
         type: string
-      yelp:
+      url:
         type: string
       categories:
         type: array
         items:
           type: string        
-      phone:
-        type: string
       description:
         type: string
-      url:
+      twitterHandle:
         type: string
-      email:
+      twittalyzer:
+        type: boolean
+      defaultCity:
         type: string
-      previewIcon:
+      instagram:
+        type: string
+      facebook:
+        description: The facebook URI for the foodtruck
         type: string
       inactive:
         type: boolean
+      email:
+        type: string
+      savory:
+        type: boolean
+      phone:
+        type: string
+      hidden:
+        type: boolean
+      previewIcon:
+        type: string
       menuUrl:
         type: string
       firstSeen:
