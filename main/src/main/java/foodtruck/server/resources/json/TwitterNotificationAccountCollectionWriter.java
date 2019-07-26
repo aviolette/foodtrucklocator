@@ -4,6 +4,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.Provider;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 
 import foodtruck.model.TwitterNotificationAccount;
@@ -20,7 +21,7 @@ public class TwitterNotificationAccountCollectionWriter extends CollectionWriter
    * @param writer the writer used to output each entity
    */
   @Inject
-  public TwitterNotificationAccountCollectionWriter(TwitterNotificationAccountWriter writer) {
-    super(writer, TwitterNotificationAccount.class);
+  public TwitterNotificationAccountCollectionWriter(TwitterNotificationAccountWriter writer, ObjectMapper objectMapper) {
+    super(writer, TwitterNotificationAccount.class, objectMapper);
   }
 }

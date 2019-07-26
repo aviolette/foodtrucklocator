@@ -2,6 +2,7 @@ package foodtruck.server.resources.json;
 
 import javax.ws.rs.ext.Provider;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 
 import foodtruck.model.TruckStopWithCounts;
@@ -14,7 +15,7 @@ import foodtruck.model.TruckStopWithCounts;
 public class TruckStopWithCountsCollectionWriter extends CollectionWriter<TruckStopWithCounts, TruckStopWithCountsWriter> {
 
   @Inject
-  public TruckStopWithCountsCollectionWriter(TruckStopWithCountsWriter writer) {
-    super(writer, TruckStopWithCounts.class);
+  public TruckStopWithCountsCollectionWriter(TruckStopWithCountsWriter writer, ObjectMapper objectMapper) {
+    super(writer, TruckStopWithCounts.class, objectMapper);
   }
 }

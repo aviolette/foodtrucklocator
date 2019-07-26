@@ -4,15 +4,21 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
+
+import foodtruck.annotations.UseJackson;
 
 /**
  * @author aviolette@gmail.com
@@ -21,15 +27,18 @@ import org.codehaus.jettison.json.JSONException;
 public abstract class CollectionWriter<E, D extends JSONWriter<E>> implements MessageBodyWriter<Iterable<E>> {
   private final D writer;
   private final Class<?> entityClass;
+  private final ObjectMapper objectMapper;
 
   /**
    * Constructs the collection writer
    * @param writer      the writer used to output each entity
    * @param entityClass the class of the entities that this collection writer supports
+   * @param objectMapper
    */
-  protected CollectionWriter(D writer, Class<?> entityClass) {
+  protected CollectionWriter(D writer, Class<?> entityClass, ObjectMapper objectMapper) {
     this.writer = writer;
     this.entityClass = entityClass;
+    this.objectMapper = objectMapper;
   }
 
   @Override
@@ -45,11 +54,20 @@ public abstract class CollectionWriter<E, D extends JSONWriter<E>> implements Me
   @Override
   public void writeTo(Iterable<E> es, Class<?> aClass, Type type, Annotation[] annotations, MediaType mediaType,
       MultivaluedMap<String, Object> stringObjectMultivaluedMap,
-      OutputStream outputStream) throws IOException, WebApplicationException {
-    try {
-      JSONSerializer.writeJSONCollection(es, writer, outputStream);
-    } catch (JSONException e) {
-      throw new WebApplicationException(e, 400);
+      OutputStream outputStream) throws WebApplicationException {
+
+    if (Arrays.stream(annotations).anyMatch(annotation -> annotation.annotationType() == UseJackson.class)) {
+      try {
+        objectMapper.writeValue(outputStream, es);
+      } catch (IOException e) {
+        throw new WebApplicationException(e, 400);
+      }
+    } else {
+      try {
+        JSONSerializer.writeJSONCollection(es, writer, outputStream);
+      } catch (JSONException e) {
+        throw new WebApplicationException(e, 400);
+      }
     }
   }
 

@@ -2,6 +2,7 @@ package foodtruck.server.resources.json;
 
 import javax.ws.rs.ext.Provider;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 
 import foodtruck.model.Location;
@@ -17,7 +18,7 @@ public class LocationCollectionWriter extends CollectionWriter<Location, Locatio
    * @param writer the writer used to output each entity
    */
   @Inject
-  public LocationCollectionWriter(LocationWriter writer) {
-    super(writer, Location.class);
+  public LocationCollectionWriter(LocationWriter writer, ObjectMapper objectMapper) {
+    super(writer, Location.class, objectMapper);
   }
 }

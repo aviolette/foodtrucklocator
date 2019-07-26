@@ -3,6 +3,7 @@ package foodtruck.server.resources.json;
 import javax.ws.rs.Produces;
 import javax.ws.rs.ext.Provider;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 
 import foodtruck.model.Application;
@@ -19,7 +20,7 @@ public class ApplicationCollectionWriter extends CollectionWriter<Application, A
    * @param writer the writer used to output each entity
    */
   @Inject
-  public ApplicationCollectionWriter(ApplicationWriter writer) {
-    super(writer, Application.class);
+  public ApplicationCollectionWriter(ApplicationWriter writer, ObjectMapper objectMapper) {
+    super(writer, Application.class, objectMapper);
   }
 }

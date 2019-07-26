@@ -4,6 +4,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.Provider;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 
 import foodtruck.model.ApplicationWithUsageCounts;
@@ -17,7 +18,7 @@ import foodtruck.model.ApplicationWithUsageCounts;
 public class ApplicationWithUsageCountsCollectionWriter extends CollectionWriter<ApplicationWithUsageCounts, ApplicationWithUsageCountsWriter> {
 
   @Inject
-  public ApplicationWithUsageCountsCollectionWriter(ApplicationWithUsageCountsWriter writer) {
-    super(writer, ApplicationWithUsageCounts.class);
+  public ApplicationWithUsageCountsCollectionWriter(ApplicationWithUsageCountsWriter writer, ObjectMapper objectMapper) {
+    super(writer, ApplicationWithUsageCounts.class, objectMapper);
   }
 }

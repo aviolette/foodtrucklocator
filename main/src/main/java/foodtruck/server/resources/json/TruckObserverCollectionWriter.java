@@ -2,6 +2,7 @@ package foodtruck.server.resources.json;
 
 import javax.ws.rs.ext.Provider;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 
 import foodtruck.model.TruckObserver;
@@ -17,7 +18,7 @@ public class TruckObserverCollectionWriter extends CollectionWriter<TruckObserve
    * @param writer the writer used to output each entity
    */
   @Inject
-  public TruckObserverCollectionWriter(TruckObserverWriter writer) {
-    super(writer, TruckObserver.class);
+  public TruckObserverCollectionWriter(TruckObserverWriter writer, ObjectMapper objectMapper) {
+    super(writer, TruckObserver.class, objectMapper);
   }
 }
