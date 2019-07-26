@@ -187,7 +187,7 @@ class FoodtruckServletModule extends ServletModule {
     serve("/cron/populate_temperance_stops").with(SeedTemperanceServlet.class);
     serve("/cron/populate_pizza_boss").with(SeedPizzaBossCalendarServlet.class);
     serve("/cron/populate_royal_palms").with(SeedRoyalPalmsScheduleServlet.class);
-    serve("/cron/populate_big_wangs").with(SeedBigWangsServlet.class);
+//    serve("/cron/populate_big_wangs").with(SeedBigWangsServlet.class);
     serve("/cron/populate_perk_n_pickle").with(SeedPerknPickleCalendar.class);
     serve("/cron/populate_your_sisters").with(SeedYourSistersScheduleServlet.class);
     serve("/cron/populate_three_legged_taco").with(SeedThreeLeggedTacoScheduleServlet.class);
