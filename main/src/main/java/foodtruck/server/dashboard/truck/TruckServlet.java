@@ -33,7 +33,7 @@ public class TruckServlet extends AbstractTruckServlet {
 
   @Inject
   public TruckServlet(StoryDAO storyDAO, Clock clock, TruckDAO truckDAO, LocationDAO locationDAO) {
-    super(truckDAO);
+    super(truckDAO, locationDAO);
     this.tweetDAO = storyDAO;
     this.locationDAO = locationDAO;
     this.clock = clock;
@@ -61,7 +61,8 @@ public class TruckServlet extends AbstractTruckServlet {
     request.setAttribute("headerSelection", "main");
 
     request.setAttribute("extraScripts",
-        ImmutableList.of("/script/lib/spin.min.js","/script/lib/typeahead.bundle.js", "/script/truck_edit_widgetv3.js", "/script/dashboard-truck-main.js"));
+        ImmutableList.of("/script/lib/spin.min.js","/script/lib/typeahead.bundle.js", "/script/truck_edit_widgetv3.js",
+            "/script/dashboard-truck-main.js"));
 
     forward(request, response);
   }

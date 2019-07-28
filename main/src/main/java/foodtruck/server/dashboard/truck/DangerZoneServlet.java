@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 
+import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
 import foodtruck.util.Link;
@@ -22,8 +23,8 @@ import foodtruck.util.Link;
 public class DangerZoneServlet extends AbstractTruckServlet {
 
   @Inject
-  public DangerZoneServlet(TruckDAO truckDAO) {
-    super(truckDAO);
+  public DangerZoneServlet(TruckDAO truckDAO, LocationDAO locationDAO) {
+    super(truckDAO, locationDAO);
   }
 
   @Override

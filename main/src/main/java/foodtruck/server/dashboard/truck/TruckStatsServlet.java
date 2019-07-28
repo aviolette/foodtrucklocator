@@ -10,6 +10,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
 import foodtruck.util.Link;
@@ -23,8 +24,8 @@ public class TruckStatsServlet extends AbstractTruckServlet {
   private static final String JSP = "/WEB-INF/jsp/dashboard/truck/truckStats.jsp";
 
   @Inject
-  public TruckStatsServlet(TruckDAO truckDAO) {
-    super(truckDAO);
+  public TruckStatsServlet(TruckDAO truckDAO, LocationDAO locationDAO) {
+    super(truckDAO, locationDAO);
   }
 
   @Override

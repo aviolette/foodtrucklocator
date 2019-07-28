@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.collect.ImmutableList;
 
+import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
 import foodtruck.server.CodedServletException;
@@ -21,9 +22,11 @@ import foodtruck.util.Link;
  */
 public abstract class AbstractTruckServlet extends HttpServlet {
   protected final TruckDAO truckDAO;
+  private final LocationDAO locationDAO;
 
-  protected AbstractTruckServlet(TruckDAO truckDAO) {
+  protected AbstractTruckServlet(TruckDAO truckDAO, LocationDAO locationDAO) {
     this.truckDAO = truckDAO;
+    this.locationDAO = locationDAO;
   }
 
   @Override
@@ -54,8 +57,20 @@ public abstract class AbstractTruckServlet extends HttpServlet {
       truckId = truckId.substring(0, idx);
     }
     final String truck = truckId;
-    return truckDAO.findByIdOpt(truckId)
+    Truck tr =  truckDAO.findByIdOpt(truckId)
         .orElseThrow(() -> new CodedServletException(404, truck));
+    Truck.Stats stats = tr.getStats();
+    if (stats == null) {
+      return tr;
+    }
+    Truck.Stats.Builder builder = Truck.Stats.builder(stats);
+    if (stats.getWhereLastSeen() != null) {
+      builder.whereFirstSeen(locationDAO.findByName(stats.getWhereFirstSeen().getName()).orElse(stats.getWhereFirstSeen()));
+    }
+    if (stats.getWhereLastSeen() != null) {
+      builder.whereLastSeen(locationDAO.findByName(stats.getWhereLastSeen().getName()).orElse(stats.getWhereLastSeen()));
+    }
+    return Truck.builder(tr).stats(builder.build()).build();
   }
 
   protected abstract ImmutableList<Link> breadcrumbs(Truck truck);

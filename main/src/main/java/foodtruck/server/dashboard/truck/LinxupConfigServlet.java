@@ -12,6 +12,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import foodtruck.dao.LinxupAccountDAO;
+import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.linxup.TrackingDeviceService;
 import foodtruck.model.LinxupAccount;
@@ -30,8 +31,8 @@ public class LinxupConfigServlet extends AbstractTruckServlet {
   private final TrackingDeviceService service;
 
   @Inject
-  public LinxupConfigServlet(TruckDAO truckDAO, LinxupAccountDAO accountDAO, TrackingDeviceService service) {
-    super(truckDAO);
+  public LinxupConfigServlet(TruckDAO truckDAO, LinxupAccountDAO accountDAO, TrackingDeviceService service, LocationDAO locationDAO) {
+    super(truckDAO, locationDAO);
     this.accountDAO = accountDAO;
     this.service = service;
   }

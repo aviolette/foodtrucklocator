@@ -9,6 +9,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
 import foodtruck.schedule.FoodTruckStopService;
@@ -25,8 +26,8 @@ public class OffTheRoadServlet extends AbstractTruckServlet {
   private final Clock clock;
 
   @Inject
-  public OffTheRoadServlet(TruckDAO truckDAO, FoodTruckStopService truckService, Clock clock) {
-    super(truckDAO);
+  public OffTheRoadServlet(TruckDAO truckDAO, FoodTruckStopService truckService, Clock clock, LocationDAO locationDAO) {
+    super(truckDAO, locationDAO);
     this.truckService = truckService;
     this.clock = clock;
   }

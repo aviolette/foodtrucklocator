@@ -11,6 +11,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import foodtruck.annotations.GoogleJavascriptApiKey;
+import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.Truck;
 import foodtruck.server.vendor.BeaconServletHelper;
@@ -28,8 +29,8 @@ public class TruckBeaconServlet extends AbstractTruckServlet {
 
   @Inject
   public TruckBeaconServlet(TruckDAO truckDAO, BeaconServletHelper helper,
-      @GoogleJavascriptApiKey String javascriptApiKey) {
-    super(truckDAO);
+      @GoogleJavascriptApiKey String javascriptApiKey, LocationDAO locationDAO) {
+    super(truckDAO, locationDAO);
     this.helper = helper;
     this.javascriptApiKey = javascriptApiKey;
   }

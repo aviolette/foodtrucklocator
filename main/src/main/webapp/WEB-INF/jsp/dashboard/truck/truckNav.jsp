@@ -1,6 +1,6 @@
 <%@ include file="../../common.jsp" %>
 
-<ul class="nav nav-bordered mt-4 mt-md-2 mb-3 clearfix" role="tablist">
+<ul class="nav nav-bordered mt-4 mt-md-2 mb-4 clearfix" role="tablist">
   <li class="nav-item" role="presentation">
     <a class="nav-link <c:if test='${headerSelection == "main"}'>active show</c:if>"  href="/admin/trucks/${truck.id}">Overview</a>
   </li>
