@@ -11,7 +11,7 @@
       <img class="location-image mr-3" src="<c:choose><c:when test="${!empty(truck.stats.whereFirstSeen.imageUrl)}">${truck.stats.whereFirstSeen.imageUrl.protocolRelative}</c:when><c:otherwise>/img/no-image400x400.png</c:otherwise></c:choose>" width="150"  title="${truck.stats.whereFirstSeen.name}">
       <div class="media-body">
         <h3 class="statcard-number text-success"><joda:format value="${truck.stats.firstSeen}" style="MS"/> <br/> <ftl:location
-            location="${truck.stats.whereFirstSeen}"/></h3>`
+            location="${truck.stats.whereFirstSeen}"/></h3>
       </div>
     </div>
   </div>
