@@ -13,7 +13,6 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -26,14 +25,14 @@ import org.joda.time.format.DateTimeFormatter;
 import foodtruck.annotations.MapCenter;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.geolocation.GeolocationGranularity;
-import foodtruck.time.DayOfWeek;
+import foodtruck.mail.SystemNotificationService;
 import foodtruck.model.Location;
 import foodtruck.model.StopOrigin;
 import foodtruck.model.Story;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
-import foodtruck.mail.SystemNotificationService;
 import foodtruck.time.Clock;
+import foodtruck.time.DayOfWeek;
 
 /**
  * Matches a tweet to a location, truck and time.

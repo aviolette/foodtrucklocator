@@ -16,7 +16,7 @@ public enum DayOfWeek {
   thursday(DateTimeConstants.THURSDAY, "thu|th|thursday|thurs"),
   friday(DateTimeConstants.FRIDAY, "fri|friday"),
   saturday(DateTimeConstants.SATURDAY, "sat|saturday"),
-  sunday(DateTimeConstants.SUNDAY, "sun|su|sunday");
+  sunday(DateTimeConstants.SUNDAY, "su|sunday");
 
   private final String matchPattern;
   private int isoConstant;
