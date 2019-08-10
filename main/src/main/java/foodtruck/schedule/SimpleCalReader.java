@@ -145,6 +145,10 @@ public class SimpleCalReader {
       return "yoursisterstomato";
     } else if (title.contains("babyq")) {
       return "babyqs123";
+    } else if (title.contains("fork n' fry") || title.contains("fork n fry")) {
+      return "forknfry";
+    } else if (title.contains("toasty taco")) {
+      return "mytoastytaco";
     } else if (title.contains("three legged") || title.contains("threelegged")) {
       return "threeleggedtaco";
     } else if (title.contains("chicago culinary kitchen")) {
