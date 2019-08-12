@@ -169,6 +169,10 @@ public class SimpleCalReader {
       return "ofrendatruck";
     } else if (title.contains("bull & balance") || title.contains("bull and balance")) {
       return "bullandbalance";
+    } else if (title.contains("salubrious stop")) {
+      return "salubriousstop";
+    } else if (title.contains("sausagefest") || title.contains("sausage fest")) {
+      return "sausagefestruck";
     } else if (title.contains("jd ") || title.contains("wally") ||
         title.contains("yarn night") || title.contains("matt alfano") ||
         title.contains("sip on") || title.contains("pop-up") ||
@@ -176,6 +180,7 @@ public class SimpleCalReader {
         title.contains("sausage making") || title.contains("open from") ||
         title.contains("music") || title.contains("santa") ||
         title.contains("have a food truck") ||
+        title.contains("freddies off") || title.contains("jb's mobile munchies") ||
         title.contains("welcoming") || title.contains("live") ||
         title.contains("closed") || title.contains("tour") ||
         title.contains("yoga") || title.contains("rock out") ||
