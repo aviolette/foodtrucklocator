@@ -180,6 +180,7 @@ public class SimpleCalReader {
         title.contains("sausage making") || title.contains("open from") ||
         title.contains("music") || title.contains("santa") ||
         title.contains("have a food truck") ||
+        title.contains("freddie's off") ||
         title.contains("freddies off") || title.contains("jb's mobile munchies") ||
         title.contains("welcoming") || title.contains("live") ||
         title.contains("closed") || title.contains("tour") ||
