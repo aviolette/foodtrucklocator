@@ -119,7 +119,7 @@ public class SimpleCalReader {
       return "thelittlereddonuttruck";
     } else if (title.contains("duke’s") || title.contains("duke's")) {
       return "dukesbluesnbbq";
-    } else if (title.contains("doctor dogs") || title.contains("dr. dogs")) {
+    } else if (title.contains("doctor dogs") || title.contains("dr. dogs") || title.contains("d.d. food truck")) {
       return "doctordogs";
     } else if (title.contains("perk n'") || title.contains("perk n’") || title.contains("perk n pickle")) {
       return "perknpickle";
