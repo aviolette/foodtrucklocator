@@ -65,24 +65,14 @@ public class GoogleCalendarReader {
       return buildTruckStopFromLocation(defaultLocation, truck, event, timezoneAdjustment);
     }
     Location location = locationFromWhereField(event, truck);
-    String where = (location == null) ? null : location.getName();
     if (location == null || !location.isResolved()) {
       // Sometimes the location is in the title - try that too
       if (!Strings.isNullOrEmpty(titleText)) {
-        where = titleText;
         location = addressExtractor.parse(titleText, truck).orElse(null);
       }
     }
     if (location != null && location.isResolved() && !event.isEndTimeUnspecified()) {
       return buildTruckStopFromLocation(location.getName(), truck, event, timezoneAdjustment);
-    } else if (location != null && location.isBlacklistedFromCalendarSearch()) {
-      log.log(Level.INFO, "Skipping {0} because it is blacklisted.", where);
-    } else {
-      // TODO: this shouldn't be hard-coded
-      if (where != null && !exemptions.contains(where)) {
-        log.log(Level.SEVERE, "Location could not be resolved for {0}, {1}. Link: {2}",
-            new Object[]{truck.getId(), where, event.getHtmlLink()});
-      }
     }
     return null;
   }

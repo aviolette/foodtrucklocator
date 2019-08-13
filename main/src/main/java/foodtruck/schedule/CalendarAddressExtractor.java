@@ -53,7 +53,7 @@ public class CalendarAddressExtractor  {
       log.log(Level.INFO, "Address {0} matches {1}", new Object[] {text, locationName.get()});
       locationOpt = geoLocator.locateOpt(locationName.get());
       if (!locationOpt.isPresent()) {
-        log.info("Address could not be geo-located");
+        log.log(Level.SEVERE, "Address could not be geo-located {0}", text);
         return Optional.empty();
       }
       Location loc = locationOpt.get();
@@ -62,6 +62,7 @@ public class CalendarAddressExtractor  {
         return Optional.of(loc);
       }
     }
+    log.log(Level.SEVERE, "Address could not be geo-located {0}", text);
 
     return Optional.empty();
   }
