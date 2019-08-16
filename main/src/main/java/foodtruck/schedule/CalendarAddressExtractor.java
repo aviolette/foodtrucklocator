@@ -35,6 +35,10 @@ public class CalendarAddressExtractor  {
   public Optional<Location> parse(String text, Truck truck) {
     log.log(Level.INFO, "Parsing address: {0}", text);
 
+    if (text.startsWith("PO Box")) {
+      return Optional.of(Location.builder().blacklistedFromCalendarSearch(true).name(text).valid(false).build());
+    }
+
     Optional<Location> locationOpt = geoLocator.locateOpt(text);
     if (locationOpt.isPresent()) {
       Location loc = locationOpt.get();
