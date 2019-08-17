@@ -19,3 +19,4 @@ src/main/webapp/WEB-INF/appengine-web.xml
 *.iml
 
 main/src/main/resources/twitter4j.properties
+deploy/configs/twitter4j.properties
