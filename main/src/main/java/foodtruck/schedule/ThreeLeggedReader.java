@@ -44,7 +44,11 @@ public class ThreeLeggedReader implements StopReader {
         for (int i=0; i < calendarItems.length(); i++) {
           try {
             JSONObject obj = calendarItems.getJSONObject(i);
-            Optional<Location> locationOpt = this.extractor.parse(obj.getString("title"), truck);
+            String locationName = obj.getString("title");
+            if (locationName.startsWith("The Truck at ")) {
+              locationName = locationName.substring(13).trim();
+            }
+            Optional<Location> locationOpt = this.extractor.parse(locationName, truck);
             if (locationOpt.isPresent()) {
               TempTruckStop stop = TempTruckStop.builder()
                   .calendarName(getCalendar())
