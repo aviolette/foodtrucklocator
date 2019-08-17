@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -40,15 +41,15 @@ public class TwitterConnector implements SocialMediaConnector {
 
   private static final Logger log = Logger.getLogger(TwitterConnector.class.getName());
 
-  private final TwitterFactoryWrapper twitterFactory;
+  private final Provider<TwitterFactoryWrapper> twitterFactoryWrapperProvider;
   private final DateTimeZone defaultZone;
   private final StaticConfig config;
   private final StoryDAO tweetDAO;
 
   @Inject
-  public TwitterConnector(TwitterFactoryWrapper twitter, DateTimeZone defaultZone,
+  public TwitterConnector(Provider<TwitterFactoryWrapper> twitterProvider, DateTimeZone defaultZone,
       StaticConfig config, StoryDAO tweetDAO) {
-    this.twitterFactory = twitter;
+    this.twitterFactoryWrapperProvider = twitterProvider;
     this.defaultZone = defaultZone;
     this.config = config;
     this.tweetDAO = tweetDAO;
@@ -57,7 +58,7 @@ public class TwitterConnector implements SocialMediaConnector {
   @Override @Monitored
   public List<Story> recentStories() {
     ImmutableList.Builder<Story> stories = ImmutableList.builder();
-    Twitter twitter = twitterFactory.create();
+    Twitter twitter = twitterFactoryWrapperProvider.get().create();
     try {
       Paging paging = determinePaging();
       List<Status> statuses;
@@ -92,7 +93,7 @@ public class TwitterConnector implements SocialMediaConnector {
     if (!truck.getHasTwitterCredentials()) {
       return;
     }
-    Twitter twitter = twitterFactory.createDetached(
+    Twitter twitter = twitterFactoryWrapperProvider.get().createDetached(
         new AccessToken(truck.getTwitterToken(), truck.getTwitterTokenSecret()));
     try {
       for (String messageComponent : message.getTwitterMessages()) {
@@ -106,14 +107,14 @@ public class TwitterConnector implements SocialMediaConnector {
   @Override @Monitored
   public void sendStatusFor(String message, Truck truck, MessageSplitter splitter) {
     twitterAccessToken(truck).ifPresent(
-        token -> splitAndSend(message, splitter, twitterFactory.createDetached(token)));
+        token -> splitAndSend(message, splitter, twitterFactoryWrapperProvider.get().createDetached(token)));
   }
 
   @Override @Monitored
   public void sendStatusFor(String message, TwitterNotificationAccount account,
       MessageSplitter splitter) {
     log.log(Level.INFO, "Initial status: {0}", new Object[]{message});
-    Twitter twitter = twitterFactory.createDetached(twitterCredentials(account));
+    Twitter twitter = twitterFactoryWrapperProvider.get().createDetached(twitterCredentials(account));
     splitAndSend(message, splitter, twitter);
   }
 
@@ -171,7 +172,7 @@ public class TwitterConnector implements SocialMediaConnector {
 
   @Monitored
   public void retweet(long storyId, TwitterNotificationAccount account) {
-    Twitter twitter = twitterFactory.createDetached(twitterCredentials(account));
+    Twitter twitter = twitterFactoryWrapperProvider.get().createDetached(twitterCredentials(account));
     try {
       twitter.retweetStatus(storyId);
     } catch (TwitterException e) {

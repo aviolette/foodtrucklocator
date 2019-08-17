@@ -26,18 +26,18 @@ import twitter4j.auth.RequestToken;
 @Singleton
 public class VendorTwitterRedirectServlet extends HttpServlet {
   static final String NOLOGON_PARAM = "nologon";
-  private final TwitterFactoryWrapper twitterFactory;
+  private final Provider<TwitterFactoryWrapper> twitterFactoryProvider;
   private final Provider<Session> sessionProvider;
 
   @Inject
-  public VendorTwitterRedirectServlet(TwitterFactoryWrapper twitterFactory, Provider<Session> sessionProvider) {
-    this.twitterFactory = twitterFactory;
+  public VendorTwitterRedirectServlet(Provider<TwitterFactoryWrapper> twitterFactoryProvider, Provider<Session> sessionProvider) {
+    this.twitterFactoryProvider = twitterFactoryProvider;
     this.sessionProvider = sessionProvider;
   }
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    Twitter twitter = twitterFactory.createDetached();
+    Twitter twitter = twitterFactoryProvider.get().createDetached();
     Session session = sessionProvider.get();
     boolean noLogon = "true".equals(req.getParameter(NOLOGON_PARAM));
     try {

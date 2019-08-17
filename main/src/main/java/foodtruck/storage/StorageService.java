@@ -2,6 +2,7 @@ package foodtruck.storage;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * @author aviolette
@@ -22,4 +23,5 @@ public interface StorageService {
 
   String writeBuffer(byte[] buffer, String toBucket, String destinationFileName, String mimeType) throws IOException;
 
+  void readStream(String bucket, String file, OutputStream outputStream) throws IOException;
 }

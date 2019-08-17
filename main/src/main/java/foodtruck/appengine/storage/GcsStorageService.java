@@ -9,11 +9,12 @@ import java.nio.channels.Channels;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.api.client.util.ByteStreams;
 import com.google.appengine.tools.cloudstorage.GcsFileOptions;
 import com.google.appengine.tools.cloudstorage.GcsFilename;
+import com.google.appengine.tools.cloudstorage.GcsInputChannel;
 import com.google.appengine.tools.cloudstorage.GcsOutputChannel;
 import com.google.appengine.tools.cloudstorage.GcsService;
+import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
 
 import foodtruck.storage.StorageService;
@@ -50,6 +51,16 @@ public class GcsStorageService implements StorageService {
   public String writeBuffer(byte[] buffer, String bucket, String fileName,
       String mimeType) throws IOException {
     return writeStream(new ByteArrayInputStream(buffer), bucket, fileName, mimeType);
+  }
+
+  @Override
+  public void readStream(String bucket, String file, OutputStream outputStream) throws IOException {
+    GcsFilename gcsFilename = new GcsFilename(bucket, file);
+    GcsInputChannel channel = cloudStorage.openReadChannel(gcsFilename, 0);
+    try (InputStream is = Channels.newInputStream(channel)) {
+      long copied = ByteStreams.copy(is, outputStream);
+      log.log(Level.INFO, "Downloaded {0} bytes from {1}/{2}", new Object[] {copied, bucket, file});
+    }
   }
 
   private String writeStream(InputStream stream, String bucket, String fileName, String mimeType) throws IOException {

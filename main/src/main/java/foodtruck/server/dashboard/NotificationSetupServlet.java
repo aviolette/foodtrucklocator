@@ -24,21 +24,21 @@ import twitter4j.auth.RequestToken;
  */
 @Singleton
 public class NotificationSetupServlet extends HttpServlet {
-  private final TwitterFactoryWrapper twitterFactory;
+  private final Provider<TwitterFactoryWrapper> twitterFactoryProvider;
   private final Provider<Session> sessionProvider;
   private final StaticConfig config;
 
   @Inject
-  public NotificationSetupServlet(TwitterFactoryWrapper twitterFactory, Provider<Session> sessionProvider,
+  public NotificationSetupServlet(Provider<TwitterFactoryWrapper> twitterFactoryProvider, Provider<Session> sessionProvider,
       StaticConfig config) {
-    this.twitterFactory = twitterFactory;
+    this.twitterFactoryProvider = twitterFactoryProvider;
     this.sessionProvider = sessionProvider;
     this.config = config;
   }
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    Twitter twitter = twitterFactory.createDetached();
+    Twitter twitter = twitterFactoryProvider.get().createDetached();
     Session session = sessionProvider.get();
     try {
       RequestToken token = twitter.getOAuthRequestToken(config.getBaseUrl() + "/vendor/callback");

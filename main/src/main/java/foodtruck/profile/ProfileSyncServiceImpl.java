@@ -15,6 +15,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.sun.jersey.api.client.WebResource;
 
 import org.codehaus.jettison.json.JSONException;
@@ -37,7 +38,7 @@ import twitter4j.User;
  */
 public class ProfileSyncServiceImpl implements ProfileSyncService {
   private static final Logger log = Logger.getLogger(ProfileSyncServiceImpl.class.getName());
-  private final TwitterFactoryWrapper twitterFactory;
+  private final Provider<TwitterFactoryWrapper> twitterFactoryProvider;
   private final StorageService storageService;
   private final TruckDAO truckDAO;
   private final StaticConfig staticConfig;
@@ -46,9 +47,9 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
 
 
   @Inject
-  public ProfileSyncServiceImpl(TwitterFactoryWrapper twitterFactory, TruckDAO truckDAO, StaticConfig staticConfig,
+  public ProfileSyncServiceImpl(Provider<TwitterFactoryWrapper> twitterFactoryProvider, TruckDAO truckDAO, StaticConfig staticConfig,
       @FacebookEndpoint WebResource facebookResource, StorageService storageService) {
-    this.twitterFactory = twitterFactory;
+    this.twitterFactoryProvider = twitterFactoryProvider;
     this.truckDAO = truckDAO;
     this.staticConfig = staticConfig;
     this.facebookResource = facebookResource;
@@ -57,9 +58,9 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
 
   @Override
   public Truck createFromTwitter(Truck truck) {
-    Twitter twitter = twitterFactory.create();
+    Twitter twitter = twitterFactoryProvider.get().create();
     try {
-      ResponseList<User> lookup = twitter.users().lookupUsers(new String[]{truck.getTwitterHandle()});
+      ResponseList<User> lookup = twitter.users().lookupUsers(truck.getTwitterHandle());
       User user = Iterables.getFirst(lookup, null);
       if (user != null) {
         String url = syncToGoogleStorage(user.getScreenName(), user.getProfileImageURL(), staticConfig.getIconBucket());
@@ -198,7 +199,7 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
   }
 
   private Truck syncFromTwitter(Truck truck) {
-    Twitter twitter = twitterFactory.create();
+    Twitter twitter = twitterFactoryProvider.get().create();
     try {
       ResponseList<User> response = twitter.users()
           .lookupUsers(new String[]{truck.getTwitterHandle()});
