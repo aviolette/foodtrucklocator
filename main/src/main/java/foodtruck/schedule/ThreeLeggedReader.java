@@ -59,8 +59,6 @@ public class ThreeLeggedReader implements StopReader {
                   .truckId(THREELEGGEDTACO)
                   .build();
               stops.add(stop);
-            } else {
-              log.log(Level.WARNING, "Could not resolve location {0}", obj.getString("title"));
             }
           } catch (JSONException je) {
             log.log(Level.WARNING, je.getMessage(), je);
