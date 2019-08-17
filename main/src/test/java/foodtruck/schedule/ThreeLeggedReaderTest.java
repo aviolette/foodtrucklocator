@@ -36,7 +36,7 @@ public class ThreeLeggedReaderTest extends AbstractReaderTest<ThreeLeggedReader>
     Truck truck = Truck.builder().id("threeleggedtaco").name("Three Legged Taco").build();
     when(truckDAO.findByIdOpt("threeleggedtaco")).thenReturn(Optional.of(truck));
     when(extractor.parse(any(), any())).thenReturn(Optional.empty());
-    when(extractor.parse("The Truck at Mikerphone Brewing", truck)).thenReturn(Optional.of(clarkAndMonroe()));
+    when(extractor.parse("Mikerphone Brewing", truck)).thenReturn(Optional.of(clarkAndMonroe()));
     List<TempTruckStop> stops = execFindStop("threelegged.json");
     assertThat(stops).hasSize(1);
     assertThat(stops).contains(TempTruckStop.builder()
