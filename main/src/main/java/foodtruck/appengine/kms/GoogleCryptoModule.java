@@ -1,6 +1,5 @@
 package foodtruck.appengine.kms;
 
-import com.google.apphosting.api.ApiProxy;
 import com.google.cloud.kms.v1.CryptoKeyName;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -18,6 +17,6 @@ public class GoogleCryptoModule extends AbstractModule {
   @Provides
   @DefaultCryptoKey
   public String providesDefaultCryptoKey() {
-    return CryptoKeyName.format(ApiProxy.getCurrentEnvironment().getAppId(), "us-central1", "foodtruckring" , "default");
+    return CryptoKeyName.format("chicagofoodtrucklocator", "us-central1", "foodtruckring" , "default");
   }
 }
