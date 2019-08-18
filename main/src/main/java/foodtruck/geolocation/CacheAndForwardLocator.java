@@ -60,6 +60,7 @@ class CacheAndForwardLocator implements GeoLocator {
     if (loc != null) {
       return loc;
     } else {
+      log.info("Could not find by alias >" + location + "<");
       counterPublisher.increment("geocode_cache_lookup_failed");
     }
     try {
