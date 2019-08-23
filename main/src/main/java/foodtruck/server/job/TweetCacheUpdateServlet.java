@@ -40,7 +40,7 @@ public class TweetCacheUpdateServlet extends HttpServlet implements Runnable {
     try {
       service.update();
     } catch (Exception e) {
-      log.log(Level.WARNING, "Error updating twitter cache", e);
+      log.log(Level.SEVERE, "Error updating twitter cache", e);
     }
     service.analyze();
   }

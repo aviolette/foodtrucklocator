@@ -34,11 +34,12 @@ public class SocialMediaModule extends AbstractModule {
 
   @Provides @Singleton
   public TwitterFactoryWrapper provideTwitterFactory(StorageService storageService, SymmetricCrypto crypto) throws IOException {
-    Properties properties = findTwitterProperties(storageService, crypto);
+    Properties original = findTwitterProperties(storageService, crypto);
+    Properties properties = new Properties(original);
     properties.put("tweetModeExtended", true);
     properties.remove("oauth.accessToken");
     properties.remove("oauth.accessTokenSecret");
-    return new TwitterFactoryWrapper(new TwitterFactory(), new TwitterFactory(new PropertyConfiguration(properties)));
+    return new TwitterFactoryWrapper(new TwitterFactory(new PropertyConfiguration(original)), new TwitterFactory(new PropertyConfiguration(properties)));
   }
 
   private Properties findTwitterProperties(StorageService storageService, SymmetricCrypto crypto) throws IOException {
