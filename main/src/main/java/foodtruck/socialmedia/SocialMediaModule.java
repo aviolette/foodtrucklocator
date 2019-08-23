@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import com.google.appengine.api.utils.SystemProperty;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
@@ -14,6 +15,7 @@ import com.google.inject.multibindings.Multibinder;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 
+import foodtruck.annotations.Twitter;
 import foodtruck.crypto.SymmetricCrypto;
 import foodtruck.storage.StorageService;
 import twitter4j.TwitterFactory;
@@ -29,12 +31,14 @@ public class SocialMediaModule extends AbstractModule {
   @Override
   protected void configure() {
     Multibinder<SocialMediaConnector> connectorBinder = Multibinder.newSetBinder(binder(), SocialMediaConnector.class);
-    connectorBinder.addBinding().to(TwitterConnector.class);
+    if (SystemProperty.environment.value() != SystemProperty.Environment.Value.Development ) {
+      connectorBinder.addBinding()
+          .to(TwitterConnector.class);
+    }
   }
 
   @Provides @Singleton
-  public TwitterFactoryWrapper provideTwitterFactory(StorageService storageService, SymmetricCrypto crypto) throws IOException {
-    Properties original = findTwitterProperties(storageService, crypto);
+  public TwitterFactoryWrapper provideTwitterFactory(@Twitter Properties original) {
     Properties properties = new Properties(original);
     properties.put("tweetModeExtended", true);
     properties.remove("oauth.accessToken");
@@ -43,14 +47,21 @@ public class SocialMediaModule extends AbstractModule {
   }
 
   private Properties findTwitterProperties(StorageService storageService, SymmetricCrypto crypto) throws IOException {
-    ByteArrayOutputStream bas = new ByteArrayOutputStream();
-    storageService.readStream("cftf_secrets", "twitter4j.properties.encrypted", bas);
-    byte[] propertyArray = crypto.decrypt(bas.toByteArray());
     Properties properties = new Properties();
-    try (StringReader reader = new StringReader(new String(propertyArray, StandardCharsets.UTF_8))) {
-      properties.load(reader);
+    if (SystemProperty.environment.value() != SystemProperty.Environment.Value.Development ) {
+      ByteArrayOutputStream bas = new ByteArrayOutputStream();
+      storageService.readStream("cftf_secrets", "twitter4j.properties.encrypted", bas);
+      byte[] propertyArray = crypto.decrypt(bas.toByteArray());
+      try (StringReader reader = new StringReader(new String(propertyArray, StandardCharsets.UTF_8))) {
+        properties.load(reader);
+      }
     }
     return properties;
+  }
+
+  @Twitter @Provides @Singleton
+  public Properties provideTwitter(StorageService storageService, SymmetricCrypto crypto) throws IOException {
+    return findTwitterProperties(storageService, crypto);
   }
 
   @FacebookEndpoint

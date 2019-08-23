@@ -1,7 +1,5 @@
 package foodtruck.socialmedia;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
@@ -45,14 +43,16 @@ public class TwitterConnector implements SocialMediaConnector {
   private final DateTimeZone defaultZone;
   private final StaticConfig config;
   private final StoryDAO tweetDAO;
+  private final Properties properties;
 
   @Inject
   public TwitterConnector(Provider<TwitterFactoryWrapper> twitterProvider, DateTimeZone defaultZone,
-      StaticConfig config, StoryDAO tweetDAO) {
+      StaticConfig config, StoryDAO tweetDAO, @foodtruck.annotations.Twitter Properties properties) {
     this.twitterFactoryWrapperProvider = twitterProvider;
     this.defaultZone = defaultZone;
     this.config = config;
     this.tweetDAO = tweetDAO;
+    this.properties = properties;
   }
 
   @Override @Monitored
@@ -189,18 +189,9 @@ public class TwitterConnector implements SocialMediaConnector {
   }
 
   private PropertyConfiguration twitterCredentials(TwitterNotificationAccount account) {
-    Properties properties = new Properties();
-    InputStream in = Thread.currentThread()
-        .getContextClassLoader()
-        .getResourceAsStream("twitter4j.properties");
-    try {
-      properties.load(in);
-      in.close();
-    } catch (IOException e) {
-      throw new ServiceException(e);
-    }
-    properties.put("oauth.accessToken", account.getOauthToken());
-    properties.put("oauth.accessTokenSecret", account.getOauthTokenSecret());
-    return new PropertyConfiguration(properties);
+    Properties truckProps = new Properties(properties);
+    truckProps.put("oauth.accessToken", account.getOauthToken());
+    truckProps.put("oauth.accessTokenSecret", account.getOauthTokenSecret());
+    return new PropertyConfiguration(truckProps);
   }
 }
