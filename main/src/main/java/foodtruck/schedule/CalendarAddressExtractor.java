@@ -26,6 +26,10 @@ public class CalendarAddressExtractor  {
     this.geoLocator = geoLocator;
   }
 
+  public Optional<Location> parse(String text) {
+    return parse(text, Truck.builder().id("generic").name("Generic").build());
+  }
+
   /**
    * Returns a location from the string if it can be extracted from the string and if it geolocates
    * @param text the string to search for a location

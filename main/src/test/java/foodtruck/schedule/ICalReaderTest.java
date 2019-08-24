@@ -17,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import foodtruck.geolocation.GeoLocator;
 import foodtruck.model.Location;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -31,7 +30,7 @@ import static foodtruck.schedule.ModelTestHelper.wackerAndAdams;
 @RunWith(MockitoJUnitRunner.class)
 public class ICalReaderTest extends Mockito {
 
-  @Mock GeoLocator geoLocator;
+  @Mock CalendarAddressExtractor geoLocator;
 
   @Test
   public void parse() {
@@ -41,9 +40,9 @@ public class ICalReaderTest extends Mockito {
         "DTSTART:20190117T163000Z\n" + "DTEND:20190117T200000Z\n" + "SUMMARY:Chicago Lunch\n" +
         "GEO:40.720756;-74.000761\n" + "LOCATION:100 South Wacker Drive\\, Chicago\\, IL\\, 60606\\, United States\n" +
         "END:VEVENT\n" + "END:VCALENDAR";
-    when(geoLocator.locateOpt("Chicago Lunch")).thenReturn(Optional.empty());
+    when(geoLocator.parse("Chicago Lunch")).thenReturn(Optional.empty());
     Location loc = wackerAndAdams();
-    when(geoLocator.locateOpt("100 South Wacker Drive, Chicago, IL, 60606, United States")).thenReturn(
+    when(geoLocator.parse("100 South Wacker Drive, Chicago, IL, 60606, United States")).thenReturn(
         Optional.of(loc));
     List<ICalReader.ICalEvent> events = reader.parse(doc, true);
     assertThat(events).containsExactly(
@@ -59,7 +58,7 @@ public class ICalReaderTest extends Mockito {
     InputStream str = ClassLoader.getSystemClassLoader()
         .getResourceAsStream("church.ics");
     String doc = new String(ByteStreams.toByteArray(str), StandardCharsets.UTF_8);
-    when(geoLocator.locateOpt(any())).thenReturn(Optional.empty());
+    when(geoLocator.parse(any())).thenReturn(Optional.empty());
     ICalReader reader = new ICalReader(CHICAGO, geoLocator);
     List<ICalReader.ICalEvent> events = reader.parse(doc, true);
     assertThat(events).hasSize(5);
@@ -75,8 +74,8 @@ public class ICalReaderTest extends Mockito {
     InputStream str = ClassLoader.getSystemClassLoader()
         .getResourceAsStream("toasty.ics");
     String doc = new String(ByteStreams.toByteArray(str), StandardCharsets.UTF_8);
-    when(geoLocator.locateOpt(any())).thenReturn(Optional.empty());
-    when(geoLocator.locateOpt("Brickyards Park, 375 Elm St., Deerfield, IL, 60015, United States")).thenReturn(Optional.of(wackerAndAdams()));
+    when(geoLocator.parse(any())).thenReturn(Optional.empty());
+    when(geoLocator.parse("Brickyards Park, 375 Elm St., Deerfield, IL, 60015, United States")).thenReturn(Optional.of(wackerAndAdams()));
     ICalReader reader = new ICalReader(CHICAGO, geoLocator);
     List<ICalReader.ICalEvent> events = reader.parse(doc, true);
     assertThat(events).hasSize(21);
@@ -94,8 +93,8 @@ public class ICalReaderTest extends Mockito {
     InputStream str = ClassLoader.getSystemClassLoader()
         .getResourceAsStream("toasty2.ics");
     String doc = new String(ByteStreams.toByteArray(str), StandardCharsets.UTF_8);
-    when(geoLocator.locateOpt(any())).thenReturn(Optional.empty());
-    when(geoLocator.locateOpt("Brickyards Park, 375 Elm St., Deerfield, IL, 60015, United States")).thenReturn(Optional.of(wackerAndAdams()));
+    when(geoLocator.parse(any())).thenReturn(Optional.empty());
+    when(geoLocator.parse("Brickyards Park, 375 Elm St., Deerfield, IL, 60015, United States")).thenReturn(Optional.of(wackerAndAdams()));
     ICalReader reader = new ICalReader(CHICAGO, geoLocator);
     List<ICalReader.ICalEvent> events = reader.parse(doc, true);
     assertThat(events).hasSize(13);

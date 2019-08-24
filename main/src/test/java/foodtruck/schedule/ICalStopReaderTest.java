@@ -9,7 +9,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import foodtruck.geolocation.GeoLocator;
 import foodtruck.model.TempTruckStop;
 import foodtruck.model.Truck;
 
@@ -26,7 +25,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ICalStopReaderTest {
 
-  private @Mock GeoLocator locator;
+  private @Mock CalendarAddressExtractor locator;
   private ICalStopReader reader;
 
   @Before
@@ -109,8 +108,8 @@ public class ICalStopReaderTest {
         .name("BBQ Truck")
         .build();
 
-    when(locator.locateOpt("Pollyanna Brewing Company - Roselle")).thenReturn(Optional.of(unresolvedLocation()));
-    when(locator.locateOpt(any())).thenReturn(Optional.of(ModelTestHelper.clarkAndMonroe()));
+    when(locator.parse("Pollyanna Brewing Company - Roselle")).thenReturn(Optional.of(unresolvedLocation()));
+    when(locator.parse(any())).thenReturn(Optional.of(ModelTestHelper.clarkAndMonroe()));
     List<TempTruckStop> stops = reader.findStops(input, truck.getId());
     assertThat(stops).hasSize(10);
   }

@@ -11,7 +11,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,7 +20,6 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 
-import foodtruck.geolocation.GeoLocator;
 import foodtruck.model.Location;
 
 /**
@@ -32,13 +30,13 @@ public class ICalReader {
 
   private static final Logger log = Logger.getLogger(ICalReader.class.getName());
   private final ZoneId defaultZone;
-  private final GeoLocator locator;
   private static final Splitter SPLITTER = Splitter.on(",").omitEmptyStrings().trimResults();
+  private final CalendarAddressExtractor addressExtractor;
 
   @Inject
-  public ICalReader(ZoneId defaultZone, GeoLocator locator) {
+  public ICalReader(ZoneId defaultZone, CalendarAddressExtractor addressExtractor) {
     this.defaultZone = defaultZone;
-    this.locator = locator;
+    this.addressExtractor = addressExtractor;
   }
 
   public List<ICalEvent> parse(String document, boolean extractSummaryLocation) {
@@ -117,16 +115,8 @@ public class ICalReader {
 
   private void appendLocation(ICalEvent.Builder builder, String rest) {
 
-    Optional<Location> location = locator.locateOpt(rest);
-    if (!location.isPresent()) {
-      log.log(Level.WARNING, "Couldn't find location: " + rest);
-    }
-    location.ifPresent(loc -> {
-      if (loc.isResolved()) {
-        builder.location(loc);
-      } else {
-        log.log(Level.WARNING, "Couldn't resolve location: " + rest);
-      }
+    addressExtractor.parse(rest).ifPresent(loc -> {
+      builder.location(loc);
     });
   }
 
@@ -155,16 +145,12 @@ public class ICalReader {
   public static class ICalEvent {
     private ZonedDateTime start;
     private ZonedDateTime end;
-    @Nullable
-    private String summary;
-    @Nullable
-    private String description;
-    @Nullable
-    private Location location;
+    @Nullable private String summary;
+    @Nullable private String description;
+    @Nullable private Location location;
 
     private List<String> categories;
-    @Nullable
-    private String image;
+    @Nullable private String image;
 
     private ICalEvent(Builder builder) {
       this.start = builder.start;
@@ -188,14 +174,17 @@ public class ICalReader {
       return end;
     }
 
+    @Nullable
     public String getSummary() {
       return summary;
     }
 
+    @Nullable
     public String getDescription() {
       return description;
     }
 
+    @Nullable
     public Location getLocation() {
       return location;
     }
@@ -229,16 +218,11 @@ public class ICalReader {
     public static class Builder {
       private ZonedDateTime start;
       private ZonedDateTime end;
-      @Nullable
-      private String summary;
-      @Nullable
-      private String description;
-      @Nullable
-      private Location location;
-
+      @Nullable private String summary;
+      @Nullable private String description;
+      @Nullable private Location location;
       private List<String> categories = ImmutableList.of();
-      @Nullable
-      private String image;
+      @Nullable private String image;
 
       public Builder() {}
 
@@ -280,7 +264,6 @@ public class ICalReader {
       public ICalEvent build() {
         return new ICalEvent(this);
       }
-
     }
   }
 }
