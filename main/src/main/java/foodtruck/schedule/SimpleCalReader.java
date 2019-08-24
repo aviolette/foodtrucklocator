@@ -169,7 +169,7 @@ public class SimpleCalReader {
       return "ofrendatruck";
     } else if (title.contains("bull & balance") || title.contains("bull and balance")) {
       return "bullandbalance";
-    } else if (title.contains("sticks and noodles") || title.contains("stix and noodles") || title.contains("stix & noodles")) {
+    } else if (title.contains("sticks and noodles") || title.contains("stick and noodles") || title.contains("stix and noodles") || title.contains("stix & noodles")) {
       return "stixandnoodles";
     } else if (title.contains("salubrious stop")) {
       return "salubriousstop";
