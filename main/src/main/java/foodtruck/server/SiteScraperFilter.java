@@ -32,7 +32,7 @@ class SiteScraperFilter implements Filter {
   public void doFilter(ServletRequest request, ServletResponse response,
       FilterChain filterChain) throws IOException, ServletException {
     String userAgent = MoreObjects.firstNonNull(((HttpServletRequest)request).getHeader("User-Agent"), "");
-    if (userAgent.contains("domainreanimator")) {
+    if (userAgent.contains("domainreanimator") || (userAgent.contains("Googlebot") && userAgent.contains("AppleWebKit"))) {
       ((HttpServletResponse)response).sendError(404);
       return;
     }
