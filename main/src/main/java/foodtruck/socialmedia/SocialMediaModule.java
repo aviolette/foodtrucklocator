@@ -39,10 +39,14 @@ public class SocialMediaModule extends AbstractModule {
 
   @Provides @Singleton
   public TwitterFactoryWrapper provideTwitterFactory(@Twitter Properties original) {
-    Properties properties = new Properties(original);
+    Properties properties = new Properties();
+    for (Object key : original.keySet()) {
+      if (key.equals("oauth.accessToken") || key.equals("oauth.accessTokenSecret"))  {
+        continue;
+      }
+      properties.put(key, original.getProperty((String)key));
+    }
     properties.put("tweetModeExtended", true);
-    properties.remove("oauth.accessToken");
-    properties.remove("oauth.accessTokenSecret");
     return new TwitterFactoryWrapper(new TwitterFactory(new PropertyConfiguration(original)),
         new TwitterFactory(new PropertyConfiguration(properties)), properties);
   }
