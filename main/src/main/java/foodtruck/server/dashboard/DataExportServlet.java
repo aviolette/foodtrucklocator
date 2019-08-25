@@ -44,7 +44,7 @@ public class DataExportServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//    service.exportTrucks();
+    service.exportTrucks();
 
     DateTime dt = new DateTime(2011, 8, 1, 0, 0, clock.zone());
     do {

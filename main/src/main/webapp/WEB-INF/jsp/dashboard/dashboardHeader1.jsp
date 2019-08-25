@@ -49,6 +49,12 @@
             <small class="iconav-nav-label d-md-none">Messages</small>
           </a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/dataexport" title="" data-toggle="tooltip" data-placement="right" data-container="body" data-original-title="Export">
+            <span class="glyphicons glyphicons-disk-export"></span>
+            <small class="iconav-nav-label d-md-none">Export</small>
+          </a>
+        </li>
       </ul>
     </div>
   </nav>
