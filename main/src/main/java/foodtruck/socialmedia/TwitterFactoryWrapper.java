@@ -1,7 +1,6 @@
 package foodtruck.socialmedia;
 
 import java.util.Properties;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import twitter4j.Twitter;
@@ -38,7 +37,6 @@ public class TwitterFactoryWrapper {
   }
 
   public Twitter createDetached() {
-    log.log(Level.INFO, "Twitter {0}", properties);
     TwitterFactory twitterFactory = new TwitterFactory(new PropertyConfiguration(properties));
     return twitterFactory.getInstance();
   }
