@@ -48,7 +48,7 @@ public class SocialMediaModule extends AbstractModule {
     }
     properties.put("tweetModeExtended", true);
     return new TwitterFactoryWrapper(new TwitterFactory(new PropertyConfiguration(original)),
-        new TwitterFactory(new PropertyConfiguration(properties)));
+        new TwitterFactory(new PropertyConfiguration(properties)), properties);
   }
 
   private Properties findTwitterProperties(StorageService storageService, SymmetricCrypto crypto) throws IOException {
