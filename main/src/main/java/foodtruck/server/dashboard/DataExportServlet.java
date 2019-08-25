@@ -12,12 +12,8 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
-import org.joda.time.DateTime;
-
 import foodtruck.datalake.DataExportService;
 import foodtruck.time.Clock;
-
-import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 
 /**
  * @author aviolette
@@ -45,7 +41,7 @@ public class DataExportServlet extends HttpServlet {
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     service.exportTrucks();
-
+/*
     DateTime dt = new DateTime(2011, 8, 1, 0, 0, clock.zone());
     do {
       Queue queue = queueProvider.get();
@@ -55,5 +51,7 @@ public class DataExportServlet extends HttpServlet {
       dt = dt.plusMonths(1);
     } while(dt.getYear() < 2019);
     resp.sendRedirect("/admin/dataexport");
+ */
   }
+
 }

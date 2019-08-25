@@ -1,7 +1,8 @@
-<%@include file="dashboardHeaderBS3.jsp" %>
+<%@include file="dashboardHeader1.jsp" %>
 
 <form method="POST" action="">
-  <button type="submit" class="btn btn-primary">Export</button>
+  <button type="submit" class="btn btn-primary">Export Trucks</button>
 </form>
 
-<%@include file="dashboardFooterBS3.jsp" %>
+
+<%@include file="dashboardFooter1.jsp" %>

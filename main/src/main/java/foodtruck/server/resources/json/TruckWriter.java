@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.logging.Level;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -12,6 +13,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 
@@ -70,6 +72,16 @@ public class TruckWriter implements JSONWriter<Truck>, MessageBodyWriter<Truck> 
   public long getSize(Truck truck, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
     return -1;
   }
+
+  public String forExportAsString(Truck truck) {
+    try {
+      return objectMapper.writeValueAsString(truck);
+    } catch (JsonProcessingException e) {
+      log.log(Level.WARNING, e.getMessage(), e);
+      throw new RuntimeException(e);
+    }
+  }
+
 
   @Override
   public void writeTo(Truck truck, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
