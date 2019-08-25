@@ -1,5 +1,7 @@
 package foodtruck.socialmedia;
 
+import java.util.Properties;
+
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
@@ -14,10 +16,12 @@ import twitter4j.conf.PropertyConfiguration;
 public class TwitterFactoryWrapper {
   private final TwitterFactory factoryDetached;
   private final TwitterFactory factory;
+  private final Properties properties;
 
-  TwitterFactoryWrapper(TwitterFactory factory, TwitterFactory factoryDetached) {
+  TwitterFactoryWrapper(TwitterFactory factory, TwitterFactory factoryDetached, Properties properties) {
     this.factory = factory;
     this.factoryDetached = factoryDetached;
+    this.properties = properties;
   }
 
   /**
@@ -29,7 +33,8 @@ public class TwitterFactoryWrapper {
   }
 
   public Twitter createDetached() {
-    return factoryDetached.getInstance();
+    TwitterFactory twitterFactory = new TwitterFactory(new PropertyConfiguration(properties));
+    return twitterFactory.getInstance();
   }
 
   Twitter createDetached(AccessToken accessToken) {
