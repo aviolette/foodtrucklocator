@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
@@ -202,6 +203,7 @@ public class Truck extends ModelEntity implements Serializable {
     return getHasTwitterCredentials();
   }
 
+  @JsonProperty
   public boolean getHasTwitterCredentials() {
     return !(Strings.isNullOrEmpty(twitterToken) || Strings.isNullOrEmpty(twitterTokenSecret));
   }
