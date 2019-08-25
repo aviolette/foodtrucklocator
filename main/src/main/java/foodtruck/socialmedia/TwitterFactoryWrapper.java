@@ -16,16 +16,12 @@ import twitter4j.conf.PropertyConfiguration;
  */
 public class TwitterFactoryWrapper {
 
-  private static final Logger log = Logger.getLogger(TwitterFactoryWrapper.class.getName());
-
   private final TwitterFactory factoryDetached;
   private final TwitterFactory factory;
-  private final Properties properties;
 
-  TwitterFactoryWrapper(TwitterFactory factory, TwitterFactory factoryDetached, Properties properties) {
+  TwitterFactoryWrapper(TwitterFactory factory, TwitterFactory factoryDetached) {
     this.factory = factory;
     this.factoryDetached = factoryDetached;
-    this.properties = properties;
   }
 
   /**
@@ -37,8 +33,7 @@ public class TwitterFactoryWrapper {
   }
 
   public Twitter createDetached() {
-    TwitterFactory twitterFactory = new TwitterFactory(new PropertyConfiguration(properties));
-    return twitterFactory.getInstance();
+    return factoryDetached.getInstance();
   }
 
   Twitter createDetached(AccessToken accessToken) {
