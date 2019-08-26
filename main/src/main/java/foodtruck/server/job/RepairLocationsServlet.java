@@ -56,25 +56,26 @@ public class RepairLocationsServlet extends HttpServlet {
     LocalDate now = clock.currentDay();
     LocalDate startDate = now.minusDays(2);
     List<TruckStop> stops = stopDAO.findOverRange(null, new Interval(startDate.toDateTimeAtStartOfDay(clock.zone()),
-        clock.currentDay()
-            .toDateTimeAtStartOfDay(clock.zone())));
-    stops.forEach(stop -> locations.findLocation(stop.getLocation()
-        .getName())
-        .ifPresent(location -> {
-          if (Strings.isNullOrEmpty(location.getCity())) {
-            geoLocator.broadSearch(location.getName())
-                .ifPresent(newLocation -> {
-                  if (!Strings.isNullOrEmpty(newLocation.getCity())) {
-                    Location loc = Location.builder(location)
-                        .neighborhood(newLocation.getNeighborhood())
-                        .city(newLocation.getCity())
-                        .build();
-                    log.log(Level.INFO, "Updating location data: {0}", loc);
-                    locationDAO.save(loc);
-                    locations.invalidate(location);
-                  }
-                });
-          }
-        }));
+        clock.currentDay().toDateTimeAtStartOfDay(clock.zone())));
+    stops.stream()
+        .map(stop -> stop.getLocation().getName())
+        .distinct()
+        .forEach(locationName -> locations.findLocation(locationName)
+            .ifPresent(location -> {
+              if (Strings.isNullOrEmpty(location.getCity())) {
+                geoLocator.broadSearch(location.getName())
+                    .ifPresent(newLocation -> {
+                      if (!Strings.isNullOrEmpty(newLocation.getCity())) {
+                        Location loc = Location.builder(location)
+                            .neighborhood(newLocation.getNeighborhood())
+                            .city(newLocation.getCity())
+                            .build();
+                        log.log(Level.INFO, "Updating location data: {0}", loc);
+                        locationDAO.save(loc);
+                        locations.invalidate(location);
+                      }
+                    });
+              }
+            }));
   }
 }
