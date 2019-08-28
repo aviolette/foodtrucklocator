@@ -125,6 +125,7 @@ public class WerkforceReader implements StopReader {
       case "AUG":
         return AUGUST;
       case "SEP":
+      case "SEPT":
         return SEPTEMBER;
       case "OCT":
         return OCTOBER;
