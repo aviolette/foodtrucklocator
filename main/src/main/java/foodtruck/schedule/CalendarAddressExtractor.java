@@ -37,6 +37,7 @@ public class CalendarAddressExtractor  {
    * @return A location if one is found in the string and if it geolocates
    */
   public Optional<Location> parse(String text, Truck truck) {
+    text = text.replaceAll("\n", " ");
     log.log(Level.INFO, "Parsing address: {0}", text);
 
     if (text.startsWith("PO Box")) {
