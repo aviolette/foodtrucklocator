@@ -29,6 +29,6 @@ public class AlterBrewingReaderTest extends AbstractReaderTest<AlterBrewingReade
   @Test
   public void findStops2() throws IOException {
     List<TempTruckStop> stops = execFindStop("alter2.html");
-    assertThat(stops).hasSize(5);
+    assertThat(stops).hasSize(6);
   }
 }
