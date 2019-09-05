@@ -40,7 +40,8 @@ public class CalendarAddressExtractor  {
     text = text.replaceAll("\n", " ");
     log.log(Level.INFO, "Parsing address: {0}", text);
 
-    if (text.startsWith("PO Box")) {
+    String lc = text.toLowerCase();
+    if (text.startsWith("PO Box") || lc.contains("popup") || lc.contains("pop-up")) {
       return Optional.of(Location.builder().blacklistedFromCalendarSearch(true).name(text).valid(false).build());
     }
 
