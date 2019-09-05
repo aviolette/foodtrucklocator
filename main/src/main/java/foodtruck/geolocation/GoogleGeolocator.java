@@ -57,7 +57,7 @@ class GoogleGeolocator implements GeoLocator {
 
   @Override
   public Optional<Location> locateOpt(String location) {
-    return Optional.ofNullable(locate(location, GeolocationGranularity.NARROW));
+    return Optional.ofNullable(locate(location, GeolocationGranularity.BROAD));
   }
 
   @Override @Monitored
