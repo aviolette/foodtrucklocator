@@ -71,6 +71,8 @@ public class SimpleCalReader {
       return "arnoldstacos";
     } else if (title.contains("aztec dave") || title.contains("mexican azteca")) {
       return "aztecdaves";
+    } else if (title.contains("bull grill")) {
+      return "bullgrilltruck";
     } else if (title.contains("my funnel truck")) {
       return "myfunneltruck";
     } else if (title.contains("donermen")) {
