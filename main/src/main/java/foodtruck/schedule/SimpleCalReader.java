@@ -139,6 +139,8 @@ public class SimpleCalReader {
       return "smokinbbqkitchn";
     } else if (title.contains("comodita")) {
       return "ballsoflove";
+    } else if (title.contains("tacos mario")) {
+      return "tacosmario";
     } else if (title.contains("twisted classics")) {
       return "twisted_classic";
     } else if (title.contains("tamale spaceship")) {
