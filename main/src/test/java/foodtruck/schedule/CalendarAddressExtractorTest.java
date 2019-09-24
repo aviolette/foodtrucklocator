@@ -36,54 +36,54 @@ public class CalendarAddressExtractorTest {
   @Test
   public void parseWholeString() {
     String loc = clarkAndMonroe().getName();
-    when(geoLocator.locateOpt(loc)).thenReturn(Optional.of(clarkAndMonroe()));
+    when(geoLocator.broadSearch(loc)).thenReturn(Optional.of(clarkAndMonroe()));
     Optional<Location> actual = cae.parse(loc, truck1());
-    verify(geoLocator).locateOpt(loc);
+    verify(geoLocator).broadSearch(loc);
     assertThat(actual).hasValue(clarkAndMonroe());
   }
 
   @Test
   public void parseContainedAddressWholeAddressNotFound() {
     String loc = clarkAndMonroe().getName();
-    when(geoLocator.locateOpt(loc)).thenReturn(Optional.empty());
+    when(geoLocator.broadSearch(loc)).thenReturn(Optional.empty());
     when(extractor.parse(loc, truck1())).thenReturn(ImmutableList.of("FOOBAR"));
-    when(geoLocator.locateOpt("FOOBAR")).thenReturn(Optional.of(wackerAndAdams()));
+    when(geoLocator.broadSearch("FOOBAR")).thenReturn(Optional.of(wackerAndAdams()));
 
     Optional<Location> actual = cae.parse(loc, truck1());
 
     assertThat(actual).hasValue(wackerAndAdams());
-    verify(geoLocator).locateOpt(loc);
+    verify(geoLocator).broadSearch(loc);
     verify(extractor).parse(loc, truck1());
-    verify(geoLocator).locateOpt("FOOBAR");
+    verify(geoLocator).broadSearch("FOOBAR");
   }
 
   @Test
   public void parseContainedAddressWholeAddressNotResolved() {
     String loc = clarkAndMonroe().getName();
-    when(geoLocator.locateOpt(loc)).thenReturn(Optional.of(unresolvedLocation()));
+    when(geoLocator.broadSearch(loc)).thenReturn(Optional.of(unresolvedLocation()));
     when(extractor.parse(loc, truck1())).thenReturn(ImmutableList.of("FOOBAR"));
-    when(geoLocator.locateOpt("FOOBAR")).thenReturn(Optional.of(wackerAndAdams()));
+    when(geoLocator.broadSearch("FOOBAR")).thenReturn(Optional.of(wackerAndAdams()));
 
     Optional<Location> actual = cae.parse(loc, truck1());
 
     assertThat(actual).hasValue(wackerAndAdams());
-    verify(geoLocator).locateOpt(loc);
+    verify(geoLocator).broadSearch(loc);
     verify(extractor).parse(loc, truck1());
-    verify(geoLocator).locateOpt("FOOBAR");
+    verify(geoLocator).broadSearch("FOOBAR");
   }
 
   @Test
   public void parseContainedAddressUnresolved() {
     String loc = clarkAndMonroe().getName();
-    when(geoLocator.locateOpt(loc)).thenReturn(Optional.of(unresolvedLocation()));
+    when(geoLocator.broadSearch(loc)).thenReturn(Optional.of(unresolvedLocation()));
     when(extractor.parse(loc, truck1())).thenReturn(ImmutableList.of("FOOBAR"));
-    when(geoLocator.locateOpt("FOOBAR")).thenReturn(Optional.of(unresolvedLocation()));
+    when(geoLocator.broadSearch("FOOBAR")).thenReturn(Optional.of(unresolvedLocation()));
 
     Optional<Location> actual = cae.parse(loc, truck1());
 
     assertThat(actual).isEmpty();
-    verify(geoLocator).locateOpt(loc);
+    verify(geoLocator).broadSearch(loc);
     verify(extractor).parse(loc, truck1());
-    verify(geoLocator).locateOpt("FOOBAR");
+    verify(geoLocator).broadSearch("FOOBAR");
   }
 }

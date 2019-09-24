@@ -45,7 +45,7 @@ public class CalendarAddressExtractor  {
       return Optional.of(Location.builder().blacklistedFromCalendarSearch(true).name(text).valid(false).build());
     }
 
-    Optional<Location> locationOpt = geoLocator.locateOpt(text);
+    Optional<Location> locationOpt = geoLocator.broadSearch(text);
     if (locationOpt.isPresent()) {
       Location loc = locationOpt.get();
       if (loc.isBlacklistedFromCalendarSearch()) {
@@ -61,7 +61,7 @@ public class CalendarAddressExtractor  {
     Optional<String> locationName = extractor.parse(text, truck).stream().findFirst();
     if (locationName.isPresent()) {
       log.log(Level.INFO, "Address {0} matches {1}", new Object[] {text, locationName.get()});
-      locationOpt = geoLocator.locateOpt(locationName.get());
+      locationOpt = geoLocator.broadSearch(locationName.get());
       if (!locationOpt.isPresent()) {
         log.log(Level.SEVERE, "Address could not be geo-located {0}", text);
         return Optional.empty();
