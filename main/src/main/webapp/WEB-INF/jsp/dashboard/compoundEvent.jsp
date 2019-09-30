@@ -19,7 +19,7 @@
             </c:forEach>
         </select>
     </div>
-    <a href="${cancelUrl}}" class="btn">Cancel</a>
+    <a href="${cancelUrl}" class="btn">Cancel</a>
     <input type="submit" class="btn btn-primary" value="Create"/>
 </form>
 <script type="text/javascript" src="/script/truck_edit_widget.js"></script>
