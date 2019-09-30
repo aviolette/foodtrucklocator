@@ -22,6 +22,8 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
+import foodtruck.dao.LocationDAO;
+import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.server.GuiceHackRequestWrapper;
 
@@ -32,16 +34,19 @@ import foodtruck.server.GuiceHackRequestWrapper;
 @Singleton
 public class VendorPageFilter implements Filter {
   static final String TRUCK = "truck";
+  static final String LOCATION = "location";
   static final String PRINCIPAL = "principal";
   private static final Logger log = Logger.getLogger(VendorPageFilter.class.getName());
   private static final String LANDING_JSP = "/WEB-INF/jsp/vendor/index.jsp";
   private final UserService userService;
   private final Provider<SessionUser> sessionUserProvider;
+  private final LocationDAO locationDAO;
 
   @Inject
-  public VendorPageFilter(UserService userService, Provider<SessionUser> sessionUserProvider) {
+  public VendorPageFilter(UserService userService, Provider<SessionUser> sessionUserProvider, LocationDAO locationDAO) {
     this.userService = userService;
     this.sessionUserProvider = sessionUserProvider;
+    this.locationDAO = locationDAO;
   }
 
   @Override
@@ -61,8 +66,7 @@ public class VendorPageFilter implements Filter {
     SessionUser sessionUser = sessionUserProvider.get();
     if (!sessionUser.isLoggedIn()) {
       log.info("User failed logging in");
-      if (req.getMethod()
-          .equalsIgnoreCase("get")) {
+      if (req.getMethod().equalsIgnoreCase("get")) {
         loginFailed(req, resp, thisURL);
       } else {
         resp.sendError(HttpStatusCodes.STATUS_CODE_UNAUTHORIZED);
@@ -71,8 +75,19 @@ public class VendorPageFilter implements Filter {
     }
     Set<Truck> trucks = sessionUser.associatedTrucks();
     if (trucks.isEmpty()) {
-      if (req.getMethod()
-          .equalsIgnoreCase("get")) {
+      Set<Location> locations = sessionUser.associatedLocations();
+      if (!locations.isEmpty()) {
+        if (!thisURL.startsWith("/vendor/managed-location") && !thisURL.equals("/vendor") && !thisURL.equals("/vendor/callback")) {
+          resp.sendError(HttpStatusCodes.STATUS_CODE_UNAUTHORIZED);
+          return;
+        }
+        req.setAttribute("logoutUrl", getLogoutUrl());
+        Location location = locations.stream().findFirst().get();
+        log.log(Level.INFO, "Logged in as location: {0}", location);
+        req.setAttribute(LOCATION, location);
+        req.setAttribute(PRINCIPAL, sessionUser.getPrincipal());
+        filterChain.doFilter(req, resp);
+      } else if (req.getMethod().equalsIgnoreCase("get")) {
         notAssociatedWithTruck(req, resp, thisURL);
       } else {
         resp.sendError(HttpStatusCodes.STATUS_CODE_FORBIDDEN);
@@ -95,8 +110,7 @@ public class VendorPageFilter implements Filter {
   }
 
   private String getLogoutUrl() {
-    if (sessionUserProvider.get()
-        .isIdentifiedByEmail()) {
+    if (sessionUserProvider.get().isIdentifiedByEmail()) {
       return userService.createLogoutURL("/vendor");
     } else {
       return "/vendor/logout";

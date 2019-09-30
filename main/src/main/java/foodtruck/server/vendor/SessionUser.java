@@ -14,6 +14,7 @@ import com.google.inject.servlet.RequestScoped;
 
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
+import foodtruck.model.Location;
 import foodtruck.model.Truck;
 import foodtruck.session.Session;
 
@@ -69,6 +70,15 @@ public class SessionUser {
       }
     }
     return ImmutableSet.of();
+  }
+
+  Set<Location> associatedLocations() {
+    Principal principal = getPrincipal();
+    if (isIdentifiedByEmail()) {
+      return ImmutableSet.copyOf(locationDAO.findByManagerEmail(principal.getName()));
+    } else {
+      return ImmutableSet.copyOf(locationDAO.findByTwitterId(principal.getName()));
+    }
   }
 
   boolean isIdentifiedByEmail() {

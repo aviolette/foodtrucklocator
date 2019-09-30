@@ -20,12 +20,12 @@
       <td><joda:format value="${stop.startTime}" pattern="hh:mm"/></td>
       <td><joda:format value="${stop.endTime}" pattern="hh:mm"/></td>
       <td>${stop.truck.name}</td>
-      <td><a href="/vendor/locations/${locationId}/stops/${stop.key}/delete" class="btn btn-default">Delete</a></td>
+      <td><a href="/vendor/managed-location/stops/${stop.key}/delete" class="btn btn-default">Delete</a></td>
     </tr>
 </c:forEach>
   </tbody>
 </table>
 
-<a href="/vendor/locations/${locationId}/stops/new" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> New Event</a>
+<a href="/vendor/managed-location/${locationId}/stops/new" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> New Event</a>
 
 <%@ include file="vendorfooter.jsp" %>

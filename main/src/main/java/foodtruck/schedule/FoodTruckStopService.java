@@ -130,4 +130,7 @@ public interface FoodTruckStopService {
   List<DailySchedule> findStopsNearLocationOverRange(Location location, Interval range);
 
   List<TruckStop> findStopsForTruckAfterWithoutCounts(String truckId, DateTime startTime);
+
+  List<TruckStop> findStopsAtLocationOverRange(Location location, Interval range);
+
 }

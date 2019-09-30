@@ -11,6 +11,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import foodtruck.dao.LocationDAO;
+import foodtruck.model.Location;
 import foodtruck.model.Truck;
 
 /**
@@ -34,6 +35,11 @@ public class VendorServlet extends HttpServlet {
     Truck truck = (Truck) req.getAttribute(VendorPageFilter.TRUCK);
     if (truck != null) {
       helper.seedRequest(req, truck);
+    } else {
+      Location location = (Location) req.getAttribute(VendorPageFilter.LOCATION);
+      if (location != null) {
+        resp.sendRedirect("/vendor/managed-location");
+      }
     }
     req.setAttribute("locations", locationDAO.findLocationNamesAsJson());
     req.setAttribute("tab", "vendorhome");

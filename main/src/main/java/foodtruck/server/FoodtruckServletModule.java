@@ -74,7 +74,6 @@ import foodtruck.server.job.RebuildTempScheduleServlet;
 import foodtruck.server.job.RecacheServlet;
 import foodtruck.server.job.RepairLocationsServlet;
 import foodtruck.server.job.SeedAlterBrewingServlet;
-import foodtruck.server.job.SeedBigWangsServlet;
 import foodtruck.server.job.SeedCoastlineScheduleServlet;
 import foodtruck.server.job.SeedFatShallotSchedule;
 import foodtruck.server.job.SeedFatTomatoScheduleServlet;
@@ -101,6 +100,9 @@ import foodtruck.server.job.TweetCacheUpdateServlet;
 import foodtruck.server.job.TwitterCachePurgeServlet;
 import foodtruck.server.resources.DailySpecialResourceFactory;
 import foodtruck.server.vendor.DeviceInfoServlet;
+import foodtruck.server.vendor.LocationDeleteVendorServlet;
+import foodtruck.server.vendor.LocationEditVendorServlet;
+import foodtruck.server.vendor.LocationVendorServlet;
 import foodtruck.server.vendor.MenuServlet;
 import foodtruck.server.vendor.PostScheduleServlet;
 import foodtruck.server.vendor.VendorBeaconDetailsServlet;
@@ -209,14 +211,16 @@ class FoodtruckServletModule extends ServletModule {
     serveRegex("/admin/trucks/[\\S]*/offtheroad").with(OffTheRoadServlet.class);
     serveRegex("/admin/trucks/[\\S]*/linxup_config").with(LinxupConfigServlet.class);
     serveRegex("/admin/trucks/[\\S]*/danger").with(DangerZoneServlet.class);
-    if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development ) {
+
+    boolean dev = SystemProperty.environment.value() == SystemProperty.Environment.Value.Development;
+    if (dev) {
       serve("/admin/trucks/threeleggedtaco","/admin/trucks/courageouscakes", "/admin/trucks/thefatshallot", "/admin/trucks/yoursisterstomato", "/admin/trucks/mytoastycheese", "/admin/trucks/beaversdonuts", "/admin/trucks/5411empanadas", "/admin/trucks/perknpickle").with(TruckServlet.class);
     } else {
       serve("/admin/trucks/*").with(TruckServlet.class);
     }
     serve("/admin/images").with(ImageUploadServlet.class);
     serve("/admin/trucks").with(TruckListServlet.class);
-    if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development ) {
+    if (dev ) {
       serve("/admin/locations/6228733371351040","/admin/locations/5335929929596928","/admin/locations/6427744975978496", "/admin/locations/5288650929602560").with(LocationEditServlet.class);
     } else {
       serve("/admin/locations/*").with(LocationEditServlet.class);
@@ -240,7 +244,15 @@ class FoodtruckServletModule extends ServletModule {
 
     // Vendor dashboard endpoints
     serve("/vendor").with(VendorServlet.class);
+    if (dev ) {
+      serve("/vendor/managed-location/6427744975978496/stops/new").with(LocationEditVendorServlet.class);
+      serve("/vendor/managed-location/stops/5659186348163072/delete").with(LocationDeleteVendorServlet.class);
+    } else {
+      serveRegex("/vendor/managed-location/[\\d]*/stops/[\\w]*").with(LocationEditVendorServlet.class);
+      serveRegex("/vendor/managed-location/stops/[\\d]*/delete").with(LocationDeleteVendorServlet.class);
+    }
     serveRegex("/vendor/locations/[\\d]*/edit").with(VendorLocationEditServlet.class);
+    serve("/vendor/managed-location").with(LocationVendorServlet.class);
     serveRegex("/vendor/stops/[\\w]*").with(VendorEditStopServlet.class);
     serve("/vendor/recache/*").with(VendorRecacheServlet.class);
     serve("/vendor/offtheroad/*").with(VendorOffTheRoadServlet.class);

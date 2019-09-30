@@ -18,6 +18,7 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
@@ -163,6 +164,19 @@ class LocationDAOAppEngine extends AppEngineDAO<Long, Location> implements Locat
   @Override
   public Optional<Location> findByAliasOpt(String locationName) {
     return Optional.ofNullable(findByAlias(locationName));
+  }
+
+
+  @Override
+  public List<Location> findByTwitterId(String twitterId) {
+    return aq().filter(predicate(TWITTERHANDLE, Query.FilterOperator.EQUAL, twitterId))
+        .execute();
+  }
+
+  @Override
+  public List<Location> findByManagerEmail(String email) {
+    return aq().filter(predicate(MANAGER_EMAILS, Query.FilterOperator.IN, ImmutableSet.of(email)))
+        .execute();
   }
 
   @Nullable

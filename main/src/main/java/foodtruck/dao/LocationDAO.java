@@ -73,4 +73,9 @@ public interface LocationDAO extends DAO<Long, Location> {
   List<Location> findAlexaStops();
 
   Optional<Location> findByAliasOpt(String locationName);
+
+  List<Location> findByTwitterId(String twitterId);
+
+  List<Location> findByManagerEmail(String email);
+
 }

@@ -233,6 +233,13 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
   }
 
   @Override
+  public List<TruckStop> findStopsAtLocationOverRange(Location location, Interval range) {
+    return truckStopDAO.findOverRange(null, range).stream()
+        .filter(truckStop -> truckStop.getLocation().getName().equals(location.getName()))
+        .collect(Collectors.toList());
+  }
+
+  @Override
   public List<TruckStopWithCounts> findStopsForTruckAfter(final String truckId, DateTime startTime) {
     List<TruckStop> stops = truckStopDAO.findAfter(startTime);
     return stops.stream()
