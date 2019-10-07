@@ -65,7 +65,8 @@ public class VendorCallbackServlet extends HttpServlet {
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
       return;
     }
-    boolean noLogon = (Boolean) session.getProperty(NOLOGON_PARAM, false);
+    Boolean nl = (Boolean) session.getProperty(NOLOGON_PARAM, false);
+    boolean noLogon = nl != null && nl;
     RequestToken requestToken = (RequestToken) session.getProperty("requestToken");
     String verifier = req.getParameter("oauth_verifier");
     try {
