@@ -37,7 +37,7 @@ public class SimpleCalReader {
     log.log(Level.INFO, "Scanning calendar: {0}", calendarName);
     ImmutableList.Builder<TempTruckStop> builder = ImmutableList.builder();
     ZonedDateTime now = clock.now8();
-    for (int i=0; i < arr.length(); i++) {
+    for (int i = 0; i < arr.length(); i++) {
       JSONObject obj = arr.getJSONObject(i);
       ZonedDateTime endTime = ZonedDateTime.from(DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse(obj.getString("end")));
       if (endTime.isBefore(now)) {
@@ -48,7 +48,8 @@ public class SimpleCalReader {
       if (truckId == null) {
         continue;
       }
-      ZonedDateTime startTime = ZonedDateTime.from(DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse(obj.getString("start")));
+      ZonedDateTime startTime = ZonedDateTime.from(
+          DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse(obj.getString("start")));
       builder.add(TempTruckStop.builder()
           .truckId(truckId)
           .locationName(locationName)
@@ -62,7 +63,8 @@ public class SimpleCalReader {
 
   @Nullable
   static String inferTruckId(String title) {
-    title = title.toLowerCase().replace('’', '\'');
+    title = title.toLowerCase()
+        .replace('’', '\'');
     if (title.contains("bop bar")) {
       return "bopbartruck";
     } else if (title.contains("5411 empanadas")) {
@@ -71,6 +73,8 @@ public class SimpleCalReader {
       return "arnoldstacos";
     } else if (title.contains("aztec dave") || title.contains("mexican azteca")) {
       return "aztecdaves";
+    } else if (title.contains("jeni's splendid ice cream")) {
+      return "jenischi";
     } else if (title.contains("bull grill")) {
       return "bullgrilltruck";
     } else if (title.contains("country grill") || title.contains("rotisserie chicken food truck")) {
@@ -163,7 +167,8 @@ public class SimpleCalReader {
       return "chicagock";
     } else if (title.contains("cocinita")) {
       return "cocinitachicago";
-    } else if (title.contains("bricks on wheels") || title.contains("bricks wood fire pizza truck") || title.contains("bricks fire pizza food truck")) {
+    } else if (title.contains("bricks on wheels") || title.contains("bricks wood fire pizza truck") ||
+        title.contains("bricks fire pizza food truck") || title.contains("brick's pizza")) {
       return "brickspizza";
     } else if (title.contains("big wang's food truck")) {
       return "bigwangschicago";
@@ -177,24 +182,20 @@ public class SimpleCalReader {
       return "ofrendatruck";
     } else if (title.contains("bull & balance") || title.contains("bull and balance")) {
       return "bullandbalance";
-    } else if (title.contains("sticks and noodles") || title.contains("stick and noodles") || title.contains("stix and noodles") || title.contains("stix & noodles")) {
+    } else if (title.contains("sticks and noodles") || title.contains("stick and noodles") ||
+        title.contains("stix and noodles") || title.contains("stix & noodles")) {
       return "stixandnoodles";
     } else if (title.contains("salubrious stop")) {
       return "salubriousstop";
     } else if (title.contains("sausagefest") || title.contains("sausage fest")) {
       return "sausagefestruck";
-    } else if (title.contains("jd ") || title.contains("wally") ||
-        title.contains("yarn night") || title.contains("matt alfano") ||
-        title.contains("sip on") || title.contains("pop-up") ||
-        title.contains("dj ") || title.contains("concert") ||
-        title.contains("sausage making") || title.contains("open from") ||
-        title.contains("music") || title.contains("santa") ||
-        title.contains("have a food truck") ||
-        title.contains("freddie's off") ||
-        title.contains("freddies off") || title.contains("jb's mobile munchies") ||
-        title.contains("welcoming") || title.contains("live") ||
-        title.contains("closed") || title.contains("tour") ||
-        title.contains("yoga") || title.contains("rock out") ||
+    } else if (title.contains("jd ") || title.contains("wally") || title.contains("yarn night") ||
+        title.contains("matt alfano") || title.contains("sip on") || title.contains("pop-up") ||
+        title.contains("dj ") || title.contains("concert") || title.contains("sausage making") ||
+        title.contains("open from") || title.contains("music") || title.contains("santa") ||
+        title.contains("have a food truck") || title.contains("freddie's off") || title.contains("freddies off") ||
+        title.contains("jb's mobile munchies") || title.contains("welcoming") || title.contains("live") ||
+        title.contains("closed") || title.contains("tour") || title.contains("yoga") || title.contains("rock out") ||
         title.contains("trivia") || title.contains("beer & yoga") || !title.contains("truck")) {
       return null;
     } else {
