@@ -87,6 +87,7 @@ class FoodTruckStopServiceImpl implements FoodTruckStopService {
   @Override
   public void delete(long stopId) {
     truckStopDAO.delete(stopId);
+    cacher.invalidate();
   }
 
   @SuppressWarnings("ConstantConditions")
