@@ -168,7 +168,8 @@ public class SimpleCalReader {
     } else if (title.contains("cocinita")) {
       return "cocinitachicago";
     } else if (title.contains("bricks on wheels") || title.contains("bricks wood fire pizza truck") ||
-        title.contains("bricks fire pizza food truck") || title.contains("brick's pizza")) {
+        title.contains("bricks fire pizza food truck") || title.contains("bricks wood fire pizza food truck") ||
+        title.contains("brick's pizza")) {
       return "brickspizza";
     } else if (title.contains("big wang's food truck")) {
       return "bigwangschicago";
