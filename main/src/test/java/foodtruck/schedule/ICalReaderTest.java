@@ -11,6 +11,7 @@ import java.util.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.ByteStreams;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -69,7 +70,7 @@ public class ICalReaderTest extends Mockito {
         .build());
   }
 
-  @Test
+  @Test @Ignore
   public void toasty() throws IOException {
     InputStream str = ClassLoader.getSystemClassLoader()
         .getResourceAsStream("toasty.ics");
@@ -88,7 +89,7 @@ public class ICalReaderTest extends Mockito {
         .categories(ImmutableList.of("The Crave Bar","Toasty Cheese"))
         .build());
   }
-  @Test
+  @Test @Ignore
   public void toasty2() throws IOException {
     InputStream str = ClassLoader.getSystemClassLoader()
         .getResourceAsStream("toasty2.ics");
