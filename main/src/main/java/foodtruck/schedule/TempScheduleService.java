@@ -67,9 +67,9 @@ public class TempScheduleService {
     queue.add(withUrl("/cron/populate_ical_location_stops")
         .param("calendar", "http://www.churchstreetbrew.com/home/events/?ical=1&tribe_display=list")
         .param("defaultLocation", "Church Street Brewing Co"));
-    queue.add(withUrl("/cron/populate_ical_location_stops")
-        .param("calendar", "https://www.solemnoathbrewery.com/events/?ical=1")
-        .param("defaultLocation", "Solemn Oath Brewery"));
+//    queue.add(withUrl("/cron/populate_ical_location_stops")
+//        .param("calendar", "https://www.solemnoathbrewery.com/events/?ical=1")
+//        .param("defaultLocation", "Solemn Oath Brewery"));
     queue.add(withUrl("/cron/populate_google_calendar_schedule")
         .param("calendar", "vchs3vsio3lll8m1anmschn1bs@group.calendar.google.com")
         .param("defaultLocation", "Hickory Creek Brewing Company"));
