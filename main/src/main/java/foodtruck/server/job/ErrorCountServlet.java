@@ -1,8 +1,10 @@
 package foodtruck.server.job;
 
 import java.io.IOException;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 import javax.servlet.ServletException;
@@ -15,9 +17,7 @@ import com.google.appengine.api.log.LogQuery;
 import com.google.appengine.api.log.LogService;
 import com.google.appengine.api.log.LogServiceFactory;
 import com.google.appengine.api.log.RequestLogs;
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -60,12 +60,10 @@ public class ErrorCountServlet extends HttpServlet {
       publisher.increment(APP_ERROR_COUNT, count);
       StringBuilder builder = new StringBuilder();
       for (RequestLogs logs : results) {
-        builder.append(Joiner.on("\n\n").join(FluentIterable.from(logs.getAppLogLines())
-            .transform(new Function<AppLogLine, String>() {
-              @Nullable @Override public String apply(@Nullable AppLogLine logLine) {
-                return logLine.getLogMessage();
-              }
-            })));
+        builder.append(Joiner.on("\n\n").join(logs.getAppLogLines()
+            .stream()
+            .map(AppLogLine::getLogMessage)
+            .collect(Collectors.toList())));
         builder.append("\n\n");
       }
       notifier.systemNotifyWarnError(builder.toString());
