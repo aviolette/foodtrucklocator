@@ -143,6 +143,8 @@ public class SimpleCalReader {
       return "smokinbbqkitchn";
     } else if (title.contains("comodita")) {
       return "ballsoflove";
+    } else if (title.contains("mario's cart")) {
+      return "marioscart";
     } else if (title.contains("tacos mario")) {
       return "tacosmario";
     } else if (title.contains("twisted classics")) {
