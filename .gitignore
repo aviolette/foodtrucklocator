@@ -15,6 +15,7 @@ package-lock.json
 node_modules
 virt
 
+main/src/main/webapp/WEB-INF/appengine-web.xml
 
 *.iml
 
