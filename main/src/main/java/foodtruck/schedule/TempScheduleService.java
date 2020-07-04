@@ -40,9 +40,7 @@ public class TempScheduleService {
     queue.add(withUrl("/cron/populate_scorched_earth_schedule"));
     queue.add(withUrl("/cron/populate_werkforce_schedule"));
     queue.add(withUrl("/cron/populate_temperance_stops"));
-    queue.add(withUrl("/cron/populate_pizza_boss"));
     queue.add(withUrl("/cron/populate_royal_palms"));
-    queue.add(withUrl("/cron/populate_big_wangs"));
     queue.add(withUrl("/cron/populate_perk_n_pickle"));
     queue.add(withUrl("/cron/populate_your_sisters"));
     queue.add(withUrl("/cron/populate_three_legged_taco"));
@@ -57,7 +55,6 @@ public class TempScheduleService {
         .param("calendar", Objects.requireNonNull(truck.getCalendarUrl()))
         .param("truck", truck.getId())));
 
-    queue.add(withUrl("/cron/populate_plank_road_schedule"));
     queue.add(withUrl("/cron/populate_google_calendar_schedule")
         .param("calendar", "oswegobrewing.com_rg6gupgfqs5d3h97ur31ed88i0@group.calendar.google.com")
         .param("defaultLocation", "Oswego Brewing Co."));
@@ -67,9 +64,6 @@ public class TempScheduleService {
     queue.add(withUrl("/cron/populate_ical_location_stops")
         .param("calendar", "http://www.churchstreetbrew.com/home/events/?ical=1&tribe_display=list")
         .param("defaultLocation", "Church Street Brewing Co"));
-//    queue.add(withUrl("/cron/populate_ical_location_stops")
-//        .param("calendar", "https://www.solemnoathbrewery.com/events/?ical=1")
-//        .param("defaultLocation", "Solemn Oath Brewery"));
     queue.add(withUrl("/cron/populate_google_calendar_schedule")
         .param("calendar", "vchs3vsio3lll8m1anmschn1bs@group.calendar.google.com")
         .param("defaultLocation", "Hickory Creek Brewing Company"));
