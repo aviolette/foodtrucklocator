@@ -87,7 +87,6 @@ import foodtruck.server.job.SeedRoyalPalmsScheduleServlet;
 import foodtruck.server.job.SeedScorchedEarthServlet;
 import foodtruck.server.job.SeedSkeletonKeyServlet;
 import foodtruck.server.job.SeedTemperanceServlet;
-import foodtruck.server.job.SeedThreeLeggedTacoScheduleServlet;
 import foodtruck.server.job.SeedWerkforceServlet;
 import foodtruck.server.job.SeedYourSistersScheduleServlet;
 import foodtruck.server.job.SendLunchNotificationsServlet;
@@ -187,7 +186,6 @@ class FoodtruckServletModule extends ServletModule {
     serve("/cron/populate_royal_palms").with(SeedRoyalPalmsScheduleServlet.class);
     serve("/cron/populate_perk_n_pickle").with(SeedPerknPickleCalendar.class);
     serve("/cron/populate_your_sisters").with(SeedYourSistersScheduleServlet.class);
-    serve("/cron/populate_three_legged_taco").with(SeedThreeLeggedTacoScheduleServlet.class);
     serve("/cron/populate_fat_tomato").with(SeedFatTomatoScheduleServlet.class);
 
     // Dashboard endpoints
