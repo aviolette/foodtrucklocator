@@ -21,6 +21,7 @@ import foodtruck.notifications.NotificationModule;
 import foodtruck.profile.ProfileModule;
 import foodtruck.schedule.ScheduleModule;
 import foodtruck.server.security.SecurityModule;
+import foodtruck.slack.SlackModule;
 import foodtruck.socialmedia.SocialMediaModule;
 import foodtruck.time.TimeModule;
 
@@ -44,6 +45,7 @@ public class FoodtruckConfig extends GuiceServletContextListener {
         .add(new NetworkModule())
         .add(new DataLakeModule())
         .add(new GeolocationModule())
+        .add(new SlackModule())
         .add(new SecurityModule())
         .add(new ScheduleModule())
         .add(new MonitoringModule())

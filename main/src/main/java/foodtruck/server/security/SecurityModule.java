@@ -11,6 +11,7 @@ import foodtruck.annotations.RequiresAppKeyWithCountRestriction;
  * @since 3/29/15
  */
 public class SecurityModule extends AbstractModule {
+
   @Override
   protected void configure() {
     bind(SecurityChecker.class).to(SecurityCheckerImpl.class);
@@ -20,5 +21,6 @@ public class SecurityModule extends AbstractModule {
     RequiresAppKeyWithCountRestrictionChecker checker = new RequiresAppKeyWithCountRestrictionChecker();
     requestInjection(checker);
     bindInterceptor(Matchers.any(), Matchers.annotatedWith(RequiresAppKeyWithCountRestriction.class), checker);
+    bind(PropertyStore.class).to(EncryptedPropertyStore.class);
   }
 }

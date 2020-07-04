@@ -10,6 +10,7 @@ foodtrucklocator.*
 output
 npm-debug.log
 src/main/resources
+main/src/main/resources
 package-lock.json
 node_modules
 virt

@@ -131,7 +131,7 @@ class FoodtruckServletModule extends ServletModule {
 
   @Override
   protected void configureServlets() {
-    if ("true".equals(System.getProperty("foodtrucklocator.shunt"))) {
+    if ("true".equals(System.getProperty("foodtrucklocator.shunt", "false"))) {
       shunt();
     } else {
       serveCommonEndpoints();

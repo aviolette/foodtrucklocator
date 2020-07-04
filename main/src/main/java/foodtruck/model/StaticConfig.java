@@ -29,7 +29,7 @@ public class StaticConfig {
   }
 
   public String getIconBucket() {
-    return System.getProperty("foodtrucklocator.icon.bucket", "");
+    return "truckicons";
   }
 
   public String getPrimaryTwitterList() {
@@ -65,7 +65,8 @@ public class StaticConfig {
   }
 
   public Iterable<String> getSystemNotificationList() {
-    return Splitter.on(",").omitEmptyStrings()
+    return Splitter.on(",")
+        .omitEmptyStrings()
         .split(System.getProperty("foodtrucklocator.mail.receivers", ""));
   }
 
@@ -79,7 +80,7 @@ public class StaticConfig {
   }
 
   public boolean getSupportsBooking() {
-    return "true".equals(System.getProperty("foodtrucklocator.supports.booking"));
+    return false;
   }
 
   public String getUserAgent() {
