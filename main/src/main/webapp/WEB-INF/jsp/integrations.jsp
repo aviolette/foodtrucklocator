@@ -27,7 +27,7 @@
       </div>
     </div>
     <div class="media">
-      <a class="mr-4 app-icon" href="https://slack.com/oauth/authorize?client_id=438175788853.466163281394&state=${slackCode}&redirect_uri=${encodedSlackUrl}&scope=incoming-webhook"><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
+      <a class="mr-4 app-icon" href="https://slack.com/oauth/authorize?client_id=${slackClientId}&state=${slackCode}&redirect_uri=${encodedSlackUrl}&scope=incoming-webhook"><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
       <div class="media-body">
         <p>The Slack integration is a webhook that sends notifications about trucks that are in your area.  Click the button on the left to add it to your workspace</p>
       </div>

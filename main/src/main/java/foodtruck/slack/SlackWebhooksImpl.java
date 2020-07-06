@@ -22,7 +22,7 @@ import foodtruck.model.StaticConfig;
 
 public class SlackWebhooksImpl implements SlackWebhooks {
 
-  static final String CLIENT_ID = "slack.client_id";
+  public static final String CLIENT_ID = "slack.client_id";
   static final String CLIENT_SECRET = "slack.client_secret";
 
   private static final Logger log = Logger.getLogger(SlackWebhooks.class.getName());
