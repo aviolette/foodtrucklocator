@@ -1,12 +1,9 @@
 package foodtruck.server;
 
-import java.time.format.DateTimeFormatter;
-
 import com.google.appengine.api.utils.SystemProperty;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Provides;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
-import com.google.inject.name.Named;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
@@ -118,7 +115,6 @@ import foodtruck.server.vendor.VendorSettingsServlet;
 import foodtruck.server.vendor.VendorSocialMediaSettingsServlet;
 import foodtruck.server.vendor.VendorTwitterRedirectServlet;
 import foodtruck.server.vendor.VendorUnlinkAccountServlet;
-import foodtruck.time.Clock;
 
 /**
  * Wires all the endpoints for the application.
@@ -301,12 +297,6 @@ class FoodtruckServletModule extends ServletModule {
   }
 
   @Provides
-  @Named("remote.tweet.update")
-  public boolean provideIsTweetUpdateEnabled() {
-    return "true".equals(System.getProperty("remote.tweet.update"));
-  }
-
-  @Provides
   @GoogleJavascriptApiKey
   public String provideJavascriptApiKey() {
     return System.getProperty("foodtrucklocator.google.javascript.api.key", "");
@@ -318,11 +308,5 @@ class FoodtruckServletModule extends ServletModule {
     return impl;
   }
 
-  @Provides
-  @Named("threeleggedtaco.url")
-  public String provideThreeLeggedUrl(Clock clock) {
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-YYYY");
-    String when = formatter.format(clock.now8());
-    return "https://www.threeleggedtacos.com/api/open/GetItemsByMonth?month=" + when + "&collectionId=5cd612e3eef1a1ec6cb5b8eb&crumb=BQBiYl38JNiFZjg1YTc4ODFlNjJiY2EwMzM4YmVmMGE1NDRjYWU4";
-  }
+
 }
