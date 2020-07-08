@@ -57,7 +57,7 @@ public class PublicPageFilter implements Filter {
     req.setAttribute("showBoozy", !"false".equals(System.getProperty("foodtrucklocator.showBoozy")));
     req.setAttribute("showWeekly", !"false".equals(System.getProperty("foodtrucklocator.showWeekly")));
     req.setAttribute("showAbout", !"false".equals(System.getProperty("foodtrucklocator.showAbout")));
-    req.setAttribute("showStats", !"false".equals(System.getProperty("foodtrucklocator.showStats")));
+    req.setAttribute("showStats", false);
     req.setAttribute("showBlog", !"false".equals(System.getProperty("foodtrucklocator.showBlog")));
     req.setAttribute("city", staticConfig.getCity());
     req.setAttribute("twitterHandle", System.getProperty("foodtrucklocator.twitter.handle", "chifoodtruckz"));

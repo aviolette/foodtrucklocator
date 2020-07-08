@@ -9,6 +9,7 @@ import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 
 import foodtruck.annotations.GoogleJavascriptApiKey;
+import foodtruck.annotations.LocalInstance;
 import foodtruck.jersey.ScheduleCacherImpl;
 import foodtruck.schedule.ScheduleCacher;
 import foodtruck.server.dashboard.AddressRuleServlet;
@@ -130,8 +131,11 @@ class FoodtruckServletModule extends ServletModule {
     } else {
       serveCommonEndpoints();
     }
+
+    boolean localEnv = providesLocalInstance();
+
     // Filters
-    if ("true".equals(System.getProperty("foodtrucklocator.supports.ssl"))) {
+    if (!localEnv) {
       filterRegex("/admin/.*", "/", "/privacy",  "/vendor.*", "/book.*").through(SSLRedirectFilter.class);
     }
     filterRegex("/", "/popular.*", "/businesses.*", "/events.*", "/trucks.*", "/integrations.*", "/about.*", "/locations.*",
@@ -308,5 +312,8 @@ class FoodtruckServletModule extends ServletModule {
     return impl;
   }
 
-
+  @LocalInstance @Provides
+  public boolean providesLocalInstance() {
+    return "true".equals(System.getenv().getOrDefault("FOODTRUCK_LOCAL", "false"));
+  }
 }
