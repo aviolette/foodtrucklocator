@@ -10,9 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import foodtruck.annotations.GoogleJavascriptApiKey;
 import foodtruck.dao.TrackingDeviceDAO;
 import foodtruck.dao.TruckDAO;
-import foodtruck.model.StaticConfig;
 import foodtruck.model.TrackingDevice;
 import foodtruck.server.CodedServletException;
 import foodtruck.server.GuiceHackRequestWrapper;
@@ -26,13 +26,13 @@ public class BeaconServlet extends HttpServlet {
   private static final String JSP_PATH = "/WEB-INF/jsp/dashboard/beacon.jsp";
   private final TrackingDeviceDAO trackingDeviceDAO;
   private final TruckDAO truckDAO;
-  private final StaticConfig config;
+  private final String googleApiKey;
 
   @Inject
-  public BeaconServlet(TrackingDeviceDAO trackingDeviceDAO, TruckDAO truckDAO, StaticConfig config) {
+  public BeaconServlet(TrackingDeviceDAO trackingDeviceDAO, TruckDAO truckDAO, @GoogleJavascriptApiKey String googleAPIKey) {
     this.trackingDeviceDAO = trackingDeviceDAO;
     this.truckDAO = truckDAO;
-    this.config = config;
+    this.googleApiKey = googleAPIKey;
   }
 
   @Override
@@ -44,7 +44,7 @@ public class BeaconServlet extends HttpServlet {
     req.setAttribute("nav", "beacons");
     req.setAttribute("title", "Beacons");
     req.setAttribute("beacon", device);
-    req.setAttribute("googleApiKey", config.getGoogleJavascriptApiKey());
+    req.setAttribute("googleApiKey", googleApiKey);
     req.setAttribute("trucks", truckDAO.findActiveTrucks());
     req.getRequestDispatcher(JSP_PATH).forward(req, resp);
   }

@@ -70,11 +70,6 @@ public class StaticConfig {
     return System.getProperty("foodtrucklocator.mail.sender", "");
   }
 
-  @Deprecated // use GoogleJavascriptApiKey
-  public String getGoogleJavascriptApiKey() {
-    return System.getProperty("foodtrucklocator.google.javascript.api.key", null);
-  }
-
   public boolean getSupportsBooking() {
     return false;
   }

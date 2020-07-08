@@ -16,6 +16,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
+import foodtruck.annotations.GoogleJavascriptApiKey;
 import foodtruck.model.StaticConfig;
 import foodtruck.user.LoggedInUser;
 
@@ -27,11 +28,14 @@ import foodtruck.user.LoggedInUser;
 public class PublicPageFilter implements Filter {
   private final Provider<Optional<LoggedInUser>> loggedInUserProvider;
   private final StaticConfig staticConfig;
+  private final String googleJavascriptAPIKey;
 
   @Inject
-  public PublicPageFilter(Provider<Optional<LoggedInUser>> loggedInUserProvider, StaticConfig staticConfig) {
+  public PublicPageFilter(Provider<Optional<LoggedInUser>> loggedInUserProvider, StaticConfig staticConfig,
+      @GoogleJavascriptApiKey String googleJavascriptAPIKey) {
     this.loggedInUserProvider = loggedInUserProvider;
     this.staticConfig = staticConfig;
+    this.googleJavascriptAPIKey = googleJavascriptAPIKey;
   }
 
   @Override
@@ -51,7 +55,7 @@ public class PublicPageFilter implements Filter {
     req.setAttribute("brandTitle", title);
     req.setAttribute("suffix", "");
     req.setAttribute("bootstrap4", true);
-    req.setAttribute("googleApiKey", staticConfig.getGoogleJavascriptApiKey());
+    req.setAttribute("googleApiKey", googleJavascriptAPIKey);
     req.setAttribute("mapButtons", System.getProperty("foodtrucklocator.map.buttons",
         "[{name:'University of Chicago', " + "latitude: 41.790628999999996, longitude:-87.60130099999999}, {name:'Downtown', latitude: 41.8806818, longitude: -87.6330294}]"));
     req.setAttribute("showBoozy", !"false".equals(System.getProperty("foodtrucklocator.showBoozy")));

@@ -21,10 +21,10 @@ import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 
+import foodtruck.annotations.GoogleJavascriptApiKey;
 import foodtruck.dao.LocationDAO;
 import foodtruck.mail.SystemNotificationService;
 import foodtruck.model.Location;
-import foodtruck.model.StaticConfig;
 import foodtruck.model.StopOrigin;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
@@ -47,21 +47,21 @@ public class VendorLocationEditServlet extends HttpServlet {
 
   private static final Logger log = Logger.getLogger(VendorLocationEditServlet.class.getName());
   private static final String JSP = "/WEB-INF/jsp/vendor/locationEdit.jsp";
-  private final StaticConfig config;
   private final LocationWriter locationWriter;
   private final LocationDAO locationDAO;
   private final LocationReader reader;
   private final DateTimeFormatter formatter;
   private final FoodTruckStopService stopService;
   private final SystemNotificationService notificationService;
+  private final String apiKey;
 
   @Inject
-  public VendorLocationEditServlet(LocationDAO locationDAO, StaticConfig config,
+  public VendorLocationEditServlet(LocationDAO locationDAO, @GoogleJavascriptApiKey String apiKey,
       LocationWriter locationWriter, LocationReader reader,
       @HtmlDateFormatter DateTimeFormatter formatter, FoodTruckStopService stopService,
       SystemNotificationService notificationService) {
     this.locationDAO = locationDAO;
-    this.config = config;
+    this.apiKey = apiKey;
     this.locationWriter = locationWriter;
     this.reader = reader;
     this.formatter = formatter;
@@ -78,7 +78,7 @@ public class VendorLocationEditServlet extends HttpServlet {
         .orElseThrow(() -> new CodedServletException(404, "Location not found: " + locationId));
     req = new GuiceHackRequestWrapper(req, JSP);
     req.setAttribute("locationId", location.getKey());
-    req.setAttribute("googleApiKey", config.getGoogleJavascriptApiKey());
+    req.setAttribute("googleApiKey", apiKey);
     String startTime = req.getParameter("startTime"), endTime = req.getParameter("endTime");
     if (!Strings.isNullOrEmpty(startTime) && !Strings.isNullOrEmpty(endTime)) {
       req.setAttribute("startTime", startTime);

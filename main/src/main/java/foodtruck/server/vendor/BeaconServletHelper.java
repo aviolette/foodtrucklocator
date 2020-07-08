@@ -5,19 +5,16 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicates;
-import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import foodtruck.annotations.GoogleJavascriptApiKey;
 import foodtruck.dao.LinxupAccountDAO;
 import foodtruck.dao.LocationDAO;
 import foodtruck.model.Location;
-import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
 
 /**
@@ -28,14 +25,13 @@ public class BeaconServletHelper {
 
   private final LocationDAO locationDAO;
   private final LinxupAccountDAO linxupAccountDAO;
-  private final StaticConfig config;
+  private final String googleApiKey;
 
   @Inject
-  public BeaconServletHelper(LocationDAO locationDAO, LinxupAccountDAO linxupAccountDAO,
-      StaticConfig config) {
+  public BeaconServletHelper(LocationDAO locationDAO, LinxupAccountDAO linxupAccountDAO, @GoogleJavascriptApiKey String googleApiKey) {
     this.locationDAO = locationDAO;
     this.linxupAccountDAO = linxupAccountDAO;
-    this.config = config;
+    this.googleApiKey = googleApiKey;
   }
 
   private JSONArray beaconsToJson(Truck truck) {
@@ -62,6 +58,6 @@ public class BeaconServletHelper {
     request.setAttribute("blacklist", beaconsToJson(truck));
     request.setAttribute("linxupAccount", linxupAccountDAO.findByTruck(truck.getId()));
     request.setAttribute("categories", new JSONArray(truck.getCategories()));
-    request.setAttribute("googleApiKey", config.getGoogleJavascriptApiKey());
+    request.setAttribute("googleApiKey", googleApiKey);
   }
 }
