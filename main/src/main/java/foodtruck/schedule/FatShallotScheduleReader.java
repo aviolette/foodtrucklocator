@@ -69,6 +69,9 @@ public class FatShallotScheduleReader implements StopReader {
         if (item.endsWith("st") || item.endsWith("rd") || item.endsWith("nd") || item.endsWith("th")) {
           item = item.substring(0, item.length() - 2);
         }
+        if (item.contains(",") && !item.contains(", ")) {
+          item = item.replace(",", ", ");
+        }
         try {
           TemporalAccessor parsedTime = FORMATTER.parse(item);
           int month = parsedTime.get(ChronoField.MONTH_OF_YEAR);
