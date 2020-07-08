@@ -13,6 +13,7 @@ import foodtruck.appengine.AppengineModule;
 import foodtruck.appengine.monitoring.MonitoringModule;
 import foodtruck.datalake.DataLakeModule;
 import foodtruck.geolocation.GeolocationModule;
+import foodtruck.google.GoogleModule;
 import foodtruck.json.jackson.JacksonModule;
 import foodtruck.linxup.LinxupModule;
 import foodtruck.mail.MailModule;
@@ -45,6 +46,7 @@ public class FoodtruckConfig extends GuiceServletContextListener {
         .add(new NetworkModule())
         .add(new DataLakeModule())
         .add(new GeolocationModule())
+        .add(new GoogleModule())
         .add(new SlackModule())
         .add(new SecurityModule())
         .add(new ScheduleModule())

@@ -8,10 +8,6 @@ import com.google.common.base.Splitter;
  */
 public class StaticConfig {
 
-  public String getSignalId() {
-    return System.getProperty("foodtrucklocator.signal.id");
-  }
-
   public String getState() {
     return System.getProperty("foodtrucklocator.state", "IL");
   }

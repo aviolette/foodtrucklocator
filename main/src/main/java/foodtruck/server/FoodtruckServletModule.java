@@ -8,7 +8,6 @@ import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 
-import foodtruck.annotations.GoogleJavascriptApiKey;
 import foodtruck.annotations.LocalInstance;
 import foodtruck.jersey.ScheduleCacherImpl;
 import foodtruck.schedule.ScheduleCacher;
@@ -298,12 +297,6 @@ class FoodtruckServletModule extends ServletModule {
     install(new FactoryModuleBuilder().build(DailySpecialResourceFactory.class));
     serve("/services/*").with(GuiceContainer.class,
         ImmutableMap.of(PackagesResourceConfig.PROPERTY_PACKAGES, "foodtruck.server.resources"));
-  }
-
-  @Provides
-  @GoogleJavascriptApiKey
-  public String provideJavascriptApiKey() {
-    return System.getProperty("foodtrucklocator.google.javascript.api.key", "");
   }
 
   // TODO: once we're off jersey-json move this into core-services

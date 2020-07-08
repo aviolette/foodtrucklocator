@@ -81,7 +81,7 @@ public class ScheduleModule extends AbstractModule {
   @Singleton
   public LocalTime provideDefaultStartTime(@MilitaryTimeOnlyFormatter DateTimeFormatter formatter) {
     try {
-      LocalTime localTime = formatter.parseLocalTime(System.getProperty("foodtrucklocator.lunchtime", "11:30"));
+      LocalTime localTime = new LocalTime(11, 0);
       log.info("Lunch time is at: " + localTime);
       return localTime;
     } catch (Exception e) {

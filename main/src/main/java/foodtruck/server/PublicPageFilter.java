@@ -62,7 +62,6 @@ public class PublicPageFilter implements Filter {
     req.setAttribute("city", staticConfig.getCity());
     req.setAttribute("twitterHandle", System.getProperty("foodtrucklocator.twitter.handle", "chifoodtruckz"));
     req.setAttribute("facebookPage", System.getProperty("foodtrucklocator.facebook.page", "chicagofoodtruckfinder"));
-    req.setAttribute("signalId", staticConfig.getSignalId());
     filterChain.doFilter(req, servletResponse);
   }
 

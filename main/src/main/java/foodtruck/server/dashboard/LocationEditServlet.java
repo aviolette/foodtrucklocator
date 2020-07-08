@@ -17,6 +17,7 @@ import com.google.inject.Singleton;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import foodtruck.annotations.GoogleJavascriptApiKey;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.ReverseLookupDAO;
 import foodtruck.model.Location;
@@ -43,20 +44,20 @@ public class LocationEditServlet extends HttpServlet {
   private final LocationReader reader;
   private final FoodTruckStopService truckStopService;
   private final PublicEventNotificationService notificationService;
-  private final StaticConfig config;
   private final ReverseLookupDAO reverseLookupDAO;
+  private final String apiKey;
 
   @Inject
   public LocationEditServlet(LocationDAO dao, LocationWriter writer, LocationReader reader,
       FoodTruckStopService truckStopService, PublicEventNotificationService notificationService, StaticConfig config,
-      ReverseLookupDAO reverseLookupDAO) {
+      ReverseLookupDAO reverseLookupDAO, @GoogleJavascriptApiKey String apiKey) {
     this.locationDAO = dao;
     this.writer = writer;
     this.reader = reader;
     this.truckStopService = checkNotNull(truckStopService);
     this.notificationService = checkNotNull(notificationService);
-    this.config = config;
     this.reverseLookupDAO = reverseLookupDAO;
+    this.apiKey = apiKey;
   }
 
   @Override
@@ -66,7 +67,7 @@ public class LocationEditServlet extends HttpServlet {
     final String path = Urls.stripSessionId(req.getRequestURI());
     final String keyIndex = path.substring(path.lastIndexOf("/") + 1);
     req = new GuiceHackRequestWrapper(req, jsp);
-    req.setAttribute("googleApiKey", config.getGoogleJavascriptApiKey());
+    req.setAttribute("googleApiKey", apiKey);
     Location location = locationDAO.findByIdOpt(Long.valueOf(keyIndex)).orElseThrow(NOT_FOUND);
     try {
       req.setAttribute("location", writer.writeLocation(location, 0, true));
@@ -85,7 +86,7 @@ public class LocationEditServlet extends HttpServlet {
         "/script/typeahead-addon.js",
         "/script/lib/dropzone.js",
         "/script/dashboard-location-edit.js",
-        "//maps.googleapis.com/maps/api/js?key=" + config.getGoogleJavascriptApiKey()));
+        "//maps.googleapis.com/maps/api/js?key=" + apiKey));
     req.getRequestDispatcher(jsp).forward(req, resp);
   }
 

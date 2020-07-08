@@ -3,13 +3,13 @@ package foodtruck.geolocation;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.sun.jersey.api.client.WebResource;
 
 import org.codehaus.jettison.json.JSONObject;
 
+import foodtruck.annotations.GoogleServerAPIKey;
 import foodtruck.model.Location;
 
 /**
@@ -20,10 +20,11 @@ class GoogleResource {
   private static final Logger log = Logger.getLogger(GoogleResource.class.getName());
 
   private final WebResource geolocationResource;
-  private final Optional<String> apiKey;
+  private final String apiKey;
   private final String state;
+
   @Inject
-  public GoogleResource(@GoogleEndPoint WebResource geolocationResource, @GoogleServerApiKey Optional<String> apiKey,
+  public GoogleResource(@GoogleEndPoint WebResource geolocationResource, @GoogleServerAPIKey String apiKey,
       @Named("foodtrucklocator.state") String state) {
     this.geolocationResource = geolocationResource;
     this.apiKey = apiKey;
@@ -35,10 +36,7 @@ class GoogleResource {
     WebResource resource = geolocationResource.queryParam("address", location)
         .queryParam("sensor", "false")
         .queryParam("components", "country:US|administrative_area:" + state);
-    if (apiKey.isPresent()) {
-      String key = apiKey.get();
-      resource = resource.queryParam("key",key);
-    }
+    resource = resource.queryParam("key", apiKey);
     log.log(Level.INFO, "Requesting web resource {0}", resource);
     return resource.get(JSONObject.class);
   }
@@ -47,9 +45,7 @@ class GoogleResource {
     WebResource resource = geolocationResource.queryParam("latlng", location.getLatitude() + "," +
         location.getLongitude())
         .queryParam("sensor", "false");
-    if (apiKey.isPresent()) {
-      resource = resource.queryParam("key", apiKey.get());
-    }
+    resource = resource.queryParam("key", apiKey);
     return resource.get(JSONObject.class);
   }
 }

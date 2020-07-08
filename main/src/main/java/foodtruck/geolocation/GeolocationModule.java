@@ -1,7 +1,5 @@
 package foodtruck.geolocation;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Strings;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
@@ -20,15 +18,6 @@ public class GeolocationModule extends AbstractModule {
   protected void configure() {
     bind(GeoLocator.class).to(CacheAndForwardLocator.class);
     bind(GeoLocator.class).annotatedWith(Google.class).to(GoogleGeolocator.class);
-  }
-
-  @Provides @GoogleServerApiKey
-  public Optional<String> provideServerKey() {
-    String key = System.getProperty("foodtrucklocator.google.api.key", null);
-    if (Strings.isNullOrEmpty(key)) {
-      return Optional.absent();
-    }
-    return Optional.of(key);
   }
 
   @Provides
