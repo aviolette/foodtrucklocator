@@ -1,7 +1,5 @@
 package foodtruck.server.job;
 
-import java.io.IOException;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -11,7 +9,6 @@ import foodtruck.dao.TrackingDeviceDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.mail.EmailSender;
-import foodtruck.model.StaticConfig;
 import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
@@ -28,23 +25,21 @@ public abstract class AbstractNotificationServlet extends HttpServlet {
   private final TrackingDeviceDAO trackingDeviceDAO;
   private final TruckDAO truckDAO;
   private final PublicEventNotificationService notificationService;
-  private final StaticConfig config;
   private final EmailSender emailSender;
+  private final String baseUrl;
 
-  AbstractNotificationServlet(TruckStopDAO truckStopDAO, TrackingDeviceDAO trackingDeviceDAO,
-      TruckDAO truckDAO, PublicEventNotificationService notificationService,
-      EmailSender emailSender, StaticConfig staticConfig) {
+  AbstractNotificationServlet(TruckStopDAO truckStopDAO, TrackingDeviceDAO trackingDeviceDAO, TruckDAO truckDAO,
+      PublicEventNotificationService notificationService, EmailSender emailSender, String baseUrl) {
     this.truckStopDAO = truckStopDAO;
     this.trackingDeviceDAO = trackingDeviceDAO;
     this.truckDAO = truckDAO;
     this.notificationService = notificationService;
-    this.config = staticConfig;
     this.emailSender = emailSender;
+    this.baseUrl = baseUrl;
   }
 
   @Override
-  protected final void doPost(HttpServletRequest request, HttpServletResponse resp)
-      throws ServletException, IOException {
+  protected final void doPost(HttpServletRequest request, HttpServletResponse resp) throws ServletException {
     String stopId = request.getParameter("stopId");
     String deviceId = request.getParameter("deviceId");
     TruckStop stop = truckStopDAO.findByIdOpt(Long.parseLong(stopId))
@@ -62,10 +57,6 @@ public abstract class AbstractNotificationServlet extends HttpServlet {
     privateNotify(stop, device, truck);
   }
 
-  protected StaticConfig getConfig() {
-    return config;
-  }
-
   EmailSender getEmailSender() {
     return emailSender;
   }
@@ -79,8 +70,7 @@ public abstract class AbstractNotificationServlet extends HttpServlet {
   }
 
   String urls(String key, String truckId) {
-    return "Beacon Information:\n" + config.getBaseUrl() + "/vendor/beacons/" + key + "\n\n" +
-        "To disable or enable these notifications:\n" + config.getBaseUrl() +
-        "/vendor/notifications/" + truckId + "\n";
+    return "Beacon Information:\n" + baseUrl + "/vendor/beacons/" + key + "\n\n" +
+        "To disable or enable these notifications:\n" + baseUrl + "/vendor/notifications/" + truckId + "\n";
   }
 }

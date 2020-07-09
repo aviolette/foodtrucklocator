@@ -43,7 +43,7 @@ public class TrucksServlet extends HttpServlet {
     req.setAttribute("description", "Catalogue of all the food trucks in " + staticConfig.getCity());
     req.setAttribute("title", "Food Trucks in " + staticConfig.getCity());
     req.setAttribute("tab", "trucks");
-    req.setAttribute("supportsBooking", staticConfig.getSupportsBooking());
+    req.setAttribute("supportsBooking", false);
     req.getRequestDispatcher(JSP)
         .forward(req, resp);
   }

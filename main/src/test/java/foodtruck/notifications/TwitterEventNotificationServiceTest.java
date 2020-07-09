@@ -16,7 +16,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.RetweetsDAO;
 import foodtruck.dao.TwitterNotificationAccountDAO;
-import foodtruck.model.StaticConfig;
 import foodtruck.model.Story;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
@@ -41,28 +40,25 @@ import static foodtruck.schedule.ModelTestHelper.wackerAndAdamsTwitterAccount;
 @RunWith(MockitoJUnitRunner.class)
 public class TwitterEventNotificationServiceTest extends Mockito {
 
+  private static final DateTime NOW = new DateTime(2017, 10, 10, 10, 10, 10);
   private @Mock FoodTruckStopService truckService;
   private @Mock Clock clock;
   private @Mock TwitterNotificationAccountDAO notificationAccountDAO;
   private @Mock RetweetsDAO retweetsDAO;
-  private @Mock StaticConfig config;
   private @Mock LocationDAO locationDAO;
   private @Mock TwitterConnector connector;
   private TwitterEventNotificationService service;
-  private static final DateTime NOW = new DateTime(2017, 10, 10, 10, 10, 10);
 
   @Before
   public void setup() {
-    service = new TwitterEventNotificationService(truckService, clock, notificationAccountDAO,
-        retweetsDAO, config, locationDAO, connector);
-    when(config.getBaseUrl()).thenReturn("http://foo");
+    service = new TwitterEventNotificationService(truckService, clock, notificationAccountDAO, retweetsDAO, locationDAO,
+        connector, "http://foo");
   }
 
   @Test
   public void sendLunchtimeNotifications() {
     TwitterNotificationAccount account1 = wackerAndAdamsTwitterAccount();
     TwitterNotificationAccount account2 = aonTwitterAccount();
-    when(config.getBaseUrl()).thenReturn("http://foo");
     when(clock.now()).thenReturn(NOW);
     when(notificationAccountDAO.findAll()).thenReturn(
         ImmutableList.of(clarkAndMonroeTwitterAccount(), account1, account2));
@@ -71,11 +67,9 @@ public class TwitterEventNotificationServiceTest extends Mockito {
     when(truckService.findTrucksNearLocation(ModelTestHelper.aon(), NOW)).thenReturn(
         ImmutableSet.of(ModelTestHelper.truck3(), ModelTestHelper.truck4()));
     service.sendLunchtimeNotifications();
-    verify(connector).sendStatusFor(
-        "Trucks at Wacker and Adams today: @truck1 @truck2\n\nhttp://foo", account1,
+    verify(connector).sendStatusFor("Trucks at Wacker and Adams today: @truck1 @truck2\n\nhttp://foo", account1,
         new TruckStopSplitter(account1.getName()));
-    verify(connector).sendStatusFor(
-        "Trucks at AON today: @truck3 @truck4\n" + "\n" + "http://foo", account2,
+    verify(connector).sendStatusFor("Trucks at AON today: @truck3 @truck4\n" + "\n" + "http://foo", account2,
         new TruckStopSplitter(account2.getName()));
   }
 
@@ -91,8 +85,8 @@ public class TwitterEventNotificationServiceTest extends Mockito {
         .truck(truck)
         .build();
     service.notifyStopStart(stop);
-    verify(connector).sendStatusFor("We are now at Clark and Monroe. http://foo/locations/1234",
-        truck, NO_SPLIT_SPLITTER);
+    verify(connector).sendStatusFor("We are now at Clark and Monroe. http://foo/locations/1234", truck,
+        NO_SPLIT_SPLITTER);
   }
 
   // If the truck has "Post at New Stop" off, then post with the Location-specific account instead
@@ -113,8 +107,8 @@ public class TwitterEventNotificationServiceTest extends Mockito {
     when(locationDAO.findByName(wackerAndAdams().getName())).thenReturn(Optional.of(wackerAndAdams()));
     service.notifyStopStart(stop);
     verify(retweetsDAO).hasBeenRetweeted(truck.getId(), wa.getTwitterHandle());
-    verify(connector).sendStatusFor(
-        ". @truck1 is now at Wacker and Adams http://foo/locations/456", wa, NO_SPLIT_SPLITTER);
+    verify(connector).sendStatusFor(". @truck1 is now at Wacker and Adams http://foo/locations/456", wa,
+        NO_SPLIT_SPLITTER);
   }
 
   // If the truck has "Post at New Stop" off, then post with the Location-specific account instead
@@ -135,8 +129,8 @@ public class TwitterEventNotificationServiceTest extends Mockito {
     when(locationDAO.findByName(wackerAndAdams().getName())).thenReturn(Optional.of(wackerAndAdams()));
     service.notifyStopStart(stop);
     verify(retweetsDAO).hasBeenRetweeted(truck.getId(), wa.getTwitterHandle());
-    verify(connector, never()).sendStatusFor(
-        ". @truck1 is now at Wacker and Adams http://foo/locations/456", wa, NO_SPLIT_SPLITTER);
+    verify(connector, never()).sendStatusFor(". @truck1 is now at Wacker and Adams http://foo/locations/456", wa,
+        NO_SPLIT_SPLITTER);
   }
 
   @Test
@@ -150,7 +144,8 @@ public class TwitterEventNotificationServiceTest extends Mockito {
         .build();
     TwitterNotificationAccount wa = wackerAndAdamsTwitterAccount();
     when(retweetsDAO.hasBeenRetweeted(truck.getId(), wa.getTwitterHandle())).thenReturn(false);
-    when(notificationAccountDAO.findAll()).thenReturn(ImmutableList.of(aonTwitterAccount(), wa, clarkAndMonroeTwitterAccount()));
+    when(notificationAccountDAO.findAll()).thenReturn(
+        ImmutableList.of(aonTwitterAccount(), wa, clarkAndMonroeTwitterAccount()));
     service.share(Story.builder()
         .text("hello world")
         .time(NOW)
@@ -175,7 +170,8 @@ public class TwitterEventNotificationServiceTest extends Mockito {
     TwitterNotificationAccount wa = TwitterNotificationAccount.builder(wackerAndAdamsTwitterAccount())
         .active(false)
         .build();
-    when(notificationAccountDAO.findAll()).thenReturn(ImmutableList.of(aonTwitterAccount(), wa, clarkAndMonroeTwitterAccount()));
+    when(notificationAccountDAO.findAll()).thenReturn(
+        ImmutableList.of(aonTwitterAccount(), wa, clarkAndMonroeTwitterAccount()));
     service.share(Story.builder()
         .text("hello world")
         .time(NOW)

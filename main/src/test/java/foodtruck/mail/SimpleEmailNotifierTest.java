@@ -2,7 +2,6 @@ package foodtruck.mail;
 
 import com.google.common.collect.ImmutableSet;
 
-
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
@@ -18,8 +17,6 @@ import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 
-import static org.mockito.Mockito.when;
-
 /**
  * @author aviolette
  * @since 8/13/15
@@ -34,18 +31,23 @@ public class SimpleEmailNotifierTest {
   @Before
   public void before() {
     DateTimeZone zone = DateTimeZone.forID("America/Chicago");
-    DateTimeFormatter timeFormatter = DateTimeFormat.forPattern("YYYYMMdd-HHmm").withZone(zone);
-    notifier = new SimpleEmailNotifier(config, timeFormatter, sender);
+    DateTimeFormatter timeFormatter = DateTimeFormat.forPattern("YYYYMMdd-HHmm")
+        .withZone(zone);
+    notifier = new SimpleEmailNotifier(timeFormatter, sender, "http://localhost", "Chicago, IL");
   }
 
   @Test
   public void testNotifyAddMentionedTrucks() throws Exception {
-    when(config.getBaseUrl()).thenReturn("http://localhost");
     TruckStop stop = TruckStop.builder()
-        .truck(Truck.builder().id("foo").name("bar").build())
+        .truck(Truck.builder()
+            .id("foo")
+            .name("bar")
+            .build())
         .startTime(new DateTime(2015, 8, 13, 12, 0, DateTimeZone.UTC))
         .endTime(new DateTime(2015, 8, 13, 2, 0, DateTimeZone.UTC))
-        .location(Location.builder().key(123L).build())
+        .location(Location.builder()
+            .key(123L)
+            .build())
         .build();
     sender.sendSystemMessage("Truck was mentioned by another truck", "This tweet \"foobar\"\n" +
         "\n from bar might have indicated that there additional trucks to be added to the system.\n\n  " +

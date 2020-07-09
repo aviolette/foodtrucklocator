@@ -2,6 +2,7 @@ package foodtruck.server.job;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,10 +18,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 
+import foodtruck.annotations.BaseUrl;
+import foodtruck.annotations.SystemNotificationList;
 import foodtruck.dao.TrackingDeviceDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.mail.EmailSender;
-import foodtruck.model.StaticConfig;
 import foodtruck.model.TrackingDevice;
 import foodtruck.model.Truck;
 
@@ -36,15 +38,17 @@ public class CheckDeviceIssuesServlet extends HttpServlet {
   private final TrackingDeviceDAO dao;
   private final EmailSender emailSender;
   private final TruckDAO truckDAO;
-  private final StaticConfig config;
+  private final List<String> systemNotificationList;
+  private final String baseUrl;
 
   @Inject
   public CheckDeviceIssuesServlet(TrackingDeviceDAO dao, EmailSender emailSender, TruckDAO truckDAO,
-      StaticConfig config) {
+      @SystemNotificationList List<String> notificationList, @BaseUrl String baseUrl) {
     this.dao = dao;
     this.emailSender = emailSender;
     this.truckDAO = truckDAO;
-    this.config = config;
+    this.systemNotificationList = notificationList;
+    this.baseUrl = baseUrl;
   }
 
   @Override
@@ -65,7 +69,8 @@ public class CheckDeviceIssuesServlet extends HttpServlet {
   }
 
   private void sendEmail(String truckId, Collection<TrackingDevice> trackingDevices) {
-    Truck truck = truckDAO.findByIdOpt(truckId).orElse(null);
+    Truck truck = truckDAO.findByIdOpt(truckId)
+        .orElse(null);
     if (truck == null || Strings.isNullOrEmpty(truck.getEmail()) || !truck.isNotifyWhenDeviceIssues()) {
       log.log(Level.INFO, "Device issue notifications disabled for {0}", truckId);
       return;
@@ -76,7 +81,7 @@ public class CheckDeviceIssuesServlet extends HttpServlet {
       msgBuilder.append("Device: ")
           .append(device.getLabel())
           .append(" ")
-          .append(config.getBaseUrl())
+          .append(baseUrl)
           .append("/vendor/beacons/")
           .append(device.getKey())
           .append("\n")
@@ -85,14 +90,14 @@ public class CheckDeviceIssuesServlet extends HttpServlet {
           .append("\n\n\n");
     }
     msgBuilder.append("To enable/disable these notifications:\n")
-        .append(config.getBaseUrl())
+        .append(baseUrl)
         .append("/vendor/notifications/")
         .append(truckId)
         .append("\n");
 
     String msg = msgBuilder.toString();
     log.log(Level.INFO, msg);
-    emailSender.sendMessage(subject, ImmutableList.of(truck.getEmail()), msgBuilder.toString(),
-        config.getSystemNotificationList(), null);
+    emailSender.sendMessage(subject, ImmutableList.of(truck.getEmail()), msgBuilder.toString(), systemNotificationList,
+        null);
   }
 }

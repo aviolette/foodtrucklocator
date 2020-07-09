@@ -1,7 +1,5 @@
 package foodtruck.model;
 
-import com.google.common.base.Splitter;
-
 /**
  * @author aviolette
  * @since 1/5/15
@@ -58,20 +56,6 @@ public class StaticConfig {
 
   public String getFrontDoorAppKey() {
     return System.getProperty("foodtrucklocator.frontdoor.app.key", "");
-  }
-
-  public Iterable<String> getSystemNotificationList() {
-    return Splitter.on(",")
-        .omitEmptyStrings()
-        .split(System.getProperty("foodtrucklocator.mail.receivers", ""));
-  }
-
-  public String getNotificationSender() {
-    return System.getProperty("foodtrucklocator.mail.sender", "");
-  }
-
-  public boolean getSupportsBooking() {
-    return false;
   }
 
   public String getUserAgent() {

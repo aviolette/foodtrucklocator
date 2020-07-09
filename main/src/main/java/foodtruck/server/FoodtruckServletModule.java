@@ -1,6 +1,9 @@
 package foodtruck.server;
 
+import java.util.List;
+
 import com.google.appengine.api.utils.SystemProperty;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Provides;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
@@ -8,7 +11,11 @@ import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 
+import foodtruck.annotations.BaseUrl;
+import foodtruck.annotations.DefaultCityState;
 import foodtruck.annotations.LocalInstance;
+import foodtruck.annotations.OwnerEmail;
+import foodtruck.annotations.SystemNotificationList;
 import foodtruck.jersey.ScheduleCacherImpl;
 import foodtruck.schedule.ScheduleCacher;
 import foodtruck.server.dashboard.AddressRuleServlet;
@@ -118,6 +125,7 @@ import foodtruck.server.vendor.VendorUnlinkAccountServlet;
 
 /**
  * Wires all the endpoints for the application.
+ *
  * @author aviolette
  * @since Jul 12, 2011
  */
@@ -135,10 +143,11 @@ class FoodtruckServletModule extends ServletModule {
 
     // Filters
     if (!localEnv) {
-      filterRegex("/admin/.*", "/", "/privacy",  "/vendor.*", "/book.*").through(SSLRedirectFilter.class);
+      filterRegex("/admin/.*", "/", "/privacy", "/vendor.*", "/book.*").through(SSLRedirectFilter.class);
     }
-    filterRegex("/", "/popular.*", "/businesses.*", "/events.*", "/trucks.*", "/integrations.*", "/about.*", "/locations.*",
-        "/stats/timeline", "/privacy", "/support.*", "/vendinfo.*", "/slack.*").through(PublicPageFilter.class);
+    filterRegex("/", "/popular.*", "/businesses.*", "/events.*", "/trucks.*", "/integrations.*", "/about.*",
+        "/locations.*", "/stats/timeline", "/privacy", "/support.*", "/vendinfo.*", "/slack.*").through(
+        PublicPageFilter.class);
     filterRegex("/vendor.*").through(VendorPageFilter.class);
     filter("/*").through(SiteScraperFilter.class);
     filter("/*").through(CommonConfigFilter.class);
@@ -206,14 +215,17 @@ class FoodtruckServletModule extends ServletModule {
 
     boolean dev = SystemProperty.environment.value() == SystemProperty.Environment.Value.Development;
     if (dev) {
-      serve("/admin/trucks/threeleggedtaco","/admin/trucks/courageouscakes", "/admin/trucks/thefatshallot", "/admin/trucks/yoursisterstomato", "/admin/trucks/mytoastycheese", "/admin/trucks/beaversdonuts", "/admin/trucks/5411empanadas", "/admin/trucks/perknpickle").with(TruckServlet.class);
+      serve("/admin/trucks/threeleggedtaco", "/admin/trucks/courageouscakes", "/admin/trucks/thefatshallot",
+          "/admin/trucks/yoursisterstomato", "/admin/trucks/mytoastycheese", "/admin/trucks/beaversdonuts",
+          "/admin/trucks/5411empanadas", "/admin/trucks/perknpickle").with(TruckServlet.class);
     } else {
       serve("/admin/trucks/*").with(TruckServlet.class);
     }
     serve("/admin/images").with(ImageUploadServlet.class);
     serve("/admin/trucks").with(TruckListServlet.class);
-    if (dev ) {
-      serve("/admin/locations/6228733371351040","/admin/locations/5335929929596928","/admin/locations/6427744975978496", "/admin/locations/5288650929602560").with(LocationEditServlet.class);
+    if (dev) {
+      serve("/admin/locations/6228733371351040", "/admin/locations/5335929929596928",
+          "/admin/locations/6427744975978496", "/admin/locations/5288650929602560").with(LocationEditServlet.class);
     } else {
       serve("/admin/locations/*").with(LocationEditServlet.class);
     }
@@ -236,7 +248,7 @@ class FoodtruckServletModule extends ServletModule {
 
     // Vendor dashboard endpoints
     serve("/vendor").with(VendorServlet.class);
-    if (dev ) {
+    if (dev) {
       serve("/vendor/managed-location/6427744975978496/stops/new").with(LocationEditVendorServlet.class);
       serve("/vendor/managed-location/stops/5659186348163072/delete").with(LocationDeleteVendorServlet.class);
     } else {
@@ -270,17 +282,17 @@ class FoodtruckServletModule extends ServletModule {
     serve("/businesses").with(TruckBusinessesServlet.class);
     serve("/events").with(BoozeAndTrucksServlet.class);
     serve("/trucks", "/trucks/").with(TrucksServlet.class);
-    if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development ) {
-      serve("/trucks/beaversdonuts", "/trucks/courageouscakes",  "/trucks/thefatshallot", "/trucks/asweetsgirl").with(foodtruck.server.front.TruckServlet.class);
+    if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development) {
+      serve("/trucks/beaversdonuts", "/trucks/courageouscakes", "/trucks/thefatshallot", "/trucks/asweetsgirl").with(
+          foodtruck.server.front.TruckServlet.class);
     } else {
       serve("/trucks/*").with(foodtruck.server.front.TruckServlet.class);
     }
     serve("/about").with(AboutServlet.class);
     serve("/integrations").with(IntegrationsServlet.class);
-    if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development ) {
+    if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development) {
       serve("/locations", "/locations/6427744975978496", "/locations/4735596580831232").with(LocationServlet.class);
-    }
-    else {
+    } else {
       serve("/locations*").with(LocationServlet.class);
     }
     serve("/images/*").with(ImageServlet.class);
@@ -305,8 +317,37 @@ class FoodtruckServletModule extends ServletModule {
     return impl;
   }
 
-  @LocalInstance @Provides
+  @LocalInstance
+  @Provides
   public boolean providesLocalInstance() {
-    return "true".equals(System.getenv().getOrDefault("FOODTRUCK_LOCAL", "false"));
+    return "true".equals(System.getenv()
+        .getOrDefault("FOODTRUCK_LOCAL", "false"));
+  }
+
+  @DefaultCityState
+  @Provides
+  public String providesDefaultCityState() {
+    return System.getenv()
+        .getOrDefault("FOODTRUCK_CITY_STATE", "Chicago, IL");
+  }
+
+  @OwnerEmail
+  @Provides
+  public String providesOwnerEmail() {
+    return System.getenv()
+        .getOrDefault("FOODTRUCK_OWNER_EMAIL", "aviolette@gmail.com");
+  }
+
+  @SystemNotificationList
+  @Provides
+  public List<String> providesSystemNotificationList(@OwnerEmail String email) {
+    return ImmutableList.of(email);
+  }
+
+  @BaseUrl
+  @Provides
+  public String providesBaseUrl() {
+    return System.getenv()
+        .getOrDefault("FOODTRUCK_BASE_URL", "https://www.chicagofoodtruckfinder.com");
   }
 }

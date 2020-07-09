@@ -11,11 +11,11 @@ import javax.ws.rs.core.Response;
 import com.google.api.client.util.Strings;
 import com.google.inject.Inject;
 
+import foodtruck.annotations.BaseUrl;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.RetweetsDAO;
 import foodtruck.dao.TwitterNotificationAccountDAO;
 import foodtruck.model.Location;
-import foodtruck.model.StaticConfig;
 import foodtruck.model.Story;
 import foodtruck.model.StoryType;
 import foodtruck.model.Truck;
@@ -33,27 +33,28 @@ import foodtruck.util.ServiceException;
  * @since 12/3/12
  */
 class TwitterEventNotificationService implements PublicEventNotificationService {
+
+  static final MessageSplitter NO_SPLIT_SPLITTER = new NoSplitSplitter();
   private static final Logger log = Logger.getLogger(TwitterEventNotificationService.class.getName());
   private final FoodTruckStopService truckService;
   private final Clock clock;
   private final TwitterNotificationAccountDAO notificationAccountDAO;
   private final RetweetsDAO retweetsDAO;
-  private final StaticConfig config;
   private final LocationDAO locationDAO;
   private final TwitterConnector twitterConnector;
-  static final MessageSplitter NO_SPLIT_SPLITTER = new NoSplitSplitter();
+  private final String baseUrl;
 
   @Inject
   public TwitterEventNotificationService(FoodTruckStopService truckService, Clock clock,
-      TwitterNotificationAccountDAO notificationAccountDAO, RetweetsDAO retweetsDAO, StaticConfig config,
-      LocationDAO locationDAO, TwitterConnector twitterConnector) {
+      TwitterNotificationAccountDAO notificationAccountDAO, RetweetsDAO retweetsDAO, LocationDAO locationDAO,
+      TwitterConnector twitterConnector, @BaseUrl String baseUrl) {
     this.truckService = truckService;
     this.clock = clock;
     this.notificationAccountDAO = notificationAccountDAO;
     this.retweetsDAO = retweetsDAO;
-    this.config = config;
     this.locationDAO = locationDAO;
     this.twitterConnector = twitterConnector;
+    this.baseUrl = baseUrl;
   }
 
   @Override
@@ -66,12 +67,11 @@ class TwitterEventNotificationService implements PublicEventNotificationService 
       try {
         Set<Truck> trucks = truckService.findTrucksNearLocation(account.getLocation(), clock.now());
         if (!trucks.isEmpty()) {
-          String format = String.format("Trucks at %s today: %s ", account.getName(),
-              trucks.stream()
-                  .map(Truck::nameForTwitterDisplay)
-                  .collect(Collectors.joining(" ")));
+          String format = String.format("Trucks at %s today: %s ", account.getName(), trucks.stream()
+              .map(Truck::nameForTwitterDisplay)
+              .collect(Collectors.joining(" ")));
           // include base URL in tweet (when possible) to drive web traffic
-          String potential = format.trim() + "\n\n" + config.getBaseUrl();
+          String potential = format.trim() + "\n\n" + baseUrl;
           if (potential.length() <= 140) {
             format = potential;
           }
@@ -101,7 +101,7 @@ class TwitterEventNotificationService implements PublicEventNotificationService 
     if (truck.isPostAtNewStop() && truck.getHasTwitterCredentials()) {
       Location location = truckStop.getLocation();
       twitterConnector.sendStatusFor(String.format("We are now at %s. %s", location.getShortenedName(),
-          config.getBaseUrl() + "/locations/" + location.getKey()), truck, NO_SPLIT_SPLITTER);
+          baseUrl + "/locations/" + location.getKey()), truck, NO_SPLIT_SPLITTER);
     } else {
       messageAtStop(truckStop, "%s is now at %s %s");
     }
@@ -116,13 +116,14 @@ class TwitterEventNotificationService implements PublicEventNotificationService 
     for (TwitterNotificationAccount account : notificationAccountDAO.findAll()) {
       Truck truck = truckStop.getTruck();
       Location location = truckStop.getLocation();
-      location = locationDAO.findByName(location.getName()).orElse(location);
-      if (location.containedWithRadiusOf(account.getLocation()) && !retweetsDAO.hasBeenRetweeted(truck.getId(),
-          account.getTwitterHandle())) {
-        String descriptor = Strings.isNullOrEmpty(
-            truck.getTwitterHandle()) ? truck.getName() : ". @" + truck.getTwitterHandle();
+      location = locationDAO.findByName(location.getName())
+          .orElse(location);
+      if (location.containedWithRadiusOf(account.getLocation()) &&
+          !retweetsDAO.hasBeenRetweeted(truck.getId(), account.getTwitterHandle())) {
+        String descriptor = Strings.isNullOrEmpty(truck.getTwitterHandle()) ? truck.getName() :
+            ". @" + truck.getTwitterHandle();
         twitterConnector.sendStatusFor(String.format(messageFormat, descriptor, location.getShortenedName(),
-            config.getBaseUrl() + "/locations/" + location.getKey()), account, NO_SPLIT_SPLITTER);
+            baseUrl + "/locations/" + location.getKey()), account, NO_SPLIT_SPLITTER);
         retweetsDAO.markRetweeted(truck.getId(), account.getTwitterHandle());
       }
     }
@@ -139,14 +140,17 @@ class TwitterEventNotificationService implements PublicEventNotificationService 
         if (!account.isActive()) {
           continue;
         }
-        if (stop.getLocation().containedWithRadiusOf(account.getLocation())) {
-          if (retweetsDAO.hasBeenRetweeted(stop.getTruck().getId(), account.getTwitterHandle())) {
+        if (stop.getLocation()
+            .containedWithRadiusOf(account.getLocation())) {
+          if (retweetsDAO.hasBeenRetweeted(stop.getTruck()
+              .getId(), account.getTwitterHandle())) {
             log.log(Level.INFO, "Already retweeted at {0} {1}",
                 new Object[]{stop.getTruck().getId(), account.getTwitterHandle()});
             continue;
           }
           log.log(Level.INFO, "RETWEETING:" + story.getText());
-          retweetsDAO.markRetweeted(stop.getTruck().getId(), account.getTwitterHandle());
+          retweetsDAO.markRetweeted(stop.getTruck()
+              .getId(), account.getTwitterHandle());
           try {
             twitterConnector.retweet(story.getId(), account);
           } catch (ServiceException e) {
