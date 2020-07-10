@@ -67,6 +67,8 @@ public class SimpleCalReader {
         .replace('’', '\'');
     if (title.contains("bop bar")) {
       return "bopbartruck";
+    } else if (title.contains("allegory")) {
+      return "allegorynaperville";
     } else if (title.contains("5411 empanadas")) {
       return "5411empanadas";
     } else if (title.contains("arnold's tacos") || title.contains("arnoldstaco")) {
