@@ -16,9 +16,9 @@ import com.sun.jersey.api.client.Client;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import foodtruck.annotations.BaseUrl;
 import foodtruck.dao.SlackWebhookDAO;
 import foodtruck.model.SlackWebhook;
-import foodtruck.model.StaticConfig;
 
 public class SlackWebhooksImpl implements SlackWebhooks {
 
@@ -26,20 +26,19 @@ public class SlackWebhooksImpl implements SlackWebhooks {
   static final String CLIENT_SECRET = "slack.client_secret";
 
   private static final Logger log = Logger.getLogger(SlackWebhooks.class.getName());
-  private final StaticConfig staticConfig;
   private final SlackWebhookDAO webhookDAO;
   private final Client client;
   private final String clientSecret;
   private final String clientId;
+  private final String baseUrl;
 
   @Inject
-  public SlackWebhooksImpl(Client client, StaticConfig staticConfig, SlackWebhookDAO webhookDAO,
-      @Named(CLIENT_ID) String clientId, @Named(CLIENT_SECRET) String clientSecret) {
-    this.staticConfig = staticConfig;
+  public SlackWebhooksImpl(Client client, SlackWebhookDAO webhookDAO, @Named(CLIENT_ID) String clientId, @Named(CLIENT_SECRET) String clientSecret, @BaseUrl String baseUrl) {
     this.webhookDAO = webhookDAO;
     this.client = client;
     this.clientId = clientId;
     this.clientSecret = clientSecret;
+    this.baseUrl = baseUrl;
   }
 
   public SlackWebhook create(
@@ -50,7 +49,7 @@ public class SlackWebhooksImpl implements SlackWebhooks {
     }
     String requestString =
         "client_id=" + clientId + "&client_secret=" + clientSecret + "&code=" + code + "&redirect_uri=" +
-            URLEncoder.encode(staticConfig.getSlackRedirect(), "UTF-8");
+            URLEncoder.encode(baseUrl + "/slack/oauth", "UTF-8");
     JSONObject response = client.resource("https://slack.com/api/oauth.access")
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED)
         .entity(requestString)

@@ -14,7 +14,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
-import foodtruck.model.StaticConfig;
+import foodtruck.annotations.BaseUrl;
 import foodtruck.session.Session;
 
 import static foodtruck.slack.SlackWebhooksImpl.CLIENT_ID;
@@ -27,15 +27,15 @@ import static foodtruck.slack.SlackWebhooksImpl.CLIENT_ID;
 public class IntegrationsServlet extends HttpServlet {
 
   private final Provider<Session> sessionProvider;
-  private final StaticConfig staticConfig;
   private final String slackClientId;
+  private final String baseUrl;
 
   @Inject
-  public IntegrationsServlet(Provider<Session> sessionProvider, StaticConfig staticConfig,
-      @Named(CLIENT_ID) String clientId) {
+  public IntegrationsServlet(Provider<Session> sessionProvider, @Named(CLIENT_ID) String clientId,
+      @BaseUrl String baseUrl) {
     this.sessionProvider = sessionProvider;
-    this.staticConfig = staticConfig;
     this.slackClientId = clientId;
+    this.baseUrl = baseUrl;
   }
 
   @Override
@@ -43,7 +43,7 @@ public class IntegrationsServlet extends HttpServlet {
     Session session = sessionProvider.get();
     String code = String.valueOf((new Random()).nextInt());
     session.setProperty("slackCode", code);
-    req.setAttribute("encodedSlackUrl", URLEncoder.encode(staticConfig.getSlackRedirect(), "UTF-8"));
+    req.setAttribute("encodedSlackUrl", URLEncoder.encode(baseUrl + "/slack/oauth", "UTF-8"));
     req.setAttribute("slackCode", code);
     req.setAttribute("slackClientId", slackClientId);
     req.setAttribute("tab", "integrations");

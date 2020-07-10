@@ -7,11 +7,6 @@ package foodtruck.model;
 public class StaticConfig {
 
 
-  public String getBaseUrl() {
-    return System.getProperty("foodtrucklocator.baseUrl", "http://www.chicagofoodtruckfinder.com");
-  }
-
-
   public String getPrimaryTwitterList() {
     return System.getProperty("foodtrucklocator.twitter.list.id");
   }
@@ -40,7 +35,4 @@ public class StaticConfig {
     return System.getProperty("foodtrucklocator.user.agent", "ChicagoFoodTruckFinder");
   }
 
-  public String getSlackRedirect() {
-    return getBaseUrl() + "/slack/oauth";
-  }
 }

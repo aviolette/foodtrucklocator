@@ -21,11 +21,11 @@ import com.sun.jersey.api.client.WebResource;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import foodtruck.annotations.BaseUrl;
 import foodtruck.dao.LocationDAO;
 import foodtruck.dao.SlackWebhookDAO;
 import foodtruck.model.Location;
 import foodtruck.model.SlackWebhook;
-import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
 import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.time.Clock;
@@ -43,16 +43,16 @@ public class SlackLunchtimeNotifications extends HttpServlet {
   private final LocationDAO locationDAO;
   private final FoodTruckStopService service;
   private final Clock clock;
-  private final StaticConfig config;
+  private final String baseUrl;
 
   @Inject
   public SlackLunchtimeNotifications(SlackWebhookDAO slackWebhookDAO, LocationDAO locationDAO,
-      FoodTruckStopService service, Clock clock, StaticConfig config) {
+      FoodTruckStopService service, Clock clock, @BaseUrl String baseUrl) {
     this.dao = slackWebhookDAO;
     this.locationDAO = locationDAO;
     this.service = service;
     this.clock = clock;
-    this.config = config;
+    this.baseUrl = baseUrl;
   }
 
   @Override
@@ -75,7 +75,7 @@ public class SlackLunchtimeNotifications extends HttpServlet {
       }
       String message = trucks.isEmpty() ? "There are no trucks at " + location.getShortenedName() + " for lunch today."  :
           "These trucks are at " + location.getShortenedName() + " today for lunch: " + trucks.stream()
-            .map(truck -> "<" + config.getBaseUrl() + "/trucks/" + truck.getId() + "|" + truck.getName() + ">")
+            .map(truck -> "<" + baseUrl + "/trucks/" + truck.getId() + "|" + truck.getName() + ">")
             .collect(Collectors.joining(", "));
       try {
         resource.type(MediaType.APPLICATION_JSON_TYPE)
