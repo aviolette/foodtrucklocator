@@ -40,8 +40,8 @@ public class TrucksServlet extends HttpServlet {
       req.setAttribute("filteredBy", tag);
     }
     req.setAttribute("foodTruckRequestOn", false);
-    req.setAttribute("description", "Catalogue of all the food trucks in " + staticConfig.getCity());
-    req.setAttribute("title", "Food Trucks in " + staticConfig.getCity());
+    req.setAttribute("description", "Catalogue of all the food trucks in Chicago");
+    req.setAttribute("title", "Food Trucks in Chicago");
     req.setAttribute("tab", "trucks");
     req.setAttribute("supportsBooking", false);
     req.getRequestDispatcher(JSP)

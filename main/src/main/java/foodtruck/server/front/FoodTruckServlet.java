@@ -12,6 +12,7 @@ import com.google.common.net.HttpHeaders;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import foodtruck.annotations.DefaultCityState;
 import foodtruck.annotations.MapCenter;
 import foodtruck.model.Location;
 import foodtruck.model.StaticConfig;
@@ -31,15 +32,17 @@ public class FoodTruckServlet extends HttpServlet {
   private final StaticConfig staticConfig;
   private final Location mapCenter;
   private final CounterPublisher publisher;
+  private final String cityState;
 
   @Inject
   public FoodTruckServlet(Clock clock, ScheduleCacher scheduleCacher, StaticConfig staticConfig,
-      @MapCenter Location location, CounterPublisher publisher) {
+      @MapCenter Location location, CounterPublisher publisher, @DefaultCityState String cityState) {
     this.clock = clock;
     this.scheduleCacher = scheduleCacher;
     this.staticConfig = staticConfig;
     this.mapCenter = location;
     this.publisher = publisher;
+    this.cityState = cityState;
   }
 
   @Override
@@ -63,8 +66,8 @@ public class FoodTruckServlet extends HttpServlet {
     String frontDoorAppKey = staticConfig.getFrontDoorAppKey();
     publisher.increment("daily_schedule_request", 1, clock.nowInMillis(), ImmutableMap.of("APP_KEY", frontDoorAppKey));
     req.setAttribute("appKey", frontDoorAppKey);
-    req.setAttribute("defaultCity", staticConfig.getCityState());
-    req.setAttribute("description", "Find food trucks on the streets of " + staticConfig.getCity() +
+    req.setAttribute("defaultCity", cityState);
+    req.setAttribute("description", "Find food trucks on the streets of Chicago" +
         " by time and location.  Results are updated in real-time throughout the day.");
     resp.setHeader(HttpHeaders.CACHE_CONTROL, "no-cache");
     resp.setHeader(HttpHeaders.PRAGMA, "no-cache");

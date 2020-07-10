@@ -24,8 +24,8 @@ import com.google.inject.Singleton;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 
+import foodtruck.annotations.IconBucketName;
 import foodtruck.dao.TruckDAO;
-import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
 import foodtruck.time.HttpHeaderFormat;
 
@@ -38,16 +38,16 @@ public class ImageServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(ImageServlet.class.getName());
   private final GcsService cloudStorage;
   private final DateTimeFormatter dateFormatter;
-  private final StaticConfig staticConfig;
   private final TruckDAO truckDAO;
+  private final String iconBucket;
 
   @Inject
   public ImageServlet(GcsService cloudStorage, @HttpHeaderFormat DateTimeFormatter formatter,
-      StaticConfig staticConfig, TruckDAO truckDAO) {
+      TruckDAO truckDAO, @IconBucketName String iconBucket) {
     this.cloudStorage = cloudStorage;
     this.dateFormatter = formatter;
-    this.staticConfig = staticConfig;
     this.truckDAO = truckDAO;
+    this.iconBucket = iconBucket;
   }
 
   @Override
@@ -88,7 +88,7 @@ public class ImageServlet extends HttpServlet {
       fileName = fileNameFrom(fileName, fileName.substring(lastIndex+1), isIpad);
     }
     log.log(Level.INFO, "Retrieving image: {0}", fileName);
-    return new GcsFilename(staticConfig.getIconBucket(), fileName);
+    return new GcsFilename(iconBucket, fileName);
   }
 
   private String fileNameFrom(final String fileName, String suffix,

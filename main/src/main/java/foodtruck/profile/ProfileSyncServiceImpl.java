@@ -21,8 +21,9 @@ import com.sun.jersey.api.client.WebResource;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import foodtruck.annotations.DefaultCityState;
+import foodtruck.annotations.IconBucketName;
 import foodtruck.dao.TruckDAO;
-import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
 import foodtruck.socialmedia.FacebookEndpoint;
 import foodtruck.socialmedia.TwitterFactoryWrapper;
@@ -37,37 +38,43 @@ import twitter4j.User;
  * @since 12/30/14
  */
 public class ProfileSyncServiceImpl implements ProfileSyncService {
+
   private static final Logger log = Logger.getLogger(ProfileSyncServiceImpl.class.getName());
   private final Provider<TwitterFactoryWrapper> twitterFactoryProvider;
   private final StorageService storageService;
   private final TruckDAO truckDAO;
-  private final StaticConfig staticConfig;
   private final Pattern pageUrlPattern = Pattern.compile("/pages/(.*)/(\\d+)");
   private final WebResource facebookResource;
-
+  private final String cityState;
+  private final String iconBucket;
 
   @Inject
-  public ProfileSyncServiceImpl(Provider<TwitterFactoryWrapper> twitterFactoryProvider, TruckDAO truckDAO, StaticConfig staticConfig,
-      @FacebookEndpoint WebResource facebookResource, StorageService storageService) {
+  public ProfileSyncServiceImpl(Provider<TwitterFactoryWrapper> twitterFactoryProvider, TruckDAO truckDAO,
+      @FacebookEndpoint WebResource facebookResource, StorageService storageService,
+      @DefaultCityState String cityState, @IconBucketName String iconBucket) {
     this.twitterFactoryProvider = twitterFactoryProvider;
     this.truckDAO = truckDAO;
-    this.staticConfig = staticConfig;
     this.facebookResource = facebookResource;
     this.storageService = storageService;
+    this.cityState = cityState;
+    this.iconBucket = iconBucket;
   }
 
   @Override
   public Truck createFromTwitter(Truck truck) {
-    Twitter twitter = twitterFactoryProvider.get().create();
+    Twitter twitter = twitterFactoryProvider.get()
+        .create();
     try {
-      ResponseList<User> lookup = twitter.users().lookupUsers(truck.getTwitterHandle());
+      ResponseList<User> lookup = twitter.users()
+          .lookupUsers(truck.getTwitterHandle());
       User user = Iterables.getFirst(lookup, null);
       if (user != null) {
-        String url = syncToGoogleStorage(user.getScreenName(), user.getProfileImageURL(), staticConfig.getIconBucket());
-        String website = user.getURLEntity().getExpandedURL();
+        String url = syncToGoogleStorage(user.getScreenName(), user.getProfileImageURL(), iconBucket);
+        String website = user.getURLEntity()
+            .getExpandedURL();
         truck = Truck.builder(truck)
             .name(user.getName())
-            .defaultCity(staticConfig.getCityState())
+            .defaultCity(cityState)
             .categories(ImmutableSet.of("Lunch"))
             .useTwittalyzer(true)
             .url(website)
@@ -85,8 +92,7 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
   private String syncToGoogleStorage(String twitterHandle, String ogIconUrl, String bucket) {
     try {
       // If the twitter profile exists, then get the icon URL
-      String extension = ogIconUrl.substring(ogIconUrl.lastIndexOf(".")),
-          fileName = twitterHandle + extension;
+      String extension = ogIconUrl.substring(ogIconUrl.lastIndexOf(".")), fileName = twitterHandle + extension;
       return storageService.copyUrl(ogIconUrl, bucket, fileName);
     } catch (Exception io) {
       log.log(Level.WARNING, io.getMessage(), io);
@@ -156,23 +162,21 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
     } catch (JSONException e) {
       return truck;
     }
-      try {
-        if (Strings.isNullOrEmpty(truck.getUrl())) {
-          builder.url(responseObj.getString("website"));
-        }
-        if (Strings.isNullOrEmpty(truck.getPhone())) {
-          builder.phone(responseObj.getString("phone"));
-        }
-      } catch (JSONException ignored) {
+    try {
+      if (Strings.isNullOrEmpty(truck.getUrl())) {
+        builder.url(responseObj.getString("website"));
       }
+      if (Strings.isNullOrEmpty(truck.getPhone())) {
+        builder.phone(responseObj.getString("phone"));
+      }
+    } catch (JSONException ignored) {
+    }
     // http://graph.facebook.com/overrice.foodtruck/picture?height=400&width=400
     if (Strings.isNullOrEmpty(truck.getPreviewIcon())) {
       try {
         URL iconUrl = new URL("http", "graph.facebook.com", 80, uri + "/picture?width=180&height=180");
         log.log(Level.INFO, "Syncing from URL {0}", iconUrl.toString());
-        builder.previewIcon(
-            copyUrlToStorage(iconUrl, staticConfig.getIconBucket(),
-                truck.getId() + "_preview"));
+        builder.previewIcon(copyUrlToStorage(iconUrl, iconBucket, truck.getId() + "_preview"));
       } catch (MalformedURLException e) {
         return truck;
       }
@@ -180,7 +184,8 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
     return builder.build();
   }
 
-  private @Nullable String copyUrlToStorage(URL iconUrl, String truckIconsBucket, String baseName) {
+  private @Nullable
+  String copyUrlToStorage(URL iconUrl, String truckIconsBucket, String baseName) {
     try {
       // If the twitter profile exists, then get the icon URL
       // copy icon to google cloud storage
@@ -199,33 +204,41 @@ public class ProfileSyncServiceImpl implements ProfileSyncService {
   }
 
   private Truck syncFromTwitter(Truck truck) {
-    Twitter twitter = twitterFactoryProvider.get().create();
+    Twitter twitter = twitterFactoryProvider.get()
+        .create();
     try {
       ResponseList<User> response = twitter.users()
-          .lookupUsers(new String[]{truck.getTwitterHandle()});
+          .lookupUsers(truck.getTwitterHandle());
       User user = Iterables.getFirst(response, null);
       if (user != null) {
-        String twitterHandle = user.getScreenName().toLowerCase();
+        String twitterHandle = user.getScreenName()
+            .toLowerCase();
         Truck.Builder builder = Truck.builder(truck);
-        if (Strings.isNullOrEmpty(truck.getIconUrl()) || truck.getIconUrl().contains("pbs.")) {
-          String url = syncToGoogleStorage(twitterHandle, user.getProfileImageURL(), staticConfig.getIconBucket());
+        if (Strings.isNullOrEmpty(truck.getIconUrl()) || truck.getIconUrl()
+            .contains("pbs.")) {
+          String url = syncToGoogleStorage(twitterHandle, user.getProfileImageURL(), iconBucket);
           builder.iconUrl(url);
         }
         if (Strings.isNullOrEmpty(truck.getPreviewIcon())) {
-          URL iconUrl = new URL(user.getProfileImageURL().replaceAll("_normal", "_400x400"));
-          builder.previewIcon(copyUrlToStorage(iconUrl, staticConfig.getIconBucket(), truck.getId() + "_preview"));
+          URL iconUrl = new URL(user.getProfileImageURL()
+              .replaceAll("_normal", "_400x400"));
+          builder.previewIcon(copyUrlToStorage(iconUrl, iconBucket, truck.getId() + "_preview"));
         }
-        if (Strings.isNullOrEmpty(truck.getBackgroundImage()) && !Strings.isNullOrEmpty(user.getProfileBannerMobileURL())) {
+        if (Strings.isNullOrEmpty(truck.getBackgroundImage()) &&
+            !Strings.isNullOrEmpty(user.getProfileBannerMobileURL())) {
           URL backgroundUrl = new URL(user.getProfileBannerMobileURL());
-          builder.backgroundImage(copyUrlToStorage(backgroundUrl, staticConfig.getIconBucket(), truck.getId() + "_banner"));
+          builder.backgroundImage(
+              copyUrlToStorage(backgroundUrl, iconBucket, truck.getId() + "_banner"));
         }
-        if (Strings.isNullOrEmpty(truck.getBackgroundImageLarge()) && !Strings.isNullOrEmpty(user.getProfileBannerIPadRetinaURL())) {
+        if (Strings.isNullOrEmpty(truck.getBackgroundImageLarge()) &&
+            !Strings.isNullOrEmpty(user.getProfileBannerIPadRetinaURL())) {
           URL backgroundUrl = new URL(user.getProfileBannerIPadRetinaURL());
-          builder.backgroundImageLarge(copyUrlToStorage(backgroundUrl, staticConfig.getIconBucket(), truck.getId() + "_bannerlarge"));
+          builder.backgroundImageLarge(
+              copyUrlToStorage(backgroundUrl, iconBucket, truck.getId() + "_bannerlarge"));
         }
         return builder.build();
       }
-    } catch (TwitterException|MalformedURLException e) {
+    } catch (TwitterException | MalformedURLException e) {
       throw new RuntimeException(e);
     }
     return truck;

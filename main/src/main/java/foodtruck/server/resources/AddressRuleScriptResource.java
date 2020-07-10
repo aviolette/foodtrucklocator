@@ -60,7 +60,7 @@ public class AddressRuleScriptResource {
       extractor.executeScript("Hello World", truck, script.getScript());
       BufferedReader reader = new BufferedReader(new StringReader(script.getScript()));
       String firstLine = reader.readLine();
-      Preconditions.checkState(firstLine.contains(config.getCity()),
+      Preconditions.checkState(firstLine.contains("Chicago"),
           "First line of script must contain correct city name");
     } catch (Exception e) {
       throw new WebApplicationException(Response.status(400)

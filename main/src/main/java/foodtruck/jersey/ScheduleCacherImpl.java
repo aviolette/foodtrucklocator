@@ -10,7 +10,6 @@ import org.joda.time.LocalDate;
 
 import foodtruck.caching.Cacher;
 import foodtruck.model.DailySchedule;
-import foodtruck.model.StaticConfig;
 import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.schedule.ScheduleCacher;
 import foodtruck.server.resources.json.DailyScheduleWriter;
@@ -26,19 +25,16 @@ public class ScheduleCacherImpl implements ScheduleCacher {
   private static final String DAILY_SCHEDULE = "daily_schedule";
   private static final String TOMORROWS_SCHEDULE = "tomorrows_schedule";
   private final Clock clock;
-  private final StaticConfig staticConfig;
-  private Cacher cacher;
-  private DailyScheduleWriter writer;
-  private FoodTruckStopService service;
+  private final Cacher cacher;
+  private final DailyScheduleWriter writer;
+  private final FoodTruckStopService service;
 
   @Inject
-  public ScheduleCacherImpl(Cacher cacher, DailyScheduleWriter writer, FoodTruckStopService service, Clock clock,
-      StaticConfig staticConfig) {
+  public ScheduleCacherImpl(Cacher cacher, DailyScheduleWriter writer, FoodTruckStopService service, Clock clock) {
     this.cacher = cacher;
     this.writer = writer;
     this.service = service;
     this.clock = clock;
-    this.staticConfig = staticConfig;
   }
 
   @Override
@@ -47,7 +43,7 @@ public class ScheduleCacherImpl implements ScheduleCacher {
   }
 
   private String fetchSchedule(LocalDate localDate, String key) {
-    if (staticConfig.isScheduleCachingOn() && cacher.contains(key)) {
+    if (cacher.contains(key)) {
       log.info("Schedule loaded from cache");
       return (String) cacher.get(key);
     }
@@ -56,9 +52,7 @@ public class ScheduleCacherImpl implements ScheduleCacher {
     try {
       JSONObject json = writer.asJSON(schedule);
       String payload = json.toString();
-      if (staticConfig.isScheduleCachingOn()) {
-        cacher.put(key, payload, 5);
-      }
+      cacher.put(key, payload, 5);
       return payload;
     } catch (JSONException e) {
       throw new RuntimeException(e);

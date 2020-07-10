@@ -13,6 +13,7 @@ import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 
 import foodtruck.annotations.BaseUrl;
 import foodtruck.annotations.DefaultCityState;
+import foodtruck.annotations.IconBucketName;
 import foodtruck.annotations.LocalInstance;
 import foodtruck.annotations.OwnerEmail;
 import foodtruck.annotations.SystemNotificationList;
@@ -349,5 +350,11 @@ class FoodtruckServletModule extends ServletModule {
   public String providesBaseUrl() {
     return System.getenv()
         .getOrDefault("FOODTRUCK_BASE_URL", "https://www.chicagofoodtruckfinder.com");
+  }
+
+  @IconBucketName
+  @Provides
+  public String provideIconBucket() {
+    return "truckicons";
   }
 }

@@ -31,6 +31,7 @@ import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckObserverDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.geolocation.GeoLocator;
+import foodtruck.mail.SystemNotificationService;
 import foodtruck.model.StaticConfig;
 import foodtruck.model.StopOrigin;
 import foodtruck.model.Story;
@@ -38,7 +39,6 @@ import foodtruck.model.Truck;
 import foodtruck.model.TruckObserver;
 import foodtruck.model.TruckStop;
 import foodtruck.monitoring.Monitored;
-import foodtruck.mail.SystemNotificationService;
 import foodtruck.socialmedia.SocialMediaConnector;
 import foodtruck.time.Clock;
 import foodtruck.time.TimeOnlyFormatter;
@@ -428,7 +428,7 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
       }
       final OffTheRoadResponse offTheRoadResponse = offTheRoadDetector.offTheRoad(tweet.getText());
       if (offTheRoadResponse.isOffTheRoad()) {
-        if (offTheRoadResponse.isConfidenceHigh() && staticConfig.isAutoOffRoad()) {
+        if (offTheRoadResponse.isConfidenceHigh()) {
           log.log(Level.INFO, "Auto canceling stops for truck {0} based on tweet: {1}",
               new Object[]{truck.getId(), tweet.getText()});
           int count = truckStopService.cancelRemainingStops(truck.getId(), clock.now());
