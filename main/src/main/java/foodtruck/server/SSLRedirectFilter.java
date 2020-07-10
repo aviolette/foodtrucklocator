@@ -34,7 +34,7 @@ class SSLRedirectFilter implements Filter {
       HttpServletRequest request = (HttpServletRequest) req;
       resp.sendRedirect(new UrlBuilder(request).protocol("https")
           .port(443)
-          .host(System.getProperty("foodtrucklocator.host", "www.chicagofoodtruckfinder.com"))
+          .host("www.chicagofoodtruckfinder.com")
           .build());
       return;
     }

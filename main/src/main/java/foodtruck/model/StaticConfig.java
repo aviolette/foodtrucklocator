@@ -19,20 +19,5 @@ public class StaticConfig {
     return System.getProperty("foodtrucklocator.twitter.list.owner");
   }
 
-  public String getSyncUrl() {
-    return System.getProperty("foodtrucklocator.sync.url", null);
-  }
-
-  public String getSyncAppKey() {
-    return System.getProperty("foodtrucklocator.sync.app.key", null);
-  }
-
-  public String getFrontDoorAppKey() {
-    return System.getProperty("foodtrucklocator.frontdoor.app.key", "");
-  }
-
-  public String getUserAgent() {
-    return System.getProperty("foodtrucklocator.user.agent", "ChicagoFoodTruckFinder");
-  }
 
 }

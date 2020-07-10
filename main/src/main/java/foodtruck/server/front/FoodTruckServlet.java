@@ -13,36 +13,38 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import foodtruck.annotations.DefaultCityState;
+import foodtruck.annotations.FrontDoorAppKey;
 import foodtruck.annotations.MapCenter;
 import foodtruck.model.Location;
-import foodtruck.model.StaticConfig;
 import foodtruck.monitoring.CounterPublisher;
 import foodtruck.schedule.ScheduleCacher;
 import foodtruck.time.Clock;
 
 /**
  * Servlet that serves up the main food truck page.
+ *
  * @author aviolette
  * @since Jul 12, 2011
  */
 @Singleton
 public class FoodTruckServlet extends HttpServlet {
+
   private final Clock clock;
   private final ScheduleCacher scheduleCacher;
-  private final StaticConfig staticConfig;
   private final Location mapCenter;
   private final CounterPublisher publisher;
   private final String cityState;
+  private final String appKey;
 
   @Inject
-  public FoodTruckServlet(Clock clock, ScheduleCacher scheduleCacher, StaticConfig staticConfig,
-      @MapCenter Location location, CounterPublisher publisher, @DefaultCityState String cityState) {
+  public FoodTruckServlet(Clock clock, ScheduleCacher scheduleCacher, @MapCenter Location location, CounterPublisher publisher, @DefaultCityState String cityState,
+      @FrontDoorAppKey String appKey) {
     this.clock = clock;
     this.scheduleCacher = scheduleCacher;
-    this.staticConfig = staticConfig;
     this.mapCenter = location;
     this.publisher = publisher;
     this.cityState = cityState;
+    this.appKey = appKey;
   }
 
   @Override
@@ -59,13 +61,13 @@ public class FoodTruckServlet extends HttpServlet {
     final String mode = req.getParameter("mode");
     req.setAttribute("mobile", "mobile".equals(mode));
     req.setAttribute("mode", mode);
-    req.setAttribute("requestTimeInMillis", clock.now().getMillis());
+    req.setAttribute("requestTimeInMillis", clock.now()
+        .getMillis());
     req.setAttribute("tab", "map");
     req.setAttribute("suffix", "");
 
-    String frontDoorAppKey = staticConfig.getFrontDoorAppKey();
-    publisher.increment("daily_schedule_request", 1, clock.nowInMillis(), ImmutableMap.of("APP_KEY", frontDoorAppKey));
-    req.setAttribute("appKey", frontDoorAppKey);
+    publisher.increment("daily_schedule_request", 1, clock.nowInMillis(), ImmutableMap.of("APP_KEY", appKey));
+    req.setAttribute("appKey", appKey);
     req.setAttribute("defaultCity", cityState);
     req.setAttribute("description", "Find food trucks on the streets of Chicago" +
         " by time and location.  Results are updated in real-time throughout the day.");

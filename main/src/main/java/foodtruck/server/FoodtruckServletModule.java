@@ -13,6 +13,7 @@ import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 
 import foodtruck.annotations.BaseUrl;
 import foodtruck.annotations.DefaultCityState;
+import foodtruck.annotations.FrontDoorAppKey;
 import foodtruck.annotations.IconBucketName;
 import foodtruck.annotations.LocalInstance;
 import foodtruck.annotations.OwnerEmail;
@@ -356,5 +357,11 @@ class FoodtruckServletModule extends ServletModule {
   @Provides
   public String provideIconBucket() {
     return "truckicons";
+  }
+
+  @FrontDoorAppKey
+  @Provides
+  public String providesFrontDoorAppKey() {
+    return System.getenv().get("FOODTRUCK_APP_KEY");
   }
 }

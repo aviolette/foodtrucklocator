@@ -20,7 +20,6 @@ import foodtruck.dao.LocationDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.model.Location;
-import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 import foodtruck.net.UrlResource;
@@ -35,7 +34,6 @@ import foodtruck.time.Clock;
 @Singleton
 public class SyncServlet extends HttpServlet {
 
-  private final StaticConfig staticConfig;
   private final TruckReader truckReader;
   private final TruckDAO truckDAO;
   private final TruckStopDAO truckStopDAO;
@@ -45,7 +43,7 @@ public class SyncServlet extends HttpServlet {
   private final UrlResource urls;
 
   @Inject
-  public SyncServlet(StaticConfig staticConfig, TruckReader truckReader, TruckDAO truckDAO, TruckStopDAO truckStopDAO,
+  public SyncServlet(TruckReader truckReader, TruckDAO truckDAO, TruckStopDAO truckStopDAO,
       Clock clock, LocationReader locationReader, LocationDAO locationDAO, UrlResource urls) {
     this.truckReader = truckReader;
     this.truckDAO = truckDAO;
@@ -53,16 +51,19 @@ public class SyncServlet extends HttpServlet {
     this.clock = clock;
     this.locationReader = locationReader;
     this.locationDAO = locationDAO;
-    this.staticConfig = staticConfig;
     this.urls = urls;
   }
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     req.setAttribute("nav", "sync");
-    req.setAttribute("syncEnabled", !Strings.isNullOrEmpty(staticConfig.getSyncUrl()));
+    req.setAttribute("syncEnabled", !Strings.isNullOrEmpty(getSyncUrl()));
     req.getRequestDispatcher("/WEB-INF/jsp/dashboard/sync.jsp")
         .forward(req, resp);
+  }
+
+  private String getSyncUrl() {
+    return System.getenv().get("FOODTRUCK_SYNC_URL");
   }
 
   @Override
@@ -73,7 +74,7 @@ public class SyncServlet extends HttpServlet {
     if (syncTrucks) {
       truckDAO.deleteAll();
       JSONArray arr = urls.getAsArray(
-          staticConfig.getSyncUrl() + "/services/trucks?appKey=" + staticConfig.getSyncAppKey());
+          getSyncUrl() + "/services/trucks?appKey=" + getSyncAppKey());
       for (int i = 0; i < arr.length(); i++) {
         try {
           Truck truck = truckReader.asJSON(arr.getJSONObject(i));
@@ -91,11 +92,11 @@ public class SyncServlet extends HttpServlet {
           .withMinuteOfHour(0);
       truckStopDAO.deleteAfter(from);
       JSONObject dailySchedule = urls.getAsJson(
-          staticConfig.getSyncUrl() + "/services/daily_schedule?appKey=" + staticConfig.getSyncAppKey());
+          getSyncUrl() + "/services/daily_schedule?appKey=" + getSyncAppKey());
 
       try {
         JSONArray locations = dailySchedule.getJSONArray("locations");
-        Location loc[] = new Location[locations.length()];
+        Location[] loc = new Location[locations.length()];
         for (int i = 0; i < locations.length(); i++) {
           Location location = locationReader.toLocation(locations.getJSONObject(i));
           locationDAO.findByName(location.getName())
@@ -124,5 +125,9 @@ public class SyncServlet extends HttpServlet {
       }
     }
     resp.sendRedirect("/admin/trucks");
+  }
+
+  private String getSyncAppKey() {
+    return System.getenv().get("FOODTRUCK_SYNC_KEY");
   }
 }
