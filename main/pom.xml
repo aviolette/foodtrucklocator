@@ -137,13 +137,6 @@
       <artifactId>google-cloud-kms</artifactId>
       <version>1.20.0</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/com.google.cloud/google-cloud-pubsub -->
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-pubsub</artifactId>
-      <version>1.108.0</version>
-    </dependency>
-
     <!-- https://mvnrepository.com/artifact/com.google.truth.extensions/truth-java8-extension -->
     <dependency>
       <groupId>com.google.truth.extensions</groupId>
