@@ -1,10 +1,14 @@
 package foodtruck.schedule;
 
+import java.io.IOException;
 import java.util.Objects;
 
 import com.google.appengine.api.taskqueue.Queue;
+import com.google.cloud.pubsub.v1.Publisher;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.protobuf.ByteString;
+import com.google.pubsub.v1.PubsubMessage;
 
 import foodtruck.dao.TempTruckStopDAO;
 import foodtruck.dao.TruckDAO;
@@ -47,24 +51,33 @@ public class TempScheduleService {
 
     truckDAO.findTruckWithICalCalendars()
         .forEach(truck -> queue.add(
-            withUrl("/cron/populate_ical_stops")
-                .param("calendar", Objects.requireNonNull(truck.getIcalCalendar()))
+            withUrl("/cron/populate_ical_stops").param("calendar", Objects.requireNonNull(truck.getIcalCalendar()))
                 .param("truck", truck.getId())));
-    truckDAO.findTrucksWithCalendars().forEach(truck -> queue.add(withUrl("/cron/populate_google_calendar_schedule")
-        .param("calendar", Objects.requireNonNull(truck.getCalendarUrl()))
-        .param("truck", truck.getId())));
+    truckDAO.findTrucksWithCalendars()
+        .forEach(truck -> queue.add(withUrl("/cron/populate_google_calendar_schedule").param("calendar",
+            Objects.requireNonNull(truck.getCalendarUrl()))
+            .param("truck", truck.getId())));
 
-    queue.add(withUrl("/cron/populate_google_calendar_schedule")
-        .param("calendar", "oswegobrewing.com_rg6gupgfqs5d3h97ur31ed88i0@group.calendar.google.com")
+    queue.add(withUrl("/cron/populate_google_calendar_schedule").param("calendar",
+        "oswegobrewing.com_rg6gupgfqs5d3h97ur31ed88i0@group.calendar.google.com")
         .param("defaultLocation", "Oswego Brewing Co."));
-    queue.add(withUrl("/cron/populate_google_calendar_schedule")
-        .param("calendar", "archerliquors@mac.com")
+    queue.add(withUrl("/cron/populate_google_calendar_schedule").param("calendar", "archerliquors@mac.com")
         .param("defaultLocation", "Archer Liquors"));
-    queue.add(withUrl("/cron/populate_ical_location_stops")
-        .param("calendar", "http://www.churchstreetbrew.com/home/events/?ical=1&tribe_display=list")
+    queue.add(withUrl("/cron/populate_ical_location_stops").param("calendar",
+        "http://www.churchstreetbrew.com/home/events/?ical=1&tribe_display=list")
         .param("defaultLocation", "Church Street Brewing Co"));
-    queue.add(withUrl("/cron/populate_google_calendar_schedule")
-        .param("calendar", "vchs3vsio3lll8m1anmschn1bs@group.calendar.google.com")
+    queue.add(withUrl("/cron/populate_google_calendar_schedule").param("calendar",
+        "vchs3vsio3lll8m1anmschn1bs@group.calendar.google.com")
         .param("defaultLocation", "Hickory Creek Brewing Company"));
+
+    try {
+      Publisher publisher = Publisher.newBuilder("schedule-build")
+          .build();
+      PubsubMessage pubsubMessage =
+          PubsubMessage.newBuilder().setData(ByteString.copyFromUtf8("{}")).build();
+      publisher.publish(pubsubMessage);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 }
