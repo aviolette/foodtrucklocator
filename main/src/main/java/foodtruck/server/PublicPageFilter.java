@@ -17,7 +17,6 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import foodtruck.annotations.GoogleJavascriptApiKey;
-import foodtruck.model.StaticConfig;
 import foodtruck.user.LoggedInUser;
 
 /**
@@ -27,14 +26,11 @@ import foodtruck.user.LoggedInUser;
 @Singleton
 public class PublicPageFilter implements Filter {
   private final Provider<Optional<LoggedInUser>> loggedInUserProvider;
-  private final StaticConfig staticConfig;
   private final String googleJavascriptAPIKey;
 
   @Inject
-  public PublicPageFilter(Provider<Optional<LoggedInUser>> loggedInUserProvider, StaticConfig staticConfig,
-      @GoogleJavascriptApiKey String googleJavascriptAPIKey) {
+  public PublicPageFilter(Provider<Optional<LoggedInUser>> loggedInUserProvider, @GoogleJavascriptApiKey String googleJavascriptAPIKey) {
     this.loggedInUserProvider = loggedInUserProvider;
-    this.staticConfig = staticConfig;
     this.googleJavascriptAPIKey = googleJavascriptAPIKey;
   }
 

@@ -22,7 +22,6 @@ import foodtruck.dao.LocationDAO;
 import foodtruck.dao.ReverseLookupDAO;
 import foodtruck.model.Location;
 import foodtruck.model.PartialLocation;
-import foodtruck.model.StaticConfig;
 import foodtruck.notifications.PublicEventNotificationService;
 import foodtruck.schedule.FoodTruckStopService;
 import foodtruck.server.GuiceHackRequestWrapper;
@@ -49,8 +48,7 @@ public class LocationEditServlet extends HttpServlet {
 
   @Inject
   public LocationEditServlet(LocationDAO dao, LocationWriter writer, LocationReader reader,
-      FoodTruckStopService truckStopService, PublicEventNotificationService notificationService, StaticConfig config,
-      ReverseLookupDAO reverseLookupDAO, @GoogleJavascriptApiKey String apiKey) {
+      FoodTruckStopService truckStopService, PublicEventNotificationService notificationService, ReverseLookupDAO reverseLookupDAO, @GoogleJavascriptApiKey String apiKey) {
     this.locationDAO = dao;
     this.writer = writer;
     this.reader = reader;

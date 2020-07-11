@@ -6,7 +6,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -16,7 +15,6 @@ import org.joda.time.DateTimeZone;
 
 import foodtruck.dao.StoryDAO;
 import foodtruck.model.Location;
-import foodtruck.model.StaticConfig;
 import foodtruck.model.Story;
 import foodtruck.model.StoryType;
 import foodtruck.model.Truck;
@@ -36,21 +34,19 @@ import twitter4j.conf.PropertyConfiguration;
  * @since 8/26/15
  */
 public class TwitterConnector implements SocialMediaConnector {
-
+  private static final int TWITTER_LIST_ID = 56683487;
   private static final Logger log = Logger.getLogger(TwitterConnector.class.getName());
 
   private final Provider<TwitterFactoryWrapper> twitterFactoryWrapperProvider;
   private final DateTimeZone defaultZone;
-  private final StaticConfig config;
   private final StoryDAO tweetDAO;
   private final Properties properties;
 
   @Inject
-  public TwitterConnector(Provider<TwitterFactoryWrapper> twitterProvider, DateTimeZone defaultZone,
-      StaticConfig config, StoryDAO tweetDAO, @foodtruck.annotations.Twitter Properties properties) {
+  public TwitterConnector(Provider<TwitterFactoryWrapper> twitterProvider, DateTimeZone defaultZone, StoryDAO tweetDAO,
+      @foodtruck.annotations.Twitter Properties properties) {
     this.twitterFactoryWrapperProvider = twitterProvider;
     this.defaultZone = defaultZone;
-    this.config = config;
     this.tweetDAO = tweetDAO;
     this.properties = properties;
   }
@@ -62,13 +58,7 @@ public class TwitterConnector implements SocialMediaConnector {
     try {
       Paging paging = determinePaging();
       List<Status> statuses;
-      String slug = config.getPrimaryTwitterListSlug();
-      if (Strings.isNullOrEmpty(slug)) {
-        int twitterListId = Integer.parseInt(config.getPrimaryTwitterList());
-        statuses = twitter.getUserListStatuses(twitterListId, paging);
-      } else {
-        statuses = twitter.getUserListStatuses(config.getPrimaryTwitterListOwner(), slug, paging);
-      }
+      statuses = twitter.getUserListStatuses(TWITTER_LIST_ID, paging);
       boolean first = true;
       for (Status status : statuses) {
         if (first) {

@@ -23,7 +23,6 @@ import org.joda.time.format.DateTimeFormatter;
 
 import foodtruck.annotations.MapCenter;
 import foodtruck.model.Location;
-import foodtruck.model.StaticConfig;
 import foodtruck.schedule.custom.chicago.ChicagoModule;
 import foodtruck.time.MilitaryTimeOnlyFormatter;
 
@@ -50,7 +49,7 @@ public class ScheduleModule extends AbstractModule {
   }
 
   @Provides @MapCenter
-  public Location providesMapCenter(StaticConfig config) {
+  public Location providesMapCenter() {
     Location.Builder builder = Location.builder().name("Unnamed")
         .lat(41.880187)
         .lng(-87.63083499999999);

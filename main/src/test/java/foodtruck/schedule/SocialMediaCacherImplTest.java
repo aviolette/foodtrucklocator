@@ -26,7 +26,6 @@ import foodtruck.dao.TruckStopDAO;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.mail.SystemNotificationService;
 import foodtruck.model.Location;
-import foodtruck.model.StaticConfig;
 import foodtruck.model.Story;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckObserver;
@@ -84,7 +83,7 @@ public class SocialMediaCacherImplTest extends Mockito {
     Set<SocialMediaConnector> connectors = ImmutableSet.of();
     service = new SocialMediaCacherImpl( tweetDAO, matcher,
         truckStopDAO, clock, terminationDetector, truckDAO, emailNotifier, offTheRoadDetector, locator,
-        truckObserverDAO, null, timeFormatter, new StaticConfig(), connectors, specialsUpdater, mock(StoryEventCallback.class));
+        truckObserverDAO, null, timeFormatter, connectors, specialsUpdater, mock(StoryEventCallback.class));
     loca = Location.builder().lat(1).lng(2).name("a").build();
     locb = Location.builder().lat(3).lng(4).name("b").build();
     basicTweet = new Story.Builder().time(now.minusHours(2)).text(

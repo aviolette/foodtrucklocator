@@ -8,10 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
-import foodtruck.model.StaticConfig;
 
 /**
  * @author aviolette
@@ -21,12 +18,6 @@ import foodtruck.model.StaticConfig;
 public class TrucksServlet extends HttpServlet {
 
   private static final String JSP = "/WEB-INF/jsp/trucks.jsp";
-  private final StaticConfig staticConfig;
-
-  @Inject
-  public TrucksServlet(StaticConfig staticConfig) {
-    this.staticConfig = staticConfig;
-  }
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

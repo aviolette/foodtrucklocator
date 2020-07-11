@@ -13,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import foodtruck.model.Location;
-import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
 import foodtruck.model.TruckStop;
 
@@ -25,7 +24,6 @@ import foodtruck.model.TruckStop;
 public class SimpleEmailNotifierTest {
 
   private SimpleEmailNotifier notifier;
-  @Mock private StaticConfig config;
   @Mock private EmailSender sender;
 
   @Before

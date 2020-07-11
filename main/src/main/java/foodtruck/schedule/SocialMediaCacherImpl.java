@@ -32,7 +32,6 @@ import foodtruck.dao.TruckObserverDAO;
 import foodtruck.dao.TruckStopDAO;
 import foodtruck.geolocation.GeoLocator;
 import foodtruck.mail.SystemNotificationService;
-import foodtruck.model.StaticConfig;
 import foodtruck.model.StopOrigin;
 import foodtruck.model.Story;
 import foodtruck.model.Truck;
@@ -63,7 +62,6 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
   private final TruckObserverDAO truckObserverDAO;
   private final FoodTruckStopService truckStopService;
   private final DateTimeFormatter timeFormatter;
-  private final StaticConfig staticConfig;
   private final Set<SocialMediaConnector> connectors;
   private final SpecialUpdater specialUpdater;
   private final StoryEventCallback eventHandler;
@@ -71,10 +69,8 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
   @Inject
   public SocialMediaCacherImpl(StoryDAO storyDAO, TruckStopMatcher matcher, TruckStopDAO truckStopDAO, Clock clock,
       TerminationDetector detector, TruckDAO truckDAO, SystemNotificationService notifier,
-      OffTheRoadDetector offTheRoadDetector,
-      GeoLocator locator, TruckObserverDAO truckObserverDAO, FoodTruckStopService truckStopService,
-      @TimeOnlyFormatter DateTimeFormatter timeFormatter, StaticConfig staticConfig,
-      Set<SocialMediaConnector> connectors, SpecialUpdater specialUpdater,
+      OffTheRoadDetector offTheRoadDetector, GeoLocator locator, TruckObserverDAO truckObserverDAO, FoodTruckStopService truckStopService,
+      @TimeOnlyFormatter DateTimeFormatter timeFormatter, Set<SocialMediaConnector> connectors, SpecialUpdater specialUpdater,
       StoryEventCallback eventHandler) {
     this.storyDAO = storyDAO;
     this.matcher = matcher;
@@ -88,7 +84,6 @@ class SocialMediaCacherImpl implements SocialMediaCacher {
     this.truckObserverDAO = truckObserverDAO;
     this.truckStopService = truckStopService;
     this.timeFormatter = timeFormatter;
-    this.staticConfig = staticConfig;
     this.connectors = connectors;
     this.specialUpdater = specialUpdater;
     this.eventHandler = eventHandler;

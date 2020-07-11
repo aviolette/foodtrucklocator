@@ -19,7 +19,6 @@ import foodtruck.annotations.RequiresAdmin;
 import foodtruck.dao.AddressRuleScriptDAO;
 import foodtruck.dao.TruckDAO;
 import foodtruck.model.AddressRuleScript;
-import foodtruck.model.StaticConfig;
 import foodtruck.model.Truck;
 import foodtruck.schedule.JavascriptAddressExtractor;
 
@@ -33,15 +32,13 @@ public class AddressRuleScriptResource {
   private final AddressRuleScriptDAO addressRuleDAO;
   private final JavascriptAddressExtractor extractor;
   private final TruckDAO truckDAO;
-  private final StaticConfig config;
 
   @Inject
   public AddressRuleScriptResource(AddressRuleScriptDAO addressRuleDAO, JavascriptAddressExtractor extractor,
-      TruckDAO truckDAO, StaticConfig config) {
+      TruckDAO truckDAO) {
     this.addressRuleDAO = addressRuleDAO;
     this.extractor = extractor;
     this.truckDAO = truckDAO;
-    this.config = config;
   }
 
   @GET
