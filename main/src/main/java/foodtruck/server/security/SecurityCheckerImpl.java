@@ -2,12 +2,14 @@ package foodtruck.server.security;
 
 import java.security.Principal;
 
+import javax.annotation.Nullable;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
@@ -67,5 +69,16 @@ public class SecurityCheckerImpl implements SecurityChecker {
   @Override
   public boolean isAdmin() {
     return userServiceProvider.get().isUserAdmin();
+  }
+
+  @Override
+  public void requiresSecret(@Nullable String secret) throws WebApplicationException {
+    if (Strings.isNullOrEmpty(secret)) {
+      throw new WebApplicationException(Response.Status.FORBIDDEN);
+    }
+    if (System.getenv().get("FOODTRUCK_API_SECRET").equals(secret)) {
+      return;
+    }
+    throw new WebApplicationException(Response.Status.FORBIDDEN);
   }
 }

@@ -1,5 +1,6 @@
 package foodtruck.server.security;
 
+import javax.annotation.Nullable;
 import javax.ws.rs.WebApplicationException;
 
 /**
@@ -18,4 +19,6 @@ public interface SecurityChecker {
    * Returns true if the currently logged in user is an admin user
    */
   boolean isAdmin();
+
+  void requiresSecret(@Nullable String secret) throws WebApplicationException;
 }
