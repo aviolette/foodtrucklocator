@@ -46,7 +46,7 @@ public class TempTruckStopProvider implements MessageBodyReader<TempTruckStop> {
       InputStream inputStream) throws IOException, WebApplicationException {
     TempTruckStop stop = mapper.readValue(inputStream, TempTruckStop.class);
     // verify that the location exists
-    log.log(Level.INFO, "Updating temp stop {0}", stop.getLocationName());
+    log.log(Level.INFO, "Verifying temp stop {0}", stop.getLocationName());
     geoLocator.locateOpt(stop.getLocationName()).orElseThrow( () -> new WebApplicationException(400));
     return stop;
   }
