@@ -10,11 +10,13 @@ import com.google.common.base.Objects;
  * @since 2018-12-09
  */
 public class TempTruckStop extends ModelEntity {
-  private final String truckId;
-  private final ZonedDateTime startTime;
-  private final ZonedDateTime endTime;
-  private final String locationName;
-  private final String calendarName;
+  private String truckId;
+  private ZonedDateTime startTime;
+  private ZonedDateTime endTime;
+  private String locationName;
+  private String calendarName;
+
+  public TempTruckStop() {}
 
   private TempTruckStop(Builder builder) {
     this.truckId = builder.truckId;

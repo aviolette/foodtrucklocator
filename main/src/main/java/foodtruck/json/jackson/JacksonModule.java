@@ -1,5 +1,7 @@
 package foodtruck.json.jackson;
 
+import java.time.ZonedDateTime;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -48,6 +50,7 @@ public class JacksonModule extends AbstractModule {
 
     objectMapper.registerModule(new SimpleModule()
         .addSerializer(DateTime.class, new JacksonDateTimeSerializer())
+        .addDeserializer(ZonedDateTime.class, new ZonedDateTimeDeserializer())
         .addDeserializer(DateTime.class, new JacksonDateTimeDeserializer()));
 
     return objectMapper;
