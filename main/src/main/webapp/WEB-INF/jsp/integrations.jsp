@@ -14,12 +14,6 @@
     <p class="lead">Aside from the website, you can also find out about Chicago food trucks from these integrations</p>
 
     <div class="media">
-      <img class="mr-4"  src="/img/alexa_horizontal_RGB_black_206.png"/>
-      <div class="media-body">
-        <p>You can enable the <a target="_blank" href="https://www.amazon.com/Andrew-Violette-Chicago-Truck-Finder/dp/B01LBSEQ4U">Chicago Food Truck Finder Alexa Skill</a> to find out information about what trucks are near you.</p>
-      </div>
-    </div>
-    <div class="media">
       <img class="mr-4" src="/img/ChromeWebStore_Badge_v2_206x58.png"/>
       <div class="media-body">
         <p>The <a target="_blank" href="https://chrome.google.com/webstore/detail/food-truck-finder-notifie/hapnieohgibnoaldifflafpcflcicdlc">Chicago Food Truck Finder Chrome Notifier</a> provides an icon in Google Chrome that indicates how many trucks are near you.

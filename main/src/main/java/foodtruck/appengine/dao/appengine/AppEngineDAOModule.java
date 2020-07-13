@@ -1,10 +1,8 @@
 package foodtruck.appengine.dao.appengine;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
 
 import foodtruck.dao.AddressRuleScriptDAO;
-import foodtruck.dao.AlexaExchangeDAO;
 import foodtruck.dao.ApplicationDAO;
 import foodtruck.dao.DailyDataDAO;
 import foodtruck.dao.LinxupAccountDAO;
@@ -34,7 +32,6 @@ public class AppEngineDAOModule extends AbstractModule {
   @Override
   protected void configure() {
     bind(AddressRuleScriptDAO.class).to(AddressRuleScriptDAOAppEngine.class);
-    bind(AlexaExchangeDAO.class).to(AlexaExchangeDAOAppEngine.class);
     bind(ApplicationDAO.class).to(ApplicationDAOAppEngine.class);
     bind(DailyDataDAO.class).to(DailyDataDAOAppEngine.class);
     bind(LinxupAccountDAO.class).to(LinxupDAOAppengine.class);

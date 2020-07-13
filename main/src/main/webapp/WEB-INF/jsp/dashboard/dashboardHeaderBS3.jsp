@@ -54,9 +54,6 @@
           </li>
           <li class="<c:if test="${nav == 'messages'}"> active</c:if>"><a href="/admin/messages">Messages</a>
           <li class="<c:if test="${nav == 'beacons'}"> active</c:if>"><a href="/admin/beacons">Beacons</a>
-          <li class="visible-desktop<c:if test="${nav == 'alexa'}"> active</c:if>"><a
-              href="/admin/alexa_query">Alexa</a></li>
-          </li>
         </ul>
         <ul class="nav navbar-right navbar-nav">
           <li><a href="#" class="btn btn-block" id="twitterButton"><span class="glyphicon glyphicon-refresh"></span>

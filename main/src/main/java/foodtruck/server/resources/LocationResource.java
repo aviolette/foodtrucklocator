@@ -2,7 +2,6 @@ package foodtruck.server.resources;
 
 import java.util.Collection;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -17,7 +16,6 @@ import com.google.inject.Inject;
 import com.sun.jersey.api.JResponse;
 
 import foodtruck.annotations.AppKey;
-import foodtruck.annotations.RequiresAdmin;
 import foodtruck.annotations.RequiresAppKeyWithCountRestriction;
 import foodtruck.dao.DailyDataDAO;
 import foodtruck.dao.LocationDAO;
@@ -50,18 +48,6 @@ public class LocationResource {
     this.locationDAO = locationDAO;
     this.dailyDataDAO = dailyDataDAO;
     this.clock = clock;
-  }
-
-  @GET
-  @Path("alexa")
-  @Produces("text/plain")
-  @Monitored
-  @RequiresAdmin
-  public String findAlexaStops() {
-    return locationDAO.findAlexaStops().stream()
-        .map(input -> input.getShortenedName())
-        .distinct()
-        .collect(Collectors.joining("\n"));
   }
 
   @GET

@@ -22,8 +22,6 @@ import foodtruck.jersey.ScheduleCacherImpl;
 import foodtruck.schedule.ScheduleCacher;
 import foodtruck.server.dashboard.AddressRuleServlet;
 import foodtruck.server.dashboard.AdminDashboardServlet;
-import foodtruck.server.dashboard.AlexaQueryServlet;
-import foodtruck.server.dashboard.AlexaTestServlet;
 import foodtruck.server.dashboard.ApplicationDetailServlet;
 import foodtruck.server.dashboard.ApplicationServlet;
 import foodtruck.server.dashboard.BeaconServlet;
@@ -200,8 +198,6 @@ class FoodtruckServletModule extends ServletModule {
 
     // Dashboard endpoints
     serve("/admin").with(AdminDashboardServlet.class);
-    serve("/admin/alexa_test").with(AlexaTestServlet.class);
-    serve("/admin/alexa_query").with(AlexaQueryServlet.class);
     serve("/admin/addresses").with(AddressRuleServlet.class);
     serve("/admin/dataexport").with(DataExportServlet.class);
     serveRegex("/admin/beacons/[\\w]+").with(BeaconServlet.class);
@@ -273,9 +269,6 @@ class FoodtruckServletModule extends ServletModule {
     serve("/vendor/socialmedia/*").with(VendorSocialMediaSettingsServlet.class);
     serve("/vendor/schedule").with(PostScheduleServlet.class);
     serve("/vendor/notifications/*").with(VendorNotificationSettingsServlet.class);
-
-    // Alexa integration
-    serve("/amazonalexa").with(AlexaServlet.class);
 
     // Front-page endpoints
     serve("/privacy").with(PrivacyPolicyServlet.class);

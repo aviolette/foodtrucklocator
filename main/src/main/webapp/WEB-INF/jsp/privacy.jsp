@@ -20,8 +20,8 @@
     <ul>
       <li>Analytics data is used to determine how the population as a whole is using this web site.</li>
       <li>Location/GPS data is used to determine your device's current proximity to food trucks.
-        This is then used to sort trucks by distance (on the website and chrome extension) and to
-        display food trucks "near me" in the alexa app.  This data is never permanently stored.
+        This is then used to sort trucks by distance (on the website and chrome extension).  This data is never
+        permanently stored.
       </li>
       <li>Logs are used for debugging purposes and do not contain personally identifiable information.</li>
     </ul>
